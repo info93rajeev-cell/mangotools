@@ -1,0 +1,38 @@
+{
+  "name": "mangotools",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm gen && pnpm --filter @mangotools/web dev",
+    "gen": "tsx scripts/generate/index.ts",
+    "typecheck": "tsc -p tsconfig.json && pnpm -r --if-present typecheck",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "verify": "biome check . && pnpm gen && pnpm typecheck && tsx scripts/validate/architecture.ts && vitest run",
+    "build": "pnpm gen && pnpm --filter @mangotools/web build && tsx scripts/check/postbuild.ts",
+    "preview": "tsx tests/support/serve.ts apps/web/dist 4321",
+    "test:e2e": "tsx scripts/test/e2e.ts",
+    "new:tool": "tsx scripts/new/tool.ts",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@biomejs/biome": "^2.5.14",
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.2",
+    "lefthook": "^2.1.14",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "unified": "^11.0.5",
+    "vitest": "^5.0.2",
+    "yaml": "^2.9.1"
+  }
+}
