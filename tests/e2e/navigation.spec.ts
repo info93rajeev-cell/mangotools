@@ -20,11 +20,12 @@ test.describe('navigation', () => {
     const search = page.getByRole('combobox', { name: 'Search tools' });
     await expect(search).toHaveAttribute(
       'placeholder',
-      'Search tools — try GST, JSON, Base64, URL',
+      'Search tools — try GST, JSON, CBM, Base64',
     );
     const categories = page.getByRole('region', { name: 'Browse by category' });
     await expect(categories.getByRole('link', { name: 'Developer & Data' })).toBeVisible();
     await expect(categories.getByRole('link', { name: 'Business & Finance' })).toBeVisible();
+    await expect(categories.getByRole('link', { name: 'Logistics' })).toBeVisible();
     await expect(page.locator('main [data-tool-card]')).toHaveCount(0);
     await expect(page.getByRole('navigation', { name: 'Popular tools' })).toHaveCount(0);
     await expect(page.locator('[data-trust-line]')).toHaveText(

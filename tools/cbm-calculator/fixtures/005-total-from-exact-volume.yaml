@@ -1,0 +1,5 @@
+id: 005-total-from-exact-volume
+preset: logistics/cbm
+source: { type: hand-verified, citation: "25 × 25 × 20 cm = 0.0125 m³ (shown 0.013); total from the exact volume: 0.0125 × 100 = 1.25 m³, not 0.013 × 100 = 1.3" }
+input: { unit: cm, length: "25", width: "25", height: "20", quantity: "100" }
+expected: { cbmPerCarton: "0.013", totalCbm: "1.250", cftPerCarton: "0.441", totalCft: "44.143" }

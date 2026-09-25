@@ -137,6 +137,54 @@ test.describe('Markup Calculator', () => {
   });
 });
 
+test.describe('CBM Calculator', () => {
+  test('calculates CBM and cubic feet in every unit, from the exact volume', async ({ page }) => {
+    await openTool(page, 'cbm-calculator');
+    const tool = island(page, 'cbm-calculator');
+    await expect(page.getByLabel('Number of cartons')).toHaveValue('1');
+    await page.getByLabel('Length').fill('25');
+    await page.getByLabel('Width').fill('25');
+    await page.getByLabel('Height').fill('20');
+    await page.getByLabel('Number of cartons').fill('100');
+    await expect(primaryResult(page)).toHaveText('1.250');
+    await expect(page.locator('[data-output="cbmPerCarton"] dd')).toHaveText('0.013');
+    await expect(page.locator('[data-output="totalCft"] dd')).toHaveText('44.143');
+    await expect(page.locator('[data-output="cftPerCarton"] dd')).toHaveText('0.441');
+    await expect(tool).toContainText(
+      'Total CBM = 0.0125 m³ × 100 cartons = 1.25 m³ (from the exact volume, rounded only for display)',
+    );
+    await expect(tool).toContainText(
+      'CBM per carton = 25 cm × 25 cm × 20 cm × 0.000001 m³ per cm³ = 0.0125 m³ (exact)',
+    );
+
+    await tool.getByText('inch', { exact: true }).click();
+    await page.getByLabel('Length').fill('20');
+    await page.getByLabel('Width').fill('16');
+    await page.getByLabel('Height').fill('12');
+    await page.getByLabel('Number of cartons').fill('10');
+    await expect(primaryResult(page)).toHaveText('0.629');
+    await expect(page.locator('[data-output="totalCft"] dd')).toHaveText('22.222');
+    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+  });
+
+  test('explains invalid dimensions and cartons next to the field', async ({ page }) => {
+    await openTool(page, 'cbm-calculator');
+    await page.getByLabel('Length').fill('50');
+    await page.getByLabel('Width').fill('0');
+    await page.getByLabel('Height').fill('30');
+    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
+    await expect(page.getByLabel('Width')).toHaveAttribute('aria-invalid', 'true');
+
+    await page.getByLabel('Width').fill('40');
+    await page.getByLabel('Number of cartons').fill('2.5');
+    await expect(page.getByText('The number of cartons must be a whole number.')).toBeVisible();
+    await expect(page.getByLabel('Number of cartons')).toHaveAttribute('aria-invalid', 'true');
+
+    await page.getByLabel('Number of cartons').fill('1000001');
+    await expect(page.getByText('Enter at most 1,000,000 cartons.')).toBeVisible();
+  });
+});
+
 test.describe('JSON Formatter', () => {
   test('reports line and column, and Go to moves the caret', async ({ page }) => {
     await openTool(page, 'json-formatter');
