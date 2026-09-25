@@ -1,0 +1,63 @@
+---
+import type { FaqItem } from '@mangotools/schemas';
+
+interface Props {
+  items: FaqItem[];
+}
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item) => (
+      <details id={item.id}>
+        <summary>
+          <h3>{item.question}</h3>
+        </summary>
+        <div class="answer prose" set:html={item.answerHtml} />
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    border-top: 1px solid var(--color-border);
+  }
+  details {
+    border-bottom: 1px solid var(--color-border);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    flex: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--color-text-subtle);
+  }
+  details[open] summary::after {
+    content: '−';
+  }
+  h3 {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    font-weight: var(--weight-semibold);
+  }
+  .answer {
+    padding-bottom: var(--space-4);
+    color: var(--color-text-muted);
+    max-width: 72ch;
+  }
+</style>

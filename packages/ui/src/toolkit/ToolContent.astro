@@ -1,0 +1,98 @@
+---
+import type { ToolContent } from '@mangotools/schemas';
+import { CardGrid, ToolCard } from '../discovery/cards.tsx';
+import type { Currency } from '../format/numbers.ts';
+import type { ToolLink } from '../layout/types.ts';
+import { t } from '../strings/en.ts';
+import Faq from './Faq.astro';
+import WorkedExample from './WorkedExample.astro';
+
+interface Props {
+  content: ToolContent;
+  related: ToolLink[];
+  currency?: Currency | undefined;
+}
+const { content, related, currency } = Astro.props;
+const beforeReferences = content.sections.filter((s) => s.id !== 'references');
+const references = content.sections.find((s) => s.id === 'references');
+---
+
+<div class="tool-content">
+  {
+    beforeReferences.map((section) => (
+      <section id={section.id} aria-labelledby={`${section.id}-title`}>
+        <h2 id={`${section.id}-title`}>{section.title}</h2>
+        {section.id === 'faq' ? (
+          <Faq items={content.faq} />
+        ) : (
+          <div class="prose" set:html={section.html} />
+        )}
+        {section.id === 'worked-example' && content.example ? (
+          <WorkedExample example={content.example} currency={currency} />
+        ) : null}
+      </section>
+    ))
+  }
+  {
+    related.length > 0 ? (
+      <section id="related-tools" aria-labelledby="related-tools-title">
+        <h2 id="related-tools-title">{t('related.title')}</h2>
+        <CardGrid>
+          {related.map((tool) => (
+            <li>
+              <ToolCard tool={tool} />
+            </li>
+          ))}
+        </CardGrid>
+      </section>
+    ) : null
+  }
+  {
+    references ? (
+      <section id={references.id} aria-labelledby={`${references.id}-title`}>
+        <h2 id={`${references.id}-title`}>{references.title}</h2>
+        <div class="prose references" set:html={references.html} />
+      </section>
+    ) : null
+  }
+</div>
+
+<style>
+  .tool-content {
+    display: grid;
+    gap: var(--space-12);
+    max-width: 880px;
+  }
+  section {
+    display: grid;
+    gap: var(--space-4);
+    scroll-margin-top: 80px;
+  }
+  .prose {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 72ch;
+  }
+  .prose :global(ol),
+  .prose :global(ul) {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: var(--space-6);
+  }
+  .prose :global(li::marker) {
+    color: var(--color-text-subtle);
+  }
+  .prose :global(code) {
+    padding: 1px 5px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    font-size: 0.875em;
+  }
+  .references {
+    color: var(--color-text-muted);
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+  }
+</style>

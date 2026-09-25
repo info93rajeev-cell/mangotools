@@ -1,0 +1,80 @@
+---
+import type { WorkedExample } from '@mangotools/schemas';
+import { type Currency, formatValue } from '../format/numbers.ts';
+import { t } from '../strings/en.ts';
+
+interface Props {
+  example: WorkedExample;
+  currency?: Currency | undefined;
+}
+const { example, currency } = Astro.props;
+const inputs = example.rows.filter((r) => r.role === 'input');
+const outputs = example.rows.filter((r) => r.role === 'output');
+const show = (row: (typeof example.rows)[number]) => formatValue(row.format, row.value, { currency });
+---
+
+<div class="example" data-worked-example={example.fixtureId}>
+  <table>
+    <tbody>
+      <tr class="group"><th colspan="2" scope="colgroup">{t('example.input')}</th></tr>
+      {
+        inputs.map((row) => (
+          <tr>
+            <th scope="row">{row.label}</th>
+            <td>{show(row)}</td>
+          </tr>
+        ))
+      }
+      <tr class="group"><th colspan="2" scope="colgroup">{t('example.result')}</th></tr>
+      {
+        outputs.map((row) => (
+          <tr class:list={{ primary: row.primary }}>
+            <th scope="row">{row.label}</th>
+            <td>{show(row)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .example {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    max-width: 560px;
+    border-collapse: collapse;
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+  }
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+  td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  tbody th[scope='row'] {
+    font-weight: var(--weight-regular);
+    color: var(--color-text-muted);
+  }
+  .group th {
+    padding-top: var(--space-4);
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-subtle);
+    border-bottom-color: var(--color-border-input);
+  }
+  .primary th,
+  .primary td {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text);
+  }
+</style>

@@ -1,3 +1,5 @@
+export * from './archetypes/CalculatorLayout.tsx';
+export * from './archetypes/TransformLayout.tsx';
 export * from './discovery/CategoryChips.tsx';
 export * from './discovery/cards.tsx';
 export * from './discovery/RecentTools.tsx';
@@ -14,3 +16,8 @@ export * from './primitives/feedback.tsx';
 export * from './primitives/Icon.tsx';
 export * from './primitives/inputs.tsx';
 export * from './strings/en.ts';
+export * from './toolkit/ActionBar.tsx';
+export * from './toolkit/presentation.ts';
+export * from './toolkit/ToolIsland.tsx';
+export * from './toolkit/textStats.ts';
+export * from './toolkit/WorkingSteps.tsx';

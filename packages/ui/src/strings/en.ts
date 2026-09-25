@@ -53,7 +53,7 @@ export const EN = {
   'toast.fileRead': 'Opened {name}.',
   'toast.downloaded': 'Downloaded {name}.',
   'input.label': 'Input',
-  'input.stats': '{chars} characters · {bytes} bytes',
+  'input.stats': '{chars} characters · {bytes}',
   'output.label': 'Output',
   'output.empty': 'The result appears here as you type.',
   'status.valid': 'Valid',
