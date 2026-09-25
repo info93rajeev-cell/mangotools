@@ -21,6 +21,20 @@ Professional browser tools that run entirely on your device. Phase 1 public beta
 | `pnpm new:tool <slug> --preset <id> --category <id> --tier <T1-T4> --archetype <A-E>` | Scaffold a tool |
 
 Set `MANGOTOOLS_ENV=production` for an indexable production build (default: `development`).
+`pnpm build -- --env production --out dist-prod` does the same without an environment variable.
+
+### Environment variables
+
+| Variable | Used by | Meaning |
+|---|---|---|
+| `MANGOTOOLS_ENV` | build | `development` (default: noindex, `/_dev/*` pages, analytics logged to the console) or `production` |
+| `PW_BROWSERS` | `pnpm test:e2e` | Comma-separated browsers to run (default `chromium,firefox,webkit`) |
+| `PW_CHROMIUM_PATH` | `pnpm test:e2e` | Use an already installed Chromium instead of Playwright's download |
+
+### Development-only pages
+
+In development builds `/_dev/components` shows every component in its states, and
+`/_dev/determinism` runs every engine fixture in the browser worker (used by `tests/determinism`).
 
 ## Where things live
 
