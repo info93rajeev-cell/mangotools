@@ -1,0 +1,5 @@
+id: 004-rounding-reconciles
+preset: estimate/pricing.markup
+source: { type: hand-verified, citation: "99.99 × 1.3333 = 133.316667 → 133.32; profit 33.33; markup 33.33 ÷ 99.99 = 33.33%; margin 33.33 ÷ 133.32 = 25.00%" }
+input: { solve: price-from-cost-and-markup, cost: "99.99", markupPercent: "33.33" }
+expected: { cost: "99.99", price: "133.32", profit: "33.33", marginPercent: "25.00", markupPercent: "33.33" }

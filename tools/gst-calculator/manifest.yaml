@@ -26,7 +26,7 @@ seo:
   primaryKeyword: gst calculator
   secondaryKeywords: [reverse gst calculator, cgst sgst calculator]
 graph:
-  related: [profit-margin-calculator]
+  related: [profit-margin-calculator, markup-calculator]
 quality:
   verifiedAgainst:
     - { citation: "CBIC GST rate structure effective 22 September 2025", locator: "Rate slabs used by the rate selector" }

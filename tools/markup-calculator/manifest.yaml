@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: markup-calculator
+slug: markup-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with price from markup, markup from cost and price, and cost from markup." }
+name: Markup Calculator
+shortName: Markup
+summary: Work out selling price, markup or cost from the other two, in ₹ with every step shown.
+archetype: B
+preset: estimate/pricing.markup
+sample: cost-200-markup-25
+taxonomy:
+  category: business
+  tags: [pricing, profit]
+  synonyms: [markup percentage calculator, selling price from markup, cost plus pricing, price markup calculator, markup vs margin]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Markup Calculator – Selling Price, Markup and Cost
+  description: Find the selling price from cost and markup, the markup from cost and price, or the cost behind a price. In ₹, every step shown, in your browser.
+  primaryKeyword: markup calculator
+  secondaryKeywords: [selling price from markup, markup percentage calculator]
+graph:
+  related: [profit-margin-calculator, gst-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Standard definitions: markup = profit ÷ cost; margin = profit ÷ selling price", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 007 and 010, tool fixtures 001–004" }
+  lastVerified: 2026-09-25

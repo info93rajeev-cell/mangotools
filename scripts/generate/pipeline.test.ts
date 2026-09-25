@@ -39,16 +39,17 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds five tools, five presets and both launch categories', () => {
+  it('builds six tools, six presets and both launch categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
       'gst-calculator',
       'json-formatter',
+      'markup-calculator',
       'profit-margin-calculator',
       'url-encode-decode',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(5);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(6);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'business',
       'developer',
@@ -88,7 +89,7 @@ describe('registry pipeline — invalid inputs fail with file and path', () => {
   });
   it('manifest: unknown related tool', async () => {
     const issues = await issuesFor((s) => {
-      manifestOf(s, 'gst-calculator').graph.related = ['markup-calculator'];
+      manifestOf(s, 'gst-calculator').graph.related = ['no-such-tool'];
     });
     expect(hasIssue(issues, 'tools/gst-calculator/manifest.yaml', 'graph.related.0')).toBe(true);
   });
@@ -210,7 +211,7 @@ describe('registry pipeline — invalid inputs fail with file and path', () => {
   });
   it('site config: home refers to an unknown tool', async () => {
     const issues = await issuesFor((s) => {
-      (s.siteConfig.data as Data).home.popular.push('markup-calculator');
+      (s.siteConfig.data as Data).home.popular.push('no-such-tool');
     });
     expect(hasIssue(issues, 'site.config.yaml', 'home.popular.5')).toBe(true);
   });
@@ -325,9 +326,16 @@ describe('category visibility threshold', () => {
     if (!output) throw new Error('pipeline failed');
     const { registry } = output;
     const taxonomy = { categories: registry.categories } as never;
-    const strict = { ...registry.site, navigation: { minToolsPerCategory: 3 } };
-    const visible = buildCategories(taxonomy, registry.tools, strict).filter((c) => c.visible);
-    expect(visible.map((c) => c.id)).toEqual(['developer']);
+    const visibleAt = (min: number) =>
+      buildCategories(taxonomy, registry.tools, {
+        ...registry.site,
+        navigation: { minToolsPerCategory: min },
+      })
+        .filter((c) => c.visible)
+        .map((c) => c.id);
+    // business and developer have three tools each.
+    expect(visibleAt(3)).toEqual(['business', 'developer']);
+    expect(visibleAt(4)).toEqual([]);
   });
 });
 

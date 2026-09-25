@@ -107,6 +107,36 @@ test.describe('Profit Margin Calculator', () => {
   });
 });
 
+test.describe('Markup Calculator', () => {
+  test('solves all three modes with ₹, working and disclaimer', async ({ page }) => {
+    await openTool(page, 'markup-calculator');
+    await page.getByLabel('Cost', { exact: true }).fill('1000000');
+    await page.getByLabel('Markup', { exact: true }).fill('50');
+    await expect(primaryResult(page)).toHaveText('₹15,00,000.00');
+    await expect(page.locator('[data-output="profit"] dd')).toHaveText('₹5,00,000.00');
+    await expect(page.locator('[data-output="marginPercent"] dd')).toHaveText('33.33%');
+    await expect(island(page, 'markup-calculator')).toContainText(
+      'Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00',
+    );
+
+    await island(page, 'markup-calculator')
+      .getByText('Markup from cost & price', { exact: true })
+      .click();
+    await page.getByLabel('Cost', { exact: true }).fill('100');
+    await page.getByLabel('Selling price', { exact: true }).fill('80');
+    await expect(primaryResult(page)).toHaveText('−20.00%');
+    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
+
+    await island(page, 'markup-calculator')
+      .getByText('Cost from price & markup', { exact: true })
+      .click();
+    await page.getByLabel('Selling price', { exact: true }).fill('250');
+    await page.getByLabel('Markup', { exact: true }).fill('25');
+    await expect(primaryResult(page)).toHaveText('₹200.00');
+    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+  });
+});
+
 test.describe('JSON Formatter', () => {
   test('reports line and column, and Go to moves the caret', async ({ page }) => {
     await openTool(page, 'json-formatter');

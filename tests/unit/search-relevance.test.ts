@@ -25,7 +25,12 @@ describe('search relevance over the generated index', () => {
     ['cgst sgst', 'gst-calculator'],
     ['goods and services tax', 'gst-calculator'],
     ['gross margin', 'profit-margin-calculator'],
-    ['markup', 'profit-margin-calculator'],
+    ['Markup Calculator', 'markup-calculator'],
+    ['markup', 'markup-calculator'],
+    ['mark up', 'markup-calculator'],
+    ['cost plus pricing', 'markup-calculator'],
+    ['selling price from markup', 'markup-calculator'],
+    ['selling price from margin', 'profit-margin-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

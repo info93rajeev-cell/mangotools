@@ -1,0 +1,5 @@
+id: 001-price-from-markup
+preset: estimate/pricing.markup
+source: { type: hand-verified, citation: "200 × (1 + 25 ÷ 100) = 250; profit 50; margin 50 ÷ 250 = 20%" }
+input: { solve: price-from-cost-and-markup, cost: "200", markupPercent: "25" }
+expected: { cost: "200.00", price: "250.00", profit: "50.00", marginPercent: "20.00", markupPercent: "25.00" }

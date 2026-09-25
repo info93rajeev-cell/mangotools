@@ -3,5 +3,6 @@ groups:
   - [base64, base 64, b64]
   - [gst, goods and services tax]
   - [margin, profit margin, gross margin]
+  - [markup, mark up, mark-up]
   - [url encode, percent encode, urlencode]
   - [json, javascript object notation]
