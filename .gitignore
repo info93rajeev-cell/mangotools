@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-dev/
+generated/
+.astro/
+test-results/
+playwright-report/
+coverage/
+.DS_Store
+*.log
+.env
+.env.*
