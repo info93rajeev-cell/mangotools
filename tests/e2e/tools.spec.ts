@@ -185,6 +185,88 @@ test.describe('CBM Calculator', () => {
   });
 });
 
+test.describe('Volumetric Weight Calculator', () => {
+  test('compares actual and volumetric weight and states the billing basis', async ({ page }) => {
+    await openTool(page, 'volumetric-weight-calculator');
+    const tool = island(page, 'volumetric-weight-calculator');
+    await expect(page.getByLabel('Number of packages')).toHaveValue('1');
+    await expect(page.getByLabel('Divisor (cm³ per kg)')).toHaveValue('5000');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(primaryResult(page)).toHaveText('120.000');
+    await expect(page.locator('[data-output="chargeablePerPackage"] dd')).toHaveText('12.000');
+    await expect(page.locator('[data-output="volumetricPerPackage"] dd')).toHaveText('12.000');
+    await expect(page.locator('[data-output="actualTotal"] dd')).toHaveText('80.000');
+    await expect(tool).toContainText(
+      'Volumetric weight is higher, so volumetric weight is used for billing.',
+    );
+
+    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: '6000' });
+    await expect(primaryResult(page)).toHaveText('100.000');
+
+    await page.getByLabel('Actual weight per package').fill('25');
+    await expect(primaryResult(page)).toHaveText('250.000');
+    await expect(tool).toContainText(
+      'Actual weight is higher, so actual weight is used for billing.',
+    );
+
+    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: 'Custom' });
+    await page.getByLabel('Custom divisor (cm³ per kg)').fill('2400');
+    await expect(page.locator('[data-output="volumetricPerPackage"] dd')).toHaveText('25.000');
+    await expect(tool).toContainText(
+      'Actual and volumetric weight are the same, so either value may be used for billing.',
+    );
+    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'CBM Calculator' }).first()).toBeVisible();
+  });
+
+  test('converts inches and pounds', async ({ page }) => {
+    await openTool(page, 'volumetric-weight-calculator');
+    const tool = island(page, 'volumetric-weight-calculator');
+    await tool.getByText('inch', { exact: true }).click();
+    await tool.getByText('lb', { exact: true }).click();
+    await page.getByLabel('Length').fill('20');
+    await page.getByLabel('Width').fill('16');
+    await page.getByLabel('Height').fill('12');
+    await page.getByLabel('Actual weight per package').fill('22');
+    await expect(primaryResult(page)).toHaveText('12.585');
+    await expect(page.locator('[data-output="actualPerPackage"] dd')).toHaveText('9.979');
+    await expect(tool).toContainText(
+      'Actual weight per package = 22 lb × 0.45359237 = 9.97903214 kg',
+    );
+  });
+
+  test('explains invalid inputs next to the field', async ({ page }) => {
+    await openTool(page, 'volumetric-weight-calculator');
+    await page.getByLabel('Length').fill('50');
+    await page.getByLabel('Width').fill('40');
+    await page.getByLabel('Height').fill('30');
+    await page.getByLabel('Actual weight per package').fill('0');
+    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
+    await expect(page.getByLabel('Actual weight per package')).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+
+    await page.getByLabel('Actual weight per package').fill('100001');
+    await expect(page.getByText('Enter at most 100,000 kg per package.')).toBeVisible();
+
+    await page.getByLabel('Actual weight per package').fill('8');
+    await page.getByLabel('Number of packages').fill('2.5');
+    await expect(page.getByText('The number of cartons must be a whole number.')).toBeVisible();
+
+    await page.getByLabel('Number of packages').fill('1');
+    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: 'Custom' });
+    await page.getByLabel('Custom divisor (cm³ per kg)').fill('999');
+    await expect(
+      page.getByText('Enter a divisor between 1,000 and 10,000 cm³ per kg.'),
+    ).toBeVisible();
+    await page.getByLabel('Custom divisor (cm³ per kg)').fill('5000.5');
+    await expect(
+      page.getByText('Enter a divisor between 1,000 and 10,000 cm³ per kg.'),
+    ).toBeVisible();
+  });
+});
+
 test.describe('JSON Formatter', () => {
   test('reports line and column, and Go to moves the caret', async ({ page }) => {
     await openTool(page, 'json-formatter');

@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: volumetric-weight-calculator
+slug: volumetric-weight-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with volumetric, actual and chargeable weight per package and in total, divisor 5000, 6000 or custom." }
+name: Volumetric Weight Calculator
+shortName: Volumetric Weight
+summary: Volumetric, actual and chargeable weight for courier and freight packages, with every step shown.
+archetype: B
+preset: logistics/volumetric
+sample: carton-50-40-30-8kg-x10
+taxonomy:
+  category: logistics
+  tags: [volume, shipping]
+  synonyms: [volumetric weight, dimensional weight, courier weight, chargeable weight, shipping weight, air freight weight, logistics calculator, dim weight calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Volumetric Weight Calculator – Chargeable Weight in kg
+  description: Work out volumetric, actual and chargeable weight for courier and air freight packages, with divisor 5000, 6000 or custom. Every step shown, in your browser.
+  primaryKeyword: volumetric weight calculator
+  secondaryKeywords: [dimensional weight calculator, chargeable weight calculator]
+graph:
+  related: [cbm-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Volumetric weight = length × width × height in cm ÷ divisor (cm³ per kg); chargeable weight = the higher of actual and volumetric weight", locator: "Method section" }
+    - { citation: "International yard and pound agreement (1959): 1 in = 2.54 cm, 1 lb = 0.45359237 kg", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–011, tool fixtures 001–005" }
+  lastVerified: 2026-09-25
