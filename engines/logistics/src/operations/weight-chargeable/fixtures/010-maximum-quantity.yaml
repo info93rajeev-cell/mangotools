@@ -1,0 +1,5 @@
+id: 010-maximum-quantity
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "12 kg × 1,000,000 = 12,000,000 kg; 8 kg × 1,000,000 = 8,000,000 kg" }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1000000", weight: "8", weightUnit: kg, divisor: "5000" }
+expected: { volumetricTotal: "12000000.000", actualTotal: "8000000.000", chargeableTotal: "12000000.000" }

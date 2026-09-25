@@ -1,0 +1,5 @@
+id: 015-weight-too-large-kg
+operation: logistics.weight.chargeable@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1", weightUnit: kg, weight: "100000.001", divisor: "5000" }
+expectedError: { code: LOGISTICS_WEIGHT_TOO_LARGE, path: weight }

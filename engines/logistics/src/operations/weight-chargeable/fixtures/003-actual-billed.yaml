@@ -1,0 +1,5 @@
+id: 003-actual-billed
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "30 × 20 × 10 cm = 6,000 cm³ ÷ 5000 = 1.2 kg; actual 2.5 kg is higher, so 2.5 kg is billed" }
+input: { unit: cm, length: "30", width: "20", height: "10", quantity: "1", weight: "2.5", weightUnit: kg, divisor: "5000" }
+expected: { volumetricPerPackage: "1.200", actualPerPackage: "2.500", chargeablePerPackage: "2.500", chargeableTotal: "2.500", billedOn: actual }

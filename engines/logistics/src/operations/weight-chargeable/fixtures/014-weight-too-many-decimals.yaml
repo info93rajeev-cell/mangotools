@@ -1,0 +1,5 @@
+id: 014-weight-too-many-decimals
+operation: logistics.weight.chargeable@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1", weightUnit: kg, weight: "1.2345", divisor: "5000" }
+expectedError: { code: LOGISTICS_TOO_MANY_DECIMALS, path: weight, details: { max: 3 } }

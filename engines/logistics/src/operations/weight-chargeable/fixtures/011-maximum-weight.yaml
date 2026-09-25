@@ -1,0 +1,5 @@
+id: 011-maximum-weight
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "100,000 kg per package is the limit and is accepted" }
+input: { unit: cm, length: "10", width: "10", height: "10", quantity: "1", weight: "100000", weightUnit: kg, divisor: "5000" }
+expected: { actualPerPackage: "100000.000", chargeablePerPackage: "100000.000", billedOn: actual }

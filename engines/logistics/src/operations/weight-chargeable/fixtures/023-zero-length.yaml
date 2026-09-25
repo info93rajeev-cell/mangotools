@@ -1,0 +1,5 @@
+id: 023-zero-length
+operation: logistics.weight.chargeable@1
+source: { type: regression }
+input: { unit: cm, length: "0", width: "40", height: "30", quantity: "1", weight: "8", weightUnit: kg, divisor: "5000" }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: length }
