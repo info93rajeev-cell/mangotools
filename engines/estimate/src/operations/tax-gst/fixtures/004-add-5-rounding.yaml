@@ -1,0 +1,5 @@
+id: 004-add-5-rounding
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "999.99 × 2.5% = 24.99975 → 25.00 (half-up) per component" }
+input: { amount: "999.99", rate: 5, mode: add, supply: intra }
+expected: { taxableValue: "999.99", cgst: "25.00", sgst: "25.00", totalTax: "50.00", grossAmount: "1049.99" }

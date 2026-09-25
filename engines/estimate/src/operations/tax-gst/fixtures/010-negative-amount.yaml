@@ -1,0 +1,5 @@
+id: 010-negative-amount
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "Negative amounts are rejected" }
+input: { amount: "-5", rate: 18, mode: add, supply: intra }
+expectedError: { code: ESTIMATE_NEGATIVE_AMOUNT, path: amount }

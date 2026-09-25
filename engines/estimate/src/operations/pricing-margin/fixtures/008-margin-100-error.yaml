@@ -1,0 +1,5 @@
+id: 008-margin-100-error
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "A 100% margin would need an infinite price" }
+input: { solve: price-from-cost-and-margin, cost: "50", marginPercent: "100" }
+expectedError: { code: ESTIMATE_MARGIN_OUT_OF_RANGE, path: marginPercent }

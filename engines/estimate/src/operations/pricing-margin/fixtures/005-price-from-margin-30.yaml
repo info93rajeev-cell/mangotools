@@ -1,0 +1,5 @@
+id: 005-price-from-margin-30
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "70 ÷ 0.70 = 100" }
+input: { solve: price-from-cost-and-margin, cost: "70", marginPercent: "30" }
+expected: { price: "100.00" }

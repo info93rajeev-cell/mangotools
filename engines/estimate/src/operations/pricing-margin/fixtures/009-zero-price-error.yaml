@@ -1,0 +1,5 @@
+id: 009-zero-price-error
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "Margin is undefined for a zero selling price" }
+input: { solve: from-cost-and-price, cost: "10", price: "0" }
+expectedError: { code: ESTIMATE_PRICE_ZERO, path: price }

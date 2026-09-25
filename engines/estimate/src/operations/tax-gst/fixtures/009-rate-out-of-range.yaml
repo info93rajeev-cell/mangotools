@@ -1,0 +1,5 @@
+id: 009-rate-out-of-range
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "A tax rate above 100% is not a valid GST rate" }
+input: { amount: "100.00", rate: 101, mode: add, supply: intra }
+expectedError: { code: ESTIMATE_GST_RATE_OUT_OF_RANGE, path: rate }

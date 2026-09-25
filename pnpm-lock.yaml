@@ -69,6 +69,18 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
+  engines/estimate:
+    dependencies:
+      '@mangotools/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@mangotools/engine-numeric':
+        specifier: workspace:*
+        version: link:../numeric
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+
   engines/numeric:
     dependencies:
       big.js:

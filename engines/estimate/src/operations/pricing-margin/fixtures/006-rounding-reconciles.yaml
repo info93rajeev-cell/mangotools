@@ -1,0 +1,5 @@
+id: 006-rounding-reconciles
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "1 ÷ 0.6667 = 1.4999… → 1.50; profit 0.50; margin 0.50 ÷ 1.50 = 33.33%; markup 50%" }
+input: { solve: price-from-cost-and-margin, cost: "1", marginPercent: "33.33" }
+expected: { price: "1.50", profit: "0.50", marginPercent: "33.33", markupPercent: "50.00" }

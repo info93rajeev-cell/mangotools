@@ -1,0 +1,5 @@
+id: 003-remove-18-intra
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "1180.00 × 100 ÷ 118 = 1000.00; 180.00 split 90.00 / 90.00" }
+input: { amount: "1180.00", rate: 18, mode: remove, supply: intra }
+expected: { taxableValue: "1000.00", totalTax: "180.00", cgst: "90.00", sgst: "90.00", igst: "0.00", grossAmount: "1180.00" }

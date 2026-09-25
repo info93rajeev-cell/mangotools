@@ -1,0 +1,5 @@
+id: 006-add-0.25-inter
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "250.00 × 0.25% = 0.625 → 0.63 (half-up)" }
+input: { amount: "250.00", rate: "0.25", mode: add, supply: inter }
+expected: { igst: "0.63", totalTax: "0.63", grossAmount: "250.63" }
