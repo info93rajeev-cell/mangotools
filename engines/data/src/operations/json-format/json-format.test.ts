@@ -1,5 +1,7 @@
 import { createTestContext, executeOperation } from '@mangotools/core';
 import { describe, expect, it } from 'vitest';
+import { messages } from '../../errors.ts';
+import { EXPECTED_TEXT } from './expected-text.ts';
 import { jsonFormat } from './operation.ts';
 import { lineColumn } from './parse.ts';
 
@@ -27,6 +29,31 @@ describe('data.json.format', () => {
     expect(!control.ok && control.error.details?.expected).toBe('valid-string-character');
     const badEscape = await run('"\\x"');
     expect(!badEscape.ok && badEscape.error.details?.expected).toBe('valid-escape');
+  });
+
+  it('explains syntax errors in plain words, keeping line, column and the expected code', async () => {
+    const result = await run('{"a":1,}');
+    expect(!result.ok && result.error.details).toMatchObject({
+      line: 1,
+      column: 8,
+      expected: 'property-name',
+      expectedText: 'a property name in double quotes',
+    });
+    const details = !result.ok ? (result.error.details ?? {}) : {};
+    const message = messages.DATA_JSON_SYNTAX_ERROR?.replace(/\{(\w+)\}/g, (_m, k: string) =>
+      String(details[k]),
+    );
+    expect(message).toBe(
+      'Invalid JSON at line 1, column 8. Expected a property name in double quotes.',
+    );
+  });
+
+  it('has a plain phrase for every expected-token code', () => {
+    for (const [code, text] of Object.entries(EXPECTED_TEXT)) {
+      expect(text, code).toMatch(/^[a-z]/);
+      expect(text, code).not.toContain('-or-');
+    }
+    expect(Object.keys(EXPECTED_TEXT)).toHaveLength(10);
   });
 
   it('uses tabs when asked', async () => {

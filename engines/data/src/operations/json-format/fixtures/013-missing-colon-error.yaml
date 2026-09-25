@@ -1,0 +1,9 @@
+id: 013-missing-colon-error
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §4 — a name is followed by a single colon" }
+input:
+  text: '{"a" 1}'
+expectedError:
+  code: DATA_JSON_SYNTAX_ERROR
+  path: text
+  details: { line: 1, column: 6, expected: colon, expectedText: "a colon (:) after the property name" }

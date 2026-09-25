@@ -13,5 +13,8 @@ Error messages for every code are in `src/errors.ts`. Golden fixtures live next 
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
 
 ## Changelog
+- 0.2.0 — `DATA_JSON_SYNTAX_ERROR` messages use plain words ("Expected a property name in double
+  quotes") via a new `expectedText` detail. The error code, `line`, `column`, `offset` and the
+  `expected` code are unchanged (TASK-002A A4).
 - 0.1.0 — first three operations (TASK-001). `DATA_JSON_TOO_DEEP` (nesting over 512 levels) added to
   protect the worker from stack exhaustion.

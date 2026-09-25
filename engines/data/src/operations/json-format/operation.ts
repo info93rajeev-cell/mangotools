@@ -1,6 +1,7 @@
 import { defineOperation, err, type OpWarning, ok, warning } from '@mangotools/core';
 import { MAX_INPUT_CHARS } from '../../errors.ts';
 import { utf8Length } from '../../lib/bytes.ts';
+import { EXPECTED_TEXT } from './expected-text.ts';
 import { isParseFailure, lineColumn, MAX_DEPTH, parseJson } from './parse.ts';
 import { printJson } from './print.ts';
 import { jsonFormatInput, jsonFormatOutput, jsonFormatParams } from './schema.ts';
@@ -44,7 +45,13 @@ export const jsonFormat = defineOperation({
       const { line, column } = lineColumn(text, e.offset);
       return err('DATA_JSON_SYNTAX_ERROR', {
         path: 'text',
-        details: { line, column, offset: e.offset, expected: e.expected },
+        details: {
+          line,
+          column,
+          offset: e.offset,
+          expected: e.expected,
+          expectedText: EXPECTED_TEXT[e.expected],
+        },
       });
     }
     for (const offset of parsed.stats.duplicateKeyOffsets) {
