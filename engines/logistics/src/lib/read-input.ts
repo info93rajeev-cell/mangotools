@@ -30,3 +30,18 @@ export function readCount(raw: Raw, path: string, max: string): Result<string> {
   }
   return ok(parsed.value);
 }
+
+/** A required whole number in [min, max]; anything else outside the range gets `rangeCode`. */
+export function readWholeInRange(
+  raw: Raw,
+  path: string,
+  range: { min: string; max: string; rangeCode: string },
+): Result<string> {
+  if (raw === undefined || text(raw).trim() === '') return err('LOGISTICS_MISSING_INPUT', { path });
+  const parsed = parseDecimal(text(raw));
+  if (!parsed.ok) return err('LOGISTICS_INVALID_NUMBER', { path });
+  if (compare(parsed.value, '0') <= 0) return err('LOGISTICS_NOT_POSITIVE', { path });
+  const outside = compare(parsed.value, range.min) < 0 || compare(parsed.value, range.max) > 0;
+  if (parsed.value.includes('.') || outside) return err(range.rangeCode, { path });
+  return ok(parsed.value);
+}

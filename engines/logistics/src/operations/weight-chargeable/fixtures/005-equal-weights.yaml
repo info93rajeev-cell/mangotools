@@ -1,0 +1,5 @@
+id: 005-equal-weights
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "60,000 cm³ ÷ 5000 = 12 kg, the same as the 12 kg actual weight" }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1", weight: "12", weightUnit: kg, divisor: "5000" }
+expected: { volumetricPerPackage: "12.000", actualPerPackage: "12.000", chargeablePerPackage: "12.000", billedOn: equal }

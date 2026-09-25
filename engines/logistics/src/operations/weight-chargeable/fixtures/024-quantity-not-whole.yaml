@@ -1,0 +1,5 @@
+id: 024-quantity-not-whole
+operation: logistics.weight.chargeable@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "2.5", weight: "8", weightUnit: kg, divisor: "5000" }
+expectedError: { code: LOGISTICS_QUANTITY_NOT_WHOLE, path: quantity }

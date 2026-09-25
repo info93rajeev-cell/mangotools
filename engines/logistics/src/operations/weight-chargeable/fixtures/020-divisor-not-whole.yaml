@@ -1,0 +1,5 @@
+id: 020-divisor-not-whole
+operation: logistics.weight.chargeable@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1", weightUnit: kg, weight: "8", divisor: "5000.5" }
+expectedError: { code: LOGISTICS_DIVISOR_OUT_OF_RANGE, path: divisor }

@@ -1,0 +1,5 @@
+id: 006-grams
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "2,500 g = 2.5 kg (SI); same result as fixture 003" }
+input: { unit: cm, length: "30", width: "20", height: "10", quantity: "1", weight: "2500", weightUnit: g, divisor: "5000" }
+expected: { actualPerPackage: "2.500", chargeablePerPackage: "2.500", billedOn: actual }

@@ -1,0 +1,5 @@
+id: 009-total-from-full-precision
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "1,000 cm³ ÷ 6000 = 0.1666… kg (shown 0.167); total uses full precision: 0.1666… × 3 = 0.5 kg, not 0.167 × 3 = 0.501" }
+input: { unit: cm, length: "10", width: "10", height: "10", quantity: "3", weight: "0.1", weightUnit: kg, divisor: "6000" }
+expected: { volumetricPerPackage: "0.167", volumetricTotal: "0.500", actualTotal: "0.300", chargeableTotal: "0.500", billedOn: volumetric }

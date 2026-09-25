@@ -1,0 +1,5 @@
+id: 002-same-carton-6000
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "60,000 cm³ ÷ 6000 = 10 kg; actual 8 kg; chargeable 10 kg (volumetric); × 10" }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "10", weight: "8", weightUnit: kg, divisor: "6000" }
+expected: { volumetricPerPackage: "10.000", volumetricTotal: "100.000", actualTotal: "80.000", chargeablePerPackage: "10.000", chargeableTotal: "100.000", billedOn: volumetric }

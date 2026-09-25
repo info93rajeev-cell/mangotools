@@ -1,0 +1,5 @@
+id: 008-millimetres
+operation: logistics.weight.chargeable@1
+source: { type: hand-verified, citation: "500 × 400 × 300 mm = 60,000 cm³; same result as fixture 001" }
+input: { unit: mm, length: "500", width: "400", height: "300", quantity: "10", weight: "8", weightUnit: kg, divisor: "5000" }
+expected: { volumetricPerPackage: "12.000", chargeableTotal: "120.000", billedOn: volumetric, volumeCm3PerPackage: "60000" }
