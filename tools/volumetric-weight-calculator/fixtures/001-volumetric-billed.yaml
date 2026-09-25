@@ -1,0 +1,5 @@
+id: 001-volumetric-billed
+preset: logistics/volumetric
+source: { type: hand-verified, citation: "50 × 40 × 30 cm = 60,000 cm³ ÷ 5000 = 12 kg; actual 8 kg; chargeable 12 kg (volumetric); × 10 packages = 120 kg" }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "10", weight: "8", weightUnit: kg, divisor: "5000" }
+expected: { volumetricPerPackage: "12.000", volumetricTotal: "120.000", actualPerPackage: "8.000", actualTotal: "80.000", chargeablePerPackage: "12.000", chargeableTotal: "120.000", billedOn: volumetric }

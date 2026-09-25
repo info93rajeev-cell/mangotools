@@ -38,11 +38,23 @@ describe('search relevance over the generated index', () => {
     ['carton volume', 'cbm-calculator'],
     ['cargo volume', 'cbm-calculator'],
     ['shipping volume', 'cbm-calculator'],
-    ['logistics calculator', 'cbm-calculator'],
+    ['Volumetric Weight Calculator', 'volumetric-weight-calculator'],
+    ['volumetric weight', 'volumetric-weight-calculator'],
+    ['dimensional weight', 'volumetric-weight-calculator'],
+    ['courier weight', 'volumetric-weight-calculator'],
+    ['chargeable weight', 'volumetric-weight-calculator'],
+    ['shipping weight', 'volumetric-weight-calculator'],
+    ['air freight weight', 'volumetric-weight-calculator'],
+    ['dim weight', 'volumetric-weight-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
   }
+
+  it('"logistics calculator" finds both logistics tools first', () => {
+    const ids = search('logistics calculator', 2).map((r) => r.id);
+    expect(ids.sort()).toEqual(['cbm-calculator', 'volumetric-weight-calculator']);
+  });
 
   it('returns nothing for an empty query', () => expect(search('  ')).toEqual([]));
   it('is deterministic', () => expect(search('encode')).toEqual(search('encode')));

@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: logistics/volumetric
+version: 0.1.0
+operation: logistics.weight.chargeable@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  unit:
+    labelKey: vw.field.unit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 10
+    options:
+      - { value: cm, labelKey: vw.unit.cm }
+      - { value: m, labelKey: vw.unit.m }
+      - { value: mm, labelKey: vw.unit.mm }
+      - { value: in, labelKey: vw.unit.in }
+  length: { labelKey: vw.field.length, kind: number, required: true, order: 20, helpKey: vw.help.dimension }
+  width: { labelKey: vw.field.width, kind: number, required: true, order: 30, helpKey: vw.help.dimension }
+  height: { labelKey: vw.field.height, kind: number, required: true, order: 40, helpKey: vw.help.dimension }
+  quantity: { labelKey: vw.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: vw.help.quantity }
+  weightUnit:
+    labelKey: vw.field.weightUnit
+    kind: enum
+    control: segmented
+    default: kg
+    order: 60
+    options:
+      - { value: kg, labelKey: vw.weightUnit.kg }
+      - { value: g, labelKey: vw.weightUnit.g }
+      - { value: lb, labelKey: vw.weightUnit.lb }
+  weight: { labelKey: vw.field.weight, kind: number, required: true, order: 70, helpKey: vw.help.weight }
+  divisor:
+    labelKey: vw.field.divisor
+    kind: enum-or-number
+    control: select
+    allowCustom: true
+    default: 5000
+    order: 80
+    helpKey: vw.help.divisor
+    options:
+      - { value: 5000, labelKey: vw.divisor.5000 }
+      - { value: 6000, labelKey: vw.divisor.6000 }
+outputs:
+  chargeableTotal: { labelKey: vw.out.chargeableTotal, format: number, order: 10, primary: true }
+  chargeablePerPackage: { labelKey: vw.out.chargeablePerPackage, format: number, order: 20 }
+  volumetricPerPackage: { labelKey: vw.out.volumetricPerPackage, format: number, order: 30 }
+  volumetricTotal: { labelKey: vw.out.volumetricTotal, format: number, order: 40 }
+  actualPerPackage: { labelKey: vw.out.actualPerPackage, format: number, order: 50 }
+  actualTotal: { labelKey: vw.out.actualTotal, format: number, order: 60 }
+samples:
+  carton-50-40-30-8kg-x10:
+    titleKey: vw.sample.carton
+    input: { unit: cm, length: "50", width: "40", height: "30", quantity: "10", weightUnit: kg, weight: "8", divisor: "5000" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    vw.field.unit: Dimension unit
+    vw.unit.cm: cm
+    vw.unit.m: m
+    vw.unit.mm: mm
+    vw.unit.in: inch
+    vw.field.length: Length
+    vw.field.width: Width
+    vw.field.height: Height
+    vw.field.quantity: Number of packages
+    vw.field.weightUnit: Weight unit
+    vw.weightUnit.kg: kg
+    vw.weightUnit.g: g
+    vw.weightUnit.lb: lb
+    vw.field.weight: Actual weight per package
+    vw.field.divisor: Divisor (cm³ per kg)
+    vw.divisor.5000: "5000"
+    vw.divisor.6000: "6000"
+    vw.help.dimension: Outer size of one package in the unit chosen above, up to 3 decimal places.
+    vw.help.quantity: Packages or cartons of this size, a whole number from 1 to 1,000,000.
+    vw.help.weight: Scale weight of one package, in the weight unit chosen above.
+    vw.help.divisor: Carriers use different divisors, often 5000 or 6000. Use the one your carrier states, or choose Custom (1,000 to 10,000).
+    vw.out.chargeableTotal: Total chargeable weight (kg)
+    vw.out.chargeablePerPackage: Chargeable weight per package (kg)
+    vw.out.volumetricPerPackage: Volumetric weight per package (kg)
+    vw.out.volumetricTotal: Total volumetric weight (kg)
+    vw.out.actualPerPackage: Actual weight per package (kg)
+    vw.out.actualTotal: Total actual weight (kg)
+    vw.sample.carton: 50 × 40 × 30 cm, 8 kg, 10 packages
+    work.vw.volume: "Volume per package = {length:number} {unit} × {width:number} {unit} × {height:number} {unit} = {result:number} cm³"
+    work.vw.volumetric: "Volumetric weight per package = {volume:number} cm³ ÷ {divisor} = {result} kg"
+    work.vw.actual: "Actual weight per package = {weight:number} kg"
+    work.vw.actual.convert: "Actual weight per package = {weight:number} {weightUnit} × {factor} = {result} kg"
+    work.vw.chargeable.volumetric: "Chargeable weight per package = higher of {actual} kg actual and {volumetric} kg volumetric = {result} kg. Volumetric weight is higher, so volumetric weight is used for billing."
+    work.vw.chargeable.actual: "Chargeable weight per package = higher of {actual} kg actual and {volumetric} kg volumetric = {result} kg. Actual weight is higher, so actual weight is used for billing."
+    work.vw.chargeable.equal: "Chargeable weight per package = {result} kg. Actual and volumetric weight are the same, so either value may be used for billing."
+    work.vw.total.volumetric: "Total volumetric weight = {perPackage} kg × {quantity:number} packages = {result} kg"
+    work.vw.total.actual: "Total actual weight = {perPackage} kg × {quantity:number} packages = {result} kg"
+    work.vw.total.chargeable: "Total chargeable weight = {perPackage} kg × {quantity:number} packages = {result} kg (from the unrounded per-package value; results are rounded to 3 decimal places only for display)"
