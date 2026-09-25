@@ -37,6 +37,7 @@ fields:
   text: { labelKey: b64.field.text, kind: text, required: true, order: 10, placeholderKey: b64.field.placeholder }
 outputs:
   text: { labelKey: b64.out.text, format: code, order: 10, primary: true }
+  hexPreview: { labelKey: b64.out.hex, format: code, order: 20, visibleWhen: { direction: [decode] } }
 samples:
   hello-rupee: { titleKey: b64.sample.hello, input: { text: "Hello, ₹ world" } }
 ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: base64.txt, outputMime: text/plain }
@@ -56,4 +57,5 @@ strings:
     b64.field.text: Input
     b64.field.placeholder: Type or paste text to encode, or Base64 to decode
     b64.out.text: Result
+    b64.out.hex: Bytes (hex preview)
     b64.sample.hello: Text with the rupee sign
