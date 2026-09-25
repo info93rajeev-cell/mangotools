@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: estimate/pricing.margin
-version: 0.1.0
+version: 0.2.0
 operation: estimate.pricing.margin@1
 params: { rounding: half-up }
 fields:
@@ -18,12 +18,14 @@ fields:
   cost:
     labelKey: margin.field.cost
     kind: money
+    currency: INR
     required: true
     order: 20
     visibleWhen: { solve: [from-cost-and-price, price-from-cost-and-margin] }
   price:
     labelKey: margin.field.price
     kind: money
+    currency: INR
     required: true
     order: 30
     visibleWhen: { solve: [from-cost-and-price, cost-from-price-and-margin] }

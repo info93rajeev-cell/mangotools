@@ -18,6 +18,7 @@ const preset = (id: string): ResolvedPreset =>
 
 const gst = preset('estimate/gst.india');
 const base64 = preset('data/base64');
+const margin = preset('estimate/pricing.margin');
 
 describe('tool presentation', () => {
   it('puts the primary output first and hides outputs for the other supply type', () => {
@@ -44,6 +45,29 @@ describe('tool presentation', () => {
       supply: 'inter',
     });
     expect(remove.map((r) => r.key)).toEqual(['taxableValue', 'grossAmount', 'igst', 'totalTax']);
+  });
+
+  it('shows Profit Margin money in ₹ with Indian grouping and percentages unchanged', () => {
+    const value = {
+      cost: '100000.00',
+      price: '118000.00',
+      profit: '18000.00',
+      marginPercent: '15.25',
+      markupPercent: '18.00',
+    };
+    const rows = outputRows(margin, value, defaultValues(margin));
+    const byKey = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+    expect(byKey).toMatchObject({
+      marginPercent: '15.25%',
+      profit: '₹18,000.00',
+      markupPercent: '18.00%',
+    });
+    const loss = outputRows(
+      margin,
+      { ...value, cost: '100.00', price: '80.00', profit: '-20.00' },
+      defaultValues(margin),
+    );
+    expect(loss.find((r) => r.key === 'profit')?.value).toBe('−₹20.00');
   });
 
   it('offers Auto only when decoding and resets it when switching to encode', () => {

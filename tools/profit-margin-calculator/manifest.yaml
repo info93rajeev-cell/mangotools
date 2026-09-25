@@ -4,8 +4,9 @@ id: profit-margin-calculator
 slug: profit-margin-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-09-25, type: changed, summary: "Money shown in ₹ with Indian digit grouping." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with margin, price and cost solve modes." }
 name: Profit Margin Calculator
 shortName: Profit Margin
