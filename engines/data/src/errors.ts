@@ -2,7 +2,7 @@
 export const messages: Readonly<Record<string, string>> = {
   DATA_INPUT_TOO_LARGE: 'The input is larger than the {limitMb} MB this tool accepts.',
   DATA_JSON_EMPTY: 'Paste or type some JSON to format.',
-  DATA_JSON_SYNTAX_ERROR: 'Invalid JSON at line {line}, column {column}: expected {expected}.',
+  DATA_JSON_SYNTAX_ERROR: 'Invalid JSON at line {line}, column {column}. Expected {expectedText}.',
   DATA_JSON_TOO_DEEP: 'The JSON is nested more than {maxDepth} levels deep.',
   DATA_JSON_DUPLICATE_KEY: 'Duplicate key at line {line}, column {column}.',
   DATA_JSON_BOM_REMOVED: 'A byte order mark at the start of the input was removed.',

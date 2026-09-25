@@ -112,7 +112,11 @@ test.describe('JSON Formatter', () => {
     await openTool(page, 'json-formatter');
     await inputArea(page, 'json-formatter').fill('{\n  "a": 1,\n}');
     await expect(island(page, 'json-formatter')).toHaveAttribute('data-phase', 'error');
-    await expect(page.getByText(/Invalid JSON at line 3, column 1/)).toBeVisible();
+    await expect(
+      page.getByText(
+        'Invalid JSON at line 3, column 1. Expected a property name in double quotes.',
+      ),
+    ).toBeVisible();
     await page.getByRole('button', { name: /Go to line 3, column 1/ }).click();
     const caret = await inputArea(page, 'json-formatter').evaluate((el) => {
       const area = el as HTMLTextAreaElement;
