@@ -109,6 +109,18 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
+  packages/runtime:
+    dependencies:
+      '@mangotools/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mangotools/engine-search':
+        specifier: workspace:*
+        version: link:../../engines/search
+      '@mangotools/schemas':
+        specifier: workspace:*
+        version: link:../../schemas
+
   schemas:
     dependencies:
       zod:
