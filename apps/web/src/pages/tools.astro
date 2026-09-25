@@ -1,18 +1,20 @@
 ---
 import { CategoryChips } from '@mangotools/ui/discovery/CategoryChips.tsx';
 import { CardGrid, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
+import { RecentTools } from '@mangotools/ui/discovery/RecentTools.tsx';
 import { SearchBox } from '@mangotools/ui/discovery/SearchBox.tsx';
 import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { COPY } from '../lib/copy.ts';
-import { ALL_TOOLS, toolLinks, visibleCategories } from '../lib/site.ts';
+import { ALL_TOOLS, listedTools, toolLink, toolLinks, visibleCategories } from '../lib/site.ts';
 import { breadcrumbList } from '../lib/structured-data.ts';
 
 const crumbs = [
   { name: 'Home', url: '/' },
   { name: COPY.tools.heading, url: '/tools' },
 ];
+const allLinks = listedTools.map(toolLink);
 const groups = visibleCategories.map((c) => ({ category: c, tools: toolLinks(c.toolIds) }));
 ---
 
@@ -33,6 +35,7 @@ const groups = visibleCategories.map((c) => ({ category: c, tools: toolLinks(c.t
       <div class="search">
         <SearchBox client:load idPrefix="tools-search" />
       </div>
+      <RecentTools client:idle tools={allLinks} />
       <CategoryChips client:idle categories={visibleCategories.map((c) => ({ id: c.id, name: c.name }))} />
       {
         groups.map(({ category, tools }) => (

@@ -17,7 +17,7 @@ async function ldTypes(page: import('@playwright/test').Page): Promise<string[]>
 
 test('home: title, canonical, Organization and WebSite', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle('MangoTools — Professional Tools That Run in Your Browser');
+  await expect(page).toHaveTitle('MangoTools — Tools for Work That Should Not Depend on AI');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', SITE);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
   expect(await ldTypes(page)).toEqual(['Organization', 'WebSite']);

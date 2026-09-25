@@ -18,7 +18,7 @@ export const EN = {
   'theme.system': 'System',
   'theme.current': 'Theme: {theme}. Change theme',
   'search.label': 'Search tools',
-  'search.placeholder': 'Search tools — try “GST” or “JSON”',
+  'search.placeholder': 'Search tools — try GST, JSON, Base64, URL',
   'search.noResults': 'No tools match “{query}”.',
   'search.count': '{count} tools found',
   'search.one': '1 tool found',

@@ -59,9 +59,9 @@ export function toolTitle(tool: RegistryTool): string {
 }
 
 export const HOME = {
-  title: 'MangoTools — Professional Tools That Run in Your Browser',
+  title: 'MangoTools — Tools for Work That Should Not Depend on AI',
   description:
-    'Free professional tools that run in your browser: GST and margin calculators, JSON formatter, Base64 and URL encoding. No uploads, no sign-up, no ads.',
+    'Calculators, converters and business tools with clear, checkable results: GST, margin, JSON, Base64 and URL. No ads, no unnecessary uploads, no AI.',
 };
 
 export const ALL_TOOLS = {
