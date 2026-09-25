@@ -17,7 +17,13 @@ export const fixtureSchema = z
     input: z.record(z.string(), z.unknown()),
     expected: z.record(z.string(), z.unknown()).optional(),
     expectedWarnings: z.array(z.string()).optional(),
-    expectedError: z.strictObject({ code: z.string(), path: z.string().optional() }).optional(),
+    expectedError: z
+      .strictObject({
+        code: z.string(),
+        path: z.string().optional(),
+        details: z.record(z.string(), z.unknown()).optional(),
+      })
+      .optional(),
     match: z.enum(['subset', 'exact']).optional(),
     tags: z.array(z.string()).optional(),
   })
