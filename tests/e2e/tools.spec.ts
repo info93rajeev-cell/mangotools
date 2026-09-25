@@ -79,20 +79,31 @@ test.describe('Profit Margin Calculator', () => {
     await page.getByLabel('Cost', { exact: true }).fill('100');
     await page.getByLabel('Selling price', { exact: true }).fill('80');
     await expect(primaryResult(page)).toHaveText('−25.00%');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−20.00');
+    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
 
     await island(page, 'profit-margin-calculator')
       .getByText('Price from cost & margin', { exact: true })
       .click();
     await page.getByLabel('Margin', { exact: true }).fill('20');
-    await expect(primaryResult(page)).toHaveText('125.00');
+    await expect(primaryResult(page)).toHaveText('₹125.00');
 
     await island(page, 'profit-margin-calculator')
       .getByText('Cost from price & margin', { exact: true })
       .click();
     await page.getByLabel('Selling price', { exact: true }).fill('200');
-    await expect(primaryResult(page)).toHaveText('160.00');
+    await expect(primaryResult(page)).toHaveText('₹160.00');
     await expect(page.locator('[data-disclaimer]')).toBeVisible();
+  });
+
+  test('shows money in ₹ with Indian digit grouping', async ({ page }) => {
+    await openTool(page, 'profit-margin-calculator');
+    await page.getByLabel('Cost', { exact: true }).fill('1000000');
+    await page.getByLabel('Selling price', { exact: true }).fill('1500000');
+    await expect(primaryResult(page)).toHaveText('33.33%');
+    await expect(page.locator('[data-output="profit"] dd')).toHaveText('₹5,00,000.00');
+    await expect(island(page, 'profit-margin-calculator')).toContainText(
+      'Profit = ₹15,00,000.00 − ₹10,00,000.00 = ₹5,00,000.00',
+    );
   });
 });
 

@@ -22,13 +22,13 @@ The rule is **round money first, then percentages**. Cost and selling price are 
 
 ## Worked example
 
-Buying at 80 and selling at 100:
+Buying at ₹80 and selling at ₹100:
 
 ## FAQ
 
 ### What is the difference between margin and markup?
 
-Both compare profit with something else. Margin compares profit with the selling price; markup compares it with the cost. Buying at 80 and selling at 100 gives a profit of 20 — a 20% margin (20 ÷ 100) but a 25% markup (20 ÷ 80). For a profitable sale, markup is always higher than margin.
+Both compare profit with something else. Margin compares profit with the selling price; markup compares it with the cost. Buying at ₹80 and selling at ₹100 gives a profit of ₹20 — a 20% margin (20 ÷ 100) but a 25% markup (20 ÷ 80). For a profitable sale, markup is always higher than margin.
 
 ### Why can't the margin be 100% or more?
 
@@ -36,7 +36,7 @@ Margin is profit as a share of the selling price. A 100% margin would mean the w
 
 ### What does a negative margin mean?
 
-A negative margin means you are selling below cost, at a loss. For example, a cost of 100 and a selling price of 80 give a profit of −20, a margin of −25% and a markup of −20%.
+A negative margin means you are selling below cost, at a loss. For example, a cost of ₹100 and a selling price of ₹80 give a profit of −₹20, a margin of −25% and a markup of −20%.
 
 ### Does this include GST?
 
