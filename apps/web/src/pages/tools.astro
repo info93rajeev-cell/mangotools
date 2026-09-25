@@ -31,7 +31,7 @@ const groups = visibleCategories.map((c) => ({ category: c, tools: toolLinks(c.t
         <p>{COPY.tools.lede}</p>
       </header>
       <div class="search">
-        <SearchBox client:idle idPrefix="tools-search" />
+        <SearchBox client:load idPrefix="tools-search" />
       </div>
       <CategoryChips client:idle categories={visibleCategories.map((c) => ({ id: c.id, name: c.name }))} />
       {

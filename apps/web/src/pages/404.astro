@@ -18,7 +18,7 @@ const popular = toolLinks(registry.site.home.popular);
         <p>{copy.lede}</p>
       </header>
       <div class="search">
-        <SearchBox client:idle idPrefix="not-found-search" />
+        <SearchBox client:load idPrefix="not-found-search" />
       </div>
       <section class="block" aria-labelledby="popular">
         <h2 id="popular">{copy.popular}</h2>

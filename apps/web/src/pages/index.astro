@@ -30,7 +30,7 @@ const copy = COPY.home;
       <h1 id="hero-title">{copy.heading}</h1>
       <p class="lede">{copy.lede}</p>
       <div class="hero-search">
-        <SearchBox client:idle idPrefix="home-search" />
+        <SearchBox client:load idPrefix="home-search" />
       </div>
       {
         popular.length > 0 ? (

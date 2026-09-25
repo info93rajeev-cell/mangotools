@@ -43,7 +43,7 @@ const { brand, categories, showSearch = true } = Astro.props;
       {
         showSearch ? (
           <div class="search">
-            <SearchBox client:idle idPrefix="header-search" compact />
+            <SearchBox client:load idPrefix="header-search" compact />
           </div>
         ) : null
       }

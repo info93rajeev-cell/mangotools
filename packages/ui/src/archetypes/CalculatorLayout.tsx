@@ -22,11 +22,11 @@ export interface CalculatorLayoutProps {
   store: ToolStore;
 }
 
-function ResultRows({ rows, stale }: { rows: OutputRow[]; stale: boolean }) {
+function ResultRows({ rows }: { rows: OutputRow[] }) {
   const [primary, ...rest] = rows;
   if (!primary) return null;
   return (
-    <div class={stale ? styles.stale : undefined}>
+    <div>
       <div class={styles.primary} aria-live="polite" aria-atomic="true" data-primary-result="">
         <span class={styles.primaryLabel}>{primary.label}</span>
         <output class={styles.primaryValue}>{primary.value}</output>
@@ -55,7 +55,7 @@ interface ResultSectionProps {
 
 function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSectionProps) {
   const { values, phase, error, result, missing } = snapshot;
-  const rows = result ? outputRows(preset, result.value, values) : [];
+  const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
   const steps = (result?.value.working as WorkingStep[] | undefined) ?? [];
   const current = result && phase !== 'error' ? result : null;
   const missingNames = missing.map((key) =>
@@ -73,11 +73,10 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
       <h2 id={`${idPrefix}-result-title`} class={styles.panelTitle}>
         {t('result.title')}
       </h2>
-      {rows.length === 0 ? (
+      {rows.length > 0 ? <ResultRows rows={rows} /> : null}
+      {rows.length === 0 && phase !== 'error' ? (
         <p class={styles.placeholder}>{placeholder}</p>
-      ) : (
-        <ResultRows rows={rows} stale={phase === 'error'} />
-      )}
+      ) : null}
       {phase === 'error' && error ? (
         <InlineAlert tone="danger" title={t('error.title')} role="alert">
           {fieldError ? null : <p>{messageFor(preset, error)}</p>}

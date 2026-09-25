@@ -159,10 +159,11 @@ export function TransformLayout({
         <OutputPane
           id={`${idPrefix}-output`}
           label={primary?.label ?? t('output.label')}
-          primary={snapshot.phase === 'idle' ? '' : (primary?.value ?? '')}
-          secondary={rows.filter((r) => !r.primary)}
+          primary={
+            snapshot.phase === 'idle' || snapshot.phase === 'error' ? '' : (primary?.value ?? '')
+          }
+          secondary={snapshot.phase === 'error' ? [] : rows.filter((r) => !r.primary)}
           hasResult={hasResult}
-          stale={snapshot.phase === 'error'}
           onCopy={() => void actions.copy()}
           onDownload={actions.download}
         >

@@ -93,7 +93,6 @@ export interface OutputPaneProps {
   primary: string;
   secondary: OutputRow[];
   hasResult: boolean;
-  stale: boolean;
   onCopy: () => void;
   onDownload: () => void;
   children?: ComponentChildren;
@@ -129,7 +128,7 @@ export function OutputPane(p: OutputPaneProps) {
         id={p.id}
         mono
         readOnly
-        class={[styles.code, p.stale ? styles.stale : ''].join(' ')}
+        class={styles.code}
         value={p.primary}
         placeholder={t('output.empty')}
         wrap="off"
