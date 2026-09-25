@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rise & Fall Leveling Calculator</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a class="logo" href="../index.html">Mango<span>Tools</span></a>
+    <div class="nav-links">
+      <a href="../index.html">All Tools</a>
+      <a href="../project-planner.html">Project Planner</a>
+    </div>
+  </nav>
+</header>
+
+<main class="tool-shell">
+  <div class="badges">
+    <span class="badge">Civil & Surveying</span>
+    <span class="badge">First MVP</span>
+    <span class="badge">Browser Calculation</span>
+  </div>
+  <h1 class="tool-title">Rise & Fall Leveling Calculator</h1>
+  <p>Calculate reduced levels from BS, IS, and FS readings. This is the first working prototype page.</p>
+  <div class="notice">Validation-only tool. Final survey results should be checked by a qualified professional.</div>
+
+  <br>
+  <div class="card">
+    <h3>Benchmark RL</h3>
+    <input id="benchmark" type="number" step="0.001" value="100.000">
+  </div>
+
+  <br>
+  <div class="table-wrap">
+    <table id="levelTable">
+      <thead>
+        <tr><th>Station</th><th>BS</th><th>IS</th><th>FS</th><th>RL</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><input value="BM-1"></td><td><input type="number" step="0.001" value="1.500"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001"></td><td class="rl">100.000</td></tr>
+        <tr><td><input value="P-1"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001" value="1.250"></td><td><input type="number" step="0.001"></td><td class="rl"></td></tr>
+        <tr><td><input value="CP-1"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001" value="1.100"></td><td class="rl"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-dark" onclick="addRow()">Add Row</button>
+    <button class="btn btn-primary" onclick="calculateRL()">Calculate</button>
+    <button class="btn btn-light" onclick="showExportModal()">Export Preview</button>
+  </div>
+
+  <br>
+  <div class="card">
+    <h3>Check Summary</h3>
+    <p id="summary">Click Calculate.</p>
+  </div>
+</main>
+
+<footer class="footer">Generated with MangoTools by MangoPie.in</footer>
+<script src="../assets/js/main.js"></script>
+<script>
+function addRow(){
+  const tbody=document.querySelector("#levelTable tbody");
+  const row=document.createElement("tr");
+  row.innerHTML='<td><input value="New Point"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001"></td><td><input type="number" step="0.001"></td><td class="rl"></td>';
+  tbody.appendChild(row);
+}
+function num(v){const n=parseFloat(v);return isNaN(n)?0:n;}
+function calculateRL(){
+  const benchmark=num(document.getElementById("benchmark").value);
+  const rows=[...document.querySelectorAll("#levelTable tbody tr")];
+  let currentHI=benchmark,currentRL=benchmark,sumBS=0,sumFS=0;
+  rows.forEach((row,index)=>{
+    const inputs=row.querySelectorAll("input");
+    const bs=num(inputs[1].value), is=num(inputs[2].value), fs=num(inputs[3].value);
+    if(index===0){
+      currentRL=benchmark;
+      if(bs){currentHI=currentRL+bs;sumBS+=bs;}
+    }else{
+      if(is){currentRL=currentHI-is;}
+      if(fs){currentRL=currentHI-fs;sumFS+=fs;}
+      if(bs){sumBS+=bs;currentHI=currentRL+bs;}
+    }
+    row.querySelector(".rl").textContent=currentRL.toFixed(3);
+  });
+  const diff=sumBS-sumFS;
+  const rlDiff=currentRL-benchmark;
+  document.getElementById("summary").innerHTML=
+    `ΣBS = <strong>${sumBS.toFixed(3)}</strong>, ΣFS = <strong>${sumFS.toFixed(3)}</strong>, ΣBS - ΣFS = <strong>${diff.toFixed(3)}</strong>, Last RL - First RL = <strong>${rlDiff.toFixed(3)}</strong>. ${Math.abs(diff-rlDiff)<0.002?"✅ Arithmetic check passed.":"⚠️ Please review entries."}`;
+}
+</script>
+</body>
+</html>

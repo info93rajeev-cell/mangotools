@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bowditch Traverse Calculator</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header><nav class="nav"><a class="logo" href="../index.html">Mango<span>Tools</span></a><div class="nav-links"><a href="../index.html">All Tools</a><a href="../project-planner.html">Project Planner</a></div></nav></header>
+<main class="tool-shell">
+  <div class="badges"><span class="badge">Civil & Surveying</span><span class="badge">MVP 2</span></div>
+  <h1 class="tool-title">Bowditch Traverse Adjustment Calculator</h1>
+  <p>Placeholder UI for the second MVP. Planned: distance, bearing, latitude, departure, closing error, Bowditch correction, adjusted coordinates, and report export.</p>
+  <div class="notice">Validation-only professional calculator. Final results must be checked independently.</div>
+  <br>
+  <div class="card">
+    <h3>Planned Input Form</h3>
+    <div class="two-col">
+      <input placeholder="Station name">
+      <input placeholder="Bearing / Azimuth">
+      <input placeholder="Distance">
+      <input placeholder="Remarks">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-dark">Add Leg</button>
+      <button class="btn btn-primary">Calculate</button>
+      <button class="btn btn-light" onclick="showExportModal()">Export Preview</button>
+    </div>
+  </div>
+</main>
+<footer class="footer">Generated with MangoTools by MangoPie.in</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical PII Scrubber</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header><nav class="nav"><a class="logo" href="../index.html">Mango<span>Tools</span></a><div class="nav-links"><a href="../index.html">All Tools</a><a href="../project-planner.html">Project Planner</a></div></nav></header>
+<main class="tool-shell">
+  <div class="badges"><span class="badge">Privacy & Medical</span><span class="badge">MVP 3</span><span class="badge">Local Text Processing</span></div>
+  <h1 class="tool-title">Medical PII / PHI Scrubber</h1>
+  <p>Paste text and redact common emails, phone numbers, dates, ID-style numbers, and labelled patient fields.</p>
+  <div class="notice">Redaction assistance only. User must manually review output and follow applicable privacy rules.</div>
+  <br>
+  <div class="two-col">
+    <div class="card">
+      <h3>Input Text</h3>
+      <textarea id="inputText" placeholder="Paste text here..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="scrubText()">Scrub Text</button>
+        <button class="btn btn-light" onclick="showExportModal()">Export Audit Preview</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Redacted Output</h3>
+      <textarea id="outputText" placeholder="Output appears here..."></textarea>
+    </div>
+  </div>
+</main>
+<footer class="footer">Generated with MangoTools by MangoPie.in</footer>
+<script src="../assets/js/main.js"></script>
+<script>
+function scrubText(){
+  let text=document.getElementById("inputText").value;
+  text=text.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[EMAIL_REDACTED]");
+  text=text.replace(/(\+?\d[\d\s-]{8,}\d)/g,"[PHONE_REDACTED]");
+  text=text.replace(/\b\d{2}[\/-]\d{2}[\/-]\d{4}\b/g,"[DATE_REDACTED]");
+  text=text.replace(/\b\d{4,}\b/g,"[ID_REDACTED]");
+  text=text.replace(/\b(Name|Patient|MRN|ID)\s*:\s*[A-Za-z0-9 ._-]+/gi,"$1: [REDACTED]");
+  document.getElementById("outputText").value=text;
+}
+</script>
+</body>
+</html>
