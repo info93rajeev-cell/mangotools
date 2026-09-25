@@ -4,6 +4,7 @@ import { expect, type Page } from '@playwright/test';
 export const SAMPLES = {
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
   'profit-margin-calculator': { archetype: 'B', result: '20.00%' },
+  'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'json-formatter': { archetype: 'A', result: '"id": 12345678901234567890' },
   'base64-encode-decode': { archetype: 'A', result: 'SGVsbG8sIOKCuSB3b3JsZA==' },
   'url-encode-decode': {

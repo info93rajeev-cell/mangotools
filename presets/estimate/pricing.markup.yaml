@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/pricing.markup
+version: 0.1.0
+operation: estimate.pricing.margin@1
+params: { rounding: half-up }
+fields:
+  solve:
+    labelKey: markup.field.solve
+    kind: enum
+    control: segmented
+    default: price-from-cost-and-markup
+    order: 10
+    options:
+      - { value: price-from-cost-and-markup, labelKey: markup.solve.priceFromMarkup }
+      - { value: from-cost-and-price, labelKey: markup.solve.fromCostAndPrice }
+      - { value: cost-from-price-and-markup, labelKey: markup.solve.costFromMarkup }
+  cost:
+    labelKey: markup.field.cost
+    kind: money
+    currency: INR
+    required: true
+    order: 20
+    visibleWhen: { solve: [price-from-cost-and-markup, from-cost-and-price] }
+  price:
+    labelKey: markup.field.price
+    kind: money
+    currency: INR
+    required: true
+    order: 30
+    visibleWhen: { solve: [from-cost-and-price, cost-from-price-and-markup] }
+  markupPercent:
+    labelKey: markup.field.markup
+    kind: percent
+    unit: "%"
+    required: true
+    order: 40
+    visibleWhen: { solve: [price-from-cost-and-markup, cost-from-price-and-markup] }
+outputs:
+  price: { labelKey: markup.out.price, format: money, order: 10, primaryWhen: { solve: [price-from-cost-and-markup] } }
+  markupPercent: { labelKey: markup.out.markup, format: percent, order: 20, primaryWhen: { solve: [from-cost-and-price] } }
+  cost: { labelKey: markup.out.cost, format: money, order: 30, primaryWhen: { solve: [cost-from-price-and-markup] } }
+  profit: { labelKey: markup.out.profit, format: money, order: 40 }
+  marginPercent: { labelKey: markup.out.margin, format: percent, order: 50 }
+samples:
+  cost-200-markup-25: { titleKey: markup.sample.cost200, input: { solve: price-from-cost-and-markup, cost: "200", markupPercent: "25" } }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    markup.field.solve: Calculate
+    markup.solve.priceFromMarkup: Price from cost & markup
+    markup.solve.fromCostAndPrice: Markup from cost & price
+    markup.solve.costFromMarkup: Cost from price & markup
+    markup.field.cost: Cost
+    markup.field.price: Selling price
+    markup.field.markup: Markup
+    markup.out.price: Selling price
+    markup.out.markup: Markup
+    markup.out.cost: Cost
+    markup.out.profit: Profit
+    markup.out.margin: Margin
+    markup.sample.cost200: Cost 200, markup 25%
+    work.margin.solve.priceFromMargin: "Selling price = {value:money} ÷ (1 − {percent}%) = {result:money}"
+    work.margin.solve.costFromMargin: "Cost = {value:money} × (1 − {percent}%) = {result:money}"
+    work.margin.solve.priceFromMarkup: "Selling price = {value:money} × (1 + {percent}%) = {result:money}"
+    work.margin.solve.costFromMarkup: "Cost = {value:money} ÷ (1 + {percent}%) = {result:money}"
+    work.margin.profit: "Profit = {price:money} − {cost:money} = {result:money}"
+    work.margin.margin: "Margin = {profit:money} ÷ {price:money} × 100 = {result}%"
+    work.margin.markup: "Markup = {profit:money} ÷ {cost:money} × 100 = {result}%"

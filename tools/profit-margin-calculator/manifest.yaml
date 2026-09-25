@@ -27,7 +27,7 @@ seo:
   primaryKeyword: profit margin calculator
   secondaryKeywords: [margin calculator, selling price from margin]
 graph:
-  related: [gst-calculator]
+  related: [gst-calculator, markup-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Standard definitions: margin = profit ÷ selling price; markup = profit ÷ cost", locator: "Method section" }
