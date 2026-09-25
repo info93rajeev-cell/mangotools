@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: gst-calculator
+slug: gst-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with add/remove GST, CGST/SGST and IGST split." }
+name: GST Calculator
+shortName: GST
+summary: Add or remove GST and split it into CGST and SGST or IGST, with every step shown.
+archetype: B
+preset: estimate/gst.india
+sample: invoice-18
+taxonomy:
+  category: business
+  tags: [tax, invoicing]
+  synonyms: [gst calculation, cgst sgst calculator, igst calculator, reverse gst calculator, gst inclusive calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: GST Calculator – Add or Remove GST, CGST SGST IGST
+  description: Calculate GST on any amount. Add or remove GST at 5%, 18%, 40% or a custom rate and see the CGST, SGST or IGST split. Runs in your browser.
+  primaryKeyword: gst calculator
+  secondaryKeywords: [reverse gst calculator, cgst sgst calculator]
+graph:
+  related: [profit-margin-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "CBIC GST rate structure effective 22 September 2025", locator: "Rate slabs used by the rate selector" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–011, tool fixtures 001 and 005" }
+  lastVerified: 2026-09-25

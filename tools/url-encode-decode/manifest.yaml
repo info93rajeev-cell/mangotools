@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: url-encode-decode
+slug: url-encode-decode
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with component, full URL and form encoding." }
+name: URL Encode & Decode
+shortName: URL Encode
+summary: Percent-encode or decode URL components, full URLs and form data, with correct UTF-8.
+archetype: A
+preset: data/url
+sample: query-value
+taxonomy:
+  category: developer
+  tags: [url, encoding]
+  synonyms: [url encoder, url decoder, percent encoding, urlencode, encode uri component]
+capabilities: { export: [txt], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: URL Encode & Decode – Percent-Encode Text and URLs
+  description: Percent-encode or decode URL components, full URLs and form data. UTF-8 safe, with clear errors for malformed escapes. Free, runs in your browser.
+  primaryKeyword: url encode decode
+  secondaryKeywords: [url encoder, url decoder, percent encoding]
+graph:
+  related: [base64-encode-decode, json-formatter]

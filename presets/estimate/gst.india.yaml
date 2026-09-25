@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/gst.india
+version: 0.1.0
+operation: estimate.tax.gst@1
+params:
+  rounding: { mode: half-up, decimals: 2 }
+  splitMethod: per-component
+fields:
+  mode:
+    labelKey: gst.field.mode
+    kind: enum
+    control: segmented
+    order: 10
+    options:
+      - { value: add, labelKey: gst.mode.add }
+      - { value: remove, labelKey: gst.mode.remove }
+  supply:
+    labelKey: gst.field.supply
+    kind: enum
+    control: segmented
+    order: 20
+    options:
+      - { value: intra, labelKey: gst.supply.intra }
+      - { value: inter, labelKey: gst.supply.inter }
+  amount: { labelKey: gst.field.amount, kind: money, currency: INR, required: true, order: 30, helpKey: gst.help.amount }
+  rate:
+    labelKey: gst.field.rate
+    kind: enum-or-number
+    unit: "%"
+    allowCustom: true
+    order: 40
+    control: select
+    options: [{ value: 0 }, { value: 0.25 }, { value: 3 }, { value: 5 }, { value: 18 }, { value: 40 }]
+outputs:
+  grossAmount: { labelKey: gst.out.gross, format: money, order: 10, primaryWhen: { mode: [add] } }
+  taxableValue: { labelKey: gst.out.taxable, format: money, order: 20, primaryWhen: { mode: [remove] } }
+  cgst: { labelKey: gst.out.cgst, format: money, order: 30, visibleWhen: { supply: [intra] } }
+  sgst: { labelKey: gst.out.sgst, format: money, order: 40, visibleWhen: { supply: [intra] } }
+  igst: { labelKey: gst.out.igst, format: money, order: 50, visibleWhen: { supply: [inter] } }
+  totalTax: { labelKey: gst.out.totalTax, format: money, order: 60 }
+samples:
+  invoice-18: { titleKey: gst.sample.invoice18, input: { amount: "1000.00", rate: 18, mode: add, supply: intra } }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    gst.field.mode: Calculation
+    gst.mode.add: Add GST
+    gst.mode.remove: Remove GST
+    gst.field.supply: Supply type
+    gst.supply.intra: "Intra-state: CGST + SGST"
+    gst.supply.inter: "Inter-state: IGST"
+    gst.field.amount: Amount (₹)
+    gst.help.amount: Price before GST when adding; price including GST when removing.
+    gst.field.rate: GST rate
+    gst.out.gross: Amount including GST
+    gst.out.taxable: Taxable value
+    gst.out.cgst: CGST
+    gst.out.sgst: SGST
+    gst.out.igst: IGST
+    gst.out.totalTax: Total GST
+    gst.sample.invoice18: ₹1,000 at 18% (intra-state)
+    work.gst.add.cgst: "CGST = {taxable} × {halfRate}% = {result}"
+    work.gst.add.sgst: "SGST = {taxable} × {halfRate}% = {result}"
+    work.gst.add.igst: "IGST = {taxable} × {rate}% = {result}"
+    work.gst.total.intra: "Total GST = {cgst} + {sgst} = {result}"
+    work.gst.total.inter: "Total GST = {igst} = {result}"
+    work.gst.add.gross: "Amount including GST = {taxable} + {totalTax} = {result}"
+    work.gst.remove.taxable: "Taxable value = {gross} × 100 ÷ (100 + {rate}) = {result}"
+    work.gst.remove.totalTax: "Total GST = {gross} − {taxable} = {result}"
+    work.gst.remove.cgst: "CGST = {totalTax} ÷ 2 = {result}"
+    work.gst.remove.sgst: "SGST = {totalTax} − {cgst} = {result}"
+    work.gst.remove.igst: "IGST = {totalTax}"

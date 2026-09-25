@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: base64-encode-decode
+slug: base64-encode-decode
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with standard and URL-safe alphabets, padding and MIME line breaks." }
+name: Base64 Encode & Decode
+shortName: Base64
+summary: Encode text to Base64 or decode it back, with URL-safe and MIME options and correct UTF-8.
+archetype: A
+preset: data/base64
+sample: hello-rupee
+taxonomy:
+  category: developer
+  tags: [encoding, data-format]
+  synonyms: [base64 encoder, base64 decoder, b64, base64 converter]
+capabilities: { export: [txt], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: Base64 Encode & Decode – Text to Base64 and Back
+  description: Encode text to Base64 or decode Base64 to text, with URL-safe and MIME options. UTF-8 characters such as ₹ work correctly. Runs in your browser.
+  primaryKeyword: base64 encode decode
+  secondaryKeywords: [base64 encoder, base64 decoder, url-safe base64]
+graph:
+  related: [url-encode-decode, json-formatter]

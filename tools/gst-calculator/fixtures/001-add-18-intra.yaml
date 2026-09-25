@@ -1,0 +1,11 @@
+id: 001-add-18-intra
+preset: estimate/gst.india
+source: { type: hand-verified, citation: "1000.00 × 9% = 90.00 CGST; 90.00 SGST" }
+input: { amount: "1000.00", rate: 18, mode: add, supply: intra }
+expected:
+  taxableValue: "1000.00"
+  cgst: "90.00"
+  sgst: "90.00"
+  igst: "0.00"
+  totalTax: "180.00"
+  grossAmount: "1180.00"

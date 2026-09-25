@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: json-formatter
+slug: json-formatter
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with format, minify, validate and sort keys." }
+name: JSON Formatter & Validator
+shortName: JSON Formatter
+summary: Format, minify and validate JSON. Big numbers and escapes stay exactly as written.
+archetype: A
+preset: data/json.format
+sample: nested-order
+taxonomy:
+  category: developer
+  tags: [json, data-format]
+  synonyms: [json beautifier, json validator, json pretty print, json minify, format json online]
+capabilities: { export: [json], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: JSON Formatter & Validator – Beautify and Minify JSON
+  description: Validate, beautify and minify JSON online. Big numbers and escapes are kept exactly, and errors show the line and column. Runs in your browser.
+  primaryKeyword: json formatter
+  secondaryKeywords: [json validator, json beautifier, json minify]
+graph:
+  related: [base64-encode-decode, url-encode-decode]

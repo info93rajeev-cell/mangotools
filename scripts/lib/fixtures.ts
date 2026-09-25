@@ -33,59 +33,67 @@ export function engineFixtureFiles(): string[] {
   return files;
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  v !== null && typeof v === 'object' && !Array.isArray(v);
+
 /** Recursive subset comparison: every key in `expected` must equal the same key in `actual`. */
 export function subsetMismatch(actual: unknown, expected: unknown, path = ''): string | null {
-  if (expected !== null && typeof expected === 'object' && !Array.isArray(expected)) {
-    if (actual === null || typeof actual !== 'object' || Array.isArray(actual)) {
-      return `${path || '(root)'}: expected an object`;
-    }
-    for (const [key, value] of Object.entries(expected)) {
-      const m = subsetMismatch(
-        (actual as Record<string, unknown>)[key],
-        value,
-        path ? `${path}.${key}` : key,
-      );
-      if (m) return m;
-    }
-    return null;
+  const where = path || '(root)';
+  if (!isRecord(expected)) {
+    const same = JSON.stringify(actual) === JSON.stringify(expected);
+    return same
+      ? null
+      : `${where}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`;
   }
-  const same = JSON.stringify(actual) === JSON.stringify(expected);
-  return same
-    ? null
-    : `${path || '(root)'}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`;
+  if (!isRecord(actual)) return `${where}: expected an object`;
+  for (const [key, value] of Object.entries(expected)) {
+    const mismatch = subsetMismatch(actual[key], value, path ? `${path}.${key}` : key);
+    if (mismatch) return mismatch;
+  }
+  return null;
+}
+
+function checkExpectedError(
+  expected: NonNullable<Fixture['expectedError']>,
+  result: Result<unknown>,
+): string | null {
+  if (result.ok) return `expected error ${expected.code}, got success`;
+  if (result.error.code !== expected.code)
+    return `expected error ${expected.code}, got ${result.error.code}`;
+  if (expected.path !== undefined && result.error.path !== expected.path) {
+    return `expected error path ${expected.path}, got ${String(result.error.path)}`;
+  }
+  return expected.details
+    ? subsetMismatch(result.error.details ?? {}, expected.details, 'details')
+    : null;
+}
+
+function checkWarnings(fixture: Fixture, codes: string[]): string | null {
+  const actual = JSON.stringify([...codes].sort());
+  const expected = JSON.stringify([...(fixture.expectedWarnings ?? [])].sort());
+  return actual === expected ? null : `expected warnings ${expected}, got ${actual}`;
 }
 
 /** Compares a result with a fixture's expectations. Returns null when the fixture passes. */
 export function checkFixture(fixture: Fixture, result: Result<unknown>): string | null {
-  if (fixture.expectedError) {
-    if (result.ok) return `expected error ${fixture.expectedError.code}, got success`;
-    if (result.error.code !== fixture.expectedError.code) {
-      return `expected error ${fixture.expectedError.code}, got ${result.error.code}`;
-    }
-    if (
-      fixture.expectedError.path !== undefined &&
-      result.error.path !== fixture.expectedError.path
-    ) {
-      return `expected error path ${fixture.expectedError.path}, got ${String(result.error.path)}`;
-    }
-    return fixture.expectedError.details
-      ? subsetMismatch(result.error.details ?? {}, fixture.expectedError.details, 'details')
-      : null;
-  }
-  if (!result.ok)
+  if (fixture.expectedError) return checkExpectedError(fixture.expectedError, result);
+  if (!result.ok) {
     return `expected success, got error ${result.error.code} ${JSON.stringify(result.error.details ?? {})}`;
+  }
+  const exact = JSON.stringify(result.value) === JSON.stringify(fixture.expected);
   const mismatch =
     fixture.match === 'exact'
-      ? JSON.stringify(result.value) === JSON.stringify(fixture.expected)
+      ? exact
         ? null
         : 'exact match failed'
       : subsetMismatch(result.value, fixture.expected);
-  if (mismatch) return mismatch;
-  const warnings = result.warnings.map((w) => w.code).sort();
-  const expectedWarnings = [...(fixture.expectedWarnings ?? [])].sort();
-  return JSON.stringify(warnings) === JSON.stringify(expectedWarnings)
-    ? null
-    : `expected warnings ${JSON.stringify(expectedWarnings)}, got ${JSON.stringify(warnings)}`;
+  return (
+    mismatch ??
+    checkWarnings(
+      fixture,
+      result.warnings.map((w) => w.code),
+    )
+  );
 }
 
 export type FixtureContextFactory = () => OperationContext;

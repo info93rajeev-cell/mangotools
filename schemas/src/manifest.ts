@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { isoDate, kebabId, lengthBetween, presetId, semver } from './common.ts';
 
+/** Lowercases and reduces punctuation such as "&" or "–" to single spaces. */
+export const normalizeWords = (text: string) =>
+  ` ${text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()} `;
+
 export const manifestSchema = z
   .strictObject({
     manifestVersion: z.literal(1),
@@ -96,11 +103,11 @@ export const manifestSchema = z
         path: ['changelog'],
         message: 'First changelog entry must match version.',
       });
-    if (!m.seo.title.toLowerCase().includes(m.seo.primaryKeyword.toLowerCase()))
+    if (!normalizeWords(m.seo.title).includes(normalizeWords(m.seo.primaryKeyword)))
       ctx.addIssue({
         code: 'custom',
         path: ['seo', 'title'],
-        message: 'seo.title must contain seo.primaryKeyword.',
+        message: 'seo.title must contain seo.primaryKeyword (punctuation is ignored).',
       });
   });
 

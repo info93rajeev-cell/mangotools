@@ -1,0 +1,5 @@
+id: 001-component-cafe-creme
+preset: data/url
+source: { type: standard, citation: "RFC 3986 §2.1 and §2.5 — é is UTF-8 C3 A9, è is C3 A8; space is %20 and & is %26 in a component" }
+input: { text: "café & crème" }
+expected: { text: "caf%C3%A9%20%26%20cr%C3%A8me", changedCount: 5 }

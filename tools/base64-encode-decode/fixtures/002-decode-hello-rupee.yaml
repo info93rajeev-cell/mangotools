@@ -1,0 +1,6 @@
+id: 002-decode-hello-rupee
+preset: data/base64
+source: { type: hand-verified, citation: "Round trip of fixture 001" }
+params: { direction: decode }
+input: { text: "SGVsbG8sIOKCuQ==" }
+expected: { text: "Hello, ₹", byteLength: 10, isUtf8: true }

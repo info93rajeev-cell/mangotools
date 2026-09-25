@@ -1,0 +1,3 @@
+# yaml-language-server: $schema=../generated/schemas/reserved-slugs.json
+reserved:
+  [app, api, for, learn, tools, pricing, about, privacy, disclaimer, security, embed, search, assets, workflows, compare, changelog, "404", _dev, search-index]

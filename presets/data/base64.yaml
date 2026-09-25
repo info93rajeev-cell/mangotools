@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/base64
+version: 0.1.0
+operation: data.base64.transform@1
+params: { direction: encode, variant: standard, padding: true, lineLength: "0" }
+userOptions:
+  direction:
+    control: segmented
+    labelKey: b64.option.direction
+    order: 10
+    values:
+      encode: { labelKey: b64.direction.encode, order: 10 }
+      decode: { labelKey: b64.direction.decode, order: 20 }
+  variant:
+    control: segmented
+    labelKey: b64.option.variant
+    order: 20
+    values:
+      standard: { labelKey: b64.variant.standard, order: 10 }
+      url-safe: { labelKey: b64.variant.urlSafe, order: 20 }
+      auto: { labelKey: b64.variant.auto, order: 30, visibleWhen: { direction: [decode] } }
+  padding:
+    control: switch
+    labelKey: b64.option.padding
+    order: 30
+    visibleWhen: { direction: [encode] }
+  lineLength:
+    control: select
+    labelKey: b64.option.lineLength
+    order: 40
+    visibleWhen: { direction: [encode] }
+    values:
+      "0": { labelKey: b64.lineLength.none, order: 10 }
+      "76": { labelKey: b64.lineLength.mime, order: 20 }
+fields:
+  text: { labelKey: b64.field.text, kind: text, required: true, order: 10, placeholderKey: b64.field.placeholder }
+outputs:
+  text: { labelKey: b64.out.text, format: code, order: 10, primary: true }
+samples:
+  hello-rupee: { titleKey: b64.sample.hello, input: { text: "Hello, ₹ world" } }
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: base64.txt, outputMime: text/plain }
+strings:
+  en:
+    b64.option.direction: Direction
+    b64.direction.encode: Encode
+    b64.direction.decode: Decode
+    b64.option.variant: Alphabet
+    b64.variant.standard: Standard
+    b64.variant.urlSafe: URL-safe
+    b64.variant.auto: Auto-detect
+    b64.option.padding: Padding (=)
+    b64.option.lineLength: Line length
+    b64.lineLength.none: No line breaks
+    b64.lineLength.mime: 76 characters (MIME)
+    b64.field.text: Input
+    b64.field.placeholder: Type or paste text to encode, or Base64 to decode
+    b64.out.text: Result
+    b64.sample.hello: Text with the rupee sign

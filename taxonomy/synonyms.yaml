@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../generated/schemas/synonyms.json
+groups:
+  - [base64, base 64, b64]
+  - [gst, goods and services tax]
+  - [margin, profit margin, gross margin]
+  - [url encode, percent encode, urlencode]
+  - [json, javascript object notation]

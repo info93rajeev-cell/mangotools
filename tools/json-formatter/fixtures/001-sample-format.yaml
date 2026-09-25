@@ -1,0 +1,26 @@
+id: 001-sample-format
+preset: data/json.format
+source: { type: standard, citation: "RFC 8259 — whitespace between tokens is insignificant; number text is copied unchanged" }
+input:
+  text: '{"order":{"id":12345678901234567890,"items":[{"sku":"A-1","qty":2,"price":499.00},{"sku":"B-7","qty":1,"price":1299.50}],"paid":true}}'
+expected:
+  text: |-
+    {
+      "order": {
+        "id": 12345678901234567890,
+        "items": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "price": 499.00
+          },
+          {
+            "sku": "B-7",
+            "qty": 1,
+            "price": 1299.50
+          }
+        ],
+        "paid": true
+      }
+    }
+  valid: true

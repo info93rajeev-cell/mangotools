@@ -18,8 +18,9 @@ operation must be added first (engine lane, separate change) with golden fixture
 pnpm new:tool <slug> --preset <engine/name> --category <category-id> --tier <T1|T2|T3|T4> --archetype <A|B|C|D|E>
 ```
 
-This creates `tools/<slug>/manifest.yaml`, `content.md` and `fixtures/001-sample.yaml`. The scaffold
-fails validation until you write the SEO and content text it asks for.
+This creates `tools/<slug>/manifest.yaml`, `content.md` and `fixtures/001-sample.yaml`. Every `TODO`
+is text for you to write; `pnpm gen` fails until all of them are replaced. The fixture's expected values
+are copied from the current engine output — verify them by hand and cite how before removing the TODO.
 
 ## 3. Fill in the manifest
 
@@ -31,8 +32,8 @@ fails validation until you write the SEO and content text it asks for.
 ## 4. Write the content
 
 `content.md` sections: T1/T2 need `## How to use`, `## Method`, `## Worked example`, `## FAQ`, `## References`.
-T3/T4 need `## How to use` and `## FAQ`. FAQ questions are `###` headings. Do not link to other websites;
-cite references as plain text. Set `example: <fixture-id>` in front matter to render the worked-example table.
+T3/T4 need `## How to use` and `## FAQ`. FAQ questions are `###` headings ending in `?`. Link to other
+tools with `[Name](tool:<id>)`. Do not link to other websites; cite references as plain text. Set `example: <fixture-id>` in front matter to render the worked-example table.
 
 ## 5. Add fixtures
 
