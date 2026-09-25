@@ -1,0 +1,5 @@
+id: 001-encode-hello-rupee
+preset: data/base64
+source: { type: hand-verified, citation: "'Hello, ' is 48 65 6C 6C 6F 2C 20 and ₹ is E2 82 B9; 10 bytes → SGVsbG8sIOKCuQ== (RFC 4648 §4)" }
+input: { text: "Hello, ₹" }
+expected: { text: "SGVsbG8sIOKCuQ==", byteLength: 10, isUtf8: true }

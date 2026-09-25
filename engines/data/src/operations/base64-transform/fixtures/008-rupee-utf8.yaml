@@ -1,0 +1,6 @@
+id: 008-rupee-utf8
+operation: data.base64.transform@1
+source: { type: hand-verified, citation: "U+20B9 is UTF-8 E2 82 B9 → 111000 101000 001010 111001 → 4oK5" }
+params: { direction: encode }
+input: { text: "₹" }
+expected: { text: "4oK5", byteLength: 3 }

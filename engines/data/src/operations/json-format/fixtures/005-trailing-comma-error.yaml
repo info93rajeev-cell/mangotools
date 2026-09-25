@@ -1,0 +1,9 @@
+id: 005-trailing-comma-error
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §4 — objects do not allow a trailing comma" }
+input:
+  text: '{"a":1,}'
+expectedError:
+  code: DATA_JSON_SYNTAX_ERROR
+  path: text
+  details: { line: 1, column: 8, expected: property-name }

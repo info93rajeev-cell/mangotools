@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=../generated/schemas/professions.json
+professions:
+  - { id: land-surveyors, name: Land surveyors }
+  - { id: civil-engineers, name: Civil engineers }
+  - { id: construction-companies, name: Construction companies and site engineers }
+  - { id: architects, name: Architects }
+  - { id: logistics-freight, name: Logistics and freight }
+  - { id: manufacturing, name: Manufacturing }
+  - { id: healthcare-administrators, name: Healthcare administrators }
+  - { id: legal-professionals, name: Legal professionals }
+  - { id: developers, name: Developers }
+  - { id: small-businesses, name: Small businesses }
+  - { id: ai-creators, name: AI creators }
+  - { id: office-workers, name: Office workers }
+  - { id: civil-engineering-students, name: Civil engineering students }

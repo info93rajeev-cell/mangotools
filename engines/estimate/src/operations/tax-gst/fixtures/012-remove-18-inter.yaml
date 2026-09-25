@@ -1,0 +1,5 @@
+id: 012-remove-18-inter
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "118.00 × 100 ÷ 118 = 100.00 taxable; IGST = 118.00 − 100.00 = 18.00" }
+input: { amount: "118.00", rate: 18, mode: remove, supply: inter }
+expected: { taxableValue: "100.00", igst: "18.00", cgst: "0.00", sgst: "0.00", totalTax: "18.00", grossAmount: "118.00" }

@@ -1,0 +1,6 @@
+id: 009-full-url-decode-keeps-reserved
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.2 — decoding a reserved character would change the URL's meaning" }
+params: { direction: decode, mode: full-url }
+input: { text: "a%2Fb%20c" }
+expected: { text: "a%2Fb c", changedCount: 1 }

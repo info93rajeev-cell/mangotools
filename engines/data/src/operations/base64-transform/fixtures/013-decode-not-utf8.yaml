@@ -1,0 +1,7 @@
+id: 013-decode-not-utf8
+operation: data.base64.transform@1
+source: { type: hand-verified, citation: "/w== decodes to the single byte FF, which is not valid UTF-8" }
+params: { direction: decode, variant: auto }
+input: { text: "/w==" }
+expected: { text: "", isUtf8: false, hexPreview: "ff", byteLength: 1 }
+expectedWarnings: [DATA_BASE64_NOT_UTF8]

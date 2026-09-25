@@ -1,0 +1,6 @@
+id: 003-full-url-encode
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.2 — reserved characters keep their meaning in a full URL" }
+params: { direction: encode, mode: full-url }
+input: { text: "https://example.com/a b?q=é" }
+expected: { text: "https://example.com/a%20b?q=%C3%A9", changedCount: 2 }

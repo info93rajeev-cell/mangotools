@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/pricing.margin
+version: 0.1.0
+operation: estimate.pricing.margin@1
+params: { rounding: half-up }
+fields:
+  solve:
+    labelKey: margin.field.solve
+    kind: enum
+    control: segmented
+    default: from-cost-and-price
+    order: 10
+    options:
+      - { value: from-cost-and-price, labelKey: margin.solve.fromCostAndPrice }
+      - { value: price-from-cost-and-margin, labelKey: margin.solve.priceFromMargin }
+      - { value: cost-from-price-and-margin, labelKey: margin.solve.costFromMargin }
+  cost:
+    labelKey: margin.field.cost
+    kind: money
+    required: true
+    order: 20
+    visibleWhen: { solve: [from-cost-and-price, price-from-cost-and-margin] }
+  price:
+    labelKey: margin.field.price
+    kind: money
+    required: true
+    order: 30
+    visibleWhen: { solve: [from-cost-and-price, cost-from-price-and-margin] }
+  marginPercent:
+    labelKey: margin.field.margin
+    kind: percent
+    unit: "%"
+    required: true
+    order: 40
+    visibleWhen: { solve: [price-from-cost-and-margin, cost-from-price-and-margin] }
+outputs:
+  marginPercent: { labelKey: margin.out.margin, format: percent, order: 10, primaryWhen: { solve: [from-cost-and-price] } }
+  price: { labelKey: margin.out.price, format: money, order: 20, primaryWhen: { solve: [price-from-cost-and-margin] } }
+  cost: { labelKey: margin.out.cost, format: money, order: 30, primaryWhen: { solve: [cost-from-price-and-margin] } }
+  profit: { labelKey: margin.out.profit, format: money, order: 40 }
+  markupPercent: { labelKey: margin.out.markup, format: percent, order: 50 }
+samples:
+  retail-80-100: { titleKey: margin.sample.retail, input: { solve: from-cost-and-price, cost: "80", price: "100" } }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    margin.field.solve: Calculate
+    margin.solve.fromCostAndPrice: Margin from cost & price
+    margin.solve.priceFromMargin: Price from cost & margin
+    margin.solve.costFromMargin: Cost from price & margin
+    margin.field.cost: Cost
+    margin.field.price: Selling price
+    margin.field.margin: Margin
+    margin.out.margin: Margin
+    margin.out.price: Selling price
+    margin.out.cost: Cost
+    margin.out.profit: Profit
+    margin.out.markup: Markup
+    margin.sample.retail: Cost 80, selling price 100
+    work.margin.solve.priceFromMargin: "Selling price = {value:money} ÷ (1 − {percent}%) = {result:money}"
+    work.margin.solve.costFromMargin: "Cost = {value:money} × (1 − {percent}%) = {result:money}"
+    work.margin.solve.priceFromMarkup: "Selling price = {value:money} × (1 + {percent}%) = {result:money}"
+    work.margin.solve.costFromMarkup: "Cost = {value:money} ÷ (1 + {percent}%) = {result:money}"
+    work.margin.profit: "Profit = {price:money} − {cost:money} = {result:money}"
+    work.margin.margin: "Margin = {profit:money} ÷ {price:money} × 100 = {result}%"
+    work.margin.markup: "Markup = {profit:money} ÷ {cost:money} × 100 = {result}%"

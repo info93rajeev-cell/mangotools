@@ -1,0 +1,6 @@
+id: 002-rfc4648-f
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §10 test vectors" }
+params: { direction: encode, variant: standard, padding: true }
+input: { text: "f" }
+expected: { text: "Zg==", byteLength: 1, isUtf8: true }

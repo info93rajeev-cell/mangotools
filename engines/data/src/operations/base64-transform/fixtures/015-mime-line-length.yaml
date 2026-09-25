@@ -1,0 +1,7 @@
+id: 015-mime-line-length
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 2045 §6.8 — encoded lines are at most 76 characters, separated by CRLF; value cross-checked with Python base64" }
+params: { direction: encode, lineLength: "76" }
+input: { text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
+expected:
+  text: "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh\r\nYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="

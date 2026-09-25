@@ -1,0 +1,6 @@
+id: 007-rfc4648-foobar
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §10 test vectors" }
+params: { direction: encode, variant: standard, padding: true }
+input: { text: "foobar" }
+expected: { text: "Zm9vYmFy", byteLength: 6, isUtf8: true }

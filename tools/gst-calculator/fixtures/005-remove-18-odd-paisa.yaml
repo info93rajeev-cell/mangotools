@@ -1,0 +1,11 @@
+id: 005-remove-18-odd-paisa
+preset: estimate/gst.india
+source: { type: hand-verified, citation: "100 × 100 ÷ 118 = 84.7457… → 84.75; tax 15.25; CGST 7.625 → 7.63; SGST 15.25 − 7.63 = 7.62" }
+input: { amount: "100.00", rate: 18, mode: remove, supply: intra }
+expected:
+  taxableValue: "84.75"
+  cgst: "7.63"
+  sgst: "7.62"
+  igst: "0.00"
+  totalTax: "15.25"
+  grossAmount: "100.00"

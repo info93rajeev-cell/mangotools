@@ -1,0 +1,59 @@
+---
+import { CardGrid, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
+import { SearchBox } from '@mangotools/ui/discovery/SearchBox.tsx';
+import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { COPY } from '../lib/copy.ts';
+import { registry, toolLinks } from '../lib/site.ts';
+
+const copy = COPY.notFound;
+const popular = toolLinks(registry.site.home.popular);
+---
+
+<BaseLayout title={copy.title} description={copy.description} path="/404" template="404" noindex showHeaderSearch={false}>
+  <PageContainer>
+    <div class="page">
+      <header class="head">
+        <h1>{copy.heading}</h1>
+        <p>{copy.lede}</p>
+      </header>
+      <div class="search">
+        <SearchBox client:load idPrefix="not-found-search" />
+      </div>
+      <section class="block" aria-labelledby="popular">
+        <h2 id="popular">{copy.popular}</h2>
+        <CardGrid>
+          {
+            popular.map((tool) => (
+              <li>
+                <ToolCard tool={tool} />
+              </li>
+            ))
+          }
+        </CardGrid>
+      </section>
+    </div>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-8);
+    padding-top: var(--space-8);
+  }
+  .head {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .head p {
+    color: var(--color-text-muted);
+  }
+  .search {
+    max-width: 640px;
+  }
+  .block {
+    display: grid;
+    gap: var(--space-4);
+  }
+</style>

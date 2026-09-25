@@ -1,0 +1,39 @@
+---
+import { Icon } from '../primitives/Icon.tsx';
+import { t } from '../strings/en.ts';
+
+interface Props {
+  kind: 'none' | 'standard' | 'professional' | 'sensitive';
+}
+const { kind } = Astro.props;
+// Phase 1 shows only the professional disclaimer (T1/T2 tools).
+const text = kind === 'professional' ? t('disclaimer.professional') : null;
+---
+
+{
+  text ? (
+    <aside class="disclaimer" aria-label={t('disclaimer.title')} data-disclaimer>
+      <Icon name="info" />
+      <p>{text}</p>
+    </aside>
+  ) : null
+}
+
+<style>
+  .disclaimer {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+  }
+  .disclaimer :global(.icon) {
+    color: var(--color-info);
+    margin-top: 1px;
+  }
+</style>

@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=../generated/schemas/categories.json
+categories:
+  - id: surveying
+    slug: surveying
+    name: Surveying
+    icon: ruler
+    order: 10
+    summary: Leveling, traverse and coordinate calculations with every check shown.
+    seo:
+      title: Surveying Calculators – Leveling & Traverse Tools
+      description: Free surveying calculators for leveling and traverse adjustment. Every check and step is shown, and everything runs in your browser.
+  - id: construction
+    slug: construction
+    name: Construction
+    icon: hard-hat
+    order: 20
+    summary: Quantity and material calculators for site and estimating work.
+    seo:
+      title: Construction Calculators – Quantities & Materials
+      description: Free construction calculators for quantities and materials, built for site engineers and estimators. Runs in your browser.
+  - id: logistics
+    slug: logistics
+    name: Logistics
+    icon: container
+    order: 30
+    summary: Freight volume, chargeable weight and container loading calculators.
+    seo:
+      title: Logistics Calculators – CBM, Volumetric Weight
+      description: Free logistics calculators for CBM, volumetric and chargeable weight, and container loading. No sign-up, runs in your browser.
+  - id: privacy-tools
+    slug: privacy-tools
+    name: Privacy & Compliance
+    icon: shield-check
+    order: 40
+    summary: Remove personal data and hidden metadata before you share files.
+    seo:
+      title: Privacy Tools – Redact Data & Remove Metadata
+      description: Free privacy tools to redact personal data and remove hidden metadata from files. Nothing is uploaded — everything runs on your device.
+  - id: business
+    slug: business
+    name: Business & Finance
+    icon: briefcase
+    order: 50
+    summary: GST, margin, markup and everyday business calculations.
+    seo:
+      title: Business Calculators – GST, Margin & Markup
+      description: Free business calculators for GST, profit margin and markup with every step shown. No sign-up, no ads, runs in your browser.
+    about:
+      - These calculators handle the numbers behind everyday pricing and invoicing work. Money is calculated with exact decimal arithmetic and rounded to the paisa, so the totals you see reconcile line by line.
+      - Every result shows its working. You can check how each figure was produced before you copy it into an invoice, a quotation or a spreadsheet.
+      - The tools run entirely in your browser. The amounts you enter are never sent to a server.
+    faq:
+      - q: Are these business calculators free?
+        a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
+      - q: How are amounts rounded?
+        a: Money is rounded to two decimal places using commercial rounding, where halves round away from zero. Each tool explains its exact rounding rule on its page.
+      - q: Is this tax or accounting advice?
+        a: No. The tools help you calculate and check figures. Confirm tax treatment with the official rules or your accountant.
+  - id: developer
+    slug: developer
+    name: Developer & Data
+    icon: braces
+    order: 60
+    summary: Format, encode, convert and generate data — instantly, in your browser.
+    seo:
+      title: Developer Tools – JSON, Base64, URL Encoding
+      description: Free developer tools to format JSON, encode Base64 and URLs, and convert data. Everything runs locally, in your browser.
+    about:
+      - These tools format, validate and encode data exactly as the relevant standards describe, so the output is predictable in every browser.
+      - The JSON formatter never rounds numbers or rewrites escapes, which matters for large IDs and financial values. The encoders follow RFC 4648 and RFC 3986 precisely.
+      - Everything runs on your device. API keys, tokens and payloads you paste are never uploaded.
+    faq:
+      - q: Is it safe to paste API responses or tokens here?
+        a: The tools run entirely in your browser and make no network requests with your data. As with any tool, avoid pasting secrets on a shared or untrusted computer.
+      - q: Which standards do these tools follow?
+        a: JSON follows RFC 8259, Base64 follows RFC 4648, and URL encoding follows RFC 3986 and the WHATWG form-encoding rules.
+      - q: Do the tools work with large inputs?
+        a: Yes. Text inputs of up to 50 MB are processed in a background worker so the page stays responsive.
+  - id: pdf
+    slug: pdf
+    name: Documents & PDF
+    icon: file-text
+    order: 70
+    summary: Merge, split, number and watermark PDFs without uploading them.
+    seo:
+      title: PDF Tools – Merge, Split, Number & Watermark
+      description: Free PDF tools that run in your browser — merge, split, add page numbers and watermarks. Your files are never uploaded anywhere.
+  - id: media
+    slug: media
+    name: Media & Images
+    icon: image
+    order: 80
+    summary: Resize, crop, compress and convert images on your device.
+    seo:
+      title: Image Tools – Resize, Crop, Compress & Convert
+      description: Free image tools to resize, crop, compress and convert images. Processed on your device — nothing is uploaded to any server.
+  - id: utilities
+    slug: utilities
+    name: Everyday Utilities
+    icon: wrench
+    order: 90
+    summary: Quick converters and generators for daily tasks.
+    seo:
+      title: Everyday Utilities – Quick Online Converters
+      description: Free everyday utilities and converters that run in your browser. No sign-up, no ads, no tracking — just quick, reliable results.

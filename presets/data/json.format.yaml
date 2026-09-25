@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/json.format
+version: 0.1.0
+operation: data.json.format@1
+params: { action: format, indent: "2", sortKeys: false }
+userOptions:
+  action:
+    control: segmented
+    labelKey: json.option.action
+    order: 10
+    values:
+      format: { labelKey: json.action.format, order: 10 }
+      minify: { labelKey: json.action.minify, order: 20 }
+      validate: { labelKey: json.action.validate, order: 30 }
+  indent:
+    control: select
+    labelKey: json.option.indent
+    order: 20
+    visibleWhen: { action: [format] }
+    values:
+      "2": { labelKey: json.indent.2, order: 10 }
+      "4": { labelKey: json.indent.4, order: 20 }
+      tab: { labelKey: json.indent.tab, order: 30 }
+  sortKeys:
+    control: switch
+    labelKey: json.option.sortKeys
+    order: 30
+    visibleWhen: { action: [format, minify] }
+fields:
+  text: { labelKey: json.field.text, kind: text, required: true, order: 10, placeholderKey: json.field.placeholder }
+outputs:
+  text: { labelKey: json.out.text, format: code, order: 10, primary: true }
+samples:
+  nested-order:
+    titleKey: json.sample.order
+    input:
+      text: '{"order":{"id":12345678901234567890,"items":[{"sku":"A-1","qty":2,"price":499.00},{"sku":"B-7","qty":1,"price":1299.50}],"paid":true}}'
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: formatted.json, outputMime: application/json }
+strings:
+  en:
+    json.option.action: Action
+    json.action.format: Format
+    json.action.minify: Minify
+    json.action.validate: Validate
+    json.option.indent: Indent
+    json.indent.2: 2 spaces
+    json.indent.4: 4 spaces
+    json.indent.tab: Tab
+    json.option.sortKeys: Sort keys
+    json.field.text: JSON input
+    json.field.placeholder: 'Paste JSON here, e.g. {"name": "value"}'
+    json.out.text: Result
+    json.sample.order: Order with a large ID

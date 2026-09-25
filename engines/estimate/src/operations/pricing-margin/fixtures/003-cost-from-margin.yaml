@@ -1,0 +1,5 @@
+id: 003-cost-from-margin
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "100 × (1 − 0.20) = 80" }
+input: { solve: cost-from-price-and-margin, price: "100", marginPercent: "20" }
+expected: { cost: "80.00", profit: "20.00" }

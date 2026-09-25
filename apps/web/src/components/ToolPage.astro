@@ -1,0 +1,66 @@
+---
+import type { RegistryTool } from '@mangotools/schemas';
+import { presetCurrency } from '@mangotools/ui/toolkit/presentation.ts';
+import { ToolIsland } from '@mangotools/ui/toolkit/ToolIsland.tsx';
+import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
+import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
+import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
+import ToolContent from '@mangotools/ui/toolkit/ToolContent.astro';
+import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categoryById, presetFor, toolLinks, toolTitle } from '../lib/site.ts';
+import { breadcrumbList, faqPage, webApplication } from '../lib/structured-data.ts';
+
+interface Props {
+  tool: RegistryTool;
+}
+const { tool } = Astro.props;
+const preset = presetFor(tool);
+const category = categoryById.get(tool.category);
+const crumbs = [
+  { name: 'Home', url: '/' },
+  ...(category?.visible ? [{ name: category.name, url: category.url }] : []),
+  { name: tool.name, url: tool.url },
+];
+const jsonLd = [webApplication(tool), breadcrumbList(crumbs), ...(tool.content.faq.length > 0 ? [faqPage(tool.content.faq)] : [])];
+const hasHowTo = tool.content.sections.some((s) => s.id === 'how-to-use');
+if (tool.archetype !== 'A' && tool.archetype !== 'B') {
+  throw new Error(`${tool.id}: archetype ${tool.archetype} is not available in Phase 1.`);
+}
+---
+
+<BaseLayout title={toolTitle(tool)} description={tool.seo.description} path={tool.url} template="tool" jsonLd={jsonLd}>
+  <PageContainer width="tool">
+    <div class="page">
+      <div class="top">
+        <Breadcrumbs items={crumbs} />
+        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} />
+      </div>
+      <ToolIsland
+        client:load
+        toolId={tool.id}
+        archetype={tool.archetype}
+        preset={preset}
+        sampleId={tool.sample}
+        print={tool.capabilities.print === true}
+        howToId={hasHowTo ? 'how-to-use' : null}
+      />
+      <Disclaimer kind={tool.disclaimer} />
+      <ToolContent content={tool.content} related={toolLinks(tool.related)} currency={presetCurrency(preset)} />
+    </div>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .top {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .page > :global(.tool-content) {
+    margin-top: var(--space-10);
+  }
+</style>

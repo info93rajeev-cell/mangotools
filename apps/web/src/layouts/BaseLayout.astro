@@ -1,0 +1,81 @@
+---
+import '@mangotools/ui/tokens/global.css';
+import SiteFooter from '@mangotools/ui/layout/SiteFooter.astro';
+import SiteHeader from '@mangotools/ui/layout/SiteHeader.astro';
+import SkipLink from '@mangotools/ui/layout/SkipLink.astro';
+import faviconUrl from '../../../../assets/brand/favicon.svg?url';
+import ogImageUrl from '../../../../assets/og/default.png?url';
+import { absolute, brand, indexable, isDevelopment, navCategories } from '../lib/site.ts';
+
+export type PageTemplate = 'home' | 'tools' | 'category' | 'tool' | '404';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Site path of this page, used for the canonical URL. */
+  path: string;
+  template: PageTemplate;
+  jsonLd?: object[];
+  noindex?: boolean;
+  showHeaderSearch?: boolean;
+}
+
+const { title, description, path, template, jsonLd = [], noindex = false, showHeaderSearch = true } = Astro.props;
+const canonical = absolute(path);
+const robots = !indexable || noindex ? 'noindex' : 'index, follow';
+const ogImage = absolute(ogImageUrl);
+---
+
+<!doctype html>
+<html lang="en" data-template={template} data-analytics={isDevelopment ? 'debug' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script is:inline src="/theme-init.js"></script>
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+  </head>
+  <body>
+    <SkipLink />
+    <SiteHeader brand={brand.name} categories={navCategories} showSearch={showHeaderSearch} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter brand={brand.name} tagline={brand.tagline} categories={navCategories} />
+    <script>
+      import '../scripts/page-analytics.ts';
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    display: block;
+    outline: none;
+    padding-top: var(--space-6);
+  }
+  @media (min-width: 768px) {
+    main {
+      padding-top: var(--space-8);
+    }
+  }
+</style>

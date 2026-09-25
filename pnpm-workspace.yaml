@@ -1,0 +1,8 @@
+packages:
+  - schemas
+  - packages/*
+  - engines/*
+  - apps/*
+onlyBuiltDependencies:
+  - esbuild
+  - lefthook

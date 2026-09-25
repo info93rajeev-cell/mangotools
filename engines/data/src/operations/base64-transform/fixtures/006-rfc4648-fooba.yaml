@@ -1,0 +1,6 @@
+id: 006-rfc4648-fooba
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §10 test vectors" }
+params: { direction: encode, variant: standard, padding: true }
+input: { text: "fooba" }
+expected: { text: "Zm9vYmE=", byteLength: 5, isUtf8: true }

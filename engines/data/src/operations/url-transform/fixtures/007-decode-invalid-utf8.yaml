@@ -1,0 +1,6 @@
+id: 007-decode-invalid-utf8
+operation: data.url.transform@1
+source: { type: hand-verified, citation: "E2 82 is an incomplete UTF-8 sequence" }
+params: { direction: decode, mode: component }
+input: { text: "%E2%82" }
+expectedError: { code: DATA_URL_INVALID_UTF8 }

@@ -1,0 +1,7 @@
+id: 009-url-safe-decode-fbff
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §5 URL-safe alphabet: bytes FB FF encode as -_8" }
+params: { direction: decode, variant: url-safe }
+input: { text: "-_8" }
+expected: { text: "", byteLength: 2, isUtf8: false, hexPreview: "fbff" }
+expectedWarnings: [DATA_BASE64_NOT_UTF8]

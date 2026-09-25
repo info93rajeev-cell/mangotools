@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/url
+version: 0.1.0
+operation: data.url.transform@1
+params: { direction: encode, mode: component }
+userOptions:
+  direction:
+    control: segmented
+    labelKey: url.option.direction
+    order: 10
+    values:
+      encode: { labelKey: url.direction.encode, order: 10 }
+      decode: { labelKey: url.direction.decode, order: 20 }
+  mode:
+    control: segmented
+    labelKey: url.option.mode
+    order: 20
+    values:
+      component: { labelKey: url.mode.component, order: 10 }
+      full-url: { labelKey: url.mode.fullUrl, order: 20 }
+      form: { labelKey: url.mode.form, order: 30 }
+fields:
+  text: { labelKey: url.field.text, kind: text, required: true, order: 10, placeholderKey: url.field.placeholder }
+outputs:
+  text: { labelKey: url.out.text, format: code, order: 10, primary: true }
+samples:
+  query-value: { titleKey: url.sample.query, input: { text: "price range=₹500–₹1,000 & sort=asc" } }
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: url.txt, outputMime: text/plain }
+strings:
+  en:
+    url.option.direction: Direction
+    url.direction.encode: Encode
+    url.direction.decode: Decode
+    url.option.mode: Mode
+    url.mode.component: Component
+    url.mode.fullUrl: Full URL
+    url.mode.form: Form
+    url.field.text: Input
+    url.field.placeholder: Type or paste text or a URL
+    url.out.text: Result
+    url.sample.query: Query value with spaces and ₹

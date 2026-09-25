@@ -1,0 +1,5 @@
+id: 012-missing-input
+operation: estimate.pricing.margin@1
+source: { type: regression }
+input: { solve: from-cost-and-price, cost: "10" }
+expectedError: { code: ESTIMATE_MISSING_INPUT, path: price }

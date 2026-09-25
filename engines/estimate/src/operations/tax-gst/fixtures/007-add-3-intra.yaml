@@ -1,0 +1,5 @@
+id: 007-add-3-intra
+operation: estimate.tax.gst@1
+source: { type: hand-verified, citation: "10000.00 × 1.5% = 150.00 per component" }
+input: { amount: "10000.00", rate: 3, mode: add, supply: intra }
+expected: { cgst: "150.00", sgst: "150.00", totalTax: "300.00", grossAmount: "10300.00" }

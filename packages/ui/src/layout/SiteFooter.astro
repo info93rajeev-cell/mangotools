@@ -1,0 +1,84 @@
+---
+import { t } from '../strings/en.ts';
+import Logo from './Logo.astro';
+import PageContainer from './PageContainer.astro';
+import type { NavCategory } from './types.ts';
+
+interface Props {
+  brand: string;
+  tagline: string;
+  categories: NavCategory[];
+}
+const { brand, tagline, categories } = Astro.props;
+---
+
+<footer class="site-footer no-print">
+  <PageContainer width="tool" class="inner">
+    <div class="brand">
+      <Logo name={brand} />
+      <p class="tagline">{tagline}</p>
+      <p class="parent">{t('site.product')}</p>
+    </div>
+    <nav aria-label={t('site.categories')}>
+      <h2 class="heading">{t('site.categories')}</h2>
+      <ul>
+        <li><a href="/tools">{t('site.allTools')}</a></li>
+        {
+          categories.map((c) => (
+            <li>
+              <a href={c.url}>{c.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </PageContainer>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-24);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-subtle);
+  }
+  .site-footer :global(.inner) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding-block: var(--space-12);
+  }
+  .brand {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 360px;
+  }
+  .tagline,
+  .parent {
+    color: var(--color-text-muted);
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+  }
+  .heading {
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+  ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-ui);
+  }
+  a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,199 @@
+---
+import type { RegistryCategory } from '@mangotools/schemas';
+import { CardGrid, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
+import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
+import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { COPY, fill } from '../lib/copy.ts';
+import { toolById, toolLinks } from '../lib/site.ts';
+import { breadcrumbList, itemList } from '../lib/structured-data.ts';
+
+interface Props {
+  category: RegistryCategory;
+}
+const { category } = Astro.props;
+const copy = COPY.category;
+const tools = toolLinks(category.toolIds);
+const registryTools = category.toolIds.flatMap((id) => toolById.get(id) ?? []);
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: category.name, url: category.url },
+];
+const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.length });
+---
+
+<BaseLayout
+  title={category.seo.title}
+  description={category.seo.description}
+  path={category.url}
+  template="category"
+  jsonLd={[breadcrumbList(crumbs), itemList(category, registryTools)]}
+>
+  <PageContainer>
+    <div class="page">
+      <Breadcrumbs items={crumbs} />
+      <header class="head">
+        <div class="title-row">
+          <h1>{category.name}</h1>
+          <span class="count">{count}</span>
+        </div>
+        <p>{category.summary}</p>
+      </header>
+      {
+        tools.length > 1 ? (
+          <nav class="start" aria-label={copy.startHere}>
+            <span class="start-label">{copy.startHere}:</span>
+            <ul>
+              {tools.slice(0, 3).map((tool) => (
+                <li>
+                  <a href={tool.url}>{tool.name}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null
+      }
+      <section class="block" aria-labelledby="all-tools">
+        <h2 id="all-tools">{fill(copy.allInCategory, { name: category.name })}</h2>
+        <CardGrid>
+          {
+            tools.map((tool) => (
+              <li>
+                <ToolCard tool={tool} />
+              </li>
+            ))
+          }
+        </CardGrid>
+      </section>
+      {
+        category.about && category.about.length > 0 ? (
+          <section class="block prose" aria-labelledby="about">
+            <h2 id="about">{copy.about}</h2>
+            {category.about.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </section>
+        ) : null
+      }
+      {
+        category.faq && category.faq.length > 0 ? (
+          <section class="block" aria-labelledby="faq">
+            <h2 id="faq">{copy.faq}</h2>
+            <div class="faq">
+              {category.faq.map((item) => (
+                <details>
+                  <summary>
+                    <h3>{item.q}</h3>
+                  </summary>
+                  <p>{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        ) : null
+      }
+    </div>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .head {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .count {
+    color: var(--color-text-subtle);
+    font-size: var(--text-ui);
+  }
+  .head p {
+    color: var(--color-text-muted);
+    max-width: 65ch;
+  }
+  .start {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-ui);
+  }
+  .start-label {
+    color: var(--color-text-muted);
+    font-weight: var(--weight-medium);
+  }
+  .start ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .start a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-height-sm);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+  }
+  .block {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .prose {
+    max-width: 72ch;
+  }
+  .prose p {
+    color: var(--color-text-muted);
+  }
+  .faq {
+    display: grid;
+    max-width: 880px;
+    border-top: 1px solid var(--color-border);
+  }
+  details {
+    border-bottom: 1px solid var(--color-border);
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    color: var(--color-text-subtle);
+    font-size: 1.25rem;
+  }
+  details[open] summary::after {
+    content: '−';
+  }
+  summary h3 {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+  details p {
+    padding-bottom: var(--space-4);
+    color: var(--color-text-muted);
+    max-width: 72ch;
+  }
+</style>

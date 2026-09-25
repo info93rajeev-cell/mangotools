@@ -1,0 +1,6 @@
+id: 006-decode-malformed
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.1 — % must be followed by two hex digits" }
+params: { direction: decode, mode: component }
+input: { text: "%ZZ" }
+expectedError: { code: DATA_URL_MALFORMED_ESCAPE, path: text, details: { offset: 0 } }

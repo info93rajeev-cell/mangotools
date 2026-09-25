@@ -1,0 +1,6 @@
+id: 001-component-encode
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.1–2.3 — percent-encode everything except unreserved characters" }
+params: { direction: encode, mode: component }
+input: { text: "a b&c=d/é" }
+expected: { text: "a%20b%26c%3Dd%2F%C3%A9", changedCount: 5 }

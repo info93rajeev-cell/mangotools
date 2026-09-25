@@ -1,0 +1,19 @@
+{
+  "name": "@mangotools/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./engine.worker": "./src/engine.worker.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@mangotools/core": "workspace:*",
+    "@mangotools/engine-search": "workspace:*",
+    "@mangotools/schemas": "workspace:*"
+  }
+}

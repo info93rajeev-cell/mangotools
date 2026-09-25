@@ -1,0 +1,293 @@
+/* ---------- Tool island shell ---------- */
+.island {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.topRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.topActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.howTo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-ui);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Options ---------- */
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4) var(--space-6);
+}
+
+.options > * {
+  min-width: 0;
+}
+
+.optionSwitch {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* ---------- Panels ---------- */
+.panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: var(--space-5);
+  }
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--control-height-sm);
+}
+
+.panelTitle {
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+  font-weight: var(--weight-semibold);
+}
+
+.panelTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--color-text-subtle);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+/* ---------- Archetype A: transform ---------- */
+.transform {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.transformBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.panes {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .panes {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.code {
+  min-height: 18rem;
+  max-height: 70vh;
+}
+
+@media (max-width: 640px) {
+  .code {
+    min-height: 12rem;
+  }
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-sm);
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+  color: var(--color-text-muted);
+}
+
+.status[data-tone="success"] {
+  color: var(--color-success);
+}
+
+.status[data-tone="danger"] {
+  color: var(--color-danger);
+}
+
+.secondary {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.secondary pre {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---------- Archetype B: calculator ---------- */
+.calculator {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 900px) {
+  .calculator {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.rateRow {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.result {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.primary {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.primaryLabel {
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.primaryValue {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, var(--text-display));
+  line-height: 1.15;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.rows {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row dt {
+  color: var(--color-text-muted);
+}
+
+.row dd {
+  margin: 0;
+  font-weight: var(--weight-medium);
+  text-align: right;
+}
+
+.placeholder {
+  color: var(--color-text-muted);
+  font-size: var(--text-ui);
+}
+
+/* ---------- Working steps ---------- */
+.working {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-3);
+}
+
+.working summary {
+  cursor: pointer;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  width: fit-content;
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-5);
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.stepValue {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
+/* ---------- Actions ---------- */
+.actionBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media print {
+  .island :global(.no-print),
+  .topRow {
+    display: none;
+  }
+}

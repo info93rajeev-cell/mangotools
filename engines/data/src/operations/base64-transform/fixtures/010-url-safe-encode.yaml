@@ -1,0 +1,6 @@
+id: 010-url-safe-encode
+operation: data.base64.transform@1
+source: { type: hand-verified, citation: "'???' = 3F 3F 3F → Pz8/ (standard) → Pz8_ (URL-safe)" }
+params: { direction: encode, variant: url-safe, padding: false }
+input: { text: "???" }
+expected: { text: "Pz8_" }

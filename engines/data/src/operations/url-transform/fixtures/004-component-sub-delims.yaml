@@ -1,0 +1,6 @@
+id: 004-component-sub-delims
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.2 — !'()* are reserved sub-delimiters, not unreserved" }
+params: { direction: encode, mode: component }
+input: { text: "!'()*" }
+expected: { text: "%21%27%28%29%2A", changedCount: 5 }

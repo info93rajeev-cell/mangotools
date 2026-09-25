@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=./generated/schemas/site-config.json
+brand:
+  name: MangoTools
+  parent: MangoPie
+  tagline: Professional tools. Zero uploads.
+environments:
+  development: { url: "http://localhost:4321", indexable: false }
+  production: { url: "https://tools.mangopie.in", indexable: true }
+navigation:
+  minToolsPerCategory: 1 # set to 3 before public launch (TASK-008)
+home:
+  popular:
+    [gst-calculator, json-formatter, profit-margin-calculator, base64-encode-decode, url-encode-decode]
+  featuredProfessional: [gst-calculator, profit-margin-calculator]

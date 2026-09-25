@@ -1,0 +1,106 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+.badge[data-tone="accent"] {
+  border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg));
+  color: var(--color-text);
+}
+
+.badge[data-tone="success"] {
+  color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 40%, transparent);
+  background: color-mix(in srgb, var(--color-success) 8%, var(--color-bg));
+}
+
+.kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--tone);
+  border-left-width: 4px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tone) 7%, var(--color-bg));
+  color: var(--color-text);
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+}
+
+.alert > :global(.icon) {
+  color: var(--tone);
+  margin-top: 1px;
+}
+
+.alertBody {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.alertTitle {
+  font-weight: var(--weight-semibold);
+}
+
+.alert[data-tone="info"] {
+  --tone: var(--color-info);
+}
+
+.alert[data-tone="success"] {
+  --tone: var(--color-success);
+}
+
+.alert[data-tone="warning"] {
+  --tone: var(--color-warning);
+}
+
+.alert[data-tone="danger"] {
+  --tone: var(--color-danger);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  z-index: var(--z-toast);
+  transform: translateX(-50%);
+  max-width: min(92vw, 420px);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-popover);
+  font-size: var(--text-ui);
+  line-height: var(--leading-ui);
+  pointer-events: none;
+}
+
+.toast:empty {
+  display: none;
+}

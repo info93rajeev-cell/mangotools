@@ -1,0 +1,5 @@
+id: 011-too-many-decimals
+operation: estimate.tax.gst@1
+source: { type: regression }
+input: { amount: "10.555", rate: 18, mode: add, supply: intra }
+expectedError: { code: ESTIMATE_TOO_MANY_DECIMALS, path: amount, details: { max: 2 } }

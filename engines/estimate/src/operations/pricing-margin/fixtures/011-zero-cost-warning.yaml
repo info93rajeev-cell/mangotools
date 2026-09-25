@@ -1,0 +1,6 @@
+id: 011-zero-cost-warning
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "Markup divides by cost, so it is undefined when cost is zero" }
+input: { solve: from-cost-and-price, cost: "0", price: "50" }
+expected: { profit: "50.00", marginPercent: "100.00", markupPercent: null }
+expectedWarnings: [ESTIMATE_MARKUP_UNDEFINED]
