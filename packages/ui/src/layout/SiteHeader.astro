@@ -1,0 +1,142 @@
+---
+import { SearchBox } from '../discovery/SearchBox.tsx';
+import { Icon } from '../primitives/Icon.tsx';
+import { t } from '../strings/en.ts';
+import Logo from './Logo.astro';
+import PageContainer from './PageContainer.astro';
+import { ThemeToggle } from './ThemeToggle.tsx';
+import type { NavCategory } from './types.ts';
+
+interface Props {
+  brand: string;
+  categories: NavCategory[];
+  /** The home page has its own large search box. */
+  showSearch?: boolean;
+}
+const { brand, categories, showSearch = true } = Astro.props;
+---
+
+<header class="site-header">
+  <PageContainer width="tool" class="bar">
+    <a class="home" href="/" aria-label={t('site.homeLink')}>
+      <Logo name={brand} />
+    </a>
+    <nav aria-label={t('site.mainNav')} class="nav">
+      <details class="menu" data-menu>
+        <summary>
+          {t('site.tools')}
+          <Icon name="chevron-down" />
+        </summary>
+        <ul class="panel">
+          <li><a href="/tools">{t('site.allTools')}</a></li>
+          {
+            categories.map((c) => (
+              <li>
+                <a href={c.url}>{c.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+    </nav>
+    <div class="actions">
+      {
+        showSearch ? (
+          <div class="search">
+            <SearchBox client:idle idPrefix="header-search" compact />
+          </div>
+        ) : null
+      }
+      <ThemeToggle client:idle />
+    </div>
+  </PageContainer>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .site-header :global(.bar) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 60px;
+  }
+  .home {
+    display: inline-flex;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+  .menu {
+    position: relative;
+  }
+  .menu summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--control-height);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--text-ui);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .menu summary:hover {
+    background: var(--color-surface-subtle);
+  }
+  .menu[open] summary :global(.icon) {
+    transform: rotate(180deg);
+  }
+  .panel {
+    position: absolute;
+    top: calc(100% + var(--space-1));
+    left: 0;
+    min-width: 220px;
+    margin: 0;
+    padding: var(--space-2);
+    list-style: none;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-popover);
+  }
+  .panel a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: var(--text-ui);
+  }
+  .panel a:hover {
+    background: var(--color-surface-subtle);
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+  }
+  .search {
+    width: min(340px, 40vw);
+  }
+  @media (max-width: 767px) {
+    .search {
+      display: none;
+    }
+  }
+</style>

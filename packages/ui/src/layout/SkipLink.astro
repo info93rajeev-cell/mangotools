@@ -1,0 +1,28 @@
+---
+import { t } from '../strings/en.ts';
+
+interface Props {
+  target?: string;
+}
+const { target = 'main' } = Astro.props;
+---
+
+<a class="skip" href={`#${target}`}>{t('site.skip')}</a>
+
+<style>
+  .skip {
+    position: absolute;
+    left: var(--space-4);
+    top: -100px;
+    z-index: 100;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+  }
+  .skip:focus {
+    top: var(--space-3);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import { t } from '../strings/en.ts';
+
+export interface Crumb {
+  name: string;
+  url?: string;
+}
+interface Props {
+  items: Crumb[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label={t('site.breadcrumb')} class="crumbs">
+  <ol>
+    {
+      items.map((item, index) => (
+        <li>
+          {item.url && index < items.length - 1 ? (
+            <a href={item.url}>{item.name}</a>
+          ) : (
+            <span aria-current="page">{item.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+    color: var(--color-text-muted);
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  li + li::before {
+    content: '›';
+    color: var(--color-text-subtle);
+    padding-inline: var(--space-1);
+  }
+  a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+  [aria-current='page'] {
+    color: var(--color-text);
+  }
+</style>

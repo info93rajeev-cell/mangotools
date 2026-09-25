@@ -1,0 +1,132 @@
+/*
+ * MangoTools design tokens (Phase 1 plan §13). Light values on :root; dark values apply when the
+ * visitor prefers dark and has not chosen light, or has chosen dark explicitly.
+ *
+ * Breakpoints (use in media queries; custom properties cannot be used there):
+ *   sm 640px · md 768px · lg 1024px · xl 1280px
+ */
+:root {
+  color-scheme: light;
+
+  --color-bg: #ffffff;
+  --color-surface-subtle: #fafaf9;
+  --color-border: #e7e5e4;
+  --color-border-input: #948d87;
+  --color-text: #1c1917;
+  --color-text-muted: #57534e;
+  --color-text-subtle: #78716c;
+  --color-accent: #ffb000;
+  --color-on-accent: #1c1917;
+  --color-accent-text: #b45309;
+  --color-focus: #d97706;
+  --color-success: #15803d;
+  --color-warning: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
+
+  --font-sans:
+    "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Noto Sans", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-display: 3rem;
+  --leading-display: 3.25rem;
+  --text-h1: 1.875rem;
+  --leading-h1: 2.25rem;
+  --text-h2: 1.5rem;
+  --leading-h2: 2rem;
+  --text-h3: 1.125rem;
+  --leading-h3: 1.625rem;
+  --text-body: 1rem;
+  --leading-body: 1.625rem;
+  --text-ui: 0.875rem;
+  --leading-ui: 1.25rem;
+  --text-caption: 0.75rem;
+  --leading-caption: 1rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-pill: 999px;
+
+  --shadow-popover: 0 4px 16px rgb(28 25 23 / 0.12), 0 1px 3px rgb(28 25 23 / 0.08);
+  --shadow-dialog: 0 16px 48px rgb(28 25 23 / 0.2), 0 2px 6px rgb(28 25 23 / 0.1);
+
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --z-header: 20;
+  --z-popover: 30;
+  --z-toast: 40;
+
+  --control-height: 40px;
+  --control-height-sm: 32px;
+  --control-height-lg: 48px;
+  --width-marketing: 1200px;
+  --width-tool: 1280px;
+  --gutter: 16px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: #0c0a09;
+    --color-surface-subtle: #1c1917;
+    --color-border: #292524;
+    --color-border-input: #6b645e;
+    --color-text: #fafaf9;
+    --color-text-muted: #d6d3d1;
+    --color-text-subtle: #a8a29e;
+    --color-accent-text: #ffb000;
+    --color-focus: #ffb000;
+    --color-success: #4ade80;
+    --color-warning: #fb923c;
+    --color-danger: #f87171;
+    --color-info: #60a5fa;
+    --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
+    --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0c0a09;
+  --color-surface-subtle: #1c1917;
+  --color-border: #292524;
+  --color-border-input: #6b645e;
+  --color-text: #fafaf9;
+  --color-text-muted: #d6d3d1;
+  --color-text-subtle: #a8a29e;
+  --color-accent-text: #ffb000;
+  --color-focus: #ffb000;
+  --color-success: #4ade80;
+  --color-warning: #fb923c;
+  --color-danger: #f87171;
+  --color-info: #60a5fa;
+  --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+}

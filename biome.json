@@ -82,7 +82,7 @@
       }
     },
     {
-      "includes": ["**/*.config.ts", "**/*.config.mjs"],
+      "includes": ["**/*.config.ts", "**/*.config.mjs", "**/*.d.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -90,6 +90,24 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/ui/src/tokens/global.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
     }
-  ]
+  ],
+  "css": {
+    "parser": {
+      "cssModules": true
+    },
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  }
 }
