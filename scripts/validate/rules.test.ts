@@ -20,17 +20,27 @@ describe('architecture rules', () => {
       "export const f = (x: number) => x.toLocaleString('en-IN');",
       'export class Parser {}',
       "export const g = () => fetch('/x');",
+      'export const h = (a: string, b: string) => a.localeCompare(b);',
+      'export const u = () => crypto.getRandomValues(new Uint8Array(4));',
     ].join('\n');
     const messages = rulesOf(checkEngineSource('engines/data/src/a.ts', 'data', src));
     expect(messages).toEqual(
       expect.arrayContaining([
         'Engines must not use Date (use ctx.clock).',
         'Engines must not use Math.random (use ctx.random).',
-        'Engines must not use locale formatting.',
+        'Engines must not use locale-dependent formatting or comparison.',
         'Engines must not use class (use functions and data).',
         'Engines must not use network (fetch).',
+        'Engines must not use crypto randomness (use ctx.random).',
       ]),
     );
+  });
+
+  it('allows new Date(value) but not the current time', () => {
+    const allowed = 'export const d = (ms: number) => new Date(ms);';
+    expect(checkEngineSource('engines/data/src/a.ts', 'data', allowed)).toEqual([]);
+    const banned = 'export const d = () => new Date();';
+    expect(checkEngineSource('engines/data/src/a.ts', 'data', banned).length).toBe(1);
   });
 
   it('ignores banned words inside comments and strings', () => {
