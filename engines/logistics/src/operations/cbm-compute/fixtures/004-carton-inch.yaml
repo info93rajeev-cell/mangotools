@@ -1,0 +1,5 @@
+id: 004-carton-inch
+operation: logistics.cbm.compute@1
+source: { type: standard, citation: "International inch (1959): 1 in = 0.0254 m, so 1 in³ = 0.000016387064 m³. 20 × 16 × 12 in = 3,840 in³ = 0.06292632576 m³; × 10 = 0.6292632576 m³; × 35.3146667 = 22.2222… ft³ (3,840 × 10 ÷ 1,728)" }
+input: { unit: in, length: "20", width: "16", height: "12", quantity: "10" }
+expected: { cbmPerCarton: "0.063", totalCbm: "0.629", cftPerCarton: "2.222", totalCft: "22.222" }

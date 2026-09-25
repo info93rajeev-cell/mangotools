@@ -1,0 +1,6 @@
+id: 015-rounds-to-zero-warning
+operation: logistics.cbm.compute@1
+source: { type: hand-verified, citation: "1 × 1 × 1 mm = 0.000000001 m³, which is 0.000 at 3 decimal places" }
+input: { unit: mm, length: "1", width: "1", height: "1", quantity: "1" }
+expected: { cbmPerCarton: "0.000", totalCbm: "0.000", cftPerCarton: "0.000", totalCft: "0.000" }
+expectedWarnings: [LOGISTICS_VOLUME_ROUNDS_TO_ZERO]

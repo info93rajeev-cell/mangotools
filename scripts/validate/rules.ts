@@ -57,6 +57,7 @@ export const ENGINE_IMPORTS: Readonly<Record<string, readonly string[]>> = {
   numeric: ['big.js'],
   data: [],
   estimate: ['@mangotools/engine-numeric'],
+  logistics: ['@mangotools/engine-numeric'],
   search: ['minisearch'],
 };
 

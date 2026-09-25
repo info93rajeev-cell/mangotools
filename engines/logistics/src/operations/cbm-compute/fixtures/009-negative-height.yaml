@@ -1,0 +1,5 @@
+id: 009-negative-height
+operation: logistics.cbm.compute@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "-30", quantity: "1" }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: height }

@@ -1,0 +1,5 @@
+id: 003-carton-m
+operation: logistics.cbm.compute@1
+source: { type: hand-verified, citation: "Same carton in metres: 0.5 × 0.4 × 0.3 m = 0.06 m³" }
+input: { unit: m, length: "0.5", width: "0.4", height: "0.3", quantity: "100" }
+expected: { cbmPerCarton: "0.060", totalCbm: "6.000", cftPerCarton: "2.119", totalCft: "211.888" }

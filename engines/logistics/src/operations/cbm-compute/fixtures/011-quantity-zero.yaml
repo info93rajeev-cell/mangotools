@@ -1,0 +1,5 @@
+id: 011-quantity-zero
+operation: logistics.cbm.compute@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "0" }
+expectedError: { code: LOGISTICS_QUANTITY_NOT_POSITIVE, path: quantity }
