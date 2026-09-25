@@ -9,6 +9,7 @@ fields:
     labelKey: margin.field.solve
     kind: enum
     control: segmented
+    default: from-cost-and-price
     order: 10
     options:
       - { value: from-cost-and-price, labelKey: margin.solve.fromCostAndPrice }

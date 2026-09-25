@@ -32,6 +32,8 @@ export const fieldSchema = z.strictObject({
   currency: z.enum(['INR']).optional(),
   unit: z.string().optional(),
   required: z.boolean().optional(),
+  /** Initial value shown before the user types (for example the most common rate). */
+  default: z.union([z.string(), z.number()]).optional(),
   order: z.int(),
   visible: z.boolean().optional(),
   visibleWhen: conditions.optional(),

@@ -11,6 +11,7 @@ fields:
     labelKey: gst.field.mode
     kind: enum
     control: segmented
+    default: add
     order: 10
     options:
       - { value: add, labelKey: gst.mode.add }
@@ -19,6 +20,7 @@ fields:
     labelKey: gst.field.supply
     kind: enum
     control: segmented
+    default: intra
     order: 20
     options:
       - { value: intra, labelKey: gst.supply.intra }
@@ -29,6 +31,7 @@ fields:
     kind: enum-or-number
     unit: "%"
     allowCustom: true
+    default: 18
     order: 40
     control: select
     options: [{ value: 0 }, { value: 0.25 }, { value: 3 }, { value: 5 }, { value: 18 }, { value: 40 }]

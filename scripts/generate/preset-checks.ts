@@ -144,6 +144,17 @@ function checkParams(file: string, p: ResolvedPreset, op: AnyOperation): Issue[]
   return issues;
 }
 
+function checkDefaults(file: string, p: ResolvedPreset): Issue[] {
+  return Object.entries(p.fields)
+    .filter(([, f]) => f.default !== undefined && f.options && !f.allowCustom)
+    .filter(([, f]) => !f.options?.some((o) => String(o.value) === String(f.default)))
+    .map(([name, f]) =>
+      issue(file, `Default "${String(f.default)}" is not one of the options.`, {
+        path: `fields.${name}.default`,
+      }),
+    );
+}
+
 function checkKeys(
   file: string,
   group: 'fields' | 'outputs',
@@ -216,6 +227,7 @@ export function checkPresetAgainstOperation(
     ),
     ...checkAllConditions(file, p, conditionDomain(p, paramKeys ?? new Set())),
     ...checkStrings(file, p),
+    ...checkDefaults(file, p),
   ];
 }
 
