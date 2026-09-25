@@ -1,0 +1,5 @@
+id: 012-not-a-number
+operation: logistics.cbm.compute@1
+source: { type: regression }
+input: { unit: cm, length: "abc", width: "40", height: "30", quantity: "1" }
+expectedError: { code: LOGISTICS_INVALID_NUMBER, path: length }

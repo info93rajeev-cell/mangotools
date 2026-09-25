@@ -1,0 +1,6 @@
+id: 016-six-decimal-places
+operation: logistics.cbm.compute@1
+source: { type: hand-verified, citation: "1 × 1 × 1 cm = 0.000001 m³; × 35.3146667 = 0.0000353146667 ft³ → 0.000035 at 6 decimal places" }
+input: { unit: cm, length: "1", width: "1", height: "1", quantity: "1" }
+params: { decimals: 6 }
+expected: { cbmPerCarton: "0.000001", totalCbm: "0.000001", cftPerCarton: "0.000035", totalCft: "0.000035" }

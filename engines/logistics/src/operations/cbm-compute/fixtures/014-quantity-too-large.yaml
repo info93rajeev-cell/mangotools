@@ -1,0 +1,5 @@
+id: 014-quantity-too-large
+operation: logistics.cbm.compute@1
+source: { type: regression }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "1000001" }
+expectedError: { code: LOGISTICS_QUANTITY_TOO_LARGE, path: quantity }

@@ -1,0 +1,5 @@
+id: 002-carton-mm
+operation: logistics.cbm.compute@1
+source: { type: hand-verified, citation: "Same carton in millimetres: 500 × 400 × 300 mm × 10⁻⁹ m³/mm³ = 0.06 m³ (SI prefixes)" }
+input: { unit: mm, length: "500", width: "400", height: "300", quantity: "100" }
+expected: { cbmPerCarton: "0.060", totalCbm: "6.000", cftPerCarton: "2.119", totalCft: "211.888" }
