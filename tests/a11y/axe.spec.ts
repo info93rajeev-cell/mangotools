@@ -30,6 +30,14 @@ for (const scheme of ['light', 'dark'] as const) {
         expect(await seriousViolations(page)).toEqual([]);
       });
     }
+    test('/gst-calculator (mobile search open)', async ({ page }) => {
+      await page.setViewportSize({ width: 360, height: 800 });
+      await gotoReady(page, '/gst-calculator');
+      await page.getByRole('button', { name: 'Search tools' }).click();
+      await page.getByRole('dialog').getByRole('combobox').fill('gst');
+      await expect(page.getByRole('dialog').getByRole('option').first()).toBeVisible();
+      expect(await seriousViolations(page)).toEqual([]);
+    });
     test('/json-formatter (error state)', async ({ page }) => {
       await gotoReady(page, '/json-formatter');
       await page.locator('#tool-json-formatter-input').fill('{"a":1,}');

@@ -43,6 +43,28 @@ test.describe('keyboard-only completion', () => {
     });
   }
 
+  test('mobile header search opens, searches and closes by keyboard', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await gotoReady(page, '/gst-calculator');
+    await tabTo(page, '[data-mobile-search-open]');
+    await page.keyboard.press('Enter');
+    const search = page
+      .getByRole('dialog', { name: 'Search tools' })
+      .getByRole('combobox', { name: 'Search tools' });
+    await expect(search).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: 'Close search' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(search).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.getByRole('button', { name: 'Close search' })).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(search).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(page.locator('[data-mobile-search-open]')).toBeFocused();
+  });
+
   test('skip link moves focus to the main content', async ({ page }) => {
     await gotoReady(page, '/tools');
     await page.keyboard.press('Tab');
