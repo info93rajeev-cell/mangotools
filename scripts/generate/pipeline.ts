@@ -19,8 +19,10 @@ import { type Issue, issue, zodIssues } from './issues.ts';
 import { type LoadedTool, validateManifests } from './manifests.ts';
 import {
   checkPresetAgainstOperation,
-  formulaKeysOf,
+  collectWorkingSteps,
+  type FormulaUse,
   runSamples,
+  templateProblems,
   toResolvedPreset,
 } from './preset-checks.ts';
 import { parsePresets, type RawPreset, resolveExtends } from './presets.ts';
@@ -41,7 +43,7 @@ interface PresetState {
   resolved: Map<string, ResolvedPreset>;
   files: Map<string, string>;
   abstract: Set<string>;
-  formulaKeys: Map<string, Set<string>>;
+  formulaKeys: Map<string, FormulaUse>;
 }
 
 type Engines = Map<string, EngineModule>;
@@ -96,15 +98,15 @@ async function buildPresets(
   return state;
 }
 
-/** Formula keys emitted by an operation's own engine fixtures (covers paths no preset sample reaches). */
-async function engineFormulaKeys(
+/** Working steps emitted by an operation's own engine fixtures (covers paths samples miss). */
+async function engineFormulaUse(
   sources: Sources,
   engines: Engines,
   operation: string,
-): Promise<Set<string>> {
-  const keys = new Set<string>();
+  into: FormulaUse,
+) {
   const op = findOperation(engines, operation);
-  if (!op) return keys;
+  if (!op) return;
   for (const source of sources.engineFixtures) {
     const parsed = fixtureSchema.safeParse(source.data);
     if (!parsed.success || parsed.data.operation !== operation || !parsed.data.expected) continue;
@@ -114,9 +116,8 @@ async function engineFormulaKeys(
       parsed.data.params ?? {},
       createTestContext(),
     );
-    if (result.ok) for (const key of formulaKeysOf(result.value)) keys.add(key);
+    if (result.ok) collectWorkingSteps(result.value, into);
   }
-  return keys;
 }
 
 async function checkFormulaStrings(
@@ -126,17 +127,19 @@ async function checkFormulaStrings(
   issues: Issue[],
 ) {
   for (const [id, preset] of presets.resolved) {
-    const keys = presets.formulaKeys.get(id) ?? new Set<string>();
-    for (const key of await engineFormulaKeys(sources, engines, preset.operation)) keys.add(key);
-    for (const key of [...keys].sort()) {
-      if (!(`work.${key}` in preset.strings)) {
-        issues.push(
-          issue(presets.files.get(id) ?? id, `Missing working-step template "work.${key}".`, {
-            path: 'strings.en',
-            hint: 'Write the formula with {variable} placeholders.',
-          }),
-        );
+    const use = presets.formulaKeys.get(id) ?? new Map<string, Set<string>>();
+    await engineFormulaUse(sources, engines, preset.operation, use);
+    const file = presets.files.get(id) ?? id;
+    for (const [key, variables] of [...use].sort(([a], [b]) => (a < b ? -1 : 1))) {
+      const template = preset.strings[`work.${key}`];
+      const path = `strings.en.work.${key}`;
+      if (template === undefined) {
+        const hint = 'Write the formula with {variable} or {variable:money} placeholders.';
+        issues.push(issue(file, `Missing working-step template "work.${key}".`, { path, hint }));
+        continue;
       }
+      for (const problem of templateProblems(template, variables))
+        issues.push(issue(file, problem, { path }));
     }
   }
 }
@@ -153,7 +156,12 @@ async function buildTool(
   if (!preset || !op || !tool.source.content) return null;
   const fixtures = await runToolFixtures(tool, preset, op);
   issues.push(...fixtures.issues);
-  for (const key of fixtures.formulaKeys) presets.formulaKeys.get(preset.id)?.add(key);
+  const use = presets.formulaKeys.get(preset.id);
+  for (const [key, names] of fixtures.formulaKeys) {
+    const merged = use?.get(key) ?? new Set<string>();
+    for (const name of names) merged.add(name);
+    use?.set(key, merged);
+  }
   const ctx = { file: tool.source.content.file, tier: tool.manifest.tier, toolUrls };
   const parsed = await parseContent(tool.source.content.text, ctx);
   issues.push(...parsed.issues);

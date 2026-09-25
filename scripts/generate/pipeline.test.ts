@@ -138,6 +138,14 @@ describe('registry pipeline — invalid inputs fail with file and path', () => {
     });
     expect(hasIssue(issues, 'presets/estimate/gst.india.yaml', 'work.gst.remove.igst')).toBe(true);
   });
+  it('preset: working-step template with an unknown variable', async () => {
+    const issues = await issuesFor((s) => {
+      presetOf(s, 'estimate/gst.india').strings.en['work.gst.add.cgst'] = 'CGST = {amount:money}';
+    });
+    expect(
+      hasIssue(issues, 'presets/estimate/gst.india.yaml', '"{amount}" is not a variable'),
+    ).toBe(true);
+  });
   it('preset: sample execution failure is reported', async () => {
     const issues = await issuesFor((s) => {
       presetOf(s, 'estimate/gst.india').samples['invoice-18'].input.amount = 'ten';

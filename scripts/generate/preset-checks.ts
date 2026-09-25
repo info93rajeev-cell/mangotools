@@ -231,17 +231,42 @@ export function checkPresetAgainstOperation(
   ];
 }
 
-/** Collects formula keys from an operation result's `working` steps, if it has any. */
-export function formulaKeysOf(value: unknown): string[] {
-  const working = (value as { working?: { formulaKey?: unknown }[] } | null)?.working;
-  if (!Array.isArray(working)) return [];
-  return working.map((w) => w.formulaKey).filter((k): k is string => typeof k === 'string');
+/** Formula key → names of the variables its working steps supply. */
+export type FormulaUse = Map<string, Set<string>>;
+
+/** Records the working steps in an operation result (if it has any). */
+export function collectWorkingSteps(value: unknown, into: FormulaUse): void {
+  const working = (value as { working?: { formulaKey?: unknown; variables?: unknown }[] } | null)
+    ?.working;
+  if (!Array.isArray(working)) return;
+  for (const step of working) {
+    if (typeof step.formulaKey !== 'string') continue;
+    const names = into.get(step.formulaKey) ?? new Set<string>(['result']);
+    for (const name of Object.keys((step.variables as Record<string, unknown>) ?? {}))
+      names.add(name);
+    into.set(step.formulaKey, names);
+  }
+}
+
+const TEMPLATE_TOKEN = /\{([^{}]*)\}/g;
+const PLACEHOLDER = /^(\w+)(?::(money|number|percent|text))?$/;
+
+/** Problems with a working-step template: unknown variables or malformed placeholders. */
+export function templateProblems(template: string, variables: Set<string>): string[] {
+  const problems: string[] = [];
+  for (const [, inner = ''] of template.matchAll(TEMPLATE_TOKEN)) {
+    const match = PLACEHOLDER.exec(inner);
+    if (!match) problems.push(`"{${inner}}" is not {name} or {name:money|number|percent|text}`);
+    else if (!variables.has(match[1] ?? ''))
+      problems.push(`"{${match[1]}}" is not a variable of this step`);
+  }
+  return problems;
 }
 
 /** Runs every sample through the real operation. */
 export async function runSamples(file: string, p: ResolvedPreset, op: AnyOperation) {
   const issues: Issue[] = [];
-  const formulaKeys = new Set<string>();
+  const formulaKeys: FormulaUse = new Map();
   for (const [name, sample] of Object.entries(p.samples)) {
     const params = { ...p.params, ...(sample.params ?? {}) };
     const result = await executeOperation(op, sample.input, params, createTestContext());
@@ -257,7 +282,7 @@ export async function runSamples(file: string, p: ResolvedPreset, op: AnyOperati
       );
       continue;
     }
-    for (const key of formulaKeysOf(result.value)) formulaKeys.add(key);
+    collectWorkingSteps(result.value, formulaKeys);
   }
   return { issues, formulaKeys };
 }

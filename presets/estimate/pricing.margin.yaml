@@ -58,10 +58,10 @@ strings:
     margin.out.profit: Profit
     margin.out.markup: Markup
     margin.sample.retail: Cost 80, selling price 100
-    work.margin.solve.priceFromMargin: "Selling price = {value} ÷ (1 − {percent}%) = {result}"
-    work.margin.solve.costFromMargin: "Cost = {value} × (1 − {percent}%) = {result}"
-    work.margin.solve.priceFromMarkup: "Selling price = {value} × (1 + {percent}%) = {result}"
-    work.margin.solve.costFromMarkup: "Cost = {value} ÷ (1 + {percent}%) = {result}"
-    work.margin.profit: "Profit = {price} − {cost} = {result}"
-    work.margin.margin: "Margin = {profit} ÷ {price} × 100 = {result}%"
-    work.margin.markup: "Markup = {profit} ÷ {cost} × 100 = {result}%"
+    work.margin.solve.priceFromMargin: "Selling price = {value:money} ÷ (1 − {percent}%) = {result:money}"
+    work.margin.solve.costFromMargin: "Cost = {value:money} × (1 − {percent}%) = {result:money}"
+    work.margin.solve.priceFromMarkup: "Selling price = {value:money} × (1 + {percent}%) = {result:money}"
+    work.margin.solve.costFromMarkup: "Cost = {value:money} ÷ (1 + {percent}%) = {result:money}"
+    work.margin.profit: "Profit = {price:money} − {cost:money} = {result:money}"
+    work.margin.margin: "Margin = {profit:money} ÷ {price:money} × 100 = {result}%"
+    work.margin.markup: "Markup = {profit:money} ÷ {cost:money} × 100 = {result}%"

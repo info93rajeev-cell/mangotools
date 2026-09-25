@@ -4,7 +4,7 @@ import { type Fixture, fixtureSchema, type ResolvedPreset } from '@mangotools/sc
 import { checkFixture } from '../lib/fixtures.ts';
 import { type Issue, issue, zodIssues } from './issues.ts';
 import { findTodos, type LoadedTool } from './manifests.ts';
-import { formulaKeysOf } from './preset-checks.ts';
+import { collectWorkingSteps, type FormulaUse } from './preset-checks.ts';
 import type { SourceFile } from './sources.ts';
 
 export interface FixtureRun {
@@ -62,7 +62,7 @@ async function runOne(
 export async function runToolFixtures(tool: LoadedTool, preset: ResolvedPreset, op: AnyOperation) {
   const issues: Issue[] = [];
   const runs = new Map<string, FixtureRun>();
-  const formulaKeys = new Set<string>();
+  const formulaKeys: FormulaUse = new Map();
   if (tool.source.fixtures.length === 0) {
     issues.push(
       issue(`tools/${tool.source.folder}/fixtures`, 'Every tool needs at least one fixture.'),
@@ -73,7 +73,7 @@ export async function runToolFixtures(tool: LoadedTool, preset: ResolvedPreset, 
     issues.push(...one.issues);
     if (!one.run) continue;
     runs.set(one.run.fixture.id, one.run);
-    for (const key of formulaKeysOf(one.run.value)) formulaKeys.add(key);
+    collectWorkingSteps(one.run.value, formulaKeys);
   }
   return { runs, issues, formulaKeys };
 }
