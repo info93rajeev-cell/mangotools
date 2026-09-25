@@ -1,0 +1,5 @@
+id: 003-carton-m
+preset: logistics/cbm
+source: { type: hand-verified, citation: "1.2 × 0.8 × 1.5 m = 1.44 m³; × 2 = 2.88 m³; 1.44 × 35.3146667 = 50.853120048 ft³; 2.88 × 35.3146667 = 101.706240096 ft³" }
+input: { unit: m, length: "1.2", width: "0.8", height: "1.5", quantity: "2" }
+expected: { cbmPerCarton: "1.440", totalCbm: "2.880", cftPerCarton: "50.853", totalCft: "101.706" }

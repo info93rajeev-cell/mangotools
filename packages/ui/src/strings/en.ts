@@ -20,7 +20,7 @@ export const EN = {
   'search.label': 'Search tools',
   'search.open': 'Search tools',
   'search.close': 'Close search',
-  'search.placeholder': 'Search tools — try GST, JSON, Base64, URL',
+  'search.placeholder': 'Search tools — try GST, JSON, CBM, Base64',
   'search.noResults': 'No tools match “{query}”.',
   'search.count': '{count} tools found',
   'search.one': '1 tool found',

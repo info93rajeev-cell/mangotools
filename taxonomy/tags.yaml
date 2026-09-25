@@ -8,3 +8,5 @@ tags:
   - { id: invoicing, label: Invoicing }
   - { id: pricing, label: Pricing }
   - { id: profit, label: Profit }
+  - { id: volume, label: Volume }
+  - { id: shipping, label: Shipping }

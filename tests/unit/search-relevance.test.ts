@@ -31,6 +31,14 @@ describe('search relevance over the generated index', () => {
     ['cost plus pricing', 'markup-calculator'],
     ['selling price from markup', 'markup-calculator'],
     ['selling price from margin', 'profit-margin-calculator'],
+    ['CBM Calculator', 'cbm-calculator'],
+    ['cbm', 'cbm-calculator'],
+    ['cubic meter', 'cbm-calculator'],
+    ['cubic metre', 'cbm-calculator'],
+    ['carton volume', 'cbm-calculator'],
+    ['cargo volume', 'cbm-calculator'],
+    ['shipping volume', 'cbm-calculator'],
+    ['logistics calculator', 'cbm-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

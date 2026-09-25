@@ -13,6 +13,7 @@ const SIZES = [
 const PAGES = [
   { name: 'home', path: '/', tool: null },
   { name: 'business', path: '/business', tool: null },
+  { name: 'logistics', path: '/logistics', tool: null },
   ...TOOL_IDS.map((id) => ({ name: id, path: `/${id}`, tool: id })),
 ];
 

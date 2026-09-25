@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: logistics/cbm
+version: 0.1.0
+operation: logistics.cbm.compute@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  unit:
+    labelKey: cbm.field.unit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 10
+    options:
+      - { value: cm, labelKey: cbm.unit.cm }
+      - { value: m, labelKey: cbm.unit.m }
+      - { value: mm, labelKey: cbm.unit.mm }
+      - { value: in, labelKey: cbm.unit.in }
+  length: { labelKey: cbm.field.length, kind: number, required: true, order: 20, helpKey: cbm.help.dimension }
+  width: { labelKey: cbm.field.width, kind: number, required: true, order: 30, helpKey: cbm.help.dimension }
+  height: { labelKey: cbm.field.height, kind: number, required: true, order: 40, helpKey: cbm.help.dimension }
+  quantity: { labelKey: cbm.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: cbm.help.quantity }
+outputs:
+  totalCbm: { labelKey: cbm.out.totalCbm, format: number, order: 10, primary: true }
+  cbmPerCarton: { labelKey: cbm.out.cbmPerCarton, format: number, order: 20 }
+  totalCft: { labelKey: cbm.out.totalCft, format: number, order: 30 }
+  cftPerCarton: { labelKey: cbm.out.cftPerCarton, format: number, order: 40 }
+samples:
+  carton-50-40-30-x100:
+    titleKey: cbm.sample.carton
+    input: { unit: cm, length: "50", width: "40", height: "30", quantity: "100" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    cbm.field.unit: Unit
+    cbm.unit.cm: cm
+    cbm.unit.m: m
+    cbm.unit.mm: mm
+    cbm.unit.in: inch
+    cbm.field.length: Length
+    cbm.field.width: Width
+    cbm.field.height: Height
+    cbm.field.quantity: Number of cartons
+    cbm.help.dimension: Outer carton size in the unit chosen above, up to 3 decimal places.
+    cbm.help.quantity: A whole number from 1 to 1,000,000.
+    cbm.out.totalCbm: Total CBM (m³)
+    cbm.out.cbmPerCarton: CBM per carton (m³)
+    cbm.out.totalCft: Total cubic feet (ft³)
+    cbm.out.cftPerCarton: Cubic feet per carton (ft³)
+    cbm.sample.carton: 50 × 40 × 30 cm, 100 cartons
+    work.cbm.perCarton: "CBM per carton = {length:number} {unit} × {width:number} {unit} × {height:number} {unit} × {factor} m³ per {unit}³ = {result} m³ (exact)"
+    work.cbm.total: "Total CBM = {cbm} m³ × {quantity:number} cartons = {result:number} m³ (from the exact volume, rounded only for display)"
+    work.cbm.cftPerCarton: "Cubic feet per carton = {cbm} m³ × {factor} = {result} ft³ (exact)"
+    work.cbm.cftTotal: "Total cubic feet = {cbm:number} m³ × {factor} = {result:number} ft³ (exact)"

@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: cbm-calculator
+slug: cbm-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with CBM per carton, total CBM and cubic feet in cm, m, mm or inches." }
+name: CBM Calculator
+shortName: CBM
+summary: Carton and cargo volume in CBM and cubic feet from dimensions in cm, m, mm or inches.
+archetype: B
+preset: logistics/cbm
+sample: carton-50-40-30-x100
+taxonomy:
+  category: logistics
+  tags: [volume, shipping]
+  synonyms: [cbm, cubic meter, cubic metre, carton volume, cargo volume, shipping volume, logistics calculator, cbm to cubic feet]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: CBM Calculator – Carton Volume in m³ and Cubic Feet
+  description: Work out carton and cargo volume in CBM (m³) and cubic feet from length, width, height and quantity in cm, m, mm or inches. Free, and it runs in your browser.
+  primaryKeyword: cbm calculator
+  secondaryKeywords: [cubic meter calculator, carton volume calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "SI definition of the metre; international inch (1959): 1 in = 25.4 mm exactly", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–006, tool fixtures 001–005" }
+  lastVerified: 2026-09-25

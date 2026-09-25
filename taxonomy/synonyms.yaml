@@ -4,5 +4,6 @@ groups:
   - [gst, goods and services tax]
   - [margin, profit margin, gross margin]
   - [markup, mark up, mark-up]
+  - [cbm, cubic meter, cubic metre, m3]
   - [url encode, percent encode, urlencode]
   - [json, javascript object notation]
