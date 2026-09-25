@@ -18,6 +18,8 @@ export const EN = {
   'theme.system': 'System',
   'theme.current': 'Theme: {theme}. Change theme',
   'search.label': 'Search tools',
+  'search.open': 'Search tools',
+  'search.close': 'Close search',
   'search.placeholder': 'Search tools — try GST, JSON, Base64, URL',
   'search.noResults': 'No tools match “{query}”.',
   'search.count': '{count} tools found',

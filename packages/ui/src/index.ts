@@ -2,6 +2,7 @@ export * from './archetypes/CalculatorLayout.tsx';
 export * from './archetypes/TransformLayout.tsx';
 export * from './discovery/CategoryChips.tsx';
 export * from './discovery/cards.tsx';
+export * from './discovery/MobileSearch.tsx';
 export * from './discovery/RecentTools.tsx';
 export * from './discovery/SearchBox.tsx';
 export * from './format/numbers.ts';

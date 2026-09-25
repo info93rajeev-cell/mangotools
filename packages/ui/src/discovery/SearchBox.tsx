@@ -8,6 +8,8 @@ export interface SearchBoxProps {
   idPrefix: string;
   /** Header size; the home page and 404 use the large version. */
   compact?: boolean;
+  /** Called on Escape when no result list is open (for example to close a search dialog). */
+  onDismiss?: () => void;
 }
 
 type Status = 'idle' | 'loading' | 'ready' | 'error';
@@ -21,7 +23,7 @@ function statusText(status: Status, query: string, count: number): string {
 }
 
 /** Search state: lazy index loading, results, the active option and keyboard handling. */
-function useSearch() {
+function useSearch(onDismiss?: () => void) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [active, setActive] = useState(-1);
@@ -56,16 +58,21 @@ function useSearch() {
     window.location.assign(result.url);
   };
 
+  /** Escape closes the result list first, then dismisses (dialog) or clears the query. */
+  const onEscape = () => {
+    if (open) setOpen(false);
+    else if (onDismiss) onDismiss();
+    else void update('');
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
     const count = results.length;
     if (event.key === 'ArrowDown' && count > 0) {
       setOpen(true);
       setActive((active + 1) % count);
     } else if (event.key === 'ArrowUp' && count > 0) setActive((active - 1 + count) % count);
-    else if (event.key === 'Escape') {
-      if (open) setOpen(false);
-      else void update('');
-    } else return;
+    else if (event.key === 'Escape') onEscape();
+    else return;
     event.preventDefault();
   };
 
@@ -86,8 +93,8 @@ function useSearch() {
 }
 
 /** Combobox: the input keeps focus, arrow keys move the active option, Enter opens it. */
-export function SearchBox({ idPrefix, compact = false }: SearchBoxProps) {
-  const s = useSearch();
+export function SearchBox({ idPrefix, compact = false, onDismiss }: SearchBoxProps) {
+  const s = useSearch(onDismiss);
   const inputId = `${idPrefix}-input`;
   const listId = `${idPrefix}-list`;
   const optionId = (i: number) => `${idPrefix}-option-${i}`;

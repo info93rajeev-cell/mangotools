@@ -1,4 +1,5 @@
 ---
+import { MobileSearch } from '../discovery/MobileSearch.tsx';
 import { SearchBox } from '../discovery/SearchBox.tsx';
 import { Icon } from '../primitives/Icon.tsx';
 import { t } from '../strings/en.ts';
@@ -42,9 +43,12 @@ const { brand, categories, showSearch = true } = Astro.props;
     <div class="actions">
       {
         showSearch ? (
-          <div class="search">
-            <SearchBox client:load idPrefix="header-search" compact />
-          </div>
+          <>
+            <div class="search">
+              <SearchBox client:load idPrefix="header-search" compact />
+            </div>
+            <MobileSearch client:load />
+          </>
         ) : null
       }
       <ThemeToggle client:idle />
