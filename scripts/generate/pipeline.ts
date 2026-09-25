@@ -32,9 +32,18 @@ import type { Sources } from './sources.ts';
 import { type Taxonomy, validateTaxonomy } from './taxonomy.ts';
 import { runToolFixtures } from './tool-fixtures.ts';
 
+/** An engine fixture as run by the cross-browser determinism check (dev builds only). */
+export interface DeterminismCase {
+  id: string;
+  operation: string;
+  input: unknown;
+  params: unknown;
+}
+
 export interface PipelineOutput {
   registry: Registry;
   searchIndex: SearchIndexFile;
+  determinism: DeterminismCase[];
   /** Engines referenced by presets; the runtime worker loads only these. */
   engineIds: string[];
 }
@@ -232,6 +241,18 @@ async function buildSearchIndex(
   };
 }
 
+/** Engine fixtures for engines the site loads in workers. */
+function determinismCases(sources: Sources, engineIds: Set<string>): DeterminismCase[] {
+  return sources.engineFixtures.flatMap((source) => {
+    const parsed = fixtureSchema.safeParse(source.data);
+    const operation = parsed.success ? parsed.data.operation : undefined;
+    if (!parsed.success || !operation || !engineIds.has(operation.split('.')[0] ?? '')) return [];
+    return [
+      { id: source.file, operation, input: parsed.data.input, params: parsed.data.params ?? {} },
+    ];
+  });
+}
+
 /** Validates every data file and, when there are no issues, builds the generated outputs. */
 export async function runPipeline(
   sources: Sources,
@@ -267,12 +288,7 @@ export async function runPipeline(
     presets: Object.fromEntries(presets.resolved),
   };
   const engineIds = [...new Set([...presets.resolved.values()].map((p) => p.engineId))].sort();
-  return {
-    output: {
-      registry,
-      searchIndex: await buildSearchIndex(registry, taxonomy, engines),
-      engineIds,
-    },
-    issues,
-  };
+  const determinism = determinismCases(sources, new Set(engineIds));
+  const searchIndex = await buildSearchIndex(registry, taxonomy, engines);
+  return { output: { registry, searchIndex, determinism, engineIds }, issues };
 }

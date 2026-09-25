@@ -1,0 +1,21 @@
+---
+import type { RegistryCategory, RegistryTool } from '@mangotools/schemas';
+import CategoryPage from '../components/CategoryPage.astro';
+import ToolPage from '../components/ToolPage.astro';
+import { registry, visibleCategories } from '../lib/site.ts';
+
+type Props = { kind: 'category'; category: RegistryCategory } | { kind: 'tool'; tool: RegistryTool };
+
+export function getStaticPaths() {
+  return [
+    ...visibleCategories.map((category) => ({ params: { slug: category.slug }, props: { kind: 'category', category } })),
+    ...registry.tools
+      .filter((tool) => tool.listed)
+      .map((tool) => ({ params: { slug: tool.slug }, props: { kind: 'tool', tool } })),
+  ];
+}
+
+const page = Astro.props as Props;
+---
+
+{page.kind === 'category' ? <CategoryPage category={page.category} /> : <ToolPage tool={page.tool} />}

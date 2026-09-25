@@ -64,6 +64,7 @@
 
 .mono {
   font-family: var(--font-mono);
+  font-variant-ligatures: none;
   font-size: var(--text-ui);
   line-height: 1.6;
   tab-size: 2;

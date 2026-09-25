@@ -1,0 +1,147 @@
+---
+import {
+  Badge,
+  Button,
+  CardGrid,
+  CategoryCard,
+  Field,
+  IconButton,
+  InlineAlert,
+  Kbd,
+  NumberField,
+  SearchBox,
+  SegmentedControl,
+  Select,
+  Switch,
+  TextInput,
+  Textarea,
+  ThemeToggle,
+  ToolCard,
+  ToolIsland,
+  WorkingSteps,
+} from '@mangotools/ui';
+import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
+import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
+import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
+import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { COPY } from '../../lib/copy.ts';
+import { isDevelopment, registry, toolById, toolLink } from '../../lib/site.ts';
+
+export function getStaticPaths() {
+  return isDevelopment ? [{ params: { dev: '_dev' } }] : [];
+}
+
+const noop = () => {};
+const gst = toolById.get('gst-calculator');
+const json = toolById.get('json-formatter');
+const gstPreset = registry.presets['estimate/gst.india'];
+const jsonPreset = registry.presets['data/json.format'];
+const steps = [
+  { ref: 'cgst', formulaKey: 'gst.add.cgst', variables: { taxable: '1000.00', halfRate: '9' }, result: '90.00' },
+  { ref: 'totalTax', formulaKey: 'gst.total.intra', variables: { cgst: '90.00', sgst: '90.00', igst: '0.00' }, result: '180.00' },
+];
+const variants = ['primary', 'secondary', 'ghost'] as const;
+const sizes = ['sm', 'md', 'lg'] as const;
+---
+
+<BaseLayout
+  title={`${COPY.dev.components} | MangoTools`}
+  description="Development-only gallery of every MangoTools component in its states, in light and dark themes. Not built for production."
+  path="/_dev/components"
+  template="404"
+  noindex
+>
+  <PageContainer width="tool">
+    <div class="gallery">
+      <h1>{COPY.dev.components}</h1>
+
+      <section><h2>Buttons</h2>
+        {variants.map((v) => (
+          <div class="row">
+            {sizes.map((s) => <Button variant={v} size={s} icon="copy">{`${v} ${s}`}</Button>)}
+            <Button variant={v} disabled>Disabled</Button>
+            <Button variant={v} loading>Loading</Button>
+          </div>
+        ))}
+        <div class="row">
+          <IconButton icon="copy" label="Copy" />
+          <IconButton icon="download" label="Download" variant="ghost" />
+          <IconButton icon="arrow-left-right" label="Swap" size="sm" />
+          <ThemeToggle client:idle />
+        </div>
+      </section>
+
+      <section><h2>Form controls</h2>
+        <div class="grid">
+          <Field id="demo-text" label="Text input" help="Help text explains the field."><TextInput id="demo-text" value="Hello" onValue={noop} /></Field>
+          <Field id="demo-invalid" label="Invalid input" error="Enter a number such as 1250 or 1250.50."><TextInput id="demo-invalid" value="12a" invalid onValue={noop} /></Field>
+          <Field id="demo-money" label="Amount (₹)"><NumberField id="demo-money" value="1,18,000.00" prefix="₹" onValue={noop} /></Field>
+          <Field id="demo-rate" label="Rate"><NumberField id="demo-rate" value="18" suffix="%" onValue={noop} /></Field>
+          <Field id="demo-select" label="Select"><Select id="demo-select" value="18" options={[{ value: '5', label: '5%' }, { value: '18', label: '18%' }]} onValue={noop} /></Field>
+          <SegmentedControl id="demo-seg" label="Segmented control" value="add" options={[{ value: 'add', label: 'Add GST' }, { value: 'remove', label: 'Remove GST' }]} onValue={noop} />
+          <div class="row"><Switch id="demo-sw-on" label="Switch on" checked onValue={noop} /><Switch id="demo-sw-off" label="Switch off" checked={false} onValue={noop} /></div>
+          <Field id="demo-area" label="Textarea (mono)"><Textarea id="demo-area" mono value={'{\n  "a": 1\n}'} /></Field>
+        </div>
+      </section>
+
+      <section><h2>Feedback</h2>
+        <div class="row"><Badge>Neutral</Badge><Badge tone="accent">Professional</Badge><Badge tone="success" icon="check">Valid</Badge><Kbd>Ctrl</Kbd><Kbd>V</Kbd></div>
+        <InlineAlert tone="info" title="Info">Information with icon and text.</InlineAlert>
+        <InlineAlert tone="success" title="Success">It worked.</InlineAlert>
+        <InlineAlert tone="warning" title="Warning">Markup cannot be calculated when the cost is zero.</InlineAlert>
+        <InlineAlert tone="danger" title="Error">Invalid JSON at line 3, column 14.</InlineAlert>
+      </section>
+
+      <section><h2>Discovery</h2>
+        <div class="search"><SearchBox client:idle idPrefix="gallery-search" /></div>
+        <Breadcrumbs items={[{ name: 'Home', url: '/' }, { name: 'Business & Finance', url: '/business' }, { name: 'GST Calculator' }]} />
+        <CardGrid>
+          {gst ? <li><ToolCard tool={toolLink(gst)} /></li> : null}
+          {json ? <li><ToolCard tool={toolLink(json)} /></li> : null}
+          <li><CategoryCard name="Business & Finance" summary="GST, margin, markup and everyday business calculations." url="/business" icon="briefcase" count={2} /></li>
+        </CardGrid>
+      </section>
+
+      <section><h2>Tool kit</h2>
+        <ToolHeader name="GST Calculator" summary="Add or remove GST and split it into CGST and SGST or IGST, with every step shown." />
+        <Disclaimer kind="professional" />
+        {gstPreset ? <WorkingSteps preset={gstPreset} steps={steps} /> : null}
+      </section>
+
+      <section><h2>Archetype B (live)</h2>
+        {gst && gstPreset ? <ToolIsland client:load toolId="gst-calculator" archetype="B" preset={gstPreset} sampleId={gst.sample} print howToId={null} /> : null}
+      </section>
+
+      <section><h2>Archetype A (live)</h2>
+        {json && jsonPreset ? <ToolIsland client:load toolId="json-formatter" archetype="A" preset={jsonPreset} sampleId={json.sample} print={false} howToId={null} /> : null}
+      </section>
+    </div>
+  </PageContainer>
+</BaseLayout>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: var(--space-12);
+  }
+  section {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .search {
+    max-width: 480px;
+  }
+</style>

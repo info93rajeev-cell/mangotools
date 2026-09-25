@@ -1,0 +1,24 @@
+---
+import cases from '@generated/determinism-fixtures.json';
+import { DeterminismHarness } from '../../dev/DeterminismHarness.tsx';
+import { COPY } from '../../lib/copy.ts';
+import { isDevelopment } from '../../lib/site.ts';
+
+// Built only in the development environment (Astro skips folders starting with "_", hence [dev]).
+export function getStaticPaths() {
+  return isDevelopment ? [{ params: { dev: '_dev' } }] : [];
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>{COPY.dev.determinism}</title>
+  </head>
+  <body>
+    <h1>{COPY.dev.determinism}</h1>
+    <DeterminismHarness client:load cases={cases} />
+  </body>
+</html>

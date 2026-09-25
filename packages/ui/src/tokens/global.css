@@ -73,6 +73,7 @@ pre,
 samp {
   font-family: var(--font-mono);
   font-size: 0.9em;
+  font-variant-ligatures: none;
 }
 
 :where(input, textarea, select, button) {

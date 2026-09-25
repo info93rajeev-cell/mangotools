@@ -64,6 +64,7 @@ export function writeOutputs(dir: string, output: PipelineOutput): string[] {
   for (const [id, preset] of Object.entries(output.registry.presets))
     put(`presets/${id}.json`, json(preset));
   put('search-index.json', json(output.searchIndex));
+  put('determinism-fixtures.json', json(output.determinism));
   put('engine-loaders.ts', engineLoadersSource(output.engineIds));
   writeSchemas(dir, put);
   return written;
