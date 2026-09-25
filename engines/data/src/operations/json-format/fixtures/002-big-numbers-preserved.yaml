@@ -1,0 +1,12 @@
+id: 002-big-numbers-preserved
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §6 — numbers are text; precision is not limited by the format" }
+params: { action: format, indent: "2" }
+input:
+  text: '{"id":12345678901234567890,"v":1.0e+10}'
+expected:
+  text: |-
+    {
+      "id": 12345678901234567890,
+      "v": 1.0e+10
+    }

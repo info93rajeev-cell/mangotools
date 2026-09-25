@@ -1,0 +1,12 @@
+id: 003-minify
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §2 — insignificant whitespace" }
+params: { action: minify }
+input:
+  text: |
+    {
+      "a": [1, 2],
+      "b": { "c": "d e" }
+    }
+expected:
+  text: '{"a":[1,2],"b":{"c":"d e"}}'

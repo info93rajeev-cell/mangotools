@@ -1,0 +1,19 @@
+id: 001-nested-indent-2
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format" }
+params: { action: format, indent: "2" }
+input:
+  text: '{"a":1,"b":[true,null,{"c":"x"}]}'
+expected:
+  valid: true
+  text: |-
+    {
+      "a": 1,
+      "b": [
+        true,
+        null,
+        {
+          "c": "x"
+        }
+      ]
+    }

@@ -1,0 +1,6 @@
+id: 008-form-decode
+operation: data.url.transform@1
+source: { type: standard, citation: "WHATWG URL Standard — application/x-www-form-urlencoded parser (+ → space)" }
+params: { direction: decode, mode: form }
+input: { text: "a+b%26c" }
+expected: { text: "a b&c", changedCount: 2 }

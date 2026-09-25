@@ -1,0 +1,11 @@
+id: 004-escapes-preserved
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §7 — string escapes" }
+params: { action: format, indent: "2" }
+input:
+  text: '{"name":"Café"}'
+expected:
+  text: |-
+    {
+      "name": "Café"
+    }

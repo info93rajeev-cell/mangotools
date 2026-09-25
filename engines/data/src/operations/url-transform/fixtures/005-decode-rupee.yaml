@@ -1,0 +1,6 @@
+id: 005-decode-rupee
+operation: data.url.transform@1
+source: { type: hand-verified, citation: "%E2%82%B9 is the UTF-8 encoding of U+20B9 (₹)" }
+params: { direction: decode, mode: component }
+input: { text: "%E2%82%B9" }
+expected: { text: "₹", changedCount: 3 }

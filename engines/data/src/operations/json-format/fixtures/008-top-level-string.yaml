@@ -1,0 +1,8 @@
+id: 008-top-level-string
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §2 — a JSON text is any serialized value" }
+input:
+  text: '"text"'
+expected:
+  valid: true
+  text: '"text"'

@@ -1,0 +1,6 @@
+id: 014-decode-invalid-length
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §4 — a single leftover character cannot encode a byte" }
+params: { direction: decode, variant: auto }
+input: { text: "Zm9vY" }
+expectedError: { code: DATA_BASE64_INVALID_LENGTH }

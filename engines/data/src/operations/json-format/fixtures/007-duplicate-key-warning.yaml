@@ -1,0 +1,14 @@
+id: 007-duplicate-key-warning
+operation: data.json.format@1
+source: { type: standard, citation: "RFC 8259 §4 — names within an object SHOULD be unique" }
+params: { action: format, indent: "2" }
+input:
+  text: '{"a":1,"a":2}'
+expected:
+  valid: true
+  text: |-
+    {
+      "a": 1,
+      "a": 2
+    }
+expectedWarnings: [DATA_JSON_DUPLICATE_KEY]

@@ -1,0 +1,6 @@
+id: 011-decode-ignores-whitespace
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §3.3 — implementations may ignore line breaks and white space" }
+params: { direction: decode, variant: auto }
+input: { text: "Zm9v YmFy" }
+expected: { text: "foobar", byteLength: 6, isUtf8: true }

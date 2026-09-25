@@ -1,0 +1,6 @@
+id: 003-rfc4648-fo
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §10 test vectors" }
+params: { direction: encode, variant: standard, padding: true }
+input: { text: "fo" }
+expected: { text: "Zm8=", byteLength: 2, isUtf8: true }

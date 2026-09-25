@@ -1,0 +1,12 @@
+id: 010-empty-containers
+operation: data.json.format@1
+source: { type: regression }
+params: { action: format, indent: "4" }
+input:
+  text: '{ "a": [ ], "b": { } }'
+expected:
+  text: |-
+    {
+        "a": [],
+        "b": {}
+    }

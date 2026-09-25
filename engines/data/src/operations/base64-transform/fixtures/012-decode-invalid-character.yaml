@@ -1,0 +1,6 @@
+id: 012-decode-invalid-character
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 4648 §3.3 — characters outside the alphabet are invalid" }
+params: { direction: decode, variant: auto }
+input: { text: "Zm9v!" }
+expectedError: { code: DATA_BASE64_INVALID_CHARACTER, path: text, details: { offset: 4 } }
