@@ -4,8 +4,9 @@ id: json-formatter
 slug: json-formatter
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-25, type: changed, summary: "Syntax errors explained in plain words, for example \"Expected a property name in double quotes\"." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with format, minify, validate and sort keys." }
 name: JSON Formatter & Validator
 shortName: JSON Formatter

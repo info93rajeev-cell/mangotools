@@ -2,7 +2,7 @@
 brand:
   name: MangoTools
   parent: MangoPie
-  tagline: Professional tools. Zero uploads.
+  tagline: Professional tools for work that should not depend on AI.
 environments:
   development: { url: "http://localhost:4321", indexable: false }
   production: { url: "https://tools.mangopie.in", indexable: true }
@@ -11,4 +11,3 @@ navigation:
 home:
   popular:
     [gst-calculator, json-formatter, profit-margin-calculator, base64-encode-decode, url-encode-decode]
-  featuredProfessional: [gst-calculator, profit-margin-calculator]

@@ -15,7 +15,7 @@ export const siteConfigSchema = z.strictObject({
       message: 'environments must define development and production.',
     }),
   navigation: z.strictObject({ minToolsPerCategory: z.int().min(1) }),
-  home: z.strictObject({ popular: z.array(kebabId), featuredProfessional: z.array(kebabId) }),
+  home: z.strictObject({ popular: z.array(kebabId) }),
 });
 
 export type SiteConfig = z.infer<typeof siteConfigSchema>;

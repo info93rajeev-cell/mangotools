@@ -50,7 +50,6 @@ export function MobileSearch() {
           data-mobile-search-open=""
         />
       </span>
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop click only; Escape and the close button cover keyboards. */}
       <dialog
         ref={dialog}
         class={styles.dialog}
