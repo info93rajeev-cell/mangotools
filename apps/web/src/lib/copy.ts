@@ -1,29 +1,11 @@
 /** Page text for the site chrome pages (home, all tools, 404). Tool text lives in tools/ and presets/. */
 export const COPY = {
   home: {
-    heading: 'Professional tools. Zero uploads.',
-    lede: 'Free calculators, converters and document tools for engineers, businesses and developers. Everything runs on your device — no sign-up, no ads.',
-    popular: 'Popular:',
-    popularLabel: 'Popular tools',
+    heading: 'Professional tools for work that should not depend on AI.',
+    lede: 'Search calculators, converters and business tools with clear, checkable results. No ads, no unnecessary uploads, no AI in calculations.',
     categories: 'Browse by category',
-    professional: 'Built for professional work',
-    professionalLede: 'Every result shows its working, so you can check it.',
-    device: 'Processed on your device',
-    deviceLede:
-      'Your files and numbers are processed in your browser. Nothing is uploaded to our servers.',
-    promises: [
-      {
-        icon: 'shield-check',
-        title: 'No uploads',
-        text: 'Files and numbers stay in your browser.',
-      },
-      { icon: 'lock', title: 'No sign-up', text: 'Every tool works straight away, for free.' },
-      {
-        icon: 'circle-check',
-        title: 'No ads or trackers',
-        text: 'Nothing on these pages follows you around the web.',
-      },
-    ],
+    trust:
+      'No ads · No unnecessary uploads · Deterministic results · Built for professional workflows',
   },
   tools: {
     heading: 'All tools',

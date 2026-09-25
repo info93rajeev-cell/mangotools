@@ -1,18 +1,13 @@
 ---
-import { CardGrid, CategoryCard, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
-import { RecentTools } from '@mangotools/ui/discovery/RecentTools.tsx';
+import { CardGrid, CategoryCard } from '@mangotools/ui/discovery/cards.tsx';
 import { SearchBox } from '@mangotools/ui/discovery/SearchBox.tsx';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
-import { Icon } from '@mangotools/ui/primitives/Icon.tsx';
 import logoUrl from '../../../../assets/brand/logo.svg?url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { organization, webSite } from '../lib/structured-data.ts';
 import { COPY } from '../lib/copy.ts';
-import { HOME, listedTools, registry, toolLink, toolLinks, visibleCategories } from '../lib/site.ts';
+import { HOME, visibleCategories } from '../lib/site.ts';
 
-const popular = toolLinks(registry.site.home.popular);
-const featured = toolLinks(registry.site.home.featuredProfessional);
-const allLinks = listedTools.map(toolLink);
 const copy = COPY.home;
 ---
 
@@ -26,80 +21,28 @@ const copy = COPY.home;
 >
   <PageContainer>
     <div class="sections">
-    <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title">{copy.heading}</h1>
-      <p class="lede">{copy.lede}</p>
-      <div class="hero-search">
-        <SearchBox client:load idPrefix="home-search" />
-      </div>
-      {
-        popular.length > 0 ? (
-          <nav class="popular" aria-label={copy.popularLabel}>
-            <span class="popular-label">{copy.popular}</span>
-            <ul>
-              {popular.map((tool) => (
-                <li>
-                  <a href={tool.url}>{tool.name}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ) : null
-      }
-    </section>
+      <section class="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title">{copy.heading}</h1>
+        <p class="lede">{copy.lede}</p>
+        <div class="hero-search">
+          <SearchBox client:load idPrefix="home-search" />
+        </div>
+      </section>
 
-    <RecentTools client:idle tools={allLinks} />
-
-    <section class="block" aria-labelledby="categories-title">
-      <h2 id="categories-title">{copy.categories}</h2>
-      <CardGrid>
-        {
-          visibleCategories.map((c) => (
-            <li>
-              <CategoryCard name={c.name} summary={c.summary} url={c.url} icon={c.icon} count={c.toolIds.length} />
-            </li>
-          ))
-        }
-      </CardGrid>
-    </section>
-
-    {
-      featured.length > 0 ? (
-        <section class="block" aria-labelledby="pro-title">
-          <div class="block-head">
-            <h2 id="pro-title">{copy.professional}</h2>
-            <p>{copy.professionalLede}</p>
-          </div>
-          <CardGrid>
-            {featured.map((tool) => (
+      <section class="block" aria-labelledby="categories-title">
+        <h2 id="categories-title">{copy.categories}</h2>
+        <CardGrid>
+          {
+            visibleCategories.map((c) => (
               <li>
-                <ToolCard tool={tool} />
+                <CategoryCard name={c.name} summary={c.summary} url={c.url} icon={c.icon} count={c.toolIds.length} />
               </li>
-            ))}
-          </CardGrid>
-        </section>
-      ) : null
-    }
+            ))
+          }
+        </CardGrid>
+      </section>
 
-    <section class="block device" aria-labelledby="device-title">
-      <div class="block-head">
-        <h2 id="device-title">{copy.device}</h2>
-        <p>{copy.deviceLede}</p>
-      </div>
-      <ul class="promises">
-        {
-          copy.promises.map((p) => (
-            <li>
-              <Icon name={p.icon} />
-              <div>
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+      <p class="trust" data-trust-line>{copy.trust}</p>
     </div>
   </PageContainer>
 </BaseLayout>
@@ -107,20 +50,21 @@ const copy = COPY.home;
 <style>
   .sections {
     display: grid;
-    gap: var(--space-16);
+    gap: var(--space-12);
+    padding-bottom: var(--space-8);
   }
   .hero {
     display: grid;
     justify-items: center;
     gap: var(--space-5);
-    padding-block: var(--space-8) var(--space-4);
+    padding-block: var(--space-12) var(--space-4);
     text-align: center;
   }
   .hero h1 {
     font-size: clamp(2rem, 1.4rem + 3vw, var(--text-display));
     line-height: 1.1;
     letter-spacing: -0.03em;
-    max-width: 18ch;
+    max-width: 20ch;
   }
   .lede {
     max-width: 60ch;
@@ -128,88 +72,23 @@ const copy = COPY.home;
     font-size: 1.0625rem;
   }
   .hero-search {
-    width: min(100%, 640px);
+    width: min(100%, 680px);
+    margin-top: var(--space-2);
     text-align: left;
-  }
-  .popular {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-ui);
-  }
-  .popular-label {
-    color: var(--color-text-muted);
-  }
-  .popular ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .popular a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-3);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-pill);
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  .popular a:hover {
-    border-color: var(--color-border-input);
-    background: var(--color-surface-subtle);
   }
   .block {
     display: grid;
     gap: var(--space-5);
   }
-  .block-head {
-    display: grid;
-    gap: var(--space-1);
-  }
-  .block-head p {
-    color: var(--color-text-muted);
-  }
-  .device {
-    padding: var(--space-8);
-    border-radius: var(--radius-xl);
-    background: var(--color-surface-subtle);
-    border: 1px solid var(--color-border);
-  }
-  .promises {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-    gap: var(--space-6);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .promises li {
-    display: flex;
-    gap: var(--space-3);
-    align-items: flex-start;
-  }
-  .promises li > :global(.icon) {
-    color: var(--color-success);
-    margin-top: 2px;
-  }
-  .promises h3 {
-    font-size: var(--text-body);
-  }
-  .promises p {
+  .trust {
     color: var(--color-text-muted);
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
+    text-align: center;
   }
   @media (max-width: 640px) {
-    .device {
-      padding: var(--space-5);
+    .hero {
+      padding-block: var(--space-8) var(--space-2);
     }
   }
 </style>

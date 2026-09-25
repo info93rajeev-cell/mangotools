@@ -15,12 +15,14 @@ test('theme choice persists after reload', async ({ page }) => {
   await expect(page.locator('[data-theme-toggle]')).toHaveAttribute('data-theme-value', 'dark');
 });
 
-test('recent tools appear on home after visiting a tool', async ({ page }) => {
-  await gotoReady(page, '/');
+test('recent tools appear on /tools, not on home, after visiting tools', async ({ page }) => {
+  await gotoReady(page, '/tools');
   await expect(page.locator('[data-recent-tools]')).toHaveCount(0);
   await openTool(page, 'url-encode-decode');
   await openTool(page, 'gst-calculator');
   await gotoReady(page, '/');
+  await expect(page.locator('[data-recent-tools]')).toHaveCount(0);
+  await gotoReady(page, '/tools');
   const recent = page.locator('[data-recent-tools]');
   await expect(recent).toBeVisible();
   await expect(recent.locator('[data-tool-card]')).toHaveCount(2);

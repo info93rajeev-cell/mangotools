@@ -52,6 +52,22 @@
   color: var(--color-text-subtle);
 }
 
+/* Keeps the full placeholder visible on phones; typed text stays at 17px (no iOS focus zoom). */
+@media (max-width: 480px) {
+  .large .box {
+    padding: 0 var(--space-3);
+  }
+  .large .input::placeholder {
+    font-size: var(--text-ui);
+  }
+}
+
+@media (max-width: 400px) {
+  .large .input::placeholder {
+    font-size: var(--text-caption);
+  }
+}
+
 .input::-webkit-search-cancel-button {
   display: none;
 }
