@@ -1,0 +1,6 @@
+id: 012-over-capacity-volume-and-grid
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "Same carton and container as fixture 001, but quantity 1300: totalCbm = 0.024 × 1300 = 31.2 m³, more than the 90%-usable 29.876 m³ (volume warning), and 1300 is also more than the 1078-carton grid estimate (grid warning), leaving 222 cartons unaccounted for by the grid" }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "1300", containerType: 20gp, usablePercent: "90" }
+expected: { cartonCbm: "0.024", totalCbm: "31.200", containerCbm: "33.196", usableCbm: "29.876", volumeFillPercent: "104.430", cartonsByVolume: "1244", remainingCbm: "-1.324", bestOrientation: lwh, cartonsAlongLength: "14", cartonsAlongWidth: "7", cartonsAlongHeight: "11", maxCartonsByGrid: "1078", cartonsLeftAfterGrid: "222", leftoverLength: "29.800", leftoverWidth: "25.200", leftoverHeight: "19.300", quantity: "1300" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_CONTAINER_OVER_CAPACITY_VOLUME, LOGISTICS_CONTAINER_OVER_CAPACITY_GRID]

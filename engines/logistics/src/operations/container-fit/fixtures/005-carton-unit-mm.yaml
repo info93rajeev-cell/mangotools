@@ -1,0 +1,6 @@
+id: 005-carton-unit-mm
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "Same physical carton as fixture 001 (40×30×20 cm), given in millimetres: 400×300×200 mm × 0.1 cm/mm = 40×30×20 cm, so every output matches fixture 001 exactly" }
+input: { unit: mm, length: "400", width: "300", height: "200", quantity: "50", containerType: 20gp, usablePercent: "90" }
+expected: { cartonCbm: "0.024", totalCbm: "1.200", containerCbm: "33.196", usableCbm: "29.876", volumeFillPercent: "4.017", cartonsByVolume: "1244", remainingCbm: "28.676", bestOrientation: lwh, cartonsAlongLength: "14", cartonsAlongWidth: "7", cartonsAlongHeight: "11", maxCartonsByGrid: "1078", cartonsLeftAfterGrid: "0", leftoverLength: "29.800", leftoverWidth: "25.200", leftoverHeight: "19.300", quantity: "50" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

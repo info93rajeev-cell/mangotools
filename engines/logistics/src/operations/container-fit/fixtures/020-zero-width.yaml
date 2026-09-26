@@ -1,0 +1,5 @@
+id: 020-zero-width
+operation: logistics.container.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "0", height: "20", quantity: "50", containerType: 20gp, usablePercent: "90" }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: width }

@@ -1,0 +1,6 @@
+id: 001-20ft-standard-basic
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "40×30×20 cm = 0.024 m³ × 50 = 1.2 m³; 20 ft standard container commonly published internal dimensions 589.8×235.2×239.3 cm ≈ 33.196 m³ (approximate, not yet verified against a specific carrier/ISO source — TASK-003C decision 13); usable 90% = 29.876 m³; grid: floor(589.8/40)=14, floor(235.2/30)=7, floor(239.3/20)=11 = 1078 cartons (lwh orientation)" }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "50", containerType: 20gp, usablePercent: "90" }
+expected: { cartonCbm: "0.024", totalCbm: "1.200", containerCbm: "33.196", usableCbm: "29.876", volumeFillPercent: "4.017", cartonsByVolume: "1244", remainingCbm: "28.676", bestOrientation: lwh, cartonsAlongLength: "14", cartonsAlongWidth: "7", cartonsAlongHeight: "11", maxCartonsByGrid: "1078", cartonsLeftAfterGrid: "0", leftoverLength: "29.800", leftoverWidth: "25.200", leftoverHeight: "19.300", quantity: "50" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

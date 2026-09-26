@@ -1,0 +1,5 @@
+id: 013-carton-exceeds-container
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "A 700×700×700 cm carton is larger than every axis of a 20 ft standard container (589.8×235.2×239.3 cm) in every orientation, so the simple grid gives 0 cartons in all 6 orientations tried" }
+input: { unit: cm, length: "700", width: "700", height: "700", quantity: "1", containerType: 20gp, usablePercent: "90" }
+expectedError: { code: LOGISTICS_CARTON_EXCEEDS_CONTAINER }

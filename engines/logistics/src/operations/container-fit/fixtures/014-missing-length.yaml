@@ -1,0 +1,5 @@
+id: 014-missing-length
+operation: logistics.container.fit@1
+source: { type: regression }
+input: { unit: cm, width: "30", height: "20", quantity: "50", containerType: 20gp, usablePercent: "90" }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: length }
