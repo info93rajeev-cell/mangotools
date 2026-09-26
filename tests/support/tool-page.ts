@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { expect, type Page } from '@playwright/test';
 
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
@@ -17,8 +18,26 @@ export const SAMPLES = {
   },
 } as const;
 
-export type ToolId = keyof typeof SAMPLES;
-export const TOOL_IDS = Object.keys(SAMPLES) as ToolId[];
+/**
+ * Tools with no canned "Try sample" (archetype D, file-based): real files are uploaded through the
+ * underlying file input instead, and `result` is the expected primary-result text afterward. This
+ * pattern is generic for any future file-based tool, not specific to PDF Merge.
+ */
+export const FILE_TOOLS = {
+  'pdf-merge': {
+    archetype: 'D',
+    files: [
+      join(process.cwd(), 'tools/pdf-merge/fixtures/files/one-page.pdf'),
+      join(process.cwd(), 'tools/pdf-merge/fixtures/files/two-page.pdf'),
+    ],
+    result: '2',
+  },
+} as const;
+
+export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;
+export const TOOL_IDS = [...Object.keys(SAMPLES), ...Object.keys(FILE_TOOLS)] as ToolId[];
+
+export const hasSample = (id: string): id is keyof typeof SAMPLES => id in SAMPLES;
 
 export const island = (page: Page, id: string) => page.locator(`[data-tool-island="${id}"]`);
 export const primaryResult = (page: Page) => page.locator('[data-primary-result] output');
@@ -39,6 +58,24 @@ export async function openTool(page: Page, id: string): Promise<void> {
 
 export async function waitForResult(page: Page, id: string): Promise<void> {
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
+}
+
+/**
+ * Produces a result the same way every shared suite (network, axe, screenshots, "Try sample")
+ * checks it: clicking "Try sample" for a tool that has one, or uploading real files through the
+ * underlying file input for a file-based tool (archetype D) that has none.
+ */
+export async function produceResult(page: Page, id: string): Promise<void> {
+  if (id in FILE_TOOLS) {
+    const files = FILE_TOOLS[id as keyof typeof FILE_TOOLS].files;
+    await island(page, id)
+      .locator('input[type="file"]')
+      .setInputFiles([...files]);
+    await page.getByRole('button', { name: 'Download merged PDF' }).click();
+  } else {
+    await page.getByRole('button', { name: 'Try sample' }).click();
+  }
+  await waitForResult(page, id);
 }
 
 /** Replaces the async clipboard with an in-page recorder (works in every browser engine). */

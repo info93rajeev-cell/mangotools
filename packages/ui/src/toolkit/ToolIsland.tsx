@@ -1,8 +1,11 @@
+import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import { createPreferences, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { CalculatorLayout } from '../archetypes/CalculatorLayout.tsx';
+import { FileToolLayout } from '../archetypes/FileToolLayout.tsx';
 import { TransformLayout } from '../archetypes/TransformLayout.tsx';
+import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { partsToText, renderTemplate } from '../format/template.ts';
 import { Button } from '../primitives/Button.tsx';
 import { Toast, useToast } from '../primitives/feedback.tsx';
@@ -17,7 +20,7 @@ import type { WorkingStep } from './WorkingSteps.tsx';
 
 export interface ToolIslandProps {
   toolId: string;
-  archetype: 'A' | 'B';
+  archetype: 'A' | 'B' | 'D';
   preset: ResolvedPreset;
   sampleId: string | null;
   /** Offer Print (calculators with capabilities.print). */
@@ -47,6 +50,80 @@ function resultText(
   return lines.join('\n');
 }
 
+interface TopBarProps {
+  sampleId: string | null;
+  howToId: string | null;
+  onTrySample: () => void;
+}
+
+function TopBar({ sampleId, howToId, onTrySample }: TopBarProps) {
+  return (
+    <div class={`${styles.topRow} no-print`}>
+      <div class={styles.topActions}>
+        {sampleId ? (
+          <Button variant="primary" icon="sparkles" onClick={onTrySample} data-try-sample="">
+            {t('action.trySample')}
+          </Button>
+        ) : null}
+      </div>
+      {howToId ? (
+        <a class={styles.howTo} href={`#${howToId}`}>
+          <Icon name="info" />
+          {t('action.howToUse')}
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
+interface ArchetypeProps {
+  archetype: ToolIslandProps['archetype'];
+  idPrefix: string;
+  toolId: string;
+  preset: ResolvedPreset;
+  snapshot: ToolSnapshot;
+  store: ToolStore;
+  notify: (message: string) => void;
+  onFilePhase: (phase: FilePhase) => void;
+}
+
+/** The one layout matching this tool's archetype. */
+function ArchetypeLayout({
+  archetype,
+  idPrefix,
+  toolId,
+  preset,
+  snapshot,
+  store,
+  notify,
+  onFilePhase,
+}: ArchetypeProps) {
+  if (archetype === 'A') {
+    return (
+      <TransformLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        snapshot={snapshot}
+        store={store}
+        notify={notify}
+      />
+    );
+  }
+  if (archetype === 'D') {
+    return (
+      <FileToolLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  return <CalculatorLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />;
+}
+
 /** The interactive part of a tool page: sample, archetype layout, actions and notifications. */
 export function ToolIsland({
   toolId,
@@ -60,6 +137,8 @@ export function ToolIsland({
   const [message, notify] = useToast();
   const ran = useRef(false);
   const idPrefix = `tool-${toolId}`;
+  const [filePhase, setFilePhase] = useState<FilePhase>('idle');
+  const displayPhase = archetype === 'D' ? filePhase : snapshot.phase;
 
   useEffect(() => {
     createPreferences().addRecentTool(toolId);
@@ -90,45 +169,26 @@ export function ToolIsland({
   const hasResult = snapshot.result !== null && snapshot.phase !== 'error';
 
   return (
-    <div class={styles.island} data-tool-island={toolId} data-phase={snapshot.phase}>
-      <div class={`${styles.topRow} no-print`}>
-        <div class={styles.topActions}>
-          {sampleId ? (
-            <Button
-              variant="primary"
-              icon="sparkles"
-              onClick={() => void trySample()}
-              data-try-sample=""
-            >
-              {t('action.trySample')}
-            </Button>
-          ) : null}
-        </div>
-        {howToId ? (
-          <a class={styles.howTo} href={`#${howToId}`}>
-            <Icon name="info" />
-            {t('action.howToUse')}
-          </a>
-        ) : null}
-      </div>
-      {archetype === 'A' ? (
-        <TransformLayout
-          idPrefix={idPrefix}
-          toolId={toolId}
-          preset={preset}
-          snapshot={snapshot}
-          store={store}
-          notify={notify}
-        />
-      ) : (
-        <CalculatorLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />
-      )}
-      <ActionBar
-        hasResult={hasResult}
-        onCopy={archetype === 'B' ? () => void copySummary() : undefined}
-        onPrint={archetype === 'B' && print ? printResult : undefined}
-        onReset={() => store.reset()}
+    <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
+      <TopBar sampleId={sampleId} howToId={howToId} onTrySample={() => void trySample()} />
+      <ArchetypeLayout
+        archetype={archetype}
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        snapshot={snapshot}
+        store={store}
+        notify={notify}
+        onFilePhase={setFilePhase}
       />
+      {archetype === 'D' ? null : (
+        <ActionBar
+          hasResult={hasResult}
+          onCopy={archetype === 'B' ? () => void copySummary() : undefined}
+          onPrint={archetype === 'B' && print ? printResult : undefined}
+          onReset={() => store.reset()}
+        />
+      )}
       <Toast message={message} />
     </div>
   );

@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import { sanitizeOutputFileName } from './file-name.ts';
 import { pdfMergeInput, pdfMergeOutput, pdfMergeParams } from './schema.ts';
 import { validateFiles } from './validate.ts';
+import { STANDING_WARNINGS } from './warnings.ts';
 
 export const pdfMerge = defineOperation({
   id: 'pdf.merge',
@@ -32,6 +33,13 @@ export const pdfMerge = defineOperation({
     if (!validation.ok) return validation;
 
     const merged = await PDFDocument.create();
+    // pdf-lib otherwise stamps CreationDate/ModDate with the current wall-clock time on every
+    // merge (not gated by `updateMetadata: false`, confirmed empirically), making byte-identical
+    // output impossible for identical input. A fixed sentinel date keeps the merge deterministic;
+    // it carries no meaning and is not `ctx.clock()`, since a merge has no real creation moment.
+    const NO_DATE = new Date(0);
+    merged.setCreationDate(NO_DATE);
+    merged.setModificationDate(NO_DATE);
     let totalPageCount = 0;
     for (const [index, file] of files.entries()) {
       let source: PDFDocument;
@@ -65,11 +73,14 @@ export const pdfMerge = defineOperation({
       return err('PDF_MERGE_FAILED');
     }
 
-    return ok({
-      bytes,
-      fileName: sanitizeOutputFileName(input.outputFileName),
-      fileCount: files.length,
-      totalPageCount,
-    });
+    return ok(
+      {
+        bytes,
+        fileName: sanitizeOutputFileName(input.outputFileName),
+        fileCount: files.length,
+        totalPageCount,
+      },
+      STANDING_WARNINGS,
+    );
   },
 });

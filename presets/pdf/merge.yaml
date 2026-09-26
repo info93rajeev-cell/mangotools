@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: pdf/merge
+version: 0.1.0
+operation: pdf.merge@1
+ui:
+  archetypes: [D]

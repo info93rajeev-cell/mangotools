@@ -1,4 +1,4 @@
-import { canonicalHash } from '@mangotools/core';
+import { canonicalHash, fromJsonSafe } from '@mangotools/core';
 import { getWorkerHost } from '@mangotools/runtime';
 import { useEffect, useState } from 'preact/hooks';
 
@@ -20,7 +20,7 @@ export function DeterminismHarness({ cases }: { cases: DeterminismCase[] }) {
       const host = getWorkerHost();
       const out: Record<string, string> = {};
       for (const c of cases) {
-        const outcome = await host.run(c.operation, c.input, c.params);
+        const outcome = await host.run(c.operation, fromJsonSafe(c.input), fromJsonSafe(c.params));
         out[c.id] = await canonicalHash(outcome);
       }
       setResults(out);

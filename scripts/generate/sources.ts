@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { parse } from 'yaml';
 import { listDirs, listFiles, walkFiles } from '../lib/files.ts';
-import { engineFixtureFiles } from '../lib/fixtures.ts';
+import { engineFixtureFiles, resolveFixtureFiles } from '../lib/fixtures.ts';
 import { ROOT } from '../lib/paths.ts';
 import { type Issue, issue } from './issues.ts';
 
@@ -50,6 +50,17 @@ function readYamlFile(root: string, path: string, issues: Issue[]): SourceFile {
   }
 }
 
+/**
+ * Reads a fixture YAML file and resolves any `{ path: '...' }` binary-file references in it to
+ * real bytes, relative to the fixture's own `files/` folder. A no-op for fixtures with no such
+ * reference (every fixture that isn't binary/file-based).
+ */
+function readFixtureFile(root: string, path: string, issues: Issue[]): SourceFile {
+  const source = readYamlFile(root, path, issues);
+  if (source.data === undefined) return source;
+  return { file: source.file, data: resolveFixtureFiles(dirname(path), source.data) };
+}
+
 function loadTool(root: string, folder: string, issues: Issue[]): ToolSource {
   const dir = join(root, 'tools', folder);
   const manifestPath = join(dir, 'manifest.yaml');
@@ -60,7 +71,9 @@ function loadTool(root: string, folder: string, issues: Issue[]): ToolSource {
     content: existsSync(contentPath)
       ? { file: toRel(root, contentPath), text: readFileSync(contentPath, 'utf8') }
       : null,
-    fixtures: listFiles(join(dir, 'fixtures'), '.yaml').map((f) => readYamlFile(root, f, issues)),
+    fixtures: listFiles(join(dir, 'fixtures'), '.yaml').map((f) =>
+      readFixtureFile(root, f, issues),
+    ),
   };
 }
 
@@ -79,7 +92,7 @@ export function loadSources(root: string = ROOT): { sources: Sources; issues: Is
     },
     presets: walkFiles(join(root, 'presets'), '.yaml').map((f) => readYamlFile(root, f, issues)),
     tools: listDirs(join(root, 'tools')).map((folder) => loadTool(root, folder, issues)),
-    engineFixtures: engineFixtureFiles().map((f) => readYamlFile(ROOT, f, issues)),
+    engineFixtures: engineFixtureFiles().map((f) => readFixtureFile(ROOT, f, issues)),
   };
   return { sources, issues };
 }

@@ -89,13 +89,23 @@ categories:
         a: Yes. Text inputs of up to 50 MB are processed in a background worker so the page stays responsive.
   - id: pdf
     slug: pdf
-    name: Documents & PDF
+    name: PDF & Documents
     icon: file-text
     order: 70
-    summary: Merge, split, number and watermark PDFs without uploading them.
+    summary: Merge multiple PDF files into one, entirely in your browser.
     seo:
-      title: PDF Tools – Merge, Split, Number & Watermark
-      description: Free PDF tools that run in your browser — merge, split, add page numbers and watermarks. Your files are never uploaded anywhere.
+      title: PDF Merge – Combine PDF Files Online
+      description: Free PDF Merge tool to combine multiple PDF files into one, in the order you choose. Runs entirely in your browser — no upload, no sign-up, no ads.
+    about:
+      - PDF Merge combines multiple PDF files into a single PDF, in the order you choose, entirely in your browser. Nothing is uploaded to a server.
+      - This is a simple, browser-first tool. Bookmarks, forms, annotations and other advanced PDF features from the original files may not be preserved, and very large, encrypted, password-protected or corrupted files may fail to process.
+    faq:
+      - q: Is PDF Merge free?
+        a: Yes. PDF Merge is free and unlimited, with no sign-up and no ads.
+      - q: Are my files uploaded anywhere?
+        a: No. PDF Merge processes your files in this browser. Nothing is uploaded to a server.
+      - q: Will more PDF tools be added?
+        a: This category currently has one tool, PDF Merge. Further PDF tools may be added later.
   - id: media
     slug: media
     name: Media & Images

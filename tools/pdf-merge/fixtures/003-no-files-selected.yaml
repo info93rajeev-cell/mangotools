@@ -1,0 +1,9 @@
+id: 003-no-files-selected
+preset: pdf/merge
+source:
+  type: synthetic
+  citation: "An empty file queue must be a specific, typed error through the tool preset too"
+input:
+  files: []
+expectedError:
+  code: PDF_NO_FILES_SELECTED

@@ -19,7 +19,16 @@ export async function readClipboard(): Promise<string | null> {
 
 /** Saves text as a file using a temporary object URL (no network). */
 export function downloadText(text: string, fileName: string, mime: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type: `${mime};charset=utf-8` }));
+  downloadBlob(new Blob([text], { type: `${mime};charset=utf-8` }), fileName);
+}
+
+/** Saves binary bytes as a file using a temporary object URL (no network, no upload). */
+export function downloadBytes(bytes: Uint8Array, fileName: string, mime: string): void {
+  downloadBlob(new Blob([bytes as BlobPart], { type: mime }), fileName);
+}
+
+function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = fileName;
@@ -35,4 +44,9 @@ export const MAX_FILE_BYTES = 50 * 1024 * 1024;
 export async function readTextFile(file: File): Promise<string | null> {
   if (file.size > MAX_FILE_BYTES) return null;
   return file.text();
+}
+
+/** Reads a local file's raw bytes (never uploaded). Size limits are the operation's own to enforce. */
+export async function readFileBytes(file: File): Promise<Uint8Array> {
+  return new Uint8Array(await file.arrayBuffer());
 }

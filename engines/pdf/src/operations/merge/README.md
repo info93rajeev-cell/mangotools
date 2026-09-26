@@ -39,6 +39,19 @@ Every error identifies which file caused it (`path: files.<index>`, `details.nam
 are not about any one file (`PDF_NO_FILES_SELECTED`, `PDF_TOO_MANY_FILES`, `PDF_TOTAL_SIZE_EXCEEDED`,
 `PDF_MERGE_FAILED`).
 
+## Warnings
+
+Every successful result carries four standing notices, unconditionally (`warnings.ts`):
+`PDF_MERGE_VERIFY_OUTPUT`, `PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED`,
+`PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL`, `PDF_MERGE_AUTHORIZED_USE_ONLY`.
+
+## Determinism: a fixed creation/modification date
+
+`pdf-lib` stamps a newly created document's `CreationDate`/`ModDate` with the current wall-clock time by
+default — not suppressed by `{ updateMetadata: false }`, confirmed empirically. Both are set explicitly
+to the Unix epoch right after `PDFDocument.create()` so identical input always produces identical output
+bytes; see the engine README for how this was found.
+
 ## Output file name normalization
 
 `sanitizeOutputFileName` (in `file-name.ts`) never rejects a custom name — it only cleans one up or falls

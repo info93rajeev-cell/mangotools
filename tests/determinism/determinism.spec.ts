@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { canonicalHash, createTestContext, executeOperation } from '@mangotools/core';
+import { canonicalHash, createTestContext, executeOperation, fromJsonSafe } from '@mangotools/core';
 import { expect, test } from '@playwright/test';
 import { findOperation, loadEngines } from '../../scripts/lib/engines.ts';
 
@@ -23,7 +23,12 @@ async function nodeHashes(): Promise<Record<string, string>> {
     const op = findOperation(engines, c.operation);
     if (!op) throw new Error(`Unknown operation ${c.operation}`);
     out[c.id] = await canonicalHash(
-      await executeOperation(op, c.input, c.params, createTestContext()),
+      await executeOperation(
+        op,
+        fromJsonSafe(c.input),
+        fromJsonSafe(c.params),
+        createTestContext(),
+      ),
     );
   }
   return out;
