@@ -183,12 +183,44 @@ describe('pdf.merge', () => {
   it('gives the same bytes for the same input, run twice', async () => {
     const input = { files: [{ name: 'one-page.pdf', bytes: onePage }] };
     const first = await run(input);
+    await new Promise((resolve) => setTimeout(resolve, 1100));
     const second = await run(input);
     if (!first.ok || !second.ok) throw new Error('expected success');
     expect(Buffer.compare(first.value.bytes, second.value.bytes)).toBe(0);
   });
 
+  it('sets a fixed creation and modification date, not the current wall-clock time', async () => {
+    const result = await run({ files: [{ name: 'one-page.pdf', bytes: onePage }] });
+    if (!result.ok) throw new Error('expected success');
+    // `updateMetadata: false` here avoids pdf-lib re-stamping ModDate to "now" as a side effect of
+    // this very read, which would otherwise mask whether the stored bytes are actually fixed.
+    const merged = await PDFDocument.load(result.value.bytes, { updateMetadata: false });
+    expect(merged.getCreationDate()?.getTime()).toBe(0);
+    expect(merged.getModificationDate()?.getTime()).toBe(0);
+  });
+
+  it('always carries the four standing warnings on a successful merge', async () => {
+    const result = await run({ files: [{ name: 'one-page.pdf', bytes: onePage }] });
+    if (!result.ok) throw new Error('expected success');
+    expect(result.warnings.map((w) => w.code).sort()).toEqual([
+      'PDF_MERGE_AUTHORIZED_USE_ONLY',
+      'PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED',
+      'PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL',
+      'PDF_MERGE_VERIFY_OUTPUT',
+    ]);
+  });
+
   it('has an English message for every error code it can return', () => {
     for (const code of pdfMerge.errors) expect(messages[code], code).toBeTruthy();
+  });
+
+  it('has an English message for every warning code it can raise', () => {
+    const warningCodes = [
+      'PDF_MERGE_VERIFY_OUTPUT',
+      'PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED',
+      'PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL',
+      'PDF_MERGE_AUTHORIZED_USE_ONLY',
+    ];
+    for (const code of warningCodes) expect(messages[code], code).toBeTruthy();
   });
 });

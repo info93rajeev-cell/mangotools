@@ -61,6 +61,15 @@ describe('search relevance over the generated index', () => {
     ['how many cartons on a pallet', 'pallet-loading-calculator'],
     ['euro pallet calculator', 'pallet-loading-calculator'],
     ['pallet planner', 'pallet-loading-calculator'],
+    ['PDF Merge', 'pdf-merge'],
+    ['pdf merge', 'pdf-merge'],
+    ['merge pdf', 'pdf-merge'],
+    ['combine pdf', 'pdf-merge'],
+    ['pdf joiner', 'pdf-merge'],
+    ['combine pdf files', 'pdf-merge'],
+    ['merge pdf online', 'pdf-merge'],
+    ['browser pdf merger', 'pdf-merge'],
+    ['no upload pdf merge', 'pdf-merge'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

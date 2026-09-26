@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds ten tools, ten presets and the three visible categories', () => {
+  it('builds eleven tools, eleven presets and the four visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -49,15 +49,17 @@ describe('registry pipeline — valid repository', () => {
       'json-formatter',
       'markup-calculator',
       'pallet-loading-calculator',
+      'pdf-merge',
       'profit-margin-calculator',
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(10);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(11);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'logistics',
       'business',
       'developer',
+      'pdf',
     ]);
   });
   it('injects the worked example from the fixture', () => {
@@ -72,7 +74,7 @@ describe('registry pipeline — valid repository', () => {
     );
   });
   it('lists only the engines that presets use', () => {
-    expect(result.output?.engineIds).toEqual(['data', 'estimate', 'logistics']);
+    expect(result.output?.engineIds).toEqual(['data', 'estimate', 'logistics', 'pdf']);
   });
 });
 
@@ -338,8 +340,8 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // logistics has four tools; business and developer have three each.
-    expect(visibleAt(1)).toEqual(['logistics', 'business', 'developer']);
+    // logistics has four tools; business and developer have three each; pdf has one.
+    expect(visibleAt(1)).toEqual(['logistics', 'business', 'developer', 'pdf']);
     expect(visibleAt(2)).toEqual(['logistics', 'business', 'developer']);
     expect(visibleAt(3)).toEqual(['logistics', 'business', 'developer']);
     expect(visibleAt(4)).toEqual(['logistics']);

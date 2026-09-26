@@ -12,3 +12,4 @@ expected:
   fileName: My Report.pdf
   fileCount: 2
   totalPageCount: 3
+expectedWarnings: [PDF_MERGE_VERIFY_OUTPUT, PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED, PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL, PDF_MERGE_AUTHORIZED_USE_ONLY]

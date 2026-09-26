@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: pdf-merge
+slug: pdf-merge
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: merge multiple PDF files into one, entirely in the browser." }
+name: PDF Merge
+shortName: PDF Merge
+summary: Combine multiple PDF files into one, in the order you choose. Runs in your browser — no upload, no sign-up.
+archetype: D
+preset: pdf/merge
+taxonomy:
+  category: pdf
+  tags: [pdf, documents]
+  synonyms: [merge pdf, combine pdf, pdf joiner, combine pdf files, merge pdf online, browser pdf merger, no upload pdf merge]
+capabilities: { export: [pdf] }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: PDF Merge – Combine Multiple PDFs Free
+  description: Combine multiple PDF files into one, in the order you choose. Free PDF Merge tool that runs entirely in your browser — no upload, no sign-up.
+  primaryKeyword: pdf merge
+  secondaryKeywords: [merge pdf, combine pdf, pdf joiner]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/pdf pdf.merge@1 fixtures 001-007 (TASK-004B PR 1)", locator: "engines/pdf/src/operations/merge/fixtures" }
+  lastVerified: 2026-09-26

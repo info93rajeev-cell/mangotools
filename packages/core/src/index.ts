@@ -1,3 +1,4 @@
+export * from './binary-json.ts';
 export * from './contract.ts';
 export * from './execute.ts';
 export * from './hash.ts';

@@ -1,29 +1,32 @@
-import { expect, test } from '@playwright/test';
+import { join } from 'node:path';
+import { expect, type Page, test } from '@playwright/test';
 import {
   copiedTexts,
+  FILE_TOOLS,
+  gotoReady,
+  hasSample,
   inputArea,
   island,
   openTool,
   outputArea,
   primaryResult,
+  produceResult,
   SAMPLES,
   stubClipboard,
   TOOL_IDS,
-  waitForResult,
 } from '../support/tool-page.ts';
 
 test.describe('Try sample gives the fixture result', () => {
   for (const id of TOOL_IDS) {
     test(id, async ({ page }) => {
       await openTool(page, id);
-      await page.getByRole('button', { name: 'Try sample' }).click();
-      await waitForResult(page, id);
-      const { archetype, result } = SAMPLES[id];
-      if (archetype === 'B') await expect(primaryResult(page)).toHaveText(result);
-      else
+      await produceResult(page, id);
+      const { archetype, result } = hasSample(id) ? SAMPLES[id] : FILE_TOOLS[id];
+      if (archetype === 'A')
         await expect(outputArea(page, id)).toHaveValue(
           new RegExp(result.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
         );
+      else await expect(primaryResult(page)).toHaveText(result);
     });
   }
 });
@@ -328,11 +331,82 @@ test.describe('Swap and copy', () => {
   test('Copy on a calculator copies the summary with working', async ({ page }) => {
     await stubClipboard(page);
     await openTool(page, 'gst-calculator');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await waitForResult(page, 'gst-calculator');
+    await produceResult(page, 'gst-calculator');
     await page.getByRole('button', { name: 'Copy result' }).click();
     const [text] = await copiedTexts(page);
     expect(text).toContain('Amount including GST: ₹1,180.00');
     expect(text).toContain('CGST = ₹1,000.00 × 9% = ₹90.00');
+  });
+});
+
+test.describe('PDF Merge', () => {
+  const fileInput = (page: Page) => island(page, 'pdf-merge').locator('input[type="file"]');
+
+  test('uploads files, reorders and removes them, then clears the queue', async ({ page }) => {
+    await openTool(page, 'pdf-merge');
+    const [one, two] = FILE_TOOLS['pdf-merge'].files;
+    await fileInput(page).setInputFiles([one, two]);
+    const rows = island(page, 'pdf-merge').getByRole('listitem');
+    await expect(rows).toHaveCount(2);
+    await expect(rows.nth(0)).toContainText('one-page.pdf');
+    await expect(rows.nth(1)).toContainText('two-page.pdf');
+
+    await page.getByRole('button', { name: 'Move two-page.pdf up' }).click();
+    await expect(rows.nth(0)).toContainText('two-page.pdf');
+    await expect(rows.nth(1)).toContainText('one-page.pdf');
+
+    await page.getByRole('button', { name: 'Remove one-page.pdf' }).click();
+    await expect(rows).toHaveCount(1);
+
+    await page.getByRole('button', { name: 'Clear all' }).click();
+    await expect(rows).toHaveCount(0);
+  });
+
+  test('merges files and downloads the result with the default name', async ({ page }) => {
+    await openTool(page, 'pdf-merge');
+    const [one, two] = FILE_TOOLS['pdf-merge'].files;
+    await fileInput(page).setInputFiles([one, two]);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download merged PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('merged.pdf');
+    await expect(primaryResult(page)).toHaveText('2');
+    await expect(page.locator('[data-output="totalPageCount"] dd')).toHaveText('3');
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'pdf-merge');
+    const [one] = FILE_TOOLS['pdf-merge'].files;
+    await fileInput(page).setInputFiles([one]);
+    await page.getByLabel('Output file name').fill('  My Report<>.PDF  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download merged PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Report.pdf');
+  });
+
+  test('shows a specific error for a non-PDF file', async ({ page }) => {
+    await openTool(page, 'pdf-merge');
+    const notPdf = join(process.cwd(), 'tools/pdf-merge/manifest.yaml');
+    await fileInput(page).setInputFiles([notPdf]);
+    await page.getByRole('button', { name: 'Download merged PDF' }).click();
+    await expect(page.getByText('is not a PDF file.')).toBeVisible();
+  });
+});
+
+test.describe('PDF & Documents category', () => {
+  test('shows exactly one tool and no future PDF tools', async ({ page }) => {
+    await gotoReady(page, '/pdf');
+    await expect(page.getByRole('heading', { name: 'PDF & Documents', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'PDF Merge' })).toBeVisible();
+    for (const future of [
+      'JPG to PDF',
+      'PDF Split',
+      'PDF Compress',
+      'Metadata Remover',
+      'PDF Watermark',
+    ]) {
+      await expect(page.getByText(future, { exact: true })).toHaveCount(0);
+    }
   });
 });

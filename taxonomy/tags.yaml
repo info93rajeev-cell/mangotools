@@ -10,3 +10,5 @@ tags:
   - { id: profit, label: Profit }
   - { id: volume, label: Volume }
   - { id: shipping, label: Shipping }
+  - { id: pdf, label: PDF }
+  - { id: documents, label: Documents }

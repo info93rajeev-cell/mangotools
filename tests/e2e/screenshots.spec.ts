@@ -1,7 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from '@playwright/test';
-import { gotoReady, TOOL_IDS, waitForResult } from '../support/tool-page.ts';
+import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const OUT = join(process.cwd(), 'tests/artifacts/screenshots');
 mkdirSync(OUT, { recursive: true });
@@ -23,8 +23,7 @@ for (const size of SIZES) {
       await page.setViewportSize({ width: size.width, height: size.height });
       await gotoReady(page, p.path);
       if (p.tool) {
-        await page.getByRole('button', { name: 'Try sample' }).click();
-        await waitForResult(page, p.tool);
+        await produceResult(page, p.tool);
         await page.mouse.move(0, 0);
       }
       await page.screenshot({ path: join(OUT, `${p.name}-${size.name}.png`) });

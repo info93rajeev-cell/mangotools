@@ -1,15 +1,15 @@
-id: 003-invalid-output-filename-falls-back
-operation: pdf.merge@1
+id: 002-custom-output-filename
+preset: pdf/merge
 source:
   type: synthetic
-  citation: "Same two files as 001-two-file-merge; an output name made only of unsafe characters normalizes to nothing, so it falls back to the default merged.pdf"
+  citation: "Same two files as 001-two-file-merge; checks that a custom output name is normalized through the tool preset"
 input:
   files:
     - { name: one-page.pdf, bytes: { path: one-page.pdf } }
     - { name: two-page.pdf, bytes: { path: two-page.pdf } }
-  outputFileName: "////"
+  outputFileName: "  My Report<>.PDF  "
 expected:
-  fileName: merged.pdf
+  fileName: My Report.pdf
   fileCount: 2
   totalPageCount: 3
 expectedWarnings: [PDF_MERGE_VERIFY_OUTPUT, PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED, PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL, PDF_MERGE_AUTHORIZED_USE_ONLY]

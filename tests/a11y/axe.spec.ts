@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
-import { gotoReady, TOOL_IDS, waitForResult } from '../support/tool-page.ts';
+import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const PAGES = ['/', '/tools', '/business', '/developer', ...TOOL_IDS.map((id) => `/${id}`)];
 
@@ -25,8 +25,7 @@ for (const scheme of ['light', 'dark'] as const) {
     for (const id of TOOL_IDS) {
       test(`/${id} (result state)`, async ({ page }) => {
         await gotoReady(page, `/${id}`);
-        await page.getByRole('button', { name: 'Try sample' }).click();
-        await waitForResult(page, id);
+        await produceResult(page, id);
         expect(await seriousViolations(page)).toEqual([]);
       });
     }

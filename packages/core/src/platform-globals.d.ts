@@ -18,3 +18,5 @@ declare const crypto: {
     ): Promise<ArrayBuffer>;
   };
 };
+declare function btoa(data: string): string;
+declare function atob(data: string): string;

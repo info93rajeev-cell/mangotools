@@ -24,7 +24,7 @@ const crumbs = [
 ];
 const jsonLd = [webApplication(tool), breadcrumbList(crumbs), ...(tool.content.faq.length > 0 ? [faqPage(tool.content.faq)] : [])];
 const hasHowTo = tool.content.sections.some((s) => s.id === 'how-to-use');
-if (tool.archetype !== 'A' && tool.archetype !== 'B') {
+if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') {
   throw new Error(`${tool.id}: archetype ${tool.archetype} is not available in Phase 1.`);
 }
 ---

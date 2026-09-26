@@ -1,5 +1,5 @@
 import { expect, type Request, test } from '@playwright/test';
-import { openTool, TOOL_IDS, waitForResult } from '../support/tool-page.ts';
+import { openTool, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 /** Privacy: only same-origin GET requests for static files, with no request bodies. */
 test.describe('network', () => {
@@ -8,8 +8,7 @@ test.describe('network', () => {
       const requests: Request[] = [];
       page.on('request', (r) => requests.push(r));
       await openTool(page, id);
-      await page.getByRole('button', { name: 'Try sample' }).click();
-      await waitForResult(page, id);
+      await produceResult(page, id);
       await page.getByRole('combobox', { name: 'Search tools' }).fill('json');
       await expect(page.getByRole('option').first()).toBeVisible();
       const origin = new URL(baseURL ?? '').origin;

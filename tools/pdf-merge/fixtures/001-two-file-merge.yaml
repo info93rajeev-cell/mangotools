@@ -1,13 +1,12 @@
-id: 003-invalid-output-filename-falls-back
-operation: pdf.merge@1
+id: 001-two-file-merge
+preset: pdf/merge
 source:
   type: synthetic
-  citation: "Same two files as 001-two-file-merge; an output name made only of unsafe characters normalizes to nothing, so it falls back to the default merged.pdf"
+  citation: "one-page.pdf (1 page, 100x100) and two-page.pdf (2 pages, 150x150), the same tiny generated PDFs used by the engine's own fixtures (TASK-004B PR 1)"
 input:
   files:
     - { name: one-page.pdf, bytes: { path: one-page.pdf } }
     - { name: two-page.pdf, bytes: { path: two-page.pdf } }
-  outputFileName: "////"
 expected:
   fileName: merged.pdf
   fileCount: 2
