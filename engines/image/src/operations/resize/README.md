@@ -15,7 +15,16 @@ drops as a side effect (see "Metadata" below).
 | `quality` | number 0–100, optional | Only meaningful for `jpg`/`webp`; ignored for `png` (lossless, no quality knob). |
 | `outputFileName` | string, optional | User-entered output name, normalized by `deriveOutputFileName` (see below). |
 
-No `params` are needed for this operation's first version.
+## Params
+
+Optional, and irrelevant to the operation's own resize/encode behavior — they only steer output-name
+wording for a preset that reuses this operation for a different purpose (added for Image Compress,
+TASK-005C):
+
+| Param | Meaning |
+|---|---|
+| `outputFileNameSuffix` | Appended to the original base name; defaults to `-resized` when unset. |
+| `outputFileNameFallback` | Used when nothing usable remains in the original name; defaults to `resized-image` when unset. |
 
 ## Output
 
@@ -26,6 +35,7 @@ No `params` are needed for this operation's first version.
 | `originalWidth`, `originalHeight` | The decoded source image's own dimensions. |
 | `outputWidth`, `outputHeight` | The actual output dimensions (after aspect-ratio fitting, if applied). |
 | `originalFileSize`, `outputFileSize` | Byte sizes, before and after. |
+| `sizeDifferenceBytes`, `sizeChangePercent` | `originalFileSize - outputFileSize`, and the same as a percentage (`size-change.ts`); positive means the output is smaller. Always populated — useful for a resize too, not Image-Compress-specific. |
 | `outputFormat` | The format actually produced — may differ from the requested one only for the WebP-unsupported fallback (see "Format handling"). |
 
 ## Validation, in order
@@ -64,6 +74,12 @@ may distort the image if its aspect ratio differs from the target's. If the comp
 the source in either axis, `IMAGE_UPSCALED_QUALITY_LOSS` is added to the warnings — resizing up always
 reduces effective quality, so this is stated rather than silently allowed to surprise.
 
+A preset can pass the source's own decoded dimensions back in as `targetWidth`/`targetHeight` (with
+`keepAspectRatio: true`, which is then a no-op fit) to re-encode at the original size without resizing —
+this is exactly how Image Compress reuses this operation. Separately, whenever the *encoded output* is
+larger in bytes than the original file, `IMAGE_OUTPUT_LARGER_THAN_INPUT` is added to the warnings —
+regardless of whether the pixel dimensions changed at all.
+
 ## Format handling
 
 **Transparency.** JPG has no alpha channel; PNG and WebP both do. Converting from an alpha-capable format
@@ -93,9 +109,11 @@ the fallback branch itself is currently unverified against a genuine failure. Fl
 
 1. If a user-entered `outputFileName` is given and non-empty after cleanup, use it (extension normalized to
    match the actual output format).
-2. Otherwise, derive from the original file name: strip its extension, append `-resized`, sanitize, and add
-   the correct extension (`product-photo.jpg` → `product-photo-resized.jpg`).
-3. If step 2 leaves nothing usable, fall back to `resized-image.<ext>`.
+2. Otherwise, derive from the original file name: strip its extension, append the suffix (`-resized`
+   unless `params.outputFileNameSuffix` overrides it), sanitize, and add the correct extension
+   (`product-photo.jpg` → `product-photo-resized.jpg`).
+3. If step 2 leaves nothing usable, fall back to `resized-image.<ext>` (or
+   `params.outputFileNameFallback.<ext>`).
 
 Sanitization: trim whitespace, remove characters unsafe across common filesystems (`\ / : * ? " < > |`) and
 control characters — the same rule as `pdf.merge@1`/`pdf.jpg-to-pdf@1`'s own `sanitizeOutputFileName`.

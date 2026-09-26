@@ -16,6 +16,7 @@ import {
   type ResolvedImageFormat,
 } from './schema.ts';
 import { type DetectedImageType, detectImageType, MIME_FOR_TYPE } from './signature.ts';
+import { computeSizeChange } from './size-change.ts';
 import { validateRequest } from './validate.ts';
 import { STANDING_WARNINGS } from './warnings.ts';
 
@@ -77,7 +78,7 @@ export const imageResize = defineOperation({
   cost: { weight: 'medium' },
   exposure: 'internal',
   dataClass: 'public',
-  async run(input) {
+  async run(input, params) {
     const validation = validateRequest(input);
     if (!validation.ok) return validation;
     const file = input.file as ImageFile; // validateRequest already rejected a missing file
@@ -123,16 +124,24 @@ export const imageResize = defineOperation({
       return err('IMAGE_RESIZE_FAILED');
     }
 
+    const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
+    if (sizeChange.sizeDifferenceBytes < 0)
+      warnings.push(warning('IMAGE_OUTPUT_LARGER_THAN_INPUT'));
+
     return ok(
       {
         bytes,
-        fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName),
+        fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
+          suffix: params.outputFileNameSuffix,
+          fallbackBase: params.outputFileNameFallback,
+        }),
         originalWidth: source.width,
         originalHeight: source.height,
         outputWidth: output.width,
         outputHeight: output.height,
         originalFileSize: file.bytes.byteLength,
         outputFileSize: bytes.byteLength,
+        ...sizeChange,
         outputFormat: finalFormat,
       },
       warnings,

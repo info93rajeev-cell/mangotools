@@ -22,7 +22,12 @@ export const imageResizeInput = z.strictObject({
   outputFileName: z.string().optional(),
 });
 
-export const imageResizeParams = z.strictObject({});
+export const imageResizeParams = z.strictObject({
+  /** Lets a preset that reuses this operation (Image Compress) pick its own output-name wording,
+   * without changing Image Resize's own "-resized" default. See file-name.ts's `OutputFileNameStyle`. */
+  outputFileNameSuffix: z.string().optional(),
+  outputFileNameFallback: z.string().optional(),
+});
 
 export const imageResizeOutput = z.strictObject({
   bytes: z.instanceof(Uint8Array),
@@ -33,6 +38,9 @@ export const imageResizeOutput = z.strictObject({
   outputHeight: z.number().int().positive(),
   originalFileSize: z.number().int().nonnegative(),
   outputFileSize: z.number().int().nonnegative(),
+  /** originalFileSize - outputFileSize: positive means the output is smaller (a reduction). */
+  sizeDifferenceBytes: z.number().int(),
+  sizeChangePercent: z.number(),
   outputFormat: resolvedImageFormat,
 });
 

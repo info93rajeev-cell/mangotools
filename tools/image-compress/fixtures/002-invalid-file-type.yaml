@@ -1,0 +1,14 @@
+id: 002-invalid-file-type
+preset: image/compress
+source:
+  type: synthetic
+  citation: "not-an-image.txt (fixtures/files/), copied from engines/image's own fixtures: a plain text file has no JPG/PNG/WebP signature and must be rejected before any attempt to decode it"
+input:
+  file: { name: not-an-image.txt, bytes: { path: not-an-image.txt } }
+  targetWidth: 100
+  targetHeight: 100
+  keepAspectRatio: true
+  outputFormat: same
+expectedError:
+  code: IMAGE_INVALID_FILE_TYPE
+  details: { name: not-an-image.txt }

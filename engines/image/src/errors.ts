@@ -19,4 +19,6 @@ export const messages: Readonly<Record<string, string>> = {
     'The output is larger than the original image in at least one dimension, which can reduce quality.',
   IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG:
     'WebP is not supported in this browser; the image was exported as PNG instead.',
+  IMAGE_OUTPUT_LARGER_THAN_INPUT:
+    'The output file is larger than the original. Try a lower quality setting or another format.',
 };

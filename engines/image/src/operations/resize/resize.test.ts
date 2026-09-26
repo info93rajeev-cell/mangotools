@@ -6,6 +6,7 @@ import { deriveOutputFileName, FALLBACK_OUTPUT_BASE_NAME } from './file-name.ts'
 import { MAX_FILE_BYTES, MAX_SINGLE_AXIS_PIXELS } from './limits.ts';
 import { imageResize } from './operation.ts';
 import { detectImageType } from './signature.ts';
+import { computeSizeChange } from './size-change.ts';
 
 const JPEG_BYTES = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
 const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);
@@ -98,6 +99,41 @@ describe('deriveOutputFileName', () => {
     expect(deriveOutputFileName('jpg', '.png', '////')).toBe(`${FALLBACK_OUTPUT_BASE_NAME}.jpg`);
     expect(deriveOutputFileName('png', '.jpg')).toBe(`${FALLBACK_OUTPUT_BASE_NAME}.png`);
   });
+  it('uses a custom suffix and fallback base when given a style (Image Compress)', () => {
+    expect(
+      deriveOutputFileName('jpg', 'product-photo.jpg', undefined, { suffix: '-compressed' }),
+    ).toBe('product-photo-compressed.jpg');
+    expect(
+      deriveOutputFileName('jpg', '.png', '////', {
+        suffix: '-compressed',
+        fallbackBase: 'compressed-image',
+      }),
+    ).toBe('compressed-image.jpg');
+  });
+});
+
+describe('computeSizeChange', () => {
+  it('reports a positive difference and percent when the output is smaller', () => {
+    expect(computeSizeChange(1000, 600)).toEqual({
+      sizeDifferenceBytes: 400,
+      sizeChangePercent: 40,
+    });
+  });
+  it('reports a negative difference and percent when the output is larger', () => {
+    expect(computeSizeChange(1000, 1250)).toEqual({
+      sizeDifferenceBytes: -250,
+      sizeChangePercent: -25,
+    });
+  });
+  it('is zero when the size is unchanged', () => {
+    expect(computeSizeChange(1000, 1000)).toEqual({ sizeDifferenceBytes: 0, sizeChangePercent: 0 });
+  });
+  it('rounds the percentage to one decimal place', () => {
+    expect(computeSizeChange(3, 1).sizeChangePercent).toBe(66.7);
+  });
+  it('never divides by zero for an empty original', () => {
+    expect(computeSizeChange(0, 0)).toEqual({ sizeDifferenceBytes: 0, sizeChangePercent: 0 });
+  });
 });
 
 describe('image.resize validation (Node-testable, pre-decode paths only)', () => {
@@ -161,6 +197,7 @@ describe('image.resize validation (Node-testable, pre-decode paths only)', () =>
       'IMAGE_TRANSPARENT_FLATTENED_TO_WHITE',
       'IMAGE_UPSCALED_QUALITY_LOSS',
       'IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG',
+      'IMAGE_OUTPUT_LARGER_THAN_INPUT',
     ];
     for (const code of warningCodes) expect(messages[code], code).toBeTruthy();
   });

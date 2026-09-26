@@ -90,6 +90,17 @@ describe('search relevance over the generated index', () => {
     ['change image dimensions', 'image-resize'],
     ['browser image resizer', 'image-resize'],
     ['no upload image resize', 'image-resize'],
+    ['Image Compress', 'image-compress'],
+    ['image compress', 'image-compress'],
+    ['compress image', 'image-compress'],
+    ['image compressor', 'image-compress'],
+    ['reduce image size', 'image-compress'],
+    ['compress jpg', 'image-compress'],
+    ['compress png', 'image-compress'],
+    ['compress webp', 'image-compress'],
+    ['reduce photo file size', 'image-compress'],
+    ['browser image compressor', 'image-compress'],
+    ['no upload image compressor', 'image-compress'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
