@@ -42,6 +42,14 @@ export const FILE_TOOLS = {
     downloadCta: 'Download PDF',
     result: '2',
   },
+  'image-resize': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
+    downloadCta: 'Download resized image',
+    // sample.jpg is 8x8; the preview prefills width/height from its natural size, and with
+    // "keep aspect ratio" on (the default) an 8x8 target on an 8x8 source is an exact fit.
+    result: '8',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;
@@ -71,6 +79,22 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
 }
 
 /**
+ * Waits for a single-file tool's image preview (if it has one) to finish decoding, so any fields
+ * it prefills from the image's natural dimensions (Image Resize's width/height) are settled before
+ * the caller acts on the form — generic for any future preview-based file tool, not Image Resize
+ * specific.
+ */
+async function waitForPreviewDecode(page: Page, id: string): Promise<void> {
+  const preview = island(page, id).locator('img');
+  if ((await preview.count()) === 0) return;
+  await preview.evaluate(
+    (img: HTMLImageElement) =>
+      img.complete ||
+      new Promise((resolve) => img.addEventListener('load', resolve, { once: true })),
+  );
+}
+
+/**
  * Produces a result the same way every shared suite (network, axe, screenshots, "Try sample")
  * checks it: clicking "Try sample" for a tool that has one, or uploading real files through the
  * underlying file input for a file-based tool (archetype D) that has none.
@@ -81,6 +105,7 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     await island(page, id)
       .locator('input[type="file"]')
       .setInputFiles([...files]);
+    await waitForPreviewDecode(page, id);
     await page.getByRole('button', { name: downloadCta }).click();
   } else {
     await page.getByRole('button', { name: 'Try sample' }).click();

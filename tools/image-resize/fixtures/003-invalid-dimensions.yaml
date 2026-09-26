@@ -1,0 +1,13 @@
+id: 003-invalid-dimensions
+preset: image/resize
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/), copied from engines/image's own fixtures: has a valid JPEG signature; checks that a zero target dimension is rejected before any attempt to decode the file"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  targetWidth: 0
+  targetHeight: 100
+  keepAspectRatio: true
+  outputFormat: same
+expectedError:
+  code: IMAGE_DIMENSIONS_INVALID

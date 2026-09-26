@@ -21,7 +21,9 @@ export const userOptionSchema = z.strictObject({
 
 export const fieldSchema = z.strictObject({
   labelKey: z.string(),
-  kind: z.enum(['text', 'number', 'money', 'percent', 'enum', 'enum-or-number']),
+  /** 'boolean' is a genuine boolean *input* field (rendered as a switch); contrast with
+   * `userOptionSchema`'s `control: 'switch'`, which is a boolean routed to operation *params*. */
+  kind: z.enum(['text', 'number', 'money', 'percent', 'enum', 'enum-or-number', 'boolean']),
   control: z.enum(['segmented', 'select']).optional(),
   options: z
     .array(
@@ -82,6 +84,8 @@ export const presetSchema = z.strictObject({
       outputMime: z.string().optional(),
       /** The file input's `accept` attribute, for archetype D (file-upload tools). */
       fileAccept: z.string().optional(),
+      /** Archetype D: caps the file queue (1 = single-file, replacing on each new selection). */
+      maxFiles: z.int().positive().optional(),
     })
     .optional(),
   strings: z.strictObject({ en: z.record(z.string(), z.string()) }).optional(),

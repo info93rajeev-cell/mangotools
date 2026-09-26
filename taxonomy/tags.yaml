@@ -13,3 +13,4 @@ tags:
   - { id: pdf, label: PDF }
   - { id: documents, label: Documents }
   - { id: images, label: Images }
+  - { id: resize, label: Resize }
