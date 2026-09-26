@@ -81,6 +81,23 @@
   gap: var(--space-1);
 }
 
+.preview {
+  display: block;
+  max-width: 100%;
+  max-height: 12rem;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.fieldsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-end;
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;

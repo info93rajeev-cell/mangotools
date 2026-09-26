@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-resize
+slug: image-resize
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: resize one JPG, PNG or WebP image to an exact size, entirely in the browser." }
+name: Image Resize
+shortName: Image Resize
+summary: Resize a JPG, PNG or WebP image to an exact width and height, right in your browser. No upload, no sign-up, no server ever sees your file.
+archetype: D
+preset: image/resize
+taxonomy:
+  category: media
+  tags: [images, resize]
+  synonyms: [resize image, image resizer, photo resizer, resize jpg, resize png, resize webp, change image dimensions, browser image resizer, no upload image resize]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Image Resize – Resize JPG, PNG or WebP Free"
+  description: "Free browser-based Image Resize tool for JPG, PNG and WebP files. Set width and height, keep the aspect ratio, and download instantly — nothing is uploaded."
+  primaryKeyword: image resize
+  secondaryKeywords: [resize image, resize jpg, resize png, resize webp, photo resizer]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.resize@1 fixtures 001-003 (TASK-005B PR1)", locator: "engines/image/src/operations/resize/fixtures" }
+  lastVerified: 2026-09-26

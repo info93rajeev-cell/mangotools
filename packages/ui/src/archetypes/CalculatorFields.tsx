@@ -1,7 +1,7 @@
 import type { FieldValues } from '@mangotools/runtime';
 import type { PresetField, ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
-import { SegmentedControl } from '../primitives/choices.tsx';
+import { SegmentedControl, Switch } from '../primitives/choices.tsx';
 import { describedBy, Field } from '../primitives/Field.tsx';
 import { NumberField, Select, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
@@ -78,42 +78,65 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   );
 }
 
-/** One preset field rendered with the control its kind asks for. */
-export function FieldControl(props: FieldControlProps) {
-  const { id, field, preset, value, error, onValue } = props;
+/** Select or segmented control over the field's fixed `options`. */
+function EnumField({ id, field, preset, value, error, onValue }: FieldControlProps) {
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
   const described = describedBy(id, help, error);
-  if (field.kind === 'enum-or-number') return <ChoiceOrNumber {...props} />;
-  if (field.kind === 'enum') {
-    const options = (field.options ?? []).map((o) => ({
-      value: String(o.value),
-      label: optionLabel(preset, field, o.value, o.labelKey),
-    }));
-    if (field.control === 'select') {
-      return (
-        <Field id={id} label={text} help={help} error={error}>
-          <Select
-            id={id}
-            value={value}
-            options={options}
-            aria-describedby={described}
-            onValue={onValue}
-          />
-        </Field>
-      );
-    }
+  const options = (field.options ?? []).map((o) => ({
+    value: String(o.value),
+    label: optionLabel(preset, field, o.value, o.labelKey),
+  }));
+  if (field.control === 'select') {
     return (
-      <SegmentedControl
-        id={id}
-        label={text}
-        value={value}
-        options={options}
-        onValue={onValue}
-        describedBy={described}
-      />
+      <Field id={id} label={text} help={help} error={error}>
+        <Select
+          id={id}
+          value={value}
+          options={options}
+          aria-describedby={described}
+          onValue={onValue}
+        />
+      </Field>
     );
   }
+  return (
+    <SegmentedControl
+      id={id}
+      label={text}
+      value={value}
+      options={options}
+      onValue={onValue}
+      describedBy={described}
+    />
+  );
+}
+
+/** A boolean *input* field (contrast `userOptionSchema`'s `control: 'switch'`, routed to params). */
+function BooleanField({ id, field, preset, value, onValue }: FieldControlProps) {
+  const text = label(preset, field.labelKey);
+  const checked = value === '' ? String(field.default) === 'true' : value === 'true';
+  return (
+    <div class={styles.optionSwitch}>
+      <Switch
+        id={id}
+        label={text}
+        checked={checked}
+        onValue={(next) => onValue(next ? 'true' : 'false')}
+      />
+    </div>
+  );
+}
+
+/** One preset field rendered with the control its kind asks for. */
+export function FieldControl(props: FieldControlProps) {
+  const { id, field, preset, value, error, onValue } = props;
+  if (field.kind === 'enum-or-number') return <ChoiceOrNumber {...props} />;
+  if (field.kind === 'enum') return <EnumField {...props} />;
+  if (field.kind === 'boolean') return <BooleanField {...props} />;
+  const text = label(preset, field.labelKey);
+  const help = field.helpKey ? label(preset, field.helpKey) : undefined;
+  const described = describedBy(id, help, error);
   const placeholder = field.placeholderKey ? label(preset, field.placeholderKey) : undefined;
   return (
     <Field id={id} label={text} help={help} error={error}>

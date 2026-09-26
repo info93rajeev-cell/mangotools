@@ -108,13 +108,23 @@ categories:
         a: This category currently has two tools, PDF Merge and JPG to PDF. Further PDF tools may be added later.
   - id: media
     slug: media
-    name: Media & Images
+    name: Image & Media
     icon: image
     order: 80
-    summary: Resize, crop, compress and convert images on your device.
+    summary: Resize a JPG, PNG or WebP image to the exact size you need, on your device.
     seo:
-      title: Image Tools – Resize, Crop, Compress & Convert
-      description: Free image tools to resize, crop, compress and convert images. Processed on your device — nothing is uploaded to any server.
+      title: Image Resize – Resize JPG, PNG & WebP Online
+      description: Free browser-based image resizer for JPG, PNG and WebP. Set the width and height, keep the aspect ratio, and download — nothing is uploaded to any server.
+    about:
+      - Image Resize changes the width and height of a single JPG, PNG or WebP image, entirely in your browser. You can keep the original aspect ratio or set an exact size, and choose to keep the input format or convert to JPG, PNG or WebP.
+      - This is a simple, browser-first tool. Very large images may fail because of browser memory limits, output can differ slightly between browsers because image encoders vary, and transparent areas are flattened onto a white background when exporting to JPG. Nothing is uploaded to a server.
+    faq:
+      - q: Is Image Resize free?
+        a: Yes. It's free and unlimited, with no sign-up and no ads.
+      - q: Are my images uploaded anywhere?
+        a: No. The image you select is read and resized in this browser. No file upload is required for this tool.
+      - q: Will more image tools be added?
+        a: This category currently has one tool, Image Resize. Further image tools may be added later.
   - id: utilities
     slug: utilities
     name: Everyday Utilities

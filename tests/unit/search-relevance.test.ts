@@ -79,6 +79,17 @@ describe('search relevance over the generated index', () => {
     ['combine images into pdf', 'jpg-to-pdf'],
     ['browser jpg to pdf', 'jpg-to-pdf'],
     ['no upload jpg to pdf', 'jpg-to-pdf'],
+    ['Image Resize', 'image-resize'],
+    ['image resize', 'image-resize'],
+    ['resize image', 'image-resize'],
+    ['image resizer', 'image-resize'],
+    ['photo resizer', 'image-resize'],
+    ['resize jpg', 'image-resize'],
+    ['resize png', 'image-resize'],
+    ['resize webp', 'image-resize'],
+    ['change image dimensions', 'image-resize'],
+    ['browser image resizer', 'image-resize'],
+    ['no upload image resize', 'image-resize'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

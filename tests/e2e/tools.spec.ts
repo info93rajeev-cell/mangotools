@@ -449,6 +449,96 @@ test.describe('JPG to PDF', () => {
   });
 });
 
+test.describe('Image Resize', () => {
+  const fileInput = (page: Page) => island(page, 'image-resize').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg');
+  const preview = (page: Page) => island(page, 'image-resize').locator('img');
+
+  test('selecting an image previews it and prefills width and height', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(preview(page)).toBeVisible();
+    await expect(page.getByLabel('Width')).toHaveValue('8');
+    await expect(page.getByLabel('Height')).toHaveValue('8');
+  });
+
+  test('resizes the image and downloads it with the default name', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Width')).toHaveValue('8');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-resized.jpg');
+    await expect(primaryResult(page)).toHaveText('8');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('jpg');
+  });
+
+  test('resizes to an exact size when aspect ratio is not kept', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Width')).toHaveValue('8');
+    await page.getByRole('switch', { name: 'Keep aspect ratio' }).click();
+    await page.getByLabel('Width').fill('20');
+    await page.getByLabel('Height').fill('10');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    await downloadPromise;
+    await expect(primaryResult(page)).toHaveText('20');
+    await expect(page.locator('[data-output="outputHeight"] dd')).toHaveText('10');
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Width')).toHaveValue('8');
+    await page.getByLabel('Output file name').fill('  My Photo<>.JPG  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Photo.jpg');
+  });
+
+  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    const notAnImage = join(process.cwd(), 'tools/image-resize/manifest.yaml');
+    await fileInput(page).setInputFiles([notAnImage]);
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+
+  test('shows a specific error for an invalid width', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Width')).toHaveValue('8');
+    await page.getByLabel('Width').fill('0');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    await expect(page.getByText('Enter a width and height greater than 0.')).toBeVisible();
+  });
+});
+
+test.describe('Image & Media category', () => {
+  test('shows exactly one tool and no future image tools', async ({ page }) => {
+    await gotoReady(page, '/media');
+    await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
+    const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
+    await expect(allTools.getByRole('link', { name: 'Image Resize' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(1);
+    for (const future of [
+      'Image Compress',
+      'Background Remover',
+      'JPG to PNG',
+      'PNG to JPG',
+      'WebP Converter',
+      'EXIF Remover',
+      'Passport Photo',
+      'Image Watermark',
+    ]) {
+      await expect(page.getByText(future, { exact: true })).toHaveCount(0);
+    }
+  });
+});
+
 test.describe('PDF & Documents category', () => {
   test('shows exactly two tools and no future PDF tools', async ({ page }) => {
     await gotoReady(page, '/pdf');

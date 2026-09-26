@@ -6,11 +6,13 @@ export interface FileDropZoneProps {
   /** The file input's `accept` attribute (e.g. `application/pdf`, `image/jpeg,.jpg,.jpeg`). */
   accept: string;
   dropHint: string;
+  /** False for a single-file tool (`preset.ui.maxFiles === 1`); true otherwise. */
+  multiple: boolean;
   onFiles: (list: FileList | File[]) => void;
 }
 
 /** Drag-and-drop target plus a real, keyboard-operable file input as the click-to-browse fallback. */
-export function FileDropZone({ accept, dropHint, onFiles }: FileDropZoneProps) {
+export function FileDropZone({ accept, dropHint, multiple, onFiles }: FileDropZoneProps) {
   const [dragActive, setDragActive] = useState(false);
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop only; the accessible control is the nested label/input, which works with no drag at all.
@@ -34,7 +36,7 @@ export function FileDropZone({ accept, dropHint, onFiles }: FileDropZoneProps) {
         <input
           type="file"
           accept={accept}
-          multiple
+          multiple={multiple}
           class={styles.fileInput}
           onChange={(event) => {
             const list = event.currentTarget.files;
