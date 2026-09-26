@@ -1,0 +1,12 @@
+id: 001-no-file-selected
+operation: image.resize@1
+source:
+  type: synthetic
+  citation: "A missing file must be a specific, typed error, not a generic failure"
+input:
+  targetWidth: 100
+  targetHeight: 100
+  keepAspectRatio: true
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

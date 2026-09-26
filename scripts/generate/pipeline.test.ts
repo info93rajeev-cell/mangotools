@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds twelve tools, twelve presets and the four visible categories', () => {
+  it('builds twelve tools, thirteen presets (image/resize has no tool yet) and the four visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -55,7 +55,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(12);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(13);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'logistics',
       'business',
@@ -75,7 +75,12 @@ describe('registry pipeline — valid repository', () => {
     );
   });
   it('lists only the engines that presets use', () => {
-    expect(result.output?.engineIds).toEqual(['data', 'estimate', 'logistics', 'pdf']);
+    expect(result.output?.engineIds).toEqual(['data', 'estimate', 'image', 'logistics', 'pdf']);
+  });
+  it('excludes worker-only (non-Node) operations from the determinism suite', () => {
+    const cases = result.output?.determinism ?? [];
+    expect(cases.some((c) => c.operation.startsWith('image.'))).toBe(false);
+    expect(cases.some((c) => c.operation.startsWith('pdf.'))).toBe(true);
   });
 });
 
