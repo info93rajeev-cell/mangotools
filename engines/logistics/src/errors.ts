@@ -23,4 +23,15 @@ export const messages: Readonly<Record<string, string>> = {
     'The requested quantity is more than the estimated volume capacity.',
   LOGISTICS_CONTAINER_OVER_CAPACITY_GRID:
     'The requested quantity is more than the simple loading grid estimate.',
+  LOGISTICS_CARTON_EXCEEDS_PALLET_BASE:
+    "This carton's footprint does not fit the pallet base in any orientation tried.",
+  LOGISTICS_CARTON_TALLER_THAN_STACK_LIMIT:
+    'This carton is taller than the maximum stack height allowed.',
+  LOGISTICS_PALLET_NOT_LOAD_SAFETY:
+    'This is a simple grid fit, not a pallet load-safety validation.',
+  LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT:
+    "Verify the final pallet load before shipment, with your logistics or warehouse professional and your carrier's requirements.",
+  LOGISTICS_PALLET_DIMENSIONS_VARY:
+    'Pallet dimensions, safe stack height and load capacity vary by pallet type, condition, packaging, warehouse practice and carrier requirements.',
+  LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED: 'This quantity needs more than one pallet.',
 };

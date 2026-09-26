@@ -1,0 +1,5 @@
+id: 026-missing-max-stack-height
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: maxStackHeight }

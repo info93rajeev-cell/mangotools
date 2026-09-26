@@ -1,0 +1,7 @@
+id: 008-allow-base-rotation-off
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "Same carton and pallet as fixture 001 (40×30×20 cm, Euro pallet, 150 cm stack limit) but allowBaseRotation: false, so only the carton's given length-along-length, width-along-width footprint is tried: floor(120/40)=3, floor(80/30)=2 = 6 cartons/layer, fewer than the 8 the rotated footprint gives in fixture 001. Layers = 7, cartons per pallet = 42, so the 100 requested need 3 pallets, with 16 on the last one" }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+params: { allowBaseRotation: false }
+expected: { bestOrientation: lwh, cartonsAlongPalletLength: "3", cartonsAlongPalletWidth: "2", cartonsPerLayer: "6", layers: "7", cartonsPerPallet: "42", palletsRequired: "3", cartonsOnLastPallet: "16", usedAreaPercent: "75.000", unusedAreaPercent: "25.000", estimatedStackHeight: "140.000", leftoverPalletLength: "0.000", leftoverPalletWidth: "20.000", quantity: "100" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY, LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED]

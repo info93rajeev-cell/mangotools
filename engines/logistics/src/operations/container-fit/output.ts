@@ -1,6 +1,6 @@
 import type { WorkingStep } from '@mangotools/core';
 import { compare, sub } from '@mangotools/engine-numeric';
-import type { OrientationResult } from './grid.ts';
+import type { OrientationResult } from '../../lib/orientation-grid.ts';
 import type { Measured } from './types.ts';
 import type { VolumeMetrics } from './volume.ts';
 

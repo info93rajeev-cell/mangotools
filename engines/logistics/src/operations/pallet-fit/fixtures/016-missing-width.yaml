@@ -1,0 +1,5 @@
+id: 016-missing-width
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: width }

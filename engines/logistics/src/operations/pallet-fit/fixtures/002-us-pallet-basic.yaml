@@ -1,0 +1,6 @@
+id: 002-us-pallet-basic
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "50×40×30 cm carton on a US/GMA pallet (121.9×101.6 cm, commonly published approximate dimensions, TASK-003D decision 15), 160 cm stack limit. Best footprint: carton width (40 cm) along pallet length, carton length (50 cm) along pallet width: floor(121.9/40)=3, floor(101.6/50)=2 = 6 cartons/layer. Layers = floor(160/30) = 5. Cartons per pallet = 6×5 = 30. 60 requested → 2 pallets, 30 on each" }
+input: { unit: cm, length: "50", width: "40", height: "30", quantity: "60", palletType: us, palletUnit: cm, maxStackHeight: "160" }
+expected: { bestOrientation: wlh, cartonsAlongPalletLength: "3", cartonsAlongPalletWidth: "2", cartonsPerLayer: "6", layers: "5", cartonsPerPallet: "30", palletsRequired: "2", cartonsOnLastPallet: "30", usedAreaPercent: "96.891", unusedAreaPercent: "3.109", estimatedStackHeight: "150.000", leftoverPalletLength: "1.900", leftoverPalletWidth: "1.600", quantity: "60" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY, LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED]

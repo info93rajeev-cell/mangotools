@@ -1,0 +1,7 @@
+id: 010-keep-upright-off-rescues-fit
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "Same carton and pallet as fixture 009 (10×10×200 cm, custom 250×80 cm pallet, 50 cm stack limit) but keepUpright: false, so the carton's 200 cm side may lie along the pallet's 250 cm length instead of standing vertical: floor(250/200)=1, floor(80/10)=8, floor(50/10)=5 = 40 cartons per pallet (orientation hlw — carton height along pallet length, carton length along pallet width, carton width vertical). This is exactly the scenario the founder's brief called higher-risk: it assumes the carton is safe to lay on its side" }
+input: { unit: cm, length: "10", width: "10", height: "200", quantity: "10", palletType: custom, palletUnit: cm, palletLength: "250", palletWidth: "80", maxStackHeight: "50" }
+params: { keepUpright: false }
+expected: { bestOrientation: hlw, cartonsAlongPalletLength: "1", cartonsAlongPalletWidth: "8", cartonsPerLayer: "8", layers: "5", cartonsPerPallet: "40", palletsRequired: "1", cartonsOnLastPallet: "10", usedAreaPercent: "80.000", unusedAreaPercent: "20.000", estimatedStackHeight: "50.000", leftoverPalletLength: "50.000", leftoverPalletWidth: "0.000", quantity: "10" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY]

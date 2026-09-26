@@ -1,6 +1,6 @@
 import { type OpWarning, warning } from '@mangotools/core';
 import { compare, div, mul, sub } from '@mangotools/engine-numeric';
-import { floorCount } from './grid.ts';
+import { floorCount } from '../../lib/orientation-grid.ts';
 import { CM3_TO_M3 } from './units.ts';
 
 export interface VolumeMetrics {

@@ -1,8 +1,8 @@
 import { defineOperation, err, ok, type Result } from '@mangotools/core';
 import { isZero, mul, toFixedString } from '@mangotools/engine-numeric';
+import { bestOrientation, leftovers } from '../../lib/orientation-grid.ts';
 import { readCount, readPositive, readWholeInRange } from '../../lib/read-input.ts';
 import { STANDARD_CONTAINERS } from './containers.ts';
-import { bestOrientation, leftovers } from './grid.ts';
 import { buildOutput, workingSteps } from './output.ts';
 import {
   type ContainerFitInput,
