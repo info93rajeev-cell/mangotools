@@ -241,12 +241,17 @@ async function buildSearchIndex(
   };
 }
 
-/** Engine fixtures for engines the site loads in workers. */
-function determinismCases(sources: Sources, engineIds: Set<string>): DeterminismCase[] {
+/** Fixtures for engines the site loads in workers, excluding non-Node-runtime operations — see `engines/image/README.md`'s "Determinism" section. */
+function determinismCases(
+  sources: Sources,
+  engines: Engines,
+  engineIds: Set<string>,
+): DeterminismCase[] {
   return sources.engineFixtures.flatMap((source) => {
     const parsed = fixtureSchema.safeParse(source.data);
     const operation = parsed.success ? parsed.data.operation : undefined;
     if (!parsed.success || !operation || !engineIds.has(operation.split('.')[0] ?? '')) return [];
+    if (!findOperation(engines, operation)?.runtimes.includes('node')) return [];
     return [
       { id: source.file, operation, input: parsed.data.input, params: parsed.data.params ?? {} },
     ];
@@ -288,7 +293,7 @@ export async function runPipeline(
     presets: Object.fromEntries(presets.resolved),
   };
   const engineIds = [...new Set([...presets.resolved.values()].map((p) => p.engineId))].sort();
-  const determinism = determinismCases(sources, new Set(engineIds));
+  const determinism = determinismCases(sources, engines, new Set(engineIds));
   const searchIndex = await buildSearchIndex(registry, taxonomy, engines);
   return { output: { registry, searchIndex, determinism, engineIds }, issues };
 }

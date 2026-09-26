@@ -3,7 +3,7 @@ import { defineConfig, devices, type Project } from '@playwright/test';
 /**
  * Suites run against two builds made by scripts/test/e2e.ts:
  *   apps/web/dist-prod (production settings) on :4321 — e2e, a11y, seo, screenshots
- *   apps/web/dist-dev  (development, with /_dev pages) on :4322 — determinism
+ *   apps/web/dist-dev  (development, with /_dev pages) on :4322 — determinism, dev
  * PW_BROWSERS limits browsers locally (CI runs chromium, firefox and webkit);
  * PW_CHROMIUM_PATH points at a preinstalled Chromium when Playwright's own is unavailable.
  */
@@ -57,6 +57,7 @@ export default defineConfig({
   projects: [
     ...perBrowser('e2e', 'tests/e2e', PROD, { testIgnore: /screenshots\.spec\.ts/ }),
     ...perBrowser('determinism', 'tests/determinism', DEV),
+    ...perBrowser('dev', 'tests/dev', DEV),
     { name: 'a11y', testDir: 'tests/a11y', use: use('chromium', PROD) },
     { name: 'seo', testDir: 'tests/seo', use: use('chromium', PROD) },
     {

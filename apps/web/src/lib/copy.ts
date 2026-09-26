@@ -30,6 +30,7 @@ export const COPY = {
   dev: {
     components: 'Component gallery',
     determinism: 'Determinism harness',
+    imageFoundation: 'Image foundation harness',
   },
 } as const;
 

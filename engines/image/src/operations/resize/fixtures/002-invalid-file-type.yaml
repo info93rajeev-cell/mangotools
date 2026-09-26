@@ -1,0 +1,14 @@
+id: 002-invalid-file-type
+operation: image.resize@1
+source:
+  type: synthetic
+  citation: "not-an-image.txt (fixtures/files/) is a plain text file; it has no JPG/PNG/WebP signature, so it must be rejected before any attempt to decode it"
+input:
+  file: { name: not-an-image.txt, bytes: { path: not-an-image.txt } }
+  targetWidth: 100
+  targetHeight: 100
+  keepAspectRatio: true
+  outputFormat: same
+expectedError:
+  code: IMAGE_INVALID_FILE_TYPE
+  details: { name: not-an-image.txt }

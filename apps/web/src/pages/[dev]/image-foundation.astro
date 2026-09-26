@@ -1,0 +1,25 @@
+---
+import { ImageFoundationHarness } from '../../dev/ImageFoundationHarness.tsx';
+import { COPY } from '../../lib/copy.ts';
+import { isDevelopment } from '../../lib/site.ts';
+
+// Built only in the development environment (Astro skips folders starting with "_", hence [dev]).
+// Foundation-only (TASK-005B PR 1): proves image.resize@1's real canvas pipeline in a real browser
+// without exposing any visible tool, manifest, content, or category. See engines/image/README.md.
+export function getStaticPaths() {
+  return isDevelopment ? [{ params: { dev: '_dev' } }] : [];
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>{COPY.dev.imageFoundation}</title>
+  </head>
+  <body>
+    <h1>{COPY.dev.imageFoundation}</h1>
+    <ImageFoundationHarness client:load />
+  </body>
+</html>
