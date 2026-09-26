@@ -1,6 +1,18 @@
 import { z } from 'zod';
 import { operationRef, presetId } from './common.ts';
 
+/**
+ * A reference to a binary file on disk, for a fixture whose operation takes file bytes (PDF,
+ * image, audio, video...). `input` and `params` below stay a generic, unknown-valued record, so
+ * this is not wired into `fixtureSchema` structurally — instead, the fixture loader
+ * (`scripts/lib/fixtures.ts`) recognizes any value shaped exactly like this and resolves it to
+ * the real file's bytes, read from a `files/` folder next to the fixture. This one small,
+ * reusable convention is deliberately all a binary/file-based fixture needs; it is not a full
+ * file-processing framework.
+ */
+export const fixtureFileRef = z.strictObject({ path: z.string().min(1) });
+export type FixtureFileRef = z.infer<typeof fixtureFileRef>;
+
 export const fixtureSchema = z
   .strictObject({
     id: z

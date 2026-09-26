@@ -1,0 +1,13 @@
+id: 005-non-pdf-file
+operation: pdf.merge@1
+source:
+  type: synthetic
+  citation: "not-a-pdf.pdf is a plain text file with a .pdf name (fixtures/files/); it has no %PDF- signature, so it must be rejected before any attempt to parse it"
+input:
+  files:
+    - { name: one-page.pdf, bytes: { path: one-page.pdf } }
+    - { name: not-a-pdf.pdf, bytes: { path: not-a-pdf.pdf } }
+expectedError:
+  code: PDF_INVALID_FILE_TYPE
+  path: files.1
+  details: { name: not-a-pdf.pdf }
