@@ -46,7 +46,10 @@ async function toQueuedFiles(list: FileList | File[]): Promise<QueuedFile[]> {
  */
 function fieldInputValue(field: ResolvedPreset['fields'][string], raw: string | boolean): unknown {
   if (field.kind === 'boolean') return raw === true || raw === 'true';
-  return field.kind === 'text' ? String(raw) : Number(raw);
+  // Only a plain 'number' field is sent as a JS number (image.resize@1's pixel dimensions); every
+  // other kind — including 'enum', whose values are strings like "same"/"jpg" — is sent as-is,
+  // matching archetype B's buildRequest (money/percent stay decimal strings for the engine to parse).
+  return field.kind === 'number' ? Number(raw) : String(raw);
 }
 
 function extraInputValues(preset: ResolvedPreset, values: FieldValues): Record<string, unknown> {
