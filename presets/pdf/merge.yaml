@@ -1,7 +1,22 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: pdf/merge
-version: 0.1.0
+version: 0.2.0
 operation: pdf.merge@1
 ui:
   archetypes: [D]
+  fileAccept: application/pdf
+outputs:
+  fileCount: { labelKey: output.filesMerged, format: number, order: 1, primary: true }
+  totalPageCount: { labelKey: output.totalPages, format: number, order: 2 }
+  fileName: { labelKey: output.outputFile, format: text, order: 3 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop PDF files here, or choose files."
+    fileTool.queueLabel: "Files to merge, in order"
+    fileTool.outputNamePlaceholder: "merged.pdf"
+    fileTool.downloadCta: "Download merged PDF"
+    fileTool.noFilesYet: "Add PDF files above to get started."
+    output.filesMerged: "Files merged"
+    output.totalPages: "Total pages"
+    output.outputFile: "Output file"

@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: jpg-to-pdf
+slug: jpg-to-pdf
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: convert one or more JPG images into a single PDF, entirely in the browser." }
+name: JPG to PDF
+shortName: JPG to PDF
+summary: Convert one or more JPG images into a single PDF, in the order you choose. Runs in your browser — no upload, no sign-up.
+archetype: D
+preset: pdf/jpg-to-pdf
+taxonomy:
+  category: pdf
+  tags: [pdf, documents, images]
+  synonyms: [image to pdf, jpg to pdf converter, jpeg to pdf, convert jpg images to pdf, combine images into pdf, browser jpg to pdf, no upload jpg to pdf]
+capabilities: { export: [pdf] }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: JPG to PDF – Convert Images to PDF Free
+  description: Convert one or more JPG images into a single PDF, in the order you choose. Free JPG to PDF tool that runs entirely in your browser — no upload, no sign-up.
+  primaryKeyword: jpg to pdf
+  secondaryKeywords: [image to pdf, jpeg to pdf, convert jpg to pdf]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/pdf pdf.jpg-to-pdf@1 fixtures 001-006 (TASK-004C)", locator: "engines/pdf/src/operations/jpg-to-pdf/fixtures" }
+  lastVerified: 2026-09-26

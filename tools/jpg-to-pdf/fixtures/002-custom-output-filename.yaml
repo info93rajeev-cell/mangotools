@@ -1,0 +1,14 @@
+id: 002-custom-output-filename
+preset: pdf/jpg-to-pdf
+source:
+  type: synthetic
+  citation: "Same two images as 001-two-image-conversion; checks that a custom output name is normalized through the tool preset"
+input:
+  files:
+    - { name: small-square.jpg, bytes: { path: small-square.jpg } }
+    - { name: wide.jpg, bytes: { path: wide.jpg } }
+  outputFileName: "  My Photos<>.PDF  "
+expected:
+  fileName: My Photos.pdf
+  imageCount: 2
+expectedWarnings: [PDF_JPG_VERIFY_OUTPUT, PDF_JPG_LARGE_OR_MANY_MAY_FAIL, PDF_JPG_QUALITY_DEPENDS_ON_SOURCE, PDF_JPG_AUTHORIZED_USE_ONLY]

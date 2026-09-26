@@ -8,12 +8,16 @@ import { moveItem, type QueuedFile } from './FileQueue.tsx';
 
 export type FilePhase = 'idle' | 'running' | 'result' | 'error';
 
-export interface MergeResult {
+/**
+ * An archetype D operation's result: always a downloadable PDF plus whatever scalar fields the
+ * preset's own `outputs` describe (`fileCount`/`totalPageCount` for PDF Merge, `imageCount` for
+ * JPG to PDF, and so on for any future file tool) — rendered generically via `outputRows`.
+ */
+export interface FileToolResult {
   fileName: string;
-  fileCount: number;
-  totalPageCount: number;
   bytes: Uint8Array;
   warnings: OpWarning[];
+  [key: string]: unknown;
 }
 
 const nextId = () =>
@@ -44,7 +48,7 @@ export interface FileToolState {
   files: QueuedFile[];
   outputFileName: string;
   phase: FilePhase;
-  result: MergeResult | null;
+  result: FileToolResult | null;
   error: OpError | null;
   addFiles(list: FileList | File[]): Promise<void>;
   removeFile(id: string): void;
@@ -54,7 +58,7 @@ export interface FileToolState {
   primaryAction(): void;
 }
 
-/** State and actions for a multi-file merge tool (archetype D): the queue, its order, and a run. */
+/** State and actions for a multi-file tool (archetype D): the queue, its order, and a run. */
 export function useFileTool(
   preset: ResolvedPreset,
   toolId: string,
@@ -64,7 +68,7 @@ export function useFileTool(
   const [files, setFiles] = useState<QueuedFile[]>([]);
   const [outputFileName, setOutputFileNameState] = useState('');
   const [phase, setPhase] = useState<FilePhase>('idle');
-  const [result, setResult] = useState<MergeResult | null>(null);
+  const [result, setResult] = useState<FileToolResult | null>(null);
   const [error, setError] = useState<OpError | null>(null);
 
   const setPhaseAndNotify = (next: FilePhase) => {
@@ -76,24 +80,24 @@ export function useFileTool(
     setError(null);
     setPhaseAndNotify('idle');
   };
-  const download = (value: MergeResult) => {
+  const download = (value: FileToolResult) => {
     downloadBytes(value.bytes, value.fileName, 'application/pdf');
     notify(t('toast.downloaded', { name: value.fileName }));
     track('tool_complete', { toolId, method: 'download' });
   };
-  const runMerge = async () => {
+  const runConversion = async () => {
     setPhaseAndNotify('running');
     const outcome = await runOperation(preset, files, outputFileName);
     if (outcome.ok) {
-      const merged: MergeResult = {
-        ...(outcome.value as Omit<MergeResult, 'warnings'>),
+      const value = {
+        ...(outcome.value as Record<string, unknown>),
         warnings: outcome.warnings,
-      };
-      setResult(merged);
+      } as FileToolResult;
+      setResult(value);
       setError(null);
       setPhaseAndNotify('result');
       track('tool_run', { toolId });
-      download(merged);
+      download(value);
     } else {
       setError(outcome.error);
       setResult(null);
@@ -135,7 +139,7 @@ export function useFileTool(
     },
     primaryAction() {
       if (phase === 'result' && result) return download(result);
-      void runMerge();
+      void runConversion();
     },
   };
 }

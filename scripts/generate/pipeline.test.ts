@@ -39,13 +39,14 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds eleven tools, eleven presets and the four visible categories', () => {
+  it('builds twelve tools, twelve presets and the four visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
       'cbm-calculator',
       'container-loading-calculator',
       'gst-calculator',
+      'jpg-to-pdf',
       'json-formatter',
       'markup-calculator',
       'pallet-loading-calculator',
@@ -54,7 +55,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(11);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(12);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'logistics',
       'business',
@@ -340,9 +341,9 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // logistics has four tools; business and developer have three each; pdf has one.
+    // logistics has four tools; business and developer have three each; pdf has two.
     expect(visibleAt(1)).toEqual(['logistics', 'business', 'developer', 'pdf']);
-    expect(visibleAt(2)).toEqual(['logistics', 'business', 'developer']);
+    expect(visibleAt(2)).toEqual(['logistics', 'business', 'developer', 'pdf']);
     expect(visibleAt(3)).toEqual(['logistics', 'business', 'developer']);
     expect(visibleAt(4)).toEqual(['logistics']);
     expect(visibleAt(5)).toEqual([]);

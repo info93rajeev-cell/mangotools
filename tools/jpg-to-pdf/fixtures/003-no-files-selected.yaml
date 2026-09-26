@@ -1,0 +1,9 @@
+id: 003-no-files-selected
+preset: pdf/jpg-to-pdf
+source:
+  type: synthetic
+  citation: "An empty image queue must be a specific, typed error through the tool preset too"
+input:
+  files: []
+expectedError:
+  code: PDF_JPG_NO_FILES_SELECTED

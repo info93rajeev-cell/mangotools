@@ -1,0 +1,13 @@
+id: 005-non-jpg-file
+operation: pdf.jpg-to-pdf@1
+source:
+  type: synthetic
+  citation: "not-a-jpg.txt is a plain text file (fixtures/files/); it has no JPEG SOI signature, so it must be rejected before any attempt to decode it"
+input:
+  files:
+    - { name: small-square.jpg, bytes: { path: small-square.jpg } }
+    - { name: not-a-jpg.txt, bytes: { path: not-a-jpg.txt } }
+expectedError:
+  code: PDF_JPG_INVALID_FILE_TYPE
+  path: files.1
+  details: { name: not-a-jpg.txt }

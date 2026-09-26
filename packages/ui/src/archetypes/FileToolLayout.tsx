@@ -3,10 +3,11 @@ import { Button } from '../primitives/Button.tsx';
 import { TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
 import fileToolStyles from '../toolkit/fileTool.module.css';
+import { label } from '../toolkit/presentation.ts';
 import styles from '../toolkit/toolkit.module.css';
 import { FileDropZone } from './FileDropZone.tsx';
 import { FileQueue } from './FileQueue.tsx';
-import { MergeOutcome } from './MergeOutcome.tsx';
+import { FileToolOutcome } from './FileToolOutcome.tsx';
 import { type FilePhase, useFileTool } from './useFileTool.ts';
 
 export interface FileToolLayoutProps {
@@ -25,13 +26,18 @@ export function FileToolLayout({ idPrefix, toolId, preset, notify, onPhase }: Fi
 
   return (
     <div class={fileToolStyles.fileTool} data-file-count={tool.files.length}>
-      <FileDropZone onFiles={(list) => void tool.addFiles(list)} />
+      <FileDropZone
+        accept={preset.ui.fileAccept ?? 'application/pdf'}
+        dropHint={label(preset, 'fileTool.dropHint')}
+        onFiles={(list) => void tool.addFiles(list)}
+      />
 
       {tool.files.length === 0 ? (
-        <p class={styles.placeholder}>{t('fileTool.noFilesYet')}</p>
+        <p class={styles.placeholder}>{label(preset, 'fileTool.noFilesYet')}</p>
       ) : (
         <>
           <FileQueue
+            queueLabel={label(preset, 'fileTool.queueLabel')}
             files={tool.files}
             problemFileName={problemFileName}
             onRemove={tool.removeFile}
@@ -44,7 +50,7 @@ export function FileToolLayout({ idPrefix, toolId, preset, notify, onPhase }: Fi
                 id={`${idPrefix}-output-name`}
                 value={tool.outputFileName}
                 onValue={tool.setOutputFileName}
-                placeholder={t('fileTool.outputNamePlaceholder')}
+                placeholder={label(preset, 'fileTool.outputNamePlaceholder')}
               />
             </label>
             <div class={fileToolStyles.actions}>
@@ -55,7 +61,7 @@ export function FileToolLayout({ idPrefix, toolId, preset, notify, onPhase }: Fi
                 loading={tool.phase === 'running'}
                 disabled={tool.phase === 'running'}
               >
-                {t('fileTool.downloadCta')}
+                {label(preset, 'fileTool.downloadCta')}
               </Button>
               <Button variant="ghost" icon="x" onClick={tool.clearAll}>
                 {t('fileTool.clearAll')}
@@ -65,7 +71,7 @@ export function FileToolLayout({ idPrefix, toolId, preset, notify, onPhase }: Fi
         </>
       )}
 
-      <MergeOutcome preset={preset} phase={tool.phase} result={tool.result} error={tool.error} />
+      <FileToolOutcome preset={preset} phase={tool.phase} result={tool.result} error={tool.error} />
     </div>
   );
 }

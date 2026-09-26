@@ -34,6 +34,7 @@ export function formatFileSize(bytes: number): string {
 }
 
 export interface FileQueueProps {
+  queueLabel: string;
   files: QueuedFile[];
   /** The file named in the current error's details, if any, highlighted in the list. */
   problemFileName: string | null;
@@ -42,10 +43,16 @@ export interface FileQueueProps {
 }
 
 /** The reorderable list of queued files: move up/down and remove, all keyboard-operable. */
-export function FileQueue({ files, problemFileName, onRemove, onMove }: FileQueueProps) {
+export function FileQueue({
+  queueLabel,
+  files,
+  problemFileName,
+  onRemove,
+  onMove,
+}: FileQueueProps) {
   if (files.length === 0) return null;
   return (
-    <ul class={styles.queue} aria-label={t('fileTool.queueLabel')}>
+    <ul class={styles.queue} aria-label={queueLabel}>
       {files.map((file, index) => (
         <li
           key={file.id}

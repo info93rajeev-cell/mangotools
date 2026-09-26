@@ -30,6 +30,16 @@ export const FILE_TOOLS = {
       join(process.cwd(), 'tools/pdf-merge/fixtures/files/one-page.pdf'),
       join(process.cwd(), 'tools/pdf-merge/fixtures/files/two-page.pdf'),
     ],
+    downloadCta: 'Download merged PDF',
+    result: '2',
+  },
+  'jpg-to-pdf': {
+    archetype: 'D',
+    files: [
+      join(process.cwd(), 'tools/jpg-to-pdf/fixtures/files/small-square.jpg'),
+      join(process.cwd(), 'tools/jpg-to-pdf/fixtures/files/wide.jpg'),
+    ],
+    downloadCta: 'Download PDF',
     result: '2',
   },
 } as const;
@@ -67,11 +77,11 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
  */
 export async function produceResult(page: Page, id: string): Promise<void> {
   if (id in FILE_TOOLS) {
-    const files = FILE_TOOLS[id as keyof typeof FILE_TOOLS].files;
+    const { files, downloadCta } = FILE_TOOLS[id as keyof typeof FILE_TOOLS];
     await island(page, id)
       .locator('input[type="file"]')
       .setInputFiles([...files]);
-    await page.getByRole('button', { name: 'Download merged PDF' }).click();
+    await page.getByRole('button', { name: downloadCta }).click();
   } else {
     await page.getByRole('button', { name: 'Try sample' }).click();
   }
