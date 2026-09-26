@@ -26,7 +26,7 @@ seo:
   primaryKeyword: container loading calculator
   secondaryKeywords: [container capacity calculator, how many cartons in a container]
 graph:
-  related: [cbm-calculator, volumetric-weight-calculator]
+  related: [cbm-calculator, volumetric-weight-calculator, pallet-loading-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Carton and container CBM = length × width × height; usable CBM = container CBM × usable %; cartons by volume = floor(usable CBM ÷ carton CBM); simple grid = floor(container axis ÷ carton dimension) per axis, over the 6 axis-aligned orientations", locator: "Method section" }

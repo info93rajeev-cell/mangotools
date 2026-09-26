@@ -9,6 +9,7 @@ import {
 
 export interface PalletStats {
   cartonsPerLayer: string;
+  cartonHeightOnAxis: string;
   layers: string;
   cartonsPerPallet: string;
   palletsRequired: string;
@@ -51,6 +52,7 @@ export function computePalletStats(
   );
   return {
     cartonsPerLayer,
+    cartonHeightOnAxis: cartonCm[order[2]],
     layers: grid.counts[2],
     cartonsPerPallet,
     palletsRequired: ceilDiv(quantity, cartonsPerPallet),

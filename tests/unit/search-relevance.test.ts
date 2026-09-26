@@ -54,16 +54,24 @@ describe('search relevance over the generated index', () => {
     ['20ft container calculator', 'container-loading-calculator'],
     ['40ft container calculator', 'container-loading-calculator'],
     ['shipping container calculator', 'container-loading-calculator'],
+    ['Pallet Loading Calculator', 'pallet-loading-calculator'],
+    ['pallet loading calculator', 'pallet-loading-calculator'],
+    ['pallet capacity calculator', 'pallet-loading-calculator'],
+    ['carton pallet calculator', 'pallet-loading-calculator'],
+    ['how many cartons on a pallet', 'pallet-loading-calculator'],
+    ['euro pallet calculator', 'pallet-loading-calculator'],
+    ['pallet planner', 'pallet-loading-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
   }
 
-  it('"logistics calculator" finds all three logistics tools first', () => {
-    const ids = search('logistics calculator', 3).map((r) => r.id);
+  it('"logistics calculator" finds all four logistics tools first', () => {
+    const ids = search('logistics calculator', 4).map((r) => r.id);
     expect(ids.sort()).toEqual([
       'cbm-calculator',
       'container-loading-calculator',
+      'pallet-loading-calculator',
       'volumetric-weight-calculator',
     ]);
   });
