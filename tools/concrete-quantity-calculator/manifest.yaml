@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: concrete-quantity-calculator
+slug: concrete-quantity-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with concrete volume for a slab, beam, column or footing, in m³ and ft³, with wastage %." }
+name: Concrete Quantity Calculator
+shortName: Concrete Quantity
+summary: Concrete volume for a slab, beam, column or footing in cubic metres and cubic feet, with wastage %.
+archetype: B
+preset: civil/concrete-quantity
+sample: slab-5x4x0.15-m
+taxonomy:
+  category: construction
+  tags: [concrete, construction]
+  synonyms: [concrete calculator, concrete volume calculator, rcc quantity calculator, slab concrete calculator, beam concrete calculator, column concrete calculator, footing concrete calculator, civil construction calculator, quantity survey calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Concrete Quantity Calculator – Volume in m³ and ft³
+  description: Work out concrete volume for a slab, beam, column or footing in cubic metres and cubic feet, with wastage %. Free, and it runs in your browser.
+  primaryKeyword: concrete quantity calculator
+  secondaryKeywords: [concrete calculator, concrete volume calculator, rcc quantity calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–017, tool fixtures 001–002" }
+  lastVerified: 2026-09-26

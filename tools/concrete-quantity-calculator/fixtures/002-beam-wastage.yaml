@@ -1,0 +1,6 @@
+id: 002-beam-wastage
+preset: civil/concrete-quantity
+source: { type: hand-verified, citation: "6 x 0.3 x 0.45 m = 0.81 m3 per beam; x4 beams = 3.24 m3; 5% wastage = 0.162 m3; total 3.402 m3; x35.3146667 = 120.1404961134 ft3" }
+input: { memberType: beam, unit: m, length: "6", width: "0.3", depth: "0.45", quantity: "4", wastagePercent: "5" }
+expected: { memberType: beam, unit: m, quantity: "4", wastagePercent: "5", baseVolumeM3: "3.240", wastageVolumeM3: "0.162", totalVolumeM3: "3.402", totalVolumeFt3: "120.140" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

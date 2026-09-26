@@ -1,0 +1,5 @@
+id: 008-zero-width
+operation: civil.concrete.quantity@1
+source: { type: regression }
+input: { memberType: slab, unit: m, length: "5", width: "0", depth: "0.15", quantity: "1", wastagePercent: "0" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: width }

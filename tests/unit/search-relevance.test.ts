@@ -101,6 +101,16 @@ describe('search relevance over the generated index', () => {
     ['reduce photo file size', 'image-compress'],
     ['browser image compressor', 'image-compress'],
     ['no upload image compressor', 'image-compress'],
+    ['Concrete Quantity Calculator', 'concrete-quantity-calculator'],
+    ['concrete calculator', 'concrete-quantity-calculator'],
+    ['concrete volume calculator', 'concrete-quantity-calculator'],
+    ['rcc quantity calculator', 'concrete-quantity-calculator'],
+    ['slab concrete calculator', 'concrete-quantity-calculator'],
+    ['beam concrete calculator', 'concrete-quantity-calculator'],
+    ['column concrete calculator', 'concrete-quantity-calculator'],
+    ['footing concrete calculator', 'concrete-quantity-calculator'],
+    ['civil construction calculator', 'concrete-quantity-calculator'],
+    ['quantity survey calculator', 'concrete-quantity-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

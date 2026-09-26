@@ -39,11 +39,12 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds fourteen tools, fourteen presets and the five visible categories', () => {
+  it('builds fifteen tools, fifteen presets and the six visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
       'cbm-calculator',
+      'concrete-quantity-calculator',
       'container-loading-calculator',
       'gst-calculator',
       'image-compress',
@@ -57,8 +58,9 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(14);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(15);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
+      'construction',
       'logistics',
       'business',
       'developer',
@@ -78,7 +80,14 @@ describe('registry pipeline — valid repository', () => {
     );
   });
   it('lists only the engines that presets use', () => {
-    expect(result.output?.engineIds).toEqual(['data', 'estimate', 'image', 'logistics', 'pdf']);
+    expect(result.output?.engineIds).toEqual([
+      'civil',
+      'data',
+      'estimate',
+      'image',
+      'logistics',
+      'pdf',
+    ]);
   });
   it('excludes worker-only (non-Node) operations from the determinism suite', () => {
     const cases = result.output?.determinism ?? [];
@@ -349,8 +358,16 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // logistics has four tools; business and developer have three each; pdf and media have two each.
-    expect(visibleAt(1)).toEqual(['logistics', 'business', 'developer', 'pdf', 'media']);
+    // logistics has four tools; business and developer have three each; pdf and media have two each;
+    // construction has one. Visible categories are ordered by taxonomy/categories.yaml's own `order`.
+    expect(visibleAt(1)).toEqual([
+      'construction',
+      'logistics',
+      'business',
+      'developer',
+      'pdf',
+      'media',
+    ]);
     expect(visibleAt(2)).toEqual(['logistics', 'business', 'developer', 'pdf', 'media']);
     expect(visibleAt(3)).toEqual(['logistics', 'business', 'developer']);
     expect(visibleAt(4)).toEqual(['logistics']);

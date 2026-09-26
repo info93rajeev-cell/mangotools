@@ -1,0 +1,5 @@
+id: 007-missing-length
+operation: civil.concrete.quantity@1
+source: { type: regression }
+input: { memberType: slab, unit: m, width: "4", depth: "0.15", quantity: "1", wastagePercent: "0" }
+expectedError: { code: CIVIL_MISSING_INPUT, path: length }

@@ -7,6 +7,7 @@ export const SAMPLES = {
   'profit-margin-calculator': { archetype: 'B', result: '20.00%' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', result: '6.000' },
+  'concrete-quantity-calculator': { archetype: 'B', result: '3.000' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },

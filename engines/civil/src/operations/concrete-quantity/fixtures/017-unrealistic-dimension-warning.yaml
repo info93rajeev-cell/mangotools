@@ -1,0 +1,6 @@
+id: 017-unrealistic-dimension-warning
+operation: civil.concrete.quantity@1
+source: { type: hand-verified, citation: "150 x 1 x 1 m = 150 m3, a length past the 100 m soft sanity ceiling; still calculated, flagged with a warning" }
+input: { memberType: slab, unit: m, length: "150", width: "1", depth: "1", quantity: "1", wastagePercent: "0" }
+expected: { memberType: slab, unit: m, quantity: "1", wastagePercent: "0", baseVolumeM3: "150.000", wastageVolumeM3: "0.000", totalVolumeM3: "150.000", totalVolumeFt3: "5297.200" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY, CIVIL_DIMENSION_UNREALISTIC]

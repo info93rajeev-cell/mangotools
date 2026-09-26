@@ -15,3 +15,5 @@ tags:
   - { id: images, label: Images }
   - { id: resize, label: Resize }
   - { id: compress, label: Compress }
+  - { id: concrete, label: Concrete }
+  - { id: construction, label: Construction }
