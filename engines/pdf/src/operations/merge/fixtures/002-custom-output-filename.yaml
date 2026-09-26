@@ -1,0 +1,14 @@
+id: 002-custom-output-filename
+operation: pdf.merge@1
+source:
+  type: synthetic
+  citation: "Same two files as 001-two-file-merge; checks that a custom output name is normalized (trimmed, unsafe characters removed, extension normalized to lowercase .pdf)"
+input:
+  files:
+    - { name: one-page.pdf, bytes: { path: one-page.pdf } }
+    - { name: two-page.pdf, bytes: { path: two-page.pdf } }
+  outputFileName: "  My Report<>.PDF  "
+expected:
+  fileName: My Report.pdf
+  fileCount: 2
+  totalPageCount: 3

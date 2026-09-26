@@ -1,0 +1,12 @@
+id: 007-corrupted-pdf
+operation: pdf.merge@1
+source:
+  type: synthetic
+  citation: "corrupted.pdf (fixtures/files/) is one-page.pdf truncated to half its length, so it has a valid %PDF- signature but fails to parse (broken xref/trailer)"
+input:
+  files:
+    - { name: corrupted.pdf, bytes: { path: corrupted.pdf } }
+expectedError:
+  code: PDF_UNREADABLE
+  path: files.0
+  details: { name: corrupted.pdf }

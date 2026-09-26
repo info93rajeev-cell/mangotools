@@ -1,0 +1,12 @@
+id: 006-encrypted-pdf
+operation: pdf.merge@1
+source:
+  type: synthetic
+  citation: "encrypted.pdf (fixtures/files/) is one-page.pdf encrypted with a user password via pypdf, for this fixture only; Phase 1 does not attempt password entry or decryption"
+input:
+  files:
+    - { name: encrypted.pdf, bytes: { path: encrypted.pdf } }
+expectedError:
+  code: PDF_ENCRYPTED_UNSUPPORTED
+  path: files.0
+  details: { name: encrypted.pdf }

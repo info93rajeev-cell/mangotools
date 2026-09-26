@@ -1,4 +1,5 @@
-import { basename, join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import type { OperationContext, Result } from '@mangotools/core';
 import { type Fixture, fixtureSchema } from '@mangotools/schemas';
 import { listDirs, listFiles, readYaml } from './files.ts';
@@ -7,6 +8,28 @@ import { paths, rel } from './paths.ts';
 export interface LoadedFixture {
   file: string;
   fixture: Fixture;
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  v !== null && typeof v === 'object' && !Array.isArray(v);
+
+const isFileRef = (v: unknown): v is { path: string } =>
+  isRecord(v) && Object.keys(v).length === 1 && typeof v.path === 'string';
+
+/**
+ * Resolves `{ path: '...' }` markers anywhere in a fixture's `input` or `params` to real file
+ * bytes, read from a `files/` folder next to the fixture. Used by binary/file-based operations
+ * (PDF, image, ...); fixtures with no such marker are returned unchanged.
+ */
+export function resolveFixtureFiles<T>(fixtureDir: string, value: T): T {
+  if (isFileRef(value)) return readFileSync(join(fixtureDir, 'files', value.path)) as T;
+  if (Array.isArray(value)) return value.map((v) => resolveFixtureFiles(fixtureDir, v)) as T;
+  if (isRecord(value)) {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, resolveFixtureFiles(fixtureDir, v)]),
+    ) as T;
+  }
+  return value;
 }
 
 export function loadFixture(file: string): LoadedFixture {
@@ -20,7 +43,13 @@ export function loadFixture(file: string): LoadedFixture {
   if (`${parsed.data.id}.yaml` !== basename(file)) {
     throw new Error(`${rel(file)}: fixture id "${parsed.data.id}" must match the file name.`);
   }
-  return { file, fixture: parsed.data };
+  const dir = dirname(file);
+  const fixture: Fixture = {
+    ...parsed.data,
+    input: resolveFixtureFiles(dir, parsed.data.input),
+    params: parsed.data.params && resolveFixtureFiles(dir, parsed.data.params),
+  };
+  return { file, fixture };
 }
 
 export function engineFixtureFiles(): string[] {
@@ -32,9 +61,6 @@ export function engineFixtureFiles(): string[] {
   }
   return files;
 }
-
-const isRecord = (v: unknown): v is Record<string, unknown> =>
-  v !== null && typeof v === 'object' && !Array.isArray(v);
 
 /** Recursive subset comparison: every key in `expected` must equal the same key in `actual`. */
 export function subsetMismatch(actual: unknown, expected: unknown, path = ''): string | null {

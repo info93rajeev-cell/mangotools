@@ -1,0 +1,13 @@
+id: 001-two-file-merge
+operation: pdf.merge@1
+source:
+  type: synthetic
+  citation: "one-page.pdf (1 page, 100x100) and two-page.pdf (2 pages, 150x150), both generated with pdf-lib itself for this fixture (fixtures/files/)"
+input:
+  files:
+    - { name: one-page.pdf, bytes: { path: one-page.pdf } }
+    - { name: two-page.pdf, bytes: { path: two-page.pdf } }
+expected:
+  fileName: merged.pdf
+  fileCount: 2
+  totalPageCount: 3

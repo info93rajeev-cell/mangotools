@@ -59,6 +59,7 @@ export const ENGINE_IMPORTS: Readonly<Record<string, readonly string[]>> = {
   estimate: ['@mangotools/engine-numeric'],
   logistics: ['@mangotools/engine-numeric'],
   search: ['minisearch'],
+  pdf: ['pdf-lib'],
 };
 
 const ALWAYS_ALLOWED = ['zod', '@mangotools/core'];
