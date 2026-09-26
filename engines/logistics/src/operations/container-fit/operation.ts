@@ -18,7 +18,7 @@ import {
   USABLE_PERCENT_MAX,
   USABLE_PERCENT_MIN,
 } from './units.ts';
-import { collectWarnings, computeVolumeMetrics } from './volume.ts';
+import { collectWarnings, computeVolumeMetrics, gridUtilization } from './volume.ts';
 
 /** Reads the carton's three dimensions and quantity, stopping at the first invalid field. */
 function readCarton(input: ContainerFitInput): Result<Carton> {
@@ -82,9 +82,6 @@ function measureAll(input: ContainerFitInput): Result<Measured> {
     cartonCm,
     containerAxes: containerAxes.value,
     usablePercent: usable.value,
-    stackable: input.stackable ?? true,
-    allowRotation: input.allowRotation ?? true,
-    keepUpright: input.keepUpright ?? false,
   });
 }
 
@@ -126,15 +123,19 @@ export const containerFit = defineOperation({
     const grid = bestOrientation(
       m.containerAxes,
       cartonDims,
-      m.allowRotation,
-      m.keepUpright,
-      m.stackable,
+      params.allowRotation,
+      params.keepUpright,
+      params.stackable,
     );
     if (isZero(grid.total)) return err('LOGISTICS_CARTON_EXCEEDS_CONTAINER');
     const leftover = leftovers(m.containerAxes, cartonDims, grid);
+    const utilizationPercent = gridUtilization(grid.total, volume.cartonCbm, volume.usableCbm);
     const warnings = collectWarnings(volume, m.carton.quantity, grid.total);
     const shown = (value: string) => toFixedString(value, params.decimals, params.rounding);
     const working = workingSteps(m, volume, grid, leftover);
-    return ok(buildOutput(volume, grid, leftover, m.carton.quantity, shown, working), warnings);
+    return ok(
+      buildOutput(volume, grid, leftover, utilizationPercent, m.carton.quantity, shown, working),
+      warnings,
+    );
   },
 });

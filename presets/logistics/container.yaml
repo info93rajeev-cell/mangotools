@@ -1,0 +1,146 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: logistics/container
+version: 0.1.0
+operation: logistics.container.fit@1
+params: { decimals: 3, rounding: half-up, stackable: true, allowRotation: true, keepUpright: false }
+userOptions:
+  stackable:
+    control: switch
+    labelKey: cf.option.stackable
+    order: 10
+  allowRotation:
+    control: switch
+    labelKey: cf.option.allowRotation
+    order: 20
+  keepUpright:
+    control: switch
+    labelKey: cf.option.keepUpright
+    order: 30
+fields:
+  unit:
+    labelKey: cf.field.unit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 10
+    options:
+      - { value: cm, labelKey: cf.unit.cm }
+      - { value: m, labelKey: cf.unit.m }
+      - { value: mm, labelKey: cf.unit.mm }
+      - { value: in, labelKey: cf.unit.in }
+  length: { labelKey: cf.field.length, kind: number, required: true, order: 20, helpKey: cf.help.dimension }
+  width: { labelKey: cf.field.width, kind: number, required: true, order: 30, helpKey: cf.help.dimension }
+  height: { labelKey: cf.field.height, kind: number, required: true, order: 40, helpKey: cf.help.dimension }
+  quantity: { labelKey: cf.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: cf.help.quantity }
+  containerType:
+    labelKey: cf.field.containerType
+    kind: enum
+    control: select
+    default: 20gp
+    order: 60
+    helpKey: cf.help.containerType
+    options:
+      - { value: 20gp, labelKey: cf.containerType.20gp }
+      - { value: 40gp, labelKey: cf.containerType.40gp }
+      - { value: 40hc, labelKey: cf.containerType.40hc }
+      - { value: custom, labelKey: cf.containerType.custom }
+  containerUnit:
+    labelKey: cf.field.containerUnit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 70
+    visibleWhen: { containerType: [custom] }
+    options:
+      - { value: cm, labelKey: cf.unit.cm }
+      - { value: m, labelKey: cf.unit.m }
+      - { value: mm, labelKey: cf.unit.mm }
+      - { value: in, labelKey: cf.unit.in }
+  containerLength: { labelKey: cf.field.containerLength, kind: number, required: true, order: 80, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
+  containerWidth: { labelKey: cf.field.containerWidth, kind: number, required: true, order: 90, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
+  containerHeight: { labelKey: cf.field.containerHeight, kind: number, required: true, order: 100, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
+  usablePercent: { labelKey: cf.field.usablePercent, kind: percent, unit: "%", required: true, default: 90, order: 110, helpKey: cf.help.usablePercent }
+outputs:
+  maxCartonsByGrid: { labelKey: cf.out.maxCartonsByGrid, format: number, order: 10, primary: true }
+  volumeFillPercent: { labelKey: cf.out.volumeFillPercent, format: percent, order: 20 }
+  totalCbm: { labelKey: cf.out.totalCbm, format: number, order: 30 }
+  cartonsByVolume: { labelKey: cf.out.cartonsByVolume, format: number, order: 40 }
+  gridUtilizationPercent: { labelKey: cf.out.gridUtilizationPercent, format: percent, order: 50 }
+  cartonsAlongLength: { labelKey: cf.out.cartonsAlongLength, format: number, order: 60 }
+  cartonsAlongWidth: { labelKey: cf.out.cartonsAlongWidth, format: number, order: 70 }
+  cartonsAlongHeight: { labelKey: cf.out.cartonsAlongHeight, format: number, order: 80 }
+  cartonsLeftAfterGrid: { labelKey: cf.out.cartonsLeftAfterGrid, format: number, order: 90 }
+  leftoverLength: { labelKey: cf.out.leftoverLength, format: number, order: 100 }
+  leftoverWidth: { labelKey: cf.out.leftoverWidth, format: number, order: 110 }
+  leftoverHeight: { labelKey: cf.out.leftoverHeight, format: number, order: 120 }
+  cartonCbm: { labelKey: cf.out.cartonCbm, format: number, order: 130 }
+  containerCbm: { labelKey: cf.out.containerCbm, format: number, order: 140 }
+  usableCbm: { labelKey: cf.out.usableCbm, format: number, order: 150 }
+  remainingCbm: { labelKey: cf.out.remainingCbm, format: number, order: 160 }
+samples:
+  carton-60-40-40-40ft-x500:
+    titleKey: cf.sample.carton
+    input: { unit: cm, length: "60", width: "40", height: "40", quantity: "500", containerType: 40gp, usablePercent: "90" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    cf.option.stackable: Cartons can be stacked
+    cf.option.allowRotation: Allow the carton to be rotated
+    cf.option.keepUpright: Keep the carton upright (don't rotate its height)
+    cf.field.unit: Carton dimension unit
+    cf.unit.cm: cm
+    cf.unit.m: m
+    cf.unit.mm: mm
+    cf.unit.in: inch
+    cf.field.length: Carton length
+    cf.field.width: Carton width
+    cf.field.height: Carton height
+    cf.field.quantity: Number of cartons
+    cf.field.containerType: Container type
+    cf.containerType.20gp: 20 ft standard
+    cf.containerType.40gp: 40 ft standard
+    cf.containerType.40hc: 40 ft high cube
+    cf.containerType.custom: Custom
+    cf.field.containerUnit: Custom container unit
+    cf.field.containerLength: Custom container length
+    cf.field.containerWidth: Custom container width
+    cf.field.containerHeight: Custom container height
+    cf.field.usablePercent: Usable space (%)
+    cf.help.dimension: Outer size of one carton in the unit chosen above, up to 3 decimal places.
+    cf.help.quantity: Cartons of this size, a whole number from 1 to 1,000,000.
+    cf.help.containerType: Pick a standard container, or Custom to enter your own internal dimensions.
+    cf.help.containerDimension: Internal size of the container, up to 3 decimal places.
+    cf.help.usablePercent: A whole number from 1 to 100. Leaves space for pallets, uneven stacking or handling clearance in the volume estimate.
+    cf.out.maxCartonsByGrid: Maximum cartons (simple grid)
+    cf.out.volumeFillPercent: Volume fill (%)
+    cf.out.totalCbm: Total shipment volume (m³)
+    cf.out.cartonsByVolume: Estimated cartons by volume
+    cf.out.gridUtilizationPercent: Estimated utilization (%)
+    cf.out.cartonsAlongLength: Cartons along container length
+    cf.out.cartonsAlongWidth: Cartons along container width
+    cf.out.cartonsAlongHeight: Cartons along container height
+    cf.out.cartonsLeftAfterGrid: Cartons left after simple grid fit
+    cf.out.leftoverLength: Leftover length (cm)
+    cf.out.leftoverWidth: Leftover width (cm)
+    cf.out.leftoverHeight: Leftover height (cm)
+    cf.out.cartonCbm: Carton volume (m³)
+    cf.out.containerCbm: Container volume (m³)
+    cf.out.usableCbm: Usable container volume (m³)
+    cf.out.remainingCbm: Remaining volume (m³)
+    cf.sample.carton: 60 × 40 × 40 cm, 500 cartons, 40 ft standard
+    work.cf.cartonVolume: "Carton volume = {length:number} {unit} × {width:number} {unit} × {height:number} {unit} = {result} m³"
+    work.cf.containerVolume.20gp: "Container volume (20 ft standard) = {length:number} cm × {width:number} cm × {height:number} cm = {result} m³"
+    work.cf.containerVolume.40gp: "Container volume (40 ft standard) = {length:number} cm × {width:number} cm × {height:number} cm = {result} m³"
+    work.cf.containerVolume.40hc: "Container volume (40 ft high cube) = {length:number} cm × {width:number} cm × {height:number} cm = {result} m³"
+    work.cf.containerVolume.custom: "Container volume (custom) = {length:number} cm × {width:number} cm × {height:number} cm = {result} m³"
+    work.cf.usableVolume: "Usable volume = {containerCbm} m³ × {usablePercent}% = {result} m³"
+    work.cf.totalVolume: "Total shipment volume = {cartonCbm} m³ × {quantity:number} cartons = {result} m³"
+    work.cf.cartonsByVolume: "Estimated cartons by volume = floor({usableCbm} m³ ÷ {cartonCbm} m³) = {result} cartons"
+    work.cf.remainingVolume: "Remaining volume = {usableCbm} m³ − {totalCbm} m³ = {result} m³"
+    work.cf.orientation.lwh: "Simple grid fit: carton length along the container's length, width along its width, height along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."
+    work.cf.orientation.lhw: "Simple grid fit: carton length along the container's length, height along its width, width along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."
+    work.cf.orientation.wlh: "Simple grid fit: carton width along the container's length, length along its width, height along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."
+    work.cf.orientation.whl: "Simple grid fit: carton width along the container's length, height along its width, length along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."
+    work.cf.orientation.hlw: "Simple grid fit: carton height along the container's length, length along its width, width along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."
+    work.cf.orientation.hwl: "Simple grid fit: carton height along the container's length, width along its width, length along its height → {alongLength:number} × {alongWidth:number} × {alongHeight:number} = {result} cartons, with {leftoverLength} cm, {leftoverWidth} cm and {leftoverHeight} cm left over. This can differ from the volume estimate above because it checks a real, single-orientation arrangement, not just total volume."

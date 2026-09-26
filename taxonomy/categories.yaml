@@ -23,21 +23,21 @@ categories:
     name: Logistics
     icon: container
     order: 30
-    summary: Carton volume (CBM) and volumetric weight for freight and shipping.
+    summary: Carton volume (CBM), volumetric weight and container loading estimates for freight and shipping.
     seo:
-      title: Logistics Calculators – CBM and Volumetric Weight
-      description: Free logistics calculators for carton volume in CBM and for volumetric and chargeable weight, with every step shown. No sign-up, runs in your browser.
+      title: Logistics Calculators – CBM, Weight & Container Loading
+      description: Free logistics calculators for carton volume (CBM), volumetric weight and container loading estimates, with every step shown. No sign-up, runs in your browser.
     about:
-      - Freight forwarders, couriers, shippers and warehouses price and plan cargo by volume and weight. The CBM Calculator works out the volume of one carton and of a whole shipment in cubic metres and cubic feet. The Volumetric Weight Calculator compares actual and volumetric weight to find the chargeable weight.
-      - Volumes and weights are calculated with exact decimal arithmetic and rounded only for display, and every result shows its working so you can check it before you share a quote.
+      - Freight forwarders, couriers, shippers and warehouses price and plan cargo by volume, weight and container capacity. The CBM Calculator works out the volume of one carton and of a whole shipment in cubic metres and cubic feet. The Volumetric Weight Calculator compares actual and volumetric weight to find the chargeable weight. The Container Loading Calculator estimates how many cartons fit in a container by volume and by a simple loading grid.
+      - Volumes, weights and loading estimates are calculated with exact decimal arithmetic and rounded only for display, and every result shows its working so you can check it before you share a quote.
       - The calculators run entirely in your browser. The dimensions and weights you enter are never sent to a server.
     faq:
       - q: Are these logistics calculators free?
         a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
       - q: Which units can I use?
-        a: Dimensions in centimetres, metres, millimetres or inches. The CBM Calculator shows cubic metres (CBM) and cubic feet; the Volumetric Weight Calculator accepts weights in kilograms, grams or pounds and shows kilograms.
-      - q: Do these calculators give the freight rate?
-        a: No. They give volume and chargeable weight, not prices. Carriers apply their own divisors, rounding and minimum charges, so confirm the final figures with your carrier or forwarder.
+        a: Dimensions in centimetres, metres, millimetres or inches throughout. The CBM Calculator shows cubic metres (CBM) and cubic feet; the Volumetric Weight Calculator accepts weights in kilograms, grams or pounds and shows kilograms; the Container Loading Calculator shows cubic metres and carton counts.
+      - q: Do these calculators give the freight rate or a guaranteed loading plan?
+        a: No. They give volume, chargeable weight and loading estimates, not prices or a certified stowage plan. Confirm freight rates with your carrier or forwarder, and verify the final loading plan with a freight forwarder or logistics professional before shipment.
   - id: privacy-tools
     slug: privacy-tools
     name: Privacy & Compliance

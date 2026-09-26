@@ -1,6 +1,7 @@
 id: 010-keep-upright-limits-orientations
 operation: logistics.container.fit@1
 source: { type: hand-verified, citation: "50×30×70 cm carton in a 40 ft high-cube container with keepUpright: true only tries lwh and wlh (carton height stays on the container's height axis). lwh gives floor(1203.2/50)=24, floor(235.2/30)=7, floor(269.8/70)=3 = 504 cartons. With full rotation allowed the same carton and container instead best-fit as width×height×length (whl) for 600 cartons — this fixture checks that keepUpright excludes that higher-count orientation because it would rotate the carton's height onto a horizontal axis" }
-input: { unit: cm, length: "50", width: "30", height: "70", quantity: "200", containerType: 40hc, usablePercent: "90", keepUpright: true }
-expected: { cartonCbm: "0.105", totalCbm: "21.000", containerCbm: "76.351", usableCbm: "68.716", volumeFillPercent: "30.560", cartonsByVolume: "654", remainingCbm: "47.716", bestOrientation: lwh, cartonsAlongLength: "24", cartonsAlongWidth: "7", cartonsAlongHeight: "3", maxCartonsByGrid: "504", cartonsLeftAfterGrid: "0", leftoverLength: "3.200", leftoverWidth: "25.200", leftoverHeight: "59.800", quantity: "200" }
+input: { unit: cm, length: "50", width: "30", height: "70", quantity: "200", containerType: 40hc, usablePercent: "90" }
+params: { keepUpright: true }
+expected: { cartonCbm: "0.105", totalCbm: "21.000", containerCbm: "76.351", usableCbm: "68.716", volumeFillPercent: "30.560", cartonsByVolume: "654", remainingCbm: "47.716", bestOrientation: lwh, cartonsAlongLength: "24", cartonsAlongWidth: "7", cartonsAlongHeight: "3", maxCartonsByGrid: "504", gridUtilizationPercent: "77.012", cartonsLeftAfterGrid: "0", leftoverLength: "3.200", leftoverWidth: "25.200", leftoverHeight: "59.800", quantity: "200" }
 expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

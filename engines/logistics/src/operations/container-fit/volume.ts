@@ -39,6 +39,15 @@ export function computeVolumeMetrics(
   };
 }
 
+/**
+ * How much of the usable volume the simple grid actually occupies: (cartons in the grid × carton
+ * volume) ÷ usable volume × 100. The grid ignores `usablePercent` (it is a physical count against the
+ * full container), so this can exceed 100% when the grid outperforms the usable-volume estimate.
+ */
+export function gridUtilization(gridTotal: string, cartonCbm: string, usableCbm: string): string {
+  return mul(div(mul(gridTotal, cartonCbm), usableCbm, 20), '100');
+}
+
 /** The three standing notices, always shown, plus over-capacity warnings when they apply. */
 export function collectWarnings(
   volume: VolumeMetrics,

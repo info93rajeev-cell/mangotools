@@ -1,0 +1,7 @@
+id: 003-not-stackable
+preset: logistics/container
+source: { type: hand-verified, citation: "Same carton and container as fixture 001, but cartons cannot be stacked. Every orientation's height-axis count is capped to 1, so the best orientation switches to carton width along the container's length and carton length along its height: floor(1203.2/40)=30, floor(235.2/40)=5, height capped to 1 = 150 cartons (matches engine fixture container-fit/008)" }
+input: { unit: cm, length: "60", width: "40", height: "40", quantity: "500", containerType: 40gp, usablePercent: "90" }
+params: { stackable: false }
+expected: { bestOrientation: whl, cartonsAlongLength: "30", cartonsAlongWidth: "5", cartonsAlongHeight: "1", maxCartonsByGrid: "150", gridUtilizationPercent: "23.627", cartonsLeftAfterGrid: "350", leftoverLength: "3.200", leftoverWidth: "35.200", leftoverHeight: "179.300" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_CONTAINER_OVER_CAPACITY_GRID]

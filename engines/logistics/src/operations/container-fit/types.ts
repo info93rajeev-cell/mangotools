@@ -14,7 +14,4 @@ export interface Measured {
   cartonCm: readonly [string, string, string];
   containerAxes: readonly [string, string, string];
   usablePercent: string;
-  stackable: boolean;
-  allowRotation: boolean;
-  keepUpright: boolean;
 }

@@ -26,7 +26,7 @@ seo:
   primaryKeyword: volumetric weight calculator
   secondaryKeywords: [dimensional weight calculator, chargeable weight calculator]
 graph:
-  related: [cbm-calculator]
+  related: [cbm-calculator, container-loading-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Volumetric weight = length × width × height in cm ÷ divisor (cm³ per kg); chargeable weight = the higher of actual and volumetric weight", locator: "Method section" }

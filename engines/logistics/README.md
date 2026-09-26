@@ -13,6 +13,15 @@ Error messages for every code are in `src/errors.ts`. Golden fixtures live next 
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
 
 ## Changelog
+- 0.3.2 — addition (TASK-003C PR 2): `logistics.container.fit@1` gains a new output,
+  `gridUtilizationPercent` (how much of the usable volume the simple grid occupies), needed to show the
+  tool's "estimated utilization" figure. Purely additive — no existing output changes.
+- 0.3.1 — fix (TASK-003C PR 2): `logistics.container.fit@1`'s `stackable`, `allowRotation` and
+  `keepUpright` moved from input to params. As input fields they could not be driven from any tool's UI
+  — this codebase's only mechanism for a boolean toggle is a preset `userOptions` switch, which the
+  runtime always sends as params (the same pattern `data.base64.transform@1` uses for `padding`). No
+  output changes for any given combination of values. `logistics.cbm.compute@1` and
+  `logistics.weight.chargeable@1` are unchanged.
 - 0.3.0 — `logistics.container.fit@1` (TASK-003C PR 1). New codes `LOGISTICS_USABLE_PERCENT_OUT_OF_RANGE`,
   `LOGISTICS_CARTON_EXCEEDS_CONTAINER`, `LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED`,
   `LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING`, `LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL`,
