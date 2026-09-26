@@ -46,14 +46,26 @@ describe('search relevance over the generated index', () => {
     ['shipping weight', 'volumetric-weight-calculator'],
     ['air freight weight', 'volumetric-weight-calculator'],
     ['dim weight', 'volumetric-weight-calculator'],
+    ['Container Loading Calculator', 'container-loading-calculator'],
+    ['container loading calculator', 'container-loading-calculator'],
+    ['container capacity calculator', 'container-loading-calculator'],
+    ['carton container calculator', 'container-loading-calculator'],
+    ['how many cartons in a container', 'container-loading-calculator'],
+    ['20ft container calculator', 'container-loading-calculator'],
+    ['40ft container calculator', 'container-loading-calculator'],
+    ['shipping container calculator', 'container-loading-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
   }
 
-  it('"logistics calculator" finds both logistics tools first', () => {
-    const ids = search('logistics calculator', 2).map((r) => r.id);
-    expect(ids.sort()).toEqual(['cbm-calculator', 'volumetric-weight-calculator']);
+  it('"logistics calculator" finds all three logistics tools first', () => {
+    const ids = search('logistics calculator', 3).map((r) => r.id);
+    expect(ids.sort()).toEqual([
+      'cbm-calculator',
+      'container-loading-calculator',
+      'volumetric-weight-calculator',
+    ]);
   });
 
   it('returns nothing for an empty query', () => expect(search('  ')).toEqual([]));

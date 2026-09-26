@@ -1,0 +1,6 @@
+id: 001-40ft-standard-basic
+preset: logistics/container
+source: { type: hand-verified, citation: "60×40×40 cm = 0.096 m³ × 500 = 48 m³; 40 ft standard container ≈ 67.720 m³, usable 90% = 60.948 m³; grid: floor(1203.2/60)=20, floor(235.2/40)=5, floor(239.3/40)=5 = 500 cartons (matches engine fixture container-fit/002)" }
+input: { unit: cm, length: "60", width: "40", height: "40", quantity: "500", containerType: 40gp, usablePercent: "90" }
+expected: { cartonCbm: "0.096", totalCbm: "48.000", containerCbm: "67.720", usableCbm: "60.948", volumeFillPercent: "78.755", cartonsByVolume: "634", remainingCbm: "12.948", bestOrientation: lwh, cartonsAlongLength: "20", cartonsAlongWidth: "5", cartonsAlongHeight: "5", maxCartonsByGrid: "500", gridUtilizationPercent: "78.755", cartonsLeftAfterGrid: "0", leftoverLength: "3.200", leftoverWidth: "35.200", leftoverHeight: "39.300" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

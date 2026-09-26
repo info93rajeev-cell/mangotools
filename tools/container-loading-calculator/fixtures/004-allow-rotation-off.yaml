@@ -1,0 +1,7 @@
+id: 004-allow-rotation-off
+preset: logistics/container
+source: { type: hand-verified, citation: "30×60×40 cm carton in a 40 ft standard container with rotation not allowed is placed only length×width×height as given: floor(1203.2/30)=40, floor(235.2/60)=3, floor(239.3/40)=5 = 600 cartons, fewer than the 700 the best rotated orientation would give (matches engine fixture container-fit/009)" }
+input: { unit: cm, length: "30", width: "60", height: "40", quantity: "100", containerType: 40gp, usablePercent: "90" }
+params: { allowRotation: false }
+expected: { bestOrientation: lwh, cartonsAlongLength: "40", cartonsAlongWidth: "3", cartonsAlongHeight: "5", maxCartonsByGrid: "600", gridUtilizationPercent: "70.880" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

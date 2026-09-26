@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: container-loading-calculator
+slug: container-loading-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with a volume estimate and a simple 6-orientation grid fit for 20 ft, 40 ft, 40 ft high-cube or custom containers." }
+name: Container Loading Calculator
+shortName: Container Loading
+summary: Estimate how many cartons fit in a container by volume and by a simple loading grid, with every step shown.
+archetype: B
+preset: logistics/container
+sample: carton-60-40-40-40ft-x500
+taxonomy:
+  category: logistics
+  tags: [volume, shipping]
+  synonyms: [container loading calculator, container capacity calculator, carton container calculator, how many cartons in a container, 20ft container calculator, 40ft container calculator, shipping container calculator, logistics calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Container Loading Calculator – Cartons per Container
+  description: Estimate how many cartons fit in a 20 ft, 40 ft, high-cube or custom container by volume and a simple loading grid. A planning aid, not a guaranteed fit.
+  primaryKeyword: container loading calculator
+  secondaryKeywords: [container capacity calculator, how many cartons in a container]
+graph:
+  related: [cbm-calculator, volumetric-weight-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Carton and container CBM = length × width × height; usable CBM = container CBM × usable %; cartons by volume = floor(usable CBM ÷ carton CBM); simple grid = floor(container axis ÷ carton dimension) per axis, over the 6 axis-aligned orientations", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–031 (TASK-003C PR 1), tool fixtures 001–005" }
+  lastVerified: 2026-09-26

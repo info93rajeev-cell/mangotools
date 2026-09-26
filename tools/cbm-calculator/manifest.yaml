@@ -26,7 +26,7 @@ seo:
   primaryKeyword: cbm calculator
   secondaryKeywords: [cubic meter calculator, carton volume calculator]
 graph:
-  related: [volumetric-weight-calculator]
+  related: [volumetric-weight-calculator, container-loading-calculator]
 quality:
   verifiedAgainst:
     - { citation: "SI definition of the metre; international inch (1959): 1 in = 25.4 mm exactly", locator: "Method section" }

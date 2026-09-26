@@ -1,0 +1,7 @@
+id: 005-keep-upright
+preset: logistics/container
+source: { type: hand-verified, citation: "50×30×70 cm carton in a 40 ft high-cube container with keep upright on only tries the two orientations that keep the carton's own height on the container's height axis: floor(1203.2/50)=24, floor(235.2/30)=7, floor(269.8/70)=3 = 504 cartons, fewer than the 600 the height-rotated orientation would give (matches engine fixture container-fit/010)" }
+input: { unit: cm, length: "50", width: "30", height: "70", quantity: "200", containerType: 40hc, usablePercent: "90" }
+params: { keepUpright: true }
+expected: { bestOrientation: lwh, cartonsAlongLength: "24", cartonsAlongWidth: "7", cartonsAlongHeight: "3", maxCartonsByGrid: "504", gridUtilizationPercent: "77.012" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

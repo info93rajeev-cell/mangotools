@@ -40,10 +40,18 @@ container axis = `floor(container axis ÷ carton dimension on that axis)`, multi
 | `bestOrientation` | which orientation gave the most cartons: `lwh`, `lhw`, `wlh`, `whl`, `hlw` or `hwl` (carton length/width/height mapped, in that order, to the container's length/width/height axis) |
 | `cartonsAlongLength`, `cartonsAlongWidth`, `cartonsAlongHeight` | per-axis counts for `bestOrientation` |
 | `maxCartonsByGrid` | the three counts multiplied together |
+| `gridUtilizationPercent` | `(maxCartonsByGrid × cartonCbm) ÷ usableCbm × 100` — can exceed 100%, since the grid is computed against the full container and does not apply `usablePercent` |
 | `cartonsLeftAfterGrid` | `max(quantity − maxCartonsByGrid, 0)` |
 | `leftoverLength`, `leftoverWidth`, `leftoverHeight` | container axis minus (count × carton dimension), for `bestOrientation` |
 
-## Options (founder decisions, TASK-003C §15)
+## Options
+
+`stackable`, `allowRotation` and `keepUpright` are **params**, not input fields — they are booleans that
+a preset exposes as `userOptions` with `control: switch` (the same pattern `data.base64.transform@1`
+uses for `padding`), which the runtime always sends as params. They were input fields in PR 1; PR 2
+(TASK-003C) moved them to params because that is the only mechanism this codebase has for a genuine
+boolean toggle in a tool's UI — an input field's value from a preset form is always text. Moving them
+does not change what any given combination of values computes.
 
 - `stackable` (default `true`): when `false`, the container's height-axis count is capped to 1 in every
   orientation tried — cartons that cannot stack occupy a single layer.
@@ -52,9 +60,10 @@ container axis = `floor(container axis ÷ carton dimension on that axis)`, multi
 - `keepUpright` (default `false`): when `true` (and rotation is allowed), only the two orientations
   where the carton's own height stays on the container's height axis are tried (`lwh`, `wlh`) — the
   carton's height is never rotated onto a horizontal axis.
-- `usablePercent`: a whole number from 1 to 100, applied **only** to the volume estimate. It does not
-  reduce the grid's container dimensions (TASK-003C §15 decision 5) — a physical carton either fits in
-  a grid cell or it does not; "90% usable" does not shrink a grid cell.
+
+`usablePercent` stays an **input** field: a whole number from 1 to 100, applied **only** to the volume
+estimate. It does not reduce the grid's container dimensions (TASK-003C §15 decision 5) — a physical
+carton either fits in a grid cell or it does not; "90% usable" does not shrink a grid cell.
 
 ## Validation
 

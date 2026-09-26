@@ -30,8 +30,7 @@ describe('logistics.container.fit', () => {
 
   it('defaults stackable and allowRotation to true and keepUpright to false', async () => {
     const withDefaults = await run(carton);
-    const explicit = await run({
-      ...carton,
+    const explicit = await run(carton, {
       stackable: true,
       allowRotation: true,
       keepUpright: false,
@@ -79,15 +78,17 @@ describe('logistics.container.fit', () => {
       containerType: '40gp',
       quantity: '500',
     });
-    const notStacked = await run({
-      ...carton,
-      length: '60',
-      width: '40',
-      height: '40',
-      containerType: '40gp',
-      quantity: '500',
-      stackable: false,
-    });
+    const notStacked = await run(
+      {
+        ...carton,
+        length: '60',
+        width: '40',
+        height: '40',
+        containerType: '40gp',
+        quantity: '500',
+      },
+      { stackable: false },
+    );
     if (!stacked.ok || !notStacked.ok) throw new Error('expected success');
     expect(stacked.value.cartonsAlongHeight).not.toBe('1');
     expect(notStacked.value.cartonsAlongHeight).toBe('1');
@@ -106,7 +107,7 @@ describe('logistics.container.fit', () => {
       quantity: '100',
     };
     const rotated = await run(input);
-    const fixed = await run({ ...input, allowRotation: false });
+    const fixed = await run(input, { allowRotation: false });
     if (!rotated.ok || !fixed.ok) throw new Error('expected success');
     expect(fixed.value.bestOrientation).toBe('lwh');
     expect(Number(fixed.value.maxCartonsByGrid)).toBeLessThanOrEqual(
@@ -123,7 +124,7 @@ describe('logistics.container.fit', () => {
       containerType: '40hc',
       quantity: '200',
     };
-    const upright = await run({ ...input, keepUpright: true });
+    const upright = await run(input, { keepUpright: true });
     if (!upright.ok) throw new Error('expected success');
     expect(['lwh', 'wlh']).toContain(upright.value.bestOrientation);
   });
