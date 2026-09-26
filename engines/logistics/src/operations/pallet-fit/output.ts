@@ -34,7 +34,12 @@ export function workingSteps(
       },
       stats.cartonsPerLayer,
     ),
-    step('layers', 'pf.layers', { maxStackHeight: palletAxes[2] }, stats.layers),
+    step(
+      'layers',
+      'pf.layers',
+      { maxStackHeight: palletAxes[2], cartonHeightOnAxis: stats.cartonHeightOnAxis },
+      stats.layers,
+    ),
     step(
       'cartonsPerPallet',
       'pf.cartonsPerPallet',
@@ -56,7 +61,11 @@ export function workingSteps(
     step(
       'usedArea',
       'pf.usedArea',
-      { palletLength: palletAxes[0], palletWidth: palletAxes[1] },
+      {
+        palletLength: palletAxes[0],
+        palletWidth: palletAxes[1],
+        cartonsPerLayer: stats.cartonsPerLayer,
+      },
       stats.usedAreaPercent,
     ),
     step(

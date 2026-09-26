@@ -1,0 +1,132 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: logistics/pallet
+version: 0.1.0
+operation: logistics.pallet.fit@1
+params: { decimals: 3, rounding: half-up, stackable: true, allowBaseRotation: true, keepUpright: true }
+userOptions:
+  stackable:
+    control: switch
+    labelKey: pf.option.stackable
+    order: 10
+  allowBaseRotation:
+    control: switch
+    labelKey: pf.option.allowBaseRotation
+    order: 20
+  keepUpright:
+    control: switch
+    labelKey: pf.option.keepUpright
+    order: 30
+fields:
+  unit:
+    labelKey: pf.field.unit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 10
+    options:
+      - { value: cm, labelKey: pf.unit.cm }
+      - { value: m, labelKey: pf.unit.m }
+      - { value: mm, labelKey: pf.unit.mm }
+      - { value: in, labelKey: pf.unit.in }
+  length: { labelKey: pf.field.length, kind: number, required: true, order: 20, helpKey: pf.help.dimension }
+  width: { labelKey: pf.field.width, kind: number, required: true, order: 30, helpKey: pf.help.dimension }
+  height: { labelKey: pf.field.height, kind: number, required: true, order: 40, helpKey: pf.help.dimension }
+  quantity: { labelKey: pf.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: pf.help.quantity }
+  palletType:
+    labelKey: pf.field.palletType
+    kind: enum
+    control: select
+    default: euro
+    order: 60
+    helpKey: pf.help.palletType
+    options:
+      - { value: euro, labelKey: pf.palletType.euro }
+      - { value: us, labelKey: pf.palletType.us }
+      - { value: custom, labelKey: pf.palletType.custom }
+  palletUnit:
+    labelKey: pf.field.palletUnit
+    kind: enum
+    control: segmented
+    default: cm
+    order: 70
+    helpKey: pf.help.palletUnit
+    options:
+      - { value: cm, labelKey: pf.unit.cm }
+      - { value: m, labelKey: pf.unit.m }
+      - { value: mm, labelKey: pf.unit.mm }
+      - { value: in, labelKey: pf.unit.in }
+  palletLength: { labelKey: pf.field.palletLength, kind: number, required: true, order: 80, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension }
+  palletWidth: { labelKey: pf.field.palletWidth, kind: number, required: true, order: 90, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension }
+  maxStackHeight: { labelKey: pf.field.maxStackHeight, kind: number, required: true, default: 150, order: 100, helpKey: pf.help.maxStackHeight }
+outputs:
+  cartonsPerPallet: { labelKey: pf.out.cartonsPerPallet, format: number, order: 10, primary: true }
+  palletsRequired: { labelKey: pf.out.palletsRequired, format: number, order: 20 }
+  cartonsPerLayer: { labelKey: pf.out.cartonsPerLayer, format: number, order: 30 }
+  layers: { labelKey: pf.out.layers, format: number, order: 40 }
+  cartonsOnLastPallet: { labelKey: pf.out.cartonsOnLastPallet, format: number, order: 50 }
+  cartonsAlongPalletLength: { labelKey: pf.out.cartonsAlongPalletLength, format: number, order: 60 }
+  cartonsAlongPalletWidth: { labelKey: pf.out.cartonsAlongPalletWidth, format: number, order: 70 }
+  usedAreaPercent: { labelKey: pf.out.usedAreaPercent, format: percent, order: 80 }
+  unusedAreaPercent: { labelKey: pf.out.unusedAreaPercent, format: percent, order: 90 }
+  estimatedStackHeight: { labelKey: pf.out.estimatedStackHeight, format: number, order: 100 }
+  leftoverPalletLength: { labelKey: pf.out.leftoverPalletLength, format: number, order: 110 }
+  leftoverPalletWidth: { labelKey: pf.out.leftoverPalletWidth, format: number, order: 120 }
+samples:
+  carton-40-30-20-euro-x100:
+    titleKey: pf.sample.carton
+    input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    pf.option.stackable: Cartons can be stacked
+    pf.option.allowBaseRotation: Allow the base footprint to be rotated
+    pf.option.keepUpright: Keep the carton upright (don't rotate its height)
+    pf.field.unit: Carton dimension unit
+    pf.unit.cm: cm
+    pf.unit.m: m
+    pf.unit.mm: mm
+    pf.unit.in: inch
+    pf.field.length: Carton length
+    pf.field.width: Carton width
+    pf.field.height: Carton height
+    pf.field.quantity: Number of cartons
+    pf.field.palletType: Pallet type
+    pf.palletType.euro: Euro pallet
+    pf.palletType.us: US pallet
+    pf.palletType.custom: Custom
+    pf.field.palletUnit: Pallet and stack-height unit
+    pf.field.palletLength: Custom pallet length
+    pf.field.palletWidth: Custom pallet width
+    pf.field.maxStackHeight: Maximum stack height
+    pf.help.dimension: Outer size of one carton in the unit chosen above, up to 3 decimal places.
+    pf.help.quantity: Cartons of this size, a whole number from 1 to 1,000,000.
+    pf.help.palletType: Pick a standard pallet, or Custom to enter your own base dimensions.
+    pf.help.palletUnit: Used for a custom pallet's length and width, and always for the maximum stack height.
+    pf.help.palletDimension: Base size of the pallet, up to 3 decimal places.
+    pf.help.maxStackHeight: The load height above the pallet deck that you allow, not including the pallet itself. Varies by warehouse, trailer or carrier — check yours.
+    pf.out.cartonsPerPallet: Total cartons per pallet
+    pf.out.palletsRequired: Pallets required
+    pf.out.cartonsPerLayer: Cartons per layer
+    pf.out.layers: Layers
+    pf.out.cartonsOnLastPallet: Cartons on last pallet
+    pf.out.cartonsAlongPalletLength: Cartons along pallet length
+    pf.out.cartonsAlongPalletWidth: Cartons along pallet width
+    pf.out.usedAreaPercent: Used pallet area (%)
+    pf.out.unusedAreaPercent: Unused pallet area (%)
+    pf.out.estimatedStackHeight: Estimated stack height (cm)
+    pf.out.leftoverPalletLength: Leftover length (cm)
+    pf.out.leftoverPalletWidth: Leftover width (cm)
+    pf.sample.carton: 40 × 30 × 20 cm, 100 cartons, Euro pallet
+    work.pf.orientation.lwh: "Simple grid fit: carton length along the pallet's length, width along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.orientation.lhw: "Simple grid fit: carton length along the pallet's length, height along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.orientation.wlh: "Simple grid fit: carton width along the pallet's length, length along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.orientation.whl: "Simple grid fit: carton width along the pallet's length, height along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.orientation.hlw: "Simple grid fit: carton height along the pallet's length, length along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.orientation.hwl: "Simple grid fit: carton height along the pallet's length, width along its width → {alongLength:number} × {alongWidth:number} = {result} cartons per layer, with {leftoverLength} cm and {leftoverWidth} cm left over on the base. This is a simple grid estimate, not advanced pallet optimisation."
+    work.pf.layers: "Layers = floor({maxStackHeight} cm ÷ {cartonHeightOnAxis} cm on the vertical axis) = {result} layers"
+    work.pf.cartonsPerPallet: "Total cartons per pallet = {cartonsPerLayer} cartons per layer × {layers} layers = {result} cartons"
+    work.pf.palletsRequired: "Pallets required = ceil({quantity:number} cartons ÷ {cartonsPerPallet} cartons per pallet) = {result} pallets"
+    work.pf.cartonsOnLastPallet: "Cartons on the last pallet = {quantity:number} cartons ÷ {cartonsPerPallet} cartons per pallet, remainder = {result} cartons"
+    work.pf.usedArea: "Used pallet area = ({cartonsPerLayer} cartons per layer's footprint) ÷ ({palletLength} cm × {palletWidth} cm) = {result}% of the pallet base"
+    work.pf.estimatedStackHeight: "Estimated stack height = {result} cm, of the {maxStackHeight} cm allowed"

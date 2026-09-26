@@ -16,6 +16,10 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.4.1 — addition (TASK-003D PR 2): `logistics.pallet.fit@1`'s `pf.layers` working step gains a
+  `cartonHeightOnAxis` variable, and `pf.usedArea` gains a `cartonsPerLayer` variable, so the tool's
+  preset can write a working-step sentence that actually explains the arithmetic. Working-step
+  `variables` are a free-form map, not part of the output schema, so this changes no output field.
 - 0.4.0 — `logistics.pallet.fit@1` (TASK-003D PR 1). New codes `LOGISTICS_CARTON_EXCEEDS_PALLET_BASE`,
   `LOGISTICS_CARTON_TALLER_THAN_STACK_LIMIT`, `LOGISTICS_PALLET_NOT_LOAD_SAFETY`,
   `LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT`, `LOGISTICS_PALLET_DIMENSIONS_VARY` and

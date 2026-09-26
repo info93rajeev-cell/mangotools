@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: pallet-loading-calculator
+slug: pallet-loading-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with cartons per layer, layers, cartons per pallet and pallets required for a Euro, US or custom pallet." }
+name: Pallet Loading Calculator
+shortName: Pallet Loading
+summary: Estimate how many cartons fit on a pallet by a simple grid fit, with layers, pallets required and every step shown.
+archetype: B
+preset: logistics/pallet
+sample: carton-40-30-20-euro-x100
+taxonomy:
+  category: logistics
+  tags: [volume, shipping]
+  synonyms: [pallet loading calculator, pallet capacity calculator, carton pallet calculator, how many cartons on a pallet, euro pallet calculator, pallet planner, logistics calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Pallet Loading Calculator – Cartons per Pallet
+  description: Estimate how many cartons fit on a Euro, US or custom pallet by a simple base-orientation grid fit. A planning aid, not a load-safety calculation.
+  primaryKeyword: pallet loading calculator
+  secondaryKeywords: [pallet capacity calculator, how many cartons on a pallet]
+graph:
+  related: [cbm-calculator, volumetric-weight-calculator, container-loading-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Cartons along an axis = floor(pallet axis ÷ carton dimension); cartons per pallet = cartons per layer × layers; pallets required = ceil(quantity ÷ cartons per pallet), over up to 6 axis-aligned orientations", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–030 (TASK-003D PR 1), tool fixtures 001–005" }
+  lastVerified: 2026-09-26
