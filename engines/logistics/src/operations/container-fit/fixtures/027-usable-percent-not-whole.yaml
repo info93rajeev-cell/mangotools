@@ -1,0 +1,5 @@
+id: 027-usable-percent-not-whole
+operation: logistics.container.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "50", containerType: 20gp, usablePercent: "92.5" }
+expectedError: { code: LOGISTICS_USABLE_PERCENT_OUT_OF_RANGE, path: usablePercent }

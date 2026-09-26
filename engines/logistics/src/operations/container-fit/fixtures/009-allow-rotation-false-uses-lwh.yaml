@@ -1,0 +1,6 @@
+id: 009-allow-rotation-false-uses-lwh
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "30×60×40 cm carton in a 40 ft standard container with allowRotation: false is placed only length×width×height as given: floor(1203.2/30)=40, floor(235.2/60)=3, floor(239.3/40)=5 = 600 cartons. With rotation allowed the same carton and container instead best-fit as width×length×height (wlh) for 700 cartons — this fixture checks that disabling rotation forces the single given orientation even though it is not the best one" }
+input: { unit: cm, length: "30", width: "60", height: "40", quantity: "100", containerType: 40gp, usablePercent: "90", allowRotation: false }
+expected: { cartonCbm: "0.072", totalCbm: "7.200", containerCbm: "67.720", usableCbm: "60.948", volumeFillPercent: "11.813", cartonsByVolume: "846", remainingCbm: "53.748", bestOrientation: lwh, cartonsAlongLength: "40", cartonsAlongWidth: "3", cartonsAlongHeight: "5", maxCartonsByGrid: "600", cartonsLeftAfterGrid: "0", leftoverLength: "3.200", leftoverWidth: "55.200", leftoverHeight: "39.300", quantity: "100" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

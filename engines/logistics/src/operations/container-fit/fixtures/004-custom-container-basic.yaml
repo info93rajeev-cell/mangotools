@@ -1,0 +1,6 @@
+id: 004-custom-container-basic
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "30×20×15 cm = 0.009 m³ × 100 = 0.9 m³; custom container 6×2.4×2.4 m = 600×240×240 cm = 34.56 m³; usable 95% = 32.832 m³; grid: floor(600/30)=20, floor(240/20)=12, floor(240/15)=16 = 3840 cartons, an exact fit with no leftover space on any axis" }
+input: { unit: cm, length: "30", width: "20", height: "15", quantity: "100", containerType: custom, containerUnit: m, containerLength: "6", containerWidth: "2.4", containerHeight: "2.4", usablePercent: "95" }
+expected: { cartonCbm: "0.009", totalCbm: "0.900", containerCbm: "34.560", usableCbm: "32.832", volumeFillPercent: "2.741", cartonsByVolume: "3648", remainingCbm: "31.932", bestOrientation: lwh, cartonsAlongLength: "20", cartonsAlongWidth: "12", cartonsAlongHeight: "16", maxCartonsByGrid: "3840", cartonsLeftAfterGrid: "0", leftoverLength: "0.000", leftoverWidth: "0.000", leftoverHeight: "0.000", quantity: "100" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

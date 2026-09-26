@@ -1,0 +1,5 @@
+id: 030-custom-missing-container-length
+operation: logistics.container.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "50", containerType: custom, containerUnit: m, containerWidth: "2.4", containerHeight: "2.4", usablePercent: "90" }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: containerLength }

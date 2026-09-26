@@ -1,0 +1,6 @@
+id: 007-carton-unit-metre
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "Same physical carton as fixture 001 (40×30×20 cm), given in metres: 0.4×0.3×0.2 m = 40×30×20 cm; quantity 40 gives total 0.4×0.3×0.2×40 = 0.96 m³" }
+input: { unit: m, length: "0.4", width: "0.3", height: "0.2", quantity: "40", containerType: 20gp, usablePercent: "90" }
+expected: { cartonCbm: "0.024", totalCbm: "0.960", containerCbm: "33.196", usableCbm: "29.876", volumeFillPercent: "3.213", cartonsByVolume: "1244", remainingCbm: "28.916", bestOrientation: lwh, cartonsAlongLength: "14", cartonsAlongWidth: "7", cartonsAlongHeight: "11", maxCartonsByGrid: "1078", cartonsLeftAfterGrid: "0", leftoverLength: "29.800", leftoverWidth: "25.200", leftoverHeight: "19.300", quantity: "40" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

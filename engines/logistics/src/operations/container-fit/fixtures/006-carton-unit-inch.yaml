@@ -1,0 +1,6 @@
+id: 006-carton-unit-inch
+operation: logistics.container.fit@1
+source: { type: hand-verified, citation: "20×15×10 in × 2.54 cm/in (international inch) = 50.8×38.1×25.4 cm = 0.049161192 m³ × 200 = 9.8322384 m³; 40 ft standard container ≈ 67.720 m³, usable 90% = 60.948 m³; grid: floor(1203.2/50.8)=23, floor(235.2/38.1)=6, floor(239.3/25.4)=9 = 1242 cartons" }
+input: { unit: in, length: "20", width: "15", height: "10", quantity: "200", containerType: 40gp, usablePercent: "90" }
+expected: { cartonCbm: "0.049", totalCbm: "9.832", containerCbm: "67.720", usableCbm: "60.948", volumeFillPercent: "16.132", cartonsByVolume: "1239", remainingCbm: "51.116", bestOrientation: lwh, cartonsAlongLength: "23", cartonsAlongWidth: "6", cartonsAlongHeight: "9", maxCartonsByGrid: "1242", cartonsLeftAfterGrid: "0", leftoverLength: "34.800", leftoverWidth: "6.600", leftoverHeight: "10.700", quantity: "200" }
+expectedWarnings: [LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED, LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]
