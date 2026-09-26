@@ -250,12 +250,24 @@ test.describe('Image Compress', () => {
   });
 
   test('warns when the output is larger than the original', async ({ page }) => {
+    // sample.jpg is a tiny (331-byte) hand-built fixture, smaller than any real browser's JPEG
+    // container overhead, so re-encoding it always grows the file — but by how much is encoder-
+    // specific (Chromium, Firefox and WebKit each produce a different byte count for the same
+    // source). The stable, cross-browser contract is: the engine's own size-change fields agree the
+    // output grew, and the warning is shown exactly because of that — not a specific percentage.
     await openTool(page, 'image-compress');
     await fileInput(page).setInputFiles([sample]);
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     await downloadPromise;
-    await expect(primaryResult(page)).toHaveText('−128.4%');
+
+    const percentText = await primaryResult(page).textContent();
+    const sizeDifferenceText = await page
+      .locator('[data-output="sizeDifferenceBytes"] dd')
+      .textContent();
+    expect(Number((percentText ?? '').replace('−', '-').replace('%', ''))).toBeLessThan(0);
+    expect(Number((sizeDifferenceText ?? '').replace('−', '-').replace(/,/g, ''))).toBeLessThan(0);
+
     await expect(
       page.getByText(
         'The output file is larger than the original. Try a lower quality setting or another format.',

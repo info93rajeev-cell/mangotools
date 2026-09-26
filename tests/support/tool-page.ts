@@ -55,10 +55,13 @@ export const FILE_TOOLS = {
     files: [join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg')],
     downloadCta: 'Download compressed image',
     // The primary output is the size-change percentage. This tiny (331-byte) hand-built source is
-    // already smaller than any real photo's re-encode overhead, so Chromium's default-quality JPEG
-    // re-encode actually grows it — a real, honest demonstration of "the output can be larger than the
-    // original" (see the "warns when the output is larger" test below), not a chosen worst case.
-    result: '−128.4%',
+    // already smaller than any real photo's re-encode overhead, so every browser's default-quality
+    // JPEG re-encode actually grows it — a real, honest demonstration of "the output can be larger
+    // than the original" (see the "warns when the output is larger" test below), not a chosen worst
+    // case. The exact percentage is encoder-specific (Chromium, Firefox and WebKit each produced a
+    // different negative value for this same fixture in CI), so only the shape — a negative
+    // percentage — is a stable cross-browser contract; see engines/image/README.md's "Determinism".
+    resultPattern: /^−\d+(\.\d+)?%$/,
   },
 } as const;
 

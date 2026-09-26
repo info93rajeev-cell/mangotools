@@ -19,12 +19,16 @@ test.describe('Try sample gives the fixture result', () => {
     test(id, async ({ page }) => {
       await openTool(page, id);
       await produceResult(page, id);
-      const { archetype, result } = hasSample(id) ? SAMPLES[id] : FILE_TOOLS[id];
-      if (archetype === 'A')
+      const sample = hasSample(id) ? SAMPLES[id] : FILE_TOOLS[id];
+      if (sample.archetype === 'A') {
         await expect(outputArea(page, id)).toHaveValue(
-          new RegExp(result.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+          new RegExp(sample.result.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
         );
-      else await expect(primaryResult(page)).toHaveText(result);
+      } else if ('resultPattern' in sample) {
+        await expect(primaryResult(page)).toHaveText(sample.resultPattern);
+      } else {
+        await expect(primaryResult(page)).toHaveText(sample.result);
+      }
     });
   }
 });
