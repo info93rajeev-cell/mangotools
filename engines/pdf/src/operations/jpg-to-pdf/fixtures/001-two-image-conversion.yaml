@@ -1,0 +1,13 @@
+id: 001-two-image-conversion
+operation: pdf.jpg-to-pdf@1
+source:
+  type: synthetic
+  citation: "small-square.jpg (8x8) and wide.jpg (16x8), tiny hand-built baseline JPEGs made for this engine"
+input:
+  files:
+    - { name: small-square.jpg, bytes: { path: small-square.jpg } }
+    - { name: wide.jpg, bytes: { path: wide.jpg } }
+expected:
+  fileName: images.pdf
+  imageCount: 2
+expectedWarnings: [PDF_JPG_VERIFY_OUTPUT, PDF_JPG_LARGE_OR_MANY_MAY_FAIL, PDF_JPG_QUALITY_DEPENDS_ON_SOURCE, PDF_JPG_AUTHORIZED_USE_ONLY]

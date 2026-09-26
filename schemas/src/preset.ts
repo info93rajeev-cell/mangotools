@@ -80,6 +80,8 @@ export const presetSchema = z.strictObject({
       compute: z.enum(['live', 'explicit']).optional(),
       outputFileName: z.string().optional(),
       outputMime: z.string().optional(),
+      /** The file input's `accept` attribute, for archetype D (file-upload tools). */
+      fileAccept: z.string().optional(),
     })
     .optional(),
   strings: z.strictObject({ en: z.record(z.string(), z.string()) }).optional(),

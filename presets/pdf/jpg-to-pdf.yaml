@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: pdf/jpg-to-pdf
+version: 0.1.0
+operation: pdf.jpg-to-pdf@1
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,.jpg,.jpeg"
+outputs:
+  imageCount: { labelKey: output.imagesConverted, format: number, order: 1, primary: true }
+  fileName: { labelKey: output.outputFile, format: text, order: 2 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop JPG images here, or choose files."
+    fileTool.queueLabel: "Images to convert, in order"
+    fileTool.outputNamePlaceholder: "images.pdf"
+    fileTool.downloadCta: "Download PDF"
+    fileTool.noFilesYet: "Add JPG images above to get started."
+    output.imagesConverted: "Images converted"
+    output.outputFile: "Output file"

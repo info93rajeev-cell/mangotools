@@ -1,12 +1,14 @@
 # engines/pdf
 
-Browser-first PDF processing. Phase 1 starts with merging multiple PDFs into one. File bytes are the
-only "data" this engine touches — no DOM, no `File`/`Blob`, no network, no server upload — selecting
-files, drag-and-drop, and downloading the result all belong in `packages/ui`, once a tool exists.
+Browser-first PDF processing. Phase 1 starts with merging multiple PDFs into one, then converting JPG
+images into a PDF. File bytes are the only "data" this engine touches — no DOM, no `File`/`Blob`, no
+network, no server upload — selecting files, drag-and-drop, and downloading the result all belong in
+`packages/ui`, once a tool exists.
 
 | Operation | Purpose |
 |---|---|
 | `pdf.merge@1` | Combines multiple PDF files into one, in the order given |
+| `pdf.jpgToPdf@1` | Combines one or more JPG images into a single PDF, one image per page, in order |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/`, with binary test PDFs in a sibling `fixtures/files/` folder,
@@ -73,16 +75,54 @@ bytes* are unaffected, but a naive `(await PDFDocument.load(bytes)).getModificat
 regardless. `merge.test.ts`'s own determinism test loads with `{ updateMetadata: false }` to read the
 true stored value.
 
+## `pdf.jpgToPdf@1`: page size and orientation
+
+Each image becomes its own PDF page, sized to that image's own pixel dimensions (1 image pixel = 1 PDF
+point) via `doc.addPage([image.width, image.height])` — the same pattern pdf-lib's own documentation
+uses for embedding an image. This is deliberately the simplest option: no fit-to-page scaling, cropping,
+or margin logic, and no ambiguity about what "fit" means for images of very different aspect ratios.
+
+**Known limitation, disclosed rather than silently wrong:** `pdf-lib`'s JPEG embedder reads only the
+image's raw pixel width and height from the JPEG's SOF marker. It does not read or apply the EXIF
+`Orientation` tag that many phone cameras write instead of physically rotating the pixel data. A photo
+that appears upright in a viewer because of that tag may appear in its raw, unrotated orientation in the
+generated PDF. Adding EXIF-aware rotation would also require correctly re-deriving each rotated page's
+own width/height and image placement, which is a real source of off-by-one and flipped-axis bugs; given
+this tool's scope (a fast, dependency-free browser conversion, not a photo editor), that complexity was
+judged not worth it for this version and is called out in the tool's content page instead of hidden.
+
+## A real `pdf-lib` bug found while building `pdf.jpgToPdf@1`: JPEG embedding and `byteOffset`
+
+`pdf-lib`'s `JpegEmbedder.for()` reads a JPEG's SOI marker via `new DataView(imageData.buffer)` — the
+*entire* underlying `ArrayBuffer`, ignoring the `Uint8Array` view's own `byteOffset`/`byteLength`. A
+`Uint8Array` that is itself a slice of a larger buffer (for example one returned by Node's
+small-allocation buffer pool, which is exactly what a naive `fs.readFileSync` of a small JPEG fixture
+produces in tests) then has its header read starting at the wrong offset in that larger buffer, and is
+rejected with `"SOI not found in JPEG"` even though the image itself is completely valid. Confirmed
+empirically: the same bytes, copied into a fresh zero-offset `Uint8Array`, embed successfully with
+correct dimensions.
+
+The fix lives entirely on our side (pdf-lib itself is not modified, per this engine's one-dependency
+rule): `operation.ts`'s `toEmbeddableJpegBytes()` copies into a fresh `Uint8Array` whenever the input
+isn't already a whole, zero-offset buffer, immediately before the `embedJpg` call. Browser `File` reads
+via `readFileBytes`/`file.arrayBuffer()` already produce zero-offset buffers, so this only ever does real
+work for the odd input that doesn't — it's a defensive, always-correct guard, not a special case for
+tests.
+
 ## Standing warnings
 
-Every successful merge carries four standing notices — verify the output, some PDF features may not be
-preserved, very large/encrypted/corrupted files may fail, and authorized use only — matching the
-TASK-004A plan's own PDF Merge tool plan. These were missing from PR 1 (an oversight against that plan,
-not a deliberate omission), added here as a small, additive, disclosed exception to "no merge behavior
+Every successful merge or conversion carries four standing notices matching its own tool plan — for
+`pdf.merge@1`: verify the output, some PDF features may not be preserved, very large/encrypted/corrupted
+files may fail, and authorized use only. For `pdf.jpgToPdf@1`: verify the output, very large images or
+too many images may fail, image quality and final size depend on the source images, and authorized use
+only. `pdf.merge@1`'s warnings were missing from PR 1 (an oversight against the TASK-004A plan, not a
+deliberate omission), added in 0.1.1 as a small, additive, disclosed exception to "no merge behavior
 change": the merge algorithm, its limits, and every existing output value are unchanged; only the
-`warnings` array gains four always-on entries on success.
+`warnings` array gained four always-on entries on success.
 
 ## Changelog
+- 0.2.0 — add (TASK-004C): `pdf.jpgToPdf@1`, combining one or more JPG images into a single PDF, one
+  image per page sized to the image's own pixel dimensions. No change to `pdf.merge@1`.
 - 0.1.2 — fix (TASK-004B PR 2): `pdf.merge@1` output was not byte-deterministic, because `pdf-lib`
   stamped the merged document's `CreationDate`/`ModDate` with the current wall-clock time by default,
   a behavior `{ updateMetadata: false }` does not suppress. Fixed by setting both dates to a fixed

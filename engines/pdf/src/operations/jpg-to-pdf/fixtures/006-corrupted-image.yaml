@@ -1,0 +1,12 @@
+id: 006-corrupted-image
+operation: pdf.jpg-to-pdf@1
+source:
+  type: synthetic
+  citation: "corrupted.jpg (fixtures/files/) is small-square.jpg truncated after its headers, so it has a valid SOI signature but fails to decode (no scan data)"
+input:
+  files:
+    - { name: corrupted.jpg, bytes: { path: corrupted.jpg } }
+expectedError:
+  code: PDF_JPG_UNREADABLE
+  path: files.0
+  details: { name: corrupted.jpg }

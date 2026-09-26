@@ -70,6 +70,15 @@ describe('search relevance over the generated index', () => {
     ['merge pdf online', 'pdf-merge'],
     ['browser pdf merger', 'pdf-merge'],
     ['no upload pdf merge', 'pdf-merge'],
+    ['JPG to PDF', 'jpg-to-pdf'],
+    ['jpg to pdf', 'jpg-to-pdf'],
+    ['image to pdf', 'jpg-to-pdf'],
+    ['jpg to pdf converter', 'jpg-to-pdf'],
+    ['jpeg to pdf', 'jpg-to-pdf'],
+    ['convert jpg images to pdf', 'jpg-to-pdf'],
+    ['combine images into pdf', 'jpg-to-pdf'],
+    ['browser jpg to pdf', 'jpg-to-pdf'],
+    ['no upload jpg to pdf', 'jpg-to-pdf'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

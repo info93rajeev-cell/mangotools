@@ -1,0 +1,13 @@
+id: 003-invalid-output-filename-falls-back
+operation: pdf.jpg-to-pdf@1
+source:
+  type: synthetic
+  citation: "An output name that is only unsafe characters must fall back to the default, never be rejected"
+input:
+  files:
+    - { name: small-square.jpg, bytes: { path: small-square.jpg } }
+  outputFileName: "////"
+expected:
+  fileName: images.pdf
+  imageCount: 1
+expectedWarnings: [PDF_JPG_VERIFY_OUTPUT, PDF_JPG_LARGE_OR_MANY_MAY_FAIL, PDF_JPG_QUALITY_DEPENDS_ON_SOURCE, PDF_JPG_AUTHORIZED_USE_ONLY]

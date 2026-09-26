@@ -92,20 +92,20 @@ categories:
     name: PDF & Documents
     icon: file-text
     order: 70
-    summary: Merge multiple PDF files into one, entirely in your browser.
+    summary: Merge PDF files and convert JPG images to PDF, entirely in your browser.
     seo:
-      title: PDF Merge – Combine PDF Files Online
-      description: Free PDF Merge tool to combine multiple PDF files into one, in the order you choose. Runs entirely in your browser — no upload, no sign-up, no ads.
+      title: PDF Tools – Merge PDFs & Convert JPG to PDF Online
+      description: Free PDF tools to merge PDF files and convert JPG images to PDF, in the order you choose. Runs entirely in your browser — no upload, no sign-up, no ads.
     about:
-      - PDF Merge combines multiple PDF files into a single PDF, in the order you choose, entirely in your browser. Nothing is uploaded to a server.
-      - This is a simple, browser-first tool. Bookmarks, forms, annotations and other advanced PDF features from the original files may not be preserved, and very large, encrypted, password-protected or corrupted files may fail to process.
+      - PDF Merge combines multiple PDF files into a single PDF, in the order you choose, entirely in your browser. JPG to PDF converts one or more JPG or JPEG images into a single PDF, one image per page. Nothing is uploaded to a server for either tool.
+      - These are simple, browser-first tools. Bookmarks, forms, annotations and other advanced PDF features from the original files may not be preserved by PDF Merge, image orientation from camera metadata may not be preserved by JPG to PDF, and very large, encrypted, password-protected or corrupted files may fail to process.
     faq:
-      - q: Is PDF Merge free?
-        a: Yes. PDF Merge is free and unlimited, with no sign-up and no ads.
+      - q: Are these PDF tools free?
+        a: Yes. PDF Merge and JPG to PDF are free and unlimited, with no sign-up and no ads.
       - q: Are my files uploaded anywhere?
-        a: No. PDF Merge processes your files in this browser. Nothing is uploaded to a server.
+        a: No. Both tools process your files in this browser. Nothing is uploaded to a server.
       - q: Will more PDF tools be added?
-        a: This category currently has one tool, PDF Merge. Further PDF tools may be added later.
+        a: This category currently has two tools, PDF Merge and JPG to PDF. Further PDF tools may be added later.
   - id: media
     slug: media
     name: Media & Images

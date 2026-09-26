@@ -1,0 +1,9 @@
+id: 004-no-files-selected
+operation: pdf.jpg-to-pdf@1
+source:
+  type: synthetic
+  citation: "An empty image queue must be a specific, typed error, not a generic conversion failure"
+input:
+  files: []
+expectedError:
+  code: PDF_JPG_NO_FILES_SELECTED
