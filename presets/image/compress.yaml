@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/compress
+version: 0.1.0
+operation: image.resize@1
+params:
+  outputFileNameSuffix: "-compressed"
+  outputFileNameFallback: "compressed-image"
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  # Hidden: Image Compress keeps the source's own dimensions. The preview's onLoad prefills these to
+  # the decoded image's natural width/height before the operation runs (same mechanism as Image Resize);
+  # keepAspectRatio: true then makes the fit a no-op rather than a resize.
+  targetWidth: { labelKey: field.targetWidth, kind: number, order: 1, required: true, default: 800, visible: false }
+  targetHeight: { labelKey: field.targetHeight, kind: number, order: 2, required: true, default: 600, visible: false }
+  keepAspectRatio: { labelKey: field.keepAspectRatio, kind: boolean, order: 3, default: "true", visible: false }
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 4
+    options:
+      - { value: same, labelKey: field.outputFormat.same }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+    default: same
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 5
+    unit: "%"
+    placeholderKey: field.quality.placeholder
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  sizeChangePercent: { labelKey: output.sizeChangePercent, format: percent, order: 1, primary: true }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: number, order: 2 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 3 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 4 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 5 }
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 6 }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 7 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 8 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 9 }
+  fileName: { labelKey: output.fileName, format: text, order: 10 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-compressed.jpg"
+    fileTool.downloadCta: "Download compressed image"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.targetWidth: "Width"
+    field.targetHeight: "Height"
+    field.keepAspectRatio: "Keep aspect ratio"
+    field.outputFormat: "Output format"
+    field.outputFormat.same: "Same as input"
+    field.outputFormat.jpg: "JPG"
+    field.outputFormat.png: "PNG"
+    field.outputFormat.webp: "WebP"
+    field.quality: "Quality"
+    field.quality.placeholder: "70"
+    output.sizeChangePercent: "Size change"
+    output.sizeDifferenceBytes: "Size difference (bytes)"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.outputFormat: "Output format"
+    output.outputWidth: "Output width (px)"
+    output.outputHeight: "Output height (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.fileName: "Output file"

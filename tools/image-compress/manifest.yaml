@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-compress
+slug: image-compress
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: re-encode a JPG, PNG or WebP image to reduce file size where possible, entirely in the browser." }
+name: Image Compress
+shortName: Image Compress
+summary: Reduce an image's file size by re-encoding it with adjustable quality and format, right in your browser. Results depend on the source image.
+archetype: D
+preset: image/compress
+taxonomy:
+  category: media
+  tags: [images, compress]
+  synonyms: [compress image, image compressor, reduce image size, compress jpg, compress png, compress webp, reduce photo file size, browser image compressor, no upload image compressor]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Image Compress – Reduce File Size Free"
+  description: "Free browser-based Image Compress tool for JPG, PNG and WebP. Adjust quality and format to reduce file size where possible — nothing is uploaded."
+  primaryKeyword: image compress
+  secondaryKeywords: [compress image, reduce image size, compress jpg, compress png, compress webp]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.resize@1 (reused by Image Compress at the source's own dimensions) fixtures 001-004, TASK-005C", locator: "engines/image/src/operations/resize/fixtures" }
+  lastVerified: 2026-09-26

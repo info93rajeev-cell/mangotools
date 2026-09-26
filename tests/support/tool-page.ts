@@ -50,6 +50,16 @@ export const FILE_TOOLS = {
     // "keep aspect ratio" on (the default) an 8x8 target on an 8x8 source is an exact fit.
     result: '8',
   },
+  'image-compress': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg')],
+    downloadCta: 'Download compressed image',
+    // The primary output is the size-change percentage. This tiny (331-byte) hand-built source is
+    // already smaller than any real photo's re-encode overhead, so Chromium's default-quality JPEG
+    // re-encode actually grows it — a real, honest demonstration of "the output can be larger than the
+    // original" (see the "warns when the output is larger" test below), not a chosen worst case.
+    result: '−128.4%',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;

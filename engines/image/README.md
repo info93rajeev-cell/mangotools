@@ -66,3 +66,14 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
 
 - 0.1.0 — `image.resize@1` foundation (TASK-005B PR 1). No preset used by a manifest yet; no visible tool.
   See `src/operations/resize/README.md` for the full operation contract.
+- 0.2.0 — `image.resize@1` reused by the visible Image Resize tool (TASK-005B PR 2). No operation
+  behavior change.
+- 0.3.0 — Small, directly-required foundation additions for Image Compress (TASK-005C), which reuses
+  `image.resize@1` at the source's own dimensions rather than a new operation:
+  - `params.outputFileNameSuffix`/`outputFileNameFallback` let a preset pick its own output-name wording
+    (`deriveOutputFileName`'s new optional `style` argument) — Image Resize's own default ("-resized",
+    `resized-image`) is unchanged when a preset sets neither.
+  - `output.sizeDifferenceBytes`/`sizeChangePercent` (`size-change.ts`) compare the output's byte size
+    against the original's; always populated, for any preset to surface.
+  - `IMAGE_OUTPUT_LARGER_THAN_INPUT` warning, raised whenever the output file is larger than the input,
+    regardless of which preset requested the resize.
