@@ -1,0 +1,5 @@
+id: 019-not-a-number-length
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "abc", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_INVALID_NUMBER, path: length }

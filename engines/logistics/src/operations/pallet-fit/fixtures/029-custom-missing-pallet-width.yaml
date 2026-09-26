@@ -1,0 +1,5 @@
+id: 029-custom-missing-pallet-width
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: custom, palletUnit: cm, palletLength: "120", maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: palletWidth }

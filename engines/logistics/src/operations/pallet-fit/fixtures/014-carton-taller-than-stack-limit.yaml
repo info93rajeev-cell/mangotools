@@ -1,0 +1,5 @@
+id: 014-carton-taller-than-stack-limit
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "A 40×30×200 cm carton fits the Euro pallet's footprint easily in either base orientation (3×2 or 4×2), but its 200 cm height is taller than the 150 cm stack limit, so floor(150/200)=0 layers fit — a height problem, not a footprint problem" }
+input: { unit: cm, length: "40", width: "30", height: "200", quantity: "1", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_CARTON_TALLER_THAN_STACK_LIMIT, path: maxStackHeight }

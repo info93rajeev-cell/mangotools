@@ -1,0 +1,6 @@
+id: 004-carton-unit-mm
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "Same physical carton as fixture 001 (40×30×20 cm), given in millimetres: 400×300×200 mm × 0.1 cm/mm = 40×30×20 cm, so every output matches fixture 001 exactly" }
+input: { unit: mm, length: "400", width: "300", height: "200", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expected: { bestOrientation: wlh, cartonsAlongPalletLength: "4", cartonsAlongPalletWidth: "2", cartonsPerLayer: "8", layers: "7", cartonsPerPallet: "56", palletsRequired: "2", cartonsOnLastPallet: "44", usedAreaPercent: "100.000", unusedAreaPercent: "0.000", estimatedStackHeight: "140.000", quantity: "100" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY, LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED]

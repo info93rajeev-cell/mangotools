@@ -1,0 +1,6 @@
+id: 003-custom-pallet-basic
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "30×20×15 cm carton on a custom 120×100 cm pallet, 100 cm stack limit. Footprint: floor(120/30)=4, floor(100/20)=5 = 20 cartons/layer, an exact fit. Layers = floor(100/15) = 6. Cartons per pallet = 20×6 = 120, well over the 20 requested (1 pallet, 20 on it)" }
+input: { unit: cm, length: "30", width: "20", height: "15", quantity: "20", palletType: custom, palletUnit: cm, palletLength: "120", palletWidth: "100", maxStackHeight: "100" }
+expected: { bestOrientation: lwh, cartonsAlongPalletLength: "4", cartonsAlongPalletWidth: "5", cartonsPerLayer: "20", layers: "6", cartonsPerPallet: "120", palletsRequired: "1", cartonsOnLastPallet: "20", usedAreaPercent: "100.000", unusedAreaPercent: "0.000", estimatedStackHeight: "90.000", leftoverPalletLength: "0.000", leftoverPalletWidth: "0.000", quantity: "20" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY]

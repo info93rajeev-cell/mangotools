@@ -8,11 +8,25 @@ decimal strings via `engines/numeric`.
 | `logistics.cbm.compute@1` | CBM per carton, total CBM and cubic feet from carton dimensions (cm, m, mm or inch) and quantity |
 | `logistics.weight.chargeable@1` | Volumetric, actual and chargeable weight (kg) per package and in total, and which one is billed |
 | `logistics.container.fit@1` | Volume estimate and a simple axis-aligned loading grid for one carton type inside a 20 ft, 40 ft, 40 ft high-cube or custom container |
+| `logistics.pallet.fit@1` | Cartons per layer, layers, cartons per pallet and pallets required, from a simple axis-aligned footprint fit on a Euro, US or custom pallet |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
-`src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
+`src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`. The
+axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives in
+`src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.4.0 — `logistics.pallet.fit@1` (TASK-003D PR 1). New codes `LOGISTICS_CARTON_EXCEEDS_PALLET_BASE`,
+  `LOGISTICS_CARTON_TALLER_THAN_STACK_LIMIT`, `LOGISTICS_PALLET_NOT_LOAD_SAFETY`,
+  `LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT`, `LOGISTICS_PALLET_DIMENSIONS_VARY` and
+  `LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED`. `stackable`, `allowBaseRotation` and `keepUpright` are
+  params from this operation's first version (the lesson TASK-003C's `container-fit` learned the hard
+  way — see its own changelog entries below). The orientation search itself was extracted from
+  `container-fit`'s `grid.ts` into the shared `src/lib/orientation-grid.ts`, with `container-fit`'s own
+  fixtures and tests passing unchanged. The default pallet dimensions are commonly published approximate
+  figures, not yet verified against a specific source — see `src/operations/pallet-fit/README.md`.
+  `logistics.cbm.compute@1`, `logistics.weight.chargeable@1` and `logistics.container.fit@1`'s behaviour
+  are unchanged.
 - 0.3.2 — addition (TASK-003C PR 2): `logistics.container.fit@1` gains a new output,
   `gridUtilizationPercent` (how much of the usable volume the simple grid occupies), needed to show the
   tool's "estimated utilization" figure. Purely additive — no existing output changes.

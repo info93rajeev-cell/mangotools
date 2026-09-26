@@ -1,0 +1,6 @@
+id: 005-carton-unit-inch
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "15×12×8 in × 2.54 cm/in (international inch) = 38.10×30.48×20.32 cm carton on a US pallet given in inches: 48×40 in = 121.9×101.6 cm, stack limit 60 in = 152.4 cm. Footprint (as given, lwh): floor(121.9/38.10)=3, floor(101.6/30.48)=3 = 9 cartons/layer. Layers = floor(152.4/20.32) = 7. Cartons per pallet = 9×7 = 63, more than the 50 requested (1 pallet, 50 on it)" }
+input: { unit: in, length: "15", width: "12", height: "8", quantity: "50", palletType: us, palletUnit: in, maxStackHeight: "60" }
+expected: { bestOrientation: lwh, cartonsAlongPalletLength: "3", cartonsAlongPalletWidth: "3", cartonsPerLayer: "9", layers: "7", cartonsPerPallet: "63", palletsRequired: "1", cartonsOnLastPallet: "50", usedAreaPercent: "84.389", unusedAreaPercent: "15.611", estimatedStackHeight: "142.240", leftoverPalletLength: "7.600", leftoverPalletWidth: "10.160", quantity: "50" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY]

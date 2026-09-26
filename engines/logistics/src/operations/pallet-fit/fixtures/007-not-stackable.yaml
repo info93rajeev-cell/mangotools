@@ -1,0 +1,7 @@
+id: 007-not-stackable
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "Same carton and pallet as fixture 001 (40×30×20 cm, Euro pallet, 150 cm stack limit) but stackable: false. The layer count is capped to 1 regardless of the height limit, so cartons per pallet = 8×1 = 8, and the 100 requested need 13 pallets, with 4 on the last one" }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+params: { stackable: false }
+expected: { bestOrientation: wlh, cartonsAlongPalletLength: "4", cartonsAlongPalletWidth: "2", cartonsPerLayer: "8", layers: "1", cartonsPerPallet: "8", palletsRequired: "13", cartonsOnLastPallet: "4", usedAreaPercent: "100.000", unusedAreaPercent: "0.000", estimatedStackHeight: "20.000", quantity: "100" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY, LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED]

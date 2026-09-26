@@ -1,0 +1,5 @@
+id: 013-carton-exceeds-pallet-base
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "A 200×200 cm carton footprint is larger than both axes of a Euro pallet (120×80 cm) in every orientation tried (floor(120/200)=0 and floor(80/200)=0 either way), so the footprint never fits, regardless of the 20 cm height or the 150 cm stack limit" }
+input: { unit: cm, length: "200", width: "200", height: "20", quantity: "1", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_CARTON_EXCEEDS_PALLET_BASE }

@@ -1,0 +1,6 @@
+id: 012-single-pallet-no-warning
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "Same carton and pallet as fixture 001 (cartons per pallet = 56), with quantity 50, less than one pallet's capacity. Pallets required = 1, cartonsOnLastPallet = the remainder, 50. The multiple-pallets warning must not fire" }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "50", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expected: { cartonsPerPallet: "56", palletsRequired: "1", cartonsOnLastPallet: "50", quantity: "50" }
+expectedWarnings: [LOGISTICS_PALLET_NOT_LOAD_SAFETY, LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT, LOGISTICS_PALLET_DIMENSIONS_VARY]

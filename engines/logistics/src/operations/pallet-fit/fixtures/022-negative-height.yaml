@@ -1,0 +1,5 @@
+id: 022-negative-height
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "-5", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: height }

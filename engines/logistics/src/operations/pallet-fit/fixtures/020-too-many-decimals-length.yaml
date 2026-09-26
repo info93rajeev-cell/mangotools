@@ -1,0 +1,5 @@
+id: 020-too-many-decimals-length
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40.1234", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_TOO_MANY_DECIMALS, path: length, details: { max: 3 } }

@@ -1,0 +1,5 @@
+id: 009-keep-upright-blocks-fit
+operation: logistics.pallet.fit@1
+source: { type: hand-verified, citation: "A 10×10×200 cm carton on a custom 250×80 cm pallet, 50 cm stack limit, with keepUpright: true (the default). The footprint fits easily (floor(250/10)=25, floor(80/10)=8) but the carton's 200 cm height must stay vertical, and floor(50/200)=0, so no layer fits at all — this is a height problem, not a footprint problem, hence the more specific error" }
+input: { unit: cm, length: "10", width: "10", height: "200", quantity: "10", palletType: custom, palletUnit: cm, palletLength: "250", palletWidth: "80", maxStackHeight: "50" }
+expectedError: { code: LOGISTICS_CARTON_TALLER_THAN_STACK_LIMIT, path: maxStackHeight }

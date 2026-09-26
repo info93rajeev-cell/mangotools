@@ -1,0 +1,5 @@
+id: 025-quantity-too-large
+operation: logistics.pallet.fit@1
+source: { type: regression }
+input: { unit: cm, length: "40", width: "30", height: "20", quantity: "1000001", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
+expectedError: { code: LOGISTICS_QUANTITY_TOO_LARGE, path: quantity, details: { max: "1,000,000" } }
