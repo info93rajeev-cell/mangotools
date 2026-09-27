@@ -3,14 +3,12 @@ import { encodeCanvas } from '../../lib/codec.ts';
 import { decodeAndCheckSource } from '../../lib/decode-source.ts';
 import { deriveOutputFileName } from '../../lib/file-name.ts';
 import { computeSizeChange } from '../../lib/size-change.ts';
-import { renderResized } from './canvas-pipeline.ts';
-import { computeOutputDimensions, type Dimensions, isUpscale } from './dimensions.ts';
-import { MAX_OUTPUT_MEGAPIXELS, MAX_OUTPUT_PIXELS } from './limits.ts';
+import { renderCropped } from './canvas-pipeline.ts';
 import {
   type ImageFile,
-  imageResizeInput,
-  imageResizeOutput,
-  imageResizeParams,
+  imageCropInput,
+  imageCropOutput,
+  imageCropParams,
   type ResolvedImageFormat,
 } from './schema.ts';
 import { validateRequest } from './validate.ts';
@@ -23,34 +21,34 @@ function qualityFraction(quality: number | undefined): number | undefined {
   return quality === undefined ? undefined : quality / 100;
 }
 
-export const imageResize = defineOperation({
-  id: 'image.resize',
+export const imageCrop = defineOperation({
+  id: 'image.crop',
   major: 1,
-  title: 'Resize an image',
-  summary:
-    'Resizes a JPG, PNG, or WebP image to the requested dimensions, entirely in the browser.',
-  input: imageResizeInput,
-  params: imageResizeParams,
-  output: imageResizeOutput,
+  title: 'Crop an image',
+  summary: 'Crops a JPG, PNG, or WebP image to a pixel rectangle, entirely in the browser.',
+  input: imageCropInput,
+  params: imageCropParams,
+  output: imageCropOutput,
   errors: [
     'IMAGE_NO_FILE_SELECTED',
     'IMAGE_INVALID_FILE_TYPE',
     'IMAGE_FILE_TOO_LARGE',
-    'IMAGE_DIMENSIONS_INVALID',
-    'IMAGE_SOURCE_PIXELS_TOO_LARGE',
-    'IMAGE_OUTPUT_DIMENSIONS_TOO_LARGE',
+    'IMAGE_CROP_POSITION_INVALID',
+    'IMAGE_CROP_SIZE_INVALID',
     'IMAGE_UNREADABLE',
+    'IMAGE_SOURCE_PIXELS_TOO_LARGE',
+    'IMAGE_CROP_OUT_OF_BOUNDS',
     'IMAGE_MEMORY_LIMIT_EXCEEDED',
-    'IMAGE_RESIZE_FAILED',
+    'IMAGE_CROP_FAILED',
   ],
   // Browser/worker-only: OffscreenCanvas and createImageBitmap do not exist in Node. See
   // engines/image/AGENTS.md and README.md's "Runtime" section — this is a disclosed exception, not an
-  // oversight.
+  // oversight, shared by every operation in this engine.
   runtimes: ['worker'],
   cost: { weight: 'medium' },
   exposure: 'internal',
   dataClass: 'public',
-  async run(input, params) {
+  async run(input, _params) {
     const validation = validateRequest(input);
     if (!validation.ok) return validation;
     const file = input.file as ImageFile; // validateRequest already rejected a missing file
@@ -58,16 +56,10 @@ export const imageResize = defineOperation({
     const decoded = await decodeAndCheckSource(file);
     if (!decoded.ok) return decoded;
     const { bitmap, sourceType, width, height } = decoded.value;
-    const source: Dimensions = { width, height };
 
-    const output = computeOutputDimensions(
-      source,
-      { width: input.targetWidth, height: input.targetHeight },
-      input.keepAspectRatio,
-    );
-    if (output.width * output.height > MAX_OUTPUT_PIXELS) {
+    if (input.cropX + input.cropWidth > width || input.cropY + input.cropHeight > height) {
       bitmap.close();
-      return err('IMAGE_OUTPUT_DIMENSIONS_TOO_LARGE', { details: { max: MAX_OUTPUT_MEGAPIXELS } });
+      return err('IMAGE_CROP_OUT_OF_BOUNDS', { details: { width, height } });
     }
 
     const requestedFormat: ResolvedImageFormat =
@@ -75,20 +67,25 @@ export const imageResize = defineOperation({
     const flattenToWhite = SUPPORTS_ALPHA[sourceType] && !SUPPORTS_ALPHA[requestedFormat];
     const warnings = [...STANDING_WARNINGS];
     if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
-    if (isUpscale(source, output)) warnings.push(warning('IMAGE_UPSCALED_QUALITY_LOSS'));
-    // Only for an *explicit* same-format request (input.outputFormat === sourceType), never for 'same'
-    // itself — 'same' trivially resolves to the source format on every Resize/Compress default run, and
-    // this warning must not fire on that already-shipped path.
+    // Only for an *explicit* same-format request, never for 'same' itself — matching image.resize@1's
+    // own IMAGE_SAME_FORMAT_REENCODED logic exactly (see its own operation.ts and README.md).
     if (input.outputFormat !== 'same' && input.outputFormat === sourceType) {
       warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
     }
 
     let canvas: OffscreenCanvas;
     try {
-      canvas = renderResized(bitmap, output, flattenToWhite);
+      canvas = renderCropped(
+        bitmap,
+        input.cropX,
+        input.cropY,
+        input.cropWidth,
+        input.cropHeight,
+        flattenToWhite,
+      );
     } catch {
       bitmap.close();
-      return err('IMAGE_RESIZE_FAILED');
+      return err('IMAGE_CROP_FAILED');
     }
     bitmap.close();
 
@@ -100,7 +97,7 @@ export const imageResize = defineOperation({
       finalFormat = encoded.finalFormat;
       bytes = new Uint8Array(await encoded.blob.arrayBuffer());
     } catch {
-      return err('IMAGE_RESIZE_FAILED');
+      return err('IMAGE_CROP_FAILED');
     }
 
     const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
@@ -111,13 +108,17 @@ export const imageResize = defineOperation({
       {
         bytes,
         fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
-          suffix: params.outputFileNameSuffix,
-          fallbackBase: params.outputFileNameFallback,
+          suffix: '-cropped',
+          fallbackBase: 'cropped-image',
         }),
-        originalWidth: source.width,
-        originalHeight: source.height,
-        outputWidth: output.width,
-        outputHeight: output.height,
+        originalWidth: width,
+        originalHeight: height,
+        outputWidth: input.cropWidth,
+        outputHeight: input.cropHeight,
+        cropX: input.cropX,
+        cropY: input.cropY,
+        cropWidth: input.cropWidth,
+        cropHeight: input.cropHeight,
         originalFileSize: file.bytes.byteLength,
         outputFileSize: bytes.byteLength,
         ...sizeChange,

@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/crop
+version: 0.1.0
+operation: image.crop@1
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  cropX: { labelKey: field.cropX, kind: number, order: 1, required: true, unit: px, default: 0, placeholderKey: field.cropX.placeholder }
+  cropY: { labelKey: field.cropY, kind: number, order: 2, required: true, unit: px, default: 0, placeholderKey: field.cropY.placeholder }
+  cropWidth: { labelKey: field.cropWidth, kind: number, order: 3, required: true, unit: px, default: 100, placeholderKey: field.cropWidth.placeholder }
+  cropHeight: { labelKey: field.cropHeight, kind: number, order: 4, required: true, unit: px, default: 100, placeholderKey: field.cropHeight.placeholder }
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 5
+    options:
+      - { value: same, labelKey: field.outputFormat.same }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+    default: same
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 6
+    unit: "%"
+    placeholderKey: field.quality.placeholder
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  cropWidth: { labelKey: output.cropWidth, format: number, order: 2 }
+  cropHeight: { labelKey: output.cropHeight, format: number, order: 3 }
+  cropX: { labelKey: output.cropX, format: number, order: 4 }
+  cropY: { labelKey: output.cropY, format: number, order: 5 }
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 6 }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 7 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 8 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 9 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 10 }
+  originalFormat: { labelKey: output.originalFormat, format: text, order: 11 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 12 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 13 }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: number, order: 14 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-cropped.jpg"
+    fileTool.downloadCta: "Download cropped image"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.cropX: "Crop X"
+    field.cropX.placeholder: "0"
+    field.cropY: "Crop Y"
+    field.cropY.placeholder: "0"
+    field.cropWidth: "Crop width"
+    field.cropWidth.placeholder: "100"
+    field.cropHeight: "Crop height"
+    field.cropHeight.placeholder: "100"
+    field.outputFormat: "Output format"
+    field.outputFormat.same: "Same as input"
+    field.outputFormat.jpg: "JPG"
+    field.outputFormat.png: "PNG"
+    field.outputFormat.webp: "WebP"
+    field.quality: "Quality"
+    field.quality.placeholder: "85"
+    output.fileName: "Cropped file"
+    output.cropWidth: "Crop width (px)"
+    output.cropHeight: "Crop height (px)"
+    output.cropX: "Crop X (px)"
+    output.cropY: "Crop Y (px)"
+    output.outputWidth: "Output width (px)"
+    output.outputHeight: "Output height (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.outputFormat: "Output format"
+    output.originalFormat: "Original format"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.sizeDifferenceBytes: "Size difference (bytes)"

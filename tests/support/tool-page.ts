@@ -94,6 +94,18 @@ export const FILE_TOOLS = {
     // this sample.jpg fixture), so the derived name keeps the .jpg extension.
     result: 'sample-watermarked.jpg',
   },
+  'image-crop': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-crop/fixtures/files/sample.jpg')],
+    downloadCta: 'Download cropped image',
+    // sample.jpg is 8x8; the preset's own real-world default crop (100x100) would be out of bounds for
+    // it, so the shared harness narrows the crop to fit this tiny fixture — a real user's own default
+    // stays a normal-photo-sized 100x100, unaffected by this test-only override.
+    fillBeforeDownload: { 'Crop width': '4', 'Crop height': '4' },
+    // The primary output is the output file name; the default output format is "same as input" (jpg for
+    // this sample.jpg fixture), so the derived name keeps the .jpg extension.
+    result: 'sample-cropped.jpg',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;

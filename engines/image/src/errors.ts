@@ -29,4 +29,9 @@ export const messages: Readonly<Record<string, string>> = {
     'The watermark could not be added. Please try again with a different image.',
   IMAGE_WATERMARK_NOT_LEGAL_PROTECTION:
     'This tool adds a visible text watermark only. It does not prove ownership or create legal copyright protection by itself.',
+  IMAGE_CROP_POSITION_INVALID: 'Enter a crop X and Y position of 0 or greater.',
+  IMAGE_CROP_SIZE_INVALID: 'Enter a crop width and height greater than 0.',
+  IMAGE_CROP_OUT_OF_BOUNDS:
+    'The crop rectangle extends outside the image, which is {width}×{height} pixels.',
+  IMAGE_CROP_FAILED: 'The image could not be cropped. Please try again with a different image.',
 };

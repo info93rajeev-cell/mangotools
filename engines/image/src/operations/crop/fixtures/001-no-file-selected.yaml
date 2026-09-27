@@ -1,0 +1,13 @@
+id: 001-no-file-selected
+operation: image.crop@1
+source:
+  type: synthetic
+  citation: "Mirrors image.resize@1's own fixture 001-no-file-selected: a missing file must be a specific, typed error through image.crop@1 too"
+input:
+  cropX: 0
+  cropY: 0
+  cropWidth: 4
+  cropHeight: 4
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

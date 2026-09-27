@@ -1,0 +1,14 @@
+id: 003-crop-position-invalid
+operation: image.crop@1
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/), copied from image.resize@1's own fixtures: has a valid JPEG signature; checks that a negative crop position is rejected before any attempt to decode the file"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  cropX: -1
+  cropY: 0
+  cropWidth: 4
+  cropHeight: 4
+  outputFormat: same
+expectedError:
+  code: IMAGE_CROP_POSITION_INVALID

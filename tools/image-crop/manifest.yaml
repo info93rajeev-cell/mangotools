@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-crop
+slug: image-crop
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: crop a JPG, PNG or WebP image to an exact pixel rectangle, entirely in the browser." }
+name: Image Crop
+shortName: Crop
+summary: Crop a JPG, PNG or WebP image to an exact pixel rectangle, right in your browser. No sign-up, no watermark, no upload.
+archetype: D
+preset: image/crop
+taxonomy:
+  category: media
+  tags: [images, crop]
+  synonyms: [crop image online, image cropper, crop jpg, crop png, crop webp, crop photo online, cut image online, pixel crop tool, free image crop tool, browser image cropper]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Image Crop – Crop JPG, PNG & WebP Free"
+  description: "Free browser-based tool to crop JPG, PNG and WebP images to an exact pixel rectangle. No sign-up, no watermark, nothing is uploaded."
+  primaryKeyword: image crop
+  secondaryKeywords: [crop image online, image cropper, crop jpg, crop png]
+graph:
+  related: [image-resize, image-compress, image-format-converter, image-metadata-remover, image-watermark]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.crop@1 fixtures 001-004", locator: "engines/image/src/operations/crop/fixtures" }
+  lastVerified: 2026-09-27

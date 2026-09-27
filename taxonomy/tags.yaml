@@ -18,6 +18,7 @@ tags:
   - { id: convert, label: Convert }
   - { id: metadata, label: Metadata }
   - { id: watermark, label: Watermark }
+  - { id: crop, label: Crop }
   - { id: concrete, label: Concrete }
   - { id: construction, label: Construction }
   - { id: excavation, label: Excavation }
