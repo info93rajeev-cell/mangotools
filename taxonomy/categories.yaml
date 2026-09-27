@@ -129,7 +129,7 @@ categories:
       title: Image Tools – Resize, Compress & Convert Free
       description: Free browser-based image tools for JPG, PNG and WebP — resize, compress, and convert formats. No sign-up, no watermark, nothing uploaded.
     about:
-      - Image & Media tools work on a single JPG, PNG or WebP image at a time, entirely in your browser. Image Resize changes the width and height, Image Compress reduces file size where possible, and Image Format Converter changes the file format between JPG, PNG and WebP — all with no sign-up and no MangoTools watermark added to the result.
+      - Image & Media tools work on a single JPG, PNG or WebP image at a time, entirely in your browser. Image Resize changes the width and height, Image Compress reduces file size where possible, Image Format Converter changes the file format between JPG, PNG and WebP, and Image Metadata Remover creates a copy with common metadata removed — all with no sign-up and no MangoTools watermark added to the result.
       - These are simple, browser-first tools for everyday images, such as preparing a photo for a website, an online store, a social post, a document, or an AI-generated image that arrived in the wrong format. Very large images may fail because of browser memory limits, output can differ slightly between browsers because image encoders vary, and transparent areas are flattened onto a white background when exporting to JPG. Nothing is uploaded to a server.
     faq:
       - q: Are these image tools free?
@@ -137,7 +137,7 @@ categories:
       - q: Are my images uploaded anywhere?
         a: No. The image you select is read and processed in this browser. No file upload is required for these tools.
       - q: Will more image tools be added?
-        a: This category currently has three tools — Image Resize, Image Compress, and Image Format Converter. Further image tools may be added later.
+        a: This category currently has four tools — Image Resize, Image Compress, Image Format Converter, and Image Metadata Remover. Further image tools may be added later.
   - id: utilities
     slug: utilities
     name: Everyday Utilities

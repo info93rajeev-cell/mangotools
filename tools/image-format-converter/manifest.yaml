@@ -4,8 +4,9 @@ id: image-format-converter
 slug: image-format-converter
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Image Metadata Remover." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: convert a JPG, PNG or WebP image to JPG, PNG or WebP, entirely in the browser." }
 name: Image Format Converter
 shortName: Format Converter
@@ -24,7 +25,7 @@ seo:
   primaryKeyword: image format converter
   secondaryKeywords: [jpg to png, png to jpg, jpg to webp, webp converter, convert image online]
 graph:
-  related: [image-resize, image-compress]
+  related: [image-resize, image-compress, image-metadata-remover]
 quality:
   verifiedAgainst:
     - { citation: "engines/image image.resize@1 fixtures 001-003 (reused unchanged by Image Format Converter, TASK-007B)", locator: "engines/image/src/operations/resize/fixtures" }
