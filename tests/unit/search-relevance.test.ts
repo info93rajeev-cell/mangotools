@@ -23,7 +23,17 @@ describe('search relevance over the generated index', () => {
     ['convert spreadsheet csv to json', 'csv-to-json'],
     ['free csv to json converter', 'csv-to-json'],
     ['browser csv to json', 'csv-to-json'],
+    ['csv json converter', 'csv-to-json'],
+    ['JSON to CSV', 'json-to-csv'],
+    ['json to csv', 'json-to-csv'],
+    ['convert json to csv', 'json-to-csv'],
+    ['json csv converter', 'json-to-csv'],
+    ['json to csv online', 'json-to-csv'],
+    ['json array to csv', 'json-to-csv'],
+    ['json object to csv', 'json-to-csv'],
     ['convert api json to csv', 'json-to-csv'],
+    ['free json to csv converter', 'json-to-csv'],
+    ['browser json to csv', 'json-to-csv'],
     ['GST Calculator', 'gst-calculator'],
     ['Profit Margin Calculator', 'profit-margin-calculator'],
     ['gst', 'gst-calculator'],
@@ -224,25 +234,20 @@ describe('search relevance over the generated index', () => {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
   }
 
-  it('CSV to JSON and JSON to CSV both surface for their shared, order-reversible phrases', () => {
-    // "csv to json" and "json to csv" (and their "convert"/"online"/"converter"/"array" variants)
-    // tokenize to the exact same bag of words either way round, so this bag-of-words search engine
-    // cannot reliably rank one tool over the other for these specific reversible phrases — only a
-    // phrase- or order-aware ranking change (a separate engines/search enhancement) could fix that.
-    // Both tools stay genuinely findable for them, which is what this asserts, rather than a
-    // specific #1 that would be a coin flip and would flake on unrelated future content changes.
-    const reversiblePhrases = [
-      'json to csv',
-      'convert json to csv',
-      'json csv converter',
-      'json to csv online',
-      'json array to csv',
-      'free json to csv converter',
-      'browser json to csv',
+  it('reversed converter queries never fully hide the other direction', () => {
+    // "csv to json" and "json to csv" tokenize to the exact same bag of words either way round, so
+    // a plain bag-of-words score alone can't tell them apart (TASK-008F's phrase-aware boost is what
+    // makes the `cases` list above resolve each one to the right tool). This just checks the loser
+    // of each pair still shows up nearby, i.e. the boost re-ranks rather than hides a real match.
+    const pairs: [string, string][] = [
+      ['csv to json', 'json-to-csv'],
+      ['json to csv', 'csv-to-json'],
+      ['csv json converter', 'json-to-csv'],
+      ['json csv converter', 'csv-to-json'],
     ];
-    for (const phrase of reversiblePhrases) {
-      const ids = search(phrase, 2).map((r) => r.id);
-      expect(ids, phrase).toContain('json-to-csv');
+    for (const [query, alsoExpected] of pairs) {
+      const ids = search(query, 5).map((r) => r.id);
+      expect(ids, query).toContain(alsoExpected);
     }
   });
 
