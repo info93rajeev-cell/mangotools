@@ -1,0 +1,20 @@
+id: 004-crlf-line-endings
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2.1 — each record is terminated by CRLF" }
+input:
+  text: "name,age\r\nRaj,50\r\nAiva,19\r\n"
+expected:
+  rowCount: 2
+  columnCount: 2
+  headers: [name, age]
+  text: |-
+    [
+      {
+        "name": "Raj",
+        "age": "50"
+      },
+      {
+        "name": "Aiva",
+        "age": "19"
+      }
+    ]

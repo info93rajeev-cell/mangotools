@@ -8,11 +8,17 @@ worker or in Node.
 | `data.json.format@1` | Lossless format / minify / validate (RFC 8259); numbers and escapes kept exactly as written |
 | `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines |
 | `data.url.transform@1` | Percent-encoding as a URL component, a full URL, or form data (RFC 3986, WHATWG form encoding) |
+| `data.csv.to-json@1` | CSV text to a JSON array of objects (RFC 4180 quoting), first row as headers, values kept as strings |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
 
 ## Changelog
+- 0.3.0 — `data.csv.to-json@1` added (TASK-008D). Hand-written CSV tokenizer (no `split(',')`):
+  quoted fields, doubled `""` escapes, commas/newlines inside quotes, CRLF/LF/lone-CR line endings.
+  Duplicate headers and inconsistent row lengths are rejected with a typed error naming the header
+  or line; a fully blank line is skipped rather than treated as a row. Values are never coerced from
+  strings.
 - 0.2.0 — `DATA_JSON_SYNTAX_ERROR` messages use plain words ("Expected a property name in double
   quotes") via a new `expectedText` detail. The error code, `line`, `column`, `offset` and the
   `expected` code are unchanged (TASK-002A A4).

@@ -1,0 +1,12 @@
+id: 007-inconsistent-columns-error
+operation: data.csv.to-json@1
+source: { type: synthetic }
+input:
+  text: |
+    name,age
+    Raj,50
+    Aiva
+expectedError:
+  code: DATA_CSV_INCONSISTENT_COLUMNS
+  path: text
+  details: { line: 3, expected: 2, actual: 1 }

@@ -1,0 +1,11 @@
+id: 010-invalid-quote-error
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2.5 — if a field is not quoted, it must not contain a double quote" }
+input:
+  text: |
+    name,note
+    Raj,ab"cd
+expectedError:
+  code: DATA_CSV_INVALID_QUOTE
+  path: text
+  details: { line: 2 }

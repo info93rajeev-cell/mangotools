@@ -12,6 +12,14 @@ export const messages: Readonly<Record<string, string>> = {
     'The decoded data is not UTF-8 text ({byteLength} bytes). A hex preview is shown instead.',
   DATA_URL_MALFORMED_ESCAPE: 'Malformed percent-escape at position {offset}.',
   DATA_URL_INVALID_UTF8: 'The text does not form valid UTF-8 characters.',
+  DATA_CSV_EMPTY: 'Paste or type some CSV to convert.',
+  DATA_CSV_BOM_REMOVED: 'A byte order mark at the start of the input was removed.',
+  DATA_CSV_NO_HEADER_ROW: 'The CSV has no header row to convert.',
+  DATA_CSV_DUPLICATE_HEADER: 'Duplicate column header "{name}" (column {column}).',
+  DATA_CSV_INCONSISTENT_COLUMNS:
+    'Row at line {line} has {actual} columns, but the header has {expected}.',
+  DATA_CSV_UNCLOSED_QUOTE: 'Unclosed quoted field starting at line {line}.',
+  DATA_CSV_INVALID_QUOTE: 'Invalid quoted field at line {line}.',
 };
 
 export const MAX_INPUT_CHARS = 50 * 1024 * 1024;

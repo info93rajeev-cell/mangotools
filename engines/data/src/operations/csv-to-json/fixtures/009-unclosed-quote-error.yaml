@@ -1,0 +1,11 @@
+id: 009-unclosed-quote-error
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2.5 — a quoted field must be closed with a matching double quote" }
+input:
+  text: |
+    name,note
+    Raj,"unterminated
+expectedError:
+  code: DATA_CSV_UNCLOSED_QUOTE
+  path: text
+  details: { line: 2 }

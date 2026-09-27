@@ -1,0 +1,18 @@
+id: 002-quoted-comma-field
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2.6 — fields containing a comma must be quoted" }
+input:
+  text: |
+    name,note
+    Raj,"a,b"
+expected:
+  rowCount: 1
+  columnCount: 2
+  headers: [name, note]
+  text: |-
+    [
+      {
+        "name": "Raj",
+        "note": "a,b"
+      }
+    ]

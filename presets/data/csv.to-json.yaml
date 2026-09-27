@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/csv.to-json
+version: 0.1.0
+operation: data.csv.to-json@1
+params: { pretty: true }
+userOptions:
+  pretty:
+    control: switch
+    labelKey: csv.option.pretty
+    order: 10
+fields:
+  text: { labelKey: csv.field.text, kind: text, required: true, order: 10, placeholderKey: csv.field.placeholder }
+outputs:
+  text: { labelKey: csv.out.text, format: code, order: 10, primary: true }
+  rowCount: { labelKey: csv.out.rowCount, format: number, order: 20 }
+  columnCount: { labelKey: csv.out.columnCount, format: number, order: 30 }
+  headers: { labelKey: csv.out.headers, format: text, order: 40 }
+samples:
+  name-age:
+    titleKey: csv.sample.nameAge
+    input:
+      text: "name,age\nRaj,50\nAiva,19\n"
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: data.json, outputMime: application/json }
+strings:
+  en:
+    csv.option.pretty: Pretty print
+    csv.field.text: CSV input
+    csv.field.placeholder: 'Paste CSV here, e.g. name,age\nRaj,50'
+    csv.out.text: Result
+    csv.out.rowCount: Rows
+    csv.out.columnCount: Columns
+    csv.out.headers: Headers
+    csv.sample.nameAge: Two rows with headers

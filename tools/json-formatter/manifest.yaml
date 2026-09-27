@@ -4,8 +4,9 @@ id: json-formatter
 slug: json-formatter
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-27, type: changed, summary: "Added a related link to the new CSV to JSON converter." }
   - { version: 0.1.1, date: 2026-09-25, type: changed, summary: "Syntax errors explained in plain words, for example \"Expected a property name in double quotes\"." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with format, minify, validate and sort keys." }
 name: JSON Formatter & Validator
@@ -27,4 +28,4 @@ seo:
   primaryKeyword: json formatter
   secondaryKeywords: [json validator, json beautifier, json minify]
 graph:
-  related: [base64-encode-decode, url-encode-decode]
+  related: [csv-to-json, base64-encode-decode, url-encode-decode]
