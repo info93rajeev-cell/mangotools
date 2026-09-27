@@ -5,14 +5,15 @@ import { createTestContext, executeOperation } from '@mangotools/core';
 import { PDFDocument } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
 import { messages } from '../../errors.ts';
-import { DEFAULT_OUTPUT_FILE_NAME, sanitizeOutputFileName } from './file-name.ts';
+import { sanitizeOutputFileName } from '../../lib/file-name.ts';
+import { hasPdfSignature } from '../../lib/signature.ts';
 import { MAX_FILE_BYTES, MAX_FILE_COUNT, MAX_TOTAL_BYTES } from './limits.ts';
 import { pdfMerge } from './operation.ts';
-import { hasPdfSignature } from './signature.ts';
 
 const filesDir = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'files');
 const onePage = readFileSync(join(filesDir, 'one-page.pdf'));
 const twoPage = readFileSync(join(filesDir, 'two-page.pdf'));
+const DEFAULT_OUTPUT_FILE_NAME = 'merged.pdf';
 
 const run = (input: Record<string, unknown>, params: Record<string, unknown> = {}) =>
   executeOperation(pdfMerge, input, params, createTestContext());
@@ -24,29 +25,33 @@ function withPdfSignature(bytes: Uint8Array): Uint8Array {
 
 describe('sanitizeOutputFileName', () => {
   it('uses the default name when nothing usable is given', () => {
-    expect(sanitizeOutputFileName(undefined)).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('   ')).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName(undefined, DEFAULT_OUTPUT_FILE_NAME)).toBe(
+      DEFAULT_OUTPUT_FILE_NAME,
+    );
+    expect(sanitizeOutputFileName('', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('   ', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
   });
 
   it('trims spaces and adds the extension', () => {
-    expect(sanitizeOutputFileName('  My Report  ')).toBe('My Report.pdf');
+    expect(sanitizeOutputFileName('  My Report  ', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Report.pdf');
   });
 
   it('keeps an existing .pdf extension, normalized to lower case', () => {
-    expect(sanitizeOutputFileName('My Report.pdf')).toBe('My Report.pdf');
-    expect(sanitizeOutputFileName('My Report.PDF')).toBe('My Report.pdf');
+    expect(sanitizeOutputFileName('My Report.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Report.pdf');
+    expect(sanitizeOutputFileName('My Report.PDF', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Report.pdf');
   });
 
   it('removes unsafe characters', () => {
-    expect(sanitizeOutputFileName('a/b\\c:d*e?f"g<h>i|j.pdf')).toBe('abcdefghij.pdf');
+    expect(sanitizeOutputFileName('a/b\\c:d*e?f"g<h>i|j.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe(
+      'abcdefghij.pdf',
+    );
   });
 
   it('falls back to the default name for unsafe-only or placeholder input', () => {
-    expect(sanitizeOutputFileName('////')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('.')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('..')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('.pdf')).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('////', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('.', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('..', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
   });
 });
 

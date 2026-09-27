@@ -1,0 +1,10 @@
+id: 003-no-file-selected
+preset: pdf/split
+source:
+  type: synthetic
+  citation: "A missing file must be a specific, typed error through the tool preset too"
+input:
+  startPage: 1
+  endPage: 1
+expectedError:
+  code: PDF_SPLIT_NO_FILE_SELECTED

@@ -1,0 +1,12 @@
+id: 009-encrypted-pdf
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "encrypted.pdf (fixtures/files/, copied from pdf.merge@1's own fixtures) is one-page.pdf encrypted with a user password via pypdf; Phase 1 does not attempt password entry or decryption"
+input:
+  file: { name: encrypted.pdf, bytes: { path: encrypted.pdf } }
+  startPage: 1
+  endPage: 1
+expectedError:
+  code: PDF_SPLIT_ENCRYPTED_UNSUPPORTED
+  details: { name: encrypted.pdf }

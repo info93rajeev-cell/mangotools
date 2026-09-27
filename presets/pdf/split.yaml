@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: pdf/split
+version: 0.1.0
+operation: pdf.split@1
+ui:
+  archetypes: [D]
+  fileAccept: application/pdf
+  maxFiles: 1
+fields:
+  startPage: { labelKey: field.startPage, kind: number, order: 1, required: true, default: 1, placeholderKey: field.startPage.placeholder }
+  endPage: { labelKey: field.endPage, kind: number, order: 2, required: true, default: 1, placeholderKey: field.endPage.placeholder }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  extractedPageCount: { labelKey: output.extractedPageCount, format: number, order: 2 }
+  startPage: { labelKey: output.startPage, format: number, order: 3 }
+  endPage: { labelKey: output.endPage, format: number, order: 4 }
+  originalPageCount: { labelKey: output.originalPageCount, format: number, order: 5 }
+  originalFileName: { labelKey: output.originalFileName, format: text, order: 6 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 7 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a PDF file here, or choose a file."
+    fileTool.queueLabel: "Selected PDF"
+    fileTool.outputNamePlaceholder: "document-pages-3-7.pdf"
+    fileTool.downloadCta: "Download split PDF"
+    fileTool.noFilesYet: "Add a PDF above to get started."
+    field.startPage: "Start page"
+    field.startPage.placeholder: "1"
+    field.endPage: "End page"
+    field.endPage.placeholder: "1"
+    output.fileName: "Output file"
+    output.extractedPageCount: "Pages extracted"
+    output.startPage: "Start page"
+    output.endPage: "End page"
+    output.originalPageCount: "Original page count"
+    output.originalFileName: "Original file"
+    output.outputFileSize: "Output file size (bytes)"

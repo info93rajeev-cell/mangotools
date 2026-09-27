@@ -1,0 +1,11 @@
+id: 012-end-page-invalid
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/); an end page of 0 is rejected before any attempt to parse the file"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 1
+  endPage: 0
+expectedError:
+  code: PDF_SPLIT_END_PAGE_INVALID

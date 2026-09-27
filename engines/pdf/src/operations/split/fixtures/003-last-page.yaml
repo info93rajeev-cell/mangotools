@@ -1,0 +1,16 @@
+id: 003-last-page
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/); extracts only the last page, page 5"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 5
+  endPage: 5
+expected:
+  fileName: five-page-pages-5-5.pdf
+  originalPageCount: 5
+  startPage: 5
+  endPage: 5
+  extractedPageCount: 1
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]

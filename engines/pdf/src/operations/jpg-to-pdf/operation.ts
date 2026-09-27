@@ -1,6 +1,6 @@
 import { defineOperation, err, ok } from '@mangotools/core';
 import { PDFDocument, type PDFImage } from 'pdf-lib';
-import { sanitizeOutputFileName } from './file-name.ts';
+import { sanitizeOutputFileName } from '../../lib/file-name.ts';
 import { pdfJpgToPdfInput, pdfJpgToPdfOutput, pdfJpgToPdfParams } from './schema.ts';
 import { validateFiles } from './validate.ts';
 import { STANDING_WARNINGS } from './warnings.ts';
@@ -79,7 +79,7 @@ export const pdfJpgToPdf = defineOperation({
     return ok(
       {
         bytes,
-        fileName: sanitizeOutputFileName(input.outputFileName),
+        fileName: sanitizeOutputFileName(input.outputFileName, 'images.pdf'),
         imageCount: files.length,
       },
       STANDING_WARNINGS,

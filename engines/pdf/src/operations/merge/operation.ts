@@ -1,6 +1,6 @@
 import { defineOperation, err, ok } from '@mangotools/core';
 import { PDFDocument } from 'pdf-lib';
-import { sanitizeOutputFileName } from './file-name.ts';
+import { sanitizeOutputFileName } from '../../lib/file-name.ts';
 import { pdfMergeInput, pdfMergeOutput, pdfMergeParams } from './schema.ts';
 import { validateFiles } from './validate.ts';
 import { STANDING_WARNINGS } from './warnings.ts';
@@ -76,7 +76,7 @@ export const pdfMerge = defineOperation({
     return ok(
       {
         bytes,
-        fileName: sanitizeOutputFileName(input.outputFileName),
+        fileName: sanitizeOutputFileName(input.outputFileName, 'merged.pdf'),
         fileCount: files.length,
         totalPageCount,
       },

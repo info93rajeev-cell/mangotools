@@ -1,0 +1,12 @@
+id: 014-range-exceeds-page-count
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/, 5 pages); an end page beyond the real page count is checked only after parsing, once the actual page count is known"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 3
+  endPage: 10
+expectedError:
+  code: PDF_SPLIT_RANGE_EXCEEDS_PAGE_COUNT
+  details: { totalPages: 5 }
