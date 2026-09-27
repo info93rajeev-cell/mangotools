@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: json-to-csv
+slug: json-to-csv
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Array or single object to CSV, missing keys become empty cells, nested values rejected." }
+name: JSON to CSV
+shortName: JSON to CSV
+summary: Convert a JSON array of objects, or a single object, into CSV. Missing keys become empty cells; values are escaped safely.
+archetype: A
+preset: data/json.to-csv
+sample: name-age
+taxonomy:
+  category: developer
+  tags: [json, csv, data-format]
+  synonyms: [convert json to csv, json csv converter, json to csv online, json array to csv, json object to csv, convert api json to csv, free json to csv converter, browser json to csv]
+capabilities: { export: [csv], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: JSON to CSV Converter – Convert JSON to CSV Online
+  description: Convert JSON to CSV online, free and instant. Handles arrays of objects, missing keys and proper comma/quote escaping. Runs in your browser, no upload.
+  primaryKeyword: json to csv
+  secondaryKeywords: [json csv converter, json array to csv, json object to csv]
+graph:
+  related: [csv-to-json, json-formatter, base64-encode-decode, url-encode-decode]

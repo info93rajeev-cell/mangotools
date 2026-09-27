@@ -20,6 +20,14 @@ export const messages: Readonly<Record<string, string>> = {
     'Row at line {line} has {actual} columns, but the header has {expected}.',
   DATA_CSV_UNCLOSED_QUOTE: 'Unclosed quoted field starting at line {line}.',
   DATA_CSV_INVALID_QUOTE: 'Invalid quoted field at line {line}.',
+  DATA_JSON_TO_CSV_EMPTY: 'Paste or type some JSON to convert.',
+  DATA_JSON_TO_CSV_INVALID_JSON: 'The input is not valid JSON.',
+  DATA_JSON_TO_CSV_ROOT_INVALID: 'The JSON must be an array of objects, or a single object.',
+  DATA_JSON_TO_CSV_EMPTY_ARRAY: 'The JSON array has no rows to convert.',
+  DATA_JSON_TO_CSV_ITEM_NOT_OBJECT: 'Item {item} in the array is not an object.',
+  DATA_JSON_TO_CSV_NESTED_VALUE:
+    'The value for "{key}" in item {item} is a nested object or array, which is not supported in this version.',
+  DATA_JSON_TO_CSV_NO_COLUMNS: 'The JSON objects have no properties to use as columns.',
 };
 
 export const MAX_INPUT_CHARS = 50 * 1024 * 1024;

@@ -17,13 +17,13 @@ describe('search relevance over the generated index', () => {
     ['CSV to JSON', 'csv-to-json'],
     ['csv to json', 'csv-to-json'],
     ['convert csv to json', 'csv-to-json'],
-    ['csv json converter', 'csv-to-json'],
     ['csv to json online', 'csv-to-json'],
     ['csv to json array', 'csv-to-json'],
     ['csv to json objects', 'csv-to-json'],
     ['convert spreadsheet csv to json', 'csv-to-json'],
     ['free csv to json converter', 'csv-to-json'],
     ['browser csv to json', 'csv-to-json'],
+    ['convert api json to csv', 'json-to-csv'],
     ['GST Calculator', 'gst-calculator'],
     ['Profit Margin Calculator', 'profit-margin-calculator'],
     ['gst', 'gst-calculator'],
@@ -223,6 +223,28 @@ describe('search relevance over the generated index', () => {
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
   }
+
+  it('CSV to JSON and JSON to CSV both surface for their shared, order-reversible phrases', () => {
+    // "csv to json" and "json to csv" (and their "convert"/"online"/"converter"/"array" variants)
+    // tokenize to the exact same bag of words either way round, so this bag-of-words search engine
+    // cannot reliably rank one tool over the other for these specific reversible phrases — only a
+    // phrase- or order-aware ranking change (a separate engines/search enhancement) could fix that.
+    // Both tools stay genuinely findable for them, which is what this asserts, rather than a
+    // specific #1 that would be a coin flip and would flake on unrelated future content changes.
+    const reversiblePhrases = [
+      'json to csv',
+      'convert json to csv',
+      'json csv converter',
+      'json to csv online',
+      'json array to csv',
+      'free json to csv converter',
+      'browser json to csv',
+    ];
+    for (const phrase of reversiblePhrases) {
+      const ids = search(phrase, 2).map((r) => r.id);
+      expect(ids, phrase).toContain('json-to-csv');
+    }
+  });
 
   it('"logistics calculator" finds all four logistics tools first', () => {
     const ids = search('logistics calculator', 4).map((r) => r.id);

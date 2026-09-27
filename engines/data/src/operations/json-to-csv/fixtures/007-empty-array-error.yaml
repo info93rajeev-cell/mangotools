@@ -1,0 +1,8 @@
+id: 007-empty-array-error
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[]'
+expectedError:
+  code: DATA_JSON_TO_CSV_EMPTY_ARRAY
+  path: text

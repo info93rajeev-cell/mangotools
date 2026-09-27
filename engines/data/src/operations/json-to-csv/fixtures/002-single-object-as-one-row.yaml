@@ -1,0 +1,12 @@
+id: 002-single-object-as-one-row
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '{"name":"Raj","age":"50"}'
+expected:
+  rowCount: 1
+  columnCount: 2
+  headers: [name, age]
+  text: |
+    name,age
+    Raj,50

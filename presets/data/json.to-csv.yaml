@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/json.to-csv
+version: 0.1.0
+operation: data.json.to-csv@1
+params: {}
+fields:
+  text: { labelKey: jsonToCsv.field.text, kind: text, required: true, order: 10, placeholderKey: jsonToCsv.field.placeholder }
+outputs:
+  text: { labelKey: jsonToCsv.out.text, format: code, order: 10, primary: true }
+  rowCount: { labelKey: jsonToCsv.out.rowCount, format: number, order: 20 }
+  columnCount: { labelKey: jsonToCsv.out.columnCount, format: number, order: 30 }
+  headers: { labelKey: jsonToCsv.out.headers, format: text, order: 40 }
+samples:
+  name-age:
+    titleKey: jsonToCsv.sample.nameAge
+    input:
+      text: |-
+        [
+          { "name": "Raj", "age": "50" },
+          { "name": "Aiva", "age": "19" }
+        ]
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: data.csv, outputMime: text/csv }
+strings:
+  en:
+    jsonToCsv.field.text: JSON input
+    jsonToCsv.field.placeholder: 'Paste a JSON array of objects here, e.g. [{"name": "Raj", "age": "50"}]'
+    jsonToCsv.out.text: Result
+    jsonToCsv.out.rowCount: Rows
+    jsonToCsv.out.columnCount: Columns
+    jsonToCsv.out.headers: Headers
+    jsonToCsv.sample.nameAge: Two rows with headers

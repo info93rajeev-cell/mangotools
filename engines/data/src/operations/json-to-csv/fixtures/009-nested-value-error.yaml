@@ -1,0 +1,9 @@
+id: 009-nested-value-error
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"a":{"b":1}}]'
+expectedError:
+  code: DATA_JSON_TO_CSV_NESTED_VALUE
+  path: text
+  details: { item: 1, key: a }

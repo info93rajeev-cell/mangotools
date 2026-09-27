@@ -1,0 +1,17 @@
+id: 001-sample-name-age
+preset: data/json.to-csv
+source: { type: synthetic }
+input:
+  text: |-
+    [
+      { "name": "Raj", "age": "50" },
+      { "name": "Aiva", "age": "19" }
+    ]
+expected:
+  rowCount: 2
+  columnCount: 2
+  headers: [name, age]
+  text: |
+    name,age
+    Raj,50
+    Aiva,19

@@ -33,13 +33,14 @@ leading zero. A future version may add explicit, opt-in type conversion; v1 does
 **Browser-based processing.** No upload is required. The CSV you paste is parsed on your own
 device, in a background worker, and never sent to a server.
 
-**What this tool does not do.** This is a CSV to JSON converter only, not a JSON to CSV converter —
-that is planned as a separate, future tool. It does not read Excel or `.xlsx` files, only plain CSV
-text. It does not import data into a database, infer a schema, or use AI to clean up messy data. It
-does not accept a delimiter other than a comma in this version.
+**What this tool does not do.** This is a CSV to JSON converter only — for the reverse direction, use
+[JSON to CSV](tool:json-to-csv). It does not read Excel or `.xlsx` files, only plain CSV text. It
+does not import data into a database, infer a schema, or use AI to clean up messy data. It does not
+accept a delimiter other than a comma in this version.
 
 **Related developer and data tools.** Once you have JSON, format or validate it with
-[JSON Formatter & Validator](tool:json-formatter). For other everyday encoding tasks, see
+[JSON Formatter & Validator](tool:json-formatter), or convert it back with
+[JSON to CSV](tool:json-to-csv). For other everyday encoding tasks, see
 [Base64 Encode & Decode](tool:base64-encode-decode) and [URL Encode & Decode](tool:url-encode-decode).
 
 ## FAQ
@@ -75,7 +76,7 @@ output.
 
 ### Can I convert JSON back to CSV here?
 
-Not yet. JSON to CSV is a possible future tool, not part of this one.
+Not on this page, but [JSON to CSV](tool:json-to-csv) does exactly that — the reverse of this tool.
 
 ### Is my CSV data uploaded anywhere?
 
