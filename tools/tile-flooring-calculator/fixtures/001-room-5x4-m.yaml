@@ -1,0 +1,26 @@
+id: 001-room-5x4-m
+preset: civil/tile-quantity
+source:
+  type: hand-verified
+  citation: "5 x 4 m room = 20 m2; 0.3 x 0.3 m tile = 0.09 m2; 20 / 0.09 = 222.222, rounded up to 223 tiles; x1.10 (10% wastage) = 245.3, rounded up to 246; 246 / 10 tiles per box = 24.6, rounded up to 25 boxes"
+input:
+  unit: m
+  surfaceLength: "5"
+  surfaceWidth: "4"
+  tileLength: "0.3"
+  tileWidth: "0.3"
+  quantity: "1"
+  wastagePercent: "10"
+  tilesPerBox: "10"
+expected:
+  unit: m
+  quantity: "1"
+  wastagePercent: "10"
+  surfaceAreaM2: "20.000"
+  tileAreaM2: "0.090"
+  baseTileCount: "223"
+  wastageTileCount: "23"
+  totalTiles: "246"
+  tilesPerBox: "10"
+  boxesRequired: "25"
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_TILE_SCOPE_LIMIT]

@@ -4,8 +4,9 @@ id: plaster-calculator
 slug: plaster-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Tile / Flooring Calculator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta with plaster area and volume for a wall, ceiling or general surface, with opening deduction and wastage %." }
 name: Plaster Calculator
 shortName: Plaster
@@ -26,7 +27,7 @@ seo:
   primaryKeyword: plaster calculator
   secondaryKeywords: [wall plaster calculator, plaster quantity calculator, cement plaster calculator]
 graph:
-  related: [brickwork-calculator, concrete-quantity-calculator]
+  related: [brickwork-calculator, concrete-quantity-calculator, tile-flooring-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Rectangular area/volume: length × width × thickness; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }

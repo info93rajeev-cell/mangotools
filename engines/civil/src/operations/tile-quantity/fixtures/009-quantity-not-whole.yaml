@@ -1,0 +1,5 @@
+id: 009-quantity-not-whole
+operation: civil.tile.quantity@1
+source: { type: regression }
+input: { unit: m, surfaceLength: "5", surfaceWidth: "4", tileLength: "0.3", tileWidth: "0.3", quantity: "1.5", wastagePercent: "0" }
+expectedError: { code: CIVIL_QUANTITY_NOT_WHOLE, path: quantity }

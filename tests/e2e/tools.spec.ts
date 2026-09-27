@@ -272,6 +272,56 @@ test.describe('Volumetric Weight Calculator', () => {
   });
 });
 
+test.describe('Tile / Flooring Calculator', () => {
+  test('calculates total tiles, base count and wastage tiles', async ({ page }) => {
+    await openTool(page, 'tile-flooring-calculator');
+    await expect(page.getByLabel('Number of identical rooms/areas')).toHaveValue('1');
+    await expect(page.getByLabel('Wastage %')).toHaveValue('10');
+    await page.getByLabel('Floor/wall length').fill('5');
+    await page.getByLabel('Floor/wall width').fill('4');
+    await page.getByLabel('Tile length').fill('0.3');
+    await page.getByLabel('Tile width').fill('0.3');
+    await expect(primaryResult(page)).toHaveText('246');
+    await expect(page.locator('[data-output="baseTileCount"] dd')).toHaveText('223');
+    await expect(page.locator('[data-output="wastageTileCount"] dd')).toHaveText('23');
+    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+  });
+
+  test('shows boxes required only once tiles per box is entered', async ({ page }) => {
+    await openTool(page, 'tile-flooring-calculator');
+    await page.getByLabel('Floor/wall length').fill('5');
+    await page.getByLabel('Floor/wall width').fill('4');
+    await page.getByLabel('Tile length').fill('0.3');
+    await page.getByLabel('Tile width').fill('0.3');
+    await expect(primaryResult(page)).toHaveText('246');
+    await expect(page.locator('[data-output="boxesRequired"]')).toHaveCount(0);
+    await page.getByLabel('Tiles per box (optional)').fill('10');
+    await expect(page.locator('[data-output="boxesRequired"] dd')).toHaveText('25');
+  });
+
+  test('a lower wastage percentage reduces total tiles', async ({ page }) => {
+    await openTool(page, 'tile-flooring-calculator');
+    await page.getByLabel('Floor/wall length').fill('5');
+    await page.getByLabel('Floor/wall width').fill('4');
+    await page.getByLabel('Tile length').fill('0.3');
+    await page.getByLabel('Tile width').fill('0.3');
+    await expect(primaryResult(page)).toHaveText('246');
+    await page.getByLabel('Wastage %').fill('0');
+    await expect(primaryResult(page)).toHaveText('223');
+  });
+
+  test('explains an invalid dimension next to the field', async ({ page }) => {
+    await openTool(page, 'tile-flooring-calculator');
+    await page.getByLabel('Floor/wall length').fill('5');
+    await page.getByLabel('Floor/wall width').fill('4');
+    await page.getByLabel('Tile length').fill('0.3');
+    await page.getByLabel('Tile width').fill('0.3');
+    await page.getByLabel('Floor/wall length').fill('0');
+    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
+    await expect(page.getByLabel('Floor/wall length')).toHaveAttribute('aria-invalid', 'true');
+  });
+});
+
 test.describe('JSON Formatter', () => {
   test('reports line and column, and Go to moves the caret', async ({ page }) => {
     await openTool(page, 'json-formatter');
