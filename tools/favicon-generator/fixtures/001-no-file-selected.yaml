@@ -1,0 +1,9 @@
+id: 001-no-file-selected
+preset: image/favicon
+source:
+  type: synthetic
+  citation: "Mirrors image.favicon@1's own fixture 001-no-file-selected: a missing file must be a specific, typed error through the Favicon Generator preset too"
+input:
+  size: "32"
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

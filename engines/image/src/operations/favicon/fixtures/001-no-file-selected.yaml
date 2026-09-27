@@ -1,0 +1,9 @@
+id: 001-no-file-selected
+operation: image.favicon@1
+source:
+  type: synthetic
+  citation: "Mirrors image.crop@1's own fixture 001-no-file-selected: a missing file must be a specific, typed error through image.favicon@1 too"
+input:
+  size: "32"
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

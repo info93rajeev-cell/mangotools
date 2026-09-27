@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/favicon
+version: 0.1.0
+operation: image.favicon@1
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  size:
+    labelKey: field.size
+    kind: enum
+    control: select
+    order: 1
+    required: true
+    default: "32"
+    options:
+      - { value: "16", labelKey: field.size.16 }
+      - { value: "32", labelKey: field.size.32 }
+      - { value: "48", labelKey: field.size.48 }
+      - { value: "180", labelKey: field.size.180 }
+      - { value: "192", labelKey: field.size.192 }
+      - { value: "512", labelKey: field.size.512 }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  outputSize: { labelKey: output.outputSize, format: number, order: 2 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 3 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 4 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 5 }
+  originalFormat: { labelKey: output.originalFormat, format: text, order: 6 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 7 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 8 }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: number, order: 9 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "favicon-32.png"
+    fileTool.downloadCta: "Download favicon"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.size: "Favicon size"
+    field.size.16: "16 × 16 px"
+    field.size.32: "32 × 32 px"
+    field.size.48: "48 × 48 px"
+    field.size.180: "180 × 180 px (Apple touch icon)"
+    field.size.192: "192 × 192 px (Android)"
+    field.size.512: "512 × 512 px (large / PWA)"
+    output.fileName: "Favicon file"
+    output.outputSize: "Favicon size (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.outputFormat: "Output format"
+    output.originalFormat: "Original format"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.sizeDifferenceBytes: "Size difference (bytes)"
