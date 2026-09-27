@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/metadata-remove
+version: 0.1.0
+operation: image.resize@1
+params:
+  outputFileNameSuffix: "-cleaned"
+  outputFileNameFallback: "cleaned-image"
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  # Hidden: Image Metadata Remover keeps the source's own dimensions. The preview's onLoad prefills these
+  # to the decoded image's natural width/height before the operation runs (same mechanism as Image Compress
+  # and Image Format Converter); keepAspectRatio: true then makes the fit a no-op rather than a resize.
+  targetWidth: { labelKey: field.targetWidth, kind: number, order: 1, required: true, default: 800, visible: false }
+  targetHeight: { labelKey: field.targetHeight, kind: number, order: 2, required: true, default: 600, visible: false }
+  keepAspectRatio: { labelKey: field.keepAspectRatio, kind: boolean, order: 3, default: "true", visible: false }
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 4
+    # Unlike Image Format Converter, "same as input" is the whole point here (v1 default): the tool's job
+    # is to strip metadata, not change format. A different explicit format is still allowed for a user who
+    # wants both in one pass.
+    options:
+      - { value: same, labelKey: field.outputFormat.same }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+    default: same
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 5
+    unit: "%"
+    placeholderKey: field.quality.placeholder
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 2 }
+  originalFormat: { labelKey: output.originalFormat, format: text, order: 3 }
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 4 }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 5 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 6 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 7 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 8 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 9 }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: number, order: 10 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-cleaned.jpg"
+    fileTool.downloadCta: "Download cleaned image"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.targetWidth: "Width"
+    field.targetHeight: "Height"
+    field.keepAspectRatio: "Keep aspect ratio"
+    field.outputFormat: "Output format"
+    field.outputFormat.same: "Same as input"
+    field.outputFormat.jpg: "JPG"
+    field.outputFormat.png: "PNG"
+    field.outputFormat.webp: "WebP"
+    field.quality: "Quality"
+    field.quality.placeholder: "85"
+    output.fileName: "Cleaned file"
+    output.outputFormat: "Output format"
+    output.originalFormat: "Original format"
+    output.outputWidth: "Width (px)"
+    output.outputHeight: "Height (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.sizeDifferenceBytes: "Size difference (bytes)"

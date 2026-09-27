@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-metadata-remover
+slug: image-metadata-remover
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: create a metadata-clean copy of a JPG, PNG or WebP image, entirely in the browser." }
+name: Image Metadata Remover
+shortName: Metadata Remover
+summary: Create a copy of a JPG, PNG or WebP image with common metadata removed, right in your browser. No sign-up, no watermark, no upload.
+archetype: D
+preset: image/metadata-remove
+taxonomy:
+  category: media
+  tags: [images, metadata]
+  synonyms: [image metadata remover, remove image metadata, remove exif data, exif remover, photo metadata remover, remove gps from photo, remove camera data from image, strip image metadata, remove metadata from jpg, remove metadata from png, privacy image tool]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Image Metadata Remover – Remove EXIF Free"
+  description: "Free browser-based tool to remove EXIF and other common metadata from JPG, PNG and WebP images. No sign-up, no watermark, nothing is uploaded."
+  primaryKeyword: image metadata remover
+  secondaryKeywords: [remove exif data, exif remover, remove gps from photo, strip image metadata]
+graph:
+  related: [image-format-converter, image-compress, image-resize]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.resize@1 fixtures 001-003 (reused unchanged by Image Metadata Remover, TASK-007C); canvas re-encode never reads or writes EXIF or other image metadata (engines/image/src/operations/resize/README.md, 'Metadata')", locator: "engines/image/src/operations/resize/fixtures" }
+  lastVerified: 2026-09-27

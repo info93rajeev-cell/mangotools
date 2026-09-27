@@ -397,19 +397,83 @@ test.describe('Image Format Converter', () => {
   });
 });
 
+test.describe('Image Metadata Remover', () => {
+  const fileInput = (page: Page) =>
+    island(page, 'image-metadata-remover').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-metadata-remover/fixtures/files/sample.jpg');
+  const preview = (page: Page) => island(page, 'image-metadata-remover').locator('img');
+
+  test('selecting an image previews it without exposing width or height controls', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-metadata-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(preview(page)).toBeVisible();
+    await expect(page.getByLabel('Width')).toHaveCount(0);
+    await expect(page.getByLabel('Height')).toHaveCount(0);
+    await expect(page.getByRole('switch', { name: 'Keep aspect ratio' })).toHaveCount(0);
+  });
+
+  test('defaults to "same as input", cleans the image, and downloads it with the default name', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-metadata-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Output format')).toHaveValue('same');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download cleaned image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-cleaned.jpg');
+    await expect(primaryResult(page)).toHaveText('sample-cleaned.jpg');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('jpg');
+    // The standing warning already shown by every image.resize@1-backed tool is this tool's whole point.
+    await expect(
+      page.getByText('Metadata such as camera and location data is not preserved.'),
+    ).toBeVisible();
+  });
+
+  test('can also convert format while cleaning', async ({ page }) => {
+    await openTool(page, 'image-metadata-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output format').selectOption('png');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download cleaned image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-cleaned.png');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'image-metadata-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output file name').fill('  My Photo<>.JPG  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download cleaned image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Photo.jpg');
+  });
+
+  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
+    await openTool(page, 'image-metadata-remover');
+    const notAnImage = join(process.cwd(), 'tools/image-metadata-remover/manifest.yaml');
+    await fileInput(page).setInputFiles([notAnImage]);
+    await page.getByRole('button', { name: 'Download cleaned image' }).click();
+    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+});
+
 test.describe('Image & Media category', () => {
-  test('shows exactly three tools and no future image tools', async ({ page }) => {
+  test('shows exactly four tools and no future image tools', async ({ page }) => {
     await gotoReady(page, '/media');
     await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
     await expect(allTools.getByRole('link', { name: 'Image Resize' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Compress' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Format Converter' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(3);
+    await expect(allTools.getByRole('link', { name: 'Image Metadata Remover' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(4);
     for (const future of [
       'Background Remover',
-      'EXIF Remover',
-      'Metadata Remover',
       'Passport Photo',
       'Image Watermark',
       'Image Crop',

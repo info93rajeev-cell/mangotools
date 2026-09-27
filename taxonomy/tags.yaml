@@ -16,6 +16,7 @@ tags:
   - { id: resize, label: Resize }
   - { id: compress, label: Compress }
   - { id: convert, label: Convert }
+  - { id: metadata, label: Metadata }
   - { id: concrete, label: Concrete }
   - { id: construction, label: Construction }
   - { id: excavation, label: Excavation }

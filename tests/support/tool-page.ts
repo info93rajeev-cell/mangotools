@@ -74,6 +74,14 @@ export const FILE_TOOLS = {
     // The primary output is the resolved output format; the preset's default target is PNG.
     result: 'png',
   },
+  'image-metadata-remover': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-metadata-remover/fixtures/files/sample.jpg')],
+    downloadCta: 'Download cleaned image',
+    // The primary output is the output file name; the default output format is "same as input" (jpg for
+    // this sample.jpg fixture), so the derived name keeps the .jpg extension.
+    result: 'sample-cleaned.jpg',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;

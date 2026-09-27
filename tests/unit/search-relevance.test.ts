@@ -149,6 +149,18 @@ describe('search relevance over the generated index', () => {
     ['free image converter', 'image-format-converter'],
     ['browser image converter', 'image-format-converter'],
     ['image format converter online', 'image-format-converter'],
+    ['Image Metadata Remover', 'image-metadata-remover'],
+    ['image metadata remover', 'image-metadata-remover'],
+    ['remove image metadata', 'image-metadata-remover'],
+    ['remove exif data', 'image-metadata-remover'],
+    ['exif remover', 'image-metadata-remover'],
+    ['photo metadata remover', 'image-metadata-remover'],
+    ['remove gps from photo', 'image-metadata-remover'],
+    ['remove camera data from image', 'image-metadata-remover'],
+    ['strip image metadata', 'image-metadata-remover'],
+    ['remove metadata from jpg', 'image-metadata-remover'],
+    ['remove metadata from png', 'image-metadata-remover'],
+    ['privacy image tool', 'image-metadata-remover'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));
