@@ -103,6 +103,12 @@ export const imageResize = defineOperation({
     const warnings = [...STANDING_WARNINGS];
     if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
     if (isUpscale(source, output)) warnings.push(warning('IMAGE_UPSCALED_QUALITY_LOSS'));
+    // Only for an *explicit* same-format request (input.outputFormat === sourceType), never for 'same'
+    // itself — 'same' trivially resolves to the source format on every Resize/Compress default run, and
+    // this warning must not fire on that already-shipped path.
+    if (input.outputFormat !== 'same' && input.outputFormat === sourceType) {
+      warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
+    }
 
     let canvas: OffscreenCanvas;
     try {
@@ -142,6 +148,7 @@ export const imageResize = defineOperation({
         originalFileSize: file.bytes.byteLength,
         outputFileSize: bytes.byteLength,
         ...sizeChange,
+        originalFormat: sourceType,
         outputFormat: finalFormat,
       },
       warnings,

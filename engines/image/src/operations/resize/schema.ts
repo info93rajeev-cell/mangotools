@@ -41,6 +41,10 @@ export const imageResizeOutput = z.strictObject({
   /** originalFileSize - outputFileSize: positive means the output is smaller (a reduction). */
   sizeDifferenceBytes: z.number().int(),
   sizeChangePercent: z.number(),
+  /** The source's own detected format (by signature) — added for Image Format Converter (TASK-007B), so a
+   * preset can show "converted from X to Y" without a separate lookup. Useful for any preset, not
+   * converter-specific. */
+  originalFormat: resolvedImageFormat,
   outputFormat: resolvedImageFormat,
 });
 

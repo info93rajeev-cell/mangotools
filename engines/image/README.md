@@ -77,3 +77,11 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
     against the original's; always populated, for any preset to surface.
   - `IMAGE_OUTPUT_LARGER_THAN_INPUT` warning, raised whenever the output file is larger than the input,
     regardless of which preset requested the resize.
+- 0.4.0 — Small, directly-required foundation additions for Image Format Converter (TASK-007B), which
+  reuses `image.resize@1` at the source's own dimensions with an *explicit* output format (never `'same'`),
+  the same reuse pattern Image Compress already established:
+  - `output.originalFormat` — the source's own detected format, so a preset can show "converted from X to
+    Y" without a separate lookup. Populated for every preset, not converter-specific.
+  - `IMAGE_SAME_FORMAT_REENCODED` warning, raised only when an *explicit* requested format equals the
+    detected source format; never raised for Image Resize's or Image Compress's own `'same'`-format
+    default, which is a different, already-shipped path. No other operation behavior change.

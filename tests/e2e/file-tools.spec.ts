@@ -314,22 +314,106 @@ test.describe('Image Compress', () => {
   });
 });
 
+test.describe('Image Format Converter', () => {
+  const fileInput = (page: Page) =>
+    island(page, 'image-format-converter').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-format-converter/fixtures/files/sample.jpg');
+  const preview = (page: Page) => island(page, 'image-format-converter').locator('img');
+
+  test('selecting an image previews it without exposing width or height controls', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(preview(page)).toBeVisible();
+    await expect(page.getByLabel('Width')).toHaveCount(0);
+    await expect(page.getByLabel('Height')).toHaveCount(0);
+    await expect(page.getByRole('switch', { name: 'Keep aspect ratio' })).toHaveCount(0);
+  });
+
+  test('has no "same as input" option, unlike Resize and Compress', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    const options = await page.getByLabel('Convert to').locator('option').allTextContents();
+    expect(options).toEqual(['JPG', 'PNG', 'WebP']);
+  });
+
+  test('converts to PNG (the default) and downloads it with the default name', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-converted.png');
+    // outputFormat is this preset's primary result, unlike Resize (outputWidth) and Compress
+    // (sizeChangePercent), so it renders via the primary-result element, not a "dd" output row.
+    await expect(primaryResult(page)).toHaveText('png');
+    await expect(page.locator('[data-output="originalFormat"] dd')).toHaveText('jpg');
+  });
+
+  test('converts to WebP and shows a quality control', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Convert to').selectOption('webp');
+    await expect(page.getByLabel('Quality')).toBeVisible();
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-converted.webp');
+  });
+
+  test('converting explicitly to the source’s own format warns that it was re-encoded', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Convert to').selectOption('jpg');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    await downloadPromise;
+    await expect(
+      page.getByText(
+        'The output format is the same as the original. The image was re-encoded, which can change its size and quality slightly.',
+      ),
+    ).toBeVisible();
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output file name').fill('  My Photo<>.PNG  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Photo.png');
+  });
+
+  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    const notAnImage = join(process.cwd(), 'tools/image-format-converter/manifest.yaml');
+    await fileInput(page).setInputFiles([notAnImage]);
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+});
+
 test.describe('Image & Media category', () => {
-  test('shows exactly two tools and no future image tools', async ({ page }) => {
+  test('shows exactly three tools and no future image tools', async ({ page }) => {
     await gotoReady(page, '/media');
     await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
     await expect(allTools.getByRole('link', { name: 'Image Resize' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Compress' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(2);
+    await expect(allTools.getByRole('link', { name: 'Image Format Converter' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(3);
     for (const future of [
       'Background Remover',
-      'JPG to PNG',
-      'PNG to JPG',
-      'WebP Converter',
       'EXIF Remover',
+      'Metadata Remover',
       'Passport Photo',
       'Image Watermark',
+      'Image Crop',
+      'Favicon Generator',
     ]) {
       await expect(page.getByText(future, { exact: true })).toHaveCount(0);
     }

@@ -67,6 +67,13 @@ export const FILE_TOOLS = {
     // percentage — is a stable cross-browser contract; see engines/image/README.md's "Determinism".
     resultPattern: /^−\d+(\.\d+)?%$/,
   },
+  'image-format-converter': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-format-converter/fixtures/files/sample.jpg')],
+    downloadCta: 'Download converted image',
+    // The primary output is the resolved output format; the preset's default target is PNG.
+    result: 'png',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;
