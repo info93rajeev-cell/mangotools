@@ -11,13 +11,26 @@ categories:
       description: Free surveying calculators for leveling and traverse adjustment. Every check and step is shown, and everything runs in your browser.
   - id: construction
     slug: construction
-    name: Construction
+    name: Civil & Construction
     icon: hard-hat
     order: 20
-    summary: Quantity and material calculators for site and estimating work.
+    summary: Concrete and quantity-survey calculators for site engineers, contractors and estimators.
     seo:
-      title: Construction Calculators – Quantities & Materials
-      description: Free construction calculators for quantities and materials, built for site engineers and estimators. Runs in your browser.
+      title: Civil & Construction Calculators – Concrete Quantity
+      description: Free civil and construction calculators for concrete quantity, built for site engineers, contractors and estimators. Runs in your browser.
+    about:
+      - The Concrete Quantity Calculator works out the volume of concrete needed for a rectangular slab, beam, column or footing, including an adjustable wastage allowance, in cubic metres and cubic feet.
+      - This is an estimation aid, not a structural design or a certified bill of quantities. Local codes, site conditions, mix design, wastage and measurement rules vary by project — verify quantities before purchase or construction, and confirm the final figures with a licensed engineer, architect or professional quantity surveyor.
+      - The calculator runs entirely in your browser and shows its working. The dimensions you enter are never sent to a server.
+    faq:
+      - q: Are these civil and construction calculators free?
+        a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
+      - q: Which units can I use?
+        a: Dimensions in millimetres, centimetres, metres, inches or feet. Results are shown in cubic metres and cubic feet.
+      - q: Does this replace a quantity surveyor or engineer?
+        a: No. This is an estimation aid to help you plan and check quantities. It does not calculate reinforcement, mix design, material split or cost, and it does not replace a licensed engineer, architect or professional quantity surveyor.
+      - q: Will more civil and construction calculators be added?
+        a: This category currently has one tool, the Concrete Quantity Calculator. Further civil and quantity-survey calculators may be added later.
   - id: logistics
     slug: logistics
     name: Logistics

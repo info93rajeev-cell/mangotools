@@ -1,0 +1,86 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/concrete-quantity
+version: 0.1.0
+operation: civil.concrete.quantity@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  memberType:
+    labelKey: concrete.field.memberType
+    kind: enum
+    control: select
+    default: slab
+    order: 10
+    options:
+      - { value: general, labelKey: concrete.memberType.general }
+      - { value: slab, labelKey: concrete.memberType.slab }
+      - { value: beam, labelKey: concrete.memberType.beam }
+      - { value: column, labelKey: concrete.memberType.column }
+      - { value: footing, labelKey: concrete.memberType.footing }
+  unit:
+    labelKey: concrete.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 20
+    options:
+      - { value: mm, labelKey: concrete.unit.mm }
+      - { value: cm, labelKey: concrete.unit.cm }
+      - { value: m, labelKey: concrete.unit.m }
+      - { value: in, labelKey: concrete.unit.in }
+      - { value: ft, labelKey: concrete.unit.ft }
+  length: { labelKey: concrete.field.length, kind: number, required: true, order: 30, helpKey: concrete.help.dimension }
+  width: { labelKey: concrete.field.width, kind: number, required: true, order: 40, helpKey: concrete.help.dimension }
+  depth: { labelKey: concrete.field.depth, kind: number, required: true, order: 50, helpKey: concrete.help.dimension }
+  quantity: { labelKey: concrete.field.quantity, kind: number, required: true, default: 1, order: 60, helpKey: concrete.help.quantity }
+  wastagePercent: { labelKey: concrete.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 70, helpKey: concrete.help.wastage }
+outputs:
+  totalVolumeM3: { labelKey: concrete.out.totalVolumeM3, format: number, order: 10, primary: true }
+  baseVolumeM3: { labelKey: concrete.out.baseVolumeM3, format: number, order: 20 }
+  wastageVolumeM3: { labelKey: concrete.out.wastageVolumeM3, format: number, order: 30 }
+  totalVolumeFt3: { labelKey: concrete.out.totalVolumeFt3, format: number, order: 40 }
+  memberType: { labelKey: concrete.out.memberType, format: text, order: 50 }
+  unit: { labelKey: concrete.out.unit, format: text, order: 60 }
+  quantity: { labelKey: concrete.out.quantity, format: number, order: 70 }
+  wastagePercent: { labelKey: concrete.out.wastagePercent, format: percent, order: 80 }
+samples:
+  slab-5x4x0.15-m:
+    titleKey: concrete.sample.slab
+    input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", wastagePercent: "0" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    concrete.field.memberType: Member type
+    concrete.memberType.general: General / rectangular
+    concrete.memberType.slab: Slab
+    concrete.memberType.beam: Beam
+    concrete.memberType.column: Column
+    concrete.memberType.footing: Footing
+    concrete.field.unit: Unit
+    concrete.unit.mm: mm
+    concrete.unit.cm: cm
+    concrete.unit.m: m
+    concrete.unit.in: inch
+    concrete.unit.ft: ft
+    concrete.field.length: Length
+    concrete.field.width: Width
+    concrete.field.depth: Depth / thickness / height
+    concrete.field.quantity: Number of members
+    concrete.field.wastagePercent: Wastage %
+    concrete.help.dimension: Outer dimension of one member, in the unit chosen above, up to 3 decimal places.
+    concrete.help.quantity: A whole number from 1 to 1,000,000.
+    concrete.help.wastage: An adjustable allowance for cutting and site wastage, from 0 to 50%. Defaults to 0%.
+    concrete.out.totalVolumeM3: Total concrete volume incl. wastage (m³)
+    concrete.out.baseVolumeM3: Volume before wastage (m³)
+    concrete.out.wastageVolumeM3: Wastage volume (m³)
+    concrete.out.totalVolumeFt3: Total concrete volume incl. wastage (ft³)
+    concrete.out.memberType: Member type
+    concrete.out.unit: Unit used
+    concrete.out.quantity: Number of members
+    concrete.out.wastagePercent: Wastage %
+    concrete.sample.slab: 5 × 4 × 0.15 m slab, 1 member
+    work.concrete.memberVolume: "One member volume = {length:number} {unit} × {width:number} {unit} × {depth:number} {unit} × {factor} m³ per {unit}³ = {result} m³ (exact)"
+    work.concrete.baseVolume: "Volume before wastage = {memberVolume} m³ × {quantity:number} members = {result:number} m³ (exact)"
+    work.concrete.wastageVolume: "Wastage volume = {baseVolume} m³ × {wastagePercent:number}% = {result} m³ (exact)"
+    work.concrete.totalVolume: "Total volume incl. wastage = {baseVolume} m³ + {wastageVolume} m³ = {result:number} m³ (exact)"
+    work.concrete.totalVolumeFt3: "Total volume in cubic feet = {totalVolume:number} m³ × {factor} = {result:number} ft³ (exact)"

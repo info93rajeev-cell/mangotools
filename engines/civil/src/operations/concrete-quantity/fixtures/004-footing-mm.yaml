@@ -1,0 +1,6 @@
+id: 004-footing-mm
+operation: civil.concrete.quantity@1
+source: { type: hand-verified, citation: "1200 x 1200 x 600 mm = 864,000,000 mm3 = 0.864 m3 per footing; x8 footings = 6.912 m3; 2.5% wastage = 0.1728 m3; total 7.0848 m3; x35.3146667 = 250.19735... ft3" }
+input: { memberType: footing, unit: mm, length: "1200", width: "1200", depth: "600", quantity: "8", wastagePercent: "2.5" }
+expected: { memberType: footing, unit: mm, quantity: "8", wastagePercent: "2.5", baseVolumeM3: "6.912", wastageVolumeM3: "0.173", totalVolumeM3: "7.085", totalVolumeFt3: "250.197" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

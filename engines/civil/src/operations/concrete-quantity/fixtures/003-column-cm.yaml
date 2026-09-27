@@ -1,0 +1,6 @@
+id: 003-column-cm
+operation: civil.concrete.quantity@1
+source: { type: hand-verified, citation: "30 x 30 x 300 cm = 270,000 cm3 = 0.27 m3 per column; x10 columns = 2.7 m3; 0% wastage; 2.7 x 35.3146667 = 95.34960009 ft3" }
+input: { memberType: column, unit: cm, length: "30", width: "30", depth: "300", quantity: "10", wastagePercent: "0" }
+expected: { memberType: column, unit: cm, quantity: "10", wastagePercent: "0", baseVolumeM3: "2.700", wastageVolumeM3: "0.000", totalVolumeM3: "2.700", totalVolumeFt3: "95.350" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

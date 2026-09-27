@@ -1,0 +1,6 @@
+id: 001-slab
+preset: civil/concrete-quantity
+source: { type: hand-verified, citation: "5 x 4 x 0.15 m = 3 m3; x1 member, 0% wastage; 3 x 35.3146667 = 105.9440001 ft3" }
+input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", wastagePercent: "0" }
+expected: { memberType: slab, unit: m, quantity: "1", wastagePercent: "0", baseVolumeM3: "3.000", wastageVolumeM3: "0.000", totalVolumeM3: "3.000", totalVolumeFt3: "105.944" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]
