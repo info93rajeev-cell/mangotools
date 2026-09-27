@@ -111,6 +111,17 @@ describe('search relevance over the generated index', () => {
     ['footing concrete calculator', 'concrete-quantity-calculator'],
     ['civil construction calculator', 'concrete-quantity-calculator'],
     ['quantity survey calculator', 'concrete-quantity-calculator'],
+    ['Excavation Calculator', 'excavation-calculator'],
+    ['excavation calculator', 'excavation-calculator'],
+    ['earthwork calculator', 'excavation-calculator'],
+    ['trench excavation calculator', 'excavation-calculator'],
+    ['footing excavation calculator', 'excavation-calculator'],
+    ['foundation excavation calculator', 'excavation-calculator'],
+    ['pit excavation calculator', 'excavation-calculator'],
+    ['excavation quantity calculator', 'excavation-calculator'],
+    ['earthwork quantity calculator', 'excavation-calculator'],
+    ['civil engineering excavation calculator', 'excavation-calculator'],
+    ['quantity survey excavation calculator', 'excavation-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

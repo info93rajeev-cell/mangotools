@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/excavation-volume
+version: 0.1.0
+operation: civil.excavation.volume@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  excavationType:
+    labelKey: excavation.field.excavationType
+    kind: enum
+    control: select
+    default: general
+    order: 10
+    options:
+      - { value: general, labelKey: excavation.type.general }
+      - { value: trench, labelKey: excavation.type.trench }
+      - { value: footing, labelKey: excavation.type.footing }
+  unit:
+    labelKey: excavation.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 20
+    options:
+      - { value: mm, labelKey: excavation.unit.mm }
+      - { value: cm, labelKey: excavation.unit.cm }
+      - { value: m, labelKey: excavation.unit.m }
+      - { value: in, labelKey: excavation.unit.in }
+      - { value: ft, labelKey: excavation.unit.ft }
+  length: { labelKey: excavation.field.length, kind: number, required: true, order: 30, helpKey: excavation.help.dimension }
+  width: { labelKey: excavation.field.width, kind: number, required: true, order: 40, helpKey: excavation.help.dimension }
+  depth: { labelKey: excavation.field.depth, kind: number, required: true, order: 50, helpKey: excavation.help.dimension }
+  quantity: { labelKey: excavation.field.quantity, kind: number, required: true, default: 1, order: 60, helpKey: excavation.help.quantity }
+  bulkingPercent: { labelKey: excavation.field.bulkingPercent, kind: percent, unit: "%", required: true, default: 0, order: 70, helpKey: excavation.help.bulking }
+outputs:
+  looseVolumeM3: { labelKey: excavation.out.looseVolumeM3, format: number, order: 10, primary: true }
+  neatVolumeM3: { labelKey: excavation.out.neatVolumeM3, format: number, order: 20 }
+  bulkingVolumeM3: { labelKey: excavation.out.bulkingVolumeM3, format: number, order: 30 }
+  looseVolumeFt3: { labelKey: excavation.out.looseVolumeFt3, format: number, order: 40 }
+  excavationType: { labelKey: excavation.out.excavationType, format: text, order: 50 }
+  unit: { labelKey: excavation.out.unit, format: text, order: 60 }
+  quantity: { labelKey: excavation.out.quantity, format: number, order: 70 }
+  bulkingPercent: { labelKey: excavation.out.bulkingPercent, format: percent, order: 80 }
+samples:
+  general-5x4x1.5-m:
+    titleKey: excavation.sample.general
+    input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", bulkingPercent: "0" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    excavation.field.excavationType: Excavation type
+    excavation.type.general: Rectangular pit / general excavation
+    excavation.type.trench: Trench
+    excavation.type.footing: Footing pit
+    excavation.field.unit: Unit
+    excavation.unit.mm: mm
+    excavation.unit.cm: cm
+    excavation.unit.m: m
+    excavation.unit.in: inch
+    excavation.unit.ft: ft
+    excavation.field.length: Length
+    excavation.field.width: Width
+    excavation.field.depth: Depth
+    excavation.field.quantity: Number of pits or trenches
+    excavation.field.bulkingPercent: Bulking / swell %
+    excavation.help.dimension: Outer dimension of one pit or trench, in the unit chosen above, up to 3 decimal places.
+    excavation.help.quantity: A whole number from 1 to 1,000,000.
+    excavation.help.bulking: An adjustable allowance for soil bulking/swell after excavation, from 0 to 50%. Defaults to 0%.
+    excavation.out.looseVolumeM3: Loose excavated volume incl. bulking (m³)
+    excavation.out.neatVolumeM3: Neat excavation volume before bulking (m³)
+    excavation.out.bulkingVolumeM3: Bulking / swell volume (m³)
+    excavation.out.looseVolumeFt3: Loose excavated volume incl. bulking (ft³)
+    excavation.out.excavationType: Excavation type
+    excavation.out.unit: Unit used
+    excavation.out.quantity: Number of pits or trenches
+    excavation.out.bulkingPercent: Bulking / swell %
+    excavation.sample.general: 5 × 4 × 1.5 m rectangular pit, 1 pit
+    work.excavation.oneVolume: "One excavation volume = {length:number} {unit} × {width:number} {unit} × {depth:number} {unit} × {factor} m³ per {unit}³ = {result} m³ (exact)"
+    work.excavation.neatVolume: "Neat volume = {oneExcavationVolume} m³ × {quantity:number} pits/trenches = {result:number} m³ (exact)"
+    work.excavation.bulkingVolume: "Bulking/swell volume = {neatVolume} m³ × {bulkingPercent:number}% = {result} m³ (exact)"
+    work.excavation.looseVolume: "Loose volume incl. bulking = {neatVolume} m³ + {bulkingVolume} m³ = {result:number} m³ (exact)"
+    work.excavation.looseVolumeFt3: "Loose volume in cubic feet = {looseVolume:number} m³ × {factor} = {result:number} ft³ (exact)"

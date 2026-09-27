@@ -1,0 +1,5 @@
+id: 011-quantity-zero
+operation: civil.excavation.volume@1
+source: { type: regression }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "0", bulkingPercent: "0" }
+expectedError: { code: CIVIL_QUANTITY_NOT_POSITIVE, path: quantity }

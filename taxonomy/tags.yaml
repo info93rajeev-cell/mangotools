@@ -17,3 +17,5 @@ tags:
   - { id: compress, label: Compress }
   - { id: concrete, label: Concrete }
   - { id: construction, label: Construction }
+  - { id: excavation, label: Excavation }
+  - { id: earthwork, label: Earthwork }

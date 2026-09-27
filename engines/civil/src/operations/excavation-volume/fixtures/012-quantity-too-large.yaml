@@ -1,0 +1,5 @@
+id: 012-quantity-too-large
+operation: civil.excavation.volume@1
+source: { type: regression }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1000001", bulkingPercent: "0" }
+expectedError: { code: CIVIL_QUANTITY_TOO_LARGE, path: quantity }

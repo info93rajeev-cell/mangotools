@@ -39,13 +39,14 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds fifteen tools, fifteen presets and the six visible categories', () => {
+  it('builds sixteen tools, sixteen presets and the six visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
       'cbm-calculator',
       'concrete-quantity-calculator',
       'container-loading-calculator',
+      'excavation-calculator',
       'gst-calculator',
       'image-compress',
       'image-resize',
@@ -58,7 +59,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(15);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(16);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
@@ -358,8 +359,8 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // logistics has four tools; business and developer have three each; pdf and media have two each;
-    // construction has one. Visible categories are ordered by taxonomy/categories.yaml's own `order`.
+    // logistics has four tools; business and developer have three each; pdf, media and construction
+    // have two each. Visible categories are ordered by taxonomy/categories.yaml's own `order`.
     expect(visibleAt(1)).toEqual([
       'construction',
       'logistics',
@@ -368,7 +369,14 @@ describe('category visibility threshold', () => {
       'pdf',
       'media',
     ]);
-    expect(visibleAt(2)).toEqual(['logistics', 'business', 'developer', 'pdf', 'media']);
+    expect(visibleAt(2)).toEqual([
+      'construction',
+      'logistics',
+      'business',
+      'developer',
+      'pdf',
+      'media',
+    ]);
     expect(visibleAt(3)).toEqual(['logistics', 'business', 'developer']);
     expect(visibleAt(4)).toEqual(['logistics']);
     expect(visibleAt(5)).toEqual([]);

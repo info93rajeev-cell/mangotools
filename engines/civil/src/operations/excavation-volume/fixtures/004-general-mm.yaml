@@ -1,0 +1,6 @@
+id: 004-general-mm
+operation: civil.excavation.volume@1
+source: { type: hand-verified, citation: "3000 x 2000 x 1000 mm = 6,000,000,000 mm3 = 6 m3 per pit; x1 pit, 0% bulking; 6 x 35.3146667 = 211.8880002 ft3" }
+input: { excavationType: general, unit: mm, length: "3000", width: "2000", depth: "1000", quantity: "1", bulkingPercent: "0" }
+expected: { excavationType: general, unit: mm, quantity: "1", bulkingPercent: "0", neatVolumeM3: "6.000", bulkingVolumeM3: "0.000", looseVolumeM3: "6.000", looseVolumeFt3: "211.888" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT]
