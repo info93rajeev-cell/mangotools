@@ -18,4 +18,14 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not replace a licensed engineer, architect, or professional quantity surveyor.',
   CIVIL_VOLUME_ONLY:
     'This tool calculates concrete volume only; it does not calculate reinforcement, mix design, material split, or cost.',
+  CIVIL_BULKING_OUT_OF_RANGE: 'Enter a bulking/swell percentage between 0 and 50.',
+  CIVIL_VERIFY_BEFORE_EXCAVATION:
+    'Verify quantities before excavation, purchase, billing, or construction.',
+  CIVIL_EXCAVATION_CONDITIONS_VARY:
+    'Actual excavation may vary due to soil type, side slopes, shoring, over-excavation, compaction, site conditions, and measurement rules.',
+  CIVIL_BULKING_VARIES: 'Bulking/swell varies by soil type and moisture content.',
+  CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR:
+    'This tool does not replace a licensed engineer, architect, contractor, or professional quantity surveyor.',
+  CIVIL_EXCAVATION_SCOPE_LIMIT:
+    'This tool does not calculate slope excavation, stepped excavation, dewatering, shoring, disposal cost, truck trips, or backfill compaction.',
 };

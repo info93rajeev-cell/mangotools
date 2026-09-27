@@ -1,0 +1,6 @@
+id: 002-trench-bulking
+preset: civil/excavation-volume
+source: { type: hand-verified, citation: "10 x 0.6 x 1.2 m = 7.2 m3 per trench run; x5 runs = 36 m3; 15% bulking = 5.4 m3; loose 41.4 m3; x35.3146667 = 1462.02720138 ft3" }
+input: { excavationType: trench, unit: m, length: "10", width: "0.6", depth: "1.2", quantity: "5", bulkingPercent: "15" }
+expected: { excavationType: trench, unit: m, quantity: "5", bulkingPercent: "15", neatVolumeM3: "36.000", bulkingVolumeM3: "5.400", looseVolumeM3: "41.400", looseVolumeFt3: "1462.027" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT]

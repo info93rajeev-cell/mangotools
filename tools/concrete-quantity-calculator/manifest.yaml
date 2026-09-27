@@ -4,8 +4,9 @@ id: concrete-quantity-calculator
 slug: concrete-quantity-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Excavation Calculator." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with concrete volume for a slab, beam, column or footing, in m³ and ft³, with wastage %." }
 name: Concrete Quantity Calculator
 shortName: Concrete Quantity
@@ -25,6 +26,8 @@ seo:
   description: Work out concrete volume for a slab, beam, column or footing in cubic metres and cubic feet, with wastage %. Free, and it runs in your browser.
   primaryKeyword: concrete quantity calculator
   secondaryKeywords: [concrete calculator, concrete volume calculator, rcc quantity calculator]
+graph:
+  related: [excavation-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }

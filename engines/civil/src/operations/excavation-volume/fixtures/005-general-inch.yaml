@@ -1,0 +1,6 @@
+id: 005-general-inch
+operation: civil.excavation.volume@1
+source: { type: hand-verified, citation: "120 x 60 x 24 in = 172,800 in3 = 100 ft3 exactly (1728 in3 = 1 ft3); 100 x 0.028316846592 = 2.8316846592 m3 per pit; x1 pit, 0% bulking; converting back, 2.8316846592 x 35.3146667 is approximately 100 ft3 (the platform's own approximate ft3-per-m3 constant, matching civil.concrete.quantity@1's own precedent)" }
+input: { excavationType: general, unit: in, length: "120", width: "60", depth: "24", quantity: "1", bulkingPercent: "0" }
+expected: { excavationType: general, unit: in, quantity: "1", bulkingPercent: "0", neatVolumeM3: "2.832", bulkingVolumeM3: "0.000", looseVolumeM3: "2.832", looseVolumeFt3: "100.000" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT]

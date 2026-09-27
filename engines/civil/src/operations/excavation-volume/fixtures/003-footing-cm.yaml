@@ -1,0 +1,6 @@
+id: 003-footing-cm
+operation: civil.excavation.volume@1
+source: { type: hand-verified, citation: "200 x 200 x 150 cm = 6,000,000 cm3 = 6 m3 per footing pit; x4 pits = 24 m3; 0% bulking; 24 x 35.3146667 = 847.5520008 ft3" }
+input: { excavationType: footing, unit: cm, length: "200", width: "200", depth: "150", quantity: "4", bulkingPercent: "0" }
+expected: { excavationType: footing, unit: cm, quantity: "4", bulkingPercent: "0", neatVolumeM3: "24.000", bulkingVolumeM3: "0.000", looseVolumeM3: "24.000", looseVolumeFt3: "847.552" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT]

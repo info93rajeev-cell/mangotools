@@ -1,0 +1,6 @@
+id: 001-pit
+preset: civil/excavation-volume
+source: { type: hand-verified, citation: "5 x 4 x 1.5 m = 30 m3; x1 pit, 0% bulking; 30 x 35.3146667 = 1059.440001 ft3" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", bulkingPercent: "0" }
+expected: { excavationType: general, unit: m, quantity: "1", bulkingPercent: "0", neatVolumeM3: "30.000", bulkingVolumeM3: "0.000", looseVolumeM3: "30.000", looseVolumeFt3: "1059.440" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT]

@@ -1,0 +1,6 @@
+id: 017-unrealistic-dimension-warning
+operation: civil.excavation.volume@1
+source: { type: hand-verified, citation: "150 x 1 x 1 m = 150 m3, a length past the 100 m soft sanity ceiling; still calculated, flagged with a warning" }
+input: { excavationType: general, unit: m, length: "150", width: "1", depth: "1", quantity: "1", bulkingPercent: "0" }
+expected: { excavationType: general, unit: m, quantity: "1", bulkingPercent: "0", neatVolumeM3: "150.000", bulkingVolumeM3: "0.000", looseVolumeM3: "150.000", looseVolumeFt3: "5297.200" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_BULKING_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT, CIVIL_DIMENSION_UNREALISTIC]

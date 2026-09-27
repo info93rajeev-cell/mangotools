@@ -1,0 +1,5 @@
+id: 015-too-many-decimals
+operation: civil.excavation.volume@1
+source: { type: regression }
+input: { excavationType: general, unit: m, length: "5.1234", width: "4", depth: "1.5", quantity: "1", bulkingPercent: "0" }
+expectedError: { code: CIVIL_TOO_MANY_DECIMALS, path: length }

@@ -1,0 +1,5 @@
+id: 007-missing-length
+operation: civil.excavation.volume@1
+source: { type: regression }
+input: { excavationType: general, unit: m, width: "4", depth: "1.5", quantity: "1", bulkingPercent: "0" }
+expectedError: { code: CIVIL_MISSING_INPUT, path: length }
