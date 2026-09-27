@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: paint-calculator
+slug: paint-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Paint litres required for a wall, ceiling or general surface, with opening deduction, coats, coverage per litre and wastage %." }
+name: Paint Calculator
+shortName: Paint
+summary: Paint litres required for a wall, ceiling or surface, with opening deduction, coats and wastage %.
+archetype: B
+preset: civil/paint-quantity
+sample: wall-5x4-m
+taxonomy:
+  category: construction
+  tags: [paint, construction]
+  synonyms: [paint calculator, wall paint calculator, paint quantity calculator, how much paint do i need, paint litres calculator, paint coverage calculator, room paint calculator, ceiling paint calculator, paint area calculator, paint wastage calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Paint Calculator – Wall Paint Litres & Coverage
+  description: Work out how much paint you need for a wall, ceiling or surface, with opening deduction, coats, coverage and wastage %. Free, runs in your browser.
+  primaryKeyword: paint calculator
+  secondaryKeywords: [wall paint calculator, paint quantity calculator, how much paint do i need]
+graph:
+  related: [plaster-calculator, tile-flooring-calculator, brickwork-calculator, concrete-quantity-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "Rectangular area, opening deduction, coats and coverage: (length × width − opening) × coats ÷ coverage per litre, × (1 + wastage %)", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–016, tool fixtures 001–002" }
+  lastVerified: 2026-09-27

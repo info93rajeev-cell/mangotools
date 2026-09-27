@@ -1,0 +1,5 @@
+id: 008-opening-exceeds-gross-area
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "5 x 4 m wall = 20 m2 gross; a 25 m2 opening cannot fit in it" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "25", coats: "2", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+expectedError: { code: CIVIL_OPENING_EXCEEDS_SURFACE_AREA, path: openingArea }

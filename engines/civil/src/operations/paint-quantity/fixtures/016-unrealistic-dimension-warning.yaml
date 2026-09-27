@@ -1,0 +1,7 @@
+id: 016-unrealistic-dimension-warning
+operation: civil.paint.quantity@1
+source: { type: hand-verified, citation: "150 m long wall, past the 100 m soft sanity ceiling; still calculated, flagged with a warning" }
+input: { unit: m, length: "150", secondDimension: "4", openingArea: "0", coats: "2", coveragePerLitre: "10", wastagePercent: "0", quantity: "1" }
+expected: { grossArea: "600.00" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT, CIVIL_DIMENSION_UNREALISTIC]

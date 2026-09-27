@@ -1,0 +1,27 @@
+id: 001-wall-5x4-m
+preset: civil/paint-quantity
+source:
+  type: hand-verified
+  citation: "5 x 4 m wall = 20 m2 gross, minus 2 m2 opening = 18 m2 net; x2 coats = 36 m2 coated; / 10 m2 per litre = 3.6 L; +10% wastage = 3.96 L"
+input:
+  unit: m
+  length: "5"
+  secondDimension: "4"
+  openingArea: "2"
+  coats: "2"
+  coveragePerLitre: "10"
+  wastagePercent: "10"
+  quantity: "1"
+expected:
+  unit: m
+  quantity: "1"
+  coats: "2"
+  coveragePerLitre: "10"
+  wastagePercent: "10"
+  grossArea: "20.00"
+  openingDeductionArea: "2.00"
+  netArea: "18.00"
+  coatedArea: "36.00"
+  paintLitresBeforeWastage: "3.60"
+  totalPaintLitres: "3.96"
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT]

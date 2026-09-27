@@ -1,0 +1,6 @@
+id: 001-wall-paint
+operation: civil.paint.quantity@1
+source: { type: hand-verified, citation: "5 x 4 m wall = 20 m2 gross, no opening; 2 coats = 40 m2 coated; /10 m2 per litre = 4 L; +10% wastage = 4.4 L" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "2", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+expected: { unit: m, quantity: "1", coats: "2", coveragePerLitre: "10", wastagePercent: "10", grossArea: "20.00", openingDeductionArea: "0.00", netArea: "20.00", coatedArea: "40.00", paintLitresBeforeWastage: "4.00", totalPaintLitres: "4.40" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT]

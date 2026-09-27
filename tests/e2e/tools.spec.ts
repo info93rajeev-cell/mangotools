@@ -322,6 +322,52 @@ test.describe('Tile / Flooring Calculator', () => {
   });
 });
 
+test.describe('Paint Calculator', () => {
+  test('calculates total paint litres from area, opening, coats and coverage', async ({ page }) => {
+    await openTool(page, 'paint-calculator');
+    await expect(page.getByLabel('Number of coats')).toHaveValue('2');
+    await expect(page.getByLabel('Coverage per litre')).toHaveValue('10');
+    await expect(page.getByLabel('Wastage %')).toHaveValue('10');
+    await page.getByLabel('Surface length').fill('5');
+    await page.getByLabel('Surface height/width').fill('4');
+    await page.getByLabel('Opening deduction area').fill('2');
+    await expect(primaryResult(page)).toHaveText('3.96');
+    await expect(page.locator('[data-output="netArea"] dd')).toHaveText('18.00');
+    await expect(page.locator('[data-output="grossArea"] dd')).toHaveText('20.00');
+    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+  });
+
+  test('a lower wastage percentage reduces total paint litres', async ({ page }) => {
+    await openTool(page, 'paint-calculator');
+    await page.getByLabel('Surface length').fill('5');
+    await page.getByLabel('Surface height/width').fill('4');
+    await page.getByLabel('Opening deduction area').fill('2');
+    await expect(primaryResult(page)).toHaveText('3.96');
+    await page.getByLabel('Wastage %').fill('0');
+    await expect(primaryResult(page)).toHaveText('3.60');
+  });
+
+  test('explains an invalid dimension next to the field', async ({ page }) => {
+    await openTool(page, 'paint-calculator');
+    await page.getByLabel('Surface length').fill('5');
+    await page.getByLabel('Surface height/width').fill('4');
+    await page.getByLabel('Surface length').fill('0');
+    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
+    await expect(page.getByLabel('Surface length')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  test('rejects an opening area that exceeds the gross area', async ({ page }) => {
+    await openTool(page, 'paint-calculator');
+    await page.getByLabel('Surface length').fill('5');
+    await page.getByLabel('Surface height/width').fill('4');
+    await page.getByLabel('Opening deduction area').fill('25');
+    await expect(
+      page.getByText('The opening area cannot be larger than the surface area.'),
+    ).toBeVisible();
+    await expect(page.getByLabel('Opening deduction area')).toHaveAttribute('aria-invalid', 'true');
+  });
+});
+
 test.describe('JSON Formatter', () => {
   test('reports line and column, and Go to moves the caret', async ({ page }) => {
     await openTool(page, 'json-formatter');

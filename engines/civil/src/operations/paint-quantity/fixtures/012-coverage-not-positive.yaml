@@ -1,0 +1,5 @@
+id: 012-coverage-not-positive
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "coverage per litre cannot be zero or negative" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "2", coveragePerLitre: "0", wastagePercent: "10", quantity: "1" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: coveragePerLitre }

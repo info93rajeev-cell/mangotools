@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/paint-quantity
+version: 0.1.0
+operation: civil.paint.quantity@1
+params: { decimals: 2, rounding: half-up }
+fields:
+  unit:
+    labelKey: paint.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 10
+    options:
+      - { value: mm, labelKey: paint.unit.mm }
+      - { value: cm, labelKey: paint.unit.cm }
+      - { value: m, labelKey: paint.unit.m }
+      - { value: in, labelKey: paint.unit.in }
+      - { value: ft, labelKey: paint.unit.ft }
+  length: { labelKey: paint.field.length, kind: number, required: true, order: 20, helpKey: paint.help.length }
+  secondDimension: { labelKey: paint.field.secondDimension, kind: number, required: true, order: 30, helpKey: paint.help.secondDimension }
+  openingArea: { labelKey: paint.field.openingArea, kind: number, required: true, default: 0, order: 40, helpKey: paint.help.openingArea }
+  coats: { labelKey: paint.field.coats, kind: number, required: true, default: 2, order: 50, helpKey: paint.help.coats }
+  coveragePerLitre: { labelKey: paint.field.coveragePerLitre, kind: number, required: true, default: 10, order: 60, helpKey: paint.help.coveragePerLitre }
+  wastagePercent: { labelKey: paint.field.wastagePercent, kind: percent, unit: "%", required: true, default: 10, order: 70, helpKey: paint.help.wastage }
+  quantity: { labelKey: paint.field.quantity, kind: number, required: true, default: 1, order: 80, helpKey: paint.help.quantity }
+outputs:
+  totalPaintLitres: { labelKey: paint.out.totalPaintLitres, format: number, order: 10, primary: true }
+  paintLitresBeforeWastage: { labelKey: paint.out.paintLitresBeforeWastage, format: number, order: 20 }
+  netArea: { labelKey: paint.out.netArea, format: number, order: 30 }
+  grossArea: { labelKey: paint.out.grossArea, format: number, order: 40 }
+  openingDeductionArea: { labelKey: paint.out.openingDeductionArea, format: number, order: 50 }
+  coatedArea: { labelKey: paint.out.coatedArea, format: number, order: 60 }
+  coats: { labelKey: paint.out.coats, format: number, order: 70 }
+  coveragePerLitre: { labelKey: paint.out.coveragePerLitre, format: number, order: 80 }
+  wastagePercent: { labelKey: paint.out.wastagePercent, format: percent, order: 90 }
+samples:
+  wall-5x4-m:
+    titleKey: paint.sample.wall
+    input: { unit: m, length: "5", secondDimension: "4", openingArea: "2", coats: "2", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    paint.field.unit: Unit
+    paint.unit.mm: mm
+    paint.unit.cm: cm
+    paint.unit.m: m
+    paint.unit.in: inch
+    paint.unit.ft: ft
+    paint.field.length: Surface length
+    paint.field.secondDimension: Surface height/width
+    paint.field.openingArea: Opening deduction area
+    paint.field.coats: Number of coats
+    paint.field.coveragePerLitre: Coverage per litre
+    paint.field.wastagePercent: Wastage %
+    paint.field.quantity: Number of identical surfaces
+    paint.help.length: Length of the wall, ceiling, or surface to paint, in the unit chosen above.
+    paint.help.secondDimension: Height for a wall, or width for a ceiling or general surface, in the same unit.
+    paint.help.openingArea: Total door/window/opening area to deduct from one surface, in the unit's own squared area (for example m² if the unit is m). Defaults to 0.
+    paint.help.coats: A whole number of paint coats. Defaults to 2.
+    paint.help.coveragePerLitre: Area one litre of paint covers, in the unit's own squared area (for example square metres per litre if the unit is m, or square feet per litre if the unit is ft). Check your paint tin's label for this figure.
+    paint.help.wastage: An adjustable allowance for spillage, extra coats on edges, and touch-ups, from 0 to 50%. Defaults to 10%.
+    paint.help.quantity: A whole number from 1 to 1,000,000, for identical walls, ceilings, or rooms.
+    paint.out.totalPaintLitres: Total paint required (incl. wastage)
+    paint.out.paintLitresBeforeWastage: Paint required before wastage
+    paint.out.netArea: Net paintable area
+    paint.out.grossArea: Gross area
+    paint.out.openingDeductionArea: Opening deduction area
+    paint.out.coatedArea: Coated area (area × coats)
+    paint.out.coats: Number of coats
+    paint.out.coveragePerLitre: Coverage per litre
+    paint.out.wastagePercent: Wastage %
+    paint.sample.wall: 5 × 4 m wall, 2 m² opening, 2 coats
+    work.paint.grossAreaPerSurface: "One surface's gross area = {length:number} {unit} × {secondDimension:number} {unit} = {result} {unit}² (exact)"
+    work.paint.grossArea: "Gross area = {grossAreaPerSurface} {unit}² × {quantity:number} surfaces = {result:number} {unit}² (exact)"
+    work.paint.openingDeduction: "Opening deduction = {openingArea} {unit}² × {quantity:number} surfaces = {result:number} {unit}² (exact)"
+    work.paint.netArea: "Net paintable area = {grossArea} {unit}² − {openingDeduction} {unit}² = {result:number} {unit}² (exact)"
+    work.paint.coatedArea: "Coated area = {netArea} {unit}² × {coats:number} coats = {result:number} {unit}² (exact)"
+    work.paint.litresBeforeWastage: "Paint litres before wastage = {coatedArea} {unit}² ÷ {coveragePerLitre} {unit}²/L = {result:number} L (exact)"
+    work.paint.totalLitres: "Total paint litres = {paintLitresBeforeWastage:number} L × (1 + {wastagePercent:number}%) = {result:number} L (exact)"

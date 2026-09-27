@@ -54,4 +54,15 @@ export const messages: Readonly<Record<string, string>> = {
     'Actual tile quantity may vary due to cutting at edges and corners, breakage, pattern layout, grout width, and measurement rules.',
   CIVIL_TILE_SCOPE_LIMIT:
     'This tool does not calculate grout or adhesive quantity, material or labour cost, diagonal or pattern layouts, or a bill of quantities (BOQ).',
+  CIVIL_COATS_NOT_POSITIVE: 'Enter at least 1 coat.',
+  CIVIL_COATS_NOT_WHOLE: 'The number of coats must be a whole number.',
+  CIVIL_COATS_TOO_LARGE: 'Enter at most {max} coats.',
+  CIVIL_VERIFY_PAINT_BEFORE_APPLICATION:
+    'Verify surface area, coats, coverage, and wastage before purchase or application.',
+  CIVIL_PAINT_CONDITIONS_VARY:
+    'Actual paint usage may vary due to surface texture and porosity, application method, paint brand and type, and site conditions.',
+  CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER:
+    'This tool does not replace a licensed engineer, architect, contractor, or professional painter.',
+  CIVIL_PAINT_SCOPE_LIMIT:
+    'This tool does not calculate primer, putty, or labour, brand-specific coverage, cost, or a bill of quantities (BOQ).',
 };

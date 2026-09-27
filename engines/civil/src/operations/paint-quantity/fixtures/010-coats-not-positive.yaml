@@ -1,0 +1,5 @@
+id: 010-coats-not-positive
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "zero coats means no paint applied at all" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "0", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+expectedError: { code: CIVIL_COATS_NOT_POSITIVE, path: coats }

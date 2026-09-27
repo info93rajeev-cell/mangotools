@@ -1,0 +1,5 @@
+id: 013-wastage-too-high
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "wastage above 50% signals a mistake" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "2", coveragePerLitre: "10", wastagePercent: "50.01", quantity: "1" }
+expectedError: { code: CIVIL_WASTAGE_OUT_OF_RANGE, path: wastagePercent }
