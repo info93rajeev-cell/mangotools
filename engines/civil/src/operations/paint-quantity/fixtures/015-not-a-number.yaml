@@ -1,0 +1,5 @@
+id: 015-not-a-number
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "a non-numeric dimension is rejected" }
+input: { unit: m, length: "5", secondDimension: "abc", openingArea: "0", coats: "2", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+expectedError: { code: CIVIL_INVALID_NUMBER, path: secondDimension }

@@ -1,0 +1,5 @@
+id: 014-quantity-not-whole
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "the number of identical surfaces must be a whole number" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "2", coveragePerLitre: "10", wastagePercent: "10", quantity: "1.5" }
+expectedError: { code: CIVIL_QUANTITY_NOT_WHOLE, path: quantity }

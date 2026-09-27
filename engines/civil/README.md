@@ -10,6 +10,7 @@ from its first version.
 |---|---|
 | `civil.concrete.quantity@1` | Concrete volume (m³ and ft³) for a rectangular slab, beam, column or footing, from dimensions, member count and wastage % |
 | `civil.tile.quantity@1` | Tile count for a rectangular floor or wall, with wastage % and an optional boxes-required calculation |
+| `civil.paint.quantity@1` | Paint litres for a rectangular wall, ceiling or surface, from dimensions, opening deduction, coats, coverage per litre and wastage % |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
@@ -33,6 +34,13 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.6.0 — `civil.paint.quantity@1` added (TASK-006G). Unlike every other operation in this engine,
+  area/coverage/litres math stays entirely in the selected input unit's own squared form rather than
+  normalizing to metres first, because coverage per litre is only meaningful in the unit it was entered
+  in (a metric-only conversion would silently corrupt a feet-based coverage figure). The metre
+  conversion table is kept solely for the soft unrealistic-dimension sanity check. Paint litres are
+  displayed rounded to 2 decimal places, half-up — chosen over an upward-rounding scheme because paint,
+  unlike whole tiles or boxes, is typically purchasable and measurable in fractional litre amounts.
 - 0.5.0 — `civil.tile.quantity@1` added (TASK-006F). Base tile count is the surface-to-tile area
   ratio rounded up; total tiles is that already-rounded base count × (1 + wastage%), rounded up again
   — the platform's documented choice between the two possible rounding orders, picked so every number

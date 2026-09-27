@@ -29,3 +29,4 @@ tags:
   - { id: earthwork, label: Earthwork }
   - { id: tile, label: Tile }
   - { id: flooring, label: Flooring }
+  - { id: paint, label: Paint }

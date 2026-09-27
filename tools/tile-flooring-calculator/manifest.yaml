@@ -4,8 +4,9 @@ id: tile-flooring-calculator
 slug: tile-flooring-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Paint Calculator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Tile count for a rectangular floor or wall, with wastage allowance and an optional boxes-required calculation." }
 name: Tile / Flooring Calculator
 shortName: Tile Calculator
@@ -26,7 +27,7 @@ seo:
   primaryKeyword: tile calculator
   secondaryKeywords: [flooring calculator, floor tile calculator, tile quantity calculator]
 graph:
-  related: [concrete-quantity-calculator, brickwork-calculator, plaster-calculator, excavation-calculator]
+  related: [concrete-quantity-calculator, brickwork-calculator, plaster-calculator, excavation-calculator, paint-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Rectangular area and tile-count ratio: surface area ÷ tile area, rounded up; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }

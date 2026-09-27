@@ -1,0 +1,5 @@
+id: 011-coats-not-whole
+operation: civil.paint.quantity@1
+source: { type: regression, citation: "a fractional number of coats is not a real paint job" }
+input: { unit: m, length: "5", secondDimension: "4", openingArea: "0", coats: "1.5", coveragePerLitre: "10", wastagePercent: "10", quantity: "1" }
+expectedError: { code: CIVIL_COATS_NOT_WHOLE, path: coats }

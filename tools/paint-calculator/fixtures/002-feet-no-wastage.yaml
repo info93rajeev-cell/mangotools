@@ -1,0 +1,24 @@
+id: 002-feet-no-wastage
+preset: civil/paint-quantity
+source:
+  type: hand-verified
+  citation: "10 x 10 ft wall = 100 sqft gross, no opening; 1 coat = 100 sqft coated; / 40 sqft per litre = 2.5 L; no wastage"
+input:
+  unit: ft
+  length: "10"
+  secondDimension: "10"
+  openingArea: "0"
+  coats: "1"
+  coveragePerLitre: "40"
+  wastagePercent: "0"
+  quantity: "1"
+expected:
+  unit: ft
+  grossArea: "100.00"
+  openingDeductionArea: "0.00"
+  netArea: "100.00"
+  coatedArea: "100.00"
+  paintLitresBeforeWastage: "2.50"
+  totalPaintLitres: "2.50"
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT]
