@@ -1,0 +1,14 @@
+id: 004-crop-size-invalid
+operation: image.crop@1
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/), copied from image.resize@1's own fixtures: checks that a zero crop width is rejected before any attempt to decode the file"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  cropX: 0
+  cropY: 0
+  cropWidth: 0
+  cropHeight: 4
+  outputFormat: same
+expectedError:
+  code: IMAGE_CROP_SIZE_INVALID

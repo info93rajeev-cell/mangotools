@@ -8,6 +8,8 @@ network, no server upload — selecting files, previews, and downloading the res
 | Operation | Purpose |
 |---|---|
 | `image.resize@1` | Resizes a JPG, PNG, or WebP image to the requested dimensions |
+| `image.watermark@1` | Draws a text watermark onto a JPG, PNG, or WebP image at a chosen position |
+| `image.crop@1` | Crops a JPG, PNG, or WebP image to a pixel rectangle |
 
 ## Runtime: this engine is browser/worker-only, by design and by necessity
 
@@ -85,3 +87,20 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
   - `IMAGE_SAME_FORMAT_REENCODED` warning, raised only when an *explicit* requested format equals the
     detected source format; never raised for Image Resize's or Image Compress's own `'same'`-format
     default, which is a different, already-shipped path. No other operation behavior change.
+- 0.5.0 — `image.watermark@1` added (TASK-007D): a new, small operation (not a reuse of `image.resize@1`,
+  which cannot draw text) for adding a text watermark at one of five anchor positions. Retroactively noted
+  here — this entry was missed when TASK-007D shipped and is being added now, alongside 0.6.0, rather than
+  left permanently absent. Before adding it, the genuinely shared pieces of `image.resize@1` (signature
+  detection, decode/encode, output-file-name derivation, size-change math, shared file/source limits) were
+  extracted into `src/lib/`, so both operations use the same code instead of duplicating it — a pure move,
+  verified against Image Resize's own existing fixtures/tests with zero behavior change before
+  `image.watermark@1` was built on top. See `src/operations/watermark/README.md` for the full contract.
+- 0.6.0 — `image.crop@1` added (TASK-007E): another new, small operation (cropping a pixel rectangle is not
+  something `image.resize@1` can do either — it always draws the *whole* source image, scaled). Reuses
+  `src/lib/`'s shared decode/encode/file-name/size-change/limits code unchanged. `src/lib/decode-source.ts`
+  is new: the decode-and-check-pixel-count step duplicated identically across Resize and Watermark was
+  extracted once this became the third occurrence, again with zero behavior change to either existing
+  operation (re-verified against both their own test suites before Crop was built). `browser-globals.d.ts`
+  gained the 9-argument `drawImage` overload (source-rectangle-to-destination-rectangle), the one canvas
+  capability no prior operation in this engine needed. See `src/operations/crop/README.md` for the full
+  contract.

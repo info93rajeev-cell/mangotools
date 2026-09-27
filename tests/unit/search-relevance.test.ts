@@ -173,6 +173,18 @@ describe('search relevance over the generated index', () => {
     ['add watermark to product image', 'image-watermark'],
     ['free image watermark tool', 'image-watermark'],
     ['browser image watermark', 'image-watermark'],
+    ['Image Crop', 'image-crop'],
+    ['image crop', 'image-crop'],
+    ['crop image online', 'image-crop'],
+    ['image cropper', 'image-crop'],
+    ['crop jpg', 'image-crop'],
+    ['crop png', 'image-crop'],
+    ['crop webp', 'image-crop'],
+    ['crop photo online', 'image-crop'],
+    ['cut image online', 'image-crop'],
+    ['pixel crop tool', 'image-crop'],
+    ['free image crop tool', 'image-crop'],
+    ['browser image cropper', 'image-crop'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

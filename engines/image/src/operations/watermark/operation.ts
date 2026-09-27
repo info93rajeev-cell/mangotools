@@ -1,8 +1,7 @@
-import { defineOperation, err, ok, type Result, warning } from '@mangotools/core';
-import { decodeImage, encodeCanvas } from '../../lib/codec.ts';
+import { defineOperation, err, ok, warning } from '@mangotools/core';
+import { encodeCanvas } from '../../lib/codec.ts';
+import { decodeAndCheckSource } from '../../lib/decode-source.ts';
 import { deriveOutputFileName } from '../../lib/file-name.ts';
-import { MAX_SOURCE_MEGAPIXELS, MAX_SOURCE_PIXELS } from '../../lib/limits.ts';
-import { detectImageType, MIME_FOR_TYPE } from '../../lib/signature.ts';
 import { computeSizeChange } from '../../lib/size-change.ts';
 import { renderWatermarked } from './canvas-pipeline.ts';
 import {
@@ -20,30 +19,6 @@ const SUPPORTS_ALPHA: Record<ResolvedImageFormat, boolean> = { jpg: false, png: 
 
 function qualityFraction(quality: number | undefined): number | undefined {
   return quality === undefined ? undefined : quality / 100;
-}
-
-interface DecodedSource {
-  bitmap: ImageBitmap;
-  sourceType: ResolvedImageFormat;
-  width: number;
-  height: number;
-}
-
-/** Decodes `file` and checks its decoded pixel count against the source cap. */
-async function decodeAndCheckSource(file: ImageFile): Promise<Result<DecodedSource>> {
-  const sourceType = detectImageType(file.bytes);
-  if (!sourceType) return err('IMAGE_INVALID_FILE_TYPE', { details: { name: file.name } });
-  let bitmap: ImageBitmap;
-  try {
-    bitmap = await decodeImage(file.bytes, MIME_FOR_TYPE[sourceType]);
-  } catch {
-    return err('IMAGE_UNREADABLE', { details: { name: file.name } });
-  }
-  if (bitmap.width * bitmap.height > MAX_SOURCE_PIXELS) {
-    bitmap.close();
-    return err('IMAGE_SOURCE_PIXELS_TOO_LARGE', { details: { max: MAX_SOURCE_MEGAPIXELS } });
-  }
-  return ok({ bitmap, sourceType, width: bitmap.width, height: bitmap.height });
 }
 
 export const imageWatermark = defineOperation({

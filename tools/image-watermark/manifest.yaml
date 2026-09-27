@@ -4,8 +4,9 @@ id: image-watermark
 slug: image-watermark
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Image Crop." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: add a text watermark to a JPG, PNG or WebP image, entirely in the browser." }
 name: Image Watermark
 shortName: Watermark
@@ -24,7 +25,7 @@ seo:
   primaryKeyword: image watermark
   secondaryKeywords: [add watermark to image, watermark image online, photo watermark tool, watermark jpg]
 graph:
-  related: [image-format-converter, image-compress, image-resize, image-metadata-remover]
+  related: [image-format-converter, image-compress, image-resize, image-metadata-remover, image-crop]
 quality:
   verifiedAgainst:
     - { citation: "engines/image image.watermark@1 fixtures 001-004", locator: "engines/image/src/operations/watermark/fixtures" }

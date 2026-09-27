@@ -53,6 +53,20 @@ interface OffscreenCanvasRenderingContext2D {
   /** Draws at the image's own natural size — used where no resize is wanted (Compress, Format Converter,
    * Metadata Remover, Watermark all draw through `image.resize@1`'s shape or their own equivalent). */
   drawImage(image: ImageBitmap, dx: number, dy: number): void;
+  /** Draws only the `(sx, sy, sw, sh)` source rectangle, scaled into `(dx, dy, dw, dh)` on the canvas —
+   * Image Crop's own use, the only operation in this engine that reads a sub-region rather than the
+   * whole source image. */
+  drawImage(
+    image: ImageBitmap,
+    sx: number,
+    sy: number,
+    sw: number,
+    sh: number,
+    dx: number,
+    dy: number,
+    dw: number,
+    dh: number,
+  ): void;
   measureText(text: string): TextMetrics;
   fillText(text: string, x: number, y: number): void;
 }
