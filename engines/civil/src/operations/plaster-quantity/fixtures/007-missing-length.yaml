@@ -1,0 +1,5 @@
+id: 007-missing-length
+operation: civil.plaster.quantity@1
+source: { type: regression }
+input: { surfaceType: wall, unit: m, secondDimension: "3", plasterThickness: "0.012", quantity: "1", openingArea: "0", wastagePercent: "0" }
+expectedError: { code: CIVIL_MISSING_INPUT, path: length }

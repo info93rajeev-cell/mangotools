@@ -10,6 +10,7 @@ export const SAMPLES = {
   'concrete-quantity-calculator': { archetype: 'B', result: '3.000' },
   'excavation-calculator': { archetype: 'B', result: '30.000' },
   'brickwork-calculator': { archetype: 'B', result: '1,409.313725' },
+  'plaster-calculator': { archetype: 'B', result: '0.180' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },

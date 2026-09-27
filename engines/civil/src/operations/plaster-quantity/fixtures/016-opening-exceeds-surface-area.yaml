@@ -1,0 +1,5 @@
+id: 016-opening-exceeds-surface-area
+operation: civil.plaster.quantity@1
+source: { type: regression, citation: "2 x 2 m wall = 4 m2 gross; a 5 m2 opening cannot fit in it" }
+input: { surfaceType: wall, unit: m, length: "2", secondDimension: "2", plasterThickness: "0.012", quantity: "1", openingArea: "5", wastagePercent: "0" }
+expectedError: { code: CIVIL_OPENING_EXCEEDS_SURFACE_AREA, path: openingArea }

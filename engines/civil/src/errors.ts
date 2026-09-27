@@ -38,4 +38,11 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not replace a licensed engineer, architect, contractor, mason, or professional quantity surveyor.',
   CIVIL_BRICKWORK_SCOPE_LIMIT:
     'This tool does not calculate structural design, reinforcement, labour cost, cement/sand mortar breakup, BOQ, or final billing.',
+  CIVIL_OPENING_EXCEEDS_SURFACE_AREA: 'The opening area cannot be larger than the surface area.',
+  CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION:
+    'Verify plaster thickness, surface dimensions, openings, and wastage before purchase, billing, or construction.',
+  CIVIL_PLASTER_CONDITIONS_VARY:
+    'Actual plaster quantity may vary due to wall unevenness, surface preparation, thickness variation, site cutting, waste, and measurement rules.',
+  CIVIL_PLASTER_SCOPE_LIMIT:
+    'This tool does not calculate cement/sand material breakup, labour cost, scaffolding, curing, BOQ, or final billing.',
 };

@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/plaster-quantity
+version: 0.1.0
+operation: civil.plaster.quantity@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  surfaceType:
+    labelKey: plaster.field.surfaceType
+    kind: enum
+    control: select
+    default: wall
+    order: 10
+    options:
+      - { value: wall, labelKey: plaster.type.wall }
+      - { value: ceiling, labelKey: plaster.type.ceiling }
+      - { value: general, labelKey: plaster.type.general }
+  unit:
+    labelKey: plaster.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 20
+    options:
+      - { value: mm, labelKey: plaster.unit.mm }
+      - { value: cm, labelKey: plaster.unit.cm }
+      - { value: m, labelKey: plaster.unit.m }
+      - { value: in, labelKey: plaster.unit.in }
+      - { value: ft, labelKey: plaster.unit.ft }
+  length: { labelKey: plaster.field.length, kind: number, required: true, order: 30, helpKey: plaster.help.dimension }
+  secondDimension: { labelKey: plaster.field.secondDimension, kind: number, required: true, order: 40, helpKey: plaster.help.secondDimension }
+  plasterThickness: { labelKey: plaster.field.plasterThickness, kind: number, required: true, order: 50, helpKey: plaster.help.thickness }
+  quantity: { labelKey: plaster.field.quantity, kind: number, required: true, default: 1, order: 60, helpKey: plaster.help.quantity }
+  openingArea: { labelKey: plaster.field.openingArea, kind: number, required: true, default: 0, order: 70, helpKey: plaster.help.openingArea }
+  wastagePercent: { labelKey: plaster.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 80, helpKey: plaster.help.wastage }
+outputs:
+  totalVolumeM3: { labelKey: plaster.out.totalVolumeM3, format: number, order: 10, primary: true }
+  netAreaM2: { labelKey: plaster.out.netAreaM2, format: number, order: 20 }
+  grossAreaM2: { labelKey: plaster.out.grossAreaM2, format: number, order: 30 }
+  openingDeductionAreaM2: { labelKey: plaster.out.openingDeductionAreaM2, format: number, order: 40 }
+  plasterVolumeM3: { labelKey: plaster.out.plasterVolumeM3, format: number, order: 50 }
+  wastageVolumeM3: { labelKey: plaster.out.wastageVolumeM3, format: number, order: 60 }
+  netAreaFt2: { labelKey: plaster.out.netAreaFt2, format: number, order: 70 }
+  totalVolumeFt3: { labelKey: plaster.out.totalVolumeFt3, format: number, order: 80 }
+  plasterThickness: { labelKey: plaster.out.plasterThickness, format: number, order: 90 }
+  wastagePercent: { labelKey: plaster.out.wastagePercent, format: percent, order: 100 }
+samples:
+  wall-5x3-m:
+    titleKey: plaster.sample.wall
+    input: { surfaceType: wall, unit: m, length: "5", secondDimension: "3", plasterThickness: "0.012", quantity: "1", openingArea: "0", wastagePercent: "0" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    plaster.field.surfaceType: Surface type
+    plaster.type.wall: Wall
+    plaster.type.ceiling: Ceiling
+    plaster.type.general: General rectangular surface
+    plaster.field.unit: Unit
+    plaster.unit.mm: mm
+    plaster.unit.cm: cm
+    plaster.unit.m: m
+    plaster.unit.in: inch
+    plaster.unit.ft: ft
+    plaster.field.length: Length
+    plaster.field.secondDimension: Second dimension (height/width)
+    plaster.field.plasterThickness: Plaster thickness
+    plaster.field.quantity: Number of surfaces
+    plaster.field.openingArea: Opening deduction area
+    plaster.field.wastagePercent: Wastage %
+    plaster.help.dimension: Length of one surface, in the unit chosen above, up to 3 decimal places.
+    plaster.help.secondDimension: Height for a wall, width for a ceiling, or the second side for a general surface, in the same unit.
+    plaster.help.thickness: Plaster coat thickness, in the same unit — for example 0.012 m (12 mm) for a typical coat.
+    plaster.help.quantity: A whole number from 1 to 1,000,000.
+    plaster.help.openingArea: Total door/window/opening area to deduct from one surface, in the unit's own squared area (for example m² if the unit is m). Defaults to 0.
+    plaster.help.wastage: An adjustable allowance for site cutting and waste, from 0 to 50%. Defaults to 0%.
+    plaster.out.totalVolumeM3: Total plaster volume incl. wastage (m³)
+    plaster.out.netAreaM2: Net plaster area (m²)
+    plaster.out.grossAreaM2: Gross plaster area (m²)
+    plaster.out.openingDeductionAreaM2: Opening deduction area (m²)
+    plaster.out.plasterVolumeM3: Plaster volume before wastage (m³)
+    plaster.out.wastageVolumeM3: Wastage volume (m³)
+    plaster.out.netAreaFt2: Net plaster area (ft²)
+    plaster.out.totalVolumeFt3: Total plaster volume incl. wastage (ft³)
+    plaster.out.plasterThickness: Plaster thickness
+    plaster.out.wastagePercent: Wastage %
+    plaster.sample.wall: 5 × 3 m wall, 12 mm plaster coat
+    work.plaster.grossAreaPerSurface: "One surface's gross area = {length:number} {unit} × {secondDimension:number} {unit} = {result} m² (exact)"
+    work.plaster.grossArea: "Gross area = {grossAreaPerSurface} m² × {quantity:number} surfaces = {result:number} m² (exact)"
+    work.plaster.openingDeduction: "Opening deduction = {openingArea} m² × {quantity:number} surfaces = {result:number} m² (exact)"
+    work.plaster.netArea: "Net area = {grossArea} m² − {openingDeduction} m² = {result:number} m² (exact)"
+    work.plaster.netAreaFt2: "Net area in square feet = {netArea:number} m² × {factor} = {result:number} ft² (exact)"
+    work.plaster.volume: "Plaster volume = {netArea} m² × {thickness} m = {result:number} m³ (exact)"
+    work.plaster.wastageVolume: "Wastage volume = {plasterVolume:number} × {wastagePercent:number}% = {result:number} m³ (exact)"
+    work.plaster.totalVolume: "Total volume incl. wastage = {plasterVolume:number} m³ + {wastageVolume:number} m³ = {result:number} m³ (exact)"
+    work.plaster.totalVolumeFt3: "Total volume in cubic feet = {totalVolume:number} m³ × {factor} = {result:number} ft³ (exact)"

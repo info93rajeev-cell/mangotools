@@ -1,0 +1,5 @@
+id: 020-too-many-decimals
+operation: civil.plaster.quantity@1
+source: { type: regression }
+input: { surfaceType: wall, unit: m, length: "5.1234", secondDimension: "3", plasterThickness: "0.012", quantity: "1", openingArea: "0", wastagePercent: "0" }
+expectedError: { code: CIVIL_TOO_MANY_DECIMALS, path: length }

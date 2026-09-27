@@ -1,0 +1,7 @@
+id: 003-general-surface-cm
+operation: civil.plaster.quantity@1
+source: { type: hand-verified, citation: "400 x 300 cm = 4 x 3 m = 12 m2; x1 cm (0.01 m) thick = 0.12 m3" }
+input: { surfaceType: general, unit: cm, length: "400", secondDimension: "300", plasterThickness: "1", quantity: "1", openingArea: "0", wastagePercent: "0" }
+expected: { grossAreaM2: "12.000", netAreaM2: "12.000", plasterVolumeM3: "0.120" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]
