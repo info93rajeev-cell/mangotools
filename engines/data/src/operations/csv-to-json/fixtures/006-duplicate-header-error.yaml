@@ -1,0 +1,11 @@
+id: 006-duplicate-header-error
+operation: data.csv.to-json@1
+source: { type: synthetic }
+input:
+  text: |
+    name,age,name
+    Raj,50,Kumar
+expectedError:
+  code: DATA_CSV_DUPLICATE_HEADER
+  path: text
+  details: { name: name, column: 3, line: 1 }

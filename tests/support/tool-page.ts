@@ -20,6 +20,7 @@ export const SAMPLES = {
     archetype: 'A',
     result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
   },
+  'csv-to-json': { archetype: 'A', result: '"name": "Raj"' },
 } as const;
 
 /**

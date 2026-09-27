@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: csv-to-json
+slug: csv-to-json
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. First row as headers, quoted fields, commas and escaped quotes supported. Values stay as strings." }
+name: CSV to JSON
+shortName: CSV to JSON
+summary: Convert CSV to a JSON array of objects. Handles quoted commas and escaped quotes. Values stay as strings.
+archetype: A
+preset: data/csv.to-json
+sample: name-age
+taxonomy:
+  category: developer
+  tags: [csv, json, data-format]
+  synonyms: [convert csv to json, csv json converter, csv to json online, csv to json array, csv to json objects, convert spreadsheet csv to json, free csv to json converter, browser csv to json]
+capabilities: { export: [json], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: CSV to JSON Converter – Convert CSV to JSON Online
+  description: Convert CSV to JSON online, free and instant. Supports quoted fields, commas and escaped quotes inside values. Runs in your browser — no upload, no signup.
+  primaryKeyword: csv to json
+  secondaryKeywords: [csv json converter, csv to json array, csv to json objects]
+graph:
+  related: [json-formatter, base64-encode-decode, url-encode-decode]

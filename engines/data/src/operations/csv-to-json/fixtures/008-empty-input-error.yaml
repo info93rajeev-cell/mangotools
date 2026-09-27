@@ -1,0 +1,8 @@
+id: 008-empty-input-error
+operation: data.csv.to-json@1
+source: { type: synthetic }
+input:
+  text: ''
+expectedError:
+  code: DATA_CSV_EMPTY
+  path: text

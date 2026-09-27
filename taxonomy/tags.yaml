@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=../generated/schemas/tags.json
 tags:
   - { id: json, label: JSON }
+  - { id: csv, label: CSV }
   - { id: encoding, label: Encoding }
   - { id: url, label: URL }
   - { id: data-format, label: Data formats }

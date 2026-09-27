@@ -1,0 +1,18 @@
+id: 003-escaped-quote-field
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2.7 — a double quote inside a quoted field is escaped as two double quotes" }
+input:
+  text: |
+    quote,ok
+    "He said ""yes""",ok
+expected:
+  rowCount: 1
+  columnCount: 2
+  headers: [quote, ok]
+  text: |-
+    [
+      {
+        "quote": "He said \"yes\"",
+        "ok": "ok"
+      }
+    ]

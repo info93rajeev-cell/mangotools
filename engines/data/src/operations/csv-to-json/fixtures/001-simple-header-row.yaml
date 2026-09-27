@@ -1,0 +1,23 @@
+id: 001-simple-header-row
+operation: data.csv.to-json@1
+source: { type: synthetic }
+input:
+  text: |
+    name,age
+    Raj,50
+    Aiva,19
+expected:
+  rowCount: 2
+  columnCount: 2
+  headers: [name, age]
+  text: |-
+    [
+      {
+        "name": "Raj",
+        "age": "50"
+      },
+      {
+        "name": "Aiva",
+        "age": "19"
+      }
+    ]

@@ -300,6 +300,34 @@ test.describe('JSON Formatter', () => {
   });
 });
 
+test.describe('CSV to JSON', () => {
+  test('converts the sample and links to JSON Formatter', async ({ page }) => {
+    await openTool(page, 'csv-to-json');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(outputArea(page, 'csv-to-json')).toHaveValue(/"name": "Raj"/);
+    await expect(island(page, 'csv-to-json')).toContainText('Rows');
+    await expect(
+      page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),
+    ).toBeVisible();
+  });
+
+  test('rejects a duplicate header with a clear error', async ({ page }) => {
+    await openTool(page, 'csv-to-json');
+    await inputArea(page, 'csv-to-json').fill('name,age,name\nRaj,50,Kumar');
+    await expect(island(page, 'csv-to-json')).toHaveAttribute('data-phase', 'error');
+    await expect(page.getByText('Duplicate column header "name" (column 3).')).toBeVisible();
+  });
+
+  test('rejects an inconsistent row length, naming the line', async ({ page }) => {
+    await openTool(page, 'csv-to-json');
+    await inputArea(page, 'csv-to-json').fill('name,age\nRaj,50\nAiva');
+    await expect(island(page, 'csv-to-json')).toHaveAttribute('data-phase', 'error');
+    await expect(
+      page.getByText('Row at line 3 has 1 columns, but the header has 2.'),
+    ).toBeVisible();
+  });
+});
+
 test.describe('Swap and copy', () => {
   test('Base64 swap decodes the encoded text back', async ({ page }) => {
     await openTool(page, 'base64-encode-decode');
