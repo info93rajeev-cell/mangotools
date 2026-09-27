@@ -9,11 +9,20 @@ worker or in Node.
 | `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines |
 | `data.url.transform@1` | Percent-encoding as a URL component, a full URL, or form data (RFC 3986, WHATWG form encoding) |
 | `data.csv.to-json@1` | CSV text to a JSON array of objects (RFC 4180 quoting), first row as headers, values kept as strings |
+| `data.json.to-csv@1` | A JSON array of objects (or a single object) to CSV text, with RFC 4180 escaping; nested values rejected |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
 
 ## Changelog
+- 0.4.0 — `data.json.to-csv@1` added (TASK-008E). Header order is the first object's own key order,
+  with later-discovered keys appended; missing keys and `null` both become an empty cell. A nested
+  object or array value is rejected with a typed error naming the key and item, rather than
+  flattened. CSV escaping (`stringify.ts`) is isolated and unit-tested: a value is quoted when it
+  has a comma, quote, CR, LF or leading/trailing space, with `"` doubled inside a quoted value.
+  Plain `JSON.parse` is used (not the lossless `json-format` parser) since values need to be
+  genuine JS values to build rows, and native parse-failure text is discarded in favor of one fixed,
+  engine-independent error message, keeping the worker/Node determinism test stable.
 - 0.3.0 — `data.csv.to-json@1` added (TASK-008D). Hand-written CSV tokenizer (no `split(',')`):
   quoted fields, doubled `""` escapes, commas/newlines inside quotes, CRLF/LF/lone-CR line endings.
   Duplicate headers and inconsistent row lengths are rejected with a typed error naming the header

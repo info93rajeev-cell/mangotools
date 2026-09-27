@@ -1,0 +1,11 @@
+id: 003-appended-header-order
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"b":1,"a":2},{"a":3,"c":4}]'
+expected:
+  headers: [b, a, c]
+  text: |
+    b,a,c
+    1,2,
+    ,3,4

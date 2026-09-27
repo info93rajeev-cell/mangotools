@@ -1,0 +1,9 @@
+id: 004-quoted-comma-and-quote
+operation: data.json.to-csv@1
+source: { type: standard, citation: "RFC 4180 §2.6-2.7 — commas and quotes inside a field must be escaped" }
+input:
+  text: '[{"note":"He said \"yes, sir\""}]'
+expected:
+  text: |
+    note
+    "He said ""yes, sir"""

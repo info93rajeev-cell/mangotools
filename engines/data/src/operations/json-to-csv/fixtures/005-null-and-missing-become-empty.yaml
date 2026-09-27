@@ -1,0 +1,10 @@
+id: 005-null-and-missing-become-empty
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"a":1,"b":null},{"a":2}]'
+expected:
+  text: |
+    a,b
+    1,
+    2,

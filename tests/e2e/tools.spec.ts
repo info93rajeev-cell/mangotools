@@ -328,6 +328,34 @@ test.describe('CSV to JSON', () => {
   });
 });
 
+test.describe('JSON to CSV', () => {
+  test('converts the sample and links to CSV to JSON', async ({ page }) => {
+    await openTool(page, 'json-to-csv');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(outputArea(page, 'json-to-csv')).toHaveValue(/name,age\nRaj,50\nAiva,19/);
+    await expect(island(page, 'json-to-csv')).toContainText('Rows');
+    await expect(page.getByRole('link', { name: 'CSV to JSON' }).first()).toBeVisible();
+  });
+
+  test('shows a clear error for invalid JSON', async ({ page }) => {
+    await openTool(page, 'json-to-csv');
+    await inputArea(page, 'json-to-csv').fill('{not json}');
+    await expect(island(page, 'json-to-csv')).toHaveAttribute('data-phase', 'error');
+    await expect(page.getByText('The input is not valid JSON.')).toBeVisible();
+  });
+
+  test('rejects a nested object value, naming the key and item', async ({ page }) => {
+    await openTool(page, 'json-to-csv');
+    await inputArea(page, 'json-to-csv').fill('[{"a":{"b":1}}]');
+    await expect(island(page, 'json-to-csv')).toHaveAttribute('data-phase', 'error');
+    await expect(
+      page.getByText(
+        'The value for "a" in item 1 is a nested object or array, which is not supported in this version.',
+      ),
+    ).toBeVisible();
+  });
+});
+
 test.describe('Swap and copy', () => {
   test('Base64 swap decodes the encoded text back', async ({ page }) => {
     await openTool(page, 'base64-encode-decode');
