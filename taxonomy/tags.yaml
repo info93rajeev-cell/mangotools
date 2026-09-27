@@ -30,3 +30,4 @@ tags:
   - { id: tile, label: Tile }
   - { id: flooring, label: Flooring }
   - { id: paint, label: Paint }
+  - { id: export, label: Export }

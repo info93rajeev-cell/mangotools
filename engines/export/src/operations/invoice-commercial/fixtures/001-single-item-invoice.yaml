@@ -1,0 +1,7 @@
+id: 001-single-item-invoice
+operation: export.invoice.commercial@1
+source: { type: hand-verified, citation: "500 units x 3.50 USD per unit = 1750.00 USD; v1 has one item row, so subtotal and total both equal the line total" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterGstin: "27ABCDE1234F1Z5", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", currency: "USD", itemDescription: "Hand-block printed cotton cushion covers", itemHsn: "630490", itemQuantity: "500", itemUnit: "PCS", itemUnitPrice: "3.50" }
+expected: { itemLineTotal: "1750.00", invoiceSubtotal: "1750.00", invoiceTotal: "1750.00", currency: "USD", invoiceNumber: "SHE/EXP/2026/014" }
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_INVOICE_SCOPE_LIMIT]

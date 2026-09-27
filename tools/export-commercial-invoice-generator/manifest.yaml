@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: export-commercial-invoice-generator
+slug: export-commercial-invoice-generator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Commercial invoice draft for an export shipment, with the item and invoice totals calculated." }
+name: Export Commercial Invoice Generator
+shortName: Export Invoice
+summary: Prepare a commercial invoice draft for an export shipment, with the item and invoice totals calculated.
+archetype: B
+preset: export/invoice-commercial
+sample: cushion-covers-usd
+taxonomy:
+  category: export-import
+  tags: [export, invoicing, documents]
+  synonyms: [export commercial invoice generator, commercial invoice generator, export invoice generator, commercial invoice for export, invoice for export shipment, india export invoice template, export invoice format, commercial invoice online]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Export Commercial Invoice Generator – Free Tool
+  description: Prepare a commercial invoice draft for an export shipment, exporter, buyer, item and shipping details, with totals calculated. Free, runs in your browser.
+  primaryKeyword: export commercial invoice generator
+  secondaryKeywords: [commercial invoice generator, export invoice generator, commercial invoice for export]
+quality:
+  verifiedAgainst:
+    - { citation: "Field groups (exporter, buyer/consignee, invoice, item, shipping, declarations) from TASK-009A's Export & Import Documents foundation planner, itself researched against secondary summaries of CBIC/DGFT/GST notifications", locator: "tasks/TASK-009A-EXPORT-IMPORT-DOCUMENTS-FOUNDATION-PLANNER.md, section 7" }
+    - { citation: "Item line total = quantity x unit price; general commercial-invoice arithmetic, no tax/duty/forex conversion applied", locator: "Method section" }
+  lastVerified: 2026-09-27

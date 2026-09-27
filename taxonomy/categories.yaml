@@ -51,6 +51,28 @@ categories:
         a: Dimensions in centimetres, metres, millimetres or inches throughout. The CBM Calculator shows cubic metres (CBM) and cubic feet; the Volumetric Weight Calculator accepts weights in kilograms, grams or pounds and shows kilograms; the Container and Pallet Loading Calculators show cubic metres, area and carton counts.
       - q: Do these calculators give the freight rate or a guaranteed loading plan?
         a: No. They give volume, chargeable weight and loading estimates, not prices or a certified stowage or load-safety plan. Confirm freight rates with your carrier or forwarder, and verify the final loading plan with a freight forwarder or logistics professional before shipment.
+  - id: export-import
+    slug: export-import
+    name: Export & Import Documents
+    icon: file-up
+    order: 35
+    summary: Prepare export invoices, packing lists and shipment records for exporters and MSMEs.
+    seo:
+      title: Export Documents – Commercial Invoice Generator
+      description: Free tools to prepare export commercial invoices and shipment paperwork for exporters, ecommerce sellers and MSMEs. Runs in your browser, no sign-up.
+    about:
+      - Practical document generators and record helpers for small exporters, ecommerce sellers and retail businesses. The Export Commercial Invoice Generator prepares an export invoice draft — exporter, buyer/consignee, item, shipping and declaration details — with the item and invoice totals calculated.
+      - These tools help you prepare documents and drafts. They do not file anything with Customs, India Post, DGFT, ICEGATE, DNK, ECCS, or any bank or government portal, and they do not give legal, tax, or FEMA/bank compliance advice. Verify final documents with India Post, your courier, customs broker, CA, bank, or the official portal before filing or shipping.
+      - The tools run entirely in your browser. The business and shipment details you enter are never sent to a server.
+    faq:
+      - q: Are these export document tools free?
+        a: Yes. Every tool is free and unlimited, with no sign-up and no ads.
+      - q: Do these tools file anything with Customs, India Post, DGFT, ICEGATE, DNK, or ECCS?
+        a: No. These are document preparation helpers only. They never file, submit, or integrate with any government or courier filing system. Verify final documents with the relevant official channel before filing or shipping.
+      - q: Is this legal, tax, or FEMA/bank compliance advice?
+        a: No. These tools help you prepare documents and drafts. Confirm compliance requirements with your CA, customs broker, bank, or the official portal.
+      - q: Will more export/import tools be added?
+        a: This category currently has one tool, the Export Commercial Invoice Generator. Further export and import document tools may be added later.
   - id: privacy-tools
     slug: privacy-tools
     name: Privacy & Compliance

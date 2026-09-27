@@ -1,0 +1,5 @@
+id: 002-missing-buyer-name
+operation: export.invoice.commercial@1
+source: { type: regression, citation: "buyer name omitted entirely" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterGstin: "27ABCDE1234F1Z5", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", currency: "USD", itemDescription: "Hand-block printed cotton cushion covers", itemHsn: "630490", itemQuantity: "500", itemUnit: "PCS", itemUnitPrice: "3.50" }
+expectedError: { code: EXPORT_MISSING_INPUT, path: buyerName }

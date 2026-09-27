@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds twenty-nine tools, twenty-nine presets and the six visible categories', () => {
+  it('builds thirty tools, thirty presets and the seven visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -49,6 +49,7 @@ describe('registry pipeline — valid repository', () => {
       'container-loading-calculator',
       'csv-to-json',
       'excavation-calculator',
+      'export-commercial-invoice-generator',
       'favicon-generator',
       'gst-calculator',
       'image-compress',
@@ -72,10 +73,11 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(29);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(30);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
+      'export-import',
       'business',
       'developer',
       'pdf',
@@ -98,6 +100,7 @@ describe('registry pipeline — valid repository', () => {
       'civil',
       'data',
       'estimate',
+      'export',
       'image',
       'logistics',
       'pdf',
@@ -373,10 +376,12 @@ describe('category visibility threshold', () => {
         .filter((c) => c.visible)
         .map((c) => c.id);
     // media has seven tools; developer and construction have six each; logistics has four; business
-    // and pdf have three each. Visible categories are ordered by taxonomy/categories.yaml's `order`.
+    // and pdf have three each; export-import has one. Visible categories are ordered by
+    // taxonomy/categories.yaml's `order`.
     expect(visibleAt(1)).toEqual([
       'construction',
       'logistics',
+      'export-import',
       'business',
       'developer',
       'pdf',
