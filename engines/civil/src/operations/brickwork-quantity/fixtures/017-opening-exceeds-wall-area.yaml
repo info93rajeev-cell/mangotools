@@ -1,0 +1,5 @@
+id: 017-opening-exceeds-wall-area
+operation: civil.brickwork.quantity@1
+source: { type: regression, citation: "2 x 2 m wall = 4 m2 gross; a 5 m2 opening cannot fit in it" }
+input: { unit: m, wallLength: "2", wallHeight: "2", wallThickness: "0.23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "5", wastagePercent: "0" }
+expectedError: { code: CIVIL_OPENING_EXCEEDS_WALL_AREA, path: openingArea }

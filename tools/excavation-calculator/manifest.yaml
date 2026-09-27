@@ -4,8 +4,9 @@ id: excavation-calculator
 slug: excavation-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta with excavation/earthwork volume for a rectangular pit, trench or footing pit, in m³ and ft³, with bulking/swell %." }
 name: Excavation Calculator
 shortName: Excavation
@@ -26,7 +27,7 @@ seo:
   primaryKeyword: excavation calculator
   secondaryKeywords: [earthwork volume calculator, trench excavation calculator, footing excavation calculator]
 graph:
-  related: [concrete-quantity-calculator]
+  related: [concrete-quantity-calculator, brickwork-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }

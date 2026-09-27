@@ -1,0 +1,8 @@
+id: 003-zero-mortar
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "No mortar joint: brick volume is size only, 230x110x75 mm = 0.0018975 m3" }
+input: { unit: m, wallLength: "5", wallHeight: "3", wallThickness: "0.23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "0", openingArea: "0", wastagePercent: "0" }
+expected: { effectiveBrickVolumeM3: "0.001898" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

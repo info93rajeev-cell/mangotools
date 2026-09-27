@@ -1,0 +1,8 @@
+id: 007-wall-unit-inch
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "120 x 96 in wall = 3.048 x 2.4384 m (120 in = 10 ft, 96 in = 8 ft exactly) = 7.4322432 m2; 9 in (0.75 ft) thickness = 0.2286 m; volume = 1.69901079552 m3, matching fixture 006 exactly" }
+input: { unit: in, wallLength: "120", wallHeight: "96", wallThickness: "9", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expected: { grossWallAreaM2: "7.432243", netWallAreaM2: "7.432243", brickworkVolumeM3: "1.699011" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

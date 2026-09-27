@@ -1,0 +1,8 @@
+id: 006-wall-unit-feet
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "10 x 8 ft wall = 3.048 x 2.4384 m = 7.4322432 m2; 0.75 ft (9 in) thickness = 0.2286 m; volume = 7.4322432 x 0.2286 = 1.69901079552 m3" }
+input: { unit: ft, wallLength: "10", wallHeight: "8", wallThickness: "0.75", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expected: { grossWallAreaM2: "7.432243", netWallAreaM2: "7.432243", brickworkVolumeM3: "1.699011" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

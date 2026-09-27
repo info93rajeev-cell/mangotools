@@ -1,0 +1,26 @@
+id: 002-opening-wastage
+preset: civil/brickwork-quantity
+source:
+  type: hand-verified
+  citation: "6 x 3 m wall = 18 m2 gross per wall; x2 walls = 36 m2; 2 m2 opening per wall x2 = 4 m2 deducted; net 32 m2; x0.23 m thick = 7.36 m3; same brick (240x120x85 mm incl. mortar) = 0.002448 m3 effective; 5% wastage"
+input:
+  unit: m
+  wallLength: "6"
+  wallHeight: "3"
+  wallThickness: "0.23"
+  quantity: "2"
+  brickUnit: mm
+  brickLength: "230"
+  brickWidth: "110"
+  brickHeight: "75"
+  mortarJointMm: "10"
+  openingArea: "2"
+  wastagePercent: "5"
+expected:
+  grossWallAreaM2: "36.000000"
+  openingDeductionAreaM2: "4.000000"
+  netWallAreaM2: "32.000000"
+  brickworkVolumeM3: "7.360000"
+  effectiveBrickVolumeM3: "0.002448"
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

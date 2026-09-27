@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/brickwork-quantity
+version: 0.1.0
+operation: civil.brickwork.quantity@1
+params: { decimals: 6, rounding: half-up }
+fields:
+  unit:
+    labelKey: brickwork.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 10
+    options:
+      - { value: mm, labelKey: brickwork.unit.mm }
+      - { value: cm, labelKey: brickwork.unit.cm }
+      - { value: m, labelKey: brickwork.unit.m }
+      - { value: in, labelKey: brickwork.unit.in }
+      - { value: ft, labelKey: brickwork.unit.ft }
+  wallLength: { labelKey: brickwork.field.wallLength, kind: number, required: true, order: 20, helpKey: brickwork.help.wallDimension }
+  wallHeight: { labelKey: brickwork.field.wallHeight, kind: number, required: true, order: 30, helpKey: brickwork.help.wallDimension }
+  wallThickness: { labelKey: brickwork.field.wallThickness, kind: number, required: true, order: 40, helpKey: brickwork.help.wallDimension }
+  quantity: { labelKey: brickwork.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: brickwork.help.quantity }
+  openingArea: { labelKey: brickwork.field.openingArea, kind: number, required: true, default: 0, order: 60, helpKey: brickwork.help.openingArea }
+  brickUnit:
+    labelKey: brickwork.field.brickUnit
+    kind: enum
+    control: segmented
+    default: mm
+    order: 70
+    options:
+      - { value: mm, labelKey: brickwork.unit.mm }
+      - { value: cm, labelKey: brickwork.unit.cm }
+      - { value: m, labelKey: brickwork.unit.m }
+      - { value: in, labelKey: brickwork.unit.in }
+      - { value: ft, labelKey: brickwork.unit.ft }
+  brickLength: { labelKey: brickwork.field.brickLength, kind: number, required: true, order: 80, helpKey: brickwork.help.brickDimension }
+  brickWidth: { labelKey: brickwork.field.brickWidth, kind: number, required: true, order: 90, helpKey: brickwork.help.brickDimension }
+  brickHeight: { labelKey: brickwork.field.brickHeight, kind: number, required: true, order: 100, helpKey: brickwork.help.brickDimension }
+  mortarJointMm: { labelKey: brickwork.field.mortarJointMm, kind: number, required: true, default: 10, order: 110, helpKey: brickwork.help.mortarJoint }
+  wastagePercent: { labelKey: brickwork.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 120, helpKey: brickwork.help.wastage }
+outputs:
+  totalBricks: { labelKey: brickwork.out.totalBricks, format: number, order: 10, primary: true }
+  brickworkVolumeM3: { labelKey: brickwork.out.brickworkVolumeM3, format: number, order: 20 }
+  estimatedBrickCount: { labelKey: brickwork.out.estimatedBrickCount, format: number, order: 30 }
+  wastageBricks: { labelKey: brickwork.out.wastageBricks, format: number, order: 40 }
+  grossWallAreaM2: { labelKey: brickwork.out.grossWallAreaM2, format: number, order: 50 }
+  openingDeductionAreaM2: { labelKey: brickwork.out.openingDeductionAreaM2, format: number, order: 60 }
+  netWallAreaM2: { labelKey: brickwork.out.netWallAreaM2, format: number, order: 70 }
+  netWallAreaFt2: { labelKey: brickwork.out.netWallAreaFt2, format: number, order: 80 }
+  brickworkVolumeFt3: { labelKey: brickwork.out.brickworkVolumeFt3, format: number, order: 90 }
+  effectiveBrickVolumeM3: { labelKey: brickwork.out.effectiveBrickVolumeM3, format: number, order: 100 }
+  mortarJointMm: { labelKey: brickwork.out.mortarJointMm, format: number, order: 110 }
+  wastagePercent: { labelKey: brickwork.out.wastagePercent, format: percent, order: 120 }
+samples:
+  standard-wall-5x3-m:
+    titleKey: brickwork.sample.standard
+    input: { unit: m, wallLength: "5", wallHeight: "3", wallThickness: "0.23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    brickwork.field.unit: Wall unit
+    brickwork.unit.mm: mm
+    brickwork.unit.cm: cm
+    brickwork.unit.m: m
+    brickwork.unit.in: inch
+    brickwork.unit.ft: ft
+    brickwork.field.wallLength: Wall length
+    brickwork.field.wallHeight: Wall height
+    brickwork.field.wallThickness: Wall thickness
+    brickwork.field.quantity: Number of walls
+    brickwork.field.openingArea: Opening area (doors/windows)
+    brickwork.field.brickUnit: Brick unit
+    brickwork.field.brickLength: Brick length
+    brickwork.field.brickWidth: Brick width
+    brickwork.field.brickHeight: Brick height
+    brickwork.field.mortarJointMm: Mortar joint thickness (mm)
+    brickwork.field.wastagePercent: Wastage %
+    brickwork.help.wallDimension: Outer dimension of one wall, in the wall unit chosen above, up to 3 decimal places.
+    brickwork.help.quantity: A whole number from 1 to 1,000,000.
+    brickwork.help.openingArea: Total door/window area to deduct from one wall, in the wall unit's own squared area (for example m² if the wall unit is m). Defaults to 0.
+    brickwork.help.brickDimension: Brick size, in the brick unit chosen above, up to 3 decimal places.
+    brickwork.help.mortarJoint: Mortar joint thickness in millimetres, added to all three brick dimensions. Defaults to 10 mm; use 0 for a brick-size-only count.
+    brickwork.help.wastage: An adjustable allowance for site cutting and breakage, from 0 to 50%. Defaults to 0%.
+    brickwork.out.totalBricks: Total bricks incl. wastage
+    brickwork.out.brickworkVolumeM3: Brickwork volume (m³)
+    brickwork.out.estimatedBrickCount: Estimated brick count before wastage
+    brickwork.out.wastageBricks: Wastage bricks
+    brickwork.out.grossWallAreaM2: Gross wall area (m²)
+    brickwork.out.openingDeductionAreaM2: Opening deduction area (m²)
+    brickwork.out.netWallAreaM2: Net wall area (m²)
+    brickwork.out.netWallAreaFt2: Net wall area (ft²)
+    brickwork.out.brickworkVolumeFt3: Brickwork volume (ft³)
+    brickwork.out.effectiveBrickVolumeM3: Effective brick volume incl. mortar (m³)
+    brickwork.out.mortarJointMm: Mortar joint thickness (mm)
+    brickwork.out.wastagePercent: Wastage %
+    brickwork.sample.standard: 5 × 3 m wall, 230 mm thick, standard 230×110×75 mm brick
+    work.brickwork.grossAreaPerWall: "One wall's gross area = {length:number} {unit} × {height:number} {unit} = {result} m² (exact)"
+    work.brickwork.grossWallArea: "Gross wall area = {grossAreaPerWall} m² × {quantity:number} walls = {result:number} m² (exact)"
+    work.brickwork.openingDeduction: "Opening deduction = {openingArea} m² × {quantity:number} walls = {result:number} m² (exact)"
+    work.brickwork.netWallArea: "Net wall area = {grossWallArea} m² − {openingDeduction} m² = {result:number} m² (exact)"
+    work.brickwork.volume: "Brickwork volume = {netWallArea} m² × {thickness} m = {result:number} m³ (exact)"
+    work.brickwork.brickVolume: "Effective brick volume = ({brickLength:number} {brickUnit} + {mortarJointMm:number} mm) × ({brickWidth:number} {brickUnit} + {mortarJointMm:number} mm) × ({brickHeight:number} {brickUnit} + {mortarJointMm:number} mm) = {result} m³ (exact)"
+    work.brickwork.brickCount: "Estimated brick count = {brickworkVolume} m³ ÷ {effectiveBrickVolume} m³ = {result:number} bricks (exact)"
+    work.brickwork.wastageBricks: "Wastage bricks = {estimatedBrickCount:number} × {wastagePercent:number}% = {result:number} bricks (exact)"
+    work.brickwork.totalBricks: "Total bricks incl. wastage = {estimatedBrickCount:number} + {wastageBricks:number} = {result:number} bricks (exact)"

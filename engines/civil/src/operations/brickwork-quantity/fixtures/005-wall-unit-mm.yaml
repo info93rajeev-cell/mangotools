@@ -1,0 +1,8 @@
+id: 005-wall-unit-mm
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "5000 x 3000 mm wall = 5 x 3 m = 15 m2; 230 mm thickness = 0.23 m; same as fixture 001 in a different wall unit" }
+input: { unit: mm, wallLength: "5000", wallHeight: "3000", wallThickness: "230", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expected: { grossWallAreaM2: "15.000000", netWallAreaM2: "15.000000", brickworkVolumeM3: "3.450000", effectiveBrickVolumeM3: "0.002448" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]
