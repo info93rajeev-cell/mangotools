@@ -11,6 +11,7 @@ export const SAMPLES = {
   'excavation-calculator': { archetype: 'B', result: '30.000' },
   'brickwork-calculator': { archetype: 'B', result: '1,409.313725' },
   'plaster-calculator': { archetype: 'B', result: '0.180' },
+  'tile-flooring-calculator': { archetype: 'B', result: '246' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },

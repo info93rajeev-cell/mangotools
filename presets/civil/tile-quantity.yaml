@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/tile-quantity
+version: 0.1.0
+operation: civil.tile.quantity@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  unit:
+    labelKey: tile.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 10
+    options:
+      - { value: mm, labelKey: tile.unit.mm }
+      - { value: cm, labelKey: tile.unit.cm }
+      - { value: m, labelKey: tile.unit.m }
+      - { value: in, labelKey: tile.unit.in }
+      - { value: ft, labelKey: tile.unit.ft }
+  surfaceLength: { labelKey: tile.field.surfaceLength, kind: number, required: true, order: 20, helpKey: tile.help.surfaceLength }
+  surfaceWidth: { labelKey: tile.field.surfaceWidth, kind: number, required: true, order: 30, helpKey: tile.help.surfaceWidth }
+  tileLength: { labelKey: tile.field.tileLength, kind: number, required: true, order: 40, helpKey: tile.help.tileLength }
+  tileWidth: { labelKey: tile.field.tileWidth, kind: number, required: true, order: 50, helpKey: tile.help.tileWidth }
+  quantity: { labelKey: tile.field.quantity, kind: number, required: true, default: 1, order: 60, helpKey: tile.help.quantity }
+  wastagePercent: { labelKey: tile.field.wastagePercent, kind: percent, unit: "%", required: true, default: 10, order: 70, helpKey: tile.help.wastage }
+  tilesPerBox: { labelKey: tile.field.tilesPerBox, kind: number, required: false, order: 80, helpKey: tile.help.tilesPerBox }
+outputs:
+  totalTiles: { labelKey: tile.out.totalTiles, format: number, order: 10, primary: true }
+  baseTileCount: { labelKey: tile.out.baseTileCount, format: number, order: 20 }
+  wastageTileCount: { labelKey: tile.out.wastageTileCount, format: number, order: 30 }
+  boxesRequired: { labelKey: tile.out.boxesRequired, format: number, order: 40 }
+  surfaceAreaM2: { labelKey: tile.out.surfaceAreaM2, format: number, order: 50 }
+  surfaceAreaFt2: { labelKey: tile.out.surfaceAreaFt2, format: number, order: 60 }
+  tileAreaM2: { labelKey: tile.out.tileAreaM2, format: number, order: 70 }
+  quantity: { labelKey: tile.out.quantity, format: number, order: 80 }
+  wastagePercent: { labelKey: tile.out.wastagePercent, format: percent, order: 90 }
+samples:
+  room-5x4-m:
+    titleKey: tile.sample.room
+    input: { unit: m, surfaceLength: "5", surfaceWidth: "4", tileLength: "0.3", tileWidth: "0.3", quantity: "1", wastagePercent: "10", tilesPerBox: "10" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    tile.field.unit: Unit
+    tile.unit.mm: mm
+    tile.unit.cm: cm
+    tile.unit.m: m
+    tile.unit.in: inch
+    tile.unit.ft: ft
+    tile.field.surfaceLength: Floor/wall length
+    tile.field.surfaceWidth: Floor/wall width
+    tile.field.tileLength: Tile length
+    tile.field.tileWidth: Tile width
+    tile.field.quantity: Number of identical rooms/areas
+    tile.field.wastagePercent: Wastage %
+    tile.field.tilesPerBox: Tiles per box (optional)
+    tile.help.surfaceLength: Length of the floor or wall to tile, in the unit chosen above.
+    tile.help.surfaceWidth: Width (or height, for a wall) of the surface, in the same unit.
+    tile.help.tileLength: One tile's length, in the same unit — for example 0.3 m for a 30 cm tile.
+    tile.help.tileWidth: One tile's width, in the same unit.
+    tile.help.quantity: A whole number from 1 to 1,000,000, for identical rooms or areas.
+    tile.help.wastage: An adjustable allowance for cutting and breakage, from 0 to 50%. Defaults to 10%.
+    tile.help.tilesPerBox: A whole number of tiles per box, if you know it. Leave blank to skip the boxes calculation.
+    tile.out.totalTiles: Total tiles required (incl. wastage)
+    tile.out.baseTileCount: Base tile count (before wastage)
+    tile.out.wastageTileCount: Extra tiles for wastage
+    tile.out.boxesRequired: Boxes required
+    tile.out.surfaceAreaM2: Surface area (m²)
+    tile.out.surfaceAreaFt2: Surface area (ft²)
+    tile.out.tileAreaM2: Tile area (m²)
+    tile.out.quantity: Number of rooms/areas
+    tile.out.wastagePercent: Wastage %
+    tile.sample.room: 5 × 4 m room, 30 cm tiles, 10 tiles/box
+    work.tile.surfaceAreaPerRoom: "One room's surface area = {surfaceLength:number} {unit} × {surfaceWidth:number} {unit} = {result} m² (exact)"
+    work.tile.surfaceArea: "Total surface area = {surfaceAreaPerRoom} m² × {quantity:number} rooms = {result:number} m² (exact)"
+    work.tile.tileArea: "Tile area = {tileLength:number} {unit} × {tileWidth:number} {unit} = {result} m² (exact)"
+    work.tile.baseTileCount: "Base tile count = {surfaceArea:number} m² ÷ {tileArea} m², rounded up = {result} tiles"
+    work.tile.totalTiles: "Total tiles incl. wastage = {baseTileCount} tiles × (1 + {wastagePercent:number}%), rounded up = {result} tiles"
+    work.tile.wastageTileCount: "Extra tiles for wastage = {totalTiles} − {baseTileCount} = {result} tiles"
+    work.tile.boxesRequired: "Boxes required = {totalTiles} tiles ÷ {tilesPerBox} tiles/box, rounded up = {result} boxes"

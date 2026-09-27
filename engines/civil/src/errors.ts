@@ -45,4 +45,13 @@ export const messages: Readonly<Record<string, string>> = {
     'Actual plaster quantity may vary due to wall unevenness, surface preparation, thickness variation, site cutting, waste, and measurement rules.',
   CIVIL_PLASTER_SCOPE_LIMIT:
     'This tool does not calculate cement/sand material breakup, labour cost, scaffolding, curing, BOQ, or final billing.',
+  CIVIL_TILES_PER_BOX_NOT_POSITIVE: 'Enter at least 1 tile per box, or leave it blank.',
+  CIVIL_TILES_PER_BOX_NOT_WHOLE: 'The number of tiles per box must be a whole number.',
+  CIVIL_TILES_PER_BOX_TOO_LARGE: 'Enter at most {max} tiles per box.',
+  CIVIL_VERIFY_TILE_BEFORE_INSTALLATION:
+    'Verify tile sizes, room dimensions, and wastage before purchase or installation.',
+  CIVIL_TILE_CONDITIONS_VARY:
+    'Actual tile quantity may vary due to cutting at edges and corners, breakage, pattern layout, grout width, and measurement rules.',
+  CIVIL_TILE_SCOPE_LIMIT:
+    'This tool does not calculate grout or adhesive quantity, material or labour cost, diagonal or pattern layouts, or a bill of quantities (BOQ).',
 };

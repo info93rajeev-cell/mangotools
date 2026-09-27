@@ -1,0 +1,7 @@
+id: 004-feet-unit-exact
+operation: civil.tile.quantity@1
+source: { type: hand-verified, citation: "10 x 10 ft room with a 1 x 1 ft tile: the unit cancels out, giving exactly 100 tiles" }
+input: { unit: ft, surfaceLength: "10", surfaceWidth: "10", tileLength: "1", tileWidth: "1", quantity: "1", wastagePercent: "0" }
+expected: { baseTileCount: "100", totalTiles: "100" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_TILE_SCOPE_LIMIT]

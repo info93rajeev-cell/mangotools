@@ -1,0 +1,5 @@
+id: 008-tiles-per-box-not-whole
+operation: civil.tile.quantity@1
+source: { type: regression }
+input: { unit: m, surfaceLength: "5", surfaceWidth: "4", tileLength: "0.3", tileWidth: "0.3", quantity: "1", wastagePercent: "0", tilesPerBox: "10.5" }
+expectedError: { code: CIVIL_TILES_PER_BOX_NOT_WHOLE, path: tilesPerBox }

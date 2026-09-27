@@ -27,3 +27,5 @@ tags:
   - { id: construction, label: Construction }
   - { id: excavation, label: Excavation }
   - { id: earthwork, label: Earthwork }
+  - { id: tile, label: Tile }
+  - { id: flooring, label: Flooring }

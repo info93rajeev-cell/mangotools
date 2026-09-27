@@ -9,9 +9,10 @@ from its first version.
 | Operation | Purpose |
 |---|---|
 | `civil.concrete.quantity@1` | Concrete volume (m³ and ft³) for a rectangular slab, beam, column or footing, from dimensions, member count and wastage % |
+| `civil.tile.quantity@1` | Tile count for a rectangular floor or wall, with wastage % and an optional boxes-required calculation |
 
-Error messages for every code are in `src/errors.ts`. Golden fixtures live next to the operation in
-`src/operations/concrete-quantity/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
+Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
+`src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
 
 This engine calculates **quantities only**. It never adds cost, price, currency, material-split
 (cement/sand/aggregate), reinforcement, mix-design or structural-adequacy logic — see
@@ -32,4 +33,9 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.5.0 — `civil.tile.quantity@1` added (TASK-006F). Base tile count is the surface-to-tile area
+  ratio rounded up; total tiles is that already-rounded base count × (1 + wastage%), rounded up again
+  — the platform's documented choice between the two possible rounding orders, picked so every number
+  in the result is one a user could recompute by hand from the number before it. Tiles per box is
+  genuinely optional: left blank, the boxes-required output is simply absent rather than defaulted.
 - 0.1.0 — first operation, `civil.concrete.quantity@1` (TASK-006B).

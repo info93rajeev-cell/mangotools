@@ -1,0 +1,7 @@
+id: 003-multiple-rooms
+operation: civil.tile.quantity@1
+source: { type: hand-verified, citation: "5 x 4 m room x 2 identical rooms = 40 m2; 40 / 0.09 = 444.444, rounded up to 445 tiles; no wastage" }
+input: { unit: m, surfaceLength: "5", surfaceWidth: "4", tileLength: "0.3", tileWidth: "0.3", quantity: "2", wastagePercent: "0" }
+expected: { surfaceAreaM2: "40.000", baseTileCount: "445", totalTiles: "445" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_TILE_SCOPE_LIMIT]
