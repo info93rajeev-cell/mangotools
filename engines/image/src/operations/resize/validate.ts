@@ -1,7 +1,8 @@
 import { err, ok, type Result } from '@mangotools/core';
-import { MAX_FILE_BYTES, MAX_FILE_MB, MAX_SINGLE_AXIS_PIXELS } from './limits.ts';
+import { MAX_FILE_BYTES, MAX_FILE_MB } from '../../lib/limits.ts';
+import { detectImageType } from '../../lib/signature.ts';
+import { MAX_SINGLE_AXIS_PIXELS } from './limits.ts';
 import type { ImageResizeInput } from './schema.ts';
-import { detectImageType } from './signature.ts';
 
 function isValidTargetAxis(value: number): boolean {
   return Number.isInteger(value) && value > 0 && value <= MAX_SINGLE_AXIS_PIXELS;

@@ -1,0 +1,16 @@
+id: 004-watermark-text-too-long
+operation: image.watermark@1
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/), copied from image.resize@1's own fixtures: checks that watermark text over the 100-character limit (limits.ts's MAX_WATERMARK_TEXT_LENGTH) is rejected before any attempt to decode the file"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  text: "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_WATERMARK_TEXT_TOO_LONG
+  details: { max: 100 }

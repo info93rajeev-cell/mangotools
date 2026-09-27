@@ -1,4 +1,4 @@
-export type DetectedImageType = 'jpg' | 'png' | 'webp';
+import type { ResolvedImageFormat } from './formats.ts';
 
 const JPEG_SIGNATURE = [0xff, 0xd8, 0xff];
 /** The full 8-byte PNG signature (not just the leading 0x89), so a truncated file is not "recognized". */
@@ -18,16 +18,16 @@ function isWebp(bytes: Uint8Array): boolean {
 
 /**
  * Detects a JPG, PNG, or WebP signature, checked before any attempt to decode. Returns `null` for
- * anything else, including a declared-but-wrong file extension.
+ * anything else, including a declared-but-wrong file extension. Shared by every operation in this engine.
  */
-export function detectImageType(bytes: Uint8Array): DetectedImageType | null {
+export function detectImageType(bytes: Uint8Array): ResolvedImageFormat | null {
   if (startsWith(bytes, JPEG_SIGNATURE)) return 'jpg';
   if (startsWith(bytes, PNG_SIGNATURE)) return 'png';
   if (isWebp(bytes)) return 'webp';
   return null;
 }
 
-export const MIME_FOR_TYPE: Record<DetectedImageType, string> = {
+export const MIME_FOR_TYPE: Record<ResolvedImageFormat, string> = {
   jpg: 'image/jpeg',
   png: 'image/png',
   webp: 'image/webp',

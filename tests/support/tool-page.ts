@@ -82,6 +82,18 @@ export const FILE_TOOLS = {
     // this sample.jpg fixture), so the derived name keeps the .jpg extension.
     result: 'sample-cleaned.jpg',
   },
+  'image-watermark': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-watermark/fixtures/files/sample.jpg')],
+    downloadCta: 'Download watermarked image',
+    // Unlike every other file tool so far, Watermark has a required field with no default value
+    // (watermark text) — produceResult fills it by label before clicking download, generic for any
+    // future file tool with its own required text field, not Watermark-specific.
+    fillBeforeDownload: { 'Watermark text': 'Sample' },
+    // The primary output is the output file name; the default output format is "same as input" (jpg for
+    // this sample.jpg fixture), so the derived name keeps the .jpg extension.
+    result: 'sample-watermarked.jpg',
+  },
 } as const;
 
 export type ToolId = keyof typeof SAMPLES | keyof typeof FILE_TOOLS;
@@ -133,12 +145,17 @@ async function waitForPreviewDecode(page: Page, id: string): Promise<void> {
  */
 export async function produceResult(page: Page, id: string): Promise<void> {
   if (id in FILE_TOOLS) {
-    const { files, downloadCta } = FILE_TOOLS[id as keyof typeof FILE_TOOLS];
+    const tool = FILE_TOOLS[id as keyof typeof FILE_TOOLS];
     await island(page, id)
       .locator('input[type="file"]')
-      .setInputFiles([...files]);
+      .setInputFiles([...tool.files]);
     await waitForPreviewDecode(page, id);
-    await page.getByRole('button', { name: downloadCta }).click();
+    if ('fillBeforeDownload' in tool) {
+      for (const [label, value] of Object.entries(tool.fillBeforeDownload)) {
+        await page.getByLabel(label).fill(value);
+      }
+    }
+    await page.getByRole('button', { name: tool.downloadCta }).click();
   } else {
     await page.getByRole('button', { name: 'Try sample' }).click();
   }

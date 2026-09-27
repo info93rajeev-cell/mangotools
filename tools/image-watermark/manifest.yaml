@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-watermark
+slug: image-watermark
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: add a text watermark to a JPG, PNG or WebP image, entirely in the browser." }
+name: Image Watermark
+shortName: Watermark
+summary: Add a text watermark to a JPG, PNG or WebP image, right in your browser. No sign-up, no MangoTools watermark, no upload.
+archetype: D
+preset: image/watermark
+taxonomy:
+  category: media
+  tags: [images, watermark]
+  synonyms: [add watermark to image, image watermark, watermark image online, add text watermark to photo, photo watermark tool, watermark jpg, watermark png, watermark webp, add watermark to product image, free image watermark tool, browser image watermark]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Image Watermark – Add Text Watermark Free"
+  description: "Free browser-based tool to add a text watermark to JPG, PNG and WebP images. Choose position, opacity and color. No sign-up, no upload, no MangoTools watermark."
+  primaryKeyword: image watermark
+  secondaryKeywords: [add watermark to image, watermark image online, photo watermark tool, watermark jpg]
+graph:
+  related: [image-format-converter, image-compress, image-resize, image-metadata-remover]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.watermark@1 fixtures 001-004", locator: "engines/image/src/operations/watermark/fixtures" }
+  lastVerified: 2026-09-27

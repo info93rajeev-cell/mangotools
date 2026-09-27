@@ -1,12 +1,13 @@
 import { createTestContext, executeOperation } from '@mangotools/core';
 import { describe, expect, it } from 'vitest';
 import { messages } from '../../errors.ts';
+import { deriveOutputFileName, FALLBACK_OUTPUT_BASE_NAME } from '../../lib/file-name.ts';
+import { MAX_FILE_BYTES } from '../../lib/limits.ts';
+import { detectImageType } from '../../lib/signature.ts';
+import { computeSizeChange } from '../../lib/size-change.ts';
 import { computeOutputDimensions, isUpscale } from './dimensions.ts';
-import { deriveOutputFileName, FALLBACK_OUTPUT_BASE_NAME } from './file-name.ts';
-import { MAX_FILE_BYTES, MAX_SINGLE_AXIS_PIXELS } from './limits.ts';
+import { MAX_SINGLE_AXIS_PIXELS } from './limits.ts';
 import { imageResize } from './operation.ts';
-import { detectImageType } from './signature.ts';
-import { computeSizeChange } from './size-change.ts';
 
 const JPEG_BYTES = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]);
 const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0]);

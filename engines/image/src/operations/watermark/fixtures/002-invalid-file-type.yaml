@@ -1,0 +1,16 @@
+id: 002-invalid-file-type
+operation: image.watermark@1
+source:
+  type: synthetic
+  citation: "not-an-image.txt (fixtures/files/), copied from image.resize@1's own fixtures: a plain text file has no JPG/PNG/WebP signature and must be rejected before any attempt to decode it"
+input:
+  file: { name: not-an-image.txt, bytes: { path: not-an-image.txt } }
+  text: "Sample"
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_INVALID_FILE_TYPE
+  details: { name: not-an-image.txt }

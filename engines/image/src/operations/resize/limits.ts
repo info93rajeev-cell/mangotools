@@ -1,10 +1,6 @@
-/** Public, stated limits for Image Resize (founder-approved). Checked before any image is decoded. */
-export const MAX_FILE_MB = 25;
-export const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
-
-/** Decoded pixel-area caps — the real memory risk, since a small file can decode to a huge bitmap. */
-export const MAX_SOURCE_MEGAPIXELS = 40;
-export const MAX_SOURCE_PIXELS = MAX_SOURCE_MEGAPIXELS * 1_000_000;
+/** Resize-specific limits (founder-approved). `MAX_FILE_*`/`MAX_SOURCE_*` are shared engine-wide — see
+ * `../../lib/limits.ts`. Only the *requested output* cap and the single-axis sanity cap are specific to
+ * Resize's own target-dimension inputs, which no other operation in this engine has. */
 export const MAX_OUTPUT_MEGAPIXELS = 40;
 export const MAX_OUTPUT_PIXELS = MAX_OUTPUT_MEGAPIXELS * 1_000_000;
 

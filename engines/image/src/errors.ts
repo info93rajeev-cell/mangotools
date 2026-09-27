@@ -23,4 +23,10 @@ export const messages: Readonly<Record<string, string>> = {
     'The output file is larger than the original. Try a lower quality setting or another format.',
   IMAGE_SAME_FORMAT_REENCODED:
     'The output format is the same as the original. The image was re-encoded, which can change its size and quality slightly.',
+  IMAGE_WATERMARK_TEXT_REQUIRED: 'Enter the text to use as a watermark.',
+  IMAGE_WATERMARK_TEXT_TOO_LONG: 'Watermark text must be {max} characters or fewer.',
+  IMAGE_WATERMARK_FAILED:
+    'The watermark could not be added. Please try again with a different image.',
+  IMAGE_WATERMARK_NOT_LEGAL_PROTECTION:
+    'This tool adds a visible text watermark only. It does not prove ownership or create legal copyright protection by itself.',
 };
