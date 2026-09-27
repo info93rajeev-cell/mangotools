@@ -22,6 +22,7 @@ export const SAMPLES = {
   },
   'csv-to-json': { archetype: 'A', result: '"name": "Raj"' },
   'json-to-csv': { archetype: 'A', result: 'Raj,50' },
+  'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
 
 /**

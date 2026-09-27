@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: data/timestamp.convert
+version: 0.1.0
+operation: data.timestamp.convert@1
+params: { direction: to-date, unit: auto, basis: local }
+userOptions:
+  direction:
+    control: segmented
+    labelKey: timestamp.option.direction
+    order: 10
+    values:
+      to-date: { labelKey: timestamp.direction.toDate, order: 10 }
+      to-timestamp: { labelKey: timestamp.direction.toTimestamp, order: 20 }
+  unit:
+    control: segmented
+    labelKey: timestamp.option.unit
+    order: 20
+    visibleWhen: { direction: [to-date] }
+    values:
+      auto: { labelKey: timestamp.unit.auto, order: 10 }
+      seconds: { labelKey: timestamp.unit.seconds, order: 20 }
+      milliseconds: { labelKey: timestamp.unit.milliseconds, order: 30 }
+  basis:
+    control: segmented
+    labelKey: timestamp.option.basis
+    order: 20
+    visibleWhen: { direction: [to-timestamp] }
+    values:
+      local: { labelKey: timestamp.basis.local, order: 10 }
+      utc: { labelKey: timestamp.basis.utc, order: 20 }
+fields:
+  text:
+    labelKey: timestamp.field.text
+    kind: text
+    required: true
+    order: 10
+    placeholderKey: timestamp.field.placeholder
+outputs:
+  text: { labelKey: timestamp.out.text, format: code, order: 10, primary: true }
+  isoString: { labelKey: timestamp.out.isoString, format: text, order: 20 }
+  utcDisplay: { labelKey: timestamp.out.utcDisplay, format: text, order: 30 }
+  localDisplay: { labelKey: timestamp.out.localDisplay, format: text, order: 40 }
+  unixSeconds: { labelKey: timestamp.out.unixSeconds, format: number, order: 50 }
+  unixMilliseconds: { labelKey: timestamp.out.unixMilliseconds, format: number, order: 60 }
+  detectedUnit: { labelKey: timestamp.out.detectedUnit, format: text, order: 70 }
+  interpretedBasis: { labelKey: timestamp.out.interpretedBasis, format: text, order: 80 }
+samples:
+  epoch-launch:
+    titleKey: timestamp.sample.epochLaunch
+    input:
+      text: '1700000000'
+ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: timestamp.txt, outputMime: text/plain }
+strings:
+  en:
+    timestamp.option.direction: Direction
+    timestamp.direction.toDate: Timestamp → Date
+    timestamp.direction.toTimestamp: Date → Timestamp
+    timestamp.option.unit: Unit
+    timestamp.unit.auto: Auto-detect
+    timestamp.unit.seconds: Seconds
+    timestamp.unit.milliseconds: Milliseconds
+    timestamp.option.basis: Interpret as
+    timestamp.basis.local: Local time
+    timestamp.basis.utc: UTC
+    timestamp.field.text: Timestamp or date/time
+    timestamp.field.placeholder: 'e.g. 1700000000 or 2023-11-14T22:13:20Z'
+    timestamp.out.text: Result
+    timestamp.out.isoString: ISO string
+    timestamp.out.utcDisplay: UTC date/time
+    timestamp.out.localDisplay: Local date/time (this browser)
+    timestamp.out.unixSeconds: Unix seconds
+    timestamp.out.unixMilliseconds: Unix milliseconds
+    timestamp.out.detectedUnit: Detected unit
+    timestamp.out.interpretedBasis: Interpreted as
+    timestamp.sample.epochLaunch: A Unix timestamp in seconds

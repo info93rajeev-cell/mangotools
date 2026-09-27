@@ -1,0 +1,9 @@
+id: 011-unsupported-format-error
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+params: { direction: to-timestamp }
+input:
+  text: 'November 14, 2023'
+expectedError:
+  code: DATA_TIMESTAMP_UNSUPPORTED_FORMAT
+  path: text

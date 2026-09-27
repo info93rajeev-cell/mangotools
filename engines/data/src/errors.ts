@@ -28,6 +28,16 @@ export const messages: Readonly<Record<string, string>> = {
   DATA_JSON_TO_CSV_NESTED_VALUE:
     'The value for "{key}" in item {item} is a nested object or array, which is not supported in this version.',
   DATA_JSON_TO_CSV_NO_COLUMNS: 'The JSON objects have no properties to use as columns.',
+  DATA_TIMESTAMP_EMPTY: 'Paste or type a timestamp or date to convert.',
+  DATA_TIMESTAMP_INVALID: 'Enter a whole number of seconds or milliseconds, such as 1700000000.',
+  DATA_TIMESTAMP_AMBIGUOUS_LENGTH:
+    'A {digits}-digit number could be seconds or milliseconds. Choose a unit to continue.',
+  DATA_TIMESTAMP_OUT_OF_RANGE:
+    'This timestamp is outside the range JavaScript dates can represent.',
+  DATA_TIMESTAMP_UNSUPPORTED_FORMAT:
+    'Enter a date like 2023-11-14 or 2023-11-14T22:13:20 (add Z for UTC).',
+  DATA_TIMESTAMP_INVALID_DATE:
+    'That date or time does not exist, such as a day, month or time out of range.',
 };
 
 export const MAX_INPUT_CHARS = 50 * 1024 * 1024;

@@ -1,0 +1,10 @@
+id: 001-sample-epoch-launch
+preset: data/timestamp.convert
+source: { type: synthetic }
+input:
+  text: '1700000000'
+expected:
+  isoString: '2023-11-14T22:13:20.000Z'
+  unixSeconds: 1700000000
+  unixMilliseconds: 1700000000000
+  detectedUnit: seconds

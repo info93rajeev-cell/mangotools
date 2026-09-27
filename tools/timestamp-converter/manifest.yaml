@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: timestamp-converter
+slug: timestamp-converter
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Timestamp to date and date to timestamp, seconds and milliseconds, UTC and local output." }
+name: Timestamp Converter
+shortName: Timestamp Converter
+summary: Convert a Unix timestamp to a date, or a date to a Unix timestamp. Seconds, milliseconds, UTC and local time.
+archetype: A
+preset: data/timestamp.convert
+sample: epoch-launch
+taxonomy:
+  category: developer
+  tags: [timestamp, date-format, data-format]
+  synonyms: [unix timestamp converter, epoch converter, convert timestamp to date, convert date to timestamp, unix time converter, milliseconds timestamp converter, timestamp to utc, timestamp to local time, online timestamp converter]
+capabilities: { export: [], share: false }
+privacy: { dataClass: public, network: none }
+disclaimer: none
+seo:
+  title: Timestamp Converter – Unix Timestamp to Date Online
+  description: Convert a Unix timestamp to a date, or a date to a Unix timestamp. Seconds or milliseconds, UTC and local time. Runs in your browser, no signup.
+  primaryKeyword: timestamp converter
+  secondaryKeywords: [unix timestamp converter, epoch converter, timestamp to date]
+graph:
+  related: [json-formatter, csv-to-json, json-to-csv, url-encode-decode, base64-encode-decode]

@@ -1,0 +1,11 @@
+id: 001-unix-seconds-to-utc-iso
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+input:
+  text: '1700000000'
+expected:
+  isoString: '2023-11-14T22:13:20.000Z'
+  utcDisplay: 'Tue, 14 Nov 2023 22:13:20 GMT'
+  unixSeconds: 1700000000
+  unixMilliseconds: 1700000000000
+  detectedUnit: seconds

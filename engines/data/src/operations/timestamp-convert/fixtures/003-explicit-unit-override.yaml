@@ -1,0 +1,9 @@
+id: 003-explicit-unit-override
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+params: { unit: seconds }
+input:
+  text: '0'
+expected:
+  isoString: '1970-01-01T00:00:00.000Z'
+  detectedUnit: seconds

@@ -1,0 +1,9 @@
+id: 006-date-to-unix-milliseconds-fractional
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+params: { direction: to-timestamp }
+input:
+  text: '2023-11-14T22:13:20.123Z'
+expected:
+  unixMilliseconds: 1700000000123
+  interpretedBasis: utc

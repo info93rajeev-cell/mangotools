@@ -1,0 +1,8 @@
+id: 004-negative-pre-1970-timestamp
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+input:
+  text: '-86400'
+expected:
+  isoString: '1969-12-31T00:00:00.000Z'
+  detectedUnit: seconds
