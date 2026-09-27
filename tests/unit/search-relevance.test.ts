@@ -138,6 +138,17 @@ describe('search relevance over the generated index', () => {
     ['internal plaster calculator', 'plaster-calculator'],
     ['external plaster calculator', 'plaster-calculator'],
     ['quantity survey plaster calculator', 'plaster-calculator'],
+    ['Image Format Converter', 'image-format-converter'],
+    ['image format converter', 'image-format-converter'],
+    ['image converter', 'image-format-converter'],
+    ['convert image online', 'image-format-converter'],
+    ['png to webp', 'image-format-converter'],
+    ['webp to png', 'image-format-converter'],
+    ['webp converter', 'image-format-converter'],
+    ['convert jpg png webp', 'image-format-converter'],
+    ['free image converter', 'image-format-converter'],
+    ['browser image converter', 'image-format-converter'],
+    ['image format converter online', 'image-format-converter'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

@@ -198,6 +198,7 @@ describe('image.resize validation (Node-testable, pre-decode paths only)', () =>
       'IMAGE_UPSCALED_QUALITY_LOSS',
       'IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG',
       'IMAGE_OUTPUT_LARGER_THAN_INPUT',
+      'IMAGE_SAME_FORMAT_REENCODED',
     ];
     for (const code of warningCodes) expect(messages[code], code).toBeTruthy();
   });

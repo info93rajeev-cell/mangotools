@@ -36,6 +36,7 @@ TASK-005C):
 | `outputWidth`, `outputHeight` | The actual output dimensions (after aspect-ratio fitting, if applied). |
 | `originalFileSize`, `outputFileSize` | Byte sizes, before and after. |
 | `sizeDifferenceBytes`, `sizeChangePercent` | `originalFileSize - outputFileSize`, and the same as a percentage (`size-change.ts`); positive means the output is smaller. Always populated — useful for a resize too, not Image-Compress-specific. |
+| `originalFormat` | The source's own detected format (by signature). Added for Image Format Converter (TASK-007B); useful for any preset that wants to show "converted from X," not converter-specific. |
 | `outputFormat` | The format actually produced — may differ from the requested one only for the WebP-unsupported fallback (see "Format handling"). |
 
 ## Validation, in order
@@ -76,9 +77,17 @@ reduces effective quality, so this is stated rather than silently allowed to sur
 
 A preset can pass the source's own decoded dimensions back in as `targetWidth`/`targetHeight` (with
 `keepAspectRatio: true`, which is then a no-op fit) to re-encode at the original size without resizing —
-this is exactly how Image Compress reuses this operation. Separately, whenever the *encoded output* is
-larger in bytes than the original file, `IMAGE_OUTPUT_LARGER_THAN_INPUT` is added to the warnings —
-regardless of whether the pixel dimensions changed at all.
+this is exactly how Image Compress and Image Format Converter both reuse this operation. Separately,
+whenever the *encoded output* is larger in bytes than the original file, `IMAGE_OUTPUT_LARGER_THAN_INPUT`
+is added to the warnings — regardless of whether the pixel dimensions changed at all.
+
+If `outputFormat` is an *explicit* format (not `'same'`) that happens to equal the detected source format —
+for example, a JPG file explicitly converted "to JPG" — the image is still decoded and re-encoded as
+normal, and `IMAGE_SAME_FORMAT_REENCODED` is added to the warnings, since re-encoding at any quality
+setting can change the file's size and, for a lossy format, its quality. This is distinct from
+`outputFormat: 'same'` itself (used by Image Resize's and Image Compress's own defaults), which never
+raises this warning — `'same'` means "whatever the source already is," not an explicit user choice of a
+matching format.
 
 ## Format handling
 
