@@ -10,6 +10,7 @@ network, no server upload — selecting files, previews, and downloading the res
 | `image.resize@1` | Resizes a JPG, PNG, or WebP image to the requested dimensions |
 | `image.watermark@1` | Draws a text watermark onto a JPG, PNG, or WebP image at a chosen position |
 | `image.crop@1` | Crops a JPG, PNG, or WebP image to a pixel rectangle |
+| `image.favicon@1` | Generates a square PNG favicon from a JPG, PNG, or WebP image |
 
 ## Runtime: this engine is browser/worker-only, by design and by necessity
 
@@ -104,3 +105,10 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
   gained the 9-argument `drawImage` overload (source-rectangle-to-destination-rectangle), the one canvas
   capability no prior operation in this engine needed. See `src/operations/crop/README.md` for the full
   contract.
+- 0.7.0 — `image.favicon@1` added (TASK-007F): a new, small operation that center-crops a source image to a
+  square (reusing the shared `decodeAndCheckSource`/`encodeCanvas`/`deriveOutputFileName`/`computeSizeChange`
+  lib code unchanged) and scales it to one of six common favicon sizes, always encoding PNG. No new shared
+  code was needed — the crop-to-square-then-scale step is entirely local to this operation's own
+  `canvas-pipeline.ts`, reusing the same 9-argument `drawImage` overload `image.crop@1` already added to
+  `browser-globals.d.ts` rather than needing another one. See `src/operations/favicon/README.md` for the
+  full contract.

@@ -185,6 +185,19 @@ describe('search relevance over the generated index', () => {
     ['pixel crop tool', 'image-crop'],
     ['free image crop tool', 'image-crop'],
     ['browser image cropper', 'image-crop'],
+    ['Favicon Generator', 'favicon-generator'],
+    ['favicon generator', 'favicon-generator'],
+    ['generate favicon', 'favicon-generator'],
+    ['favicon maker', 'favicon-generator'],
+    ['website favicon generator', 'favicon-generator'],
+    ['favicon from image', 'favicon-generator'],
+    ['png favicon generator', 'favicon-generator'],
+    ['create favicon online', 'favicon-generator'],
+    ['favicon sizes', 'favicon-generator'],
+    ['website icon generator', 'favicon-generator'],
+    ['convert image to favicon', 'favicon-generator'],
+    ['browser favicon tool', 'favicon-generator'],
+    ['favicon for website', 'favicon-generator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

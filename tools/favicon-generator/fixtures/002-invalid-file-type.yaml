@@ -1,0 +1,11 @@
+id: 002-invalid-file-type
+preset: image/favicon
+source:
+  type: synthetic
+  citation: "not-an-image.txt (fixtures/files/), copied from image.favicon@1's own fixtures: a plain text file has no JPG/PNG/WebP signature and must be rejected before any attempt to decode it"
+input:
+  file: { name: not-an-image.txt, bytes: { path: not-an-image.txt } }
+  size: "32"
+expectedError:
+  code: IMAGE_INVALID_FILE_TYPE
+  details: { name: not-an-image.txt }

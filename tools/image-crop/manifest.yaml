@@ -4,8 +4,9 @@ id: image-crop
 slug: image-crop
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Favicon Generator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: crop a JPG, PNG or WebP image to an exact pixel rectangle, entirely in the browser." }
 name: Image Crop
 shortName: Crop
@@ -24,7 +25,7 @@ seo:
   primaryKeyword: image crop
   secondaryKeywords: [crop image online, image cropper, crop jpg, crop png]
 graph:
-  related: [image-resize, image-compress, image-format-converter, image-metadata-remover, image-watermark]
+  related: [image-resize, image-compress, image-format-converter, image-metadata-remover, image-watermark, favicon-generator]
 quality:
   verifiedAgainst:
     - { citation: "engines/image image.crop@1 fixtures 001-004", locator: "engines/image/src/operations/crop/fixtures" }

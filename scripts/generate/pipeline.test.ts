@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds twenty-two tools, twenty-two presets and the six visible categories', () => {
+  it('builds twenty-three tools, twenty-three presets and the six visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -48,6 +48,7 @@ describe('registry pipeline — valid repository', () => {
       'concrete-quantity-calculator',
       'container-loading-calculator',
       'excavation-calculator',
+      'favicon-generator',
       'gst-calculator',
       'image-compress',
       'image-crop',
@@ -65,7 +66,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(22);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(23);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
@@ -365,7 +366,7 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // media has six tools; logistics and construction have four each; business and developer have three
+    // media has seven tools; logistics and construction have four each; business and developer have three
     // each; pdf has two. Visible categories are ordered by taxonomy/categories.yaml's own `order`.
     expect(visibleAt(1)).toEqual([
       'construction',
@@ -387,7 +388,8 @@ describe('category visibility threshold', () => {
     expect(visibleAt(4)).toEqual(['construction', 'logistics', 'media']);
     expect(visibleAt(5)).toEqual(['media']);
     expect(visibleAt(6)).toEqual(['media']);
-    expect(visibleAt(7)).toEqual([]);
+    expect(visibleAt(7)).toEqual(['media']);
+    expect(visibleAt(8)).toEqual([]);
   });
 });
 

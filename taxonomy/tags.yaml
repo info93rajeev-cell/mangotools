@@ -19,6 +19,7 @@ tags:
   - { id: metadata, label: Metadata }
   - { id: watermark, label: Watermark }
   - { id: crop, label: Crop }
+  - { id: favicon, label: Favicon }
   - { id: concrete, label: Concrete }
   - { id: construction, label: Construction }
   - { id: excavation, label: Excavation }

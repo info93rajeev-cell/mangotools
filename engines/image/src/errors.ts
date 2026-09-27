@@ -34,4 +34,15 @@ export const messages: Readonly<Record<string, string>> = {
   IMAGE_CROP_OUT_OF_BOUNDS:
     'The crop rectangle extends outside the image, which is {width}×{height} pixels.',
   IMAGE_CROP_FAILED: 'The image could not be cropped. Please try again with a different image.',
+  IMAGE_FAVICON_FAILED:
+    'The favicon could not be generated. Please try again with a different image.',
+  IMAGE_FAVICON_CROPPED_TO_SQUARE:
+    'Your image is not square, so it was center-cropped to a square before resizing.',
+  IMAGE_FAVICON_SOURCE_TOO_SMALL:
+    'This image is smaller than the selected favicon size, so it may look blurry.',
+  IMAGE_FAVICON_SMALL_SIZE_DETAIL_LOSS: 'Complex images may lose detail at 16×16 or 32×32 pixels.',
+  IMAGE_FAVICON_ENCODER_SIZE_VARIES:
+    'Different browsers may produce slightly different file sizes when encoding PNG images.',
+  IMAGE_FAVICON_NOT_LOGO_TOOL:
+    'This tool creates favicon image files from your image. It is not a logo design tool.',
 };

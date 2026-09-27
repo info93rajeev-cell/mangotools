@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: favicon-generator
+slug: favicon-generator
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: generate a square PNG favicon from a JPG, PNG or WebP image, entirely in the browser." }
+name: Favicon Generator
+shortName: Favicon
+summary: Free browser favicon generator. Create a square PNG website icon from an image, right in your browser. No sign-up, no watermark, no upload.
+archetype: D
+preset: image/favicon
+taxonomy:
+  category: media
+  tags: [images, favicon]
+  synonyms: [generate favicon, favicon maker, website favicon generator, favicon from image, png favicon generator, create favicon online, favicon sizes, website icon generator, convert image to favicon, browser favicon tool, favicon for website]
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: "Favicon Generator – Create a Website Icon Free"
+  description: "Free browser-based favicon generator. Create a square PNG website icon from a JPG, PNG or WebP image. No sign-up, no watermark, nothing is uploaded."
+  primaryKeyword: favicon generator
+  secondaryKeywords: [generate favicon, favicon maker, favicon from image, png favicon generator]
+graph:
+  related: [image-crop, image-resize, image-format-converter, image-compress, image-metadata-remover]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.favicon@1 fixtures 001-002", locator: "engines/image/src/operations/favicon/fixtures" }
+  lastVerified: 2026-09-27
