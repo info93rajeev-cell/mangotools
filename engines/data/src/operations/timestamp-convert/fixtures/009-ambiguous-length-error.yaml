@@ -1,0 +1,9 @@
+id: 009-ambiguous-length-error
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+input:
+  text: '12345678901'
+expectedError:
+  code: DATA_TIMESTAMP_AMBIGUOUS_LENGTH
+  path: text
+  details: { digits: 11 }

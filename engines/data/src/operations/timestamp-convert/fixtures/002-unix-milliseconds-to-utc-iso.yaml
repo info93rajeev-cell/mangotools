@@ -1,0 +1,10 @@
+id: 002-unix-milliseconds-to-utc-iso
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+input:
+  text: '1700000000123'
+expected:
+  isoString: '2023-11-14T22:13:20.123Z'
+  unixSeconds: 1700000000
+  unixMilliseconds: 1700000000123
+  detectedUnit: milliseconds

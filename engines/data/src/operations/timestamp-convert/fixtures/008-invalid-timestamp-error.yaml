@@ -1,0 +1,8 @@
+id: 008-invalid-timestamp-error
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+input:
+  text: 'not-a-timestamp'
+expectedError:
+  code: DATA_TIMESTAMP_INVALID
+  path: text

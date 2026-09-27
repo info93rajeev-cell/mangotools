@@ -356,6 +356,55 @@ test.describe('JSON to CSV', () => {
   });
 });
 
+test.describe('Timestamp Converter', () => {
+  test('converts the sample timestamp to a UTC ISO date and links to JSON Formatter', async ({
+    page,
+  }) => {
+    await openTool(page, 'timestamp-converter');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(outputArea(page, 'timestamp-converter')).toHaveValue('2023-11-14T22:13:20.000Z');
+    await expect(island(page, 'timestamp-converter')).toContainText('Unix seconds');
+    await expect(
+      page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),
+    ).toBeVisible();
+  });
+
+  test('converts a date to a Unix timestamp, interpreted as UTC', async ({ page }) => {
+    await openTool(page, 'timestamp-converter');
+    await island(page, 'timestamp-converter')
+      .getByText('Date → Timestamp', { exact: true })
+      .click();
+    await island(page, 'timestamp-converter').getByText('UTC', { exact: true }).click();
+    await inputArea(page, 'timestamp-converter').fill('2023-11-14T22:13:20');
+    await expect(outputArea(page, 'timestamp-converter')).toHaveValue('1700000000');
+  });
+
+  test('shows a clear error for an ambiguous-length timestamp', async ({ page }) => {
+    await openTool(page, 'timestamp-converter');
+    await inputArea(page, 'timestamp-converter').fill('12345678901');
+    await expect(island(page, 'timestamp-converter')).toHaveAttribute('data-phase', 'error');
+    await expect(
+      page.getByText(
+        'A 11-digit number could be seconds or milliseconds. Choose a unit to continue.',
+      ),
+    ).toBeVisible();
+  });
+
+  test('shows a clear error for an invalid date', async ({ page }) => {
+    await openTool(page, 'timestamp-converter');
+    await island(page, 'timestamp-converter')
+      .getByText('Date → Timestamp', { exact: true })
+      .click();
+    await inputArea(page, 'timestamp-converter').fill('2023-02-30');
+    await expect(island(page, 'timestamp-converter')).toHaveAttribute('data-phase', 'error');
+    await expect(
+      page.getByText(
+        'That date or time does not exist, such as a day, month or time out of range.',
+      ),
+    ).toBeVisible();
+  });
+});
+
 test.describe('Swap and copy', () => {
   test('Base64 swap decodes the encoded text back', async ({ page }) => {
     await openTool(page, 'base64-encode-decode');

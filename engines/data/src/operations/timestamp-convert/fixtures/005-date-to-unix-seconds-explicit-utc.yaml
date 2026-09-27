@@ -1,0 +1,12 @@
+id: 005-date-to-unix-seconds-explicit-utc
+operation: data.timestamp.convert@1
+source: { type: standard, citation: "RFC 3339 — a trailing Z denotes UTC" }
+params: { direction: to-timestamp }
+input:
+  text: '2023-11-14T22:13:20Z'
+expected:
+  text: '1700000000'
+  unixSeconds: 1700000000
+  unixMilliseconds: 1700000000000
+  isoString: '2023-11-14T22:13:20.000Z'
+  interpretedBasis: utc

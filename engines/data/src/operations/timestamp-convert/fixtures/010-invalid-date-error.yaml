@@ -1,0 +1,9 @@
+id: 010-invalid-date-error
+operation: data.timestamp.convert@1
+source: { type: synthetic }
+params: { direction: to-timestamp, basis: utc }
+input:
+  text: '2023-02-30'
+expectedError:
+  code: DATA_TIMESTAMP_INVALID_DATE
+  path: text

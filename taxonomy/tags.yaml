@@ -5,6 +5,8 @@ tags:
   - { id: encoding, label: Encoding }
   - { id: url, label: URL }
   - { id: data-format, label: Data formats }
+  - { id: timestamp, label: Timestamp }
+  - { id: date-format, label: Date and time }
   - { id: tax, label: Tax }
   - { id: invoicing, label: Invoicing }
   - { id: pricing, label: Pricing }
