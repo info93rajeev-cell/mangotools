@@ -18,6 +18,19 @@ export function readPositive(raw: Raw, path: string, maxDecimals: number): Resul
   return ok(parsed.value);
 }
 
+/** A required measurement that may be zero, with at most `maxDecimals` decimal places. */
+export function readNonNegative(raw: Raw, path: string, maxDecimals: number): Result<string> {
+  if (raw === undefined || text(raw).trim() === '') return err('CIVIL_MISSING_INPUT', { path });
+  const parsed = parseDecimal(text(raw), { maxDecimals });
+  if (!parsed.ok) {
+    return parsed.code === 'TOO_MANY_DECIMALS'
+      ? err('CIVIL_TOO_MANY_DECIMALS', { path, details: { max: maxDecimals } })
+      : err('CIVIL_INVALID_NUMBER', { path });
+  }
+  if (compare(parsed.value, '0') < 0) return err('CIVIL_NOT_NEGATIVE', { path });
+  return ok(parsed.value);
+}
+
 /** A required whole number from 1 to `max` ("12" and "12.0" are both 12). */
 export function readCount(raw: Raw, path: string, max: string): Result<string> {
   if (raw === undefined || text(raw).trim() === '') return err('CIVIL_MISSING_INPUT', { path });

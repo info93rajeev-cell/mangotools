@@ -28,4 +28,14 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not replace a licensed engineer, architect, contractor, or professional quantity surveyor.',
   CIVIL_EXCAVATION_SCOPE_LIMIT:
     'This tool does not calculate slope excavation, stepped excavation, dewatering, shoring, disposal cost, truck trips, or backfill compaction.',
+  CIVIL_NOT_NEGATIVE: 'This cannot be negative.',
+  CIVIL_OPENING_EXCEEDS_WALL_AREA: 'The opening area cannot be larger than the wall area.',
+  CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION:
+    'Verify brick sizes, wall thickness, openings, mortar joints, and wastage before purchase or construction.',
+  CIVIL_BRICKWORK_CONDITIONS_VARY:
+    'Brick sizes, mortar thickness, wall bonds, site cutting, breakage, and measurement rules may vary.',
+  CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON:
+    'This tool does not replace a licensed engineer, architect, contractor, mason, or professional quantity surveyor.',
+  CIVIL_BRICKWORK_SCOPE_LIMIT:
+    'This tool does not calculate structural design, reinforcement, labour cost, cement/sand mortar breakup, BOQ, or final billing.',
 };

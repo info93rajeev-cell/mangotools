@@ -1,0 +1,8 @@
+id: 004-wall-unit-cm
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "500 x 300 cm wall = 5 x 3 m = 15 m2; 23 cm thickness = 0.23 m; same as fixture 001 in a different wall unit" }
+input: { unit: cm, wallLength: "500", wallHeight: "300", wallThickness: "23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expected: { grossWallAreaM2: "15.000000", netWallAreaM2: "15.000000", brickworkVolumeM3: "3.450000", effectiveBrickVolumeM3: "0.002448" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

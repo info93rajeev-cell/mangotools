@@ -1,0 +1,5 @@
+id: 018-not-a-number
+operation: civil.brickwork.quantity@1
+source: { type: regression }
+input: { unit: m, wallLength: "5", wallHeight: "abc", wallThickness: "0.23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expectedError: { code: CIVIL_INVALID_NUMBER, path: wallHeight }

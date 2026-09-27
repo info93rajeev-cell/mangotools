@@ -1,0 +1,35 @@
+id: 001-standard-wall
+preset: civil/brickwork-quantity
+source:
+  type: hand-verified
+  citation: "5 x 3 m wall = 15 m2; x1 wall, no opening; x0.23 m thick = 3.45 m3; standard 230x110x75 mm brick + 10 mm mortar on each dimension = 240x120x85 mm = 0.002448 m3; 3.45 / 0.002448 = 1409.3137254901961 bricks; 3.45 x 35.3146667 = 121.835600115 ft3; 15 x 10.7639104 = 161.4586560 ft2"
+input:
+  unit: m
+  wallLength: "5"
+  wallHeight: "3"
+  wallThickness: "0.23"
+  quantity: "1"
+  brickUnit: mm
+  brickLength: "230"
+  brickWidth: "110"
+  brickHeight: "75"
+  mortarJointMm: "10"
+  openingArea: "0"
+  wastagePercent: "0"
+expected:
+  unit: m
+  brickUnit: mm
+  quantity: "1"
+  wastagePercent: "0"
+  mortarJointMm: "10"
+  grossWallAreaM2: "15.000000"
+  openingDeductionAreaM2: "0.000000"
+  netWallAreaM2: "15.000000"
+  netWallAreaFt2: "161.458656"
+  brickworkVolumeM3: "3.450000"
+  brickworkVolumeFt3: "121.835600"
+  effectiveBrickVolumeM3: "0.002448"
+  estimatedBrickCount: "1409.313725"
+  wastageBricks: "0.000000"
+  totalBricks: "1409.313725"
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

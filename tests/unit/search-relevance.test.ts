@@ -122,6 +122,14 @@ describe('search relevance over the generated index', () => {
     ['earthwork quantity calculator', 'excavation-calculator'],
     ['civil engineering excavation calculator', 'excavation-calculator'],
     ['quantity survey excavation calculator', 'excavation-calculator'],
+    ['Brickwork Calculator', 'brickwork-calculator'],
+    ['brickwork calculator', 'brickwork-calculator'],
+    ['brick wall calculator', 'brickwork-calculator'],
+    ['brick quantity calculator', 'brickwork-calculator'],
+    ['bricks per square metre calculator', 'brickwork-calculator'],
+    ['brick masonry calculator', 'brickwork-calculator'],
+    ['cement mortar brickwork calculator', 'brickwork-calculator'],
+    ['quantity survey brickwork calculator', 'brickwork-calculator'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

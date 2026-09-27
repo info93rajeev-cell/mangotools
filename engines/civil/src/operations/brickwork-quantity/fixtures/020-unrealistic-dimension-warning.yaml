@@ -1,0 +1,8 @@
+id: 020-unrealistic-dimension-warning
+operation: civil.brickwork.quantity@1
+params: { decimals: 6 }
+source: { type: hand-verified, citation: "150 m long wall, past the 100 m soft sanity ceiling; still calculated, flagged with a warning" }
+input: { unit: m, wallLength: "150", wallHeight: "3", wallThickness: "0.23", quantity: "1", brickUnit: mm, brickLength: "230", brickWidth: "110", brickHeight: "75", mortarJointMm: "10", openingArea: "0", wastagePercent: "0" }
+expected: { grossWallAreaM2: "450.000000" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT, CIVIL_DIMENSION_UNREALISTIC]
