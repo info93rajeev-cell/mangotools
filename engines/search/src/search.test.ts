@@ -34,3 +34,41 @@ describe('search', () => {
     expect(search('   ')).toEqual([]);
   });
 });
+
+describe('search — reversed converter pairs', () => {
+  const converters = createSearcher(
+    buildIndex([
+      doc(
+        'csv-to-json',
+        'CSV to JSON',
+        'convert csv to json · csv json converter · csv to json online',
+      ),
+      doc(
+        'json-to-csv',
+        'JSON to CSV',
+        'convert json to csv · json csv converter · json to csv online',
+      ),
+    ]),
+  );
+
+  it('"csv to json" ranks CSV to JSON first', () => {
+    expect(converters('csv to json')[0]?.id).toBe('csv-to-json');
+  });
+
+  it('"convert csv to json" ranks CSV to JSON first', () => {
+    expect(converters('convert csv to json')[0]?.id).toBe('csv-to-json');
+  });
+
+  it('"json to csv" ranks JSON to CSV first', () => {
+    expect(converters('json to csv')[0]?.id).toBe('json-to-csv');
+  });
+
+  it('"convert json to csv" ranks JSON to CSV first', () => {
+    expect(converters('convert json to csv')[0]?.id).toBe('json-to-csv');
+  });
+
+  it('an ambiguous "X Y converter" phrase still favors the tool that has it verbatim', () => {
+    expect(converters('csv json converter')[0]?.id).toBe('csv-to-json');
+    expect(converters('json csv converter')[0]?.id).toBe('json-to-csv');
+  });
+});

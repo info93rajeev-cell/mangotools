@@ -13,10 +13,14 @@ export interface SearchDocument {
 
 export const FIELDS = ['name', 'shortName', 'synonyms', 'summary', 'categoryName', 'tags'] as const;
 
+/**
+ * `name`/`shortName`/`synonyms`/`summary` are also stored (not just indexed) so the phrase-aware
+ * ranking boost (see `phrase-boost.ts`) can re-read a candidate's own text at query time.
+ */
 export const INDEX_OPTIONS: Options<SearchDocument> = {
   idField: 'id',
   fields: [...FIELDS],
-  storeFields: ['id'],
+  storeFields: ['id', 'name', 'shortName', 'synonyms', 'summary'],
 };
 
 export const SEARCH_OPTIONS: SearchOptions = {
