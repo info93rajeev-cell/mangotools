@@ -1,0 +1,7 @@
+id: 004-wall-unit-mm
+operation: civil.plaster.quantity@1
+source: { type: hand-verified, citation: "5000 x 3000 mm wall = 5 x 3 m = 15 m2; 12 mm thick = 0.012 m; same as fixture 001 in a different unit" }
+input: { surfaceType: wall, unit: mm, length: "5000", secondDimension: "3000", plasterThickness: "12", quantity: "1", openingArea: "0", wastagePercent: "0" }
+expected: { grossAreaM2: "15.000", netAreaM2: "15.000", plasterVolumeM3: "0.180" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

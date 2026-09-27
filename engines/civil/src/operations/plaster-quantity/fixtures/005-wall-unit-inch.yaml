@@ -1,0 +1,7 @@
+id: 005-wall-unit-inch
+operation: civil.plaster.quantity@1
+source: { type: hand-verified, citation: "120 x 96 in wall = 3.048 x 2.4384 m = 7.4322432 m2; 0.5 in (0.0127 m) thick = 0.09438948864 m3" }
+input: { surfaceType: wall, unit: in, length: "120", secondDimension: "96", plasterThickness: "0.5", quantity: "1", openingArea: "0", wastagePercent: "0" }
+expected: { grossAreaM2: "7.432", netAreaM2: "7.432", plasterVolumeM3: "0.094" }
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

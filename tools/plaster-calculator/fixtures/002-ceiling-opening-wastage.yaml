@@ -1,0 +1,23 @@
+id: 002-ceiling-opening-wastage
+preset: civil/plaster-quantity
+source:
+  type: hand-verified
+  citation: "6 x 4 m ceiling = 24 m2 gross per surface; x2 surfaces = 48 m2; 1.5 m2 opening per surface x2 = 3 m2 deducted; net 45 m2; x0.015 m (15 mm) thick = 0.675 m3; 10% wastage = 0.0675 m3; total 0.7425 m3"
+input:
+  surfaceType: ceiling
+  unit: m
+  length: "6"
+  secondDimension: "4"
+  plasterThickness: "0.015"
+  quantity: "2"
+  openingArea: "1.5"
+  wastagePercent: "10"
+expected:
+  grossAreaM2: "48.000"
+  openingDeductionAreaM2: "3.000"
+  netAreaM2: "45.000"
+  plasterVolumeM3: "0.675"
+  wastageVolumeM3: "0.068"
+  totalVolumeM3: "0.743"
+match: subset
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

@@ -1,0 +1,5 @@
+id: 012-quantity-not-whole
+operation: civil.plaster.quantity@1
+source: { type: regression }
+input: { surfaceType: wall, unit: m, length: "5", secondDimension: "3", plasterThickness: "0.012", quantity: "1.5", openingArea: "0", wastagePercent: "0" }
+expectedError: { code: CIVIL_QUANTITY_NOT_WHOLE, path: quantity }

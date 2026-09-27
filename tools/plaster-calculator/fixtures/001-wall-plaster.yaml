@@ -1,0 +1,29 @@
+id: 001-wall-plaster
+preset: civil/plaster-quantity
+source:
+  type: hand-verified
+  citation: "5 x 3 m wall = 15 m2; x1 surface, no opening; x0.012 m (12 mm) thick = 0.18 m3; 0.18 x 35.3146667 = 6.356640006 ft3; 15 x 10.7639104 = 161.4586560 ft2"
+input:
+  surfaceType: wall
+  unit: m
+  length: "5"
+  secondDimension: "3"
+  plasterThickness: "0.012"
+  quantity: "1"
+  openingArea: "0"
+  wastagePercent: "0"
+expected:
+  surfaceType: wall
+  unit: m
+  quantity: "1"
+  plasterThickness: "0.012"
+  wastagePercent: "0"
+  grossAreaM2: "15.000"
+  openingDeductionAreaM2: "0.000"
+  netAreaM2: "15.000"
+  netAreaFt2: "161.459"
+  plasterVolumeM3: "0.180"
+  wastageVolumeM3: "0.000"
+  totalVolumeM3: "0.180"
+  totalVolumeFt3: "6.357"
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]
