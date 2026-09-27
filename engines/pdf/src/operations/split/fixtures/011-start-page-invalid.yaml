@@ -1,0 +1,11 @@
+id: 011-start-page-invalid
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/); a start page of 0 is rejected before any attempt to parse the file"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 0
+  endPage: 1
+expectedError:
+  code: PDF_SPLIT_START_PAGE_INVALID

@@ -1,0 +1,16 @@
+id: 004-full-range
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/); extracts every page, 1 through 5 — a full-range extraction must still be allowed, not rejected as pointless"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 1
+  endPage: 5
+expected:
+  fileName: five-page-pages-1-5.pdf
+  originalPageCount: 5
+  startPage: 1
+  endPage: 5
+  extractedPageCount: 5
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]

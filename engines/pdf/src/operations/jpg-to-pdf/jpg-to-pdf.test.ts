@@ -5,7 +5,7 @@ import { createTestContext, executeOperation } from '@mangotools/core';
 import { PDFDocument } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
 import { messages } from '../../errors.ts';
-import { DEFAULT_OUTPUT_FILE_NAME, sanitizeOutputFileName } from './file-name.ts';
+import { sanitizeOutputFileName } from '../../lib/file-name.ts';
 import { MAX_FILE_BYTES, MAX_FILE_COUNT, MAX_TOTAL_BYTES } from './limits.ts';
 import { pdfJpgToPdf } from './operation.ts';
 import { hasJpegSignature } from './signature.ts';
@@ -13,6 +13,7 @@ import { hasJpegSignature } from './signature.ts';
 const filesDir = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'files');
 const smallSquare = readFileSync(join(filesDir, 'small-square.jpg'));
 const wide = readFileSync(join(filesDir, 'wide.jpg'));
+const DEFAULT_OUTPUT_FILE_NAME = 'images.pdf';
 
 const run = (input: Record<string, unknown>, params: Record<string, unknown> = {}) =>
   executeOperation(pdfJpgToPdf, input, params, createTestContext());
@@ -24,29 +25,33 @@ function withJpegSignature(bytes: Uint8Array): Uint8Array {
 
 describe('sanitizeOutputFileName', () => {
   it('uses the default name when nothing usable is given', () => {
-    expect(sanitizeOutputFileName(undefined)).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('   ')).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName(undefined, DEFAULT_OUTPUT_FILE_NAME)).toBe(
+      DEFAULT_OUTPUT_FILE_NAME,
+    );
+    expect(sanitizeOutputFileName('', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('   ', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
   });
 
   it('trims spaces and adds the extension', () => {
-    expect(sanitizeOutputFileName('  My Photos  ')).toBe('My Photos.pdf');
+    expect(sanitizeOutputFileName('  My Photos  ', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Photos.pdf');
   });
 
   it('keeps an existing .pdf extension, normalized to lower case', () => {
-    expect(sanitizeOutputFileName('My Photos.pdf')).toBe('My Photos.pdf');
-    expect(sanitizeOutputFileName('My Photos.PDF')).toBe('My Photos.pdf');
+    expect(sanitizeOutputFileName('My Photos.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Photos.pdf');
+    expect(sanitizeOutputFileName('My Photos.PDF', DEFAULT_OUTPUT_FILE_NAME)).toBe('My Photos.pdf');
   });
 
   it('removes unsafe characters', () => {
-    expect(sanitizeOutputFileName('a/b\\c:d*e?f"g<h>i|j.pdf')).toBe('abcdefghij.pdf');
+    expect(sanitizeOutputFileName('a/b\\c:d*e?f"g<h>i|j.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe(
+      'abcdefghij.pdf',
+    );
   });
 
   it('falls back to the default name for unsafe-only or placeholder input', () => {
-    expect(sanitizeOutputFileName('////')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('.')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('..')).toBe(DEFAULT_OUTPUT_FILE_NAME);
-    expect(sanitizeOutputFileName('.pdf')).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('////', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('.', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('..', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
+    expect(sanitizeOutputFileName('.pdf', DEFAULT_OUTPUT_FILE_NAME)).toBe(DEFAULT_OUTPUT_FILE_NAME);
   });
 });
 

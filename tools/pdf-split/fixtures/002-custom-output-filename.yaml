@@ -1,0 +1,13 @@
+id: 002-custom-output-filename
+preset: pdf/split
+source:
+  type: synthetic
+  citation: "Same five-page.pdf as 001-middle-range; checks that a custom output name is normalized through the tool preset"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 2
+  endPage: 4
+  outputFileName: "  My Pages<>.PDF  "
+expected:
+  fileName: My Pages.pdf
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]

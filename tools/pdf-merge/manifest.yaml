@@ -4,8 +4,9 @@ id: pdf-merge
 slug: pdf-merge
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new PDF Split." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: merge multiple PDF files into one, entirely in the browser." }
 name: PDF Merge
 shortName: PDF Merge
@@ -16,6 +17,8 @@ taxonomy:
   category: pdf
   tags: [pdf, documents]
   synonyms: [merge pdf, combine pdf, pdf joiner, combine pdf files, merge pdf online, browser pdf merger, no upload pdf merge]
+graph:
+  related: [pdf-split, jpg-to-pdf]
 capabilities: { export: [pdf] }
 privacy: { dataClass: public, network: none }
 disclaimer: professional

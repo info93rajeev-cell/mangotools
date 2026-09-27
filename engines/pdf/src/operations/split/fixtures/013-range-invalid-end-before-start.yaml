@@ -1,0 +1,11 @@
+id: 013-range-invalid-end-before-start
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (fixtures/files/); an end page before the start page is rejected before any attempt to parse the file"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 4
+  endPage: 2
+expectedError:
+  code: PDF_SPLIT_RANGE_INVALID

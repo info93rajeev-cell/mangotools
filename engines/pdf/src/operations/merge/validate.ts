@@ -1,4 +1,5 @@
 import { err, ok, type Result } from '@mangotools/core';
+import { hasPdfSignature } from '../../lib/signature.ts';
 import {
   MAX_FILE_BYTES,
   MAX_FILE_COUNT,
@@ -7,7 +8,6 @@ import {
   MAX_TOTAL_MB,
 } from './limits.ts';
 import type { PdfFile } from './schema.ts';
-import { hasPdfSignature } from './signature.ts';
 
 /**
  * Checks file count, then each file's size and type, then the combined total — all before any

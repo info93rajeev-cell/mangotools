@@ -46,6 +46,15 @@ export const FILE_TOOLS = {
     downloadCta: 'Download PDF',
     result: '2',
   },
+  'pdf-split': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/pdf-split/fixtures/files/five-page.pdf')],
+    downloadCta: 'Download split PDF',
+    // Defaults are startPage=1, endPage=1, always valid for any non-empty PDF (unlike Image Crop's own
+    // real-world default, which needed a test-only override to fit the tiny shared sample.jpg fixture).
+    // The primary output is the output file name, derived from the original name plus the page range.
+    result: 'five-page-pages-1-1.pdf',
+  },
   'image-resize': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],

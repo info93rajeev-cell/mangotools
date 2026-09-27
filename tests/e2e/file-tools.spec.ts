@@ -112,15 +112,102 @@ test.describe('JPG to PDF', () => {
   });
 });
 
+test.describe('PDF Split', () => {
+  const fileInput = (page: Page) => island(page, 'pdf-split').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/pdf-split/fixtures/files/five-page.pdf');
+
+  test('selecting a PDF shows the default start and end page', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(page.getByLabel('Start page')).toHaveValue('1');
+    await expect(page.getByLabel('End page')).toHaveValue('1');
+  });
+
+  test('extracts the first page and downloads it with the default name', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('five-page-pages-1-1.pdf');
+    await expect(primaryResult(page)).toHaveText('five-page-pages-1-1.pdf');
+    await expect(page.locator('[data-output="extractedPageCount"] dd')).toHaveText('1');
+    await expect(page.locator('[data-output="originalPageCount"] dd')).toHaveText('5');
+  });
+
+  test('extracts a middle page range', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Start page').fill('2');
+    await page.getByLabel('End page').fill('4');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('five-page-pages-2-4.pdf');
+    await expect(page.locator('[data-output="extractedPageCount"] dd')).toHaveText('3');
+    await expect(page.locator('[data-output="startPage"] dd')).toHaveText('2');
+    await expect(page.locator('[data-output="endPage"] dd')).toHaveText('4');
+  });
+
+  test('shows a specific error when the end page is before the start page', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Start page').fill('4');
+    await page.getByLabel('End page').fill('2');
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    await expect(
+      page.getByText('The end page must be the same as or after the start page.'),
+    ).toBeVisible();
+  });
+
+  test('shows a specific error when the page range exceeds the page count', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Start page').fill('3');
+    await page.getByLabel('End page').fill('10');
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    await expect(
+      page.getByText('The selected page range extends beyond this PDF, which has 5 pages.'),
+    ).toBeVisible();
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Start page').fill('2');
+    await page.getByLabel('End page').fill('4');
+    await page.getByLabel('Output file name').fill('  My Pages<>.PDF  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Pages.pdf');
+  });
+
+  test('shows a specific error for a non-PDF file', async ({ page }) => {
+    await openTool(page, 'pdf-split');
+    const notPdf = join(process.cwd(), 'tools/pdf-split/manifest.yaml');
+    await fileInput(page).setInputFiles([notPdf]);
+    await page.getByRole('button', { name: 'Download split PDF' }).click();
+    await expect(page.getByText('is not a PDF file.')).toBeVisible();
+  });
+});
+
 test.describe('PDF & Documents category', () => {
-  test('shows exactly two tools and no future PDF tools', async ({ page }) => {
+  test('shows exactly three tools and no future PDF tools', async ({ page }) => {
     await gotoReady(page, '/pdf');
     await expect(page.getByRole('heading', { name: 'PDF & Documents', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All PDF & Documents tools' });
     await expect(allTools.getByRole('link', { name: 'PDF Merge' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'JPG to PDF' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(2);
-    for (const future of ['PDF Split', 'PDF Compress', 'Metadata Remover', 'PDF Watermark']) {
+    await expect(allTools.getByRole('link', { name: 'PDF Split' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(3);
+    for (const future of [
+      'PDF Compress',
+      'PDF to JPG',
+      'PDF to PNG',
+      'PDF Rotate',
+      'Metadata Remover',
+    ]) {
       await expect(page.getByText(future, { exact: true })).toHaveCount(0);
     }
   });

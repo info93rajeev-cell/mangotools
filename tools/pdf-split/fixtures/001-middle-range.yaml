@@ -1,0 +1,14 @@
+id: 001-middle-range
+preset: pdf/split
+source:
+  type: synthetic
+  citation: "five-page.pdf (5 pages), the same tiny generated PDF used by the engine's own fixtures"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 2
+  endPage: 4
+expected:
+  fileName: five-page-pages-2-4.pdf
+  originalPageCount: 5
+  extractedPageCount: 3
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]

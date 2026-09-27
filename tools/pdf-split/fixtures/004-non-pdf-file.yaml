@@ -1,0 +1,12 @@
+id: 004-non-pdf-file
+preset: pdf/split
+source:
+  type: synthetic
+  citation: "not-a-pdf.pdf (fixtures/files/) is a plain text file with a .pdf name; it has no %PDF- signature, so it must be rejected before any attempt to parse it"
+input:
+  file: { name: not-a-pdf.pdf, bytes: { path: not-a-pdf.pdf } }
+  startPage: 1
+  endPage: 1
+expectedError:
+  code: PDF_SPLIT_INVALID_FILE_TYPE
+  details: { name: not-a-pdf.pdf }

@@ -9,6 +9,7 @@ network, no server upload — selecting files, drag-and-drop, and downloading th
 |---|---|
 | `pdf.merge@1` | Combines multiple PDF files into one, in the order given |
 | `pdf.jpgToPdf@1` | Combines one or more JPG images into a single PDF, one image per page, in order |
+| `pdf.split@1` | Extracts a page range from a single PDF into a new PDF |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/`, with binary test PDFs in a sibling `fixtures/files/` folder,
@@ -121,6 +122,14 @@ change": the merge algorithm, its limits, and every existing output value are un
 `warnings` array gained four always-on entries on success.
 
 ## Changelog
+- 0.3.0 — add (TASK-008B): `pdf.split@1`, extracting a page range from a single PDF into a new PDF. The
+  `sanitizeOutputFileName`/`hasPdfSignature` helpers, previously duplicated identically in `pdf.merge@1`
+  and `pdf.jpgToPdf@1`'s own operation folders, were extracted into a new shared `src/lib/` (mirroring
+  `engines/image`'s own `src/lib/` extraction pattern) now that `pdf.split@1` became the third operation
+  needing the same file-name logic and the second needing the same PDF-signature check — a pure move,
+  `sanitizeOutputFileName`'s default name now a parameter instead of a per-operation module constant,
+  verified against both existing operations' own tests with zero behavior change before `pdf.split@1` was
+  built on top. See `src/operations/split/README.md` for the full operation contract.
 - 0.2.0 — add (TASK-004C): `pdf.jpgToPdf@1`, combining one or more JPG images into a single PDF, one
   image per page sized to the image's own pixel dimensions. No change to `pdf.merge@1`.
 - 0.1.2 — fix (TASK-004B PR 2): `pdf.merge@1` output was not byte-deterministic, because `pdf-lib`

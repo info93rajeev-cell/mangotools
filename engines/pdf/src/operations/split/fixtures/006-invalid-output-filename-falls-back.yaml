@@ -1,0 +1,13 @@
+id: 006-invalid-output-filename-falls-back
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "Same five-page.pdf as 002-middle-range; an output name made only of unsafe characters normalizes to nothing, so it falls back to the default original-name-plus-range name"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 2
+  endPage: 4
+  outputFileName: "////"
+expected:
+  fileName: five-page-pages-2-4.pdf
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]

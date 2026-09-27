@@ -31,4 +31,24 @@ export const messages: Readonly<Record<string, string>> = {
   PDF_JPG_QUALITY_DEPENDS_ON_SOURCE:
     'Image quality and final PDF size depend on the source images.',
   PDF_JPG_AUTHORIZED_USE_ONLY: 'Do not use this tool for files you are not allowed to process.',
+  PDF_SPLIT_NO_FILE_SELECTED: 'Select a PDF file to split.',
+  PDF_SPLIT_INVALID_FILE_TYPE: '"{name}" is not a PDF file.',
+  PDF_SPLIT_FILE_TOO_LARGE: '"{name}" is larger than the {max} MB limit.',
+  PDF_SPLIT_START_PAGE_INVALID: 'Enter a start page of 1 or greater.',
+  PDF_SPLIT_END_PAGE_INVALID: 'Enter an end page of 1 or greater.',
+  PDF_SPLIT_RANGE_INVALID: 'The end page must be the same as or after the start page.',
+  PDF_SPLIT_ENCRYPTED_UNSUPPORTED: '"{name}" is password-protected and cannot be processed here.',
+  PDF_SPLIT_UNREADABLE: '"{name}" could not be read as a PDF. It may be corrupted or damaged.',
+  PDF_SPLIT_RANGE_EXCEEDS_PAGE_COUNT:
+    'The selected page range extends beyond this PDF, which has {totalPages} pages.',
+  PDF_SPLIT_FAILED:
+    'The PDF could not be split. Please try again with a different file or page range.',
+  PDF_SPLIT_VERIFY_OUTPUT:
+    'Verify the extracted PDF before sending, printing, filing, or publishing.',
+  PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED:
+    'Bookmarks, forms, annotations, signatures, attachments, layers, or advanced PDF features may not be preserved.',
+  PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL:
+    'Very large, encrypted, password-protected, or corrupted PDFs may fail in the browser.',
+  PDF_SPLIT_AUTHORIZED_USE_ONLY:
+    'Do not use this tool for documents you are not allowed to process.',
 };

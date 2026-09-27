@@ -1,0 +1,17 @@
+id: 001-first-page
+operation: pdf.split@1
+source:
+  type: synthetic
+  citation: "five-page.pdf (5 blank 100x100 pages, generated with pdf-lib itself for this fixture, fixtures/files/); extracts only page 1"
+input:
+  file: { name: five-page.pdf, bytes: { path: five-page.pdf } }
+  startPage: 1
+  endPage: 1
+expected:
+  fileName: five-page-pages-1-1.pdf
+  originalFileName: five-page.pdf
+  originalPageCount: 5
+  startPage: 1
+  endPage: 1
+  extractedPageCount: 1
+expectedWarnings: [PDF_SPLIT_VERIFY_OUTPUT, PDF_SPLIT_FEATURES_MAY_NOT_BE_PRESERVED, PDF_SPLIT_LARGE_OR_PROTECTED_MAY_FAIL, PDF_SPLIT_AUTHORIZED_USE_ONLY]
