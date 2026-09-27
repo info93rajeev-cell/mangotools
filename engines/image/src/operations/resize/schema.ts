@@ -1,13 +1,9 @@
 import { z } from 'zod';
+import type { ImageFile, ImageOutputFormat, ResolvedImageFormat } from '../../lib/formats.ts';
+import { imageFile, imageOutputFormat, resolvedImageFormat } from '../../lib/formats.ts';
 
-const imageFile = z.strictObject({
-  /** The original file name, used to derive the output name and to identify it in error details. */
-  name: z.string().min(1),
-  bytes: z.instanceof(Uint8Array),
-});
-
-export const imageOutputFormat = z.enum(['same', 'jpg', 'png', 'webp']);
-export const resolvedImageFormat = z.enum(['jpg', 'png', 'webp']);
+export type { ImageFile, ImageOutputFormat, ResolvedImageFormat };
+export { imageOutputFormat, resolvedImageFormat };
 
 export const imageResizeInput = z.strictObject({
   /** Optional so "no file selected" is a normal validation error, not a schema rejection. */
@@ -48,9 +44,6 @@ export const imageResizeOutput = z.strictObject({
   outputFormat: resolvedImageFormat,
 });
 
-export type ImageFile = z.infer<typeof imageFile>;
-export type ImageOutputFormat = z.infer<typeof imageOutputFormat>;
-export type ResolvedImageFormat = z.infer<typeof resolvedImageFormat>;
 export type ImageResizeInput = z.infer<typeof imageResizeInput>;
 export type ImageResizeParams = z.infer<typeof imageResizeParams>;
 export type ImageResizeOutput = z.infer<typeof imageResizeOutput>;

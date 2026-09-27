@@ -1,0 +1,14 @@
+id: 005-watermark-text-missing
+operation: image.watermark@1
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/): the real UI (packages/ui/src/archetypes/useFileTool.ts's extraInputValues) omits the text field entirely from the request when it is empty, rather than sending an empty string — text is optional at the schema level for exactly this reason, so a genuinely missing key must be treated the same as an empty one, not fall through to the generic INVALID_INPUT schema error"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_WATERMARK_TEXT_REQUIRED

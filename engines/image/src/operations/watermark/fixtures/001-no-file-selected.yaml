@@ -1,0 +1,14 @@
+id: 001-no-file-selected
+operation: image.watermark@1
+source:
+  type: synthetic
+  citation: "Mirrors image.resize@1 fixture 001-no-file-selected: a missing file must be a specific, typed error"
+input:
+  text: "Sample"
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

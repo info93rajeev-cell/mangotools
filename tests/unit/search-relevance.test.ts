@@ -161,6 +161,18 @@ describe('search relevance over the generated index', () => {
     ['remove metadata from jpg', 'image-metadata-remover'],
     ['remove metadata from png', 'image-metadata-remover'],
     ['privacy image tool', 'image-metadata-remover'],
+    ['Image Watermark', 'image-watermark'],
+    ['image watermark', 'image-watermark'],
+    ['add watermark to image', 'image-watermark'],
+    ['watermark image online', 'image-watermark'],
+    ['add text watermark to photo', 'image-watermark'],
+    ['photo watermark tool', 'image-watermark'],
+    ['watermark jpg', 'image-watermark'],
+    ['watermark png', 'image-watermark'],
+    ['watermark webp', 'image-watermark'],
+    ['add watermark to product image', 'image-watermark'],
+    ['free image watermark tool', 'image-watermark'],
+    ['browser image watermark', 'image-watermark'],
   ];
   for (const [query, expected] of cases) {
     it(`"${query}" → ${expected}`, () => expect(top(query)).toBe(expected));

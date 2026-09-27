@@ -4,14 +4,12 @@ import { deriveOutputFileName } from '../../lib/file-name.ts';
 import { MAX_SOURCE_MEGAPIXELS, MAX_SOURCE_PIXELS } from '../../lib/limits.ts';
 import { detectImageType, MIME_FOR_TYPE } from '../../lib/signature.ts';
 import { computeSizeChange } from '../../lib/size-change.ts';
-import { renderResized } from './canvas-pipeline.ts';
-import { computeOutputDimensions, type Dimensions, isUpscale } from './dimensions.ts';
-import { MAX_OUTPUT_MEGAPIXELS, MAX_OUTPUT_PIXELS } from './limits.ts';
+import { renderWatermarked } from './canvas-pipeline.ts';
 import {
   type ImageFile,
-  imageResizeInput,
-  imageResizeOutput,
-  imageResizeParams,
+  imageWatermarkInput,
+  imageWatermarkOutput,
+  imageWatermarkParams,
   type ResolvedImageFormat,
 } from './schema.ts';
 import { validateRequest } from './validate.ts';
@@ -27,7 +25,8 @@ function qualityFraction(quality: number | undefined): number | undefined {
 interface DecodedSource {
   bitmap: ImageBitmap;
   sourceType: ResolvedImageFormat;
-  dimensions: Dimensions;
+  width: number;
+  height: number;
 }
 
 /** Decodes `file` and checks its decoded pixel count against the source cap. */
@@ -40,79 +39,75 @@ async function decodeAndCheckSource(file: ImageFile): Promise<Result<DecodedSour
   } catch {
     return err('IMAGE_UNREADABLE', { details: { name: file.name } });
   }
-  const dimensions: Dimensions = { width: bitmap.width, height: bitmap.height };
-  if (dimensions.width * dimensions.height > MAX_SOURCE_PIXELS) {
+  if (bitmap.width * bitmap.height > MAX_SOURCE_PIXELS) {
     bitmap.close();
     return err('IMAGE_SOURCE_PIXELS_TOO_LARGE', { details: { max: MAX_SOURCE_MEGAPIXELS } });
   }
-  return ok({ bitmap, sourceType, dimensions });
+  return ok({ bitmap, sourceType, width: bitmap.width, height: bitmap.height });
 }
 
-export const imageResize = defineOperation({
-  id: 'image.resize',
+export const imageWatermark = defineOperation({
+  id: 'image.watermark',
   major: 1,
-  title: 'Resize an image',
+  title: 'Add a text watermark to an image',
   summary:
-    'Resizes a JPG, PNG, or WebP image to the requested dimensions, entirely in the browser.',
-  input: imageResizeInput,
-  params: imageResizeParams,
-  output: imageResizeOutput,
+    'Draws a text watermark onto a JPG, PNG, or WebP image at a chosen position, entirely in the browser.',
+  input: imageWatermarkInput,
+  params: imageWatermarkParams,
+  output: imageWatermarkOutput,
   errors: [
     'IMAGE_NO_FILE_SELECTED',
     'IMAGE_INVALID_FILE_TYPE',
     'IMAGE_FILE_TOO_LARGE',
-    'IMAGE_DIMENSIONS_INVALID',
-    'IMAGE_SOURCE_PIXELS_TOO_LARGE',
-    'IMAGE_OUTPUT_DIMENSIONS_TOO_LARGE',
+    'IMAGE_WATERMARK_TEXT_REQUIRED',
+    'IMAGE_WATERMARK_TEXT_TOO_LONG',
     'IMAGE_UNREADABLE',
+    'IMAGE_SOURCE_PIXELS_TOO_LARGE',
     'IMAGE_MEMORY_LIMIT_EXCEEDED',
-    'IMAGE_RESIZE_FAILED',
+    'IMAGE_WATERMARK_FAILED',
   ],
   // Browser/worker-only: OffscreenCanvas and createImageBitmap do not exist in Node. See
   // engines/image/AGENTS.md and README.md's "Runtime" section — this is a disclosed exception, not an
-  // oversight.
+  // oversight, shared by every operation in this engine.
   runtimes: ['worker'],
   cost: { weight: 'medium' },
   exposure: 'internal',
   dataClass: 'public',
-  async run(input, params) {
+  async run(input, _params) {
     const validation = validateRequest(input);
     if (!validation.ok) return validation;
     const file = input.file as ImageFile; // validateRequest already rejected a missing file
+    const text = (input.text ?? '').trim(); // validateRequest already rejected an empty/too-long value
 
     const decoded = await decodeAndCheckSource(file);
     if (!decoded.ok) return decoded;
-    const { bitmap, sourceType, dimensions: source } = decoded.value;
-
-    const output = computeOutputDimensions(
-      source,
-      { width: input.targetWidth, height: input.targetHeight },
-      input.keepAspectRatio,
-    );
-    if (output.width * output.height > MAX_OUTPUT_PIXELS) {
-      bitmap.close();
-      return err('IMAGE_OUTPUT_DIMENSIONS_TOO_LARGE', { details: { max: MAX_OUTPUT_MEGAPIXELS } });
-    }
+    const { bitmap, sourceType, width, height } = decoded.value;
 
     const requestedFormat: ResolvedImageFormat =
       input.outputFormat === 'same' ? sourceType : input.outputFormat;
     const flattenToWhite = SUPPORTS_ALPHA[sourceType] && !SUPPORTS_ALPHA[requestedFormat];
     const warnings = [...STANDING_WARNINGS];
     if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
-    if (isUpscale(source, output)) warnings.push(warning('IMAGE_UPSCALED_QUALITY_LOSS'));
-    // Only for an *explicit* same-format request (input.outputFormat === sourceType), never for 'same'
-    // itself — 'same' trivially resolves to the source format on every Resize/Compress default run, and
-    // this warning must not fire on that already-shipped path.
+    // Only for an *explicit* same-format request, never for 'same' itself — matching image.resize@1's
+    // own IMAGE_SAME_FORMAT_REENCODED logic exactly (see its own operation.ts and README.md).
     if (input.outputFormat !== 'same' && input.outputFormat === sourceType) {
       warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
     }
 
     let canvas: OffscreenCanvas;
     try {
-      canvas = renderResized(bitmap, output, flattenToWhite);
+      canvas = renderWatermarked(
+        bitmap,
+        text,
+        input.position,
+        input.opacity,
+        input.fontSize,
+        input.color,
+        flattenToWhite,
+      );
     } catch {
       bitmap.close();
-      return err('IMAGE_RESIZE_FAILED');
+      return err('IMAGE_WATERMARK_FAILED');
     }
     bitmap.close();
 
@@ -124,7 +119,7 @@ export const imageResize = defineOperation({
       finalFormat = encoded.finalFormat;
       bytes = new Uint8Array(await encoded.blob.arrayBuffer());
     } catch {
-      return err('IMAGE_RESIZE_FAILED');
+      return err('IMAGE_WATERMARK_FAILED');
     }
 
     const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
@@ -135,18 +130,23 @@ export const imageResize = defineOperation({
       {
         bytes,
         fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
-          suffix: params.outputFileNameSuffix,
-          fallbackBase: params.outputFileNameFallback,
+          suffix: '-watermarked',
+          fallbackBase: 'watermarked-image',
         }),
-        originalWidth: source.width,
-        originalHeight: source.height,
-        outputWidth: output.width,
-        outputHeight: output.height,
+        originalWidth: width,
+        originalHeight: height,
+        outputWidth: width,
+        outputHeight: height,
         originalFileSize: file.bytes.byteLength,
         outputFileSize: bytes.byteLength,
         ...sizeChange,
         originalFormat: sourceType,
         outputFormat: finalFormat,
+        watermarkText: text,
+        position: input.position,
+        opacity: input.opacity,
+        fontSize: input.fontSize,
+        color: input.color,
       },
       warnings,
     );

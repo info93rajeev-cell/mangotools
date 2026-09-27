@@ -1,0 +1,15 @@
+id: 003-watermark-text-required
+preset: image/watermark
+source:
+  type: synthetic
+  citation: "tiny.jpg (fixtures/files/), copied from image.watermark@1's own fixtures: has a valid JPEG signature; checks that whitespace-only watermark text is rejected as empty, before any attempt to decode the file"
+input:
+  file: { name: tiny.jpg, bytes: { path: tiny.jpg } }
+  text: "   "
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_WATERMARK_TEXT_REQUIRED

@@ -1,8 +1,8 @@
-import type { DetectedImageType } from './signature.ts';
+import type { ResolvedImageFormat } from './formats.ts';
 
 export const FALLBACK_OUTPUT_BASE_NAME = 'resized-image';
 
-const EXTENSION_FOR_TYPE: Record<DetectedImageType, string> = {
+const EXTENSION_FOR_TYPE: Record<ResolvedImageFormat, string> = {
   jpg: 'jpg',
   png: 'png',
   webp: 'webp',
@@ -34,10 +34,11 @@ export interface OutputFileNameStyle {
  * for `outputType`. Never rejects a name; only cleans one up or falls back, matching
  * `pdf.merge@1`/`pdf.jpg-to-pdf@1`'s own `sanitizeOutputFileName` behavior. `style` lets a preset that
  * reuses this operation for a different purpose (Image Compress's "-compressed") pick its own suffix
- * and fallback without changing Image Resize's own default wording.
+ * and fallback without changing Image Resize's own default wording. Shared by every operation in this
+ * engine that produces a downloadable image file.
  */
 export function deriveOutputFileName(
-  outputType: DetectedImageType,
+  outputType: ResolvedImageFormat,
   originalFileName: string,
   requestedName?: string,
   style?: OutputFileNameStyle,

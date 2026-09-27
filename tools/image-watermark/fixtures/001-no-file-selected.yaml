@@ -1,0 +1,14 @@
+id: 001-no-file-selected
+preset: image/watermark
+source:
+  type: synthetic
+  citation: "Mirrors image.watermark@1's own fixture 001-no-file-selected: a missing file must be a specific, typed error through the Image Watermark preset too"
+input:
+  text: "Sample"
+  position: bottom-right
+  opacity: 50
+  fontSize: 32
+  color: "#ffffff"
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

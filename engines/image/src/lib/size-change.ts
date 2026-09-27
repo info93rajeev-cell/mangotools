@@ -5,7 +5,7 @@ export interface SizeChange {
   sizeChangePercent: number;
 }
 
-/** Compares an output's byte size against its source's. Used by Image Resize and Image Compress alike. */
+/** Compares an output's byte size against its source's. Shared by every operation in this engine. */
 export function computeSizeChange(originalBytes: number, outputBytes: number): SizeChange {
   const sizeDifferenceBytes = originalBytes - outputBytes;
   const sizeChangePercent =

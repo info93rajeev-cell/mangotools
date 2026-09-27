@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/watermark
+version: 0.1.0
+operation: image.watermark@1
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  text:
+    labelKey: field.text
+    kind: text
+    order: 1
+    required: true
+    placeholderKey: field.text.placeholder
+  position:
+    labelKey: field.position
+    kind: enum
+    control: select
+    order: 2
+    options:
+      - { value: top-left, labelKey: field.position.topLeft }
+      - { value: top-right, labelKey: field.position.topRight }
+      - { value: center, labelKey: field.position.center }
+      - { value: bottom-left, labelKey: field.position.bottomLeft }
+      - { value: bottom-right, labelKey: field.position.bottomRight }
+    default: bottom-right
+  opacity: { labelKey: field.opacity, kind: number, order: 3, required: true, unit: "%", default: 50 }
+  fontSize: { labelKey: field.fontSize, kind: number, order: 4, required: true, unit: px, default: 32 }
+  color:
+    labelKey: field.color
+    kind: text
+    order: 5
+    required: true
+    default: "#ffffff"
+    placeholderKey: field.color.placeholder
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 6
+    options:
+      - { value: same, labelKey: field.outputFormat.same }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+    default: same
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 7
+    unit: "%"
+    placeholderKey: field.quality.placeholder
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  watermarkText: { labelKey: output.watermarkText, format: text, order: 2 }
+  position: { labelKey: output.position, format: text, order: 3 }
+  opacity: { labelKey: output.opacity, format: number, order: 4 }
+  fontSize: { labelKey: output.fontSize, format: number, order: 5 }
+  color: { labelKey: output.color, format: text, order: 6 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 7 }
+  originalFormat: { labelKey: output.originalFormat, format: text, order: 8 }
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 9 }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 10 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 11 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 12 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 13 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 14 }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: number, order: 15 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-watermarked.jpg"
+    fileTool.downloadCta: "Download watermarked image"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.text: "Watermark text"
+    field.text.placeholder: "© Your Name"
+    field.position: "Position"
+    field.position.topLeft: "Top left"
+    field.position.topRight: "Top right"
+    field.position.center: "Center"
+    field.position.bottomLeft: "Bottom left"
+    field.position.bottomRight: "Bottom right"
+    field.opacity: "Opacity"
+    field.fontSize: "Font size"
+    field.color: "Text color"
+    field.color.placeholder: "#ffffff"
+    field.outputFormat: "Output format"
+    field.outputFormat.same: "Same as input"
+    field.outputFormat.jpg: "JPG"
+    field.outputFormat.png: "PNG"
+    field.outputFormat.webp: "WebP"
+    field.quality: "Quality"
+    field.quality.placeholder: "85"
+    output.fileName: "Watermarked file"
+    output.watermarkText: "Watermark text"
+    output.position: "Position"
+    output.opacity: "Opacity (%)"
+    output.fontSize: "Font size (px)"
+    output.color: "Text color"
+    output.outputFormat: "Output format"
+    output.originalFormat: "Original format"
+    output.outputWidth: "Width (px)"
+    output.outputHeight: "Height (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.sizeDifferenceBytes: "Size difference (bytes)"

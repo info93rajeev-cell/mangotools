@@ -462,8 +462,97 @@ test.describe('Image Metadata Remover', () => {
   });
 });
 
+test.describe('Image Watermark', () => {
+  const fileInput = (page: Page) => island(page, 'image-watermark').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-watermark/fixtures/files/sample.jpg');
+  const preview = (page: Page) => island(page, 'image-watermark').locator('img');
+
+  test('selecting an image previews it and shows watermark controls with their defaults', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(preview(page)).toBeVisible();
+    await expect(page.getByLabel('Position')).toHaveValue('bottom-right');
+    await expect(page.getByLabel('Opacity')).toHaveValue('50');
+    await expect(page.getByLabel('Font size')).toHaveValue('32');
+    await expect(page.getByLabel('Text color')).toHaveValue('#ffffff');
+  });
+
+  test('shows a specific error when no watermark text is entered', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    await expect(page.getByText('Enter the text to use as a watermark.')).toBeVisible();
+  });
+
+  test('adds a bottom-right watermark and downloads it with the default name', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Watermark text').fill('© Sample');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-watermarked.jpg');
+    await expect(primaryResult(page)).toHaveText('sample-watermarked.jpg');
+    await expect(page.locator('[data-output="watermarkText"] dd')).toHaveText('© Sample');
+    await expect(page.locator('[data-output="position"] dd')).toHaveText('bottom-right');
+    await expect(page.locator('[data-output="outputWidth"] dd')).toHaveText('8');
+    await expect(page.locator('[data-output="outputHeight"] dd')).toHaveText('8');
+  });
+
+  test('adds a center watermark with custom opacity, font size and color', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Watermark text').fill('Draft');
+    await page.getByLabel('Position').selectOption('center');
+    await page.getByLabel('Opacity').fill('80');
+    await page.getByLabel('Font size').fill('16');
+    await page.getByLabel('Text color').fill('#ff0000');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    await downloadPromise;
+    await expect(page.locator('[data-output="position"] dd')).toHaveText('center');
+    await expect(page.locator('[data-output="opacity"] dd')).toHaveText('80');
+    await expect(page.locator('[data-output="fontSize"] dd')).toHaveText('16');
+    await expect(page.locator('[data-output="color"] dd')).toHaveText('#ff0000');
+  });
+
+  test('can also convert format while watermarking', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Watermark text').fill('Sample');
+    await page.getByLabel('Output format').selectOption('png');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-watermarked.png');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Watermark text').fill('Sample');
+    await page.getByLabel('Output file name').fill('  My Photo<>.JPG  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Photo.jpg');
+  });
+
+  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
+    await openTool(page, 'image-watermark');
+    const notAnImage = join(process.cwd(), 'tools/image-watermark/manifest.yaml');
+    await fileInput(page).setInputFiles([notAnImage]);
+    await page.getByLabel('Watermark text').fill('Sample');
+    await page.getByRole('button', { name: 'Download watermarked image' }).click();
+    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+});
+
 test.describe('Image & Media category', () => {
-  test('shows exactly four tools and no future image tools', async ({ page }) => {
+  test('shows exactly five tools and no future image tools', async ({ page }) => {
     await gotoReady(page, '/media');
     await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
@@ -471,11 +560,11 @@ test.describe('Image & Media category', () => {
     await expect(allTools.getByRole('link', { name: 'Image Compress' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Format Converter' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Metadata Remover' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(4);
+    await expect(allTools.getByRole('link', { name: 'Image Watermark' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(5);
     for (const future of [
       'Background Remover',
       'Passport Photo',
-      'Image Watermark',
       'Image Crop',
       'Favicon Generator',
     ]) {
