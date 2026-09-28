@@ -1,0 +1,5 @@
+id: 005-zero-items-rejected
+operation: export.packing.list@2
+source: { type: synthetic, citation: "Every packing list must contain at least one item" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/018", packingListDate: "2026-09-28", items: [], packageCount: "1", weightUnit: kg, netWeight: "1", grossWeight: "1" }
+expectedError: { code: EXPORT_TOO_FEW_ITEMS, path: items }

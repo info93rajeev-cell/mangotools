@@ -1,4 +1,5 @@
-/* Export Commercial Invoice Generator's multi-item rows (TASK-009G). Scoped to this one tool. */
+/* Shared item-row/result-table layout for the Export Commercial Invoice Generator (TASK-009G) and
+   Export Packing List Generator (TASK-009I) — pure layout, no document-specific content. */
 
 .rows {
   display: grid;

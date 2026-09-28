@@ -12,9 +12,10 @@ input:
   destinationCountry: "United Kingdom"
   packingListNumber: "CST-PL-2026-071"
   packingListDate: "2026-09-28"
-  itemDescription: "Whole black pepper, dried"
-  itemQuantity: "20"
-  itemUnit: "KG"
+  items:
+    - description: "Whole black pepper, dried"
+      quantity: "20"
+      unit: "KG"
   packageCount: "4"
   weightUnit: "kg"
   netWeight: "20"

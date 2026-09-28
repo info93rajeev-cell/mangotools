@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: export/packing-list
-version: 0.1.0
-operation: export.packing.list@1
+version: 0.2.0
+operation: export.packing.list@2
 params: {}
 fields:
   exporterName: { labelKey: packing.field.exporterName, kind: text, required: true, order: 10, helpKey: packing.help.exporterName }
@@ -22,12 +22,9 @@ fields:
   orderReference: { labelKey: packing.field.orderReference, kind: text, required: false, order: 150, helpKey: packing.help.orderReference }
   shippingMode: { labelKey: packing.field.shippingMode, kind: text, required: false, order: 160, helpKey: packing.help.shippingMode }
   trackingNumber: { labelKey: packing.field.trackingNumber, kind: text, required: false, order: 170, helpKey: packing.help.trackingNumber }
-  itemDescription: { labelKey: packing.field.itemDescription, kind: text, required: true, order: 180, helpKey: packing.help.itemDescription }
-  itemSku: { labelKey: packing.field.itemSku, kind: text, required: false, order: 190, helpKey: packing.help.itemSku }
-  itemHsn: { labelKey: packing.field.itemHsn, kind: text, required: false, order: 200, helpKey: packing.help.itemHsn }
-  itemCountryOfOrigin: { labelKey: packing.field.itemCountryOfOrigin, kind: text, required: false, order: 210, helpKey: packing.help.countryOfOrigin }
-  itemQuantity: { labelKey: packing.field.itemQuantity, kind: number, required: true, order: 220, helpKey: packing.help.itemQuantity }
-  itemUnit: { labelKey: packing.field.itemUnit, kind: text, required: true, default: PCS, order: 230, helpKey: packing.help.itemUnit }
+  # v2 (TASK-009I): one JSON-encoded field carries 1-5 item rows. Rendered and validated entirely by
+  # this one tool's own PackingListItemsLayout/PackingListItemsForm — see packages/ui/src/toolkit/packingItems.ts.
+  items: { labelKey: packing.field.items, kind: text, required: false, order: 180, helpKey: packing.help.items }
   packageCount: { labelKey: packing.field.packageCount, kind: number, required: true, order: 240, helpKey: packing.help.packageCount }
   packageType: { labelKey: packing.field.packageType, kind: text, required: false, order: 250, helpKey: packing.help.packageType }
   shippingMarks: { labelKey: packing.field.shippingMarks, kind: text, required: false, order: 260, helpKey: packing.help.shippingMarks }
@@ -65,12 +62,6 @@ outputs:
   consigneeName: { labelKey: packing.out.consigneeName, format: text, order: 160 }
   consigneeAddress: { labelKey: packing.out.consigneeAddress, format: text, order: 170 }
   destinationCountry: { labelKey: packing.out.destinationCountry, format: text, order: 180 }
-  itemDescription: { labelKey: packing.out.itemDescription, format: text, order: 190 }
-  itemSku: { labelKey: packing.out.itemSku, format: text, order: 200 }
-  itemHsn: { labelKey: packing.out.itemHsn, format: text, order: 210 }
-  itemCountryOfOrigin: { labelKey: packing.out.itemCountryOfOrigin, format: text, order: 220 }
-  itemQuantity: { labelKey: packing.out.itemQuantity, format: number, order: 230 }
-  itemUnit: { labelKey: packing.out.itemUnit, format: text, order: 240 }
   packageType: { labelKey: packing.out.packageType, format: text, order: 250 }
   shippingMarks: { labelKey: packing.out.shippingMarks, format: text, order: 260 }
   weightUnit: { labelKey: packing.out.weightUnit, format: text, order: 270 }
@@ -82,8 +73,8 @@ outputs:
 samples:
   cushion-covers-10-cartons:
     titleKey: packing.sample.cushionCovers
-    input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", exporterGstin: "27ABCDE1234F1Z5", exporterContact: "export@sunrisehandicrafts.example", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/014", packingListDate: "2026-09-28", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", orderReference: "PO-2026-0098", shippingMode: "Air Cargo", trackingNumber: "AWB-123456789", itemDescription: "Hand-block printed cotton cushion covers", itemSku: "CC-BLK-001", itemHsn: "630490", itemCountryOfOrigin: India, itemQuantity: "500", itemUnit: PCS, packageCount: "10", packageType: Carton, shippingMarks: "GHD / SF / 1-10", weightUnit: kg, netWeight: "125", grossWeight: "135", dimensions: "50 x 40 x 35 cm", authorizedSignatory: "Raj Mehta" }
-ui: { archetypes: [B], density: comfortable, compute: live, transferNoticeKey: packing.notice.transferred }
+    input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", exporterGstin: "27ABCDE1234F1Z5", exporterContact: "export@sunrisehandicrafts.example", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/014", packingListDate: "2026-09-28", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", orderReference: "PO-2026-0098", shippingMode: "Air Cargo", trackingNumber: "AWB-123456789", items: [{ description: "Hand-block printed cotton cushion covers", sku: "CC-BLK-001", hsn: "630490", countryOfOrigin: India, quantity: "500", unit: PCS }], packageCount: "10", packageType: Carton, shippingMarks: "GHD / SF / 1-10", weightUnit: kg, netWeight: "125", grossWeight: "135", dimensions: "50 x 40 x 35 cm", authorizedSignatory: "Raj Mehta" }
+ui: { archetypes: [B], density: comfortable, compute: live, maxItems: 5, transferNoticeKey: packing.notice.transferred }
 strings:
   en:
     packing.field.exporterName: "Exporter — Business name"
@@ -103,12 +94,7 @@ strings:
     packing.field.orderReference: "Document — Order/reference number (optional)"
     packing.field.shippingMode: "Document — Shipping mode (optional)"
     packing.field.trackingNumber: "Document — AWB / BL / tracking number (optional)"
-    packing.field.itemDescription: "Item — Description"
-    packing.field.itemSku: "Item — SKU / style code (optional)"
-    packing.field.itemHsn: "Item — HSN code (optional)"
-    packing.field.itemCountryOfOrigin: "Item — Country of origin (optional)"
-    packing.field.itemQuantity: "Item — Quantity"
-    packing.field.itemUnit: "Item — Unit"
+    packing.field.items: "Items"
     packing.field.packageCount: "Packing — Number of packages/cartons"
     packing.field.packageType: "Packing — Package type (optional)"
     packing.field.shippingMarks: "Packing — Shipping marks / marks and numbers (optional)"
@@ -118,6 +104,12 @@ strings:
     packing.field.dimensions: "Packing — Dimensions (optional)"
     packing.field.declarationText: "Declaration — Packing-list declaration (optional)"
     packing.field.authorizedSignatory: "Declaration — Authorized signatory (optional)"
+    packing.item.description: "Item — Description"
+    packing.item.sku: "Item — SKU / style code (optional)"
+    packing.item.hsn: "Item — HSN code (optional)"
+    packing.item.countryOfOrigin: "Item — Country of origin (optional)"
+    packing.item.quantity: "Item — Quantity"
+    packing.item.unit: "Item — Unit"
     packing.unit.kg: kg
     packing.unit.lb: lb
     packing.help.exporterName: Your business name as it should appear on the packing list.
@@ -131,22 +123,17 @@ strings:
     packing.help.destinationCountry: Country the goods are being shipped to.
     packing.help.packingListNumber: Your own packing-list numbering — this tool does not assign or track a numbering series.
     packing.help.date: Date in YYYY-MM-DD format.
-    packing.help.invoiceNumber: A reference only — this field is not linked to, or filled in from, the Export Commercial Invoice Generator.
+    packing.help.invoiceNumber: Your own reference, or filled in for you if you arrived here via the Commercial Invoice Generator's "Create Packing List" action — either way, verify it yourself.
     packing.help.orderReference: Your own purchase order or reference number, if any.
     packing.help.shippingMode: For example Post, Courier, Air Cargo or Sea Cargo.
     packing.help.trackingNumber: AWB (air waybill), BL (bill of lading), or courier/consignment number, once available.
-    packing.help.itemDescription: A clear description of the goods being packed.
-    packing.help.itemSku: Your own internal product or style code, if you use one.
-    packing.help.itemHsn: Product classification code. Verify the correct HSN with your CA/customs broker if unsure.
-    packing.help.countryOfOrigin: Country where goods originate/manufactured.
-    packing.help.itemQuantity: Number of units being shipped. This version supports one item row per packing list.
-    packing.help.itemUnit: Unit of measure, for example PCS, KG, SET or BOX.
+    packing.help.items: Add one row per product in this shipment, up to 5.
     packing.help.packageCount: Total number of packages, cartons, or pallets in the shipment.
     packing.help.packageType: For example Carton, Box, Crate or Pallet.
     packing.help.shippingMarks: Marks and numbers stencilled or labelled on the packages, for example a buyer code and package range.
     packing.help.weightUnit: Applies to both net and gross weight below — choose kilograms or pounds.
-    packing.help.netWeight: Product weight excluding packaging.
-    packing.help.grossWeight: Packed shipment weight including packaging.
+    packing.help.netWeight: Total product weight for the whole shipment, excluding packaging.
+    packing.help.grossWeight: Total packed shipment weight, including packaging.
     packing.help.dimensions: Package dimensions with units in the text itself, for example "50 x 40 x 35 cm". Leave blank if not needed.
     packing.help.declarationText: A standard packing-list declaration you can edit or clear — not filed anywhere by this tool.
     packing.help.authorizedSignatory: Name shown in the signature area of the packing list.
@@ -169,12 +156,7 @@ strings:
     packing.out.consigneeName: Consignee
     packing.out.consigneeAddress: Consignee address
     packing.out.destinationCountry: Destination country
-    packing.out.itemDescription: Item description
-    packing.out.itemSku: SKU / style code
-    packing.out.itemHsn: HSN code
-    packing.out.itemCountryOfOrigin: Country of origin
-    packing.out.itemQuantity: Quantity
-    packing.out.itemUnit: Unit
+    packing.out.items: Items
     packing.out.packageType: Package type
     packing.out.shippingMarks: Shipping marks
     packing.out.weightUnit: Weight unit

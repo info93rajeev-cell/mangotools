@@ -1,0 +1,7 @@
+id: 003-five-item-packing-list-at-cap
+operation: export.packing.list@2
+source: { type: hand-verified, citation: "Exercises the MAX_ITEMS=5 cap exactly at the limit" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/016", packingListDate: "2026-09-28", items: [{ description: "Item A", quantity: "10", unit: "PCS" }, { description: "Item B", quantity: "10", unit: "PCS" }, { description: "Item C", quantity: "10", unit: "PCS" }, { description: "Item D", quantity: "10", unit: "PCS" }, { description: "Item E", quantity: "10", unit: "PCS" }], packageCount: "5", weightUnit: kg, netWeight: "50", grossWeight: "55" }
+expected: { packingListNumber: "SHE/PL/2026/016", packageCount: "5", working: [] }
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_PACKING_LIST_SCOPE_LIMIT]

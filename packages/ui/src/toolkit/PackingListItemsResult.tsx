@@ -10,37 +10,37 @@ import { type WorkingStep, WorkingSteps } from './WorkingSteps.tsx';
 
 interface ResultItem {
   description: string;
-  hsn: string;
+  sku: string | null;
+  hsn: string | null;
+  countryOfOrigin: string | null;
   quantity: string;
   unit: string;
-  unitPrice: string;
-  lineAmount: string;
 }
 
-/** Description · HSN · Qty · Unit · Unit price · Amount — the one thing v1's flat result never had. */
+/** Description · SKU · HSN · Qty · Unit · Origin — no price, no amount, no commercial value. */
 function ItemTable({ preset, items }: { preset: ResolvedPreset; items: ResultItem[] }) {
-  const col = (key: string) => label(preset, `invoice.item.${key}`);
+  const col = (key: string) => label(preset, `packing.item.${key}`);
   return (
-    <ScrollableItemTable caption={label(preset, 'invoice.out.items')}>
+    <ScrollableItemTable caption={label(preset, 'packing.out.items')}>
       <thead>
         <tr>
           <th scope="col">{col('description')}</th>
+          <th scope="col">{col('sku')}</th>
           <th scope="col">{col('hsn')}</th>
           <th scope="col">{col('quantity')}</th>
           <th scope="col">{col('unit')}</th>
-          <th scope="col">{col('unitPrice')}</th>
-          <th scope="col">{label(preset, 'invoice.out.lineAmount')}</th>
+          <th scope="col">{col('countryOfOrigin')}</th>
         </tr>
       </thead>
       <tbody>
         {items.map((item, index) => (
           <tr key={index} data-item-row-result={index}>
             <td>{item.description}</td>
+            <td>{item.sku}</td>
             <td>{item.hsn}</td>
             <td>{formatValue('number', item.quantity)}</td>
             <td>{item.unit}</td>
-            <td>{formatValue('money', item.unitPrice)}</td>
-            <td>{formatValue('money', item.lineAmount)}</td>
+            <td>{item.countryOfOrigin}</td>
           </tr>
         ))}
       </tbody>
@@ -77,7 +77,7 @@ function ScalarRows({ rows }: { rows: OutputRow[] }) {
   );
 }
 
-export interface InvoiceItemsResultProps {
+export interface PackingListItemsResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   snapshot: ToolSnapshot;
@@ -86,13 +86,15 @@ export interface InvoiceItemsResultProps {
   shownInline: boolean;
 }
 
-/** Archetype B's usual result section, plus an item table above the scalar outputs (subtotal/total). */
-export function InvoiceItemsResult({
+/** Archetype B's usual result section, plus an item table above the shipment-level scalar outputs
+ * (package count, weights, dimensions) — those stay exactly as v1's flat result, unaffected by how
+ * many items are listed above them (TASK-009H: packing/weight fields are shipment-level, not per item). */
+export function PackingListItemsResult({
   idPrefix,
   preset,
   snapshot,
   shownInline,
-}: InvoiceItemsResultProps) {
+}: PackingListItemsResultProps) {
   const { values, phase, error, result } = snapshot;
   const items = (result?.value.items as ResultItem[] | undefined) ?? [];
   const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
