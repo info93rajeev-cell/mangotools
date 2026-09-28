@@ -1,0 +1,5 @@
+id: 006-invalid-quantity-on-second-row
+operation: export.packing.list@2
+source: { type: synthetic, citation: "Row 0 is valid; row 1 has a zero quantity, which must be identified by its own index/path" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/019", packingListDate: "2026-09-28", items: [{ description: "Item A", quantity: "10", unit: "PCS" }, { description: "Item B", quantity: "0", unit: "PCS" }], packageCount: "2", weightUnit: kg, netWeight: "10", grossWeight: "12" }
+expectedError: { code: EXPORT_NOT_POSITIVE, path: "items[1].quantity" }

@@ -14,19 +14,23 @@ MSMEs shipping through India Post, a courier, or cargo.
 2. Enter the buyer's details, and the consignee's details if the actual receiver abroad is different
    from the buyer.
 3. Enter the packing list number and date. If you already have a commercial invoice for this shipment,
-   you can type its number and date as a reference — this is a plain text reference only, not a link.
-4. Enter the item being packed: description, quantity, and unit. This version supports one item row
-   per packing list.
-5. Enter the number of packages, and net and gross weight in the unit you choose. Add shipping marks,
-   package type, and dimensions if useful.
+   you can type its number and date as a reference yourself — or, if you arrived here from the Export
+   Commercial Invoice Generator's "Create Packing List" action, some of these details are already
+   filled in for you (see "Does it link to the Export Commercial Invoice Generator?" below).
+4. Enter each item being packed: description, quantity, and unit. Use **Add item** for more than one
+   product, up to 5 items per packing list.
+5. Enter the number of packages, and net and gross weight for the whole shipment, in the unit you
+   choose. Add shipping marks, package type, and dimensions if useful.
 6. Edit or clear the declaration text, then read the packing-list draft. Copy or print it.
 
 ## Method
 
 This is primarily a **document generator, not a calculator**. Every field in the output is either a
 direct echo of what you typed, or a fixed printable signature block — this tool does not calculate
-duties, taxes, freight, forex, customs value, or regulatory eligibility, and it does not total package
-weights or quantities across rows, since this version supports only one item row.
+duties, taxes, freight, forex, customs value, or regulatory eligibility, and it does not total item
+quantities across rows, since the units may not even be compatible (for example 10 PCS and 20 KG on
+the same packing list). Package count and net/gross weight are always a single figure for the whole
+shipment, not totalled from the item rows.
 
 The one check this tool does perform is a plain data-integrity check, not a calculation: **gross weight
 cannot be less than net weight**, since a packed shipment cannot weigh less than the goods inside it.
@@ -52,12 +56,16 @@ cannot be less than net weight**, since a packed shipment cannot weigh less than
 **What this tool does not do:** this is a document preparation helper only. It does not file anything
 with Customs, India Post, DGFT, ICEGATE, DNK, ECCS, or any bank or government portal, it does not
 generate an official or government-approved packing list, and it does not provide legal, tax, customs,
-GST, FEMA, or banking compliance advice. **It also does not automatically pull data from, or send data
-to, the Export Commercial Invoice Generator** — the optional invoice number/date fields here are a
-plain text reference you type yourself, with no shared profile, sync, or autofill between the two
-tools. Always verify the final packing list, and confirm your export route's own requirements, with
-your courier, freight forwarder, customs broker, CA, bank, or the official portal before filing or
-shipping.
+GST, FEMA, or banking compliance advice. **It can optionally receive selected details from the Export
+Commercial Invoice Generator**, through that tool's own "Create Packing List" action — a one-time copy
+of exporter, buyer, and (for a single-item invoice) item-identity details, made once when you follow
+that link. The two documents are never kept in sync afterward: editing one does not update the other,
+there is no shared profile or saved data, and nothing is verified for correctness automatically. Item
+quantities, package counts, and weights are never copied — you must enter and verify what was actually
+packed yourself, since it can legitimately differ from what was invoiced. If your invoice has more than
+one item, its item details are not copied at all; enter each item here yourself. Always verify the
+final packing list, and confirm your export route's own requirements, with your courier, freight
+forwarder, customs broker, CA, bank, or the official portal before filing or shipping.
 
 ## Worked example
 
@@ -79,9 +87,12 @@ draft.
 
 ### Does it link to the Export Commercial Invoice Generator?
 
-No, not automatically. You can type the commercial invoice number and date here as a plain text
-reference, but nothing is transferred, synced, or autofilled between the two tools — each one is filled
-in independently.
+It can, if you use that tool's "Create Packing List" action: exporter, buyer, and (for a single-item
+invoice) item-identity details are copied here once, as a starting point. You still need to review what
+was copied, and enter the actual packed quantity, package count, and weights yourself — these are never
+copied, since what you invoiced and what you actually pack can differ. After this one-time copy, the two
+documents are independent: editing one does not update the other. If you open this tool directly, or
+type your own commercial invoice number and date as a reference, nothing is transferred at all.
 
 ### What is the difference between net weight and gross weight?
 
@@ -115,7 +126,9 @@ No. This tool works without an account, sign-up, or login.
 
 ### Can it handle more than one item?
 
-Not in this version. This packing list generator supports one item row per packing list draft.
+Yes, up to 5 items per packing list. Use **Add item** to add a row for each product, and **Remove
+item** to take one out. Package count and net/gross weight stay a single figure for the whole
+shipment, not a total per item.
 
 ## References
 

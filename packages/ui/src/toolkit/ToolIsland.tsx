@@ -23,18 +23,22 @@ import { ActionBar } from './ActionBar.tsx';
 import { copyText } from './actions.ts';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { invoiceTransferValues } from './invoiceItems.ts';
+import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
+import { shapeIncomingPackingTransfer } from './packingItems.ts';
 import { label, outputRows, presetCurrency } from './presentation.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 import type { WorkingStep } from './WorkingSteps.tsx';
 
 /**
- * The one tool with per-tool UI logic on the platform: its item rows can't be described by a flat
- * preset field, so it gets its own layout (see `InvoiceItemsLayout.tsx` and TASK-009G's report for
- * why this is a one-off special case rather than a new generic archetype or field kind). Every other
- * tool renders through the ordinary `ArchetypeLayout` switch below, completely unaffected.
+ * The two tools with per-tool UI logic on the platform: their item rows can't be described by a flat
+ * preset field, so each gets its own layout (see `InvoiceItemsLayout.tsx`/`PackingListItemsLayout.tsx`
+ * and TASK-009G/TASK-009I's reports for why this is a small, explicit special case rather than a new
+ * generic archetype or field kind). Every other tool renders through the ordinary `ArchetypeLayout`
+ * switch below, completely unaffected.
  */
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
+const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -118,13 +122,24 @@ function TransferNotice({
  * browser never sends to any server, so it never reaches a log, an analytics call, or MangoTools
  * itself. Consumed once, then the hash is always stripped so a later reload of this same URL never
  * re-applies it. Returns whether a transfer was applied, for a one-time "review these" notice.
+ *
+ * The Packing List Generator's own flat `itemDescription`/`itemSku`/`itemUnit`/`itemCountryOfOrigin`
+ * fields were replaced by its `items` array (TASK-009I); the Invoice's transfer payload still sends
+ * those exact flat keys (its `transferTo.fields` list is unchanged), so without shaping them first they
+ * would be silently dropped by `filterTransferValues` below and a previously-working single-item
+ * transfer would stop populating any item at all. `shapeIncomingPackingTransfer` folds them into one
+ * row instead — see its own comment for why this is not a new multi-row transfer.
  */
 function useIncomingTransfer(preset: ResolvedPreset, store: ToolStore): boolean {
   const [transferred, setTransferred] = useState(false);
   useEffect(() => {
     if (!hasTransferHash(window.location.hash)) return;
     const payload = decodeTransferHash(window.location.hash);
-    const filtered = payload && filterTransferValues(payload, Object.keys(preset.fields));
+    const shaped =
+      payload && preset.id === PACKING_LIST_MULTI_ITEM_PRESET_ID
+        ? shapeIncomingPackingTransfer(payload)
+        : payload;
+    const filtered = shaped && filterTransferValues(shaped, Object.keys(preset.fields));
     if (filtered && Object.keys(filtered).length > 0) {
       store.setMany(filtered);
       setTransferred(true);
@@ -182,6 +197,16 @@ function ArchetypeLayout({
   if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
     return (
       <InvoiceItemsLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />
+    );
+  }
+  if (preset.id === PACKING_LIST_MULTI_ITEM_PRESET_ID) {
+    return (
+      <PackingListItemsLayout
+        idPrefix={idPrefix}
+        preset={preset}
+        snapshot={snapshot}
+        store={store}
+      />
     );
   }
   return <CalculatorLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />;

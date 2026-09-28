@@ -4,8 +4,8 @@ import { Field } from '../primitives/Field.tsx';
 import { NumberField, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
 import { ItemRowShell } from './ItemRowShell.tsx';
-import type { ItemRowField, ItemRowValues, RowError } from './invoiceItems.ts';
 import styles from './itemRows.module.css';
+import type { PackingItemRowField, PackingItemRowValues, PackingRowError } from './packingItems.ts';
 import { label } from './presentation.ts';
 
 interface TextRowFieldProps {
@@ -35,22 +35,22 @@ interface ItemRowProps {
   idPrefix: string;
   index: number;
   preset: ResolvedPreset;
-  row: ItemRowValues;
-  rowError: RowError | null;
+  row: PackingItemRowValues;
+  rowError: PackingRowError | null;
   rowErrorMessage: string | null;
   canRemove: boolean;
-  onChange: (field: ItemRowField, value: string) => void;
+  onChange: (field: PackingItemRowField, value: string) => void;
   onRemove: () => void;
 }
 
 const errorFor = (
-  rowError: RowError | null,
+  rowError: PackingRowError | null,
   message: string | null,
   index: number,
-  field: ItemRowField,
+  field: PackingItemRowField,
 ) => (rowError && rowError.index === index && rowError.field === field ? message : null);
 
-/** One item's fieldset: description/SKU/HSN, quantity/unit/price, origin/net weight. */
+/** One item's fieldset: description/SKU/HSN, quantity/unit, country of origin. */
 function ItemRow({
   idPrefix,
   index,
@@ -64,7 +64,7 @@ function ItemRow({
 }: ItemRowProps) {
   const number = index + 1;
   const rowId = `${idPrefix}-item-${index}`;
-  const field = (name: ItemRowField, labelKey: string, numeric = false) => (
+  const field = (name: PackingItemRowField, labelKey: string, numeric = false) => (
     <RowField
       id={`${rowId}-${name}`}
       preset={preset}
@@ -82,32 +82,30 @@ function ItemRow({
       removeLabel={canRemove ? t('itemRows.removeItem', { number }) : null}
       onRemove={onRemove}
     >
-      {field('description', 'invoice.item.description')}
-      {field('sku', 'invoice.item.sku')}
-      {field('hsn', 'invoice.item.hsn')}
-      {field('quantity', 'invoice.item.quantity', true)}
-      {field('unit', 'invoice.item.unit')}
-      {field('unitPrice', 'invoice.item.unitPrice', true)}
-      {field('countryOfOrigin', 'invoice.item.countryOfOrigin')}
-      {field('netWeight', 'invoice.item.netWeight', true)}
+      {field('description', 'packing.item.description')}
+      {field('sku', 'packing.item.sku')}
+      {field('hsn', 'packing.item.hsn')}
+      {field('countryOfOrigin', 'packing.item.countryOfOrigin')}
+      {field('quantity', 'packing.item.quantity', true)}
+      {field('unit', 'packing.item.unit')}
     </ItemRowShell>
   );
 }
 
-export interface InvoiceItemsFormProps {
+export interface PackingListItemsFormProps {
   idPrefix: string;
   preset: ResolvedPreset;
-  rows: ItemRowValues[];
-  rowError: RowError | null;
+  rows: PackingItemRowValues[];
+  rowError: PackingRowError | null;
   rowErrorMessage: string | null;
   maxItems: number;
-  onChange: (index: number, field: ItemRowField, value: string) => void;
+  onChange: (index: number, field: PackingItemRowField, value: string) => void;
   onAdd: () => void;
   onRemove: (index: number) => void;
 }
 
-/** The invoice's item rows: add up to `maxItems`, remove any but the last remaining one. */
-export function InvoiceItemsForm({
+/** The packing list's item rows: add up to `maxItems`, remove any but the last remaining one. */
+export function PackingListItemsForm({
   idPrefix,
   preset,
   rows,
@@ -117,7 +115,7 @@ export function InvoiceItemsForm({
   onChange,
   onAdd,
   onRemove,
-}: InvoiceItemsFormProps) {
+}: PackingListItemsFormProps) {
   return (
     <div class={styles.rows} data-item-rows="">
       {rows.map((row, index) => (
@@ -140,7 +138,7 @@ export function InvoiceItemsForm({
             {t('itemRows.addItem')}
           </Button>
         ) : (
-          <p class={styles.maxReached}>{t('invoiceItems.maxReached', { max: maxItems })}</p>
+          <p class={styles.maxReached}>{t('packingItems.maxReached', { max: maxItems })}</p>
         )}
       </div>
     </div>

@@ -1,0 +1,7 @@
+id: 002-two-item-packing-list
+operation: export.packing.list@2
+source: { type: hand-verified, citation: "Two products packed into one shipment: aggregate package count and weights stay shipment-level, not per item" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/015", packingListDate: "2026-09-28", items: [{ description: "Hand-block printed cotton cushion covers", hsn: "630490", quantity: "500", unit: "PCS" }, { description: "Hand-block printed table runners", hsn: "630790", quantity: "200", unit: "PCS" }], packageCount: "12", weightUnit: kg, netWeight: "140", grossWeight: "150" }
+expected: { packingListNumber: "SHE/PL/2026/015", packageCount: "12", netWeight: "140", grossWeight: "150", working: [] }
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_PACKING_LIST_SCOPE_LIMIT]

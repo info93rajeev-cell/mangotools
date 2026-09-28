@@ -2,24 +2,24 @@ import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { CalculatorFields } from '../archetypes/CalculatorFields.tsx';
 import { t } from '../strings/en.ts';
-import { InvoiceItemsForm } from './InvoiceItemsForm.tsx';
-import { InvoiceItemsResult } from './InvoiceItemsResult.tsx';
-import {
-  emptyItemRow,
-  type ItemRowField,
-  type ItemRowValues,
-  parseItemRows,
-  parseRowError,
-  serializeItemRows,
-} from './invoiceItems.ts';
 import { OptionControls } from './OptionControls.tsx';
+import { PackingListItemsForm } from './PackingListItemsForm.tsx';
+import { PackingListItemsResult } from './PackingListItemsResult.tsx';
+import {
+  emptyPackingItemRow,
+  type PackingItemRowField,
+  type PackingItemRowValues,
+  parsePackingItemRows,
+  parsePackingRowError,
+  serializePackingItemRows,
+} from './packingItems.ts';
 import { messageFor, reconcileOptions, visibleEntries } from './presentation.ts';
 import styles from './toolkit.module.css';
 
 /** Fallback only; the shipped preset always sets `ui.maxItems` explicitly. */
 const DEFAULT_MAX_ITEMS = 5;
 
-export interface InvoiceItemsLayoutProps {
+export interface PackingListItemsLayoutProps {
   idPrefix: string;
   preset: ResolvedPreset;
   snapshot: ToolSnapshot;
@@ -27,7 +27,7 @@ export interface InvoiceItemsLayoutProps {
 }
 
 function useRowErrorMessage(preset: ResolvedPreset, snapshot: ToolSnapshot) {
-  const rowError = parseRowError(snapshot.error?.path);
+  const rowError = parsePackingRowError(snapshot.error?.path);
   if (!rowError || !snapshot.error) return { rowError: null, rowErrorMessage: null };
   const message = t('itemRows.rowError', {
     number: rowError.index + 1,
@@ -38,14 +38,20 @@ function useRowErrorMessage(preset: ResolvedPreset, snapshot: ToolSnapshot) {
 
 /**
  * Archetype B's usual two-panel layout (fields · result), but for exactly this one tool: the item
- * fields are replaced with repeatable rows (`InvoiceItemsForm`) and the result gains an item table
- * (`InvoiceItemsResult`). Every other field on the invoice still goes through the ordinary
- * `CalculatorFields`/`ToolStore` pipe unchanged — only the `items` field is special-cased here.
+ * fields are replaced with repeatable rows (`PackingListItemsForm`) and the result gains an item table
+ * (`PackingListItemsResult`). Every other field — including every shipment-level packing/weight field
+ * — still goes through the ordinary `CalculatorFields`/`ToolStore` pipe unchanged; only the `items`
+ * field is special-cased here (TASK-009I, following the pattern proven by TASK-009G's Invoice).
  */
-export function InvoiceItemsLayout({ idPrefix, preset, snapshot, store }: InvoiceItemsLayoutProps) {
+export function PackingListItemsLayout({
+  idPrefix,
+  preset,
+  snapshot,
+  store,
+}: PackingListItemsLayoutProps) {
   const { values, error } = snapshot;
   const maxItems = preset.ui.maxItems ?? DEFAULT_MAX_ITEMS;
-  const rows = parseItemRows(typeof values.items === 'string' ? values.items : '');
+  const rows = parsePackingItemRows(typeof values.items === 'string' ? values.items : '');
   const { rowError, rowErrorMessage } = useRowErrorMessage(preset, snapshot);
 
   const otherFields = visibleEntries(preset.fields, values).filter(([key]) => key !== 'items');
@@ -54,12 +60,13 @@ export function InvoiceItemsLayout({ idPrefix, preset, snapshot, store }: Invoic
   const errorFor = (key: string) =>
     error && key === fieldError ? messageFor(preset, error) : null;
 
-  const updateRows = (next: ItemRowValues[]) => store.set('items', serializeItemRows(next));
-  const onChangeItem = (index: number, field: ItemRowField, value: string) => {
+  const updateRows = (next: PackingItemRowValues[]) =>
+    store.set('items', serializePackingItemRows(next));
+  const onChangeItem = (index: number, field: PackingItemRowField, value: string) => {
     updateRows(rows.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
   };
   const onAdd = () => {
-    if (rows.length < maxItems) updateRows([...rows, emptyItemRow()]);
+    if (rows.length < maxItems) updateRows([...rows, emptyPackingItemRow()]);
   };
   const onRemove = (index: number) => {
     if (rows.length <= 1) return;
@@ -86,7 +93,7 @@ export function InvoiceItemsLayout({ idPrefix, preset, snapshot, store }: Invoic
           errorFor={errorFor}
           onValue={(key, next) => store.set(key, next)}
         />
-        <InvoiceItemsForm
+        <PackingListItemsForm
           idPrefix={idPrefix}
           preset={preset}
           rows={rows}
@@ -98,7 +105,7 @@ export function InvoiceItemsLayout({ idPrefix, preset, snapshot, store }: Invoic
           onRemove={onRemove}
         />
       </section>
-      <InvoiceItemsResult
+      <PackingListItemsResult
         idPrefix={idPrefix}
         preset={preset}
         snapshot={snapshot}

@@ -1,0 +1,5 @@
+id: 004-too-many-items-rejected
+operation: export.packing.list@2
+source: { type: synthetic, citation: "6 rows exceeds the MAX_ITEMS=5 prototype cap" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/017", packingListDate: "2026-09-28", items: [{ description: "Item A", quantity: "10", unit: "PCS" }, { description: "Item B", quantity: "10", unit: "PCS" }, { description: "Item C", quantity: "10", unit: "PCS" }, { description: "Item D", quantity: "10", unit: "PCS" }, { description: "Item E", quantity: "10", unit: "PCS" }, { description: "Item F", quantity: "10", unit: "PCS" }], packageCount: "6", weightUnit: kg, netWeight: "60", grossWeight: "65" }
+expectedError: { code: EXPORT_TOO_MANY_ITEMS, path: items, details: { max: 5 } }

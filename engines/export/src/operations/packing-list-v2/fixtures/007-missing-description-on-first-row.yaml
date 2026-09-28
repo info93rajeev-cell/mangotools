@@ -1,0 +1,5 @@
+id: 007-missing-description-on-first-row
+operation: export.packing.list@2
+source: { type: synthetic, citation: "Description is required per row, same as v1's single item" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/020", packingListDate: "2026-09-28", items: [{ quantity: "10", unit: "PCS" }], packageCount: "1", weightUnit: kg, netWeight: "10", grossWeight: "12" }
+expectedError: { code: EXPORT_MISSING_INPUT, path: "items[0].description" }
