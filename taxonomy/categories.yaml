@@ -56,12 +56,12 @@ categories:
     name: Export & Import Documents
     icon: file-up
     order: 35
-    summary: Prepare export invoices, packing lists and shipment records for exporters and MSMEs.
+    summary: Prepare export commercial invoices for exporters, ecommerce sellers and MSMEs.
     seo:
       title: Export Documents – Commercial Invoice Generator
-      description: Free tools to prepare export commercial invoices and shipment paperwork for exporters, ecommerce sellers and MSMEs. Runs in your browser, no sign-up.
+      description: Free tools to prepare export commercial invoices for exporters, ecommerce sellers and MSMEs. Runs in your browser, no sign-up.
     about:
-      - Practical document generators and record helpers for small exporters, ecommerce sellers and retail businesses. The Export Commercial Invoice Generator prepares an export invoice draft — exporter, buyer/consignee, item, shipping and declaration details — with the item and invoice totals calculated.
+      - Practical document generators for small exporters, ecommerce sellers and retail businesses. The Export Commercial Invoice Generator prepares an export invoice draft — exporter, buyer/consignee, item, shipping and declaration details — with the item and invoice totals calculated.
       - These tools help you prepare documents and drafts. They do not file anything with Customs, India Post, DGFT, ICEGATE, DNK, ECCS, or any bank or government portal, and they do not give legal, tax, or FEMA/bank compliance advice. Verify final documents with India Post, your courier, customs broker, CA, bank, or the official portal before filing or shipping.
       - The tools run entirely in your browser. The business and shipment details you enter are never sent to a server.
     faq:
