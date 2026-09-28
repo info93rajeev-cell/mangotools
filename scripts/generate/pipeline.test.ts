@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds thirty tools, thirty presets and the seven visible categories', () => {
+  it('builds thirty-one tools, thirty-one presets and the seven visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -50,6 +50,7 @@ describe('registry pipeline — valid repository', () => {
       'csv-to-json',
       'excavation-calculator',
       'export-commercial-invoice-generator',
+      'export-packing-list-generator',
       'favicon-generator',
       'gst-calculator',
       'image-compress',
@@ -73,7 +74,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(30);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(31);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
@@ -375,8 +376,8 @@ describe('category visibility threshold', () => {
       })
         .filter((c) => c.visible)
         .map((c) => c.id);
-    // media has seven tools; developer and construction have six each; logistics has four; business
-    // and pdf have three each; export-import has one. Visible categories are ordered by
+    // media has seven tools; developer and construction have six each; logistics has four; business,
+    // pdf and export-import have three, three and two respectively. Visible categories are ordered by
     // taxonomy/categories.yaml's `order`.
     expect(visibleAt(1)).toEqual([
       'construction',
@@ -390,6 +391,7 @@ describe('category visibility threshold', () => {
     expect(visibleAt(2)).toEqual([
       'construction',
       'logistics',
+      'export-import',
       'business',
       'developer',
       'pdf',

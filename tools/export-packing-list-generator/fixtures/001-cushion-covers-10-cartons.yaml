@@ -1,0 +1,44 @@
+id: 001-cushion-covers-10-cartons
+preset: export/packing-list
+source:
+  type: hand-verified
+  citation: "Direct field echo, no calculation performed; gross weight (135 kg) is not less than net weight (125 kg)"
+input:
+  exporterName: "Sunrise Handicrafts Exports"
+  exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India"
+  exporterIec: "AAAAA1234A"
+  exporterGstin: "27ABCDE1234F1Z5"
+  exporterContact: "export@sunrisehandicrafts.example"
+  buyerName: "Global Home Decor LLC"
+  buyerAddress: "500 Market Street, San Francisco, CA 94105, USA"
+  destinationCountry: "United States"
+  packingListNumber: "SHE/PL/2026/014"
+  packingListDate: "2026-09-28"
+  invoiceNumber: "SHE/EXP/2026/014"
+  invoiceDate: "2026-09-27"
+  orderReference: "PO-2026-0098"
+  shippingMode: "Air Cargo"
+  trackingNumber: "AWB-123456789"
+  itemDescription: "Hand-block printed cotton cushion covers"
+  itemSku: "CC-BLK-001"
+  itemHsn: "630490"
+  itemCountryOfOrigin: "India"
+  itemQuantity: "500"
+  itemUnit: "PCS"
+  packageCount: "10"
+  packageType: "Carton"
+  shippingMarks: "GHD / SF / 1-10"
+  weightUnit: "kg"
+  netWeight: "125"
+  grossWeight: "135"
+  dimensions: "50 x 40 x 35 cm"
+  authorizedSignatory: "Raj Mehta"
+expected:
+  packingListNumber: "SHE/PL/2026/014"
+  packageCount: "10"
+  weightUnit: "kg"
+  netWeight: "125"
+  grossWeight: "135"
+  working: []
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_PACKING_LIST_SCOPE_LIMIT]

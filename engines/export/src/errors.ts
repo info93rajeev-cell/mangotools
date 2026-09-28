@@ -20,4 +20,7 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not provide legal, tax, or FEMA/bank compliance advice.',
   EXPORT_INVOICE_SCOPE_LIMIT:
     'This invoice draft does not calculate tax, duty, or foreign-exchange conversion, and is not a government-approved format.',
+  EXPORT_PACKING_LIST_SCOPE_LIMIT:
+    'This packing list draft does not calculate duties, taxes, freight, forex, customs value, or regulatory eligibility, and is not an official or government-approved packing list.',
+  EXPORT_GROSS_WEIGHT_BELOW_NET: 'Gross weight cannot be less than net weight.',
 };

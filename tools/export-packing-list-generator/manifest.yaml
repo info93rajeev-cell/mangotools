@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: export-packing-list-generator
+slug: export-packing-list-generator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-09-28, type: added, summary: "First beta. Packing list draft for an export shipment: exporter, buyer/consignee, item, package count, weight and declaration details." }
+name: Export Packing List Generator
+shortName: Packing List
+summary: Prepare an export packing list draft for exporters, ecommerce sellers and MSMEs.
+archetype: B
+preset: export/packing-list
+sample: cushion-covers-10-cartons
+taxonomy:
+  category: export-import
+  tags: [export, documents]
+  synonyms: [export packing list generator, packing list generator, export packing list, packing list for export, packing list template export, shipment packing list, packing list format, export shipment packing list]
+capabilities: { print: true, share: true }
+privacy: { dataClass: public, network: none }
+disclaimer: professional
+seo:
+  title: Packing List Generator – Export Document Draft
+  description: Prepare an export packing list draft, exporter, buyer, item, package count and weight details. Free, runs in your browser.
+  primaryKeyword: packing list generator
+  secondaryKeywords: [export packing list generator, export packing list, packing list for export]
+graph:
+  related: [export-commercial-invoice-generator]
+quality:
+  verifiedAgainst:
+    - { citation: "Field groups (exporter, buyer/consignee, document/shipment, item, packing/weight, declaration) from TASK-009A's Export & Import Documents foundation planner and TASK-009C's brief, itself researched against secondary summaries of CBIC/DGFT/GST notifications", locator: "tasks/TASK-009A-EXPORT-IMPORT-DOCUMENTS-FOUNDATION-PLANNER.md, section 8" }
+    - { citation: "Net weight excludes packaging, gross weight includes packaging (general shipping terminology); gross weight cannot be less than net weight", locator: "Method section" }
+  lastVerified: 2026-09-28

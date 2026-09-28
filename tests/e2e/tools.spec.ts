@@ -399,7 +399,7 @@ test.describe('Export Commercial Invoice Generator', () => {
     await expect(page.locator('[data-disclaimer]')).toBeVisible();
     await expect(
       page.getByRole('link', {
-        name: /Packing List|Product Master|Buyer Master|Shipment Record|Postal Export|Courier Export/i,
+        name: /Product Master|Buyer Master|Shipment Record|Postal Export|Courier Export/i,
       }),
     ).toHaveCount(0);
   });

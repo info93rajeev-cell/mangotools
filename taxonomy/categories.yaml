@@ -56,12 +56,12 @@ categories:
     name: Export & Import Documents
     icon: file-up
     order: 35
-    summary: Prepare export commercial invoices for exporters, ecommerce sellers and MSMEs.
+    summary: Prepare export commercial invoices and packing lists for exporters, ecommerce sellers and MSMEs.
     seo:
-      title: Export Documents – Commercial Invoice Generator
-      description: Free tools to prepare export commercial invoices for exporters, ecommerce sellers and MSMEs. Runs in your browser, no sign-up.
+      title: Export Documents – Invoice & Packing List Tools
+      description: Free tools to prepare export commercial invoices and packing lists for exporters, ecommerce sellers and MSMEs. Runs in your browser, no sign-up.
     about:
-      - Practical document generators for small exporters, ecommerce sellers and retail businesses. The Export Commercial Invoice Generator prepares an export invoice draft — exporter, buyer/consignee, item, shipping and declaration details — with the item and invoice totals calculated.
+      - Practical document generators for small exporters, ecommerce sellers and retail businesses. The Export Commercial Invoice Generator prepares an export invoice draft — exporter, buyer/consignee, item, shipping and declaration details — with the item and invoice totals calculated. The Export Packing List Generator prepares a packing-list draft — exporter, buyer/consignee, item, package count, net/gross weight and declaration details — with no automatic data transfer between the two tools.
       - These tools help you prepare documents and drafts. They do not file anything with Customs, India Post, DGFT, ICEGATE, DNK, ECCS, or any bank or government portal, and they do not give legal, tax, or FEMA/bank compliance advice. Verify final documents with India Post, your courier, customs broker, CA, bank, or the official portal before filing or shipping.
       - The tools run entirely in your browser. The business and shipment details you enter are never sent to a server.
     faq:
@@ -72,7 +72,7 @@ categories:
       - q: Is this legal, tax, or FEMA/bank compliance advice?
         a: No. These tools help you prepare documents and drafts. Confirm compliance requirements with your CA, customs broker, bank, or the official portal.
       - q: Will more export/import tools be added?
-        a: This category currently has one tool, the Export Commercial Invoice Generator. Further export and import document tools may be added later.
+        a: This category currently has two tools, the Export Commercial Invoice Generator and the Export Packing List Generator. Further export and import document tools may be added later.
   - id: privacy-tools
     slug: privacy-tools
     name: Privacy & Compliance

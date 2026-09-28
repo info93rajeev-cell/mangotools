@@ -1,0 +1,31 @@
+id: 002-minimal-required-fields
+preset: export/packing-list
+source:
+  type: hand-verified
+  citation: "Only the required fields filled, everything optional left blank"
+input:
+  exporterName: "Coastal Spice Traders"
+  exporterAddress: "45 Harbour Road, Kochi, Kerala 682001, India"
+  exporterIec: "BBBBB5678B"
+  buyerName: "Northgate Foods Ltd"
+  buyerAddress: "9 Industrial Estate, Manchester M1 2AB, United Kingdom"
+  destinationCountry: "United Kingdom"
+  packingListNumber: "CST-PL-2026-071"
+  packingListDate: "2026-09-28"
+  itemDescription: "Whole black pepper, dried"
+  itemQuantity: "20"
+  itemUnit: "KG"
+  packageCount: "4"
+  weightUnit: "kg"
+  netWeight: "20"
+  grossWeight: "22"
+expected:
+  packageCount: "4"
+  netWeight: "20"
+  grossWeight: "22"
+  exporterGstin: null
+  consigneeName: null
+  invoiceNumber: null
+  dimensions: null
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_PACKING_LIST_SCOPE_LIMIT]

@@ -61,6 +61,16 @@ export function readOptionalPositiveInt(raw: Raw, path: string): Result<string |
   return ok(parsed.value);
 }
 
+/** A required whole number greater than zero (a count). */
+export function readPositiveInt(raw: Raw, path: string): Result<string> {
+  if (raw === undefined || text(raw) === '') return err('EXPORT_MISSING_INPUT', { path });
+  const parsed = parseDecimal(text(raw));
+  if (!parsed.ok) return err('EXPORT_INVALID_NUMBER', { path });
+  if (compare(parsed.value, '0') <= 0) return err('EXPORT_NOT_POSITIVE', { path });
+  if (parsed.value.includes('.')) return err('EXPORT_NOT_WHOLE', { path });
+  return ok(parsed.value);
+}
+
 const DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /**
@@ -69,9 +79,7 @@ const DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
  * pattern already used by `engines/data`'s timestamp-convert operation: day-of-month validity is
  * confirmed by checking the constructed date didn't roll over, so 2026-02-30 is rejected outright.
  */
-export function readDate(raw: Raw, path: string): Result<string> {
-  if (raw === undefined || text(raw) === '') return err('EXPORT_MISSING_INPUT', { path });
-  const value = text(raw);
+function parseDate(value: string, path: string): Result<string> {
   const m = DATE.exec(value);
   if (!m) return err('EXPORT_INVALID_DATE', { path });
   const year = Number(m[1]);
@@ -82,6 +90,17 @@ export function readDate(raw: Raw, path: string): Result<string> {
   const rolledOver = constructed.getUTCDate() !== day || constructed.getUTCMonth() !== month - 1;
   if (rolledOver) return err('EXPORT_INVALID_DATE', { path });
   return ok(value);
+}
+
+export function readDate(raw: Raw, path: string): Result<string> {
+  if (raw === undefined || text(raw) === '') return err('EXPORT_MISSING_INPUT', { path });
+  return parseDate(text(raw), path);
+}
+
+/** An optional calendar date in YYYY-MM-DD form, checked only when given. */
+export function readOptionalDate(raw: Raw, path: string): Result<string | null> {
+  if (raw === undefined || text(raw) === '') return ok(null);
+  return parseDate(text(raw), path);
 }
 
 const GSTIN = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
@@ -102,6 +121,14 @@ const HSN = /^\d{4}(\d{2}(\d{2})?)?$/;
 /** A required HSN code: numeric, 4, 6 or 8 digits (the three standard GST HSN lengths). */
 export function readHsn(raw: Raw, path: string): Result<string> {
   if (raw === undefined || text(raw) === '') return err('EXPORT_MISSING_INPUT', { path });
+  const value = text(raw);
+  if (!HSN.test(value)) return err('EXPORT_HSN_INVALID_FORMAT', { path });
+  return ok(value);
+}
+
+/** An optional HSN code, checked against the standard 4/6/8-digit numeric format only when given. */
+export function readOptionalHsn(raw: Raw, path: string): Result<string | null> {
+  if (raw === undefined || text(raw) === '') return ok(null);
   const value = text(raw);
   if (!HSN.test(value)) return err('EXPORT_HSN_INVALID_FORMAT', { path });
   return ok(value);

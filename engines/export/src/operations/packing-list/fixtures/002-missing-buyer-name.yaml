@@ -1,0 +1,5 @@
+id: 002-missing-buyer-name
+operation: export.packing.list@1
+source: { type: regression, citation: "buyer name omitted entirely" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", packingListNumber: "SHE/PL/2026/014", packingListDate: "2026-09-28", itemDescription: "Hand-block printed cotton cushion covers", itemQuantity: "500", itemUnit: "PCS", packageCount: "10", weightUnit: kg, netWeight: "125", grossWeight: "135" }
+expectedError: { code: EXPORT_MISSING_INPUT, path: buyerName }
