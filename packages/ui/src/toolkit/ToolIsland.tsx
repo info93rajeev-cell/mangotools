@@ -1,5 +1,13 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
-import { createPreferences, track } from '@mangotools/runtime';
+import {
+  createPreferences,
+  decodeTransferHash,
+  encodeTransferHash,
+  filterTransferValues,
+  hasTransferHash,
+  pickTransferValues,
+  track,
+} from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { CalculatorLayout } from '../archetypes/CalculatorLayout.tsx';
@@ -8,12 +16,12 @@ import { TransformLayout } from '../archetypes/TransformLayout.tsx';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { partsToText, renderTemplate } from '../format/template.ts';
 import { Button } from '../primitives/Button.tsx';
-import { Toast, useToast } from '../primitives/feedback.tsx';
+import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { Icon } from '../primitives/Icon.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar } from './ActionBar.tsx';
 import { copyText } from './actions.ts';
-import { outputRows, presetCurrency } from './presentation.ts';
+import { label, outputRows, presetCurrency } from './presentation.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 import type { WorkingStep } from './WorkingSteps.tsx';
@@ -74,6 +82,46 @@ function TopBar({ sampleId, howToId, onTrySample }: TopBarProps) {
       ) : null}
     </div>
   );
+}
+
+/** Shown once, only when this page's fields were just seeded via another tool's transfer button. */
+function TransferNotice({
+  preset,
+  idPrefix,
+  visible,
+}: {
+  preset: ResolvedPreset;
+  idPrefix: string;
+  visible: boolean;
+}) {
+  if (!visible || !preset.ui.transferNoticeKey) return null;
+  return (
+    <InlineAlert tone="info" role="status" id={`${idPrefix}-transfer-notice`}>
+      <p data-transfer-notice="">{label(preset, preset.ui.transferNoticeKey)}</p>
+    </InlineAlert>
+  );
+}
+
+/**
+ * Consumes a one-shot transfer hash on mount, if this page was opened via another tool's transfer
+ * button (see preset `ui.transferTo`). The payload lives only in the URL's hash fragment, which the
+ * browser never sends to any server, so it never reaches a log, an analytics call, or MangoTools
+ * itself. Consumed once, then the hash is always stripped so a later reload of this same URL never
+ * re-applies it. Returns whether a transfer was applied, for a one-time "review these" notice.
+ */
+function useIncomingTransfer(preset: ResolvedPreset, store: ToolStore): boolean {
+  const [transferred, setTransferred] = useState(false);
+  useEffect(() => {
+    if (!hasTransferHash(window.location.hash)) return;
+    const payload = decodeTransferHash(window.location.hash);
+    const filtered = payload && filterTransferValues(payload, Object.keys(preset.fields));
+    if (filtered && Object.keys(filtered).length > 0) {
+      store.setMany(filtered);
+      setTransferred(true);
+    }
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }, [preset, store]);
+  return transferred;
 }
 
 interface ArchetypeProps {
@@ -138,6 +186,7 @@ export function ToolIsland({
   const ran = useRef(false);
   const idPrefix = `tool-${toolId}`;
   const [filePhase, setFilePhase] = useState<FilePhase>('idle');
+  const transferred = useIncomingTransfer(preset, store);
   const displayPhase = archetype === 'D' ? filePhase : snapshot.phase;
 
   useEffect(() => {
@@ -167,10 +216,18 @@ export function ToolIsland({
     window.print();
   };
   const hasResult = snapshot.result !== null && snapshot.phase !== 'error';
+  const transferTo = preset.ui.transferTo;
+  const startTransfer = () => {
+    if (!transferTo) return;
+    const payload = pickTransferValues(snapshot.values, transferTo.fields);
+    track('tool_complete', { toolId, method: 'transfer' });
+    window.location.href = `/${transferTo.targetToolId}${encodeTransferHash(payload)}`;
+  };
 
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       <TopBar sampleId={sampleId} howToId={howToId} onTrySample={() => void trySample()} />
+      <TransferNotice preset={preset} idPrefix={idPrefix} visible={transferred} />
       <ArchetypeLayout
         archetype={archetype}
         idPrefix={idPrefix}
@@ -186,6 +243,8 @@ export function ToolIsland({
           hasResult={hasResult}
           onCopy={archetype === 'B' ? () => void copySummary() : undefined}
           onPrint={archetype === 'B' && print ? printResult : undefined}
+          onTransfer={archetype === 'B' && transferTo ? startTransfer : undefined}
+          transferLabel={transferTo ? label(preset, transferTo.buttonLabelKey) : undefined}
           onReset={() => store.reset()}
         />
       )}

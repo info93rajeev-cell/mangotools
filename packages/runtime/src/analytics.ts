@@ -5,7 +5,7 @@
  */
 
 const TEMPLATES = ['home', 'tools', 'category', 'tool', '404'] as const;
-const METHODS = ['copy', 'download', 'print'] as const;
+const METHODS = ['copy', 'download', 'print', 'transfer'] as const;
 const THEMES = ['light', 'dark', 'system'] as const;
 
 export interface AnalyticsCatalogue {
