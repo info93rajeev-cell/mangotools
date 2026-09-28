@@ -40,7 +40,15 @@ export function sampleValues(preset: ResolvedPreset, sampleId: string): FieldVal
   if (!sample) return null;
   const values = defaultValues(preset);
   for (const [key, v] of Object.entries({ ...(sample.params ?? {}), ...sample.input })) {
-    values[key] = typeof v === 'boolean' ? v : String(v);
+    // A sample field is almost always a scalar written as-is in YAML; the one exception is a
+    // structured field authored as a native array/object (e.g. the invoice's item rows), which a
+    // form field can only hold as a string, so it is JSON-encoded exactly like the browser would.
+    values[key] =
+      typeof v === 'boolean'
+        ? v
+        : typeof v === 'object' && v !== null
+          ? JSON.stringify(v)
+          : String(v);
   }
   return values;
 }

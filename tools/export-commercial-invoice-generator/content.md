@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-28
 example: 001-cushion-covers-usd
 ---
 
@@ -14,17 +14,16 @@ ecommerce exporters, small businesses, and MSMEs shipping through India Post, a 
 2. Enter the buyer's details, and the consignee's details if the actual receiver abroad is different
    from the buyer.
 3. Enter the invoice number, date, and currency, plus any payment terms or incoterm you use.
-4. Enter the item being shipped: description, HSN code, quantity, unit, and unit price. This version
-   supports one item row per invoice.
+4. Enter each item being shipped: description, HSN code, quantity, unit, and unit price. Use **Add
+   item** for more than one product, up to 5 items per invoice.
 5. Optionally enter shipping details (package count, weights, shipping mode) and edit or clear the
    declaration text.
 6. Read the invoice draft, including the calculated item and invoice totals. Copy or print it.
 
 ## Method
 
-- Item line total = quantity × unit price, in the invoice currency you entered.
-- Invoice subtotal = the item line total. This version supports one item row, so the subtotal and
-  the invoice total are always equal to that single line's total.
+- Each item's line amount = quantity × unit price, in the invoice currency you entered.
+- Invoice subtotal = the exact sum of every item's line amount (up to 5 items).
 - Invoice total = invoice subtotal. **No tax, duty, or foreign-exchange conversion is calculated or
   added** — this is a plain export-value total, not a tax-inclusive or landed-cost figure.
 

@@ -1,0 +1,5 @@
+id: 005-zero-items-rejected
+operation: export.invoice.commercial@2
+source: { type: synthetic, citation: "Every invoice must contain at least one item" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", invoiceNumber: "SHE/EXP/2026/018", invoiceDate: "2026-09-27", currency: "USD", items: [] }
+expectedError: { code: EXPORT_TOO_FEW_ITEMS, path: items }

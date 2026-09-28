@@ -1,0 +1,5 @@
+id: 006-invalid-quantity-on-second-row
+operation: export.invoice.commercial@2
+source: { type: synthetic, citation: "Row 0 is valid; row 1 has a zero quantity, which must be identified by its own index/path" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", invoiceNumber: "SHE/EXP/2026/019", invoiceDate: "2026-09-27", currency: "USD", items: [{ description: "Item A", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }, { description: "Item B", hsn: "630490", quantity: "0", unit: "PCS", unitPrice: "1.00" }] }
+expectedError: { code: EXPORT_NOT_POSITIVE, path: "items[1].quantity" }

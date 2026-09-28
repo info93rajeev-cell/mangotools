@@ -79,6 +79,22 @@ describe('tool input', () => {
     });
     expect(sampleValues(gst, 'nope')).toBeNull();
   });
+
+  it('JSON-encodes a sample field authored as a native array/object (e.g. invoice item rows)', () => {
+    const withItems: ResolvedPreset = {
+      ...gst,
+      fields: { ...gst.fields, items: { labelKey: 'x', kind: 'text', order: 1 } },
+      samples: {
+        ...gst.samples,
+        'two-items': {
+          titleKey: 't',
+          input: { items: [{ description: 'A' }, { description: 'B' }] },
+        },
+      },
+    };
+    const values = sampleValues(withItems, 'two-items');
+    expect(values?.items).toBe(JSON.stringify([{ description: 'A' }, { description: 'B' }]));
+  });
 });
 
 describe('tool store', () => {

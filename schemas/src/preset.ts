@@ -98,6 +98,9 @@ export const presetSchema = z.strictObject({
       fileAccept: z.string().optional(),
       /** Archetype D: caps the file queue (1 = single-file, replacing on each new selection). */
       maxFiles: z.int().positive().optional(),
+      /** Caps the Export Commercial Invoice Generator's item rows (TASK-009G). Not a generic
+       * repeatable-field mechanism — read by exactly that one tool's own layout component. */
+      maxItems: z.int().positive().optional(),
       /** Declares a "send named fields to another tool" button on this tool's own result. */
       transferTo: transferToSchema.optional(),
       /** Shown once, on this tool, when it detects it was opened via another tool's transfer. */
