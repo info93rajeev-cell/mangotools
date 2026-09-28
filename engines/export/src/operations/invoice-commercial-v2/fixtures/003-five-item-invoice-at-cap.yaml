@@ -1,0 +1,7 @@
+id: 003-five-item-invoice-at-cap
+operation: export.invoice.commercial@2
+source: { type: hand-verified, citation: "5 rows of 10 x 1.00 = 10.00 each; subtotal and total = 5 x 10.00 = 50.00; exercises the MAX_ITEMS=5 cap exactly at the limit" }
+input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", invoiceNumber: "SHE/EXP/2026/016", invoiceDate: "2026-09-27", currency: "USD", items: [{ description: "Item A", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }, { description: "Item B", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }, { description: "Item C", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }, { description: "Item D", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }, { description: "Item E", hsn: "630490", quantity: "10", unit: "PCS", unitPrice: "1.00" }] }
+expected: { invoiceSubtotal: "50.00", invoiceTotal: "50.00" }
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_INVOICE_SCOPE_LIMIT]

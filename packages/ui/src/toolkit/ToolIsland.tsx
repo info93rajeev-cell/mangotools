@@ -21,10 +21,20 @@ import { Icon } from '../primitives/Icon.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar } from './ActionBar.tsx';
 import { copyText } from './actions.ts';
+import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
+import { invoiceTransferValues } from './invoiceItems.ts';
 import { label, outputRows, presetCurrency } from './presentation.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 import type { WorkingStep } from './WorkingSteps.tsx';
+
+/**
+ * The one tool with per-tool UI logic on the platform: its item rows can't be described by a flat
+ * preset field, so it gets its own layout (see `InvoiceItemsLayout.tsx` and TASK-009G's report for
+ * why this is a one-off special case rather than a new generic archetype or field kind). Every other
+ * tool renders through the ordinary `ArchetypeLayout` switch below, completely unaffected.
+ */
+const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -169,6 +179,11 @@ function ArchetypeLayout({
       />
     );
   }
+  if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
+    return (
+      <InvoiceItemsLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />
+    );
+  }
   return <CalculatorLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />;
 }
 
@@ -219,7 +234,7 @@ export function ToolIsland({
   const transferTo = preset.ui.transferTo;
   const startTransfer = () => {
     if (!transferTo) return;
-    const payload = pickTransferValues(snapshot.values, transferTo.fields);
+    const payload = pickTransferValues(invoiceTransferValues(snapshot.values), transferTo.fields);
     track('tool_complete', { toolId, method: 'transfer' });
     window.location.href = `/${transferTo.targetToolId}${encodeTransferHash(payload)}`;
   };

@@ -14,13 +14,13 @@ input:
   invoiceNumber: "CST-2026-071"
   invoiceDate: "2026-09-27"
   currency: "GBP"
-  itemDescription: "Whole black pepper, dried"
-  itemHsn: "0904"
-  itemQuantity: "20"
-  itemUnit: "KG"
-  itemUnitPrice: "12.00"
+  items:
+    - description: "Whole black pepper, dried"
+      hsn: "0904"
+      quantity: "20"
+      unit: "KG"
+      unitPrice: "12.00"
 expected:
-  itemLineTotal: "240.00"
   invoiceSubtotal: "240.00"
   invoiceTotal: "240.00"
   exporterGstin: null

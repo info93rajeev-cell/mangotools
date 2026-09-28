@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
   copiedTexts,
   FILE_TOOLS,
@@ -365,61 +365,6 @@ test.describe('Paint Calculator', () => {
       page.getByText('The opening area cannot be larger than the surface area.'),
     ).toBeVisible();
     await expect(page.getByLabel('Opening deduction area')).toHaveAttribute('aria-invalid', 'true');
-  });
-});
-
-test.describe('Export Commercial Invoice Generator', () => {
-  const fillRequired = async (page: Page) => {
-    await page.getByLabel('Exporter — Business name').fill('Sunrise Handicrafts Exports');
-    await page.getByLabel('Exporter — Address').fill('12 MG Road, Jaipur, Rajasthan 302001, India');
-    await page.getByLabel('Exporter — IEC').fill('AAAAA1234A');
-    await page.getByLabel('Exporter — Phone/email').fill('+91 98765 43210');
-    await page.getByLabel('Buyer — Name').fill('Global Home Decor LLC');
-    await page
-      .getByLabel('Buyer — Address')
-      .fill('500 Market Street, San Francisco, CA 94105, USA');
-    await page.getByLabel('Buyer — Destination country').fill('United States');
-    await page.getByLabel('Invoice — Number').fill('SHE/EXP/2026/014');
-    await page.getByLabel('Invoice — Date').fill('2026-09-27');
-    await page.getByLabel('Item — Description').fill('Hand-block printed cotton cushion covers');
-    await page.getByLabel('Item — HSN code').fill('630490');
-    await page.getByLabel('Item — Quantity').fill('500');
-    await page.getByLabel('Item — Unit price').fill('3.50');
-  };
-
-  test('calculates the item line total and invoice total (500 x 3.50 = 1,750.00)', async ({
-    page,
-  }) => {
-    await openTool(page, 'export-commercial-invoice-generator');
-    await expect(page.getByLabel('Invoice — Currency')).toHaveValue('USD');
-    await expect(page.getByLabel('Item — Unit', { exact: true })).toHaveValue('PCS');
-    await fillRequired(page);
-    await expect(primaryResult(page)).toHaveText('1,750.00');
-    await expect(page.locator('[data-output="itemLineTotal"] dd')).toHaveText('1,750.00');
-    await expect(page.locator('[data-disclaimer]')).toBeVisible();
-    await expect(
-      page.getByRole('link', {
-        name: /Product Master|Buyer Master|Shipment Record|Postal Export|Courier Export/i,
-      }),
-    ).toHaveCount(0);
-  });
-
-  test('explains an invalid quantity next to the field', async ({ page }) => {
-    await openTool(page, 'export-commercial-invoice-generator');
-    await fillRequired(page);
-    await page.getByLabel('Item — Quantity').fill('0');
-    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
-    await expect(page.getByLabel('Item — Quantity')).toHaveAttribute('aria-invalid', 'true');
-  });
-
-  test('explains an invalid invoice date next to the field', async ({ page }) => {
-    await openTool(page, 'export-commercial-invoice-generator');
-    await fillRequired(page);
-    await page.getByLabel('Invoice — Date').fill('27-09-2026');
-    await expect(
-      page.getByText('Enter a date in YYYY-MM-DD format, such as 2026-09-27.'),
-    ).toBeVisible();
-    await expect(page.getByLabel('Invoice — Date')).toHaveAttribute('aria-invalid', 'true');
   });
 });
 

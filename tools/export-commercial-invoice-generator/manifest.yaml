@@ -4,12 +4,13 @@ id: export-commercial-invoice-generator
 slug: export-commercial-invoice-generator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-09-28, type: changed, summary: "Supports up to 5 line items per invoice, with a per-item result table summing to the invoice total." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Commercial invoice draft for an export shipment, with the item and invoice totals calculated." }
 name: Export Commercial Invoice Generator
 shortName: Export Invoice
-summary: Prepare a commercial invoice draft for an export shipment, with the item and invoice totals calculated.
+summary: Prepare a commercial invoice draft for an export shipment with up to 5 line items, with each item and the invoice total calculated.
 archetype: B
 preset: export/invoice-commercial
 sample: cushion-covers-usd
@@ -22,7 +23,7 @@ privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
   title: Export Commercial Invoice Generator – Free Tool
-  description: Prepare a commercial invoice draft for an export shipment, exporter, buyer, item and shipping details, with totals calculated. Free, runs in your browser.
+  description: Prepare a commercial invoice draft for an export shipment with up to 5 line items, exporter and buyer details, with totals calculated. Free, no sign-up.
   primaryKeyword: export commercial invoice generator
   secondaryKeywords: [commercial invoice generator, export invoice generator, commercial invoice for export]
 quality:

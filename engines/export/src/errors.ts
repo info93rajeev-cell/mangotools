@@ -23,4 +23,7 @@ export const messages: Readonly<Record<string, string>> = {
   EXPORT_PACKING_LIST_SCOPE_LIMIT:
     'This packing list draft does not calculate duties, taxes, freight, forex, customs value, or regulatory eligibility, and is not an official or government-approved packing list.',
   EXPORT_GROSS_WEIGHT_BELOW_NET: 'Gross weight cannot be less than net weight.',
+  EXPORT_INVALID_ITEMS: 'The item rows could not be read. Try removing and re-adding the item.',
+  EXPORT_TOO_FEW_ITEMS: 'Add at least one item.',
+  EXPORT_TOO_MANY_ITEMS: 'This invoice supports at most {max} items.',
 };
