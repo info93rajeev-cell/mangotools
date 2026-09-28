@@ -14,6 +14,7 @@ export const SAMPLES = {
   'tile-flooring-calculator': { archetype: 'B', result: '246' },
   'paint-calculator': { archetype: 'B', result: '3.96' },
   'export-commercial-invoice-generator': { archetype: 'B', result: '1,750.00' },
+  'export-packing-list-generator': { archetype: 'B', result: '10' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },

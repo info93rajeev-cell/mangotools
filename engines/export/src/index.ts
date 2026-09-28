@@ -1,11 +1,12 @@
 import type { EngineModule } from '@mangotools/core';
 import { messages } from './errors.ts';
 import { invoiceCommercial } from './operations/invoice-commercial/operation.ts';
+import { packingList } from './operations/packing-list/operation.ts';
 
 export const engine: EngineModule = {
   engineId: 'export',
-  operations: [invoiceCommercial],
+  operations: [invoiceCommercial, packingList],
   messages,
 };
 
-export { invoiceCommercial };
+export { invoiceCommercial, packingList };
