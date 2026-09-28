@@ -8,11 +8,22 @@ export interface ActionBarProps {
   onCopy?: (() => void) | undefined;
   onDownload?: (() => void) | undefined;
   onPrint?: (() => void) | undefined;
+  /** Sends named fields to another tool (preset `ui.transferTo`); label comes from that preset. */
+  onTransfer?: (() => void) | undefined;
+  transferLabel?: string | undefined;
   onReset: () => void;
 }
 
-/** Copy · Download · Print · Reset — only the actions that make sense for the tool. */
-export function ActionBar({ hasResult, onCopy, onDownload, onPrint, onReset }: ActionBarProps) {
+/** Copy · Download · Print · Transfer · Reset — only the actions that make sense for the tool. */
+export function ActionBar({
+  hasResult,
+  onCopy,
+  onDownload,
+  onPrint,
+  onTransfer,
+  transferLabel,
+  onReset,
+}: ActionBarProps) {
   return (
     <div class={`${styles.actionBar} no-print`}>
       {onCopy ? (
@@ -28,6 +39,11 @@ export function ActionBar({ hasResult, onCopy, onDownload, onPrint, onReset }: A
       {onPrint ? (
         <Button icon="printer" onClick={onPrint} disabled={!hasResult}>
           {t('action.print')}
+        </Button>
+      ) : null}
+      {onTransfer && transferLabel ? (
+        <Button icon="arrow-right" onClick={onTransfer} disabled={!hasResult}>
+          {transferLabel}
         </Button>
       ) : null}
       <Button variant="ghost" icon="rotate-ccw" onClick={onReset}>

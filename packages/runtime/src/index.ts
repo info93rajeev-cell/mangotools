@@ -5,5 +5,6 @@ export * from './protocol.ts';
 export * from './search.ts';
 export * from './tool-input.ts';
 export * from './tool-state.ts';
+export * from './transfer.ts';
 export * from './worker-handler.ts';
 export * from './worker-host.ts';

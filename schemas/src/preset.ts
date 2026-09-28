@@ -1,8 +1,20 @@
 import { z } from 'zod';
-import { operationRef, presetId, semver } from './common.ts';
+import { kebabId, operationRef, presetId, semver } from './common.ts';
 
 const conditions = z.record(z.string(), z.array(z.string()));
 const archetype = z.enum(['A', 'B', 'C', 'D', 'E']);
+
+/**
+ * A one-shot, same-tab handoff of named field values to another tool, initiated by a button on this
+ * tool's own result. Carried in the destination URL's hash fragment only (never sent in an HTTP
+ * request, never written to any browser storage) and consumed once on the destination's first paint.
+ * This is initialization only: the two tools stay fully independent afterward.
+ */
+const transferToSchema = z.strictObject({
+  targetToolId: kebabId,
+  fields: z.array(z.string()).min(1),
+  buttonLabelKey: z.string(),
+});
 
 const optionValue = z.strictObject({
   labelKey: z.string(),
@@ -86,6 +98,10 @@ export const presetSchema = z.strictObject({
       fileAccept: z.string().optional(),
       /** Archetype D: caps the file queue (1 = single-file, replacing on each new selection). */
       maxFiles: z.int().positive().optional(),
+      /** Declares a "send named fields to another tool" button on this tool's own result. */
+      transferTo: transferToSchema.optional(),
+      /** Shown once, on this tool, when it detects it was opened via another tool's transfer. */
+      transferNoticeKey: z.string().optional(),
     })
     .optional(),
   strings: z.strictObject({ en: z.record(z.string(), z.string()) }).optional(),

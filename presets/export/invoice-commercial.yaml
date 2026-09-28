@@ -83,7 +83,14 @@ samples:
   cushion-covers-usd:
     titleKey: invoice.sample.cushionCovers
     input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterGstin: "27ABCDE1234F1Z5", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210 / export@sunrisehandicrafts.example", lutArn: "AD270622000111A", authorizedSignatory: "Raj Mehta", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", buyerContact: "buyer@globalhomedecor.example", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", currency: USD, paymentTerms: "100% advance", orderReference: "PO-2026-0098", incoterm: "FOB Mumbai", itemDescription: "Hand-block printed cotton cushion covers", itemSku: "CC-BLK-001", itemHsn: "630490", itemQuantity: "500", itemUnit: PCS, itemUnitPrice: "3.50", itemCountryOfOrigin: India, itemNetWeight: "125", packageCount: "10", grossWeight: "135", netWeight: "125", shippingMode: "Air Cargo", gstDeclaration: "Supply meant for export under LUT without payment of IGST.", exportDeclaration: "We declare that the information given above is true and correct." }
-ui: { archetypes: [B], density: comfortable, compute: live }
+ui:
+  archetypes: [B]
+  density: comfortable
+  compute: live
+  transferTo:
+    targetToolId: export-packing-list-generator
+    buttonLabelKey: invoice.action.createPackingList
+    fields: [exporterName, exporterAddress, exporterIec, exporterGstin, buyerName, buyerAddress, consigneeName, consigneeAddress, destinationCountry, orderReference, shippingMode, trackingNumber, itemDescription, itemSku, itemUnit, itemCountryOfOrigin, authorizedSignatory, invoiceNumber, invoiceDate]
 strings:
   en:
     invoice.field.exporterName: "Exporter — Business name"
@@ -194,6 +201,7 @@ strings:
     invoice.out.exportDeclaration: Export declaration
     invoice.out.signatureArea: Signature / seal area
     invoice.sample.cushionCovers: 500 cushion covers, USD, LUT export
+    invoice.action.createPackingList: Create Packing List
     work.invoice.itemLineTotal: "Item line total = {itemQuantity:number} {itemUnit} × {itemUnitPrice:number} {currency} = {result:number} {currency} (exact)"
     work.invoice.subtotal: "Invoice subtotal (v1: one item row, so this equals the item line total) = {itemLineTotal:number} {currency} (exact)"
     work.invoice.total: "Invoice total (no tax, duty or forex conversion added) = {invoiceSubtotal:number} {currency} (exact)"
