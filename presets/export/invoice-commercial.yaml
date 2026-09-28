@@ -1,0 +1,199 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: export/invoice-commercial
+version: 0.1.0
+operation: export.invoice.commercial@1
+params: { decimals: 2, rounding: half-up }
+fields:
+  exporterName: { labelKey: invoice.field.exporterName, kind: text, required: true, order: 10, helpKey: invoice.help.exporterName }
+  exporterAddress: { labelKey: invoice.field.exporterAddress, kind: text, required: true, order: 20, helpKey: invoice.help.exporterAddress }
+  exporterGstin: { labelKey: invoice.field.exporterGstin, kind: text, required: false, order: 30, helpKey: invoice.help.exporterGstin }
+  exporterIec: { labelKey: invoice.field.exporterIec, kind: text, required: true, order: 40, helpKey: invoice.help.exporterIec }
+  exporterContact: { labelKey: invoice.field.exporterContact, kind: text, required: true, order: 50, helpKey: invoice.help.exporterContact }
+  lutArn: { labelKey: invoice.field.lutArn, kind: text, required: false, order: 60, helpKey: invoice.help.lutArn }
+  authorizedSignatory: { labelKey: invoice.field.authorizedSignatory, kind: text, required: false, order: 70, helpKey: invoice.help.authorizedSignatory }
+  buyerName: { labelKey: invoice.field.buyerName, kind: text, required: true, order: 80, helpKey: invoice.help.buyerName }
+  buyerAddress: { labelKey: invoice.field.buyerAddress, kind: text, required: true, order: 90, helpKey: invoice.help.buyerAddress }
+  consigneeName: { labelKey: invoice.field.consigneeName, kind: text, required: false, order: 100, helpKey: invoice.help.consignee }
+  consigneeAddress: { labelKey: invoice.field.consigneeAddress, kind: text, required: false, order: 110, helpKey: invoice.help.consignee }
+  destinationCountry: { labelKey: invoice.field.destinationCountry, kind: text, required: true, order: 120, helpKey: invoice.help.destinationCountry }
+  buyerContact: { labelKey: invoice.field.buyerContact, kind: text, required: false, order: 130, helpKey: invoice.help.buyerContact }
+  buyerTaxId: { labelKey: invoice.field.buyerTaxId, kind: text, required: false, order: 140, helpKey: invoice.help.buyerTaxId }
+  invoiceNumber: { labelKey: invoice.field.invoiceNumber, kind: text, required: true, order: 150, helpKey: invoice.help.invoiceNumber }
+  invoiceDate: { labelKey: invoice.field.invoiceDate, kind: text, required: true, order: 160, helpKey: invoice.help.invoiceDate, placeholderKey: invoice.placeholder.invoiceDate }
+  currency: { labelKey: invoice.field.currency, kind: text, required: true, default: USD, order: 170, helpKey: invoice.help.currency }
+  paymentTerms: { labelKey: invoice.field.paymentTerms, kind: text, required: false, order: 180, helpKey: invoice.help.paymentTerms }
+  orderReference: { labelKey: invoice.field.orderReference, kind: text, required: false, order: 190, helpKey: invoice.help.orderReference }
+  incoterm: { labelKey: invoice.field.incoterm, kind: text, required: false, order: 200, helpKey: invoice.help.incoterm }
+  itemDescription: { labelKey: invoice.field.itemDescription, kind: text, required: true, order: 210, helpKey: invoice.help.itemDescription }
+  itemSku: { labelKey: invoice.field.itemSku, kind: text, required: false, order: 220, helpKey: invoice.help.itemSku }
+  itemHsn: { labelKey: invoice.field.itemHsn, kind: text, required: true, order: 230, helpKey: invoice.help.itemHsn }
+  itemQuantity: { labelKey: invoice.field.itemQuantity, kind: number, required: true, order: 240, helpKey: invoice.help.itemQuantity }
+  itemUnit: { labelKey: invoice.field.itemUnit, kind: text, required: true, default: PCS, order: 250, helpKey: invoice.help.itemUnit }
+  itemUnitPrice: { labelKey: invoice.field.itemUnitPrice, kind: number, required: true, order: 260, helpKey: invoice.help.itemUnitPrice }
+  itemCountryOfOrigin: { labelKey: invoice.field.itemCountryOfOrigin, kind: text, required: false, order: 270, helpKey: invoice.help.countryOfOrigin }
+  itemNetWeight: { labelKey: invoice.field.itemNetWeight, kind: number, required: false, order: 280, helpKey: invoice.help.netWeight }
+  packageCount: { labelKey: invoice.field.packageCount, kind: number, required: false, order: 290, helpKey: invoice.help.packageCount }
+  grossWeight: { labelKey: invoice.field.grossWeight, kind: number, required: false, order: 300, helpKey: invoice.help.grossWeight }
+  netWeight: { labelKey: invoice.field.netWeight, kind: number, required: false, order: 310, helpKey: invoice.help.netWeight }
+  shippingMode: { labelKey: invoice.field.shippingMode, kind: text, required: false, order: 320, helpKey: invoice.help.shippingMode }
+  trackingNumber: { labelKey: invoice.field.trackingNumber, kind: text, required: false, order: 330, helpKey: invoice.help.trackingNumber }
+  gstDeclaration: { labelKey: invoice.field.gstDeclaration, kind: text, required: false, default: "Supply meant for export under Letter of Undertaking (LUT) without payment of integrated tax (IGST), where applicable.", order: 340, helpKey: invoice.help.gstDeclaration }
+  exportDeclaration: { labelKey: invoice.field.exportDeclaration, kind: text, required: false, default: "We declare that the information given in this invoice is true and correct to the best of our knowledge and belief.", order: 350, helpKey: invoice.help.exportDeclaration }
+outputs:
+  invoiceTotal: { labelKey: invoice.out.invoiceTotal, format: money, order: 10, primary: true }
+  invoiceNumber: { labelKey: invoice.out.invoiceNumber, format: text, order: 20 }
+  invoiceDate: { labelKey: invoice.out.invoiceDate, format: text, order: 30 }
+  currency: { labelKey: invoice.out.currency, format: text, order: 40 }
+  orderReference: { labelKey: invoice.out.orderReference, format: text, order: 50 }
+  paymentTerms: { labelKey: invoice.out.paymentTerms, format: text, order: 60 }
+  incoterm: { labelKey: invoice.out.incoterm, format: text, order: 70 }
+  exporterName: { labelKey: invoice.out.exporterName, format: text, order: 80 }
+  exporterAddress: { labelKey: invoice.out.exporterAddress, format: text, order: 90 }
+  exporterGstin: { labelKey: invoice.out.exporterGstin, format: text, order: 100 }
+  exporterIec: { labelKey: invoice.out.exporterIec, format: text, order: 110 }
+  exporterContact: { labelKey: invoice.out.exporterContact, format: text, order: 120 }
+  lutArn: { labelKey: invoice.out.lutArn, format: text, order: 130 }
+  buyerName: { labelKey: invoice.out.buyerName, format: text, order: 140 }
+  buyerAddress: { labelKey: invoice.out.buyerAddress, format: text, order: 150 }
+  consigneeName: { labelKey: invoice.out.consigneeName, format: text, order: 160 }
+  consigneeAddress: { labelKey: invoice.out.consigneeAddress, format: text, order: 170 }
+  destinationCountry: { labelKey: invoice.out.destinationCountry, format: text, order: 180 }
+  buyerContact: { labelKey: invoice.out.buyerContact, format: text, order: 190 }
+  buyerTaxId: { labelKey: invoice.out.buyerTaxId, format: text, order: 200 }
+  itemDescription: { labelKey: invoice.out.itemDescription, format: text, order: 210 }
+  itemSku: { labelKey: invoice.out.itemSku, format: text, order: 220 }
+  itemHsn: { labelKey: invoice.out.itemHsn, format: text, order: 230 }
+  itemQuantity: { labelKey: invoice.out.itemQuantity, format: number, order: 240 }
+  itemUnit: { labelKey: invoice.out.itemUnit, format: text, order: 250 }
+  itemUnitPrice: { labelKey: invoice.out.itemUnitPrice, format: money, order: 260 }
+  itemCountryOfOrigin: { labelKey: invoice.out.itemCountryOfOrigin, format: text, order: 270 }
+  itemNetWeight: { labelKey: invoice.out.itemNetWeight, format: number, order: 280 }
+  itemLineTotal: { labelKey: invoice.out.itemLineTotal, format: money, order: 290 }
+  invoiceSubtotal: { labelKey: invoice.out.invoiceSubtotal, format: money, order: 300 }
+  packageCount: { labelKey: invoice.out.packageCount, format: number, order: 310 }
+  grossWeight: { labelKey: invoice.out.grossWeight, format: number, order: 320 }
+  netWeight: { labelKey: invoice.out.netWeight, format: number, order: 330 }
+  shippingMode: { labelKey: invoice.out.shippingMode, format: text, order: 340 }
+  trackingNumber: { labelKey: invoice.out.trackingNumber, format: text, order: 350 }
+  gstDeclaration: { labelKey: invoice.out.gstDeclaration, format: text, order: 360 }
+  exportDeclaration: { labelKey: invoice.out.exportDeclaration, format: text, order: 370 }
+  signatureArea: { labelKey: invoice.out.signatureArea, format: text, order: 380 }
+samples:
+  cushion-covers-usd:
+    titleKey: invoice.sample.cushionCovers
+    input: { exporterName: "Sunrise Handicrafts Exports", exporterAddress: "12 MG Road, Jaipur, Rajasthan 302001, India", exporterGstin: "27ABCDE1234F1Z5", exporterIec: "AAAAA1234A", exporterContact: "+91 98765 43210 / export@sunrisehandicrafts.example", lutArn: "AD270622000111A", authorizedSignatory: "Raj Mehta", buyerName: "Global Home Decor LLC", buyerAddress: "500 Market Street, San Francisco, CA 94105, USA", destinationCountry: "United States", buyerContact: "buyer@globalhomedecor.example", invoiceNumber: "SHE/EXP/2026/014", invoiceDate: "2026-09-27", currency: USD, paymentTerms: "100% advance", orderReference: "PO-2026-0098", incoterm: "FOB Mumbai", itemDescription: "Hand-block printed cotton cushion covers", itemSku: "CC-BLK-001", itemHsn: "630490", itemQuantity: "500", itemUnit: PCS, itemUnitPrice: "3.50", itemCountryOfOrigin: India, itemNetWeight: "125", packageCount: "10", grossWeight: "135", netWeight: "125", shippingMode: "Air Cargo", gstDeclaration: "Supply meant for export under LUT without payment of IGST.", exportDeclaration: "We declare that the information given above is true and correct." }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    invoice.field.exporterName: "Exporter — Business name"
+    invoice.field.exporterAddress: "Exporter — Address"
+    invoice.field.exporterGstin: "Exporter — GSTIN"
+    invoice.field.exporterIec: "Exporter — IEC"
+    invoice.field.exporterContact: "Exporter — Phone/email"
+    invoice.field.lutArn: "Exporter — LUT ARN (optional)"
+    invoice.field.authorizedSignatory: "Exporter — Authorized signatory (optional)"
+    invoice.field.buyerName: "Buyer — Name"
+    invoice.field.buyerAddress: "Buyer — Address"
+    invoice.field.consigneeName: "Consignee — Name (optional, if different from buyer)"
+    invoice.field.consigneeAddress: "Consignee — Address (optional)"
+    invoice.field.destinationCountry: "Buyer — Destination country"
+    invoice.field.buyerContact: "Buyer — Phone/email (optional)"
+    invoice.field.buyerTaxId: "Buyer — Tax/VAT ID (optional)"
+    invoice.field.invoiceNumber: "Invoice — Number"
+    invoice.field.invoiceDate: "Invoice — Date"
+    invoice.field.currency: "Invoice — Currency"
+    invoice.field.paymentTerms: "Invoice — Payment terms (optional)"
+    invoice.field.orderReference: "Invoice — Order/reference number (optional)"
+    invoice.field.incoterm: "Invoice — Incoterm / delivery term (optional)"
+    invoice.field.itemDescription: "Item — Description"
+    invoice.field.itemSku: "Item — SKU (optional)"
+    invoice.field.itemHsn: "Item — HSN code"
+    invoice.field.itemQuantity: "Item — Quantity"
+    invoice.field.itemUnit: "Item — Unit"
+    invoice.field.itemUnitPrice: "Item — Unit price"
+    invoice.field.itemCountryOfOrigin: "Item — Country of origin (optional)"
+    invoice.field.itemNetWeight: "Item — Net weight (optional)"
+    invoice.field.packageCount: "Shipping — Package count (optional)"
+    invoice.field.grossWeight: "Shipping — Gross weight (optional)"
+    invoice.field.netWeight: "Shipping — Net weight (optional)"
+    invoice.field.shippingMode: "Shipping — Mode (optional)"
+    invoice.field.trackingNumber: "Shipping — Tracking number (optional)"
+    invoice.field.gstDeclaration: "Declaration — GST/LUT/IGST statement (optional)"
+    invoice.field.exportDeclaration: "Declaration — Export declaration (optional)"
+    invoice.help.exporterName: Your business name as it should appear on the invoice.
+    invoice.help.exporterAddress: Full postal address shown on the invoice.
+    invoice.help.exporterGstin: Business GST registration number, if applicable.
+    invoice.help.exporterIec: Import Export Code issued by DGFT. Verify before use.
+    invoice.help.exporterContact: Phone number and/or email shown on the invoice.
+    invoice.help.lutArn: GST LUT reference if exporting without IGST payment, where applicable.
+    invoice.help.authorizedSignatory: Name shown in the signature area of the invoice.
+    invoice.help.buyerName: The overseas buyer named on the invoice.
+    invoice.help.buyerAddress: Full postal address of the buyer.
+    invoice.help.consignee: Actual receiver abroad. May be different from buyer.
+    invoice.help.destinationCountry: Country the goods are being shipped to.
+    invoice.help.buyerContact: Phone number and/or email for the buyer.
+    invoice.help.buyerTaxId: Buyer's own tax or VAT identification number, if they have one.
+    invoice.help.invoiceNumber: Your own invoice numbering — this tool does not assign or track a numbering series.
+    invoice.help.invoiceDate: Date the invoice is issued, in YYYY-MM-DD format.
+    invoice.help.currency: Invoice currency charged to buyer.
+    invoice.help.paymentTerms: For example "100% advance" or "30 days from invoice date".
+    invoice.help.orderReference: Your own purchase order or reference number, if any.
+    invoice.help.incoterm: For example FOB, CIF or EXW, with the named place.
+    invoice.help.itemDescription: A clear description of the goods being exported. This version supports one item row per invoice.
+    invoice.help.itemSku: Your own internal product code, if you use one.
+    invoice.help.itemHsn: Product classification code. Verify correct HSN with your CA/customs broker if unsure.
+    invoice.help.itemQuantity: Number of units being shipped.
+    invoice.help.itemUnit: Unit of measure, for example PCS, KG, SET or BOX.
+    invoice.help.itemUnitPrice: Price per unit, in the invoice currency above.
+    invoice.help.countryOfOrigin: Country where goods originate/manufactured.
+    invoice.help.netWeight: Product weight excluding packaging.
+    invoice.help.packageCount: Number of packages/cartons in the shipment.
+    invoice.help.grossWeight: Packed shipment weight including packaging.
+    invoice.help.shippingMode: For example Post, Courier, Air Cargo or Sea Cargo.
+    invoice.help.trackingNumber: Tracking/consignment number, once available.
+    invoice.help.gstDeclaration: A standard export tax statement you can edit or clear — not filed anywhere by this tool.
+    invoice.help.exportDeclaration: A standard declaration statement you can edit or clear — not filed anywhere by this tool.
+    invoice.placeholder.invoiceDate: "2026-09-27"
+    invoice.out.invoiceTotal: Invoice total
+    invoice.out.invoiceNumber: Invoice number
+    invoice.out.invoiceDate: Invoice date
+    invoice.out.currency: Currency
+    invoice.out.orderReference: Order/reference number
+    invoice.out.paymentTerms: Payment terms
+    invoice.out.incoterm: Incoterm / delivery term
+    invoice.out.exporterName: Exporter
+    invoice.out.exporterAddress: Exporter address
+    invoice.out.exporterGstin: Exporter GSTIN
+    invoice.out.exporterIec: Exporter IEC
+    invoice.out.exporterContact: Exporter phone/email
+    invoice.out.lutArn: LUT ARN
+    invoice.out.buyerName: Buyer
+    invoice.out.buyerAddress: Buyer address
+    invoice.out.consigneeName: Consignee
+    invoice.out.consigneeAddress: Consignee address
+    invoice.out.destinationCountry: Destination country
+    invoice.out.buyerContact: Buyer phone/email
+    invoice.out.buyerTaxId: Buyer tax/VAT ID
+    invoice.out.itemDescription: Item description
+    invoice.out.itemSku: SKU
+    invoice.out.itemHsn: HSN code
+    invoice.out.itemQuantity: Quantity
+    invoice.out.itemUnit: Unit
+    invoice.out.itemUnitPrice: Unit price
+    invoice.out.itemCountryOfOrigin: Country of origin
+    invoice.out.itemNetWeight: Item net weight
+    invoice.out.itemLineTotal: Item line total
+    invoice.out.invoiceSubtotal: Invoice subtotal
+    invoice.out.packageCount: Package count
+    invoice.out.grossWeight: Gross weight
+    invoice.out.netWeight: Net weight
+    invoice.out.shippingMode: Shipping mode
+    invoice.out.trackingNumber: Tracking number
+    invoice.out.gstDeclaration: GST/LUT/IGST statement
+    invoice.out.exportDeclaration: Export declaration
+    invoice.out.signatureArea: Signature / seal area
+    invoice.sample.cushionCovers: 500 cushion covers, USD, LUT export
+    work.invoice.itemLineTotal: "Item line total = {itemQuantity:number} {itemUnit} × {itemUnitPrice:number} {currency} = {result:number} {currency} (exact)"
+    work.invoice.subtotal: "Invoice subtotal (v1: one item row, so this equals the item line total) = {itemLineTotal:number} {currency} (exact)"
+    work.invoice.total: "Invoice total (no tax, duty or forex conversion added) = {invoiceSubtotal:number} {currency} (exact)"

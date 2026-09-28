@@ -13,6 +13,7 @@ export const SAMPLES = {
   'plaster-calculator': { archetype: 'B', result: '0.180' },
   'tile-flooring-calculator': { archetype: 'B', result: '246' },
   'paint-calculator': { archetype: 'B', result: '3.96' },
+  'export-commercial-invoice-generator': { archetype: 'B', result: '1,750.00' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },

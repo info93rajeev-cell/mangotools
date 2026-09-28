@@ -1,0 +1,30 @@
+id: 002-minimal-required-fields
+preset: export/invoice-commercial
+source:
+  type: hand-verified
+  citation: "Only the required fields filled, everything optional left blank; 20 units x 12.00 = 240.00"
+input:
+  exporterName: "Coastal Spice Traders"
+  exporterAddress: "45 Harbour Road, Kochi, Kerala 682001, India"
+  exporterIec: "BBBBB5678B"
+  exporterContact: "sales@coastalspice.example"
+  buyerName: "Northgate Foods Ltd"
+  buyerAddress: "9 Industrial Estate, Manchester M1 2AB, United Kingdom"
+  destinationCountry: "United Kingdom"
+  invoiceNumber: "CST-2026-071"
+  invoiceDate: "2026-09-27"
+  currency: "GBP"
+  itemDescription: "Whole black pepper, dried"
+  itemHsn: "0904"
+  itemQuantity: "20"
+  itemUnit: "KG"
+  itemUnitPrice: "12.00"
+expected:
+  itemLineTotal: "240.00"
+  invoiceSubtotal: "240.00"
+  invoiceTotal: "240.00"
+  exporterGstin: null
+  lutArn: null
+  consigneeName: null
+match: subset
+expectedWarnings: [EXPORT_DOCUMENT_PREPARATION_HELPER_ONLY, EXPORT_VERIFY_BEFORE_FILING, EXPORT_NOT_LEGAL_TAX_ADVICE, EXPORT_INVOICE_SCOPE_LIMIT]
