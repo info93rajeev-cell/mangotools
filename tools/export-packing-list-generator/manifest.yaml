@@ -4,8 +4,9 @@ id: export-packing-list-generator
 slug: export-packing-list-generator
 status: beta
 tier: T2
-version: 0.2.0
+version: 0.2.1
 changelog:
+  - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.2.0, date: 2026-09-28, type: changed, summary: "Supports up to 5 line items per packing list, with a per-item result table; package count and weights stay shipment-level." }
   - { version: 0.1.0, date: 2026-09-28, type: added, summary: "First beta. Packing list draft for an export shipment: exporter, buyer/consignee, item, package count, weight and declaration details." }
 name: Export Packing List Generator
@@ -19,7 +20,7 @@ taxonomy:
   tags: [export, documents]
   synonyms: [export packing list generator, packing list generator, export packing list, packing list for export, packing list template export, shipment packing list, packing list format, export shipment packing list]
 capabilities: { print: true, share: true }
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: Packing List Generator – Export Document Draft

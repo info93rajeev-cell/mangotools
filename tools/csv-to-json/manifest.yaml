@@ -4,8 +4,9 @@ id: csv-to-json
 slug: csv-to-json
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Added a related link to the new JSON to CSV converter." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. First row as headers, quoted fields, commas and escaped quotes supported. Values stay as strings." }
 name: CSV to JSON
@@ -19,7 +20,7 @@ taxonomy:
   tags: [csv, json, data-format]
   synonyms: [convert csv to json, csv json converter, csv to json online, csv to json array, csv to json objects, convert spreadsheet csv to json, free csv to json converter, browser csv to json]
 capabilities: { export: [json], share: false }
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: none
 seo:
   title: CSV to JSON Converter – Convert CSV to JSON Online

@@ -4,8 +4,9 @@ id: favicon-generator
 slug: favicon-generator
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe the no-watermark guarantee without naming the site brand." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: generate a square PNG favicon from a JPG, PNG or WebP image, entirely in the browser." }
 name: Favicon Generator
@@ -17,7 +18,7 @@ taxonomy:
   category: media
   tags: [images, favicon]
   synonyms: [generate favicon, favicon maker, website favicon generator, favicon from image, png favicon generator, create favicon online, favicon sizes, website icon generator, convert image to favicon, browser favicon tool, favicon for website]
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: "Favicon Generator – Create a Website Icon Free"
