@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -20,14 +20,14 @@ output format or quality) re-encoding it.
 ## Method
 
 **Watermark position options.** Five anchor positions are available: top left, top right, center, bottom
-left, and bottom right. There is no free-drag placement or repeated/tiled watermark in this version — pick
+left, and bottom right. There is no free-drag placement or repeated/tiled watermark — pick
 the anchor closest to where you want the text.
 
 **Opacity and font size.** Opacity ranges from 10% (barely visible) to 100% (fully solid), default 50%.
 Font size is in pixels, default 32px. Both affect only the watermark text — the underlying image is drawn
 at full opacity and its original size.
 
-**Text color.** Enter any hex color (for example `#ffffff` for white, the default, or `#000000` for
+**Text color.** Enter a six-digit hex color (for example `#ffffff` for white, the default, or `#000000` for
 black). Choose a color with enough contrast against your image for the watermark to actually be visible in
 your chosen position.
 
@@ -38,7 +38,7 @@ you want to visibly mark as your own before sharing.
 **What this tool does not do.** It adds a visible text watermark only — it does not embed a hidden or
 cryptographic mark, and it does not prove ownership or create legal copyright protection by itself. It does
 not support a logo or image watermark, drag-to-position placement, a repeated or tiled watermark, or
-rotation in this version, and it handles one image per run — there is no batch watermarking or ZIP download.
+rotation, and it handles one image per run — there is no batch watermarking or ZIP download.
 Watermark appearance may also vary slightly by browser, since font rendering is not identical everywhere.
 
 **Browser-based processing.** No file upload is required for this tool — the image you select is read,
@@ -73,12 +73,11 @@ No. Only the text you type is added — the tool never adds its own branding or 
 
 ### Can I upload a logo as a watermark?
 
-Not in this version. Image Watermark supports text watermarks only; a logo or image watermark is not
-included in v1.
+No. Image Watermark supports text watermarks only; a logo or image watermark is not included.
 
 ### Can I watermark many images at once?
 
-Not in this version. Batch watermarking is not included in v1 — Image Watermark handles one image per run;
+No. Batch watermarking is not included — Image Watermark handles one image per run;
 select a new image to watermark another.
 
 ### Does a watermark prove copyright ownership?

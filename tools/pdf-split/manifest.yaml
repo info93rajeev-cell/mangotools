@@ -4,8 +4,9 @@ id: pdf-split
 slug: pdf-split
 status: beta
 tier: T3
-version: 0.1.2
+version: 0.1.3
 changelog:
+  - { version: 0.1.3, date: 2026-09-30, type: changed, summary: "Describe limitations without future versions; say nothing is uploaded in the description." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe the no-watermark guarantee without naming the site brand." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: extract a page range from a PDF into a new PDF, entirely in the browser." }
@@ -23,7 +24,7 @@ privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: "PDF Split – Extract Pages from a PDF Free"
-  description: "Free browser-based tool to split a PDF by page range and extract pages into a new PDF file. No sign-up, no upload, nothing leaves your device."
+  description: "Free browser-based tool to split a PDF by page range and extract pages into a new PDF file. No sign-up, and nothing is uploaded."
   primaryKeyword: pdf split
   secondaryKeywords: [pdf splitter, extract pages from pdf, pdf page extractor]
 graph:

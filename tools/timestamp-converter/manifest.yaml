@@ -4,8 +4,9 @@ id: timestamp-converter
 slug: timestamp-converter
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe limitations without future versions; clarify local time and that numeric offsets are not accepted." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Timestamp to date and date to timestamp, seconds and milliseconds, UTC and local output." }
 name: Timestamp Converter
 shortName: Timestamp Converter

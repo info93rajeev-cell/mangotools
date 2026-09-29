@@ -4,8 +4,9 @@ id: url-encode-decode
 slug: url-encode-decode
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Add a Method section explaining how the tool works." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with component, full URL and form encoding." }
 name: URL Encode & Decode

@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 example: 001-pit
 ---
 
@@ -89,12 +89,12 @@ contractor, or professional quantity surveyor.
 ### Does this calculate truck trips or disposal cost?
 
 No. Truck trips and disposal cost depend on truck capacity, haul distance, and local disposal rates —
-factors outside a simple excavation volume calculator. These may be considered as separate future tools.
+factors outside a simple excavation volume calculator.
 
 ### Does this include backfill or compaction?
 
 No. This calculator estimates the excavation volume only. Backfill quantity and compaction are separate
-calculations this version does not perform.
+calculations this tool does not perform.
 
 ## References
 

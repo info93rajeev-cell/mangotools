@@ -4,8 +4,9 @@ id: paint-calculator
 slug: paint-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Paint litres required for a wall, ceiling or general surface, with opening deduction, coats, coverage per litre and wastage %." }
 name: Paint Calculator
 shortName: Paint

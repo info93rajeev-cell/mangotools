@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-26
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -13,7 +13,7 @@ lastReviewed: 2026-09-26
 
 ## Method
 
-**Images are processed in your browser where supported.** No file upload is required for this tool — every image you add is read and converted on your own device, and the PDF is generated and downloaded without ever leaving it.
+**Images are processed locally in your browser.** No file upload is required for this tool — every image you add is read and converted on your own device, and the PDF is generated and downloaded without ever leaving it.
 
 **Image order and page behavior.** Each image becomes its own page, sized to that image's own dimensions — there is no cropping, no scaling to a fixed paper size, and no image editing. This keeps every page an exact, predictable match for its source image. One known limitation: if a photo was taken in portrait mode with orientation information written by the camera rather than the pixels themselves rotated, that image may appear in its original, unrotated orientation on the page. Verify the generated PDF before relying on it.
 
@@ -25,7 +25,7 @@ lastReviewed: 2026-09-26
 
 ### Is JPG to PDF free?
 
-Yes. It's free and unlimited, with no sign-up and no ads.
+Yes. It's free to use, with no sign-up and no ads.
 
 ### Are my images uploaded anywhere?
 
@@ -37,7 +37,7 @@ The order shown in the list, top to bottom. Use the up and down arrows to reorde
 
 ### Does JPG to PDF support PNG or other image formats?
 
-Not in this version. Only JPG and JPEG images are supported; other formats return a clear error rather than a silently wrong result.
+No. Only JPG and JPEG images are supported; other formats return a clear error rather than a silently wrong result.
 
 ### Will the PDF page match my photo's orientation?
 

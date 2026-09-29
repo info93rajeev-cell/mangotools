@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-26
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -13,7 +13,7 @@ lastReviewed: 2026-09-26
 
 ## Method
 
-**Browser-first, and processed locally where supported.** No file upload is required for this tool — the image you select is read and re-encoded on your own device, and the result downloads without ever leaving it.
+**Processed locally in your browser.** No file upload is required for this tool — the image you select is read and re-encoded on your own device, and the result downloads without ever leaving it.
 
 **Why compression results vary.** An image that is already tightly compressed, or one saved in a format with no quality knob, may not get smaller no matter what settings you choose — sometimes re-encoding even makes a file larger. Always compare the original and output size shown, and use a lower quality setting or a different format if the result isn't smaller.
 
@@ -29,7 +29,7 @@ lastReviewed: 2026-09-26
 
 ### Is Image Compress free?
 
-Yes. It's free and unlimited, with no sign-up and no ads.
+Yes. It's free to use, with no sign-up and no ads.
 
 ### Are my images uploaded anywhere?
 

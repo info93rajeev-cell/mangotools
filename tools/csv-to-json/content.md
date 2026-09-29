@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -25,10 +25,10 @@ line breaks without being split into extra columns — for example `"Lives in NY
 field. A double quote inside a quoted field is written as two double quotes (`""`), the standard
 CSV escape, for example `"He said ""yes"""` becomes the text `He said "yes"`.
 
-**Why values stay as strings in v1.** Every value in the output JSON is a string, even when it
+**Why values stay as strings.** Every value in the output JSON is a string, even when it
 looks like a number, such as `"age": "50"` rather than `"age": 50`. Guessing at numbers, booleans
 or dates would silently change data that might be an ID, a postal code, or a phone number with a
-leading zero. A future version may add explicit, opt-in type conversion; v1 does not guess.
+leading zero. The converter does not guess types.
 
 **Browser-based processing.** No upload is required. The CSV you paste is parsed on your own
 device, in a background worker, and never sent to a server.
@@ -36,7 +36,7 @@ device, in a background worker, and never sent to a server.
 **What this tool does not do.** This is a CSV to JSON converter only — for the reverse direction, use
 [JSON to CSV](tool:json-to-csv). It does not read Excel or `.xlsx` files, only plain CSV text. It
 does not import data into a database, infer a schema, or use AI to clean up messy data. It does not
-accept a delimiter other than a comma in this version.
+accept a delimiter other than a comma.
 
 **Related developer and data tools.** Once you have JSON, format or validate it with
 [JSON Formatter & Validator](tool:json-formatter), or convert it back with
@@ -47,7 +47,7 @@ accept a delimiter other than a comma in this version.
 
 ### Does CSV to JSON use the first row as headers?
 
-Yes. This version always treats the first row as the column headers, and every row after it becomes
+Yes. The tool always treats the first row as the column headers, and every row after it becomes
 one JSON object using those headers as keys.
 
 ### Do the values stay as text, or does it detect numbers?

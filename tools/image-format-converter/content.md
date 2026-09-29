@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -18,7 +18,7 @@ image itself; use [Image Resize](tool:image-resize) for size changes.
 
 ## Method
 
-**Browser-first, and processed locally where supported.** No file upload is required for this tool — the
+**Processed locally in your browser.** No file upload is required for this tool — the
 image you select is read and re-encoded on your own device, and the result downloads without ever leaving
 it. This is useful for everyday image conversion — preparing images for a website, an online store, a
 social media post, a document, or an AI-generated image that arrived in a format you did not want — not for
@@ -56,7 +56,7 @@ it; where it doesn't, the tool falls back to PNG and says so.
 
 **What this tool does not do.** It does not resize, crop, rotate, retouch, add a watermark, remove a
 background, remove metadata, or convert to or from HEIC, AVIF, PDF, video, or audio formats. It handles one
-image per run — there is no batch conversion or ZIP download in this version. Metadata such as camera and
+image per run — there is no batch conversion or ZIP download. Metadata such as camera and
 location data is not preserved, since re-encoding to a canvas does not carry it over.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no image selected, a
@@ -105,7 +105,7 @@ is a common step in getting an image ready for a website, an online store, or a 
 
 ### Does this add a watermark?
 
-No. The converted image is exactly the image you uploaded, re-encoded in the format and quality you chose —
+No. The converted image is the same picture you selected, re-encoded in the format and quality you chose —
 no branding or watermark is added.
 
 ### Do I need to sign up?
@@ -114,11 +114,11 @@ No. Image Format Converter is free, with no sign-up and no account required.
 
 ### Can I convert many images at once?
 
-Not in this version. Image Format Converter handles one image per run; select a new image to convert
+No. Image Format Converter handles one image per run; select a new image to convert
 another.
 
 ### Will the output look exactly the same in every browser?
 
 Not necessarily. Browser image encoders vary, so the exact bytes of the converted file can differ slightly
-between browsers even for the same input and settings. The format and dimensions you chose are what's
-guaranteed.
+between browsers even for the same input and settings. The dimensions are always kept, and so is the
+format you chose — except that WebP falls back to PNG, with a warning, in a browser that cannot encode WebP.

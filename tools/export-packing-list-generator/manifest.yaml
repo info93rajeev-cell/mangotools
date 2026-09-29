@@ -4,8 +4,9 @@ id: export-packing-list-generator
 slug: export-packing-list-generator
 status: beta
 tier: T2
-version: 0.2.1
+version: 0.2.2
 changelog:
+  - { version: 0.2.2, date: 2026-09-30, type: changed, summary: "Remove roadmap wording; cite the official CBIC and DGFT portals; link the logistics calculators." }
   - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.2.0, date: 2026-09-28, type: changed, summary: "Supports up to 5 line items per packing list, with a per-item result table; package count and weights stay shipment-level." }
   - { version: 0.1.0, date: 2026-09-28, type: added, summary: "First beta. Packing list draft for an export shipment: exporter, buyer/consignee, item, package count, weight and declaration details." }
@@ -28,7 +29,7 @@ seo:
   primaryKeyword: packing list generator
   secondaryKeywords: [export packing list generator, export packing list, packing list for export]
 graph:
-  related: [export-commercial-invoice-generator]
+  related: [export-commercial-invoice-generator, cbm-calculator, volumetric-weight-calculator, container-loading-calculator, pallet-loading-calculator]
 quality:
   verifiedAgainst:
     - { citation: "Field groups (exporter, buyer/consignee, document/shipment, item, packing/weight, declaration) from TASK-009A's Export & Import Documents foundation planner and TASK-009C's brief, itself researched against secondary summaries of CBIC/DGFT/GST notifications", locator: "tasks/TASK-009A-EXPORT-IMPORT-DOCUMENTS-FOUNDATION-PLANNER.md, section 8" }

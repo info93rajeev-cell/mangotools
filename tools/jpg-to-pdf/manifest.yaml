@@ -4,8 +4,9 @@ id: jpg-to-pdf
 slug: jpg-to-pdf
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without future versions; say free to use; state that processing is local." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: convert one or more JPG images into a single PDF, entirely in the browser." }
 name: JPG to PDF

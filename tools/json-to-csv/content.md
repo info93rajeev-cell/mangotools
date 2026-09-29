@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -7,7 +7,7 @@ lastReviewed: 2026-09-27
 1. Paste your JSON into the input box, or select **Try sample**.
 2. The JSON must be an array of objects, or a single object (treated as one row).
 3. The result updates as you type: CSV text with one header row and one row per object.
-4. Copy or download the `.csv` result — it opens cleanly in Excel or Google Sheets.
+4. Copy or download the `.csv` result to open in Excel or Google Sheets.
 
 **What JSON to CSV does:** it is a free JSON to CSV converter that turns a JSON array to CSV, or a
 single JSON object to CSV, entirely in your browser. It is built for the common case: paste JSON
@@ -28,6 +28,8 @@ column — objects do not need identical keys.
 value is wrapped in double quotes if it contains a comma, a double quote, a line break, or leading
 or trailing spaces; a double quote inside such a value is written as two double quotes (`""`), the
 standard CSV escape. Numbers and booleans are written as plain text (`50`, `true`), not quoted.
+Numbers are read as standard JavaScript numbers, so `499.00` is written as `499`, and whole numbers
+longer than 15 digits can be rounded — put long IDs in quotes in the JSON to keep them exactly.
 `null` and a missing key both become an empty cell.
 
 **Browser-based processing.** No upload is required. The JSON you paste is parsed on your own
@@ -35,7 +37,7 @@ device, in a background worker, and never sent to a server.
 
 **What this tool does not do.** This is a JSON to CSV converter only, not a JSON CSV converter that
 also reads Excel or `.xlsx` files. Nested objects and arrays inside a value are rejected with a
-clear error in this version, rather than being silently flattened into extra columns — flatten your
+clear error, rather than being silently flattened into extra columns — flatten your
 data to a simple, flat shape (or pick the fields you need) before converting. It does not import
 data into a database, infer a schema beyond collecting column names, or use AI to clean up messy
 data.
@@ -68,7 +70,7 @@ empty cell for that column, so objects with different (or missing) keys don't ca
 
 ### Can it handle nested objects?
 
-Not in this version. A value that is itself an object or array is rejected with a clear error naming
+No. A value that is itself an object or array is rejected with a clear error naming
 the key and the item, rather than being flattened or stringified in a way that might surprise you.
 
 ### Are commas and quotes escaped correctly?
@@ -87,7 +89,9 @@ Yes — see [CSV to JSON](tool:csv-to-json) for the reverse conversion.
 
 ### Can I open the CSV in Excel or Google Sheets?
 
-Yes. The output is standard, properly escaped CSV text that both open without any extra steps.
+Yes. The output is standard, properly escaped CSV text (UTF-8, without a byte order mark). Google Sheets
+reads it directly. If Excel shows characters such as ₹ incorrectly when you double-click the file, import
+it with **Data → From Text/CSV** and choose UTF-8.
 
 ### Do I need to sign up?
 

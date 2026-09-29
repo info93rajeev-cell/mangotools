@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-26
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -13,7 +13,7 @@ lastReviewed: 2026-09-26
 
 ## Method
 
-**Browser-first, and processed locally where supported.** No file upload is required for this tool — the image you select is read, resized, and re-encoded on your own device, and the result downloads without ever leaving it.
+**Processed locally in your browser.** No file upload is required for this tool — the image you select is read, resized, and re-encoded on your own device, and the result downloads without ever leaving it.
 
 **Image size and quality.** With **Keep aspect ratio** on, your width and height describe a box the image is scaled to fit inside, without cropping or distortion. With it off, the output is exactly the size you entered, which can distort the image if its proportions differ from your target. Making an image larger than its original size always reduces effective quality, and a warning appears when this happens. Resizing itself, and re-encoding at a JPG or WebP quality setting, can also reduce image quality — always verify the final output before publishing, printing, filing, or sending.
 
@@ -27,7 +27,7 @@ lastReviewed: 2026-09-26
 
 ### Is Image Resize free?
 
-Yes. It's free and unlimited, with no sign-up and no ads.
+Yes. It's free to use, with no sign-up and no ads.
 
 ### Are my images uploaded anywhere?
 
@@ -47,8 +47,8 @@ The most common reasons are a file that isn't actually a JPG, PNG, or WebP; a fi
 
 ### Does Image Resize support more than one image at a time?
 
-Not in this version. Image Resize handles one image per run; select a new image to start again.
+No. Image Resize handles one image per run; select a new image to start again.
 
 ### Will the output look exactly the same in every browser?
 
-Not necessarily. Browser image encoders vary, so the exact bytes of the resized file can differ slightly between browsers even for the same input and settings. The dimensions and format you chose are what's guaranteed.
+Not necessarily. Browser image encoders vary, so the exact bytes of the resized file can differ slightly between browsers even for the same input and settings. The dimensions you chose are always kept, and so is the format — except that WebP falls back to PNG, with a warning, in a browser that cannot encode WebP.

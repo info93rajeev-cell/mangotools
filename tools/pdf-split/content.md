@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -29,7 +29,7 @@ the same PDF, run the tool again for each range you want.
 processed on your own device, and the result downloads without ever leaving it.
 
 **File limits and encrypted PDFs.** Files up to 25 MB are supported. Password-protected (encrypted) PDFs
-are not supported in this version — a clear error explains this rather than silently failing. Bookmarks,
+are not supported — a clear error explains this rather than silently failing. Bookmarks,
 form fields, annotations, and other advanced PDF features from the original file may not be preserved in
 the extracted result.
 
@@ -58,12 +58,12 @@ in order.
 
 ### Does this split every page into separate PDFs?
 
-No, not in this version. This tool extracts one page range into one PDF per run. To get several ranges
+No. This tool extracts one page range into one PDF per run. To get several ranges
 from the same document, run the tool again for each range.
 
 ### Can I split multiple PDFs at once?
 
-Not in this version. This tool works on one PDF at a time.
+No. This tool works on one PDF at a time.
 
 ### Does the PDF upload to a server?
 
@@ -71,11 +71,11 @@ No. The file you select is read and processed in this browser. Nothing is upload
 
 ### Can it handle password-protected PDFs?
 
-Not in this version. A password-protected (encrypted) PDF shows a clear error instead of being processed.
+No. A password-protected (encrypted) PDF shows a clear error instead of being processed.
 
 ### Can I reorder pages?
 
-Not in this version. The extracted pages keep their original order from the source document.
+No. The extracted pages keep their original order from the source document.
 
 ### Can I merge the result with another PDF?
 

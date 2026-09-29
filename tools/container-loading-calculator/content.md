@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-26
+lastReviewed: 2026-09-30
 example: 001-40ft-standard-basic
 ---
 
@@ -15,7 +15,7 @@ example: 001-40ft-standard-basic
 
 This tool gives two different numbers, both **estimates**, not a guaranteed loading plan:
 
-- **Estimated cartons by volume** — how many cartons could fit if the container were filled perfectly, with no gaps. This is always the more generous number.
+- **Estimated cartons by volume** — how many cartons could fit if the container were filled perfectly, with no gaps. This is usually the more generous number.
 - **Maximum cartons (simple grid)** — a real, single-orientation arrangement: cartons stacked in rows along the container's length, width and height, in whichever of the 6 axis-aligned orientations fits the most. This number is usually lower, because a real carton shape rarely tiles a container with zero wasted space.
 
 **Volume estimate:**
@@ -44,7 +44,7 @@ Results are rounded to three decimal places for display; totals and percentages 
 
 ## Worked example
 
-500 cartons of 60 × 40 × 30 cm in a 40 ft standard container, 90% usable space:
+500 cartons of 60 × 40 × 40 cm in a 40 ft standard container, 90% usable space:
 
 ## FAQ
 

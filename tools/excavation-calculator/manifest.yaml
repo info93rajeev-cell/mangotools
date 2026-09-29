@@ -4,8 +4,9 @@ id: excavation-calculator
 slug: excavation-calculator
 status: beta
 tier: T2
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta with excavation/earthwork volume for a rectangular pit, trench or footing pit, in m³ and ft³, with bulking/swell %." }
 name: Excavation Calculator
