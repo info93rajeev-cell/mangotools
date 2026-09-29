@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   checkPage,
   cspScriptHashes,
+  duplicateProblems,
   entryModules,
   headersFile,
   pageFacts,
@@ -38,6 +39,29 @@ describe('post-build page checks', () => {
     expect(problems).toContain('title is 61');
     expect(problems).toContain('description is 5');
     expect(problems).toContain('canonical');
+  });
+
+  it('reports more than one canonical link', () => {
+    const page = pageFacts('a.html', html({ head: `<link rel="canonical" href="${SITE}/x">` }));
+    expect(checkPage(page, SITE)).toContain('has 2 canonical links');
+  });
+
+  it('reports duplicate titles, descriptions and <h1> text across search pages only', () => {
+    const a = pageFacts('a.html', html({ body: '<h1>GST <span>Calculator</span></h1>' }));
+    const b = pageFacts('b.html', html({ body: '<h1>GST  Calculator</h1>' }));
+    const c = pageFacts('c.html', html({ template: '404', body: '<h1>GST Calculator</h1>' }));
+    const d = pageFacts(
+      'd.html',
+      html({ body: '<h1>Other</h1>' })
+        .replace('<title>GST Calculator</title>', '<title>Other</title>')
+        .replace(/content="x+"/, `content="${'y'.repeat(130)}"`),
+    );
+    expect(duplicateProblems([a, b, c, d])).toEqual([
+      'duplicate title "GST Calculator" on a.html, b.html',
+      `duplicate description "${'x'.repeat(130)}" on a.html, b.html`,
+      'duplicate <h1> "GST Calculator" on a.html, b.html',
+    ]);
+    expect(duplicateProblems([a, d])).toEqual([]);
   });
 
   it('reports retired public names anywhere on the page', () => {
@@ -77,7 +101,10 @@ describe('post-build page checks', () => {
     expect(text).toContain("script-src 'self' 'sha256-a' 'sha256-b';");
     expect(text).toContain("frame-ancestors 'none'");
     expect(text).toContain('X-Robots-Tag: noindex');
-    expect(headersFile({ scriptHashes: [], indexable: true })).not.toContain('X-Robots-Tag');
+    const production = headersFile({ scriptHashes: [], indexable: true });
+    expect(production.split('/assets/*')[0]).not.toContain('X-Robots-Tag');
+    expect(production).toContain('https://:project.pages.dev/*\n  X-Robots-Tag: noindex');
+    expect(production).toContain('https://:version.:project.pages.dev/*\n  X-Robots-Tag: noindex');
     expect(
       cspScriptHashes("default-src 'self'; script-src 'self' 'sha256-x'; style-src 'self'"),
     ).toEqual(["'sha256-x'"]);

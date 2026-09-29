@@ -12,8 +12,10 @@ import { paths, ROOT } from '../lib/paths.ts';
 import {
   checkPage,
   cspScriptHashes,
+  duplicateProblems,
   entryModules,
   headersFile,
+  type PageFacts,
   pageFacts,
   staticImports,
 } from './postbuild-rules.ts';
@@ -123,16 +125,19 @@ export function runPostbuild(distDir: string, env: string): PostbuildResult {
   const hashes: string[] = [];
   const bundles: Record<string, number> = {};
   const pages = walkFiles(dist, '.html');
+  const seoFacts: PageFacts[] = [];
   for (const file of pages) {
     const rel = relative(dist, file).split('\\').join('/');
     const html = readFileSync(file, 'utf8');
     const facts = pageFacts(rel, html);
     const devPage = rel.startsWith('_dev/');
+    if (!devPage) seoFacts.push(facts);
     const checks = checkPage(facts, siteUrl).filter((c) => !devPage || c.includes('CSP'));
     problems.push(...checks.map((c) => `${rel}: ${c}`));
     hashes.push(...cspScriptHashes(facts.cspMeta));
     if (!devPage) bundles[rel] = pageScriptBytes(dist, html);
   }
+  problems.push(...duplicateProblems(seoFacts));
   problems.push(...budgetProblems(dist, bundles));
   problems.push(...checkRobotsAndSitemap(dist, registry, siteUrl, environment.indexable));
   writeFileSync(

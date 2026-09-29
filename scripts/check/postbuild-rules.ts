@@ -10,7 +10,10 @@ export interface PageFacts {
   title: string | null;
   description: string | null;
   canonical: string | null;
+  canonicalCount: number;
   h1Count: number;
+  /** Text of the first <h1>, with tags removed and whitespace collapsed. */
+  h1: string | null;
   jsonLd: string[];
   inlineScripts: string[];
   cspMeta: string | null;
@@ -39,6 +42,14 @@ function scripts(html: string): { attrs: string; body: string }[] {
   }));
 }
 
+function headingText(html: string): string | null {
+  const inner = /<h1\b[^>]*>([\s\S]*?)<\/h1>/.exec(html)?.[1];
+  if (inner === undefined) return null;
+  return decode(inner.replace(/<[^>]+>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /** Extracts what the checks need from one HTML page. */
 export function pageFacts(file: string, html: string): PageFacts {
   const meta = (name: string) => {
@@ -62,7 +73,9 @@ export function pageFacts(file: string, html: string): PageFacts {
       : null,
     description: meta('description'),
     canonical: canonicalTag ? attr(canonicalTag, 'href') : null,
+    canonicalCount: (html.match(/<link\b[^>]*rel="canonical"/g) ?? []).length,
     h1Count: (html.match(/<h1\b/g) ?? []).length,
+    h1: headingText(html),
     jsonLd: all.filter((s) => /type="application\/ld\+json"/.test(s.attrs)).map((s) => s.body),
     inlineScripts: all
       .filter((s) => !/\bsrc=/.test(s.attrs) && !/type="application\/ld\+json"/.test(s.attrs))
@@ -94,6 +107,7 @@ function checkHead(page: PageFacts, siteUrl: string): string[] {
   }
   if (canonical !== siteUrl && canonical.endsWith('/'))
     problems.push('canonical has a trailing slash');
+  if (page.canonicalCount > 1) problems.push(`has ${page.canonicalCount} canonical links`);
   return problems;
 }
 
@@ -138,6 +152,26 @@ export function checkPage(page: PageFacts, siteUrl: string): string[] {
   ];
 }
 
+/** Titles, descriptions and <h1> text must each be unique across search pages. */
+export function duplicateProblems(pages: PageFacts[]): string[] {
+  const seo = pages.filter((p) => p.template !== null && SEO_TEMPLATES.has(p.template));
+  const fields = [
+    ['title', (p: PageFacts) => p.title],
+    ['description', (p: PageFacts) => p.description],
+    ['<h1>', (p: PageFacts) => p.h1],
+  ] as const;
+  return fields.flatMap(([name, value]) => {
+    const byValue = new Map<string, string[]>();
+    for (const page of seo) {
+      const text = value(page);
+      if (text) byValue.set(text, [...(byValue.get(text) ?? []), page.file]);
+    }
+    return [...byValue]
+      .filter(([, files]) => files.length > 1)
+      .map(([text, files]) => `duplicate ${name} "${text}" on ${files.join(', ')}`);
+  });
+}
+
 /** Script hashes from a page's CSP meta. */
 export const cspScriptHashes = (csp: string | null): string[] =>
   /script-src([^;]*)/.exec(csp ?? '')?.[1]?.match(/'sha256-[^']+'/g) ?? [];
@@ -173,6 +207,18 @@ export function headersFile({ scriptHashes, indexable }: HeadersOptions): string
     '/assets/*',
     '  Cache-Control: public, max-age=31536000, immutable',
     '',
+    // The production build is also reachable on Cloudflare's *.pages.dev hosts; keep those out of
+    // search results so only the canonical domain is indexed.
+    ...(indexable
+      ? [
+          'https://:project.pages.dev/*',
+          '  X-Robots-Tag: noindex',
+          '',
+          'https://:version.:project.pages.dev/*',
+          '  X-Robots-Tag: noindex',
+          '',
+        ]
+      : []),
   ];
   return lines.join('\n');
 }
