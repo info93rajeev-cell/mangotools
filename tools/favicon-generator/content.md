@@ -18,7 +18,7 @@ overwrite one size with another.
 ## Method
 
 **What the Favicon Generator does.** It turns a single JPG, PNG, or WebP image into one square PNG favicon
-at a size you choose, entirely on your device, with no sign-up and no MangoTools watermark added to the
+at a size you choose, entirely on your device, with no sign-up and no watermark added to the
 result.
 
 **Recommended favicon sizes.** Most websites only need a small set:
@@ -67,7 +67,7 @@ limits.
 **What this tool does not do.** It generates one square PNG favicon per run, at a size you pick from a fixed
 list — there is no batch mode, no ZIP download of multiple sizes at once, and no `.ico` file output in this
 version. It is not a logo design tool: it resizes and center-crops your existing image, it does not create
-new artwork, add effects, or use AI. It does not add a MangoTools watermark of any kind.
+new artwork, add effects, or use AI. It does not add a watermark of any kind.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no image selected, a
 file that isn't a JPG, PNG, or WebP, a file over the size limit, or an image file that can't be read
@@ -112,9 +112,9 @@ detailed photo. Enlarging a source image that's smaller than your chosen favicon
 Upload the downloaded file to your website's root folder (or your hosting platform's icon upload location),
 then reference it with an HTML `<link>` tag in your page's `<head>`, as shown above.
 
-### Does MangoTools add a watermark?
+### Does this tool add a watermark?
 
-No. The generated favicon is only your image, cropped and resized — no MangoTools branding or watermark is
+No. The generated favicon is only your image, cropped and resized — no branding or watermark is
 added.
 
 ### Do I need to sign up?

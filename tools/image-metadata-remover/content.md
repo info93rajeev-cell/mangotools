@@ -14,7 +14,7 @@ lastReviewed: 2026-09-27
 
 **What Image Metadata Remover does:** it creates a new copy of a single JPG, PNG, or WebP image with common
 embedded metadata — such as camera make and model, exposure settings, and GPS location, where present —
-removed, entirely on your device, with no sign-up and no MangoTools watermark added to the result.
+removed, entirely on your device, with no sign-up and no watermark added to the result.
 
 ## Method
 
@@ -91,9 +91,9 @@ not share camera or location details along with the picture.
 
 No. Image Metadata Remover is free, with no sign-up and no account required.
 
-### Does MangoTools add a watermark?
+### Does this tool add a watermark?
 
-No. The cleaned image is exactly the image you uploaded, re-encoded with metadata removed — no MangoTools
+No. The cleaned image is exactly the image you uploaded, re-encoded with metadata removed — no
 branding or watermark is added.
 
 ### Can I remove metadata from many images at once?

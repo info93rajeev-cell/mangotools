@@ -14,7 +14,7 @@ lastReviewed: 2026-09-27
    result downloads immediately — nothing is uploaded anywhere.
 
 **What Image Crop does:** it cuts out a rectangular area from a single JPG, PNG, or WebP image, by exact
-pixel coordinates, entirely on your device, with no sign-up and no MangoTools watermark added to the result.
+pixel coordinates, entirely on your device, with no sign-up and no watermark added to the result.
 It does not resize the result afterward — the output is always exactly the crop width and height you
 entered.
 
@@ -42,7 +42,7 @@ memory limits.
 
 **What this tool does not do.** It supports a numeric crop rectangle only — there is no drag-to-select or
 interactive crop area in this version. It handles one image per run — there is no batch cropping or ZIP
-download. It does not add a MangoTools watermark of any kind.
+download. It does not add a watermark of any kind.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no image selected, a
 file that isn't a JPG, PNG, or WebP, a file over the size limit, an invalid crop X/Y position, an invalid
@@ -65,9 +65,9 @@ Yes, all three are supported as both input and output format.
 
 Yes — Crop X, Y, width, and height are all entered as exact pixel values.
 
-### Does MangoTools add a watermark?
+### Does this tool add a watermark?
 
-No. The cropped image is exactly the rectangle you selected from your original — no MangoTools branding or
+No. The cropped image is exactly the rectangle you selected from your original — no branding or
 watermark is added.
 
 ### Can I crop many images at once?
