@@ -10,6 +10,7 @@ export const EN = {
   'site.mainNav': 'Main',
   'site.breadcrumb': 'Breadcrumb',
   'site.categories': 'Categories',
+  'site.info': 'Site information',
   'site.homeLink': 'BeyondTheAI home',
   'theme.label': 'Colour theme',
   'theme.light': 'Light',

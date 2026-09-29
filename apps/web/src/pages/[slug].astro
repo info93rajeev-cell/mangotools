@@ -1,10 +1,15 @@
 ---
 import type { RegistryCategory, RegistryTool } from '@mangotools/schemas';
 import CategoryPage from '../components/CategoryPage.astro';
+import SitePageView from '../components/SitePage.astro';
 import ToolPage from '../components/ToolPage.astro';
+import { type SitePage, sitePages } from '../lib/pages.ts';
 import { registry, visibleCategories } from '../lib/site.ts';
 
-type Props = { kind: 'category'; category: RegistryCategory } | { kind: 'tool'; tool: RegistryTool };
+type Props =
+  | { kind: 'category'; category: RegistryCategory }
+  | { kind: 'tool'; tool: RegistryTool }
+  | { kind: 'page'; page: SitePage };
 
 export function getStaticPaths() {
   return [
@@ -12,10 +17,13 @@ export function getStaticPaths() {
     ...registry.tools
       .filter((tool) => tool.listed)
       .map((tool) => ({ params: { slug: tool.slug }, props: { kind: 'tool', tool } })),
+    ...sitePages.map((page) => ({ params: { slug: page.slug }, props: { kind: 'page', page } })),
   ];
 }
 
 const page = Astro.props as Props;
 ---
 
-{page.kind === 'category' ? <CategoryPage category={page.category} /> : <ToolPage tool={page.tool} />}
+{page.kind === 'category' ? <CategoryPage category={page.category} /> : null}
+{page.kind === 'tool' ? <ToolPage tool={page.tool} /> : null}
+{page.kind === 'page' ? <SitePageView page={page.page} /> : null}

@@ -27,6 +27,14 @@ export const COPY = {
     lede: 'The page you were looking for does not exist or has moved. Search for a tool instead:',
     popular: 'Popular tools',
   },
+  pages: {
+    about: 'About',
+    privacy: 'Privacy',
+    disclaimer: 'Disclaimer',
+    lastUpdated: 'Last updated {date}',
+    draft:
+      'Draft for review — not approved for publication. This page appears only in development and preview builds and is never indexed.',
+  },
   dev: {
     components: 'Component gallery',
     determinism: 'Determinism harness',

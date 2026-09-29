@@ -5,9 +5,10 @@ import SiteHeader from '@mangotools/ui/layout/SiteHeader.astro';
 import SkipLink from '@mangotools/ui/layout/SkipLink.astro';
 import faviconUrl from '../../../../assets/brand/favicon.svg?url';
 import ogImageUrl from '../../../../assets/og/default.png?url';
+import { pageLinks } from '../lib/pages.ts';
 import { absolute, brand, indexable, isDevelopment, navCategories } from '../lib/site.ts';
 
-export type PageTemplate = 'home' | 'tools' | 'category' | 'tool' | '404';
+export type PageTemplate = 'home' | 'tools' | 'category' | 'tool' | 'page' | '404';
 
 interface Props {
   title: string;
@@ -60,7 +61,7 @@ const ogImage = absolute(ogImageUrl);
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <SiteFooter brand={brand.name} tagline={brand.tagline} categories={navCategories} />
+    <SiteFooter brand={brand.name} tagline={brand.tagline} categories={navCategories} pages={pageLinks} />
     <script>
       import '../scripts/page-analytics.ts';
     </script>

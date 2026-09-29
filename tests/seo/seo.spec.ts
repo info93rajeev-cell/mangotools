@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Registry } from '@mangotools/schemas';
 import { expect, test } from '@playwright/test';
@@ -78,6 +78,24 @@ for (const tool of listed) {
     expect([...title].length).toBeLessThanOrEqual(60);
   });
 }
+
+const PAGES_DIR = join(process.cwd(), 'content/pages');
+const approvedPages = (existsSync(PAGES_DIR) ? readdirSync(PAGES_DIR) : [])
+  .filter((f) => f.endsWith('.md'))
+  .filter((f) => /^status:\s*approved\s*$/m.test(readFileSync(join(PAGES_DIR, f), 'utf8')))
+  .map((f) => `/${f.replace(/\.md$/, '')}`);
+
+test('site information pages: only approved pages are published and linked', async ({ page }) => {
+  await page.goto('/');
+  const links = await page
+    .locator('footer nav[aria-label="Site information"] a')
+    .evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(links.sort()).toEqual([...approvedPages].sort());
+  for (const path of ['/about', '/privacy', '/disclaimer']) {
+    const response = await page.goto(path);
+    expect(response?.status(), path).toBe(approvedPages.includes(path) ? 200 : 404);
+  }
+});
 
 test('sitemap lists exactly the indexable pages; robots points to it', async ({ request }) => {
   const robots = await (await request.get('/robots.txt')).text();
