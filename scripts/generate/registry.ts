@@ -26,7 +26,13 @@ function fieldFormat(field: PresetField): ExampleFormat {
   return 'text';
 }
 
-/** Rows of the worked-example table: visible inputs, then visible outputs, from a passing fixture. */
+/** Lists and objects (for example invoice line items) have no single-cell text form. */
+const isScalar = (value: unknown) => value === null || typeof value !== 'object';
+
+/**
+ * Rows of the worked-example table: visible scalar inputs, then visible scalar outputs, from a
+ * passing fixture. List inputs such as line items are described in the example's own text instead.
+ */
 export function exampleRows(preset: ResolvedPreset, run: FixtureRun): ExampleRow[] {
   const input = run.fixture.input;
   const state = { ...run.params, ...input };
@@ -34,7 +40,7 @@ export function exampleRows(preset: ResolvedPreset, run: FixtureRun): ExampleRow
   const rows: ExampleRow[] = [];
   const fields = Object.entries(preset.fields).sort(([, a], [, b]) => a.order - b.order);
   for (const [key, field] of fields) {
-    if (!(key in input) || !isShown(field, state)) continue;
+    if (!(key in input) || !isScalar(input[key]) || !isShown(field, state)) continue;
     const raw = String(input[key]);
     const option = field.options?.find((o) => String(o.value) === raw);
     const value = option?.labelKey ? label(option.labelKey) : raw;
@@ -45,7 +51,7 @@ export function exampleRows(preset: ResolvedPreset, run: FixtureRun): ExampleRow
   const outputs = Object.entries(preset.outputs).sort(([, a], [, b]) => a.order - b.order);
   for (const [key, out] of outputs) {
     const value = output[key];
-    if (value === null || value === undefined || !isShown(out, state)) continue;
+    if (value === null || value === undefined || !isScalar(value) || !isShown(out, state)) continue;
     const primary =
       out.primary === true || (out.primaryWhen ? matchesConditions(out.primaryWhen, state) : false);
     rows.push({
