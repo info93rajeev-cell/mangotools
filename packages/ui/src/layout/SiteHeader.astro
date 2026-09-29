@@ -143,4 +143,10 @@ const { brand, categories, showSearch = true } = Astro.props;
       display: none;
     }
   }
+  /* Keeps the wordmark, the Tools menu and both header buttons within a 360 px screen. */
+  @media (max-width: 400px) {
+    .site-header :global(.bar) {
+      gap: var(--space-3);
+    }
+  }
 </style>

@@ -15,7 +15,11 @@ export interface PageFacts {
   inlineScripts: string[];
   cspMeta: string | null;
   externalUrls: string[];
+  retiredNames: string[];
 }
+
+/** Public names that were retired or never launched. They must not appear on a built page. */
+const RETIRED_NAMES = /MangoTools|MangoPie|Beyond the AI Tools/g;
 
 const attr = (tag: string, name: string) =>
   new RegExp(`\\b${name}="([^"]*)"`).exec(tag)?.[1] ?? null;
@@ -65,6 +69,7 @@ export function pageFacts(file: string, html: string): PageFacts {
       .map((s) => s.body),
     cspMeta: cspTag ? decode(attr(cspTag, 'content') ?? '') : null,
     externalUrls: [...withoutScripts.matchAll(/https?:\/\/[^\s"'<>)]+/g)].map((m) => m[0]),
+    retiredNames: [...new Set(html.match(RETIRED_NAMES) ?? [])],
   };
 }
 
@@ -129,6 +134,7 @@ export function checkPage(page: PageFacts, siteUrl: string): string[] {
     ...checkJsonLd(page),
     ...checkHosts(page, siteUrl),
     ...checkScripts(page),
+    ...page.retiredNames.map((name) => `mentions the retired public name "${name}"`),
   ];
 }
 

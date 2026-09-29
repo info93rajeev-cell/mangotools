@@ -59,13 +59,12 @@ export function toolTitle(tool: RegistryTool): string {
 }
 
 export const HOME = {
-  title: 'MangoTools — Tools for Work That Should Not Depend on AI',
+  title: `${brand.name} — Tools for Work That Should Not Depend on AI`,
   description:
-    'Calculators, converters and business tools with clear, checkable results: GST, margin, JSON, Base64 and URL. No ads, no unnecessary uploads, no AI.',
+    'Business, logistics, construction, export, PDF, image and developer tools that run in your browser. Nothing is uploaded and no AI is used in calculations.',
 };
 
 export const ALL_TOOLS = {
-  title: 'All Tools – Calculators, Converters and Developer Tools',
-  description:
-    'Browse every MangoTools tool: GST and profit margin calculators, a JSON formatter, Base64 and URL encoders. Free, no sign-up, and it all runs in your browser.',
+  title: 'All Tools – Calculators, PDF, Image and Developer Tools',
+  description: `Browse every ${brand.name} tool: business, logistics and construction calculators, export documents, PDF, image and developer tools. All run in your browser.`,
 };
