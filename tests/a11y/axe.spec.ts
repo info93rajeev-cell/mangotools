@@ -1,8 +1,21 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
+import type { Registry } from '@mangotools/schemas';
 import { expect, type Page, test } from '@playwright/test';
-import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
+import { gotoReady, island, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
-const PAGES = ['/', '/tools', '/business', '/developer', ...TOOL_IDS.map((id) => `/${id}`)];
+const registry = JSON.parse(
+  readFileSync(join(process.cwd(), 'generated/registry.json'), 'utf8'),
+) as Registry;
+const CATEGORY_PAGES = registry.categories.filter((c) => c.visible).map((c) => c.url);
+const PAGES = [
+  '/',
+  '/tools',
+  ...CATEGORY_PAGES,
+  '/this-page-does-not-exist',
+  ...TOOL_IDS.map((id) => `/${id}`),
+];
 
 async function seriousViolations(page: Page) {
   const results = await new AxeBuilder({ page })
@@ -35,6 +48,28 @@ for (const scheme of ['light', 'dark'] as const) {
       await page.getByRole('button', { name: 'Search tools' }).click();
       await page.getByRole('dialog').getByRole('combobox').fill('gst');
       await expect(page.getByRole('dialog').getByRole('option').first()).toBeVisible();
+      expect(await seriousViolations(page)).toEqual([]);
+    });
+    test('/gst-calculator (field error state)', async ({ page }) => {
+      await gotoReady(page, '/gst-calculator');
+      await page.getByLabel('Amount (₹)').fill('12a');
+      await expect(page.getByLabel('Amount (₹)')).toHaveAttribute('aria-invalid', 'true');
+      expect(await seriousViolations(page)).toEqual([]);
+    });
+    test('/image-metadata-remover (file error state)', async ({ page }) => {
+      await gotoReady(page, '/image-metadata-remover');
+      const notAnImage = join(process.cwd(), 'tools/image-metadata-remover/manifest.yaml');
+      await island(page, 'image-metadata-remover')
+        .locator('input[type="file"]')
+        .setInputFiles([notAnImage]);
+      await page.getByRole('button', { name: 'Download cleaned image' }).click();
+      await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+      expect(await seriousViolations(page)).toEqual([]);
+    });
+    test('/tools (search with no results)', async ({ page }) => {
+      await gotoReady(page, '/tools');
+      await page.locator('#tools-search-input').fill('zzqxv');
+      await expect(page.getByText(/No tools match/).first()).toBeVisible();
       expect(await seriousViolations(page)).toEqual([]);
     });
     test('/json-formatter (error state)', async ({ page }) => {

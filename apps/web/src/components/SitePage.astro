@@ -65,7 +65,13 @@ const crumbs = [
   .prose {
     display: grid;
     gap: var(--space-4);
+    min-width: 0;
     max-width: 72ch;
+  }
+  .prose :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
   }
   .prose :global(h2) {
     margin-top: var(--space-4);
