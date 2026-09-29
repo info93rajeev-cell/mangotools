@@ -28,6 +28,16 @@ are copied from the current engine output — verify them by hand and cite how b
 - `seo.primaryKeyword` must not be used by any other tool.
 - T1/T2 tools need `quality.verifiedAgainst` and `quality.lastVerified`.
 - Slugs are the search phrase in kebab-case and may not collide with categories or reserved slugs.
+- `privacy.dataClass` is the most sensitive data the tool **may receive**, not where it is processed.
+  Use `personal` for any tool that accepts uploaded files, documents, images or unrestricted
+  text/data (PDF, image, document generators, JSON/CSV/Base64/URL tools). Use `public` only for
+  calculators and generators whose inputs are ordinary non-sensitive parameters. When unsure, pick
+  the more sensitive class and ask in the issue — never guess silently.
+- `privacy.network` is `none` unless the tool needs the network and says so on its page. It is a
+  declaration, not proof: `pnpm gen` derives the registry's `processing` from it **and** the
+  operation's runtimes, and only `processing: device` shows the "Runs on your device" badge. A tool
+  with `processing: device` must be covered by `tests/e2e/network.spec.ts`
+  (`tests/e2e/privacy-badge.spec.ts` fails otherwise).
 
 ## 4. Write the content
 

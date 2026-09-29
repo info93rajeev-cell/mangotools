@@ -1,3 +1,4 @@
+import type { Runtime } from '@mangotools/core';
 import {
   type ExampleFormat,
   type ExampleRow,
@@ -12,6 +13,7 @@ import {
 } from '@mangotools/schemas';
 import type { ParsedContent } from './content.ts';
 import type { LoadedTool } from './manifests.ts';
+import { processingOf } from './processing.ts';
 import type { Taxonomy } from './taxonomy.ts';
 import type { FixtureRun } from './tool-fixtures.ts';
 
@@ -99,6 +101,7 @@ export function toRegistryTool(
   loaded: LoadedTool,
   content: ParsedContent,
   example: ToolContent['example'],
+  runtimes: readonly Runtime[],
 ): RegistryTool {
   const m = loaded.manifest;
   return {
@@ -121,6 +124,7 @@ export function toRegistryTool(
     synonyms: m.taxonomy.synonyms ?? [],
     capabilities: m.capabilities ?? {},
     privacy: m.privacy,
+    processing: processingOf(m.privacy, runtimes),
     disclaimer: m.disclaimer,
     seo: m.seo,
     related: m.graph?.related ?? [],

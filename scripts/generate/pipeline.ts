@@ -194,7 +194,7 @@ async function buildTool(
   }
   const example =
     run && exampleId ? { fixtureId: exampleId, rows: exampleRows(preset, run) } : null;
-  return toRegistryTool(tool, parsed.content, example);
+  return toRegistryTool(tool, parsed.content, example, op.runtimes);
 }
 
 function checkHome(

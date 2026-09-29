@@ -10,6 +10,18 @@ import type { Category } from './taxonomy.ts';
 
 export type Conditions = Record<string, string[]>;
 
+/**
+ * Where a tool processes user input. `pnpm gen` derives it from implementation evidence — the
+ * manifest's `privacy.network` and the runtimes of the tool's engine operation — and it is never
+ * written by hand. Only `device` supports the public claims "Runs on your device" and "Nothing is
+ * uploaded"; the tool-page privacy badge renders only for `device`.
+ * - `device`: the operation runs in this browser in a same-origin worker, and the tool declares no
+ *   network use (`privacy.network: none`).
+ * - `network`: the tool declares network use (`privacy.network: declared`).
+ * - `unverified`: no network is declared, but the operation cannot run in the browser.
+ */
+export type Processing = 'device' | 'network' | 'unverified';
+
 /** A preset after `extends` is applied; what tool islands receive. */
 export interface ResolvedPreset {
   id: string;
@@ -85,6 +97,8 @@ export interface RegistryTool {
   synonyms: string[];
   capabilities: NonNullable<Manifest['capabilities']>;
   privacy: Manifest['privacy'];
+  /** Derived by `pnpm gen`; see {@link Processing}. */
+  processing: Processing;
   disclaimer: Manifest['disclaimer'];
   seo: Manifest['seo'];
   related: string[];

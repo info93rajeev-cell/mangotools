@@ -104,7 +104,7 @@ const sizes = ['sm', 'md', 'lg'] as const;
       </section>
 
       <section><h2>Tool kit</h2>
-        <ToolHeader name="GST Calculator" summary="Add or remove GST and split it into CGST and SGST or IGST, with every step shown." />
+        <ToolHeader name="GST Calculator" summary="Add or remove GST and split it into CGST and SGST or IGST, with every step shown." processing="device" />
         <Disclaimer kind="professional" />
         {gstPreset ? <WorkingSteps preset={gstPreset} steps={steps} /> : null}
       </section>

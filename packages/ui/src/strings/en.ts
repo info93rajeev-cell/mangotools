@@ -32,7 +32,7 @@ export const EN = {
   'card.tool': '1 tool',
   'card.pro': 'Professional',
   'privacy.badge': 'Runs on your device',
-  'privacy.detail': 'Your data is processed in this browser and never uploaded.',
+  'privacy.detail': 'Processed locally in your browser. Nothing is uploaded.',
   'action.trySample': 'Try sample',
   'action.howToUse': 'How to use',
   'action.copy': 'Copy',
