@@ -223,6 +223,20 @@ export function headersFile({ scriptHashes, indexable }: HeadersOptions): string
   return lines.join('\n');
 }
 
+/** Cloudflare Pages limits for _headers: at most 100 rules and 2,000 characters per line. */
+export function headersLimitProblems(text: string): string[] {
+  const lines = text.split('\n');
+  const rules = lines.filter((l) => l.trim() !== '' && !/^\s/.test(l)).length;
+  const problems = rules > 100 ? [`_headers has ${rules} rules (Cloudflare Pages allows 100)`] : [];
+  lines.forEach((line, i) => {
+    if (line.length > 2000)
+      problems.push(
+        `_headers line ${i + 1} is ${line.length} characters (Cloudflare Pages allows 2,000)`,
+      );
+  });
+  return problems;
+}
+
 /** Module URLs a page loads up front: module scripts and island component/renderer URLs. */
 export function entryModules(html: string): string[] {
   const urls = new Set<string>();
