@@ -14,23 +14,21 @@ categories:
     name: Civil & Construction
     icon: hard-hat
     order: 20
-    summary: Concrete and quantity-survey calculators for site engineers, contractors and estimators.
+    summary: Concrete, excavation, brickwork, plaster, tile and paint quantity calculators for site engineers and estimators.
     seo:
-      title: Civil & Construction Calculators – Concrete Quantity
-      description: Free civil and construction calculators for concrete quantity, built for site engineers, contractors and estimators. Runs in your browser.
+      title: Construction Calculators – Concrete, Brick, Plaster & Paint
+      description: Free construction quantity calculators for concrete, excavation, brickwork, plaster, tiles and paint, with every step shown. Runs in your browser.
     about:
-      - The Concrete Quantity Calculator works out the volume of concrete needed for a rectangular slab, beam, column or footing, including an adjustable wastage allowance, in cubic metres and cubic feet.
-      - This is an estimation aid, not a structural design or a certified bill of quantities. Local codes, site conditions, mix design, wastage and measurement rules vary by project — verify quantities before purchase or construction, and confirm the final figures with a licensed engineer, architect or professional quantity surveyor.
-      - The calculator runs entirely in your browser and shows its working. The dimensions you enter are never sent to a server.
+      - Six quantity calculators for site engineers, contractors, estimators and homeowners. The Concrete Quantity Calculator works out concrete volume for a slab, beam, column or footing. The Excavation Calculator works out earthwork volume for a pit, trench or footing, with a bulking allowance. The Brickwork Calculator estimates brick count and brickwork volume for a wall. The Plaster Calculator works out plaster area and volume for a wall, ceiling or surface. The Tile / Flooring Calculator estimates tiles and boxes for a rectangular floor or wall, and the Paint Calculator estimates litres of paint from coverage and coats.
+      - These are estimation aids, not structural designs or certified bills of quantities. Local codes, site conditions, mix design, wastage and measurement rules vary by project — verify quantities before purchase or construction, and confirm the final figures with a licensed engineer, architect or professional quantity surveyor.
+      - The calculators run entirely in your browser and show their working. The dimensions you enter are never sent to a server.
     faq:
       - q: Are these civil and construction calculators free?
-        a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
+        a: Yes. The calculators are free to use, with no sign-up and no ads.
       - q: Which units can I use?
-        a: Dimensions in millimetres, centimetres, metres, inches or feet. Results are shown in cubic metres and cubic feet.
+        a: Enter dimensions in millimetres, centimetres, metres, inches or feet. Volumes are shown in cubic metres and cubic feet, and areas in square metres and square feet. The Brickwork, Tile / Flooring and Paint calculators also show brick count, tiles and boxes, and litres of paint.
       - q: Does this replace a quantity surveyor or engineer?
-        a: No. This is an estimation aid to help you plan and check quantities. It does not calculate reinforcement, mix design, material split or cost, and it does not replace a licensed engineer, architect or professional quantity surveyor.
-      - q: Will more civil and construction calculators be added?
-        a: This category currently has one tool, the Concrete Quantity Calculator. Further civil and quantity-survey calculators may be added later.
+        a: No. These are estimation aids to help you plan and check quantities. They do not calculate reinforcement, structural design, mix design, material cost or labour, and they do not replace a licensed engineer, architect or professional quantity surveyor.
   - id: logistics
     slug: logistics
     name: Logistics
@@ -46,7 +44,7 @@ categories:
       - The calculators run entirely in your browser. The dimensions and weights you enter are never sent to a server.
     faq:
       - q: Are these logistics calculators free?
-        a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
+        a: Yes. The calculators are free to use, with no sign-up and no ads.
       - q: Which units can I use?
         a: Dimensions in centimetres, metres, millimetres or inches throughout. The CBM Calculator shows cubic metres (CBM) and cubic feet; the Volumetric Weight Calculator accepts weights in kilograms, grams or pounds and shows kilograms; the Container and Pallet Loading Calculators show cubic metres, area and carton counts.
       - q: Do these calculators give the freight rate or a guaranteed loading plan?
@@ -66,13 +64,11 @@ categories:
       - The tools run entirely in your browser. The business and shipment details you enter are never sent to a server.
     faq:
       - q: Are these export document tools free?
-        a: Yes. Every tool is free and unlimited, with no sign-up and no ads.
+        a: Yes. Both tools are free to use, with no sign-up and no ads.
       - q: Do these tools file anything with Customs, India Post, DGFT, ICEGATE, DNK, or ECCS?
         a: No. These are document preparation helpers only. They never file, submit, or integrate with any government or courier filing system. Verify final documents with the relevant official channel before filing or shipping.
       - q: Is this legal, tax, or FEMA/bank compliance advice?
         a: No. These tools help you prepare documents and drafts. Confirm compliance requirements with your CA, customs broker, bank, or the official portal.
-      - q: Will more export/import tools be added?
-        a: This category currently has two tools, the Export Commercial Invoice Generator and the Export Packing List Generator. Further export and import document tools may be added later.
   - id: privacy-tools
     slug: privacy-tools
     name: Privacy & Compliance
@@ -97,7 +93,7 @@ categories:
       - The tools run entirely in your browser. The amounts you enter are never sent to a server.
     faq:
       - q: Are these business calculators free?
-        a: Yes. Every calculation is free and unlimited, with no sign-up and no ads.
+        a: Yes. The calculators are free to use, with no sign-up and no ads.
       - q: How are amounts rounded?
         a: Money is rounded to two decimal places using commercial rounding, where halves round away from zero. Each tool explains its exact rounding rule on its page.
       - q: Is this tax or accounting advice?
@@ -107,19 +103,19 @@ categories:
     name: Developer & Data
     icon: braces
     order: 60
-    summary: Format, encode, convert and generate data — instantly, in your browser.
+    summary: Format JSON, convert CSV and JSON, encode Base64 and URLs, and convert timestamps, in your browser.
     seo:
-      title: Developer Tools – JSON, Base64, URL Encoding
-      description: Free developer tools to format JSON, encode Base64 and URLs, and convert data. Everything runs locally, in your browser.
+      title: Developer Tools – JSON, CSV, Base64, URL & Timestamps
+      description: Free developer tools to format JSON, convert CSV to JSON and back, encode Base64 and URLs, and convert Unix timestamps. Everything runs in your browser.
     about:
-      - These tools format, validate and encode data exactly as the relevant standards describe, so the output is predictable in every browser.
-      - The JSON formatter never rounds numbers or rewrites escapes, which matters for large IDs and financial values. The encoders follow RFC 4648 and RFC 3986 precisely.
+      - Six tools for everyday data work. The JSON Formatter formats, minifies and validates JSON. CSV to JSON and JSON to CSV convert between a CSV table and a JSON array of objects. Base64 Encode & Decode and URL Encode & Decode encode and decode text with correct UTF-8. The Timestamp Converter converts a Unix timestamp to a date and back, in seconds or milliseconds, UTC and local time.
+      - The tools follow the relevant standards, so the output is predictable in every browser. The JSON Formatter never rounds numbers or rewrites escapes, which matters for large IDs and financial values, and the CSV converters keep values as text rather than guessing types.
       - Everything runs on your device. API keys, tokens and payloads you paste are never uploaded.
     faq:
       - q: Is it safe to paste API responses or tokens here?
         a: The tools run entirely in your browser and make no network requests with your data. As with any tool, avoid pasting secrets on a shared or untrusted computer.
       - q: Which standards do these tools follow?
-        a: JSON follows RFC 8259, Base64 follows RFC 4648, and URL encoding follows RFC 3986 and the WHATWG form-encoding rules.
+        a: JSON follows RFC 8259, CSV follows RFC 4180, Base64 follows RFC 4648, URL encoding follows RFC 3986 and the WHATWG form-encoding rules, and Unix time follows the POSIX definition.
       - q: Do the tools work with large inputs?
         a: Yes. Text inputs of up to 50 MB are processed in a background worker so the page stays responsive.
   - id: pdf
@@ -136,30 +132,26 @@ categories:
       - These are simple, browser-first tools. Bookmarks, forms, annotations and other advanced PDF features from the original files may not be preserved by PDF Merge or PDF Split, image orientation from camera metadata may not be preserved by JPG to PDF, and very large, encrypted, password-protected or corrupted files may fail to process.
     faq:
       - q: Are these PDF tools free?
-        a: Yes. PDF Merge, PDF Split, and JPG to PDF are free and unlimited, with no sign-up and no ads.
+        a: Yes. PDF Merge, PDF Split and JPG to PDF are free to use, with no sign-up and no ads.
       - q: Are my files uploaded anywhere?
         a: No. Every tool processes your files in this browser. Nothing is uploaded to a server.
-      - q: Will more PDF tools be added?
-        a: This category currently has three tools, PDF Merge, JPG to PDF, and PDF Split. Further PDF tools may be added later.
   - id: media
     slug: media
     name: Image & Media
     icon: image
     order: 80
-    summary: Resize, compress and convert JPG, PNG and WebP images for websites, ecommerce and social media, in your browser.
+    summary: Resize, compress, convert, crop, watermark and clean JPG, PNG and WebP images, and make favicons, in your browser.
     seo:
-      title: Image Tools – Resize, Compress & Convert Free
-      description: Free browser-based image tools for JPG, PNG and WebP — resize, compress, and convert formats. No sign-up, no watermark, nothing uploaded.
+      title: Image Tools – Resize, Compress, Convert & Crop Images
+      description: "Free image tools for JPG, PNG and WebP: resize, compress, convert, crop, watermark, remove metadata and make favicons. Nothing is uploaded."
     about:
       - Image & Media tools work on a single JPG, PNG or WebP image at a time, entirely in your browser. Image Resize changes the width and height, Image Compress reduces file size where possible, Image Format Converter changes the file format between JPG, PNG and WebP, Image Metadata Remover creates a copy with common metadata removed, Image Watermark adds your own text watermark, Image Crop cuts out an exact pixel rectangle, and Favicon Generator creates a square PNG website icon — all with no sign-up and no watermark added to the result.
       - These are simple, browser-first tools for everyday images, such as preparing a photo for a website, an online store, a social post, a document, or an AI-generated image that arrived in the wrong format. Very large images may fail because of browser memory limits, output can differ slightly between browsers because image encoders vary, and transparent areas are flattened onto a white background when exporting to JPG. Nothing is uploaded to a server.
     faq:
       - q: Are these image tools free?
-        a: Yes. Every tool is free and unlimited, with no sign-up and no ads.
+        a: Yes. The tools are free to use, with no sign-up and no ads.
       - q: Are my images uploaded anywhere?
         a: No. The image you select is read and processed in this browser. No file upload is required for these tools.
-      - q: Will more image tools be added?
-        a: This category currently has seven tools — Image Resize, Image Compress, Image Format Converter, Image Metadata Remover, Image Watermark, Image Crop, and Favicon Generator. Further image tools may be added later.
   - id: utilities
     slug: utilities
     name: Everyday Utilities
