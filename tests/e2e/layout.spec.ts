@@ -2,12 +2,18 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Registry } from '@mangotools/schemas';
 import { expect, type Page, test } from '@playwright/test';
+import { approvedSitePages } from '../support/site-pages.ts';
 import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const registry = JSON.parse(
   readFileSync(join(process.cwd(), 'generated/registry.json'), 'utf8'),
 ) as Registry;
-const PAGES = ['/', '/tools', ...registry.categories.filter((c) => c.visible).map((c) => c.url)];
+const PAGES = [
+  '/',
+  '/tools',
+  ...registry.categories.filter((c) => c.visible).map((c) => c.url),
+  ...approvedSitePages(),
+];
 const SIZES = [
   { width: 360, height: 800 },
   { width: 1366, height: 768 },
