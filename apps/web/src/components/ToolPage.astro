@@ -34,7 +34,7 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
     <div class="page">
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} />
+        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
       </div>
       <ToolIsland
         client:load

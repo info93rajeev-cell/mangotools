@@ -26,6 +26,18 @@ export const listedTools: RegistryTool[] = registry.tools.filter((t) => t.listed
 export const toolById = new Map(registry.tools.map((t) => [t.id, t]));
 export const categoryById = new Map(registry.categories.map((c) => [c.id, c]));
 
+/**
+ * Site-wide copy (HOME, ALL_TOOLS, COPY) says that tools run in the browser and nothing is
+ * uploaded. That is true only while every listed tool is processed on the device, according to
+ * the registry's evidence-based `processing`; the build stops before publishing it otherwise.
+ */
+const notOnDevice = listedTools.filter((t) => t.processing !== 'device').map((t) => t.id);
+if (notOnDevice.length > 0) {
+  throw new Error(
+    `Site-wide privacy copy assumes every listed tool runs on the device, but these do not: ${notOnDevice.join(', ')}. Revise that copy before listing them.`,
+  );
+}
+
 export const navCategories = visibleCategories.map((c) => ({ name: c.name, url: c.url }));
 
 export function toolLink(tool: RegistryTool): ToolLink {

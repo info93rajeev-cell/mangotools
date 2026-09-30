@@ -34,10 +34,10 @@ only, must not be claimed.
 |---|---|
 | Wording | "Files and numbers are processed in your browser." (Use "where possible" only once a tool exists that genuinely cannot work locally, and label that tool.) |
 | Product rule | Every tool computes on the device. A tool that needs a server must say so on its page before the user adds any data. |
-| Enforcement | Engines run in same-origin module workers (`packages/runtime`). There is no server API in Phase 1: `apps/api` is a forbidden folder (`scripts/validate/rules.ts`). |
-| Test / proof | `tests/e2e/network.spec.ts` (no third-party requests and no request bodies, on all three browsers). The user can go offline after the page loads and the tool still works. |
-| Evidence | Privacy page (TASK-008). The tool page's "Processed on your device" note. |
-| Limits | Phase 1 tools take typed or pasted input. File tools arrive in TASK-004/005 and must extend the network test to cover files. |
+| Enforcement | Engines run in same-origin module workers (`packages/runtime`). There is no server API in Phase 1: `apps/api` is a forbidden folder (`scripts/validate/rules.ts`). `pnpm gen` derives each tool's `processing` from its manifest `privacy.network` and its operation's runtimes (`scripts/generate/processing.ts`); the tool-page badge renders only for `processing: device`, and the build stops if site-wide copy would claim on-device processing while a listed tool is not `device` (`apps/web/src/lib/site.ts`). `privacy.dataClass` describes sensitivity only and is never used as evidence. |
+| Test / proof | `tests/e2e/network.spec.ts` (no third-party requests and no request bodies, on all three browsers, including file tools). `tests/e2e/privacy-badge.spec.ts` (badge follows `processing`; every `device` tool is covered by the network test). `scripts/generate/processing.test.ts` and `packages/ui/src/toolkit/privacyBadge.test.ts` (a non-local tool gets no badge). This is not an offline guarantee: engine workers and the search index are fetched from the same origin on first use. |
+| Evidence | Privacy page (TASK-008). The tool page's "Runs on your device" badge (detail: "Processed locally in your browser. Nothing is uploaded."). |
+| Limits | Covers the tools listed today (typed, pasted and file input). A tool that declares network use gets `processing: network` and no badge, and must say so on its page. |
 
 ### 2.2 No uploads unless clearly stated — ✅ Phase 1
 

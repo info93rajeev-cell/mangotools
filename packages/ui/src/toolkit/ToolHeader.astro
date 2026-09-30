@@ -1,21 +1,30 @@
 ---
+import type { Processing } from '@mangotools/schemas';
 import { Icon } from '../primitives/Icon.tsx';
-import { t } from '../strings/en.ts';
+import { privacyBadge } from './privacyBadge.ts';
 
 interface Props {
   name: string;
   summary: string;
+  /** Evidence-based processing from the registry. The badge renders only for `device`. */
+  processing: Processing;
 }
-const { name, summary } = Astro.props;
+const { name, summary, processing } = Astro.props;
+const badge = privacyBadge(processing);
 ---
 
 <div class="tool-header">
   <div class="title-row">
     <h1>{name}</h1>
-    <p class="privacy" title={t('privacy.detail')}>
-      <Icon name="lock" />
-      <span>{t('privacy.badge')}</span>
-    </p>
+    {
+      badge ? (
+        <p class="privacy" title={badge.detail} data-processing={processing}>
+          <Icon name="lock" />
+          <span>{badge.label}</span>
+          <span class="visually-hidden">{badge.detail}</span>
+        </p>
+      ) : null
+    }
   </div>
   <p class="summary">{summary}</p>
 </div>

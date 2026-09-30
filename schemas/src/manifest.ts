@@ -56,7 +56,12 @@ export const manifestSchema = z
       })
       .optional(),
     privacy: z.strictObject({
+      /**
+       * The most sensitive data the tool may receive. It describes sensitivity only and is not
+       * evidence of local processing; see `Processing` in registry.ts for that.
+       */
       dataClass: z.enum(['public', 'personal', 'sensitive']),
+      /** Declared network use. `pnpm gen` combines it with the operation's runtimes. */
       network: z.enum(['none', 'declared']),
     }),
     disclaimer: z.enum(['none', 'standard', 'professional', 'sensitive']),
