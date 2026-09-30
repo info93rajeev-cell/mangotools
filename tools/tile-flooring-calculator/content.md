@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 example: 001-room-5x4-m
 ---
 
@@ -34,7 +34,7 @@ planning a tiling job.
   entered.
 
 Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m. The
-same unit applies to both the surface and the tile in this version — for example, enter both the room
+same unit applies to both the surface and the tile — for example, enter both the room
 and the tile in feet, or both in inches.
 
 **Why round up twice?** Rounding the base tile count up first, then applying wastage to that whole
@@ -69,17 +69,17 @@ calculation and see only the tile count.
 
 ### Can I use feet for room size and inches for tile size?
 
-Not in this version — the same unit applies to both the surface and the tile. Convert one of them
+No — the same unit applies to both the surface and the tile. Convert one of them
 first (for example, 12 inches = 1 foot) if your measurements are in different units.
 
 ### Does this include grout or adhesive?
 
 No. This tile quantity calculator estimates tile count only. Grout and adhesive quantities are a
-separate calculation this version does not perform.
+separate calculation this tool does not perform.
 
 ### Does it handle diagonal tile layouts?
 
-No, not in this version. It assumes a simple rectangular layout; a diagonal or pattern layout
+No. It assumes a simple rectangular layout; a diagonal or pattern layout
 typically needs more tiles and more cutting than this estimate accounts for.
 
 ### Does it calculate tile cost?
@@ -107,5 +107,5 @@ final figures with a licensed engineer, architect, contractor, or professional q
 
 - Rectangular area and tile-count ratio: surface area ÷ tile area (general geometry).
 - International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
-- Square foot: 1 ft² = 0.09290304 m², rounded here to this platform's own Phase 1 constant
-  (10.7639104 ft² per m²), matching the Plaster Calculator and Brickwork Calculator.
+- Square foot: 1 ft² = 0.09290304 m², rounded here to
+  10.7639104 ft² per m², matching the Plaster Calculator and Brickwork Calculator.

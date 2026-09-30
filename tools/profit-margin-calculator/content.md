@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-25
+lastReviewed: 2026-09-30
 example: 001-cost-and-price
 ---
 
@@ -41,6 +41,11 @@ A negative margin means you are selling below cost, at a loss. For example, a co
 ### Does this include GST?
 
 No. Enter cost and selling price on the same basis, normally both excluding GST. To add or remove GST, use the [GST Calculator](tool:gst-calculator).
+
+### Is this pricing, tax or accounting advice?
+
+No. The calculator does the arithmetic and shows every step so you can check it. Confirm prices, tax
+treatment and accounting figures with your accountant before you rely on them.
 
 ## References
 

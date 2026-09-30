@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 example: 001-standard-wall
 ---
 
@@ -93,12 +93,12 @@ mason, or professional quantity surveyor.
 ### Does this calculate cement and sand for mortar?
 
 No. This calculator estimates brick count and brickwork volume only. The cement/sand mortar material
-breakup is a separate calculation this version does not perform.
+breakup is a separate calculation this tool does not perform.
 
 ## References
 
 - Rectangular-prism volume: length × width × height (SI, general geometry).
 - International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
-- Cubic foot: 1 ft³ = 0.028316846592 m³, and square foot: 1 ft² = 0.09290304 m², both rounded here to this
-  platform's own Phase 1 constants (35.3146667 ft³ per m³ and 10.7639104 ft² per m²), matching the
+- Cubic foot: 1 ft³ = 0.028316846592 m³, and square foot: 1 ft² = 0.09290304 m², both rounded here to
+  35.3146667 ft³ per m³ and 10.7639104 ft² per m², matching the
   Concrete Quantity Calculator and CBM Calculator.

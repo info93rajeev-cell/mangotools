@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 example: 001-wall-5x4-m
 ---
 
@@ -79,8 +79,8 @@ involved.
 
 ### Does this include primer, putty, or labour?
 
-No, not in this version. This paint calculator estimates paint litres only. Primer, putty, and labour
-are separate calculations this version does not perform.
+No. This paint calculator estimates paint litres only. Primer, putty, and labour
+are separate calculations this tool does not perform.
 
 ### Can I use this for a rectangular wall, ceiling, or flat surface?
 

@@ -4,8 +4,9 @@ id: container-loading-calculator
 slug: container-loading-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Fix the worked-example carton size (60 × 40 × 40 cm) and say the volume estimate is usually, not always, higher." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with a volume estimate and a simple 6-orientation grid fit for 20 ft, 40 ft, 40 ft high-cube or custom containers." }
 name: Container Loading Calculator
 shortName: Container Loading

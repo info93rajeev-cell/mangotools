@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -39,7 +39,7 @@ center-cropped to a square first — the longer side is trimmed evenly from both
 side — and that square is then resized to your chosen favicon size. This means the entire output is always
 filled by your image: there is never a padding or background color to add or choose, and any transparency
 already in your source image (PNG or WebP) is kept as-is. This tool does not offer an interactive crop
-editor in this version — if the automatic center crop cuts off part of the image you wanted to keep, crop
+editor — if the automatic center crop cuts off part of the image you wanted to keep, crop
 the source image with [Image Crop](tool:image-crop) first, then generate the favicon from the cropped result.
 
 **Where to upload favicon files.** Once downloaded, upload the favicon file(s) to your website's root
@@ -65,8 +65,7 @@ camera and location data is not preserved after export. Very large images may fa
 limits.
 
 **What this tool does not do.** It generates one square PNG favicon per run, at a size you pick from a fixed
-list — there is no batch mode, no ZIP download of multiple sizes at once, and no `.ico` file output in this
-version. It is not a logo design tool: it resizes and center-crops your existing image, it does not create
+list — there is no batch mode, no ZIP download of multiple sizes at once, and no `.ico` file output. It is not a logo design tool: it resizes and center-crops your existing image, it does not create
 new artwork, add effects, or use AI. It does not add a watermark of any kind.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no image selected, a
@@ -98,7 +97,7 @@ Yes. PNG is the most widely supported favicon format today and is what this tool
 
 ### Does this create .ico files?
 
-Not in this version. This tool generates PNG favicons only. Modern browsers support PNG favicons directly,
+No. This tool generates PNG favicons only. Modern browsers support PNG favicons directly,
 so a `.ico` file is not required for most sites.
 
 ### Why does my favicon look blurry?
@@ -123,5 +122,5 @@ No. This tool works without an account, sign-up, or login.
 
 ### Can I create many favicon files at once?
 
-Not in this version. Batch processing and a multi-size ZIP pack are not included in v1 — generate one size
+No. Batch processing and a multi-size ZIP pack are not included — generate one size
 at a time, and run the tool again with a different size for each file you need.

@@ -4,8 +4,9 @@ id: export-commercial-invoice-generator
 slug: export-commercial-invoice-generator
 status: beta
 tier: T2
-version: 0.2.1
+version: 0.2.2
 changelog:
+  - { version: 0.2.2, date: 2026-09-30, type: changed, summary: "Remove roadmap wording; cite the official CBIC and DGFT portals instead of an internal planning file." }
   - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.2.0, date: 2026-09-28, type: changed, summary: "Supports up to 5 line items per invoice, with a per-item result table summing to the invoice total." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Commercial invoice draft for an export shipment, with the item and invoice totals calculated." }

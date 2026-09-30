@@ -4,8 +4,9 @@ id: markup-calculator
 slug: markup-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Add an FAQ on pricing/accounting advice; margin can never exceed 100%." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with price from markup, markup from cost and price, and cost from markup." }
 name: Markup Calculator
 shortName: Markup

@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-28
+lastReviewed: 2026-09-30
 example: 001-cushion-covers-10-cartons
 ---
 
@@ -117,7 +117,7 @@ yourself.
 
 ### Does this store my data?
 
-No. This version does not save, store, or upload anything — nothing you type is sent to a server or
+No. The tool does not save, store, or upload anything — nothing you type is sent to a server or
 kept after you close or refresh the page.
 
 ### Do I need to sign up?
@@ -134,4 +134,6 @@ shipment, not a total per item.
 
 - General packing-list content (exporter, buyer/consignee, item, packages, net/gross weight):
   common international trade documentation practice.
-- Field groups and compliance boundary: this platform's own `TASK-009A-EXPORT-IMPORT-DOCUMENTS-FOUNDATION-PLANNER.md`, itself researched against secondary summaries of CBIC, DGFT, and GST notifications (see that document's own source list and disclosed research limitations).
+- Indian exporter identifiers and declarations (IEC, GSTIN, LUT/ARN, HSN code): see the official
+  CBIC (cbic.gov.in) and DGFT (dgft.gov.in) portals for current requirements. This tool does not follow
+  or certify any official template.

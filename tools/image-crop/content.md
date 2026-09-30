@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -41,7 +41,7 @@ as camera and location data is not preserved after export. Very large images may
 memory limits.
 
 **What this tool does not do.** It supports a numeric crop rectangle only — there is no drag-to-select or
-interactive crop area in this version. It handles one image per run — there is no batch cropping or ZIP
+interactive crop area. It handles one image per run — there is no batch cropping or ZIP
 download. It does not add a watermark of any kind.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no image selected, a
@@ -72,12 +72,12 @@ watermark is added.
 
 ### Can I crop many images at once?
 
-Not in this version. Batch cropping is not included in v1 — Image Crop handles one image per run; select a
+No. Batch cropping is not included — Image Crop handles one image per run; select a
 new image to crop another.
 
 ### Can I drag to crop?
 
-Not in this version. Drag-to-select crop is not included in v1 — enter the crop rectangle as exact pixel
+No. Drag-to-select crop is not included — enter the crop rectangle as exact pixel
 values instead.
 
 ### Why did my file size change?

@@ -1,14 +1,14 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
 
 1. **Choose one image.** Drag and drop a JPG, PNG, or WebP file onto the box, or select one from your
-   device. A preview appears, and the image's own dimensions are kept by default — this tool creates a
+   device. A preview appears, and the image's own dimensions are always kept — this tool creates a
    cleaner copy, not a resize.
 2. **Leave the output format as "Same as input"** to keep the original format, or pick JPG, PNG, or WebP if
-   you also want to convert while you're at it. Pick a quality setting if you chose (or kept) JPG or WebP.
+   you also want to convert while you're at it. Pick a quality setting if you chose JPG or WebP as the output format.
 3. Select **Download cleaned image**. The image is read and re-encoded in your browser, and the result
    downloads immediately — nothing is uploaded anywhere.
 
@@ -24,7 +24,7 @@ extra data travels with the file when you upload, email, or post it. Removing it
 reasonable, everyday privacy step for photos going on a website, an online store, a social post, or a
 document — this tool exists to make that one step simple, not to replace judgment about what you share.
 
-**Browser-first, and processed locally where supported.** No file upload is required for this tool — the
+**Processed locally in your browser.** No file upload is required for this tool — the
 image you select is read and re-encoded on your own device, and the result downloads without ever leaving
 it.
 
@@ -69,8 +69,7 @@ of the metadata.
 ### Does this change image quality?
 
 Re-encoding can affect visual compression, and for JPG or WebP output the quality setting you choose has a
-direct effect. PNG output is lossless. Dimensions are kept the same as the original unless you separately
-choose a different output format.
+direct effect. PNG output is lossless. Dimensions are always kept the same as the original.
 
 ### Why did the file size change?
 
@@ -93,10 +92,10 @@ No. Image Metadata Remover is free, with no sign-up and no account required.
 
 ### Does this tool add a watermark?
 
-No. The cleaned image is exactly the image you uploaded, re-encoded with metadata removed — no
+No. The cleaned image is the same picture you selected, re-encoded with metadata removed — no
 branding or watermark is added.
 
 ### Can I remove metadata from many images at once?
 
-Not in this version. Batch metadata removal is not included in v1 — Image Metadata Remover handles one
+No. Batch metadata removal is not included — Image Metadata Remover handles one
 image per run; select a new image to clean another.

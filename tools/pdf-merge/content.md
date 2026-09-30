@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-26
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -13,7 +13,7 @@ lastReviewed: 2026-09-26
 
 ## Method
 
-**Files are processed in your browser where supported.** No file upload is required for this tool — every PDF you add is read and combined on your own device, and the merged file is generated and downloaded without ever leaving it.
+**Files are processed locally in your browser.** No file upload is required for this tool — every PDF you add is read and combined on your own device, and the merged file is generated and downloaded without ever leaving it.
 
 **What may not be preserved.** Bookmarks, forms, annotations, signatures, attachments, layers, and some other advanced PDF features from the original files may not carry over into the merged document. Verify the merged PDF before sending, printing, filing, or publishing it.
 
@@ -25,7 +25,7 @@ lastReviewed: 2026-09-26
 
 ### Is PDF Merge free?
 
-Yes. It's free and unlimited, with no sign-up and no ads.
+Yes. It's free to use, with no sign-up and no ads.
 
 ### Are my files uploaded anywhere?
 
@@ -45,7 +45,7 @@ The most common reasons are a password-protected or encrypted PDF, a corrupted f
 
 ### Can I merge password-protected PDFs?
 
-Not in this version. A password-protected or encrypted PDF returns a clear error rather than prompting for a password.
+No. A password-protected or encrypted PDF returns a clear error rather than prompting for a password.
 
 ### Is there a file size limit?
 

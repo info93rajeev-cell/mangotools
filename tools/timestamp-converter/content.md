@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-27
+lastReviewed: 2026-09-30
 ---
 
 ## How to use
@@ -25,10 +25,11 @@ to pick a unit rather than guessing one and risking a wrong date decades off.
 
 **UTC vs local time.** UTC is Coordinated Universal Time, the zone-free reference every other time
 zone is defined relative to. This tool always shows the UTC date/time clearly labeled, and separately
-shows local date/time — the current time in whatever timezone this browser itself is set to, read
-from your device, not a named city you pick. Converting **Date → Timestamp**, a date/time with no
+shows local date/time — that same moment in the time zone this browser is set to, read from your
+device, not a named city you pick. Converting **Date → Timestamp**, a date/time with no
 explicit zone (no trailing `Z`) is read using whichever basis — local or UTC — you select; a date/time
-that already ends in `Z` is always read as UTC regardless of that choice.
+that already ends in `Z` is always read as UTC regardless of that choice. A numeric offset such as
+`+05:30` is not accepted — convert the time to UTC and end it with `Z` instead.
 
 **Browser-based processing.** No upload is required. Every conversion happens on your own device, in
 a background worker, and nothing you enter is sent to a server.
@@ -80,7 +81,7 @@ to.
 
 ### Does this support timezones by city?
 
-No, not in this version. Only UTC and this browser's own local time are shown — there is no picker
+No. Only UTC and this browser's own local time are shown — there is no picker
 for named cities or other timezones.
 
 ### Does this upload anything to a server?

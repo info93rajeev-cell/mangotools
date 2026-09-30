@@ -12,7 +12,7 @@ example: 001-carton-cm
 
 ## Method
 
-CBM means cubic metres (m³), the volume unit freight forwarders use to price and plan sea and air cargo.
+CBM means cubic metres (m³), the volume unit freight forwarders use to price sea (LCL) freight and to plan cargo; for air and courier shipments the volume is converted to volumetric weight.
 
 - CBM per carton = length × width × height, converted to cubic metres.
 - Total CBM = CBM per carton × number of cartons.
@@ -30,7 +30,7 @@ The rule is **exact first, round once**. Every volume is calculated exactly and 
 
 ### What does CBM mean?
 
-CBM stands for cubic metre (m³). One CBM is the volume of a box 1 m long, 1 m wide and 1 m high. Freight forwarders quote and plan sea and air shipments by CBM.
+CBM stands for cubic metre (m³). One CBM is the volume of a box 1 m long, 1 m wide and 1 m high. Freight forwarders quote sea (LCL) shipments by CBM; for air and courier shipments they convert the volume to volumetric weight.
 
 ### How do I convert CBM to cubic feet?
 
