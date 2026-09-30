@@ -6,7 +6,8 @@ const environment = z.strictObject({ url: z.url(), indexable: z.boolean() });
 export const siteConfigSchema = z.strictObject({
   brand: z.strictObject({
     name: z.string().min(1),
-    parent: z.string().min(1),
+    /** Optional parent organisation. Leave it out unless one exists; it is published in structured data. */
+    parent: z.string().min(1).optional(),
     tagline: z.string().min(1),
   }),
   environments: z

@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <title>MangoTools — Professional tools. Zero uploads.</title>
+  <title>BeyondTheAI — Professional tools for work that should not depend on AI.</title>
   <rect width="1200" height="630" fill="#FFFFFF"/>
   <rect x="0" y="606" width="1200" height="24" fill="#FFB000"/>
-  <g transform="translate(120 205) scale(4)">
+  <g transform="translate(120 150) scale(4)">
     <rect width="32" height="32" rx="8" fill="#FFB000"/>
-    <path d="M8.5 23V9.5h3.1l4.4 7.3 4.4-7.3h3.1V23h-3.2v-8.1l-3.6 5.9h-1.4l-3.6-5.9V23z" fill="#1C1917"/>
+    <path fill-rule="evenodd" d="M9.5 9.5h7.1c3 0 4.8 1.5 4.8 3.8 0 1.5-.8 2.5-2 2.9 1.6.4 2.6 1.7 2.6 3.4 0 2.2-1.8 3.4-4.8 3.4H9.5zm3.1 2.6v2.9h3.7c1.3 0 2-.5 2-1.45s-.7-1.45-2-1.45zm0 5.3v3h4.1c1.4 0 2.2-.5 2.2-1.5s-.8-1.5-2.2-1.5z" fill="#1C1917"/>
   </g>
-  <text x="290" y="300" font-family="'Inter Variable', Inter, sans-serif" font-size="96" font-weight="600" letter-spacing="-2" fill="#1C1917">MangoTools</text>
-  <text x="292" y="372" font-family="'Inter Variable', Inter, sans-serif" font-size="40" font-weight="400" fill="#57534E">Professional tools. Zero uploads.</text>
-  <text x="120" y="520" font-family="'Inter Variable', Inter, sans-serif" font-size="28" font-weight="500" fill="#78716C">GST · Profit margin · JSON · Base64 · URL encoding — runs in your browser</text>
+  <text x="290" y="246" font-family="'Inter Variable', Inter, sans-serif" font-size="96" font-weight="600" letter-spacing="-2" fill="#1C1917">BeyondTheAI</text>
+  <text x="120" y="410" font-family="'Inter Variable', Inter, sans-serif" font-size="34" font-weight="400" fill="#57534E">Professional tools for work that should not depend on AI.</text>
+  <text x="120" y="520" font-family="'Inter Variable', Inter, sans-serif" font-size="28" font-weight="500" fill="#78716C">Runs on your device · Nothing is uploaded · No AI in calculations</text>
 </svg>

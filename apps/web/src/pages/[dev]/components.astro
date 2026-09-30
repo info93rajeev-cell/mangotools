@@ -26,7 +26,7 @@ import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
 import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { COPY } from '../../lib/copy.ts';
-import { isDevelopment, registry, toolById, toolLink } from '../../lib/site.ts';
+import { brand, isDevelopment, registry, toolById, toolLink } from '../../lib/site.ts';
 
 export function getStaticPaths() {
   return isDevelopment ? [{ params: { dev: '_dev' } }] : [];
@@ -46,8 +46,8 @@ const sizes = ['sm', 'md', 'lg'] as const;
 ---
 
 <BaseLayout
-  title={`${COPY.dev.components} | MangoTools`}
-  description="Development-only gallery of every MangoTools component in its states, in light and dark themes. Not built for production."
+  title={`${COPY.dev.components} | ${brand.name}`}
+  description={`Development-only gallery of every ${brand.name} component in its states, in light and dark themes. Not built for production.`}
   path="/_dev/components"
   template="404"
   noindex

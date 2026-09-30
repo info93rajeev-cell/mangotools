@@ -28,7 +28,9 @@ export function organization(logoUrl: string) {
     name: brand.name,
     url: siteUrl,
     logo: absolute(logoUrl),
-    parentOrganization: { '@type': 'Organization', name: brand.parent },
+    ...(brand.parent
+      ? { parentOrganization: { '@type': 'Organization', name: brand.parent } }
+      : {}),
   };
 }
 

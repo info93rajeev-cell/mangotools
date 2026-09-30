@@ -20,7 +20,7 @@ export const COPY = {
     one: '1 tool',
   },
   notFound: {
-    title: 'Page not found | MangoTools',
+    title: 'Page not found | BeyondTheAI',
     description:
       'The page you were looking for does not exist. Search for a tool or pick one of the popular tools below.',
     heading: 'Page not found',

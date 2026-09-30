@@ -1,6 +1,8 @@
-# MangoTools
+# MangoTools — source of BeyondTheAI
 
-Professional browser tools that run entirely on your device. Phase 1 public beta.
+This repository builds **BeyondTheAI** (https://beyondtheai.com): professional browser tools that run on
+your device. Phase 1 public beta. `mangotools` and the `@mangotools/*` package names are internal names
+only; the public name and production URL come from `site.config.yaml`.
 
 ## Requirements
 

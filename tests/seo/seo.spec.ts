@@ -17,10 +17,33 @@ async function ldTypes(page: import('@playwright/test').Page): Promise<string[]>
 
 test('home: title, canonical, Organization and WebSite', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle('MangoTools — Tools for Work That Should Not Depend on AI');
+  await expect(page).toHaveTitle('BeyondTheAI — Tools for Work That Should Not Depend on AI');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', SITE);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
   expect(await ldTypes(page)).toEqual(['Organization', 'WebSite']);
+});
+
+test('public identity: BeyondTheAI on https://beyondtheai.com with no parent organisation', async ({
+  page,
+}) => {
+  expect(SITE).toBe('https://beyondtheai.com');
+  await page.goto('/');
+  const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+    (b) => JSON.parse(b) as Record<string, unknown>,
+  );
+  const organization = blocks.find((b) => b['@type'] === 'Organization');
+  expect(organization).toMatchObject({ name: 'BeyondTheAI', url: SITE });
+  expect(organization).not.toHaveProperty('parentOrganization');
+  expect(blocks.find((b) => b['@type'] === 'WebSite')).toMatchObject({
+    name: 'BeyondTheAI',
+    url: SITE,
+  });
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+    'content',
+    'BeyondTheAI',
+  );
+  await expect(page.locator('footer')).toContainText('BeyondTheAI');
+  await expect(page.locator('body')).not.toContainText(/MangoTools|MangoPie/);
 });
 
 for (const category of categories) {

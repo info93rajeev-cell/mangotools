@@ -1,11 +1,10 @@
 # yaml-language-server: $schema=./generated/schemas/site-config.json
 brand:
-  name: MangoTools
-  parent: MangoPie
+  name: BeyondTheAI
   tagline: Professional tools for work that should not depend on AI.
 environments:
   development: { url: "http://localhost:4321", indexable: false }
-  production: { url: "https://tools.mangopie.in", indexable: true }
+  production: { url: "https://beyondtheai.com", indexable: true }
 navigation:
   minToolsPerCategory: 1 # set to 3 before public launch (TASK-008)
 home:

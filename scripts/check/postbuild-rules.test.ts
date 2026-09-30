@@ -9,7 +9,7 @@ import {
   staticImports,
 } from './postbuild-rules.ts';
 
-const SITE = 'https://tools.mangopie.in';
+const SITE = 'https://beyondtheai.com';
 
 function html(parts: { head?: string; body?: string; template?: string }) {
   const description = 'x'.repeat(130);
@@ -38,6 +38,20 @@ describe('post-build page checks', () => {
     expect(problems).toContain('title is 61');
     expect(problems).toContain('description is 5');
     expect(problems).toContain('canonical');
+  });
+
+  it('reports retired public names anywhere on the page', () => {
+    const page = pageFacts(
+      'a.html',
+      html({ body: '<h1>x</h1><p>A MangoPie product</p><footer>MangoTools</footer>' }),
+    );
+    expect(checkPage(page, SITE)).toEqual([
+      'mentions the retired public name "MangoPie"',
+      'mentions the retired public name "MangoTools"',
+    ]);
+    expect(checkPage(pageFacts('b.html', html({ body: '<h1>BeyondTheAI</h1>' })), SITE)).toEqual(
+      [],
+    );
   });
 
   it('reports third-party hosts, broken JSON-LD and unhashed inline scripts', () => {

@@ -17,7 +17,6 @@ const { brand, tagline, categories } = Astro.props;
     <div class="brand">
       <Logo name={brand} />
       <p class="tagline">{tagline}</p>
-      <p class="parent">{t('site.product')}</p>
     </div>
     <nav aria-label={t('site.categories')}>
       <h2 class="heading">{t('site.categories')}</h2>
@@ -53,13 +52,10 @@ const { brand, tagline, categories } = Astro.props;
     gap: var(--space-2);
     max-width: 360px;
   }
-  .tagline,
-  .parent {
+  .tagline {
     color: var(--color-text-muted);
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
-  }
-  .tagline {
     text-wrap: balance;
   }
   .heading {
