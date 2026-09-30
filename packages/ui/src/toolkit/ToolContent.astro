@@ -66,12 +66,28 @@ const references = content.sections.find((s) => s.id === 'references');
   section {
     display: grid;
     gap: var(--space-4);
+    min-width: 0;
     scroll-margin-top: 80px;
   }
   .prose {
     display: grid;
     gap: var(--space-3);
+    min-width: 0;
     max-width: 72ch;
+  }
+  /* Code samples scroll inside their own box instead of widening the page on small screens. */
+  .prose :global(pre) {
+    margin: 0;
+    padding: var(--space-3);
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+  }
+  .prose :global(pre code) {
+    padding: 0;
+    border: 0;
+    background: none;
   }
   .prose :global(ol),
   .prose :global(ul) {

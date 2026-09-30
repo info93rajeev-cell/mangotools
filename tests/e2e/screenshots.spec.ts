@@ -1,5 +1,6 @@
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { Registry } from '@mangotools/schemas';
 import { test } from '@playwright/test';
 import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
@@ -10,10 +11,15 @@ const SIZES = [
   { name: 'mobile', width: 360, height: 800 },
   { name: 'desktop', width: 1366, height: 768 },
 ];
+const registry = JSON.parse(
+  readFileSync(join(process.cwd(), 'generated/registry.json'), 'utf8'),
+) as Registry;
 const PAGES = [
   { name: 'home', path: '/', tool: null },
-  { name: 'business', path: '/business', tool: null },
-  { name: 'logistics', path: '/logistics', tool: null },
+  { name: 'tools', path: '/tools', tool: null },
+  ...registry.categories
+    .filter((c) => c.visible)
+    .map((c) => ({ name: c.slug, path: c.url, tool: null })),
   ...TOOL_IDS.map((id) => ({ name: id, path: `/${id}`, tool: id })),
 ];
 
