@@ -13,7 +13,7 @@ lastReviewed: 2026-09-27
    and the result downloads immediately — nothing is uploaded anywhere.
 
 **What Image Watermark does:** it draws your own text onto a single JPG, PNG, or WebP image, at a position
-you choose, entirely on your device, with no sign-up and no MangoTools watermark added to the result. It
+you choose, entirely on your device, with no sign-up and no extra branding — only your own text is added. It
 does not resize, crop, or otherwise edit the image beyond drawing the text and (if you choose a different
 output format or quality) re-encoding it.
 
@@ -67,9 +67,9 @@ Yes. Any JPG, PNG, or WebP photo can have a text watermark added, in any of the 
 
 Yes, all three are supported as both input and output format.
 
-### Does MangoTools add its own watermark?
+### Does this tool add its own watermark?
 
-No. Only the text you type is added — MangoTools never adds its own branding or watermark to your image.
+No. Only the text you type is added — the tool never adds its own branding or watermark to your image.
 
 ### Can I upload a logo as a watermark?
 

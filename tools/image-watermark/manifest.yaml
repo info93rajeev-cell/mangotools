@@ -4,13 +4,14 @@ id: image-watermark
 slug: image-watermark
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe the no-watermark guarantee without naming the site brand." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Image Crop." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta: add a text watermark to a JPG, PNG or WebP image, entirely in the browser." }
 name: Image Watermark
 shortName: Watermark
-summary: Add a text watermark to a JPG, PNG or WebP image, right in your browser. No sign-up, no MangoTools watermark, no upload.
+summary: Add a text watermark to a JPG, PNG or WebP image, right in your browser. No sign-up, no upload, no extra branding.
 archetype: D
 preset: image/watermark
 taxonomy:
@@ -21,7 +22,7 @@ privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
   title: "Image Watermark – Add Text Watermark Free"
-  description: "Free browser-based tool to add a text watermark to JPG, PNG and WebP images. Choose position, opacity and color. No sign-up, no upload, no MangoTools watermark."
+  description: "Free browser-based tool to add a text watermark to JPG, PNG and WebP images. Choose position, opacity and color. No sign-up, no upload, no extra branding."
   primaryKeyword: image watermark
   secondaryKeywords: [add watermark to image, watermark image online, photo watermark tool, watermark jpg]
 graph:

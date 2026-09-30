@@ -13,7 +13,7 @@ lastReviewed: 2026-09-27
 
 **What Image Format Converter does:** it changes the file format of a single JPG, PNG, or WebP image —
 converting between any of the three, in either direction — entirely on your device, with no sign-up and no
-MangoTools watermark added to the result. It does not resize, crop, rotate, retouch, or watermark the
+watermark added to the result. It does not resize, crop, rotate, retouch, or watermark the
 image itself; use [Image Resize](tool:image-resize) for size changes.
 
 ## Method
@@ -106,7 +106,7 @@ is a common step in getting an image ready for a website, an online store, or a 
 ### Does this add a watermark?
 
 No. The converted image is exactly the image you uploaded, re-encoded in the format and quality you chose —
-no MangoTools branding or watermark is added.
+no branding or watermark is added.
 
 ### Do I need to sign up?
 

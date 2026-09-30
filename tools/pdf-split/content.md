@@ -11,7 +11,7 @@ lastReviewed: 2026-09-27
    result downloads immediately — nothing is uploaded anywhere.
 
 **What PDF Split does:** it extracts a page range from a single PDF into a brand-new PDF, entirely on your
-device, with no sign-up and no MangoTools branding added to the result. It does not modify your original
+device, with no sign-up and no branding added to the result. It does not modify your original
 file.
 
 ## Method
@@ -36,7 +36,7 @@ the extracted result.
 **What this tool does not do.** It handles one PDF and one page range per run — there is no batch
 splitting, no ZIP download of multiple ranges, and no page reordering. It does not merge its own output
 with another file (use [PDF Merge](tool:pdf-merge) afterward if you need that). It does not add a
-MangoTools watermark of any kind, and it does not perform OCR or read the document's text content.
+watermark of any kind, and it does not perform OCR or read the document's text content.
 
 **Common errors.** A specific, plain-English message explains exactly what went wrong: no file selected, a
 file that isn't a PDF, a file over the size limit, a password-protected PDF, a corrupted or unreadable
@@ -82,9 +82,9 @@ Not in this version. The extracted pages keep their original order from the sour
 Not directly in this tool, but you can download the split result and then use [PDF Merge](tool:pdf-merge)
 to combine it with another PDF.
 
-### Does MangoTools add a watermark?
+### Does this tool add a watermark?
 
-No. The extracted PDF contains only the pages you selected — no MangoTools branding or watermark is added.
+No. The extracted PDF contains only the pages you selected — no branding or watermark is added.
 
 ### Do I need to sign up?
 
