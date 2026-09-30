@@ -4,8 +4,9 @@ id: image-resize
 slug: image-resize
 status: beta
 tier: T3
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Image Format Converter." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: resize one JPG, PNG or WebP image to an exact size, entirely in the browser." }
 name: Image Resize
@@ -17,7 +18,7 @@ taxonomy:
   category: media
   tags: [images, resize]
   synonyms: [resize image, image resizer, photo resizer, resize jpg, resize png, resize webp, change image dimensions, browser image resizer, no upload image resize]
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: "Image Resize – Resize JPG, PNG or WebP Free"

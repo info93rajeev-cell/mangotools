@@ -4,8 +4,9 @@ id: jpg-to-pdf
 slug: jpg-to-pdf
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta: convert one or more JPG images into a single PDF, entirely in the browser." }
 name: JPG to PDF
 shortName: JPG to PDF
@@ -17,7 +18,7 @@ taxonomy:
   tags: [pdf, documents, images]
   synonyms: [image to pdf, jpg to pdf converter, jpeg to pdf, convert jpg images to pdf, combine images into pdf, browser jpg to pdf, no upload jpg to pdf]
 capabilities: { export: [pdf] }
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: JPG to PDF – Convert Images to PDF Free

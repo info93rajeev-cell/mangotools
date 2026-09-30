@@ -4,8 +4,9 @@ id: base64-encode-decode
 slug: base64-encode-decode
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with standard and URL-safe alphabets, padding and MIME line breaks." }
 name: Base64 Encode & Decode
 shortName: Base64
@@ -18,7 +19,7 @@ taxonomy:
   tags: [encoding, data-format]
   synonyms: [base64 encoder, base64 decoder, b64, base64 converter]
 capabilities: { export: [txt], share: false }
-privacy: { dataClass: public, network: none }
+privacy: { dataClass: personal, network: none }
 disclaimer: none
 seo:
   title: Base64 Encode & Decode – Text to Base64 and Back
