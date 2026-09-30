@@ -37,7 +37,9 @@ test('public identity: BeyondTheAI on https://beyondtheai.com with no parent org
   expect(blocks.find((b) => b['@type'] === 'WebSite')).toMatchObject({
     name: 'BeyondTheAI',
     url: SITE,
+    publisher: { '@id': `${SITE}/#organization` },
   });
+  expect(organization).toMatchObject({ '@id': `${SITE}/#organization` });
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
     'content',
     'BeyondTheAI',
@@ -74,6 +76,14 @@ for (const tool of listed) {
       new RegExp(`^${SITE}/assets/`),
     );
     expect(await ldTypes(page)).toEqual(['BreadcrumbList', 'FAQPage', 'WebApplication']);
+    const app = (await page.locator('script[type="application/ld+json"]').allTextContents())
+      .map((b) => JSON.parse(b) as Record<string, unknown>)
+      .find((b) => b['@type'] === 'WebApplication');
+    expect(app).toMatchObject({
+      name: tool.name,
+      url: `${SITE}${tool.url}`,
+      publisher: { '@id': `${SITE}/#organization`, name: 'BeyondTheAI', url: SITE },
+    });
     const title = await page.title();
     expect([...title].length).toBeLessThanOrEqual(60);
   });
@@ -94,6 +104,54 @@ test('site information pages: only approved pages are published and linked', asy
   for (const path of ['/about', '/privacy', '/disclaimer']) {
     const response = await page.goto(path);
     expect(response?.status(), path).toBe(approvedPages.includes(path) ? 200 : 404);
+  }
+});
+
+for (const tool of listed) {
+  test(`tool ${tool.id}: FAQPage JSON-LD matches the visible FAQ`, async ({ page }) => {
+    await page.goto(tool.url);
+    const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+      (b) => JSON.parse(b) as { '@type': string; mainEntity?: unknown },
+    );
+    const faq = blocks.find((b) => b['@type'] === 'FAQPage')?.mainEntity as {
+      name: string;
+      acceptedAnswer: { text: string };
+    }[];
+    const visible = await page.locator('.faq details').evaluateAll((items) =>
+      items.map((d) => ({
+        q: d.querySelector('summary')?.textContent ?? '',
+        a: d.querySelector('.answer')?.textContent ?? '',
+      })),
+    );
+    const squash = (t: string) => t.replace(/\s+/g, '');
+    expect(faq.map((f) => f.name)).toEqual(visible.map((v) => v.q.trim()));
+    expect(faq.map((f) => squash(f.acceptedAnswer.text))).toEqual(visible.map((v) => squash(v.a)));
+  });
+}
+
+test('Round 1 contract: 7 visible categories, 31 listed tools, 40 sitemap URLs', async ({
+  request,
+}) => {
+  expect(categories).toHaveLength(7);
+  expect(listed).toHaveLength(31);
+  const pages = await (await request.get('/sitemap-pages.xml')).text();
+  expect([...pages.matchAll(/<loc>/g)]).toHaveLength(1 + 1 + 7 + 31);
+});
+
+test('one canonical per page, absolute on the production host, no trailing slash', async ({
+  page,
+}) => {
+  for (const path of [
+    '/',
+    '/tools',
+    ...categories.map((c) => c.url),
+    ...listed.map((t) => t.url),
+  ]) {
+    await page.goto(path);
+    const canonicals = await page
+      .locator('link[rel="canonical"]')
+      .evaluateAll((ls) => ls.map((l) => l.getAttribute('href') ?? ''));
+    expect(canonicals, path).toEqual([path === '/' ? SITE : `${SITE}${path}`]);
   }
 });
 

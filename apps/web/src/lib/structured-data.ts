@@ -2,6 +2,9 @@ import type { RegistryCategory, RegistryTool } from '@mangotools/schemas';
 import { absolute, brand, siteUrl } from './site.ts';
 
 const CONTEXT = 'https://schema.org';
+/** Stable node ids so WebSite and WebApplication can point at the same publisher. */
+const ORGANIZATION_ID = `${siteUrl}/#organization`;
+const WEBSITE_ID = `${siteUrl}/#website`;
 
 export interface Crumb {
   name: string;
@@ -25,6 +28,7 @@ export function organization(logoUrl: string) {
   return {
     '@context': CONTEXT,
     '@type': 'Organization',
+    '@id': ORGANIZATION_ID,
     name: brand.name,
     url: siteUrl,
     logo: absolute(logoUrl),
@@ -35,7 +39,14 @@ export function organization(logoUrl: string) {
 }
 
 export function webSite() {
-  return { '@context': CONTEXT, '@type': 'WebSite', name: brand.name, url: siteUrl };
+  return {
+    '@context': CONTEXT,
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    name: brand.name,
+    url: siteUrl,
+    publisher: { '@id': ORGANIZATION_ID },
+  };
 }
 
 export function itemList(category: RegistryCategory, tools: RegistryTool[]) {
@@ -68,7 +79,8 @@ export function webApplication(tool: RegistryTool) {
     operatingSystem: 'Any (web browser)',
     isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-    publisher: { '@type': 'Organization', name: brand.name, url: siteUrl },
+    isPartOf: { '@id': WEBSITE_ID },
+    publisher: { '@type': 'Organization', '@id': ORGANIZATION_ID, name: brand.name, url: siteUrl },
   };
 }
 

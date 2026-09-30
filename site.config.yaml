@@ -6,7 +6,9 @@ environments:
   development: { url: "http://localhost:4321", indexable: false }
   production: { url: "https://beyondtheai.com", indexable: true }
 navigation:
-  minToolsPerCategory: 1 # set to 3 before public launch (TASK-008)
+  # Round 1 launch: every category with at least one listed tool is visible (7 categories).
+  # Export & Import has two tools, so a higher threshold would hide it.
+  minToolsPerCategory: 1
 home:
   popular:
     [gst-calculator, json-formatter, profit-margin-calculator, base64-encode-decode, url-encode-decode]
