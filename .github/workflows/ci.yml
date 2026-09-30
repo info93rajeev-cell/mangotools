@@ -15,7 +15,7 @@ jobs:
   ci:
     name: verify · build · e2e (Node 24, Chromium/Firefox/WebKit)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
     steps:
@@ -35,6 +35,11 @@ jobs:
 
       - name: pnpm build (development build + post-build checks)
         run: pnpm build
+
+      - name: pnpm build:deploy (production deployment build + deploy checks)
+        run: pnpm build:deploy
+        env:
+          MANGOTOOLS_ENV: production
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium firefox webkit
