@@ -8,8 +8,10 @@ interface Props {
   brand: string;
   tagline: string;
   categories: NavCategory[];
+  /** Site information pages that exist in this build (About, Privacy, Disclaimer). */
+  pages?: NavCategory[];
 }
-const { brand, tagline, categories } = Astro.props;
+const { brand, tagline, categories, pages = [] } = Astro.props;
 ---
 
 <footer class="site-footer no-print">
@@ -17,6 +19,19 @@ const { brand, tagline, categories } = Astro.props;
     <div class="brand">
       <Logo name={brand} />
       <p class="tagline">{tagline}</p>
+      {
+        pages.length > 0 ? (
+          <nav aria-label={t('site.info')} class="info">
+            <ul>
+              {pages.map((p) => (
+                <li>
+                  <a href={p.url}>{p.name}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null
+      }
     </div>
     <nav aria-label={t('site.categories')}>
       <h2 class="heading">{t('site.categories')}</h2>
@@ -57,6 +72,11 @@ const { brand, tagline, categories } = Astro.props;
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
     text-wrap: balance;
+  }
+  .info ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
   }
   .heading {
     font-size: var(--text-ui);

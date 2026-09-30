@@ -76,7 +76,7 @@ export function pageFacts(file: string, html: string): PageFacts {
 export const sha256 = (text: string) =>
   `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
 
-const SEO_TEMPLATES = new Set(['home', 'tools', 'category', 'tool']);
+const SEO_TEMPLATES = new Set(['home', 'tools', 'category', 'tool', 'page']);
 const ALLOWED_HOSTS = ['schema.org', 'www.w3.org'];
 
 function checkHead(page: PageFacts, siteUrl: string): string[] {
