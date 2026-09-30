@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import type { Registry } from '@mangotools/schemas';
 import { expect, type Page, test } from '@playwright/test';
+import { approvedSitePages } from '../support/site-pages.ts';
 import { gotoReady, island, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const registry = JSON.parse(
@@ -13,6 +14,7 @@ const PAGES = [
   '/',
   '/tools',
   ...CATEGORY_PAGES,
+  ...approvedSitePages(),
   '/this-page-does-not-exist',
   ...TOOL_IDS.map((id) => `/${id}`),
 ];
