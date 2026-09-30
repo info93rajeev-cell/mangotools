@@ -19,6 +19,8 @@ only; the public name and production URL come from `site.config.yaml`.
 | `pnpm verify` | Lint, generate, typecheck, architecture checks and unit/fixture tests |
 | `pnpm build` | Generate, build the static site into `apps/web/dist`, run post-build checks |
 | `pnpm preview` | Serve `apps/web/dist` with the production headers |
+| `MANGOTOOLS_ENV=production pnpm build:deploy` | The deployment build (Cloudflare Pages): `MANGOTOOLS_ENV` must be set; output checked for that environment. See `docs/phase-1/DEPLOYMENT-RUNBOOK.md` |
+| `pnpm smoke` | Post-deploy smoke test of https://beyondtheai.com (`-- --preview --base <url>` for previews) |
 | `pnpm test:e2e` | Build production + test sites and run Playwright suites |
 | `pnpm new:tool <slug> --preset <id> --category <id> --tier <T1-T4> --archetype <A-E>` | Scaffold a tool |
 

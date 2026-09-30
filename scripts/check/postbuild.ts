@@ -15,6 +15,7 @@ import {
   duplicateProblems,
   entryModules,
   headersFile,
+  headersLimitProblems,
   type PageFacts,
   pageFacts,
   staticImports,
@@ -140,10 +141,9 @@ export function runPostbuild(distDir: string, env: string): PostbuildResult {
   problems.push(...duplicateProblems(seoFacts));
   problems.push(...budgetProblems(dist, bundles));
   problems.push(...checkRobotsAndSitemap(dist, registry, siteUrl, environment.indexable));
-  writeFileSync(
-    join(dist, '_headers'),
-    headersFile({ scriptHashes: hashes, indexable: environment.indexable }),
-  );
+  const headers = headersFile({ scriptHashes: hashes, indexable: environment.indexable });
+  problems.push(...headersLimitProblems(headers));
+  writeFileSync(join(dist, '_headers'), headers);
   return { problems, bundles, pages: pages.length };
 }
 

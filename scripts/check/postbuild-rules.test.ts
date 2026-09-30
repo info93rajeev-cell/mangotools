@@ -5,6 +5,7 @@ import {
   duplicateProblems,
   entryModules,
   headersFile,
+  headersLimitProblems,
   pageFacts,
   sha256,
   staticImports,
@@ -108,6 +109,20 @@ describe('post-build page checks', () => {
     expect(
       cspScriptHashes("default-src 'self'; script-src 'self' 'sha256-x'; style-src 'self'"),
     ).toEqual(["'sha256-x'"]);
+  });
+
+  it('keeps _headers within the Cloudflare Pages limits', () => {
+    expect(
+      headersLimitProblems(headersFile({ scriptHashes: ["'sha256-a'"], indexable: true })),
+    ).toEqual([]);
+    const long = `/*\n  Content-Security-Policy: ${'x'.repeat(2001)}\n`;
+    expect(headersLimitProblems(long)).toEqual([
+      '_headers line 2 is 2028 characters (Cloudflare Pages allows 2,000)',
+    ]);
+    const many = Array.from({ length: 101 }, (_, i) => `/p${i}\n  X-A: b`).join('\n');
+    expect(headersLimitProblems(many)).toEqual([
+      '_headers has 101 rules (Cloudflare Pages allows 100)',
+    ]);
   });
 
   it('finds entry modules and static imports but not dynamic imports', () => {
