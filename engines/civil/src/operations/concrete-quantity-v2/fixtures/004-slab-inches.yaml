@@ -1,0 +1,6 @@
+id: 004-slab-inches
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "120 x 120 x 4 in = 57600 in3 = 33.33 ft3 (1728 in3 per ft3) = 1.23 yd3 = 0.944 m3 (1 in = 0.0254 m)" }
+input: { memberType: slab, unit: in, length: "120", width: "120", depth: "4", quantity: "1", overagePercent: "0" }
+expected: { netVolumeM3: "0.944", netVolumeFt3: "33.33", netVolumeYd3: "1.23" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_OVERAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

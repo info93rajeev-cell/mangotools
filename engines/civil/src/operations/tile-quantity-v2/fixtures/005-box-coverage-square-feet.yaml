@@ -1,0 +1,6 @@
+id: 005-box-coverage-square-feet
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "120 ft2 x 1.10 = 132 ft2 / 15 ft2 per box = 8.8 -> 9 boxes" }
+input: { mode: dimensions, unit: ft, surfaceLength: "12", surfaceWidth: "10", quantity: "1", tileUnit: in, tileLength: "12", tileWidth: "12", wastagePercent: "10", packMode: coverage, boxCoverage: "15", boxCoverageUnit: ft2 }
+expected: { orderTiles: "132", boxes: "9" }
+expectedWarnings: [CIVIL_ASSUMPTION_TILE_FACE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_TILE_SCOPE_LIMIT_V2]

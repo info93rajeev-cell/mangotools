@@ -1,0 +1,5 @@
+id: 012-zero-opening-width
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "An opening row's width must be greater than zero" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ width: "0", height: "2.1", quantity: "1" }], brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: "openings[0].width" }

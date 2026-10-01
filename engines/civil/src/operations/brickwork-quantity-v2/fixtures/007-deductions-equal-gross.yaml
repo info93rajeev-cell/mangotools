@@ -1,0 +1,5 @@
+id: 007-deductions-equal-gross
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "A 5 x 3 m opening in a 5 x 3 m wall leaves nothing to calculate" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ width: "5", height: "3", quantity: "1" }], brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expectedError: { code: CIVIL_DEDUCTIONS_EXCEED_AREA, path: openings }

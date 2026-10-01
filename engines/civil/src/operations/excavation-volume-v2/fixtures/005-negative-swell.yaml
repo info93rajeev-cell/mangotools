@@ -1,0 +1,5 @@
+id: 005-negative-swell
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "Swell must be from 0 to 100%" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", swellPercent: "-5" }
+expectedError: { code: CIVIL_SWELL_OUT_OF_RANGE, path: swellPercent }

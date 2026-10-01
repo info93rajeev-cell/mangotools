@@ -1,0 +1,6 @@
+id: 005-metric-equivalent-of-inch-slab
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "Fixture 004 converted exactly: 3.048 x 3.048 x 0.1016 m gives the same 33.33 ft3 / 0.944 m3" }
+input: { memberType: slab, unit: m, length: "3.048", width: "3.048", depth: "0.1016", quantity: "1", overagePercent: "0" }
+expected: { netVolumeM3: "0.944", netVolumeFt3: "33.33", netVolumeYd3: "1.23" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_OVERAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

@@ -1,0 +1,5 @@
+id: 006-openings-exceed-surface
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "A 5 x 4 m opening on a 5 x 4 m surface leaves nothing to paint" }
+input: { mode: surface, unit: m, length: "5", secondDimension: "4", quantity: "1", openings: [{ width: "5", height: "4", quantity: "1" }], coats: "2", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "10" }
+expectedError: { code: CIVIL_DEDUCTIONS_EXCEED_AREA, path: openings }

@@ -1,0 +1,5 @@
+id: 006-missing-product-yield
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "A bag estimate needs the yield stated by the product — never an assumed one" }
+input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", thickness: "12", thicknessUnit: mm, wastagePercent: "0", materialMode: bag-yield }
+expectedError: { code: CIVIL_MISSING_INPUT, path: bagYield }

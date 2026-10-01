@@ -1,0 +1,6 @@
+id: 003-bags-from-product-coverage-exact
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "Product states 1.5 m2 per bag at 10 mm = 0.015 m3 per bag; job 10 m2 x 15 mm = 0.15 m3; 0% wastage; exactly 10 bags (must not round up to 11)" }
+input: { surfaceType: wall, unit: m, length: "5", secondDimension: "2", quantity: "1", thickness: "15", thicknessUnit: mm, wastagePercent: "0", materialMode: bag-coverage, bagCoverage: "1.5", bagCoverageUnit: m2, bagCoverageThickness: "10" }
+expected: { wetVolumeM3: "0.150", bags: "10" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ASSUMPTION_PLASTER_PRODUCT, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

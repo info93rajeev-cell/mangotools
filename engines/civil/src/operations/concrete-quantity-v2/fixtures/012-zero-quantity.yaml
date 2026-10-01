@@ -1,0 +1,5 @@
+id: 012-zero-quantity
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "At least one member" }
+input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "0", overagePercent: "0" }
+expectedError: { code: CIVIL_QUANTITY_NOT_POSITIVE, path: quantity }

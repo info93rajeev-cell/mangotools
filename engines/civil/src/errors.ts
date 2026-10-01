@@ -65,4 +65,46 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not replace a licensed engineer, architect, contractor, or professional painter.',
   CIVIL_PAINT_SCOPE_LIMIT:
     'This tool does not calculate primer, putty, or labour, brand-specific coverage, cost, or a bill of quantities (BOQ).',
+  CIVIL_OPENINGS_INVALID: 'The openings list could not be read. Re-enter the openings.',
+  CIVIL_OPENINGS_TOO_MANY: 'Enter at most {max} opening rows.',
+  CIVIL_DEDUCTIONS_EXCEED_AREA:
+    'Openings and deductions must be smaller than the gross area — otherwise nothing is left to calculate.',
+  CIVIL_WYTHES_OUT_OF_RANGE: 'Enter a whole number of brick skins from 1 to {max}.',
+  CIVIL_SWELL_OUT_OF_RANGE: 'Enter a swell percentage between 0 and 100.',
+  CIVIL_ASSUMPTION_WASTAGE:
+    'Includes a {percent}% wastage allowance — an editable estimating allowance, not a standard.',
+  CIVIL_ASSUMPTION_NO_WASTAGE:
+    'No wastage allowance is included (0%). Most jobs need some allowance for cutting and breakage.',
+  CIVIL_ASSUMPTION_OVERAGE:
+    'The order volume includes a {percent}% overage — an editable estimating allowance, not a requirement.',
+  CIVIL_ASSUMPTION_NO_OVERAGE:
+    'No overage is included (0%): the order volume equals the geometric volume.',
+  CIVIL_ASSUMPTION_MORTAR_JOINT:
+    'Each brick is counted with a {joint} {unit} mortar joint added to its length and height. This is an editable preset, not a universal joint size.',
+  CIVIL_ASSUMPTION_WYTHES:
+    'Counted for a wall {wythes} brick skin(s) thick: face-area count × {wythes}. Bond pattern, headers and collar joints are not modelled.',
+  CIVIL_ASSUMPTION_BAG_YIELD:
+    'Bags use the yield you entered ({yield} {unit} per bag). Check the yield printed on your product — bags of the same weight can yield different volumes.',
+  CIVIL_ASSUMPTION_SWELL:
+    'Loose volume uses a {percent}% swell — an approximate, editable estimate. Actual swell depends on soil type and moisture.',
+  CIVIL_ASSUMPTION_TRUCK:
+    'Truck loads use the usable truck volume you entered ({capacity} {unit} per load), rounded up to whole loads.',
+  CIVIL_ASSUMPTION_COVERAGE:
+    'Uses your coverage rate of {coverage} {unit} per coat — an editable estimate. Check the rate stated for your product and surface.',
+  CIVIL_ASSUMPTION_CONTAINER:
+    'Containers are rounded up to whole {size} {unit} containers, using the size you entered.',
+  CIVIL_ASSUMPTION_PLASTER_PRODUCT:
+    'Bags use the yield or coverage you entered for your product. Plaster systems differ — use the figure stated by your product, not a generic one.',
+  CIVIL_ASSUMPTION_TILE_FACE:
+    'Tiles are counted from tile face area plus the wastage allowance. Grout joints are not deducted, and layout cuts are covered only by the allowance.',
+  CIVIL_ASSUMPTION_BOX_COVERAGE:
+    'Boxes use the coverage per box you entered ({coverage} {unit} per box), rounded up to whole boxes.',
+  CIVIL_EXCAVATION_SCOPE_LIMIT_V2:
+    'This tool calculates geometric volume only. It does not cover slope stability, shoring design, excavation safety, dewatering, geotechnical design, disposal cost, or backfill compaction.',
+  CIVIL_PAINT_SCOPE_LIMIT_V2:
+    'This tool does not calculate primer, putty, labour, cost, or a bill of quantities (BOQ). Coverage varies by product and surface.',
+  CIVIL_TILE_SCOPE_LIMIT_V2:
+    'This tool does not calculate grout or adhesive quantity, skirting, layout-specific cuts, material or labour cost, or a bill of quantities (BOQ).',
+  CIVIL_INFO_PLASTER_MATERIAL:
+    'To also estimate bags, choose a material estimate and enter the yield or coverage stated by your plaster product.',
 };

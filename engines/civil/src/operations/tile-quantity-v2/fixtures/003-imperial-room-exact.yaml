@@ -1,0 +1,6 @@
+id: 003-imperial-room-exact
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "12 x 10 ft = 120 ft2; 12 x 12 in tile = 1 ft2; exactly 120 tiles; 0% wastage; 10 per box = exactly 12 boxes" }
+input: { mode: dimensions, unit: ft, surfaceLength: "12", surfaceWidth: "10", quantity: "1", tileUnit: in, tileLength: "12", tileWidth: "12", wastagePercent: "0", packMode: pieces, tilesPerBox: "10" }
+expected: { netAreaFt2: "120.00", baseTiles: "120.00", orderTiles: "120", boxes: "12" }
+expectedWarnings: [CIVIL_ASSUMPTION_TILE_FACE, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_TILE_SCOPE_LIMIT_V2]

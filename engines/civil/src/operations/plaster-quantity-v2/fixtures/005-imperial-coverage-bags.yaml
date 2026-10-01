@@ -1,0 +1,6 @@
+id: 005-imperial-coverage-bags
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "Product states 20 ft2 per bag at 0.5 in; job 80 ft2 at 0.5 in; 80 / 20 = exactly 4 bags" }
+input: { surfaceType: wall, unit: ft, length: "10", secondDimension: "8", quantity: "1", thickness: "0.5", thicknessUnit: in, wastagePercent: "0", materialMode: bag-coverage, bagCoverage: "20", bagCoverageUnit: ft2, bagCoverageThickness: "0.5" }
+expected: { bags: "4" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ASSUMPTION_PLASTER_PRODUCT, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

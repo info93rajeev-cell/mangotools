@@ -1,0 +1,5 @@
+id: 011-zero-bag-yield
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "A bag yield, when entered, must be greater than zero" }
+input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", overagePercent: "0", bagYield: "0", bagYieldUnit: l }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: bagYield }

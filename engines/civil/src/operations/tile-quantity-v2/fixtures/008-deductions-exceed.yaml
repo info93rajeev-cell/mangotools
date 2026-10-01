@@ -1,0 +1,5 @@
+id: 008-deductions-exceed
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "A 5 x 4 m deduction on a 5 x 4 m floor leaves nothing to tile" }
+input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", openings: [{ width: "4", height: "5", quantity: "1" }], tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: none }
+expectedError: { code: CIVIL_DEDUCTIONS_EXCEED_AREA, path: openings }

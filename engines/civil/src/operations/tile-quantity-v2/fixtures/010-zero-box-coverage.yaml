@@ -1,0 +1,5 @@
+id: 010-zero-box-coverage
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "Coverage per box must be greater than zero" }
+input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: coverage, boxCoverage: "0", boxCoverageUnit: m2 }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: boxCoverage }

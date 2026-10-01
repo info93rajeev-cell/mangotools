@@ -1,0 +1,5 @@
+id: 009-missing-direct-area
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "Direct-area mode needs the area" }
+input: { mode: area, unit: m, quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: none }
+expectedError: { code: CIVIL_MISSING_INPUT, path: surfaceArea }

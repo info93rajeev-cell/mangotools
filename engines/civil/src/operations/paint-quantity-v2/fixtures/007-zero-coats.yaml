@@ -1,0 +1,5 @@
+id: 007-zero-coats
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "At least one coat" }
+input: { mode: surface, unit: m, length: "5", secondDimension: "4", quantity: "1", coats: "0", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "10" }
+expectedError: { code: CIVIL_COATS_NOT_POSITIVE, path: coats }

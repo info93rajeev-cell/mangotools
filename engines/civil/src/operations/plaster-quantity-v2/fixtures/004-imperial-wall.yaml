@@ -1,0 +1,6 @@
+id: 004-imperial-wall
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "10 x 8 ft = 80 ft2 x 0.5 in (1/24 ft) = 3.333 ft3 = 0.094 m3 = 94.39 L" }
+input: { surfaceType: wall, unit: ft, length: "10", secondDimension: "8", quantity: "1", thickness: "0.5", thicknessUnit: in, wastagePercent: "0", materialMode: none }
+expected: { netAreaFt2: "80.00", wetVolumeFt3: "3.33", wetVolumeM3: "0.094", wetVolumeLitres: "94.39" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_INFO_PLASTER_MATERIAL, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

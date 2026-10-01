@@ -1,0 +1,6 @@
+id: 001-slab-metric
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "5 x 4 x 0.15 m = 3 m3; 3 / 0.028316846592 = 105.94 ft3; 3 / 0.764554857984 = 3.92 yd3; 0% overage" }
+input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", overagePercent: "0" }
+expected: { netVolumeM3: "3.000", netVolumeFt3: "105.94", netVolumeYd3: "3.92", overageVolumeM3: "0.000", orderVolumeM3: "3.000", orderVolumeYd3: "3.92" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_OVERAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

@@ -9,8 +9,23 @@ from its first version.
 | Operation | Purpose |
 |---|---|
 | `civil.concrete.quantity@1` | Concrete volume (m³ and ft³) for a rectangular slab, beam, column or footing, from dimensions, member count and wastage % |
+| `civil.excavation.volume@1` | Excavation bank volume, optional bulking and estimated truck loads from rectangular dimensions |
+| `civil.brickwork.quantity@1` | Brickwork volume method with mortar allowance, wastage and whole-brick purchasing quantity |
+| `civil.plaster.quantity@1` | Plaster area and application volume with the original density/bag-size estimating model |
 | `civil.tile.quantity@1` | Tile count for a rectangular floor or wall, with wastage % and an optional boxes-required calculation |
 | `civil.paint.quantity@1` | Paint litres for a rectangular wall, ceiling or surface, from dimensions, opening deduction, coats, coverage per litre and wastage % |
+| `civil.concrete.quantity@2` | Net geometric volume (rectangular members or circular columns), editable overage → order volume (m³/ft³/yd³), optional bags from a stated yield |
+| `civil.excavation.volume@2` | Bank volume shown on its own, optional editable swell → loose volume, optional truck loads from a user-supplied usable truck volume |
+| `civil.brickwork.quantity@2` | Face-area brick count: net wall area (repeatable openings) ÷ ((brick length + joint) × (brick height + joint)) × skins, + wastage, rounded up |
+| `civil.plaster.quantity@2` | Net area (repeatable openings) × thickness = application volume, + wastage, optional bags only from the product's own yield or coverage |
+| `civil.tile.quantity@2` | Net area (dimensions or direct area, repeatable deductions) ÷ tile face area, + wastage once, rounded up; boxes by pieces or coverage |
+| `civil.paint.quantity@2` | Room walls (± ceiling) or a surface, repeatable openings, coats, coverage in m²/L or ft²/US gal, + wastage; optional whole containers |
+
+The `@1` operations stay registered unchanged (their golden fixtures remain truth); every tool preset now
+runs the `@2` operation. Shared `@2` building blocks live in `src/lib/`: `openings.ts` (repeatable
+width × height × quantity rows), `present.ts` (per-result-type display precision and whole-unit
+`ceilWhole`), `quantities.ts` (exact unit conversions and single-division allowance ratios),
+`notices.ts` (notice severities) and `units-v2.ts` (exact constants).
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
 `src/operations/<operation>/fixtures/` and run through `tests/unit/engine-fixtures.test.ts`.
@@ -34,6 +49,19 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.7.0 — `@2` of all six operations (civil reconciliation pass). Purchase quantities (bricks, tiles,
+  bags, boxes, containers, truck loads) are whole numbers rounded up from one exact division, so an
+  exactly whole quantity is never pushed up by intermediate rounding. Results use result-type precision
+  (areas 2 dp, m³ 3 dp, ft³/yd³/litres/gallons 2 dp, calculated counts 2 dp) instead of one global
+  `params.decimals`; `@2` operations take no display params. Imperial outputs use exact divisions by
+  0.09290304 m²/ft², 0.028316846592 m³/ft³ and 0.764554857984 m³/yd³ instead of the rounded
+  multipliers used in `@1`. Measurements accept up to 12 decimal places so UI unit conversions stay
+  exact enough. Every notice carries a `severity` detail: `assumption` (editable estimating/product
+  assumptions that shaped the result), `info` (the standing estimation-aid wording, still on every
+  result) or none (a real warning). Brickwork switches from the volume method (which added the joint to
+  the wall-thickness direction too and over-counted single-skin walls) to the face-area method with an
+  explicit number of skins. Tile applies wastage once to the unrounded base count instead of rounding
+  twice. Plaster never assumes a density or bag size. No new dependencies.
 - 0.6.0 — `civil.paint.quantity@1` added (TASK-006G). Unlike every other operation in this engine,
   area/coverage/litres math stays entirely in the selected input unit's own squared form rather than
   normalizing to metres first, because coverage per litre is only meaningful in the unit it was entered

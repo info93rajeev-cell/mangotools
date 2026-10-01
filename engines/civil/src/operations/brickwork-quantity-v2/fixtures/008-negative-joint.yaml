@@ -1,0 +1,5 @@
+id: 008-negative-joint
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "A mortar joint cannot be negative" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "-1", wastagePercent: "0" }
+expectedError: { code: CIVIL_NOT_NEGATIVE, path: mortarJoint }

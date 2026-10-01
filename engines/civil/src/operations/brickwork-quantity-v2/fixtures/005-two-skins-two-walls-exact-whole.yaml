@@ -1,0 +1,6 @@
+id: 005-two-skins-two-walls-exact-whole
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "2 walls x 4 x 3 m = 24 m2; 2 skins = 48 m2 of face; brick face 0.2 x 0.1 m (no joint) = 0.02 m2; 2400 bricks; +10% = exactly 2640 (must not round up to 2641)" }
+input: { unit: m, wallLength: "4", wallHeight: "3", quantity: "2", wythes: "2", brickUnit: mm, brickLength: "200", brickHeight: "100", mortarJoint: "0", wastagePercent: "10" }
+expected: { netWallAreaM2: "24.00", baseBricks: "2400.00", wastageBricks: "240.00", orderBricks: "2640" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

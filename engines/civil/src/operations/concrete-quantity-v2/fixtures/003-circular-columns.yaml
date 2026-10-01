@@ -1,0 +1,6 @@
+id: 003-circular-columns
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "pi x (0.45 / 2)^2 x 3 m = 3.14159265 x 0.050625 x 3 = 0.477129 m3 x 6 columns = 2.86278 m3" }
+input: { memberType: circular-column, unit: m, diameter: "0.45", height: "3", quantity: "6", overagePercent: "0" }
+expected: { netVolumeM3: "2.863", netVolumeFt3: "101.10", orderVolumeM3: "2.863" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_OVERAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

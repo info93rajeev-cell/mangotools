@@ -1,0 +1,6 @@
+id: 004-feet-cubic-yard-trucks
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "30 x 20 x 3 ft = 1800 ft3 = 66.67 yd3 (27 ft3 per yd3) = 50.970 m3; no swell; 66.67 / 10 yd3 = 6.67 -> 7 loads" }
+input: { excavationType: general, unit: ft, length: "30", width: "20", depth: "3", quantity: "1", swellPercent: "0", truckCapacity: "10", truckCapacityUnit: yd3 }
+expected: { bankVolumeM3: "50.970", bankVolumeFt3: "1800.00", bankVolumeYd3: "66.67", truckLoads: "7" }
+expectedWarnings: [CIVIL_ASSUMPTION_TRUCK, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT_V2]

@@ -1,0 +1,6 @@
+id: 004-metric-equivalent-of-imperial-wall
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "Fixture 003 converted exactly (1 ft = 0.3048 m, 1 in = 25.4 mm): 3.048 x 2.4384 m wall, 193.675 x 57.15 mm brick, 9.525 mm joint; same 548.571... bricks, order 549" }
+input: { unit: m, wallLength: "3.048", wallHeight: "2.4384", quantity: "1", wythes: "1", brickUnit: mm, brickLength: "193.675", brickHeight: "57.15", mortarJoint: "9.525", wastagePercent: "0" }
+expected: { netWallAreaFt2: "80.00", baseBricks: "548.57", orderBricks: "549" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]
