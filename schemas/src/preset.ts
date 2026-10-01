@@ -31,15 +31,37 @@ export const userOptionSchema = z.strictObject({
   visible: z.boolean().optional(),
 });
 
+/**
+ * Unit families a numeric field's value can be converted within when its unit selector changes
+ * (the value is converted, never merely relabelled). Factors live in packages/ui/src/format/units.ts.
+ */
+export const unitFamilies = ['length', 'area', 'volume', 'coverage', 'liquid'] as const;
+export type UnitFamily = (typeof unitFamilies)[number];
+
 export const fieldSchema = z.strictObject({
   labelKey: z.string(),
   /** 'boolean' is a genuine boolean *input* field (rendered as a switch); contrast with
    * `userOptionSchema`'s `control: 'switch'`, which is a boolean routed to operation *params*. */
-  kind: z.enum(['text', 'number', 'money', 'percent', 'enum', 'enum-or-number', 'boolean']),
+  /** 'openings' is a repeatable list of width × height × quantity rows (JSON in the form value). */
+  kind: z.enum([
+    'text',
+    'number',
+    'money',
+    'percent',
+    'enum',
+    'enum-or-number',
+    'boolean',
+    'openings',
+  ]),
   control: z.enum(['segmented', 'select']).optional(),
   options: z
     .array(
-      z.strictObject({ value: z.union([z.string(), z.number()]), labelKey: z.string().optional() }),
+      z.strictObject({
+        value: z.union([z.string(), z.number()]),
+        labelKey: z.string().optional(),
+        /** Choosing this option fills these fields (an editable preset, never a locked value). */
+        sets: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+      }),
     )
     .optional(),
   allowCustom: z.boolean().optional(),
@@ -53,6 +75,11 @@ export const fieldSchema = z.strictObject({
   visibleWhen: conditions.optional(),
   helpKey: z.string().optional(),
   placeholderKey: z.string().optional(),
+  /** The enum field holding this value's unit: changing it converts this value, and its label
+   * becomes this field's suffix. */
+  convert: z.strictObject({ unitField: z.string(), family: z.enum(unitFamilies) }).optional(),
+  /** A form-only helper (such as a preset picker) that is never sent to the engine. */
+  uiOnly: z.boolean().optional(),
 });
 
 export const outputSchema = z.strictObject({

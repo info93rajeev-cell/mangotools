@@ -1,11 +1,24 @@
-import { type FormatOptions, formatValue, type ValueFormat } from './numbers.ts';
+import {
+  type FormatOptions,
+  formatDecimal,
+  formatValue,
+  roundDecimalText,
+  type ValueFormat,
+} from './numbers.ts';
 
 /** A piece of a rendered working-step line: literal text or a formatted value. */
 export type TemplatePart =
   | { kind: 'text'; text: string }
   | { kind: 'value'; name: string; text: string };
 
-const PLACEHOLDER = /\{(\w+)(?::(money|number|percent|text))?\}/g;
+const PLACEHOLDER = /\{(\w+)(?::(money|number|percent|text|d[0-6]))?\}/g;
+
+/** `{name:d2}` shows a value rounded to 2 decimal places (for long exact intermediate values). */
+function formatPart(format: string, raw: string, options: FormatOptions): string {
+  const places = /^d(\d)$/.exec(format);
+  if (places) return formatDecimal(roundDecimalText(raw, Number(places[1])), 'international');
+  return formatValue(format as ValueFormat, raw, options);
+}
 
 /**
  * Renders a working-step template such as "CGST = {taxable:money} × {halfRate}% = {result:money}".
@@ -25,7 +38,7 @@ export function renderTemplate(
     parts.push(
       raw === undefined
         ? { kind: 'text', text: whole }
-        : { kind: 'value', name, text: formatValue(format as ValueFormat, raw, options) },
+        : { kind: 'value', name, text: formatPart(format, raw, options) },
     );
     last = match.index + whole.length;
   }

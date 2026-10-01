@@ -235,10 +235,15 @@
 }
 
 .row dt {
+  flex: 1 1 auto;
+  min-width: 0;
   color: var(--color-text-muted);
 }
 
 .row dd {
+  /* Short numbers never break mid-value; long values still wrap within their share of the row. */
+  flex: 0 0 auto;
+  max-width: 60%;
   min-width: 0;
   margin: 0;
   font-weight: var(--weight-medium);
@@ -250,6 +255,31 @@
 .placeholder {
   color: var(--color-text-muted);
   font-size: var(--text-ui);
+}
+
+/* ---------- Assumptions and notes (civil calculators) ---------- */
+.noteList {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: var(--space-4);
+}
+
+.notes {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-text-muted);
+}
+
+.notesTitle {
+  margin: 0;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
 }
 
 /* ---------- Working steps ---------- */

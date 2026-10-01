@@ -6,6 +6,7 @@ import {
   formatPercent,
   formatValue,
   groupIndian,
+  roundDecimalText,
 } from './numbers.ts';
 import { partsToText, renderTemplate, templateNames } from './template.ts';
 
@@ -67,5 +68,16 @@ describe('working-step templates', () => {
   it('keeps unknown placeholders and lists names', () => {
     expect(partsToText(renderTemplate('{a} + {b}', { a: '1' }))).toBe('1 + {b}');
     expect(templateNames('{a:money} × {b}')).toEqual(['a', 'b']);
+  });
+});
+
+describe('roundDecimalText', () => {
+  it('rounds exact decimal text half-up without floating point', () => {
+    expect(roundDecimalText('735.29411764705882352941', 2)).toBe('735.29');
+    expect(roundDecimalText('0.0204', 3)).toBe('0.020');
+    expect(roundDecimalText('9.995', 2)).toBe('10.00');
+    expect(roundDecimalText('99.5', 0)).toBe('100');
+    expect(roundDecimalText('15', 2)).toBe('15.00');
+    expect(roundDecimalText('-1.005', 2)).toBe('-1.01');
   });
 });
