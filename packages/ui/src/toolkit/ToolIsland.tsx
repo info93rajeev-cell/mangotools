@@ -79,6 +79,11 @@ interface TopBarProps {
 }
 
 function TopBar({ sampleId, howToId, onTrySample }: TopBarProps) {
+  const revealHowTo = () => {
+    if (!howToId) return;
+    const section = document.getElementById(howToId);
+    if (section instanceof HTMLDetailsElement) section.open = true;
+  };
   return (
     <div class={`${styles.topRow} no-print`}>
       <div class={styles.topActions}>
@@ -89,7 +94,7 @@ function TopBar({ sampleId, howToId, onTrySample }: TopBarProps) {
         ) : null}
       </div>
       {howToId ? (
-        <a class={styles.howTo} href={`#${howToId}`}>
+        <a class={styles.howTo} href={`#${howToId}`} onClick={revealHowTo}>
           <Icon name="info" />
           {t('action.howToUse')}
         </a>

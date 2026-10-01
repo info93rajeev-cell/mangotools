@@ -156,6 +156,13 @@ export async function openTool(page: Page, id: string): Promise<void> {
   await expect(island(page, id)).toBeVisible();
 }
 
+/** Opens the shared related-tools disclosure before interacting with its links. */
+export async function openRelatedTools(page: Page): Promise<void> {
+  const related = page.locator('details#related-tools');
+  await related.locator('summary').click();
+  await expect(related).toHaveAttribute('open');
+}
+
 export async function waitForResult(page: Page, id: string): Promise<void> {
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
 }

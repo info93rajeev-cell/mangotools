@@ -2,6 +2,7 @@ import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
+import { applyFieldEdit } from '../toolkit/fieldEffects.ts';
 import { OptionControls } from '../toolkit/OptionControls.tsx';
 import {
   label,
@@ -11,6 +12,12 @@ import {
   reconcileOptions,
   visibleEntries,
 } from '../toolkit/presentation.ts';
+import {
+  AssumptionList,
+  NoteList,
+  partitionNotices,
+  WarningAlerts,
+} from '../toolkit/ResultNotices.tsx';
 import styles from '../toolkit/toolkit.module.css';
 import { type WorkingStep, WorkingSteps } from '../toolkit/WorkingSteps.tsx';
 import { CalculatorFields } from './CalculatorFields.tsx';
@@ -58,6 +65,7 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
   const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
   const steps = (result?.value.working as WorkingStep[] | undefined) ?? [];
   const current = result && phase !== 'error' ? result : null;
+  const notices = partitionNotices(current?.warnings ?? []);
   const missingNames = missing.map((key) =>
     label(preset, preset.fields[key]?.labelKey).toLowerCase(),
   );
@@ -82,12 +90,10 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
           {fieldError ? null : <p>{messageFor(preset, error)}</p>}
         </InlineAlert>
       ) : null}
-      {current?.warnings.map((w) => (
-        <InlineAlert key={w.code} tone="warning">
-          {messageFor(preset, w)}
-        </InlineAlert>
-      ))}
+      <WarningAlerts preset={preset} notices={notices.warnings} />
+      <AssumptionList preset={preset} notices={notices.assumptions} />
       {current ? <WorkingSteps preset={preset} steps={steps} /> : null}
+      <NoteList preset={preset} notices={notices.notes} />
     </section>
   );
 }
@@ -96,7 +102,11 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
 export function CalculatorLayout({ idPrefix, preset, snapshot, store }: CalculatorLayoutProps) {
   const { values, error } = snapshot;
   const fields = visibleEntries(preset.fields, values);
-  const fieldError = error?.path && fields.some(([key]) => key === error.path) ? error.path : null;
+  // A list field's own error path points inside it (e.g. "openings[0].width").
+  const fieldError =
+    fields
+      .map(([key]) => key)
+      .find((key) => error?.path === key || error?.path?.startsWith(`${key}[`)) ?? null;
   const errorFor = (key: string) =>
     error && key === fieldError ? messageFor(preset, error) : null;
   return (
@@ -116,7 +126,8 @@ export function CalculatorLayout({ idPrefix, preset, snapshot, store }: Calculat
           fields={fields}
           values={values}
           errorFor={errorFor}
-          onValue={(key, next) => store.set(key, next)}
+          errorPath={error?.path}
+          onValue={(key, next) => store.setMany(applyFieldEdit(preset, values, key, next))}
         />
       </section>
       <ResultSection

@@ -8,6 +8,7 @@ import {
 } from '@mangotools/core';
 import type { Conditions, Preset, ResolvedPreset } from '@mangotools/schemas';
 import { type Issue, issue } from './issues.ts';
+import { checkFieldReferences } from './preset-field-references.ts';
 
 const shapeKeys = (schema: unknown): Set<string> | null => {
   const shape = (schema as { shape?: Record<string, unknown> }).shape;
@@ -214,7 +215,8 @@ export function checkPresetAgainstOperation(
     ...checkKeys(
       file,
       'fields',
-      Object.keys(p.fields),
+      // Form-only helpers (such as a preset picker) are never sent to the engine.
+      Object.keys(p.fields).filter((key) => p.fields[key]?.uiOnly !== true),
       shapeKeys(op.input),
       `an input of ${p.operation}`,
     ),
@@ -228,6 +230,7 @@ export function checkPresetAgainstOperation(
     ...checkAllConditions(file, p, conditionDomain(p, paramKeys ?? new Set())),
     ...checkStrings(file, p),
     ...checkDefaults(file, p),
+    ...checkFieldReferences(file, p),
   ];
 }
 
@@ -249,14 +252,15 @@ export function collectWorkingSteps(value: unknown, into: FormulaUse): void {
 }
 
 const TEMPLATE_TOKEN = /\{([^{}]*)\}/g;
-const PLACEHOLDER = /^(\w+)(?::(money|number|percent|text))?$/;
+const PLACEHOLDER = /^(\w+)(?::(money|number|percent|text|d[0-6]))?$/;
 
 /** Problems with a working-step template: unknown variables or malformed placeholders. */
 export function templateProblems(template: string, variables: Set<string>): string[] {
   const problems: string[] = [];
   for (const [, inner = ''] of template.matchAll(TEMPLATE_TOKEN)) {
     const match = PLACEHOLDER.exec(inner);
-    if (!match) problems.push(`"{${inner}}" is not {name} or {name:money|number|percent|text}`);
+    if (!match)
+      problems.push(`"{${inner}}" is not {name} or {name:money|number|percent|text|d0-d6}`);
     else if (!variables.has(match[1] ?? ''))
       problems.push(`"{${match[1]}}" is not a variable of this step`);
   }

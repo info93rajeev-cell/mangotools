@@ -21,7 +21,7 @@ export function WorkingSteps({ preset, steps }: WorkingStepsProps) {
   if (steps.length === 0) return null;
   const currency = presetCurrency(preset);
   return (
-    <details class={styles.working} open>
+    <details class={styles.working} data-working="">
       <summary>{t('action.showWorking')}</summary>
       <ol class={styles.steps}>
         {steps.map((step) => {

@@ -7,6 +7,8 @@ export interface ItemRowShellProps {
   itemLabel: string;
   /** Omit (null) to hide the remove action — used for the last remaining row. */
   removeLabel: string | null;
+  /** Shorter visible text for the remove action (the full `removeLabel` stays its accessible name). */
+  removeText?: string;
   onRemove: () => void;
   children: ComponentChildren;
 }
@@ -21,6 +23,7 @@ export function ItemRowShell({
   index,
   itemLabel,
   removeLabel,
+  removeText,
   onRemove,
   children,
 }: ItemRowShellProps) {
@@ -37,7 +40,7 @@ export function ItemRowShell({
             onClick={onRemove}
             aria-label={removeLabel}
           >
-            {removeLabel}
+            {removeText ?? removeLabel}
           </Button>
         ) : null}
       </legend>

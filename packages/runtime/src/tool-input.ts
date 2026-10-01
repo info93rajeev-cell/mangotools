@@ -84,7 +84,7 @@ export function buildRequest(preset: ResolvedPreset, values: FieldValues): ToolR
   const input: Record<string, unknown> = {};
   const missing: string[] = [];
   for (const [key, field] of Object.entries(preset.fields)) {
-    if (!isShown(field, state)) continue;
+    if (field.uiOnly === true || !isShown(field, state)) continue;
     const value = fieldText(field, values[key]);
     if (value.trim() !== '') input[key] = value;
     else if (mustChoose(field)) missing.push(key);

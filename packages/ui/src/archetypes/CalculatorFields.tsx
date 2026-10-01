@@ -5,6 +5,7 @@ import { SegmentedControl, Switch } from '../primitives/choices.tsx';
 import { describedBy, Field } from '../primitives/Field.tsx';
 import { NumberField, Select, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
+import { OpeningRows } from '../toolkit/OpeningRows.tsx';
 import { label } from '../toolkit/presentation.ts';
 import styles from '../toolkit/toolkit.module.css';
 
@@ -17,6 +18,10 @@ export interface FieldControlProps {
   preset: ResolvedPreset;
   value: string;
   error: string | null;
+  /** Engine path of the error, when it points inside a list field (e.g. "openings[0].width"). */
+  errorPath?: string | undefined;
+  /** Label of the unit this value is measured in (fields with `convert`). */
+  unitLabel?: string | undefined;
   onValue: (value: string) => void;
 }
 
@@ -37,6 +42,7 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   const [custom, setCustom] = useState(!isOption && value !== '');
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
+  const helpMode = field.helpMode ?? 'inline';
   const choices = [
     ...options.map((o) => ({
       value: String(o.value),
@@ -46,12 +52,12 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   ];
   return (
     <div class={styles.rateRow}>
-      <Field id={id} label={text} help={help} error={custom ? null : error}>
+      <Field id={id} label={text} help={help} helpMode={helpMode} error={custom ? null : error}>
         <Select
           id={id}
           value={custom ? CUSTOM : value}
           options={choices}
-          aria-describedby={describedBy(id, help, custom ? null : error)}
+          aria-describedby={describedBy(id, help, custom ? null : error, helpMode)}
           onValue={(next) => {
             setCustom(next === CUSTOM);
             if (next !== CUSTOM) onValue(next);
@@ -82,14 +88,15 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
 function EnumField({ id, field, preset, value, error, onValue }: FieldControlProps) {
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const described = describedBy(id, help, error);
+  const helpMode = field.helpMode ?? 'inline';
+  const described = describedBy(id, help, error, helpMode);
   const options = (field.options ?? []).map((o) => ({
     value: String(o.value),
     label: optionLabel(preset, field, o.value, o.labelKey),
   }));
   if (field.control === 'select') {
     return (
-      <Field id={id} label={text} help={help} error={error}>
+      <Field id={id} label={text} help={help} helpMode={helpMode} error={error}>
         <Select
           id={id}
           value={value}
@@ -130,16 +137,31 @@ function BooleanField({ id, field, preset, value, onValue }: FieldControlProps) 
 
 /** One preset field rendered with the control its kind asks for. */
 export function FieldControl(props: FieldControlProps) {
-  const { id, field, preset, value, error, onValue } = props;
+  const { id, field, preset, value, error, onValue, unitLabel } = props;
+  if (field.kind === 'openings') {
+    return (
+      <OpeningRows
+        id={id}
+        field={field}
+        preset={preset}
+        value={value}
+        error={error}
+        errorPath={props.errorPath}
+        unitLabel={unitLabel}
+        onValue={onValue}
+      />
+    );
+  }
   if (field.kind === 'enum-or-number') return <ChoiceOrNumber {...props} />;
   if (field.kind === 'enum') return <EnumField {...props} />;
   if (field.kind === 'boolean') return <BooleanField {...props} />;
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const described = describedBy(id, help, error);
+  const helpMode = field.helpMode ?? 'inline';
+  const described = describedBy(id, help, error, helpMode);
   const placeholder = field.placeholderKey ? label(preset, field.placeholderKey) : undefined;
   return (
-    <Field id={id} label={text} help={help} error={error}>
+    <Field id={id} label={text} help={help} helpMode={helpMode} error={error}>
       {field.kind === 'text' ? (
         <TextInput
           id={id}
@@ -154,7 +176,7 @@ export function FieldControl(props: FieldControlProps) {
           id={id}
           value={value}
           prefix={field.currency === 'INR' ? '₹' : undefined}
-          suffix={field.unit}
+          suffix={unitLabel ?? field.unit}
           placeholder={placeholder ?? '0'}
           invalid={error !== null}
           aria-describedby={described}
@@ -174,7 +196,21 @@ export interface CalculatorFieldsProps {
   fields: FieldEntries;
   values: FieldValues;
   errorFor: (key: string) => string | null;
+  errorPath?: string | undefined;
   onValue: (key: string, value: string) => void;
+}
+
+/** The selected option label of the unit field a value is measured in, if it has one. */
+export function unitLabelFor(
+  preset: ResolvedPreset,
+  field: PresetField,
+  values: FieldValues,
+): string | undefined {
+  const unitField = field.convert?.unitField;
+  if (!unitField) return undefined;
+  const current = String(values[unitField] ?? '');
+  const option = preset.fields[unitField]?.options?.find((o) => String(o.value) === current);
+  return option?.labelKey ? label(preset, option.labelKey) : current || undefined;
 }
 
 export function CalculatorFields({
@@ -183,21 +219,25 @@ export function CalculatorFields({
   fields,
   values,
   errorFor,
+  errorPath,
   onValue,
 }: CalculatorFieldsProps) {
   return (
     <div class={styles.fields}>
       {fields.map(([key, field]) => (
-        <FieldControl
-          key={key}
-          id={`${idPrefix}-${key}`}
-          name={key}
-          field={field}
-          preset={preset}
-          value={String(values[key] ?? '')}
-          error={errorFor(key)}
-          onValue={(next) => onValue(key, next)}
-        />
+        <div key={key} class={styles.fieldSlot} data-width={field.width ?? 'full'}>
+          <FieldControl
+            id={`${idPrefix}-${key}`}
+            name={key}
+            field={field}
+            preset={preset}
+            value={String(values[key] ?? '')}
+            error={errorFor(key)}
+            errorPath={errorPath}
+            unitLabel={unitLabelFor(preset, field, values)}
+            onValue={(next) => onValue(key, next)}
+          />
+        </div>
       ))}
     </div>
   );

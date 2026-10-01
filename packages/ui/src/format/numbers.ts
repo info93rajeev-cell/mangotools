@@ -48,6 +48,35 @@ export function formatDecimal(value: string, grouping: Grouping, minDecimals = 0
   return `${prefix}${grouped}${frac ? `.${frac}` : ''}`;
 }
 
+/** Increments a string of decimal digits by one ("0999" → "1000"). */
+function incrementDigits(digits: string): string {
+  const out = digits.split('');
+  for (let i = out.length - 1; i >= 0; i--) {
+    if (out[i] !== '9') {
+      out[i] = String(Number(out[i]) + 1);
+      return out.join('');
+    }
+    out[i] = '0';
+  }
+  return `1${out.join('')}`;
+}
+
+/**
+ * Rounds a plain decimal string half-up (away from zero) to `decimals` places, as text — used for
+ * readable working steps whose exact values carry 20 decimals. Never converts to floating point.
+ */
+export function roundDecimalText(value: string, decimals: number): string {
+  const match = DECIMAL.exec(value.trim());
+  if (!match) return value;
+  const [, sign = '', intRaw = '', fracRaw = ''] = match;
+  const frac = fracRaw.padEnd(decimals + 1, '0');
+  let digits = (intRaw || '0') + frac.slice(0, decimals);
+  if (Number(frac[decimals]) >= 5) digits = incrementDigits(digits);
+  const intPart = digits.slice(0, digits.length - decimals) || '0';
+  const fracPart = digits.slice(digits.length - decimals);
+  return `${sign}${intPart}${decimals > 0 ? `.${fracPart}` : ''}`;
+}
+
 export function formatMoney(value: string, options: FormatOptions = {}): string {
   if (options.currency === 'INR') {
     const text = formatDecimal(value, 'indian', 2);

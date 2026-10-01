@@ -5,6 +5,7 @@ import {
   hasSample,
   inputArea,
   island,
+  openRelatedTools,
   openTool,
   outputArea,
   primaryResult,
@@ -221,6 +222,7 @@ test.describe('Volumetric Weight Calculator', () => {
       'Actual and volumetric weight are the same, so either value may be used for billing.',
     );
     await expect(page.locator('[data-disclaimer]')).toBeVisible();
+    await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CBM Calculator' }).first()).toBeVisible();
   });
 
@@ -402,6 +404,7 @@ test.describe('CSV to JSON', () => {
     await page.getByRole('button', { name: 'Try sample' }).click();
     await expect(outputArea(page, 'csv-to-json')).toHaveValue(/"name": "Raj"/);
     await expect(island(page, 'csv-to-json')).toContainText('Rows');
+    await openRelatedTools(page);
     await expect(
       page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),
     ).toBeVisible();
@@ -430,6 +433,7 @@ test.describe('JSON to CSV', () => {
     await page.getByRole('button', { name: 'Try sample' }).click();
     await expect(outputArea(page, 'json-to-csv')).toHaveValue(/name,age\nRaj,50\nAiva,19/);
     await expect(island(page, 'json-to-csv')).toContainText('Rows');
+    await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CSV to JSON' }).first()).toBeVisible();
   });
 
@@ -460,6 +464,7 @@ test.describe('Timestamp Converter', () => {
     await page.getByRole('button', { name: 'Try sample' }).click();
     await expect(outputArea(page, 'timestamp-converter')).toHaveValue('2023-11-14T22:13:20.000Z');
     await expect(island(page, 'timestamp-converter')).toContainText('Unix seconds');
+    await openRelatedTools(page);
     await expect(
       page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),
     ).toBeVisible();
