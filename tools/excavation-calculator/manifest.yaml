@@ -4,17 +4,18 @@ id: excavation-calculator
 slug: excavation-calculator
 status: beta
 tier: T2
-version: 0.1.2
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Bank volume shown first, optional editable swell for loose volume, optional truck loads from your truck volume, yd³, converting units." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta with excavation/earthwork volume for a rectangular pit, trench or footing pit, in m³ and ft³, with bulking/swell %." }
 name: Excavation Calculator
 shortName: Excavation
-summary: Excavation and earthwork quantity for a pit, trench or footing, in cubic metres and cubic feet, with bulking %.
+summary: Excavation volume for a pit, trench or footing, with optional swell for loose volume and truck loads.
 archetype: B
-preset: civil/excavation-volume
-sample: general-5x4x1.5-m
+preset: civil/excavation-volume-v2
+sample: trench-20x0.6x1-m
 taxonomy:
   category: construction
   tags: [excavation, earthwork, construction]
@@ -24,7 +25,7 @@ privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
   title: Excavation Calculator – Earthwork Volume in m³ and ft³
-  description: Work out excavation volume for a pit, trench or footing in cubic metres and cubic feet, with a bulking/swell allowance. Free, and it runs in your browser.
+  description: Work out excavation volume for a pit, trench or footing in m³, ft³ or yd³, with optional swell and truck loads. Free, and it runs in your browser.
   primaryKeyword: excavation calculator
   secondaryKeywords: [earthwork volume calculator, trench excavation calculator, footing excavation calculator]
 graph:
@@ -32,5 +33,5 @@ graph:
 quality:
   verifiedAgainst:
     - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–017, tool fixtures 001–002" }
-  lastVerified: 2026-09-27
+    - { citation: "Hand-verified arithmetic", locator: "civil.excavation.volume@2 engine fixtures 001–008, tool fixtures 001–002" }
+  lastVerified: 2026-10-01

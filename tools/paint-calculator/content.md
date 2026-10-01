@@ -1,113 +1,89 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-wall-5x4-m
+lastReviewed: 2026-10-01
+example: 001-room-4x3x2.7-m
 ---
 
 ## How to use
 
-This paint calculator works out how much paint you need for a rectangular wall, ceiling or general
-surface — a practical wall paint calculator and paint quantity calculator for homeowners, painters,
-and contractors planning a paint job.
+This paint calculator works out how much paint you need for a room or a single wall, ceiling or flat
+surface — a practical wall paint calculator for homeowners, painters, and contractors.
 
-1. Choose the unit your measurements are in.
-2. Enter the surface's length and height/width.
-3. Enter an opening deduction area (doors, windows), if any — it defaults to 0.
-4. Enter the number of coats (defaults to 2) and the coverage per litre your paint achieves in the
-   selected unit's own squared area (defaults to 10, meaning 10 square metres per litre if the unit
-   is metres).
-5. Enter a wastage percentage for spillage and touch-ups (defaults to 10%, up to 50%), and the number
-   of identical surfaces (defaults to 1).
-6. Read the total paint litres required (including wastage), and the working. Copy or print the
-   result.
+1. Choose **Room walls** (enter the room's length, width and wall height, and tick the ceiling if it is
+   being painted too) or **Single surface** (enter its length and height or width).
+2. Choose the unit your measurements are in. Changing the unit converts the values you already typed.
+3. Add each door, window or other unpainted area with its width, height and quantity.
+4. Enter the number of coats and your paint's coverage per coat, in m²/L or ft²/US gal — use the figure
+   on your paint's label.
+5. Set a wastage allowance (defaults to 10%) and, optionally, the container size you will buy.
+6. Read the paint to buy, the calculated paint before wastage, the areas, the assumptions used and the
+   working. Copy or print the result.
 
 ## Method
 
-- Gross area = length × height/width (per surface), × the number of identical surfaces for the total.
-- Net paintable area = gross area − opening deduction area. Enter the opening area (doors, windows, or
-  any unpainted section) for **one** surface — this paint area calculator deducts it once per surface,
-  then multiplies by the number of identical surfaces you entered. An opening area that equals or
-  exceeds one surface's gross area is rejected, since there would be nothing left to paint.
-- Coated area = net paintable area × number of coats. Most walls need at least two coats for even
-  colour — this room paint calculator and ceiling paint calculator defaults to 2, but you can enter
-  any whole number of coats.
-- Paint litres before wastage = coated area ÷ coverage per litre. Coverage per litre is always entered
-  as **area per litre in the unit you selected** — for example, square metres per litre if the unit is
-  metres, or square feet per litre if the unit is feet. Check your paint tin's label for its own
-  coverage figure and enter it directly; this tool does not implement brand-specific or
-  country-specific coverage standards.
-- Total paint litres required = paint litres before wastage × (1 + wastage %). The wastage percentage
-  is an adjustable allowance for spillage, extra coats on edges and corners, and touch-ups. 10% is a
-  common starting allowance and this calculator's default; some surfaces or techniques call for more.
+- Room walls: gross area = 2 × (length + width) × wall height, plus length × width if the ceiling is
+  included, × the number of identical rooms.
+- Single surface: gross area = length × height or width, × the number of identical surfaces.
+- Openings = Σ(width × height × quantity), deducted from each room or surface. Openings that equal or
+  exceed the gross area are rejected, since nothing would be left to paint.
+- Paint = net area × number of coats ÷ coverage per coat.
+- Paint to buy = paint × (1 + wastage % ÷ 100). Containers, when you enter a size, are rounded up to whole
+  containers.
 
-Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m.
-The same unit selector applies to every dimension, the opening area, and the coverage figure — there
-is no mixing of units within one calculation. Area and paint litres are both displayed rounded to 2
-decimal places.
+Coverage is converted exactly between m²/L and ft²/US gal (1 ft² = 0.09290304 m², 1 US gallon =
+3.785411784 L), and lengths use 1 inch = 0.0254 m and 1 foot = 0.3048 m. Areas and paint volumes are kept at
+full precision and shown to 2 decimal places.
 
-This paint quantity calculator estimates paint litres **only**, for a flat rectangular surface. It
-does not calculate primer, putty, or labour, brand-specific paint recommendations, cost, colour
-matching, multi-room totals, a PDF report, Excel export, or a bill of quantities (BOQ).
+**Coverage is an estimate you control.** 10 m²/L is only a starting value; real coverage depends on the
+product, the surface's texture and porosity, the colour change and how it is applied. The coverage used
+is always listed with the result.
+
+This calculator estimates finish paint **only**. It does not calculate primer, putty, labour, cost,
+colour matching, or a bill of quantities (BOQ), and it never assumes a brand's tin size.
 
 ## Worked example
 
-A 5 × 4 m wall, 2 m² opening, 2 coats, 10 m²/litre coverage, 10% wastage, 1 surface:
+A 4 × 3 m room with 2.7 m walls, one 0.9 × 2.1 m door and one 1.5 × 1.2 m window, 2 coats, 10 m²/L
+coverage and a 10% wastage allowance:
 
 ## FAQ
 
-### How do I calculate how much paint I need?
+### How do I calculate how much paint I need for a room?
 
-Enter the surface's length and height/width, an opening deduction if any, the number of coats, and
-your paint's coverage per litre. This paint litres calculator deducts the opening, multiplies by the
-number of coats, then divides by the coverage figure to give litres before wastage.
+Choose "Room walls", enter the room's length, width and wall height, add the doors and windows, then the
+number of coats and your paint's coverage. Wall area is the room's perimeter × height, less the openings.
+
+### Should the ceiling be included?
+
+Only if you are painting it with the same paint. Tick "Also paint the ceiling" to add length × width to
+the area.
+
+### What coverage rate should I use?
+
+The one stated on your paint's label or data sheet, for the surface you are painting. Rough, porous or
+unpainted surfaces usually need more paint than the label's best-case figure.
+
+### Does this include primer?
+
+No. Primer usually has its own coverage and number of coats, so it is not estimated from the finish
+paint's figures.
+
+### How much wastage should I add for paint?
+
+10% is a common starting allowance and this calculator's default; change it to suit your job.
 
 ### Is the result an estimate?
 
 Yes. This is an estimation aid for planning and quantity checks, not a final billing quantity. Actual
 paint usage may vary due to surface texture and porosity, application method, paint brand and type,
 and site conditions — verify surface area, coats, coverage, and wastage before purchase or
-application, and confirm the final figures with a licensed engineer, architect, contractor, or
-professional painter.
-
-### Do I need to sign up?
-
-No. This paint area calculator works without an account, sign-up, or login.
+application.
 
 ### Does this use AI?
 
-No. This tool is a deterministic calculator — the same inputs always give the same result, with no AI
-involved.
-
-### Does this include primer, putty, or labour?
-
-No. This paint calculator estimates paint litres only. Primer, putty, and labour
-are separate calculations this tool does not perform.
-
-### Can I use this for a rectangular wall, ceiling, or flat surface?
-
-Yes. The same length × width formula applies to a wall paint calculator, a ceiling paint calculator,
-or any flat rectangular surface — choose the surface's length and height/width as the two dimensions.
-
-### How much wastage should I add for paint?
-
-10% is a common starting allowance for spillage and touch-ups, and is this calculator's default; some
-surfaces or techniques call for more. Always confirm your own project's expected wastage.
-
-### What if my opening area is larger than the wall?
-
-This paint wastage calculator rejects an opening area that equals or exceeds the surface's gross
-area, since there would be nothing left to paint — check your dimensions and opening size.
-
-### Does it calculate paint cost?
-
-No. This calculator estimates paint quantity only, not material or labour cost.
-
-### Can I calculate paint for multiple identical rooms at once?
-
-You can enter a number of identical surfaces to multiply a single surface's result, but this tool
-does not save or total multiple different rooms — enter and read one surface calculation at a time.
+No. This tool is a deterministic calculator — the same inputs always give the same result.
 
 ## References
 
-- Rectangular area and paint-coverage ratio: (length × width − opening) × coats ÷ coverage per litre
-  (general geometry).
-- International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
+- Rectangular area and paint coverage: (area − openings) × coats ÷ coverage (general geometry).
+- International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly; US
+  liquid gallon = 3.785411784 L exactly.

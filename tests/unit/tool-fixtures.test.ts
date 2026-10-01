@@ -10,19 +10,26 @@ const engines = await loadEngines();
 const { sources } = loadSources();
 const { raw } = parsePresets(sources.presets);
 
-describe('tool fixtures (through each tool preset)', () => {
+describe('tool fixtures (through each fixture-declared preset)', () => {
   it('every tool has fixtures', () => {
     for (const tool of sources.tools) expect(tool.fixtures.length, tool.folder).toBeGreaterThan(0);
   });
 
+  it('every tool has a fixture for its active preset', () => {
+    for (const tool of sources.tools) {
+      const manifest = manifestSchema.parse(tool.manifest?.data);
+      const presets = tool.fixtures.map((source) => fixtureSchema.parse(source.data).preset);
+      expect(presets, tool.folder).toContain(manifest.preset);
+    }
+  });
+
   for (const tool of sources.tools) {
-    const manifest = manifestSchema.parse(tool.manifest?.data);
-    const resolved = resolveExtends(manifest.preset, raw);
     for (const source of tool.fixtures) {
       it(source.file, async () => {
-        if (!('preset' in resolved)) throw new Error(resolved.problem.message);
         const fixture = fixtureSchema.parse(source.data);
-        expect(fixture.preset).toBe(manifest.preset);
+        if (!fixture.preset) throw new Error('Tool fixture must declare a preset.');
+        const resolved = resolveExtends(fixture.preset, raw);
+        if (!('preset' in resolved)) throw new Error(resolved.problem.message);
         const op = findOperation(engines, resolved.preset.operation ?? '');
         expect(op).toBeDefined();
         if (!op) return;
