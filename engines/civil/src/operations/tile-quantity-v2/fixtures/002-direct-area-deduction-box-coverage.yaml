@@ -1,0 +1,6 @@
+id: 002-direct-area-deduction-box-coverage
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "30 m2 - 2 x 1 m deduction = 28 m2; 600 x 600 mm = 0.36 m2; 77.78 base; x 1.05 = 81.67 -> 82 tiles; 28 x 1.05 = 29.4 m2 / 1.44 m2 per box = 20.42 -> 21 boxes" }
+input: { mode: area, unit: m, surfaceArea: "30", quantity: "1", openings: [{ width: "2", height: "1", quantity: "1" }], tileUnit: mm, tileLength: "600", tileWidth: "600", wastagePercent: "5", packMode: coverage, boxCoverage: "1.44", boxCoverageUnit: m2 }
+expected: { grossAreaM2: "30.00", openingAreaM2: "2.00", netAreaM2: "28.00", baseTiles: "77.78", orderTiles: "82", boxes: "21" }
+expectedWarnings: [CIVIL_ASSUMPTION_TILE_FACE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_TILE_SCOPE_LIMIT_V2]

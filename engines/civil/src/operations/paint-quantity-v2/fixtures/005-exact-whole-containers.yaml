@@ -1,0 +1,6 @@
+id: 005-exact-whole-containers
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "10 x 4 m = 40 m2; 1 coat / 10 m2/L = exactly 4 L; 4 L containers = exactly 1 (must not round up to 2)" }
+input: { mode: surface, unit: m, length: "10", secondDimension: "4", quantity: "1", coats: "1", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "0", containerSize: "4", containerUnit: l }
+expected: { orderLitres: "4.00", containers: "1" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ASSUMPTION_CONTAINER, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

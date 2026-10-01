@@ -1,0 +1,5 @@
+id: 006-zero-tile-width
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "Tile width must be greater than zero" }
+input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "0", wastagePercent: "10", packMode: none }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: tileWidth }

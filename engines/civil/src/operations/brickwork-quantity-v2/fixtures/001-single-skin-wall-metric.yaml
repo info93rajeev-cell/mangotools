@@ -1,0 +1,6 @@
+id: 001-single-skin-wall-metric
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "5 x 3 m = 15 m2; brick face (230+10) x (75+10) mm = 0.24 x 0.085 = 0.0204 m2; 15 / 0.0204 = 735.294... bricks; 0% wastage; order ceil = 736" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expected: { grossWallAreaM2: "15.00", openingAreaM2: "0.00", netWallAreaM2: "15.00", netWallAreaFt2: "161.46", baseBricks: "735.29", wastageBricks: "0.00", orderBricks: "736" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

@@ -1,0 +1,5 @@
+id: 006-zero-truck-capacity
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "A usable truck volume, when entered, must be greater than zero" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", swellPercent: "0", truckCapacity: "0", truckCapacityUnit: m3 }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: truckCapacity }

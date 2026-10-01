@@ -1,0 +1,6 @@
+id: 002-surface-dimensions
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "5 x 4 m = 20 m2 - 1 x 2 m opening = 18 m2; x 2 coats / 10 m2/L = 3.6 L; +10% = 3.96 L" }
+input: { mode: surface, unit: m, length: "5", secondDimension: "4", quantity: "1", openings: [{ width: "1", height: "2", quantity: "1" }], coats: "2", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "10" }
+expected: { netAreaM2: "18.00", paintLitres: "3.60", orderLitres: "3.96" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

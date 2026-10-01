@@ -1,0 +1,5 @@
+id: 009-missing-room-height
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "Room mode needs a wall height" }
+input: { mode: room, unit: m, roomLength: "4", roomWidth: "3", quantity: "1", coats: "2", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "10" }
+expectedError: { code: CIVIL_MISSING_INPUT, path: roomHeight }

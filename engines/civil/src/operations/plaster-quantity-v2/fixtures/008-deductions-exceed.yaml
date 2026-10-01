@@ -1,0 +1,5 @@
+id: 008-deductions-exceed
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "Openings of 2 x (2 x 3) = 12 m2 equal a 4 x 3 m wall" }
+input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", openings: [{ width: "2", height: "3", quantity: "2" }], thickness: "12", thicknessUnit: mm, wastagePercent: "0", materialMode: none }
+expectedError: { code: CIVIL_DEDUCTIONS_EXCEED_AREA, path: openings }

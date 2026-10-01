@@ -1,0 +1,5 @@
+id: 008-zero-diameter
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "A column diameter must be greater than zero" }
+input: { memberType: circular-column, unit: m, diameter: "0", height: "3", quantity: "1", overagePercent: "0" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: diameter }

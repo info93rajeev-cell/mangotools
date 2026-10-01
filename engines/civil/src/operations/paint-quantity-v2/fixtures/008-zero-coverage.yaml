@@ -1,0 +1,5 @@
+id: 008-zero-coverage
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "Coverage must be greater than zero" }
+input: { mode: surface, unit: m, length: "5", secondDimension: "4", quantity: "1", coats: "2", coverage: "0", coverageUnit: m2-per-l, wastagePercent: "10" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: coverage }

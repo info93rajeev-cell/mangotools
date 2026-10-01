@@ -1,0 +1,5 @@
+id: 011-zero-wythes
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "Brick skins must be a whole number from 1 to 4" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "0", brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expectedError: { code: CIVIL_WYTHES_OUT_OF_RANGE, path: wythes, details: { max: "4" } }

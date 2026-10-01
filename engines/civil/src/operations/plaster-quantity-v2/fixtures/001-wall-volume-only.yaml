@@ -1,0 +1,6 @@
+id: 001-wall-volume-only
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "4 x 3 m = 12 m2 - 1 x 2 m opening = 10 m2; x 12 mm = 0.12 m3 = 120 L = 4.24 ft3; 0% wastage; no product data so no bags" }
+input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", openings: [{ width: "1", height: "2", quantity: "1" }], thickness: "12", thicknessUnit: mm, wastagePercent: "0", materialMode: none }
+expected: { grossAreaM2: "12.00", openingAreaM2: "2.00", netAreaM2: "10.00", wetVolumeM3: "0.120", wetVolumeLitres: "120.00", wetVolumeFt3: "4.24", orderVolumeM3: "0.120" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_INFO_PLASTER_MATERIAL, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PLASTER_BEFORE_CONSTRUCTION, CIVIL_PLASTER_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_PLASTER_SCOPE_LIMIT]

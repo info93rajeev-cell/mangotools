@@ -1,0 +1,5 @@
+id: 007-zero-depth
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "Depth must be greater than zero" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "0", quantity: "1", swellPercent: "0" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: depth }

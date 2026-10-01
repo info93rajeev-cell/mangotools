@@ -1,0 +1,5 @@
+id: 007-tiles-per-box-not-whole
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "Tiles per box must be a whole number" }
+input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: pieces, tilesPerBox: "10.5" }
+expectedError: { code: CIVIL_TILES_PER_BOX_NOT_WHOLE, path: tilesPerBox }

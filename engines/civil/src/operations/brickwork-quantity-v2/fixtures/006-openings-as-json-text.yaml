@@ -1,0 +1,6 @@
+id: 006-openings-as-json-text
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "Same as fixture 002, with the openings list sent as the JSON text a form field holds" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: '[{"width":"0.9","height":"2.1","quantity":"1"},{"width":"1.2","height":"1.2","quantity":"2"},{}]', brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10", wastagePercent: "5" }
+expected: { openingAreaM2: "4.77", orderBricks: "538" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

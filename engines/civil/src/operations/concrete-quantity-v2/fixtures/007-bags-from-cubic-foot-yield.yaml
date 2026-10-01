@@ -1,0 +1,6 @@
+id: 007-bags-from-cubic-foot-yield
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "0.21 m3 / (0.6 ft3 x 0.028316846592) = 0.21 / 0.0169901 = 12.36 -> 13 bags" }
+input: { memberType: slab, unit: m, length: "2", width: "1", depth: "0.1", quantity: "1", overagePercent: "5", bagYield: "0.6", bagYieldUnit: ft3 }
+expected: { bags: "13" }
+expectedWarnings: [CIVIL_ASSUMPTION_OVERAGE, CIVIL_ASSUMPTION_BAG_YIELD, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

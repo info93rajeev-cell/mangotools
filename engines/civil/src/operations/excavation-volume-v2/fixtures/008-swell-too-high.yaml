@@ -1,0 +1,5 @@
+id: 008-swell-too-high
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "Swell above 100% is rejected" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", swellPercent: "101" }
+expectedError: { code: CIVIL_SWELL_OUT_OF_RANGE, path: swellPercent }

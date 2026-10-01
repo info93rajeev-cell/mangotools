@@ -1,0 +1,6 @@
+id: 014-large-wall-warning
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "150 x 3 m = 450 m2 / 0.0204 m2 = 22058.82...; order 22059; 150 m exceeds the 100 m sanity ceiling (warning, not error)" }
+input: { unit: m, wallLength: "150", wallHeight: "3", quantity: "1", wythes: "1", brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expected: { netWallAreaM2: "450.00", baseBricks: "22058.82", orderBricks: "22059" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT, CIVIL_DIMENSION_UNREALISTIC]

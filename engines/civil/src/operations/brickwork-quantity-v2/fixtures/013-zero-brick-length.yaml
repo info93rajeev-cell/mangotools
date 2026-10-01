@@ -1,0 +1,5 @@
+id: 013-zero-brick-length
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "Brick dimensions must be greater than zero" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", brickUnit: mm, brickLength: "0", brickHeight: "75", mortarJoint: "10", wastagePercent: "0" }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: brickLength }

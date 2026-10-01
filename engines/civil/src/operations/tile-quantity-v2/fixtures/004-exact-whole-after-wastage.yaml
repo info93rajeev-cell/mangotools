@@ -1,0 +1,6 @@
+id: 004-exact-whole-after-wastage
+operation: civil.tile.quantity@2
+source: { type: hand-verified, citation: "3 x 3 m = 9 m2 / 0.09 m2 = 100 tiles; +10% = exactly 110 (must not round up to 111)" }
+input: { mode: dimensions, unit: m, surfaceLength: "3", surfaceWidth: "3", quantity: "1", tileUnit: cm, tileLength: "30", tileWidth: "30", wastagePercent: "10", packMode: none }
+expected: { baseTiles: "100.00", orderTiles: "110" }
+expectedWarnings: [CIVIL_ASSUMPTION_TILE_FACE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_TILE_SCOPE_LIMIT_V2]

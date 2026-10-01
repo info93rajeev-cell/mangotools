@@ -1,0 +1,5 @@
+id: 009-wastage-too-high
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "Wastage must be from 0 to 50%" }
+input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", thickness: "12", thicknessUnit: mm, wastagePercent: "60", materialMode: none }
+expectedError: { code: CIVIL_WASTAGE_OUT_OF_RANGE, path: wastagePercent }

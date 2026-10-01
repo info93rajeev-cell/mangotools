@@ -1,0 +1,7 @@
+id: 001-pit-bank-volume
+operation: civil.excavation.volume@2
+source: { type: hand-verified, citation: "5 x 4 x 1.5 m = 30 m3 bank volume = 1059.44 ft3 = 39.24 yd3; no swell, no trucks" }
+input: { excavationType: general, unit: m, length: "5", width: "4", depth: "1.5", quantity: "1", swellPercent: "0" }
+expected: { bankVolumeM3: "30.000", bankVolumeFt3: "1059.44", bankVolumeYd3: "39.24" }
+expectedWarnings: [CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT_V2]
+match: subset

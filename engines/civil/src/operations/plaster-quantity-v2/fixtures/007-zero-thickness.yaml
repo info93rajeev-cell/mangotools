@@ -1,0 +1,5 @@
+id: 007-zero-thickness
+operation: civil.plaster.quantity@2
+source: { type: hand-verified, citation: "Thickness must be greater than zero" }
+input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", thickness: "0", thicknessUnit: mm, wastagePercent: "0", materialMode: none }
+expectedError: { code: CIVIL_NOT_POSITIVE, path: thickness }

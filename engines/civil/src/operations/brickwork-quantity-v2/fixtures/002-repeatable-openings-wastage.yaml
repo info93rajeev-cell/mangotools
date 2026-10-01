@@ -1,0 +1,6 @@
+id: 002-repeatable-openings-wastage
+operation: civil.brickwork.quantity@2
+source: { type: hand-verified, citation: "Openings 0.9 x 2.1 x 1 + 1.2 x 1.2 x 2 = 1.89 + 2.88 = 4.77 m2; net 15 - 4.77 = 10.23 m2; face (190+10) x (90+10) mm = 0.02 m2; 10.23 / 0.02 = 511.5; x 1.05 = 537.075; order 538" }
+input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ width: "0.9", height: "2.1", quantity: "1" }, { width: "1.2", height: "1.2", quantity: "2" }], brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10", wastagePercent: "5" }
+expected: { grossWallAreaM2: "15.00", openingAreaM2: "4.77", netWallAreaM2: "10.23", baseBricks: "511.50", wastageBricks: "25.58", orderBricks: "538" }
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

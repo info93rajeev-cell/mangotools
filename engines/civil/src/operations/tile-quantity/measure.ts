@@ -17,7 +17,7 @@ import {
  * civil helper supports "blank is fine, but if present it must be a positive whole number", so this
  * stays local rather than changing the shared `readCount` (which always treats blank as an error).
  */
-function readOptionalTilesPerBox(raw: string | number | undefined): Result<string | null> {
+export function readOptionalTilesPerBox(raw: string | number | undefined): Result<string | null> {
   const text = raw === undefined ? '' : typeof raw === 'number' ? String(raw) : raw;
   if (text.trim() === '') return ok(null);
   const parsed = parseDecimal(text);

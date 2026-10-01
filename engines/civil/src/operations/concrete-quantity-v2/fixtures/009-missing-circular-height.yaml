@@ -1,0 +1,5 @@
+id: 009-missing-circular-height
+operation: civil.concrete.quantity@2
+source: { type: hand-verified, citation: "A circular column needs a height" }
+input: { memberType: circular-column, unit: m, diameter: "0.3", quantity: "1", overagePercent: "0" }
+expectedError: { code: CIVIL_MISSING_INPUT, path: height }

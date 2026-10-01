@@ -1,0 +1,6 @@
+id: 003-room-with-ceiling
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "Walls 37.8 m2 + ceiling 4 x 3 = 12 m2 = 49.8 m2; 1 coat / 12 m2/L = 4.15 L; 0% wastage" }
+input: { mode: room, unit: m, roomLength: "4", roomWidth: "3", roomHeight: "2.7", includeCeiling: "true", quantity: "1", coats: "1", coverage: "12", coverageUnit: m2-per-l, wastagePercent: "0" }
+expected: { grossAreaM2: "49.80", netAreaM2: "49.80", paintLitres: "4.15", orderLitres: "4.15" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

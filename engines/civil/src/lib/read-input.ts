@@ -61,3 +61,28 @@ export function readPercent(
   if (outside) return err(range.rangeCode, { path });
   return ok(parsed.value);
 }
+
+/** An optional measurement: blank means "not supplied" (`null`); otherwise it must be > 0. */
+export function readOptionalPositive(
+  raw: Raw,
+  path: string,
+  maxDecimals: number,
+): Result<string | null> {
+  if (raw === undefined || text(raw).trim() === '') return ok(null);
+  return readPositive(raw, path, maxDecimals);
+}
+
+/** A required whole number in [1, max]; anything else returns `rangeCode` (with `max` in details). */
+export function readWholeInRange(
+  raw: Raw,
+  path: string,
+  range: { max: string; rangeCode: string },
+): Result<string> {
+  if (raw === undefined || text(raw).trim() === '') return err('CIVIL_MISSING_INPUT', { path });
+  const parsed = parseDecimal(text(raw));
+  if (!parsed.ok) return err('CIVIL_INVALID_NUMBER', { path });
+  const whole = !parsed.value.includes('.');
+  const inRange = compare(parsed.value, '1') >= 0 && compare(parsed.value, range.max) <= 0;
+  if (!whole || !inRange) return err(range.rangeCode, { path, details: { max: range.max } });
+  return ok(parsed.value);
+}
