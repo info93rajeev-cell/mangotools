@@ -24,6 +24,26 @@ test.describe('application-first tool pages', () => {
     await expect(section).toHaveAttribute('open');
   });
 
+  test('Related tools links are server-rendered, collapsed and keyboard accessible', async ({
+    page,
+  }) => {
+    await gotoReady(page, '/csv-to-json');
+    const section = page.locator('details#related-tools');
+    const summary = section.locator('summary');
+    const renderedLink = section.locator('a[href="/json-formatter"]');
+    await expect(section).not.toHaveAttribute('open');
+    await expect(renderedLink).toHaveCount(1);
+    await expect(renderedLink).toHaveText('JSON Formatter & Validator');
+    await expect(renderedLink).toBeHidden();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect(section).toHaveAttribute('open');
+    const accessibleLink = section.getByRole('link', { name: 'JSON Formatter & Validator' });
+    await expect(accessibleLink).toBeVisible();
+    await page.keyboard.press('Tab');
+    await expect(section.getByRole('link').first()).toBeFocused();
+  });
+
   test('calculation details are collapsed until deliberately opened', async ({ page }) => {
     await gotoReady(page, '/gst-calculator');
     await produceResult(page, 'gst-calculator');

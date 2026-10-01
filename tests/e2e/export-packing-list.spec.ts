@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { openTool, primaryResult } from '../support/tool-page.ts';
+import { openRelatedTools, openTool, primaryResult } from '../support/tool-page.ts';
 
 test.describe('Export Packing List Generator', () => {
   const fillRequired = async (page: Page) => {
@@ -53,6 +53,7 @@ test.describe('Export Packing List Generator', () => {
     page,
   }) => {
     await openTool(page, 'export-packing-list-generator');
+    await openRelatedTools(page);
     await expect(
       page.getByRole('link', { name: 'Export Commercial Invoice Generator' }),
     ).toBeVisible();
