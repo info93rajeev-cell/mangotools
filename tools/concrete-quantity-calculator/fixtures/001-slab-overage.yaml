@@ -1,0 +1,8 @@
+id: 001-slab-overage
+preset: civil/concrete-quantity-v2
+source:
+  type: hand-verified
+  citation: "5 x 4 x 0.15 m = 3 m3 net; +5% overage = 3.15 m3 to order = 111.24 ft3 = 4.12 yd3"
+input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", overagePercent: "5" }
+expected: { netVolumeM3: "3.000", overageVolumeM3: "0.150", orderVolumeM3: "3.150", orderVolumeFt3: "111.24", orderVolumeYd3: "4.12" }
+expectedWarnings: [CIVIL_ASSUMPTION_OVERAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

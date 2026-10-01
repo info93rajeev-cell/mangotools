@@ -1,0 +1,8 @@
+id: 003-v2-room-5x4-m
+preset: civil/tile-quantity-v2
+source:
+  type: hand-verified
+  citation: "5 x 4 m = 20 m2; 300 x 300 mm = 0.09 m2; 20 / 0.09 = 222.22 tiles; x 1.10 = 244.44 -> 245 tiles; 245 / 10 per box = 24.5 -> 25 boxes"
+input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: pieces, tilesPerBox: "10" }
+expected: { netAreaM2: "20.00", baseTiles: "222.22", wastageTiles: "22.22", orderTiles: "245", boxes: "25" }
+expectedWarnings: [CIVIL_ASSUMPTION_TILE_FACE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_TILE_BEFORE_INSTALLATION, CIVIL_TILE_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_TILE_SCOPE_LIMIT_V2]

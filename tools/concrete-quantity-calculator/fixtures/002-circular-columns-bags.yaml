@@ -1,0 +1,8 @@
+id: 002-circular-columns-bags
+preset: civil/concrete-quantity-v2
+source:
+  type: hand-verified
+  citation: "pi x 0.15^2 x 3 m = 0.212058 m3 per column x 2 = 0.424115 m3; 0% overage; 0.424115 / 0.014 m3 (14 L per bag, as printed on the product) = 30.29 -> 31 bags"
+input: { memberType: circular-column, unit: m, diameter: "0.3", height: "3", quantity: "2", overagePercent: "0", bagYield: "14", bagYieldUnit: l }
+expected: { netVolumeM3: "0.424", orderVolumeM3: "0.424", bags: "31" }
+expectedWarnings: [CIVIL_ASSUMPTION_NO_OVERAGE, CIVIL_ASSUMPTION_BAG_YIELD, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_CONSTRUCTION, CIVIL_LOCAL_PRACTICE_VARIES, CIVIL_NOT_PROFESSIONAL_REPLACEMENT, CIVIL_VOLUME_ONLY]

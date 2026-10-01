@@ -17,12 +17,15 @@ export interface FixtureRun {
 export const MIN_FIXTURES = { T1: 3, T2: 2, T3: 1, T4: 1 } as const;
 
 type OneRun = { issues: Issue[]; run?: FixtureRun };
+export type FixtureBinding = { preset: ResolvedPreset; op: AnyOperation };
+export type ResolveFixtureBinding = (presetId: string) => FixtureBinding | undefined;
 
 async function runOne(
   source: SourceFile,
   tool: LoadedTool,
   preset: ResolvedPreset,
   op: AnyOperation,
+  resolveBinding: ResolveFixtureBinding,
 ): Promise<OneRun> {
   const parsed = fixtureSchema.safeParse(source.data);
   if (!parsed.success) return { issues: zodIssues(source.file, parsed.error) };
@@ -38,16 +41,22 @@ async function runOne(
       issue(source.file, `Fixture id "${fixture.id}" must match the file name.`, { path: 'id' }),
     );
   }
-  if (fixture.preset !== tool.manifest.preset) {
+  if (!fixture.preset) {
+    issues.push(issue(source.file, 'Tool fixtures must declare a preset.', { path: 'preset' }));
+    return { issues };
+  }
+  const active = fixture.preset === tool.manifest.preset;
+  const binding = active ? { preset, op } : resolveBinding(fixture.preset);
+  if (!binding) {
     issues.push(
-      issue(source.file, `Tool fixtures use the tool's preset (${tool.manifest.preset}).`, {
+      issue(source.file, `Fixture refers to unknown or unavailable preset "${fixture.preset}".`, {
         path: 'preset',
       }),
     );
     return { issues };
   }
-  const params = { ...preset.params, ...(fixture.params ?? {}) };
-  const result = await executeOperation(op, fixture.input, params, createTestContext());
+  const params = { ...binding.preset.params, ...(fixture.params ?? {}) };
+  const result = await executeOperation(binding.op, fixture.input, params, createTestContext());
   const mismatch = checkFixture(fixture, result);
   if (mismatch) {
     const hint =
@@ -55,11 +64,19 @@ async function runOne(
     issues.push(issue(source.file, `Fixture fails: ${mismatch}`, { hint }));
     return { issues };
   }
-  return { issues, ...(result.ok ? { run: { fixture, params, value: result.value } } : {}) };
+  return {
+    issues,
+    ...(active && result.ok ? { run: { fixture, params, value: result.value } } : {}),
+  };
 }
 
 /** Validates a tool's fixtures and runs each one through its preset and operation. */
-export async function runToolFixtures(tool: LoadedTool, preset: ResolvedPreset, op: AnyOperation) {
+export async function runToolFixtures(
+  tool: LoadedTool,
+  preset: ResolvedPreset,
+  op: AnyOperation,
+  resolveBinding: ResolveFixtureBinding,
+) {
   const issues: Issue[] = [];
   const runs = new Map<string, FixtureRun>();
   const formulaKeys: FormulaUse = new Map();
@@ -69,7 +86,7 @@ export async function runToolFixtures(tool: LoadedTool, preset: ResolvedPreset, 
     );
   }
   for (const source of tool.source.fixtures.filter((f) => f.data !== undefined)) {
-    const one = await runOne(source, tool, preset, op);
+    const one = await runOne(source, tool, preset, op, resolveBinding);
     issues.push(...one.issues);
     if (!one.run) continue;
     runs.set(one.run.fixture.id, one.run);

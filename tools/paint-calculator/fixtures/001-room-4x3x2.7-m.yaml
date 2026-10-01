@@ -1,0 +1,8 @@
+id: 001-room-4x3x2.7-m
+preset: civil/paint-quantity-v2
+source:
+  type: hand-verified
+  citation: "Walls 2 x (4 + 3) x 2.7 = 37.8 m2; door 0.9 x 2.1 + window 1.5 x 1.2 = 3.69 m2; net 34.11 m2; x 2 coats / 10 m2/L = 6.822 L; +10% = 7.5042 L"
+input: { mode: room, unit: m, roomLength: "4", roomWidth: "3", roomHeight: "2.7", includeCeiling: "false", quantity: "1", openings: [{ width: "0.9", height: "2.1", quantity: "1" }, { width: "1.5", height: "1.2", quantity: "1" }], coats: "2", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "10" }
+expected: { grossAreaM2: "37.80", openingAreaM2: "3.69", netAreaM2: "34.11", paintLitres: "6.82", orderLitres: "7.50" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

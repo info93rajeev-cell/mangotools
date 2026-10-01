@@ -1,0 +1,127 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/brickwork-quantity-v2
+version: 0.2.0
+operation: civil.brickwork.quantity@2
+fields:
+  unit:
+    labelKey: brickwork.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 10
+    options: &lengthUnits
+      - { value: mm, labelKey: brickwork.unit.mm }
+      - { value: cm, labelKey: brickwork.unit.cm }
+      - { value: m, labelKey: brickwork.unit.m }
+      - { value: in, labelKey: brickwork.unit.in }
+      - { value: ft, labelKey: brickwork.unit.ft }
+  wallLength: { labelKey: brickwork.field.wallLength, kind: number, required: true, order: 20, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  wallHeight: { labelKey: brickwork.field.wallHeight, kind: number, required: true, order: 30, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  quantity: { labelKey: brickwork.field.quantity, kind: number, required: true, default: 1, order: 40, width: half, helpKey: brickwork.help.quantity, helpMode: disclosure }
+  wythes:
+    labelKey: brickwork.field.wythes
+    kind: enum
+    control: select
+    default: "1"
+    order: 50
+    width: half
+    helpKey: brickwork.help.wythes
+    helpMode: disclosure
+    options:
+      - { value: "1", labelKey: brickwork.wythes.1 }
+      - { value: "2", labelKey: brickwork.wythes.2 }
+      - { value: "3", labelKey: brickwork.wythes.3 }
+      - { value: "4", labelKey: brickwork.wythes.4 }
+  openings: { labelKey: brickwork.field.openings, kind: openings, order: 60, helpKey: brickwork.help.openings, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  brickPreset:
+    labelKey: brickwork.field.brickPreset
+    kind: enum
+    control: select
+    default: in-modular
+    order: 70
+    uiOnly: true
+    helpKey: brickwork.help.brickPreset
+    helpMode: disclosure
+    options:
+      - { value: custom, labelKey: brickwork.brick.custom }
+      - { value: in-modular, labelKey: brickwork.brick.inModular, sets: { brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10" } }
+      - { value: common-230, labelKey: brickwork.brick.common230, sets: { brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10" } }
+      - { value: uk-215, labelKey: brickwork.brick.uk215, sets: { brickUnit: mm, brickLength: "215", brickHeight: "65", mortarJoint: "10" } }
+      - { value: us-modular, labelKey: brickwork.brick.usModular, sets: { brickUnit: in, brickLength: "7.625", brickHeight: "2.25", mortarJoint: "0.375" } }
+  brickUnit: { labelKey: brickwork.field.brickUnit, kind: enum, control: segmented, default: mm, order: 80, options: *lengthUnits }
+  brickLength: { labelKey: brickwork.field.brickLength, kind: number, required: true, default: "190", order: 90, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
+  brickHeight: { labelKey: brickwork.field.brickHeight, kind: number, required: true, default: "90", order: 100, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
+  mortarJoint: { labelKey: brickwork.field.mortarJoint, kind: number, required: true, default: "10", order: 110, width: half, helpKey: brickwork.help.mortarJoint, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
+  wastagePercent: { labelKey: brickwork.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 120, width: half, helpKey: brickwork.help.wastage, helpMode: disclosure }
+outputs:
+  orderBricks: { labelKey: brickwork.out.orderBricks, format: number, order: 10, primary: true }
+  baseBricks: { labelKey: brickwork.out.baseBricks, format: number, order: 20 }
+  wastagePercent: { labelKey: brickwork.out.wastagePercent, format: percent, order: 30 }
+  wastageBricks: { labelKey: brickwork.out.wastageBricks, format: number, order: 40 }
+  netWallAreaM2: { labelKey: brickwork.out.netWallAreaM2, format: number, order: 50, visibleWhen: { unit: [mm, cm, m] } }
+  netWallAreaFt2: { labelKey: brickwork.out.netWallAreaFt2, format: number, order: 50, visibleWhen: { unit: [in, ft] } }
+  grossWallAreaM2: { labelKey: brickwork.out.grossWallAreaM2, format: number, order: 60, visibleWhen: { unit: [mm, cm, m] } }
+  grossWallAreaFt2: { labelKey: brickwork.out.grossWallAreaFt2, format: number, order: 60, visibleWhen: { unit: [in, ft] } }
+  openingAreaM2: { labelKey: brickwork.out.openingAreaM2, format: number, order: 70, visibleWhen: { unit: [mm, cm, m] } }
+  openingAreaFt2: { labelKey: brickwork.out.openingAreaFt2, format: number, order: 70, visibleWhen: { unit: [in, ft] } }
+samples:
+  wall-5x3-m-openings:
+    titleKey: brickwork.sample.standard
+    input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ width: "0.9", height: "2.1", quantity: "1" }, { width: "1.2", height: "1.2", quantity: "2" }], brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10", wastagePercent: "5" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    brickwork.field.unit: Wall unit
+    brickwork.unit.mm: mm
+    brickwork.unit.cm: cm
+    brickwork.unit.m: m
+    brickwork.unit.in: in
+    brickwork.unit.ft: ft
+    brickwork.field.wallLength: Wall length
+    brickwork.field.wallHeight: Wall height
+    brickwork.field.quantity: Number of identical walls
+    brickwork.field.wythes: Wall thickness in brick skins
+    brickwork.wythes.1: 1 skin (half-brick / single-wythe wall)
+    brickwork.wythes.2: 2 skins (one-brick wall)
+    brickwork.wythes.3: 3 skins
+    brickwork.wythes.4: 4 skins
+    brickwork.field.openings: Openings in one wall (doors, windows)
+    brickwork.field.openings.row: Opening {number}
+    brickwork.field.openings.add: Add door or window
+    brickwork.field.brickPreset: Brick size preset
+    brickwork.brick.custom: Custom size
+    brickwork.brick.inModular: India modular — 190 × 90 mm face, 10 mm joint
+    brickwork.brick.common230: Common 230 × 75 mm face, 10 mm joint
+    brickwork.brick.uk215: UK 215 × 65 mm face, 10 mm joint
+    brickwork.brick.usModular: US modular — 7⅝ × 2¼ in face, ⅜ in joint
+    brickwork.field.brickUnit: Brick unit
+    brickwork.field.brickLength: Brick length
+    brickwork.field.brickHeight: Brick height
+    brickwork.field.mortarJoint: Mortar joint
+    brickwork.field.wastagePercent: Wastage allowance %
+    brickwork.help.wallDimension: One wall's outer size, in the wall unit. Changing the unit converts the value.
+    brickwork.help.quantity: A whole number from 1 to 1,000,000. Openings below are deducted from each wall.
+    brickwork.help.wythes: Bricks are counted on the wall face and multiplied by the number of skins. Bond pattern and collar joints are not modelled.
+    brickwork.help.openings: Add each door, window or other opening once with its width, height and how many there are. Leave empty for a solid wall.
+    brickwork.help.brickPreset: Regional examples to start from, not universal standards. Every value stays editable below.
+    brickwork.help.brickDimension: Size of the brick face you see in the wall (length × height), in the brick unit.
+    brickwork.help.mortarJoint: Added to the brick length and height. 10 mm (about ⅜ in) is a common starting value, not a universal size.
+    brickwork.help.wastage: An editable estimating allowance for cutting and breakage (0–50%) — not an engineering standard. Defaults to 0%.
+    brickwork.out.orderBricks: Bricks to order (rounded up)
+    brickwork.out.baseBricks: Calculated bricks before wastage
+    brickwork.out.wastagePercent: Wastage allowance
+    brickwork.out.wastageBricks: Wastage allowance (bricks)
+    brickwork.out.netWallAreaM2: Net wall area (m²)
+    brickwork.out.netWallAreaFt2: Net wall area (ft²)
+    brickwork.out.grossWallAreaM2: Gross wall area (m²)
+    brickwork.out.grossWallAreaFt2: Gross wall area (ft²)
+    brickwork.out.openingAreaM2: Openings deducted (m²)
+    brickwork.out.openingAreaFt2: Openings deducted (ft²)
+    brickwork.sample.standard: 5 × 3 m wall, one door and two windows, India modular brick, 5% wastage
+    work.brickwork2.grossWallArea: "Gross wall area = {length} {unit} × {height} {unit} × {quantity} wall(s) = {result:d2} m²"
+    work.brickwork2.openingArea: "Openings = Σ(width × height × quantity) × {quantity} wall(s) = {result:d2} m²"
+    work.brickwork2.netWallArea: "Net wall area = {gross:d2} m² − {openings:d2} m² = {result:d2} m²"
+    work.brickwork2.brickFace: "Brick face with joint = ({length} + {joint}) {brickUnit} × ({height} + {joint}) {brickUnit} = {result:d6} m²"
+    work.brickwork2.baseBricks: "Calculated bricks = {net:d2} m² × {wythes} skin(s) ÷ {face:d6} m² = {result:d2}"
+    work.brickwork2.orderBricks: "Bricks to order = {base:d2} × (1 + {wastagePercent}%) = {adjusted:d2} → rounded up to {result}"

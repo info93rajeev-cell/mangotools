@@ -1,0 +1,21 @@
+id: 002-imperial-wall
+preset: civil/brickwork-quantity-v2
+source:
+  type: hand-verified
+  citation: "10 x 8 ft = 80 ft2 = 11520 in2; US modular face (7.625 + 0.375) x (2.25 + 0.375) in = 21 in2; 548.571 bricks; 0% wastage; order 549"
+input:
+  unit: ft
+  wallLength: "10"
+  wallHeight: "8"
+  quantity: "1"
+  wythes: "1"
+  brickUnit: in
+  brickLength: "7.625"
+  brickHeight: "2.25"
+  mortarJoint: "0.375"
+  wastagePercent: "0"
+expected:
+  netWallAreaFt2: "80.00"
+  baseBricks: "548.57"
+  orderBricks: "549"
+expectedWarnings: [CIVIL_ASSUMPTION_MORTAR_JOINT, CIVIL_ASSUMPTION_WYTHES, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BRICKWORK_BEFORE_CONSTRUCTION, CIVIL_BRICKWORK_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_MASON, CIVIL_BRICKWORK_SCOPE_LIMIT]

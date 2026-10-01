@@ -4,16 +4,17 @@ id: paint-calculator
 slug: paint-calculator
 status: beta
 tier: T2
-version: 0.1.1
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Room-dimension mode with optional ceiling, door/window rows, coverage in m²/L or ft²/gal, optional containers, converting units." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Paint litres required for a wall, ceiling or general surface, with opening deduction, coats, coverage per litre and wastage %." }
 name: Paint Calculator
 shortName: Paint
-summary: Paint litres required for a wall, ceiling or surface, with opening deduction, coats and wastage %.
+summary: Paint needed for a room or surface, with doors and windows deducted, coats, coverage and wastage.
 archetype: B
-preset: civil/paint-quantity
-sample: wall-5x4-m
+preset: civil/paint-quantity-v2
+sample: room-4x3x2.7-m
 taxonomy:
   category: construction
   tags: [paint, construction]
@@ -30,6 +31,6 @@ graph:
   related: [plaster-calculator, tile-flooring-calculator, brickwork-calculator, concrete-quantity-calculator]
 quality:
   verifiedAgainst:
-    - { citation: "Rectangular area, opening deduction, coats and coverage: (length × width − opening) × coats ÷ coverage per litre, × (1 + wastage %)", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–016, tool fixtures 001–002" }
-  lastVerified: 2026-09-27
+    - { citation: "Room wall area 2 × (L + W) × H; (area − openings) × coats ÷ coverage, × (1 + wastage %); exact m²/L ↔ ft²/US gal", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "civil.paint.quantity@2 engine fixtures 001–010, tool fixtures 001–002" }
+  lastVerified: 2026-10-01
