@@ -118,6 +118,9 @@ const { brand, categories, showSearch = true } = Astro.props;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-popover);
   }
+  .menu:not([open]) > .panel {
+    display: none;
+  }
   .panel a {
     display: block;
     padding: var(--space-2) var(--space-3);
@@ -147,6 +150,11 @@ const { brand, categories, showSearch = true } = Astro.props;
   @media (max-width: 400px) {
     .site-header :global(.bar) {
       gap: var(--space-3);
+    }
+    .panel {
+      right: 0;
+      left: auto;
+      max-width: calc(100vw - (2 * var(--space-4)));
     }
   }
 </style>

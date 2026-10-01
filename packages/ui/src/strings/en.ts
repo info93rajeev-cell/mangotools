@@ -70,6 +70,7 @@ export const EN = {
   'field.custom': 'Custom',
   'field.customValue': 'Custom {label}',
   'field.required': 'Required',
+  'field.help': 'Help',
   'error.title': 'Please check the input',
   'disclaimer.title': 'Disclaimer',
   'disclaimer.professional':
@@ -97,6 +98,7 @@ export const EN = {
   'openings.max': 'You can add at most {max} rows.',
   'notes.assumptions': 'Assumptions used',
   'notes.about': 'About this estimate',
+  'notes.important': 'Important notes',
   'related.title': 'Related tools',
   'example.input': 'Input',
   'example.result': 'Result',

@@ -17,6 +17,26 @@
   color: var(--color-text-muted);
 }
 
+.helpDisclosure {
+  width: fit-content;
+  max-width: 100%;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-text-muted);
+}
+
+.helpDisclosure summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--color-accent-text);
+  font-weight: var(--weight-medium);
+}
+
+.helpDisclosure .help {
+  margin-top: var(--space-2);
+  max-width: 60ch;
+}
+
 .error {
   display: flex;
   gap: var(--space-1);

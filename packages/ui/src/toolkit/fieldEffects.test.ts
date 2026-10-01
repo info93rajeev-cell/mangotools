@@ -53,7 +53,7 @@ const base = {
 describe('applyFieldEdit', () => {
   it('converts dependent values when a unit changes', () => {
     const next = applyFieldEdit(preset, base, 'unit', 'ft');
-    expect(next.length).toBe('16.404199');
+    expect(next.length).toBe('16.404199475066');
     expect(next.joint).toBe('10');
   });
 

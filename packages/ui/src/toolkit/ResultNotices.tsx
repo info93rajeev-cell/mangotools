@@ -27,13 +27,14 @@ export function AssumptionList({
 }) {
   if (notices.length === 0) return null;
   return (
-    <InlineAlert tone="info" title={t('notes.assumptions')}>
-      <ul class={styles.noteList} data-assumptions="">
+    <details class={styles.noticeDisclosure} data-assumptions="">
+      <summary>{t('notes.assumptions')}</summary>
+      <ul class={styles.noteList}>
         {notices.map((n) => (
           <li key={n.code}>{messageFor(preset, n)}</li>
         ))}
       </ul>
-    </InlineAlert>
+    </details>
   );
 }
 
@@ -58,13 +59,13 @@ export function WarningAlerts({
 export function NoteList({ preset, notices }: { preset: ResolvedPreset; notices: OpWarning[] }) {
   if (notices.length === 0) return null;
   return (
-    <section class={styles.notes} aria-label={t('notes.about')} data-notes="">
-      <h3 class={styles.notesTitle}>{t('notes.about')}</h3>
+    <details class={`${styles.notes} ${styles.noticeDisclosure}`} data-notes="">
+      <summary>{t('notes.important')}</summary>
       <ul class={styles.noteList}>
         {notices.map((n) => (
           <li key={n.code}>{messageFor(preset, n)}</li>
         ))}
       </ul>
-    </section>
+    </details>
   );
 }

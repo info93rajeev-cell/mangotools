@@ -1,6 +1,6 @@
 import type { PresetField, ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
-import { Field, helpId } from '../primitives/Field.tsx';
+import { describedBy, Field, FieldHelp } from '../primitives/Field.tsx';
 import formStyles from '../primitives/form.module.css';
 import { Icon } from '../primitives/Icon.tsx';
 import { NumberField } from '../primitives/inputs.tsx';
@@ -47,6 +47,7 @@ export function OpeningRows(props: OpeningRowsProps) {
   const rows = readOpeningRows(value);
   const rowError = openingRowError(errorPath);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
+  const helpMode = field.helpMode ?? 'inline';
   const update = (next: OpeningRowValues[]) => onValue(writeOpeningRows(next));
   const change = (index: number, key: OpeningField, text: string) =>
     update(rows.map((row, i) => (i === index ? { ...row, [key]: text } : row)));
@@ -61,14 +62,10 @@ export function OpeningRows(props: OpeningRowsProps) {
     <fieldset
       class={styles.group}
       data-openings={id}
-      aria-describedby={help ? helpId(id) : undefined}
+      aria-describedby={describedBy(id, help, error && !rowError ? error : null, helpMode)}
     >
       <legend class={styles.legend}>{label(preset, field.labelKey)}</legend>
-      {help ? (
-        <p id={helpId(id)} class={formStyles.help}>
-          {help}
-        </p>
-      ) : null}
+      <FieldHelp id={id} help={help} mode={helpMode} />
       {rows.map((row, index) => (
         <ItemRowShell
           key={index}

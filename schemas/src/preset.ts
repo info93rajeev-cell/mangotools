@@ -38,6 +38,15 @@ export const userOptionSchema = z.strictObject({
 export const unitFamilies = ['length', 'area', 'volume', 'coverage', 'liquid'] as const;
 export type UnitFamily = (typeof unitFamilies)[number];
 
+/** Unit values understood by the shared form converter for each family. */
+export const unitValuesByFamily = {
+  length: ['mm', 'cm', 'm', 'in', 'ft'],
+  area: ['mm', 'cm', 'm', 'in', 'ft', 'm2', 'ft2'],
+  volume: ['l', 'm3', 'ft3', 'yd3'],
+  coverage: ['m2-per-l', 'ft2-per-gal'],
+  liquid: ['l', 'gal'],
+} as const satisfies Record<UnitFamily, readonly string[]>;
+
 export const fieldSchema = z.strictObject({
   labelKey: z.string(),
   /** 'boolean' is a genuine boolean *input* field (rendered as a switch); contrast with
@@ -74,12 +83,16 @@ export const fieldSchema = z.strictObject({
   visible: z.boolean().optional(),
   visibleWhen: conditions.optional(),
   helpKey: z.string().optional(),
+  /** Keep essential entry guidance inline; put explanatory guidance in a native disclosure. */
+  helpMode: z.enum(['inline', 'disclosure']).optional(),
   placeholderKey: z.string().optional(),
   /** The enum field holding this value's unit: changing it converts this value, and its label
    * becomes this field's suffix. */
   convert: z.strictObject({ unitField: z.string(), family: z.enum(unitFamilies) }).optional(),
   /** A form-only helper (such as a preset picker) that is never sent to the engine. */
   uiOnly: z.boolean().optional(),
+  /** Allows related short controls to share a row on wider calculator forms. */
+  width: z.enum(['full', 'half']).optional(),
 });
 
 export const outputSchema = z.strictObject({

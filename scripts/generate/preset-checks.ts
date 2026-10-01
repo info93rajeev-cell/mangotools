@@ -8,6 +8,7 @@ import {
 } from '@mangotools/core';
 import type { Conditions, Preset, ResolvedPreset } from '@mangotools/schemas';
 import { type Issue, issue } from './issues.ts';
+import { checkFieldReferences } from './preset-field-references.ts';
 
 const shapeKeys = (schema: unknown): Set<string> | null => {
   const shape = (schema as { shape?: Record<string, unknown> }).shape;
@@ -229,6 +230,7 @@ export function checkPresetAgainstOperation(
     ...checkAllConditions(file, p, conditionDomain(p, paramKeys ?? new Set())),
     ...checkStrings(file, p),
     ...checkDefaults(file, p),
+    ...checkFieldReferences(file, p),
   ];
 }
 

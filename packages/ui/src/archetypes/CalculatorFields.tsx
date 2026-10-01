@@ -42,6 +42,7 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   const [custom, setCustom] = useState(!isOption && value !== '');
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
+  const helpMode = field.helpMode ?? 'inline';
   const choices = [
     ...options.map((o) => ({
       value: String(o.value),
@@ -51,12 +52,12 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   ];
   return (
     <div class={styles.rateRow}>
-      <Field id={id} label={text} help={help} error={custom ? null : error}>
+      <Field id={id} label={text} help={help} helpMode={helpMode} error={custom ? null : error}>
         <Select
           id={id}
           value={custom ? CUSTOM : value}
           options={choices}
-          aria-describedby={describedBy(id, help, custom ? null : error)}
+          aria-describedby={describedBy(id, help, custom ? null : error, helpMode)}
           onValue={(next) => {
             setCustom(next === CUSTOM);
             if (next !== CUSTOM) onValue(next);
@@ -87,14 +88,15 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
 function EnumField({ id, field, preset, value, error, onValue }: FieldControlProps) {
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const described = describedBy(id, help, error);
+  const helpMode = field.helpMode ?? 'inline';
+  const described = describedBy(id, help, error, helpMode);
   const options = (field.options ?? []).map((o) => ({
     value: String(o.value),
     label: optionLabel(preset, field, o.value, o.labelKey),
   }));
   if (field.control === 'select') {
     return (
-      <Field id={id} label={text} help={help} error={error}>
+      <Field id={id} label={text} help={help} helpMode={helpMode} error={error}>
         <Select
           id={id}
           value={value}
@@ -155,10 +157,11 @@ export function FieldControl(props: FieldControlProps) {
   if (field.kind === 'boolean') return <BooleanField {...props} />;
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const described = describedBy(id, help, error);
+  const helpMode = field.helpMode ?? 'inline';
+  const described = describedBy(id, help, error, helpMode);
   const placeholder = field.placeholderKey ? label(preset, field.placeholderKey) : undefined;
   return (
-    <Field id={id} label={text} help={help} error={error}>
+    <Field id={id} label={text} help={help} helpMode={helpMode} error={error}>
       {field.kind === 'text' ? (
         <TextInput
           id={id}
@@ -222,18 +225,19 @@ export function CalculatorFields({
   return (
     <div class={styles.fields}>
       {fields.map(([key, field]) => (
-        <FieldControl
-          key={key}
-          id={`${idPrefix}-${key}`}
-          name={key}
-          field={field}
-          preset={preset}
-          value={String(values[key] ?? '')}
-          error={errorFor(key)}
-          errorPath={errorPath}
-          unitLabel={unitLabelFor(preset, field, values)}
-          onValue={(next) => onValue(key, next)}
-        />
+        <div key={key} class={styles.fieldSlot} data-width={field.width ?? 'full'}>
+          <FieldControl
+            id={`${idPrefix}-${key}`}
+            name={key}
+            field={field}
+            preset={preset}
+            value={String(values[key] ?? '')}
+            error={errorFor(key)}
+            errorPath={errorPath}
+            unitLabel={unitLabelFor(preset, field, values)}
+            onValue={(next) => onValue(key, next)}
+          />
+        </div>
       ))}
     </div>
   );

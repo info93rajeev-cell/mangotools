@@ -39,7 +39,7 @@ describe('registry pipeline — valid repository', () => {
 
   it('loads every source file', () => expect(loadIssues).toEqual([]));
   it('reports no issues', () => expect(result.issues).toEqual([]));
-  it('builds thirty-one tools, thirty-one presets and the seven visible categories', () => {
+  it('builds every tool and preset plus the seven visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
       'base64-encode-decode',
@@ -74,7 +74,7 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(31);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(real.presets.length);
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
@@ -205,6 +205,39 @@ describe('registry pipeline — invalid inputs fail with file and path', () => {
     expect(
       hasIssue(issues, 'presets/estimate/gst.india.yaml', 'unknown field or option "region"'),
     ).toBe(true);
+  });
+
+  it('preset: conversion unit field must exist', async () => {
+    const issues = await issuesFor((s) => {
+      presetOf(s, 'logistics/cbm').fields.length.convert = {
+        unitField: 'missingUnit',
+        family: 'length',
+      };
+    });
+    expect(hasIssue(issues, 'presets/logistics/cbm.yaml', 'unknown field "missingUnit"')).toBe(
+      true,
+    );
+  });
+
+  it('preset: conversion unit options must match the family', async () => {
+    const issues = await issuesFor((s) => {
+      presetOf(s, 'logistics/cbm').fields.length.convert = {
+        unitField: 'unit',
+        family: 'liquid',
+      };
+    });
+    expect(
+      hasIssue(issues, 'presets/logistics/cbm.yaml', 'not supported by the liquid converter'),
+    ).toBe(true);
+  });
+
+  it('preset: option fills must target a field', async () => {
+    const issues = await issuesFor((s) => {
+      presetOf(s, 'estimate/gst.india').fields.mode.options[0].sets = { ghostField: 'x' };
+    });
+    expect(hasIssue(issues, 'presets/estimate/gst.india.yaml', 'unknown field "ghostField"')).toBe(
+      true,
+    );
   });
   it('fixture: invalid id and failing expectation', async () => {
     const issues = await issuesFor((s) => {
