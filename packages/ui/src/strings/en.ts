@@ -71,10 +71,13 @@ export const EN = {
   'field.customValue': 'Custom {label}',
   'field.required': 'Required',
   'field.help': 'Help',
+  'field.helpFor': 'Help for {label}',
+  'field.helpContext': 'For {label}',
   'error.title': 'Please check the input',
   'disclaimer.title': 'Disclaimer',
   'disclaimer.professional':
     'Results are provided for guidance. Check them against the applicable rules and your professional judgement before relying on them.',
+  'secondary.title': 'Tool information',
   'fileTool.chooseFiles': 'Choose files',
   'fileTool.moveUp': 'Move {name} up',
   'fileTool.moveDown': 'Move {name} down',

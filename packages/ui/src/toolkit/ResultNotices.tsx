@@ -27,14 +27,14 @@ export function AssumptionList({
 }) {
   if (notices.length === 0) return null;
   return (
-    <details class={styles.noticeDisclosure} data-assumptions="">
-      <summary>{t('notes.assumptions')}</summary>
+    <section class={styles.activeAssumptions} data-assumptions="">
+      <h3 class={styles.notesTitle}>{t('notes.assumptions')}</h3>
       <ul class={styles.noteList}>
         {notices.map((n) => (
           <li key={n.code}>{messageFor(preset, n)}</li>
         ))}
       </ul>
-    </details>
+    </section>
   );
 }
 

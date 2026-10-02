@@ -42,7 +42,7 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
   const [custom, setCustom] = useState(!isOption && value !== '');
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const helpMode = field.helpMode ?? 'inline';
+  const helpMode = 'disclosure' as const;
   const choices = [
     ...options.map((o) => ({
       value: String(o.value),
@@ -88,7 +88,7 @@ function ChoiceOrNumber({ id, field, preset, value, error, onValue }: FieldContr
 function EnumField({ id, field, preset, value, error, onValue }: FieldControlProps) {
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const helpMode = field.helpMode ?? 'inline';
+  const helpMode = 'disclosure' as const;
   const described = describedBy(id, help, error, helpMode);
   const options = (field.options ?? []).map((o) => ({
     value: String(o.value),
@@ -157,7 +157,7 @@ export function FieldControl(props: FieldControlProps) {
   if (field.kind === 'boolean') return <BooleanField {...props} />;
   const text = label(preset, field.labelKey);
   const help = field.helpKey ? label(preset, field.helpKey) : undefined;
-  const helpMode = field.helpMode ?? 'inline';
+  const helpMode = 'disclosure' as const;
   const described = describedBy(id, help, error, helpMode);
   const placeholder = field.placeholderKey ? label(preset, field.placeholderKey) : undefined;
   return (

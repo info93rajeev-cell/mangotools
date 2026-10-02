@@ -58,7 +58,7 @@ const ogImage = absolute(ogImageUrl);
   <body>
     <SkipLink />
     <SiteHeader brand={brand.name} categories={navCategories} showSearch={showHeaderSearch} />
-    <main id="main" tabindex="-1">
+    <main id="main" tabindex="-1" data-template={template}>
       <slot />
     </main>
     <SiteFooter brand={brand.name} tagline={brand.tagline} categories={navCategories} pages={pageLinks} />
@@ -74,9 +74,15 @@ const ogImage = absolute(ogImageUrl);
     outline: none;
     padding-top: var(--space-6);
   }
+  main[data-template='tool'] {
+    padding-top: var(--space-4);
+  }
   @media (min-width: 768px) {
     main {
       padding-top: var(--space-8);
+    }
+    main[data-template='tool'] {
+      padding-top: var(--space-4);
     }
   }
 </style>

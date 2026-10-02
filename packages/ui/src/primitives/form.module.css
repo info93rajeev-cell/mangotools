@@ -2,6 +2,14 @@
   display: grid;
   gap: var(--space-2);
   min-width: 0;
+  position: relative;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
 }
 
 .label {
@@ -18,23 +26,49 @@
 }
 
 .helpDisclosure {
-  width: fit-content;
-  max-width: 100%;
+  width: var(--space-6);
+  flex: none;
   font-size: var(--text-caption);
   line-height: var(--leading-caption);
   color: var(--color-text-muted);
 }
 
 .helpDisclosure summary {
-  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   color: var(--color-accent-text);
-  font-weight: var(--weight-medium);
+  list-style: none;
+}
+
+.helpDisclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.helpDisclosure summary:hover {
+  background: var(--color-surface-subtle);
+}
+
+.helpDisclosure summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
 }
 
 .helpDisclosure .help {
-  margin-top: var(--space-2);
-  max-width: 60ch;
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: var(--z-popover);
+  width: min(24rem, 100%);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-popover);
 }
 
 .error {
@@ -96,6 +130,7 @@
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-md);
   background: var(--color-bg);
+  overflow: hidden;
 }
 
 .affixed:focus-within {

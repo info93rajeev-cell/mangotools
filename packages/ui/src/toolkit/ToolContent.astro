@@ -86,25 +86,23 @@ const references = content.sections.find((s) => s.id === 'references');
 
 <style>
   .tool-content {
-    display: grid;
-    gap: var(--space-12);
-    max-width: 880px;
+    display: contents;
   }
   .content-disclosure {
-    display: grid;
+    flex: 0 0 auto;
     min-width: 0;
     scroll-margin-top: 80px;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .content-disclosure:first-child {
-    border-top: 1px solid var(--color-border);
+    border: 0;
   }
   .content-disclosure summary {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4);
-    padding: var(--space-4) 0;
+    gap: var(--space-2);
+    min-height: var(--control-height-sm);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
     cursor: pointer;
     list-style: none;
   }
@@ -115,21 +113,33 @@ const references = content.sections.find((s) => s.id === 'references');
     content: '+';
     flex: none;
     color: var(--color-text-subtle);
-    font-size: 1.25rem;
+    font-size: var(--text-body);
     line-height: 1;
   }
   .content-disclosure[open] summary::after {
     content: '−';
   }
+  .content-disclosure[open] {
+    display: grid;
+    flex-basis: 100%;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-subtle);
+  }
+  .content-disclosure[open] summary {
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+    border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  }
   .content-disclosure h2 {
-    font-size: var(--text-body);
-    line-height: var(--leading-body);
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
     font-weight: var(--weight-semibold);
   }
   .content-body {
     display: grid;
     gap: var(--space-4);
-    padding-bottom: var(--space-5);
   }
   .prose {
     display: grid;

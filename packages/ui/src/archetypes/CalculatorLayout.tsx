@@ -1,5 +1,6 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { applyFieldEdit } from '../toolkit/fieldEffects.ts';
@@ -27,6 +28,35 @@ export interface CalculatorLayoutProps {
   preset: ResolvedPreset;
   snapshot: ToolSnapshot;
   store: ToolStore;
+  actions: CalculatorWorkspaceActions;
+}
+
+export interface CalculatorWorkspaceActions {
+  hasResult: boolean;
+  onTrySample?: (() => void) | undefined;
+  onCopy: () => void;
+  onPrint?: (() => void) | undefined;
+  onTransfer?: (() => void) | undefined;
+  transferLabel?: string | undefined;
+  onReset: () => void;
+}
+
+function InputPanelHead({ actions }: { actions: CalculatorWorkspaceActions }) {
+  return (
+    <div class={`${styles.panelHead} no-print`}>
+      <h2 class={styles.panelTitle}>{t('input.label')}</h2>
+      <div class={styles.panelTools}>
+        {actions.onTrySample ? (
+          <Button size="sm" variant="primary" icon="sparkles" onClick={actions.onTrySample}>
+            {t('action.trySample')}
+          </Button>
+        ) : null}
+        <Button size="sm" variant="ghost" icon="rotate-ccw" onClick={actions.onReset}>
+          {t('action.reset')}
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 function ResultRows({ rows }: { rows: OutputRow[] }) {
@@ -58,9 +88,40 @@ interface ResultSectionProps {
   snapshot: ToolSnapshot;
   /** Set when the error is already shown next to its field. */
   fieldError: string | null;
+  actions: CalculatorWorkspaceActions;
 }
 
-function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSectionProps) {
+function ResultPanelHead({ idPrefix, actions }: Pick<ResultSectionProps, 'idPrefix' | 'actions'>) {
+  return (
+    <div class={`${styles.panelHead} no-print`}>
+      <h2 id={`${idPrefix}-result-title`} class={styles.panelTitle}>
+        {t('result.title')}
+      </h2>
+      <div class={styles.panelTools}>
+        <Button size="sm" icon="copy" onClick={actions.onCopy} disabled={!actions.hasResult}>
+          {t('action.copyResult')}
+        </Button>
+        {actions.onPrint ? (
+          <Button size="sm" icon="printer" onClick={actions.onPrint} disabled={!actions.hasResult}>
+            {t('action.print')}
+          </Button>
+        ) : null}
+        {actions.onTransfer && actions.transferLabel ? (
+          <Button
+            size="sm"
+            icon="arrow-right"
+            onClick={actions.onTransfer}
+            disabled={!actions.hasResult}
+          >
+            {actions.transferLabel}
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: ResultSectionProps) {
   const { values, phase, error, result, missing } = snapshot;
   const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
   const steps = (result?.value.working as WorkingStep[] | undefined) ?? [];
@@ -77,10 +138,9 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
     <section
       class={`${styles.panel} ${styles.result}`}
       aria-labelledby={`${idPrefix}-result-title`}
+      data-result-panel=""
     >
-      <h2 id={`${idPrefix}-result-title`} class={styles.panelTitle}>
-        {t('result.title')}
-      </h2>
+      <ResultPanelHead idPrefix={idPrefix} actions={actions} />
       {rows.length > 0 ? <ResultRows rows={rows} /> : null}
       {rows.length === 0 && phase !== 'error' ? (
         <p class={styles.placeholder}>{placeholder}</p>
@@ -99,7 +159,13 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError }: ResultSection
 }
 
 /** Archetype B: fields on the left, the result with its working on the right. */
-export function CalculatorLayout({ idPrefix, preset, snapshot, store }: CalculatorLayoutProps) {
+export function CalculatorLayout({
+  idPrefix,
+  preset,
+  snapshot,
+  store,
+  actions,
+}: CalculatorLayoutProps) {
   const { values, error } = snapshot;
   const fields = visibleEntries(preset.fields, values);
   // A list field's own error path points inside it (e.g. "openings[0].width").
@@ -110,8 +176,9 @@ export function CalculatorLayout({ idPrefix, preset, snapshot, store }: Calculat
   const errorFor = (key: string) =>
     error && key === fieldError ? messageFor(preset, error) : null;
   return (
-    <div class={styles.calculator}>
-      <section class={styles.panel} aria-label={t('input.label')}>
+    <div class={styles.calculator} data-density={preset.ui.density ?? 'comfortable'}>
+      <section class={styles.panel} aria-label={t('input.label')} data-input-panel="">
+        <InputPanelHead actions={actions} />
         <OptionControls
           idPrefix={idPrefix}
           preset={preset}
@@ -135,6 +202,7 @@ export function CalculatorLayout({ idPrefix, preset, snapshot, store }: Calculat
         preset={preset}
         snapshot={snapshot}
         fieldError={fieldError}
+        actions={actions}
       />
     </div>
   );

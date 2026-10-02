@@ -14,14 +14,61 @@ test.describe('application-first tool pages', () => {
   test('How to use opens its disclosure and remains keyboard operable', async ({ page }) => {
     await gotoReady(page, '/gst-calculator');
     const section = page.locator('#how-to-use');
-    await page.getByRole('link', { name: 'How to use' }).click();
-    await expect(section).toHaveAttribute('open');
     const summary = section.locator('summary');
+    await expect(summary).toBeVisible();
     await summary.focus();
     await page.keyboard.press('Enter');
-    await expect(section).not.toHaveAttribute('open');
-    await page.keyboard.press('Enter');
     await expect(section).toHaveAttribute('open');
+    await page.keyboard.press('Enter');
+    await expect(section).not.toHaveAttribute('open');
+  });
+
+  test('desktop calculator keeps its workspace and compact information controls in view', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await gotoReady(page, '/gst-calculator');
+    const input = page.locator('[data-input-panel]');
+    const result = page.locator('[data-result-panel]');
+    const supporting = page.locator('[data-secondary-information]');
+    const [inputBox, resultBox, supportingBox] = await Promise.all([
+      input.boundingBox(),
+      result.boundingBox(),
+      supporting.boundingBox(),
+    ]);
+    if (!inputBox || !resultBox || !supportingBox) throw new Error('Workspace panels are missing.');
+    expect(inputBox.width / resultBox.width).toBeGreaterThan(1.4);
+    expect(inputBox.width / resultBox.width).toBeLessThan(1.6);
+    expect(Math.max(inputBox.y, resultBox.y, supportingBox.y)).toBeLessThan(768);
+    expect(supportingBox.y + supportingBox.height).toBeLessThanOrEqual(768);
+    await expect(input.getByRole('button', { name: 'Try sample' })).toBeVisible();
+    await expect(input.getByRole('button', { name: 'Reset' })).toBeVisible();
+    await expect(result.getByRole('button', { name: 'Copy result' })).toBeVisible();
+  });
+
+  test('field help is contextual and keyboard accessible', async ({ page }) => {
+    await gotoReady(page, '/volumetric-weight-calculator');
+    const fieldLabel = page.locator('label[for="tool-volumetric-weight-calculator-length"]');
+    const help = fieldLabel.locator('..').getByLabel('Help');
+    const disclosure = help.locator('..');
+    await expect(help).toBeVisible();
+    await expect(help).toHaveAttribute('title', 'Help for Length');
+    await expect(disclosure.locator('p')).toBeHidden();
+    await help.focus();
+    await page.keyboard.press('Enter');
+    await expect(disclosure).toHaveAttribute('open');
+    await expect(disclosure.locator('p')).toBeVisible();
+  });
+
+  test('professional disclaimer is compact until deliberately opened', async ({ page }) => {
+    await gotoReady(page, '/gst-calculator');
+    const disclaimer = page.locator('details[data-disclaimer]');
+    const summary = disclaimer.locator('summary');
+    await expect(disclaimer).not.toHaveAttribute('open');
+    await expect(disclaimer.locator('p')).toBeHidden();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect(disclaimer.locator('p')).toBeVisible();
   });
 
   test('Related tools links are server-rendered, collapsed and keyboard accessible', async ({
