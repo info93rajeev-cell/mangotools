@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { island, openTool, primaryResult } from '../support/tool-page.ts';
+import { island, openTool, primaryResult, produceResult } from '../support/tool-page.ts';
 
 /** Clicks one option of a segmented unit/mode control. */
 const choose = (page: Page, tool: string, field: string, value: string) =>
@@ -32,10 +32,8 @@ test.describe('Brickwork Calculator', () => {
     await expect(output(page, 'wastagePercent')).toHaveText('5%');
     await expect(page.getByLabel('Wastage allowance %')).toBeVisible();
     await expect(page.getByLabel('Mortar joint')).toHaveValue('10');
-    const assumptions = page.locator('details[data-assumptions]');
-    await expect(assumptions).not.toHaveAttribute('open');
-    await expect(assumptions.locator('summary')).toBeVisible();
-    await expect(assumptions.locator('ul')).toBeHidden();
+    const assumptions = page.locator('section[data-assumptions]');
+    await expect(assumptions).toBeVisible();
     await expect(assumptions).toContainText('5% wastage allowance');
     await expect(assumptions).toContainText('10 mm mortar joint');
   });
@@ -218,7 +216,7 @@ test.describe('Civil calculators on a 360 px phone', () => {
     test(`${tool} has no horizontal overflow and whole purchase counts`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await openTool(page, tool);
-      await island(page, tool).locator('[data-try-sample]').click();
+      await produceResult(page, tool);
       await expect(primaryResult(page)).not.toHaveText('');
       await expect(page.locator('details[data-working]')).not.toHaveAttribute('open');
       const content = page.locator('details[data-tool-content-section]');
