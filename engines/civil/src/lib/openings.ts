@@ -10,7 +10,11 @@ import { MAX_COUNT, MEASURE_DECIMALS } from './units-v2.ts';
  * field can only hold a string, so the list arrives either as an array or as its JSON text.
  */
 const decimal = z.union([z.string(), z.number()]);
+export const openingTypes = ['door', 'window', 'other'] as const;
+export type OpeningType = (typeof openingTypes)[number];
+const openingType = z.enum(openingTypes);
 const openingRow = z.strictObject({
+  type: openingType.optional(),
   width: decimal.optional(),
   height: decimal.optional(),
   quantity: decimal.optional(),
@@ -21,6 +25,7 @@ export type OpeningsInput = z.infer<typeof openingsInput>;
 export const MAX_OPENING_ROWS = 20;
 
 export interface OpeningRow {
+  type?: OpeningType;
   width: string;
   height: string;
   quantity: string;
@@ -44,7 +49,7 @@ function rowsOf(raw: OpeningsInput): Result<unknown[]> {
 function readRow(row: unknown, index: number): Result<OpeningRow | null> {
   const parsed = openingRow.safeParse(row);
   if (!parsed.success) return err('CIVIL_OPENINGS_INVALID', { path: 'openings' });
-  const { width, height, quantity } = parsed.data;
+  const { type, width, height, quantity } = parsed.data;
   if (blank(width) && blank(height) && blank(quantity)) return ok(null);
   const at = (field: string) => `openings[${index}].${field}`;
   const w = readPositive(width, at('width'), MEASURE_DECIMALS);
@@ -53,7 +58,12 @@ function readRow(row: unknown, index: number): Result<OpeningRow | null> {
   if (!h.ok) return h;
   const q = blank(quantity) ? ok('1') : readCount(quantity, at('quantity'), MAX_COUNT);
   if (!q.ok) return q;
-  return ok({ width: w.value, height: h.value, quantity: q.value });
+  return ok({
+    ...(type ? { type } : {}),
+    width: w.value,
+    height: h.value,
+    quantity: q.value,
+  });
 }
 
 /** Reads every opening row; fully blank rows are ignored, partly filled rows are validated. */

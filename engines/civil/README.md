@@ -23,8 +23,9 @@ from its first version.
 
 The `@1` operations stay registered unchanged (their golden fixtures remain truth); every tool preset now
 runs the `@2` operation. Shared `@2` building blocks live in `src/lib/`: `openings.ts` (repeatable
-width × height × quantity rows), `present.ts` (per-result-type display precision and whole-unit
-`ceilWhole`), `quantities.ts` (exact unit conversions and single-division allowance ratios),
+width × height × quantity rows with an optional semantic door/window/other type), `present.ts`
+(per-result-type display precision and whole-unit `ceilWhole`), `quantities.ts` (exact unit
+conversions and single-division allowance ratios),
 `notices.ts` (notice severities) and `units-v2.ts` (exact constants).
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
@@ -49,6 +50,9 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.8.0 — Civil `@2` opening rows accept and preserve an optional semantic `type` of `door`,
+  `window` or `other`. Untyped historical rows remain valid and generic. The metadata does not alter
+  the existing width × height × quantity deduction, and no `@1` contract changes.
 - 0.7.0 — `@2` of all six operations (civil reconciliation pass). Purchase quantities (bricks, tiles,
   bags, boxes, containers, truck loads) are whole numbers rounded up from one exact division, so an
   exactly whole quantity is never pushed up by intermediate rounding. Results use result-type precision

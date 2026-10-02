@@ -84,6 +84,21 @@ describe('civil.brickwork.quantity@2', () => {
     expect(v.netWallAreaM2).toBe('39.00');
   });
 
+  it('accepts typed openings without changing the numerical result', async () => {
+    const opening = { width: '1', height: '2', quantity: '1' };
+    const untyped = await value({ ...wall, openings: [opening] });
+    const typed = await value({ ...wall, openings: [{ type: 'window', ...opening }] });
+    expect(typed).toEqual(untyped);
+  });
+
+  it('rejects an unsupported opening type at the strict operation boundary', async () => {
+    const result = await run({
+      ...wall,
+      openings: [{ type: 'vent', width: '1', height: '2', quantity: '1' }],
+    });
+    expect(result).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+  });
+
   it('accepts very large but valid walls', async () => {
     const v = await value({ ...wall, wallLength: '99', wallHeight: '99', quantity: '1000000' });
     expect(v.orderBricks).toMatch(/^\d+$/);
