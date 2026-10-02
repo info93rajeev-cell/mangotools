@@ -69,6 +69,43 @@ describe('openings', () => {
     expect(readOpenings('').ok).toBe(true);
   });
 
+  it('preserves each supported semantic opening type', () => {
+    for (const type of ['door', 'window', 'other'] as const) {
+      const rows = readOpenings([{ type, width: '1', height: '2', quantity: '1' }]);
+      expect(rows).toMatchObject({ ok: true, value: [{ type }] });
+    }
+    const json = readOpenings('[{"type":"door","width":"1","height":"2"}]');
+    expect(json).toMatchObject({ ok: true, value: [{ type: 'door', quantity: '1' }] });
+  });
+
+  it('keeps untyped openings generic and rejects unsupported types', () => {
+    const generic = readOpenings([{ width: '1', height: '2', quantity: '1' }]);
+    expect(generic).toMatchObject({ ok: true, value: [{ width: '1', height: '2' }] });
+    if (generic.ok) expect(generic.value[0]).not.toHaveProperty('type');
+
+    const unsupported = readOpenings([{ type: 'vent', width: '1', height: '2', quantity: '1' }]);
+    expect(unsupported).toMatchObject({
+      ok: false,
+      error: { code: 'CIVIL_OPENINGS_INVALID', path: 'openings' },
+    });
+  });
+
+  it('deducts typed and untyped openings with identical dimensions identically', () => {
+    const untyped = readOpenings([{ width: '0.9', height: '2.1', quantity: '2' }]);
+    const typed = readOpenings([{ type: 'door', width: '0.9', height: '2.1', quantity: '2' }]);
+    expect(untyped.ok && openingsArea(untyped.value)).toBe('3.78');
+    expect(typed.ok && openingsArea(typed.value)).toBe('3.78');
+  });
+
+  it('calculates multiple typed openings with the existing area formula', () => {
+    const rows = readOpenings([
+      { type: 'door', width: '0.9', height: '2.1', quantity: '1' },
+      { type: 'window', width: '1.2', height: '1.2', quantity: '2' },
+      { type: 'other', width: '0.5', height: '0.4', quantity: '3' },
+    ]);
+    expect(rows.ok && openingsArea(rows.value)).toBe('5.37');
+  });
+
   it('rejects unreadable, partial and excessive rows', () => {
     const bad = readOpenings('not json');
     expect(!bad.ok && bad.error.code).toBe('CIVIL_OPENINGS_INVALID');
