@@ -1,6 +1,8 @@
 .field {
   display: grid;
+  grid-template-columns: var(--field-columns, minmax(0, 1fr));
   gap: var(--field-gap, var(--space-2));
+  align-items: var(--field-align, stretch);
   min-width: 0;
   position: relative;
 }
@@ -78,6 +80,7 @@
   font-size: var(--text-caption);
   line-height: var(--leading-caption);
   color: var(--color-danger);
+  grid-column: var(--field-error-column, auto);
 }
 
 .control {
@@ -143,6 +146,16 @@
   border-color: var(--color-danger);
 }
 
+.field > .label,
+.field > .labelRow {
+  grid-column: var(--field-label-column, auto);
+}
+
+.field > .control,
+.field > .affixed {
+  grid-column: var(--field-control-column, auto);
+}
+
 .affixed .control {
   border: 0;
   min-width: 0;
@@ -189,7 +202,9 @@
 
 .fieldset {
   display: grid;
+  grid-template-columns: var(--field-columns, minmax(0, 1fr));
   gap: var(--space-2);
+  align-items: var(--field-align, stretch);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -197,8 +212,13 @@
 }
 
 .fieldset > legend {
+  grid-column: var(--field-label-column, auto);
   padding: 0;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--field-legend-margin, var(--space-2));
+}
+
+.fieldset > .segmented {
+  grid-column: var(--field-control-column, auto);
 }
 
 .segmentItem {

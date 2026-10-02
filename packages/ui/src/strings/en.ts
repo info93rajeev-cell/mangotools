@@ -92,6 +92,7 @@ export const EN = {
   'invoiceItems.maxReached': 'This invoice supports at most {max} items.',
   'packingItems.maxReached': 'This packing list supports at most {max} items.',
   'openings.row': 'Opening {number}',
+  'openings.item': 'Opening',
   'openings.add': 'Add opening',
   'openings.remove': 'Remove {label}',
   'openings.removeShort': 'Remove',

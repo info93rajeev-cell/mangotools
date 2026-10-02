@@ -115,6 +115,15 @@ export function OpeningRows(props: OpeningRowsProps) {
         <span>{groupLabel}</span>
         <FieldHelp id={id} help={help} mode="disclosure" label={groupLabel} />
       </legend>
+      {rows.length > 0 ? (
+        <div class={styles.columnHeaders} aria-hidden="true">
+          <span>{t('openings.item')}</span>
+          {(['width', 'height', 'quantity'] as const).map((key) => (
+            <span key={key}>{cellLabel(key)}</span>
+          ))}
+          <span />
+        </div>
+      ) : null}
       <div class={styles.rows}>
         {rows.map((row, index) => (
           <OpeningRowEditor
