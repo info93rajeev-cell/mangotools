@@ -132,7 +132,7 @@ export function OpeningRows(props: OpeningRowsProps) {
         ))}
       </div>
       {error && !rowError ? (
-        <p class={formStyles.error} id={`${id}-error`}>
+        <p class={`${formStyles.error} ${styles.groupError}`} id={`${id}-error`}>
           <Icon name="circle-alert" />
           <span>{error}</span>
         </p>
