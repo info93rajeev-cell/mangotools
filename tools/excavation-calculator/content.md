@@ -1,6 +1,6 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-pit
+lastReviewed: 2026-10-01
+example: 001-trench-swell-trucks
 ---
 
 ## How to use
@@ -9,74 +9,71 @@ This excavation calculator works out earthwork volume for a rectangular pit, a t
 the three excavation shapes most site engineers, contractors, and quantity surveyors need for everyday
 earthwork quantity checks.
 
-1. Choose the excavation type: rectangular pit / general excavation, trench, or footing pit.
-2. Choose the unit your dimensions are measured in: millimetres, centimetres, metres, inches, or feet.
-3. Enter the length, width, and depth of one pit or trench.
-4. Enter the number of pits or trenches (a whole number from 1 to 1,000,000) and a bulking/swell
-   percentage (0 to 50, defaults to 0).
-5. Read the loose excavated volume including bulking, the neat volume before bulking, and the same
-   volume in cubic feet, with the working. Copy or print the result.
+1. Choose the excavation type and the unit your dimensions are in. Changing the unit converts the values
+   you already typed.
+2. Enter the length, width, and depth of one pit or trench, and how many identical ones there are.
+3. Optionally enter a swell percentage to see the loose volume of the dug soil (0% shows bank volume
+   only).
+4. Optionally enter the usable volume one truck carries on your job to see truck loads.
+5. Read the bank (in-place) volume, the loose volume and truck loads when used, the assumptions and the
+   working. Copy or print the result.
 
 ## Method
 
-A rectangular pit, a trench, and a footing pit are all excavated as a rectangular prism, so this
-excavation quantity calculator uses one formula for all three:
+- Bank volume = length × width × depth × number of pits or trenches — the geometric volume of the hole,
+  shown on its own.
+- Loose volume = bank volume × (1 + swell % ÷ 100), only when you set a swell percentage.
+- Truck loads = loose volume (or bank volume when swell is 0%) ÷ your usable truck volume, **rounded up
+  to whole loads**.
 
-- One excavation's volume = length × width × depth, converted to cubic metres.
-- Neat volume before bulking = one excavation's volume × number of pits or trenches.
-- Bulking/swell volume = neat volume × bulking %.
-- Loose excavated volume including bulking = neat volume + bulking volume.
-- Excavation volume in cubic feet (ft³) = loose volume × 35.3146667.
+Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m, so
+1 ft³ = 0.028316846592 m³ and 1 yd³ = 0.764554857984 m³ exactly. Volumes are kept at full precision and
+rounded only for display — m³ to 3 decimal places, ft³ and yd³ to 2.
 
-Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m. The
-rule is **exact first, round once** — every volume is calculated exactly and rounded only for display, the
-same rule the Concrete Quantity Calculator uses.
+**Bank volume vs. loose volume.** Bank volume is the size of the hole itself. Once dug, soil no longer
+packs as tightly, so the same soil occupies more space; that is the loose volume you haul. Swell varies
+by soil type and moisture content, so it is an approximate estimate you set — not an engineering constant
+— and it is listed with the result whenever it is used.
 
-**Neat volume vs. loose excavated volume.** "Neat" is the volume of the hole itself, as if the soil were
-removed with no change in volume. "Loose" is the neat volume plus bulking/swell: once soil is dug, it no
-longer packs as tightly, so the same soil occupies more space once excavated. Bulking/swell varies by
-soil type and moisture content — loose sand typically bulks less than dense clay — so this calculator
-treats it as a single adjustable percentage you set, not a soil-specific lookup table.
+**Truck capacity is yours to enter.** Trucks carry very different usable volumes, so the calculator
+never assumes one.
 
-This calculator gives excavation/earthwork **volume only**. It does not calculate side-slope or battered
-excavation, stepped excavation, dewatering, shoring, disposal cost, truck trips, or backfill and backfill
-compaction — each depends on site-specific factors this simple rectangular-volume tool does not model.
+This calculator gives **geometric volume only**, for vertical-sided rectangular excavations. It does not
+cover side slopes or battered excavation, slope stability, shoring design, excavation safety compliance,
+dewatering, geotechnical design, disposal cost, or backfill compaction.
 
 ## Worked example
 
-A 5 × 4 × 1.5 m rectangular pit, 1 pit, 0% bulking:
+A 20 × 0.6 × 1 m trench with a 25% swell estimate and trucks carrying 6 m³ per load:
 
 ## FAQ
 
 ### How do I calculate trench excavation volume?
 
-Choose "Trench" as the excavation type, enter the trench's length, width, and depth in one unit, and the
-number of trench runs. The trench excavation calculator uses the same length × width × depth formula as
-a pit — a trench is simply a long, narrow rectangular excavation.
+Choose "Trench", enter the trench's length, width, and depth in one unit, and the number of identical
+trench runs. A trench uses the same length × width × depth formula as a pit.
 
 ### How do I calculate footing excavation quantity?
 
-Choose "Footing pit" as the excavation type and enter the footing pit's length, width, and depth. Footing
-excavation quantity uses the same rectangular-volume formula; the excavation type only changes the label,
-not the arithmetic.
+Choose "Footing pit" and enter the pit's length, width, and depth. The excavation type changes only the
+label, not the arithmetic.
 
-### How do I calculate pit excavation volume?
+### What is the difference between bank and loose volume?
 
-Choose "Rectangular pit / general excavation," enter the pit's length, width, and depth, and the number of
-pits. This also covers a general soil excavation volume calculation for any simple rectangular cut.
+Bank volume is the excavation as measured in the ground. Loose volume adds swell, since dug soil takes up
+more space. Use bank volume to describe the excavation and loose volume when estimating material to move
+or haul.
 
-### What is the difference between neat excavation and loose excavation?
+### What swell percentage should I use?
 
-Neat excavation volume is the size of the hole itself. Loose excavated volume adds bulking/swell, since
-dug soil takes up more space than it did in the ground. Use the loose volume when estimating how much
-excavated material there will be to move or haul; use the neat volume when describing the excavation
-itself.
+It depends on the soil and its moisture, and published figures vary. Use a figure from your site
+investigation, contractor or supplier, and treat the result as an estimate. Leave it at 0% to see bank
+volume only.
 
-### What is soil bulking or swell?
+### How many truck loads will I need?
 
-Bulking (also called swell) is the percentage increase in volume when soil is excavated and loosened,
-compared to its volume in the ground. It varies by soil type and moisture content, so this calculator lets
-you set your own bulking percentage rather than assuming one figure for every soil.
+Enter the loose volume one truck actually carries on your job. The calculator divides the loose volume
+by it and rounds up to whole loads.
 
 ### Can I use this for final billing?
 
@@ -86,19 +83,7 @@ side slopes, shoring, compaction, and local measurement rules — verify quantit
 purchase, billing, or construction, and confirm the final figures with a licensed engineer, architect,
 contractor, or professional quantity surveyor.
 
-### Does this calculate truck trips or disposal cost?
-
-No. Truck trips and disposal cost depend on truck capacity, haul distance, and local disposal rates —
-factors outside a simple excavation volume calculator.
-
-### Does this include backfill or compaction?
-
-No. This calculator estimates the excavation volume only. Backfill quantity and compaction are separate
-calculations this tool does not perform.
-
 ## References
 
 - Rectangular-prism volume: length × width × height (SI, general geometry).
 - International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
-- Cubic foot: 1 ft³ = 0.028316846592 m³, rounded here to 35.3146667 ft³ per m³, matching this platform's
-  Concrete Quantity Calculator and CBM Calculator.

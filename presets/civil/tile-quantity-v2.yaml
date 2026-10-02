@@ -1,0 +1,156 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/tile-quantity-v2
+version: 0.2.0
+operation: civil.tile.quantity@2
+fields:
+  mode:
+    labelKey: tile.field.mode
+    kind: enum
+    control: segmented
+    default: dimensions
+    order: 5
+    width: half
+    options:
+      - { value: dimensions, labelKey: tile.mode.dimensions }
+      - { value: area, labelKey: tile.mode.area }
+  unit:
+    labelKey: tile.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 10
+    width: half
+    options: &lengthUnits
+      - { value: mm, labelKey: tile.unit.mm }
+      - { value: cm, labelKey: tile.unit.cm }
+      - { value: m, labelKey: tile.unit.m }
+      - { value: in, labelKey: tile.unit.in }
+      - { value: ft, labelKey: tile.unit.ft }
+  surfaceLength: { labelKey: tile.field.surfaceLength, kind: number, required: true, order: 20, width: half, helpKey: tile.help.surface, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { mode: [dimensions] } }
+  surfaceWidth: { labelKey: tile.field.surfaceWidth, kind: number, required: true, order: 30, width: half, helpKey: tile.help.surface, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { mode: [dimensions] } }
+  surfaceArea: { labelKey: tile.field.surfaceArea, kind: number, required: true, order: 20, width: half, helpKey: tile.help.surfaceArea, helpMode: disclosure, convert: { unitField: unit, family: area }, visibleWhen: { mode: [area] } }
+  quantity: { labelKey: tile.field.quantity, kind: number, required: true, default: 1, order: 40, width: half, helpKey: tile.help.quantity, helpMode: disclosure }
+  openings: { labelKey: tile.field.openings, kind: openings, order: 50, helpKey: tile.help.openings, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  tileUnit: { labelKey: tile.field.tileUnit, kind: enum, control: segmented, default: mm, order: 60, options: *lengthUnits }
+  tileLength: { labelKey: tile.field.tileLength, kind: number, required: true, order: 70, width: half, helpKey: tile.help.tile, helpMode: disclosure, convert: { unitField: tileUnit, family: length } }
+  tileWidth: { labelKey: tile.field.tileWidth, kind: number, required: true, order: 80, width: half, helpKey: tile.help.tile, helpMode: disclosure, convert: { unitField: tileUnit, family: length } }
+  pattern:
+    labelKey: tile.field.pattern
+    kind: enum
+    control: select
+    default: straight
+    order: 90
+    width: half
+    uiOnly: true
+    helpKey: tile.help.pattern
+    helpMode: disclosure
+    options:
+      - { value: straight, labelKey: tile.pattern.straight, sets: { wastagePercent: "10" } }
+      - { value: diagonal, labelKey: tile.pattern.diagonal, sets: { wastagePercent: "15" } }
+      - { value: complex, labelKey: tile.pattern.complex, sets: { wastagePercent: "20" } }
+      - { value: custom, labelKey: tile.pattern.custom }
+  wastagePercent: { labelKey: tile.field.wastagePercent, kind: percent, unit: "%", required: true, default: 10, order: 100, width: half, helpKey: tile.help.wastage, helpMode: disclosure }
+  packMode:
+    labelKey: tile.field.packMode
+    kind: enum
+    control: select
+    default: pieces
+    order: 110
+    width: half
+    options:
+      - { value: pieces, labelKey: tile.pack.pieces }
+      - { value: coverage, labelKey: tile.pack.coverage }
+      - { value: none, labelKey: tile.pack.none }
+  tilesPerBox: { labelKey: tile.field.tilesPerBox, kind: number, required: false, order: 120, width: half, helpKey: tile.help.tilesPerBox, helpMode: disclosure, visibleWhen: { packMode: [pieces] } }
+  boxCoverage: { labelKey: tile.field.boxCoverage, kind: number, required: true, order: 120, width: half, helpKey: tile.help.boxCoverage, helpMode: disclosure, convert: { unitField: boxCoverageUnit, family: area }, visibleWhen: { packMode: [coverage] } }
+  boxCoverageUnit:
+    labelKey: tile.field.boxCoverageUnit
+    kind: enum
+    control: segmented
+    default: m2
+    order: 121
+    width: half
+    visibleWhen: { packMode: [coverage] }
+    options:
+      - { value: m2, labelKey: tile.area.m2 }
+      - { value: ft2, labelKey: tile.area.ft2 }
+outputs:
+  orderTiles: { labelKey: tile.out.orderTiles, format: number, order: 10, primary: true }
+  boxes: { labelKey: tile.out.boxes, format: number, order: 20 }
+  baseTiles: { labelKey: tile.out.baseTiles, format: number, order: 30 }
+  wastagePercent: { labelKey: tile.out.wastagePercent, format: percent, order: 31 }
+  wastageTiles: { labelKey: tile.out.wastageTiles, format: number, order: 32 }
+  netAreaM2: { labelKey: tile.out.netAreaM2, format: number, order: 40, visibleWhen: { unit: [mm, cm, m] } }
+  netAreaFt2: { labelKey: tile.out.netAreaFt2, format: number, order: 40, visibleWhen: { unit: [in, ft] } }
+  grossAreaM2: { labelKey: tile.out.grossAreaM2, format: number, order: 41, visibleWhen: { unit: [mm, cm, m] } }
+  grossAreaFt2: { labelKey: tile.out.grossAreaFt2, format: number, order: 41, visibleWhen: { unit: [in, ft] } }
+  openingAreaM2: { labelKey: tile.out.openingAreaM2, format: number, order: 42, visibleWhen: { unit: [mm, cm, m] } }
+  openingAreaFt2: { labelKey: tile.out.openingAreaFt2, format: number, order: 42, visibleWhen: { unit: [in, ft] } }
+samples:
+  room-5x4-m:
+    titleKey: tile.sample.room
+    input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: pieces, tilesPerBox: "10" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    tile.field.mode: Surface size
+    tile.mode.dimensions: Length × width
+    tile.mode.area: Known area
+    tile.field.unit: Surface unit
+    tile.unit.mm: mm
+    tile.unit.cm: cm
+    tile.unit.m: m
+    tile.unit.in: in
+    tile.unit.ft: ft
+    tile.field.surfaceLength: Floor or wall length
+    tile.field.surfaceWidth: Floor width or wall height
+    tile.field.surfaceArea: Area (surface unit squared, e.g. m² or ft²)
+    tile.field.quantity: Number of identical rooms or areas
+    tile.field.openings: Areas not tiled (fixed cabinets, doors, windows)
+    tile.field.openings.row: Area {number}
+    tile.field.openings.add: Add area to deduct
+    tile.field.tileUnit: Tile unit
+    tile.field.tileLength: Tile length
+    tile.field.tileWidth: Tile width
+    tile.field.pattern: Layout (suggests a wastage %)
+    tile.pattern.straight: Straight lay — suggests 10%
+    tile.pattern.diagonal: Diagonal — suggests 15%
+    tile.pattern.complex: Herringbone / complex — suggests 20%
+    tile.pattern.custom: Custom wastage
+    tile.field.wastagePercent: Wastage allowance %
+    tile.field.packMode: Box packing
+    tile.pack.pieces: Tiles per box
+    tile.pack.coverage: Coverage per box
+    tile.pack.none: No box count
+    tile.field.tilesPerBox: Tiles per box (optional)
+    tile.field.boxCoverage: Coverage per box
+    tile.field.boxCoverageUnit: Coverage unit
+    tile.area.m2: m²
+    tile.area.ft2: ft²
+    tile.help.surface: In the surface unit. Changing the unit converts the value.
+    tile.help.surfaceArea: A measured area in the surface unit squared — for example m² when the unit is m.
+    tile.help.quantity: A whole number from 1 to 1,000,000. Deductions below apply to each one.
+    tile.help.openings: Add any part of the floor or wall that will not be tiled, with how many there are.
+    tile.help.tile: The tile's face size, in the tile unit. Grout joints are not deducted.
+    tile.help.pattern: The suggestions are estimating guidance, not standards — they only fill the wastage field, which you can change.
+    tile.help.wastage: An editable allowance for cuts, breakage and spares (0–50%).
+    tile.help.tilesPerBox: From the box label. Leave blank to skip boxes.
+    tile.help.boxCoverage: The area one box covers, from the box label.
+    tile.out.orderTiles: Tiles to buy (rounded up)
+    tile.out.boxes: Boxes to buy (rounded up)
+    tile.out.baseTiles: Calculated tiles before wastage
+    tile.out.wastagePercent: Wastage allowance
+    tile.out.wastageTiles: Wastage allowance (tiles)
+    tile.out.netAreaM2: Net tiled area (m²)
+    tile.out.netAreaFt2: Net tiled area (ft²)
+    tile.out.grossAreaM2: Gross area (m²)
+    tile.out.grossAreaFt2: Gross area (ft²)
+    tile.out.openingAreaM2: Areas deducted (m²)
+    tile.out.openingAreaFt2: Areas deducted (ft²)
+    tile.sample.room: 5 × 4 m room, 300 × 300 mm tiles, 10% wastage, 10 tiles per box
+    work.tile2.netArea: "Net area = {gross:d2} m² − {openings:d2} m² = {result:d2} m²"
+    work.tile2.baseTiles: "Calculated tiles = {net:d2} m² ÷ {tile:d4} m² per tile = {result:d2}"
+    work.tile2.orderTiles: "Tiles to buy = {base:d2} × (1 + {wastagePercent}%) = {adjusted:d2} → rounded up to {result}"
+    work.tile2.boxes.pieces: "Boxes = {orderTiles} tiles ÷ tiles per box, rounded up = {result}"
+    work.tile2.boxes.coverage: "Boxes = net area × (1 + wastage %) ÷ coverage per box, rounded up = {result}"

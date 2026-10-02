@@ -1,0 +1,8 @@
+id: 002-imperial-room-gallons
+preset: civil/paint-quantity-v2
+source:
+  type: hand-verified
+  citation: "Walls 2 x (12 + 10) x 8 ft = 352 ft2; x 2 coats / 350 ft2 per US gal = 2.0114 gal; 0% wastage; 1-gal containers rounded up = 3"
+input: { mode: room, unit: ft, roomLength: "12", roomWidth: "10", roomHeight: "8", includeCeiling: "false", quantity: "1", coats: "2", coverage: "350", coverageUnit: ft2-per-gal, wastagePercent: "0", containerSize: "1", containerUnit: gal }
+expected: { netAreaFt2: "352.00", orderGallons: "2.01", containers: "3" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ASSUMPTION_CONTAINER, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

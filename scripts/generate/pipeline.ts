@@ -32,7 +32,6 @@ import type { Sources } from './sources.ts';
 import { type Taxonomy, validateTaxonomy } from './taxonomy.ts';
 import { runToolFixtures } from './tool-fixtures.ts';
 
-/** An engine fixture as run by the cross-browser determinism check (dev builds only). */
 export interface DeterminismCase {
   id: string;
   operation: string;
@@ -107,7 +106,6 @@ async function buildPresets(
   return state;
 }
 
-/** Working steps emitted by an operation's own engine fixtures (covers paths samples miss). */
 async function engineFormulaUse(
   sources: Sources,
   engines: Engines,
@@ -163,7 +161,11 @@ async function buildTool(
   const preset = presets.resolved.get(tool.manifest.preset);
   const op = preset ? findOperation(engines, preset.operation) : undefined;
   if (!preset || !op || !tool.source.content) return null;
-  const fixtures = await runToolFixtures(tool, preset, op);
+  const fixtures = await runToolFixtures(tool, preset, op, (presetId) => {
+    const fixturePreset = presets.resolved.get(presetId);
+    const fixtureOp = fixturePreset ? findOperation(engines, fixturePreset.operation) : undefined;
+    return fixturePreset && fixtureOp ? { preset: fixturePreset, op: fixtureOp } : undefined;
+  });
   issues.push(...fixtures.issues);
   const use = presets.formulaKeys.get(preset.id);
   for (const [key, names] of fixtures.formulaKeys) {
@@ -241,7 +243,6 @@ async function buildSearchIndex(
   };
 }
 
-/** Fixtures for engines the site loads in workers, excluding non-Node-runtime operations — see `engines/image/README.md`'s "Determinism" section. */
 function determinismCases(
   sources: Sources,
   engines: Engines,
@@ -258,7 +259,6 @@ function determinismCases(
   });
 }
 
-/** Validates every data file and, when there are no issues, builds the generated outputs. */
 export async function runPipeline(
   sources: Sources,
   engines: Engines,

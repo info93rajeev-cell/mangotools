@@ -252,6 +252,19 @@ describe('registry pipeline — invalid inputs fail with file and path', () => {
       hasIssue(issues, 'tools/gst-calculator/fixtures/005-remove-18-odd-paisa.yaml', 'id'),
     ).toBe(true);
   });
+  it('fixture: unknown historical preset', async () => {
+    const issues = await issuesFor((s) => {
+      const [first] = tool(s, 'gst-calculator').fixtures as { data: Data }[];
+      if (first) first.data.preset = 'estimate/missing-v1';
+    });
+    expect(
+      hasIssue(
+        issues,
+        'tools/gst-calculator/fixtures/001-add-18-intra.yaml',
+        'unknown or unavailable preset',
+      ),
+    ).toBe(true);
+  });
   it('content: missing section, unknown tool link and raw HTML', async () => {
     const issues = await issuesFor((s) => {
       const content = tool(s, 'profit-margin-calculator').content;
