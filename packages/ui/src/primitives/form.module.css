@@ -177,6 +177,7 @@
 
 .select {
   appearance: none;
+  overflow: hidden;
   padding-right: var(--space-8);
   background-image:
     linear-gradient(45deg, transparent 50%, currentColor 50%),
