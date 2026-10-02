@@ -1,6 +1,16 @@
 .field {
   display: grid;
-  gap: var(--space-2);
+  grid-template-columns: var(--field-columns, minmax(0, 1fr));
+  gap: var(--field-gap, var(--space-2));
+  align-items: var(--field-align, stretch);
+  min-width: 0;
+  position: relative;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -18,23 +28,49 @@
 }
 
 .helpDisclosure {
-  width: fit-content;
-  max-width: 100%;
+  width: var(--space-6);
+  flex: none;
   font-size: var(--text-caption);
   line-height: var(--leading-caption);
   color: var(--color-text-muted);
 }
 
 .helpDisclosure summary {
-  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   color: var(--color-accent-text);
-  font-weight: var(--weight-medium);
+  list-style: none;
+}
+
+.helpDisclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.helpDisclosure summary:hover {
+  background: var(--color-surface-subtle);
+}
+
+.helpDisclosure summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
 }
 
 .helpDisclosure .help {
-  margin-top: var(--space-2);
-  max-width: 60ch;
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: var(--z-popover);
+  width: min(24rem, 100%);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-popover);
 }
 
 .error {
@@ -44,6 +80,7 @@
   font-size: var(--text-caption);
   line-height: var(--leading-caption);
   color: var(--color-danger);
+  grid-column: var(--field-error-column, auto);
 }
 
 .control {
@@ -96,6 +133,7 @@
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-md);
   background: var(--color-bg);
+  overflow: hidden;
 }
 
 .affixed:focus-within {
@@ -106,6 +144,16 @@
 
 .affixed[data-invalid="true"] {
   border-color: var(--color-danger);
+}
+
+.field > .label,
+.field > .labelRow {
+  grid-column: var(--field-label-column, auto);
+}
+
+.field > .control,
+.field > .affixed {
+  grid-column: var(--field-control-column, auto);
 }
 
 .affixed .control {
@@ -154,7 +202,9 @@
 
 .fieldset {
   display: grid;
+  grid-template-columns: var(--field-columns, minmax(0, 1fr));
   gap: var(--space-2);
+  align-items: var(--field-align, stretch);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -162,8 +212,13 @@
 }
 
 .fieldset > legend {
+  grid-column: var(--field-label-column, auto);
   padding: 0;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--field-legend-margin, var(--space-2));
+}
+
+.fieldset > .segmented {
+  grid-column: var(--field-control-column, auto);
 }
 
 .segmentItem {

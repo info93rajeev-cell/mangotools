@@ -12,28 +12,62 @@ const text = kind === 'professional' ? t('disclaimer.professional') : null;
 
 {
   text ? (
-    <aside class="disclaimer" aria-label={t('disclaimer.title')} data-disclaimer>
-      <Icon name="info" />
+    <details class="disclaimer" data-disclaimer>
+      <summary>
+        <Icon name="info" />
+        <span>{t('disclaimer.title')}</span>
+      </summary>
       <p>{text}</p>
-    </aside>
+    </details>
   ) : null
 }
 
 <style>
   .disclaimer {
-    display: flex;
-    gap: var(--space-2);
-    align-items: flex-start;
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface-subtle);
-    border: 1px solid var(--color-border);
+    flex: 0 0 auto;
     color: var(--color-text-muted);
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
   }
+  .disclaimer summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--control-height-sm);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    list-style: none;
+  }
+  .disclaimer summary::-webkit-details-marker {
+    display: none;
+  }
+  .disclaimer summary::after {
+    content: '+';
+    color: var(--color-text-subtle);
+    font-size: var(--text-body);
+    line-height: 1;
+  }
+  .disclaimer[open] {
+    display: grid;
+    flex-basis: 100%;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-subtle);
+  }
+  .disclaimer[open] summary::after {
+    content: '−';
+  }
   .disclaimer :global(.icon) {
     color: var(--color-info);
-    margin-top: 1px;
+  }
+  .disclaimer p {
+    max-width: 72ch;
   }
 </style>

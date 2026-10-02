@@ -38,16 +38,31 @@ export function FieldHelp({
   id,
   help,
   mode = 'inline',
+  label,
 }: {
   id: string;
   help?: string;
   mode?: HelpMode;
+  label?: string;
 }) {
   if (!help) return null;
   if (mode === 'disclosure') {
+    const title = label ? t('field.helpFor', { label }) : t('field.help');
+    const contextId = `${id}-help-context`;
     return (
       <details class={styles.helpDisclosure} data-field-help="">
-        <summary>{t('field.help')}</summary>
+        <summary
+          aria-label={t('field.help')}
+          aria-describedby={label ? contextId : undefined}
+          title={title}
+        >
+          <Icon name="info" />
+          {label ? (
+            <span id={contextId} class="visually-hidden">
+              {t('field.helpContext', { label })}
+            </span>
+          ) : null}
+        </summary>
         <p id={helpId(id)} class={styles.help}>
           {help}
         </p>
@@ -73,19 +88,28 @@ export function Field({
   children,
 }: FieldProps) {
   const labelClass = hideLabel ? 'visually-hidden' : styles.label;
+  const disclosureHelp = help && helpMode === 'disclosure';
+  const fieldLabel = group ? (
+    <span id={`${id}-label`} class={labelClass}>
+      {label}
+    </span>
+  ) : (
+    <label for={id} class={labelClass}>
+      {label}
+    </label>
+  );
   return (
     <div class={styles.field}>
-      {group ? (
-        <span id={`${id}-label`} class={labelClass}>
-          {label}
-        </span>
+      {disclosureHelp ? (
+        <div class={styles.labelRow}>
+          {fieldLabel}
+          <FieldHelp id={id} help={help} mode="disclosure" label={label} />
+        </div>
       ) : (
-        <label for={id} class={labelClass}>
-          {label}
-        </label>
+        fieldLabel
       )}
       {children}
-      <FieldHelp id={id} help={help} mode={helpMode} />
+      {disclosureHelp ? null : <FieldHelp id={id} help={help} mode={helpMode} label={label} />}
       {error ? (
         <p id={errorId(id)} class={styles.error}>
           <Icon name="circle-alert" />

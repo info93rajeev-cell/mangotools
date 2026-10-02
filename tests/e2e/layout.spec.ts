@@ -25,6 +25,7 @@ async function overflow(page: Page) {
     const width = document.documentElement.clientWidth;
     const clipped = [...document.querySelectorAll('main button, main a, main input, main select')]
       .filter((el) => {
+        if (!el.checkVisibility()) return false;
         const box = el.getBoundingClientRect();
         const scroller = el.closest('[style*="overflow"], .example, pre, table');
         return box.width > 0 && box.right > width + 0.5 && !scroller;

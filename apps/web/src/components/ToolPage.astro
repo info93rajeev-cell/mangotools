@@ -2,6 +2,7 @@
 import type { RegistryTool } from '@mangotools/schemas';
 import { presetCurrency } from '@mangotools/ui/toolkit/presentation.ts';
 import { ToolIsland } from '@mangotools/ui/toolkit/ToolIsland.tsx';
+import { t } from '@mangotools/ui/strings/en.ts';
 import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
@@ -23,7 +24,6 @@ const crumbs = [
   { name: tool.name, url: tool.url },
 ];
 const jsonLd = [webApplication(tool), breadcrumbList(crumbs), ...(tool.content.faq.length > 0 ? [faqPage(tool.content.faq)] : [])];
-const hasHowTo = tool.content.sections.some((s) => s.id === 'how-to-use');
 if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') {
   throw new Error(`${tool.id}: archetype ${tool.archetype} is not available in Phase 1.`);
 }
@@ -43,10 +43,16 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
         preset={preset}
         sampleId={tool.sample}
         print={tool.capabilities.print === true}
-        howToId={hasHowTo ? 'how-to-use' : null}
       />
-      <Disclaimer kind={tool.disclaimer} />
-      <ToolContent content={tool.content} related={toolLinks(tool.related)} currency={presetCurrency(preset)} />
+      <section
+        class="supporting"
+        aria-labelledby="tool-information-title"
+        data-secondary-information
+      >
+        <h2 id="tool-information-title" class="visually-hidden">{t('secondary.title')}</h2>
+        <Disclaimer kind={tool.disclaimer} />
+        <ToolContent content={tool.content} related={toolLinks(tool.related)} currency={presetCurrency(preset)} />
+      </section>
     </div>
   </PageContainer>
 </BaseLayout>
@@ -54,13 +60,18 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
 <style>
   .page {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--space-1);
   }
   .top {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-1);
   }
-  .page > :global(.tool-content) {
-    margin-top: var(--space-10);
+  .supporting {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-width: 0;
+    padding-bottom: var(--space-4);
   }
 </style>
