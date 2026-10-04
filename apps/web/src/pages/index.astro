@@ -35,7 +35,14 @@ const copy = COPY.home;
           {
             visibleCategories.map((c) => (
               <li>
-                <CategoryCard name={c.name} summary={c.summary} url={c.url} icon={c.icon} count={c.toolIds.length} />
+                <CategoryCard
+                  name={c.name}
+                  summary={c.summary}
+                  url={c.url}
+                  icon={c.icon}
+                  count={c.toolIds.length}
+                  compact
+                />
               </li>
             ))
           }
@@ -50,21 +57,21 @@ const copy = COPY.home;
 <style>
   .sections {
     display: grid;
-    gap: var(--space-12);
-    padding-bottom: var(--space-8);
+    gap: var(--space-4);
+    padding-bottom: var(--space-2);
   }
   .hero {
     display: grid;
     justify-items: center;
-    gap: var(--space-5);
-    padding-block: var(--space-12) var(--space-4);
+    gap: var(--space-3);
+    padding-block: var(--space-6) 0;
     text-align: center;
   }
   .hero h1 {
-    font-size: clamp(2rem, 1.4rem + 3vw, var(--text-display));
+    font-size: clamp(2rem, 1.6rem + 2vw, 2.5rem);
     line-height: 1.1;
     letter-spacing: -0.03em;
-    max-width: 20ch;
+    max-width: 26ch;
   }
   .lede {
     max-width: 60ch;
@@ -73,12 +80,11 @@ const copy = COPY.home;
   }
   .hero-search {
     width: min(100%, 680px);
-    margin-top: var(--space-2);
     text-align: left;
   }
   .block {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-3);
   }
   .trust {
     color: var(--color-text-muted);
@@ -87,8 +93,15 @@ const copy = COPY.home;
     text-align: center;
   }
   @media (max-width: 640px) {
+    .sections {
+      gap: var(--space-8);
+      padding-bottom: var(--space-6);
+    }
     .hero {
       padding-block: var(--space-8) var(--space-2);
+    }
+    .block {
+      gap: var(--space-5);
     }
   }
 </style>

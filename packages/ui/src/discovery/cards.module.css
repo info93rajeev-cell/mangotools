@@ -91,6 +91,41 @@
   height: 22px;
 }
 
+.categoryCompact {
+  grid-template-columns: 36px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3);
+}
+
+.categoryCompact .categoryIcon {
+  grid-row: 1 / span 3;
+  width: 36px;
+  height: 36px;
+}
+
+.categoryCompact .title,
+.categoryCompact .summary,
+.categoryCompact .meta {
+  grid-column: 2;
+}
+
+.categoryCompact .title {
+  font-size: var(--text-body);
+  line-height: 1.25rem;
+}
+
+.categoryCompact .summary {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.categoryCompact .meta {
+  margin-top: 0;
+}
+
 .chips {
   margin: 0;
   padding: 0;

@@ -33,6 +33,18 @@ test.describe('navigation', () => {
     );
   });
 
+  test('home fits the standard desktop viewport without document scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await gotoReady(page, '/');
+
+    const dimensions = await page.evaluate(() => ({
+      clientHeight: document.documentElement.clientHeight,
+      scrollHeight: document.documentElement.scrollHeight,
+    }));
+
+    expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
+  });
+
   test('search handles synonyms and typos', async ({ page }) => {
     await gotoReady(page, '/tools');
     const search = page.getByRole('combobox', { name: 'Search tools' }).first();
