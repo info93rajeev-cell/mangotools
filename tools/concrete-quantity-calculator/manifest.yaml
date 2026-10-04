@@ -4,17 +4,18 @@ id: concrete-quantity-calculator
 slug: concrete-quantity-calculator
 status: beta
 tier: T2
-version: 0.1.3
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Circular columns, editable overage for an order volume, optional bags from stated yield, yd³ output, converting units, visible assumptions." }
   - { version: 0.1.3, date: 2026-09-27, type: changed, summary: "Add a related link to the new Tile / Flooring Calculator." }
   - { version: 0.1.2, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Excavation Calculator." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with concrete volume for a slab, beam, column or footing, in m³ and ft³, with wastage %." }
 name: Concrete Quantity Calculator
 shortName: Concrete Quantity
-summary: Concrete volume for a slab, beam, column or footing in cubic metres and cubic feet, with wastage %.
+summary: Concrete volume and order volume for slabs, footings, walls, beams and columns, with overage and optional bags.
 archetype: B
-preset: civil/concrete-quantity
+preset: civil/concrete-quantity-v2
 sample: slab-5x4x0.15-m
 taxonomy:
   category: construction
@@ -25,13 +26,13 @@ privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
   title: Concrete Quantity Calculator – Volume in m³ and ft³
-  description: Work out concrete volume for a slab, beam, column or footing in cubic metres and cubic feet, with wastage %. Free, and it runs in your browser.
+  description: Work out concrete volume for slabs, footings, walls, beams and round or square columns in m³, ft³ and yd³, with overage and bags. Free, in your browser.
   primaryKeyword: concrete quantity calculator
   secondaryKeywords: [concrete calculator, concrete volume calculator, rcc quantity calculator]
 graph:
   related: [excavation-calculator, brickwork-calculator, tile-flooring-calculator]
 quality:
   verifiedAgainst:
-    - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–017, tool fixtures 001–002" }
-  lastVerified: 2026-09-26
+    - { citation: "Rectangular-prism and cylinder volume; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "civil.concrete.quantity@2 engine fixtures 001–012, tool fixtures 001–002" }
+  lastVerified: 2026-10-01

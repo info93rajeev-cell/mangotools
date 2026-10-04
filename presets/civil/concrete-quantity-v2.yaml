@@ -1,0 +1,117 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/concrete-quantity-v2
+version: 0.2.0
+operation: civil.concrete.quantity@2
+fields:
+  memberType:
+    labelKey: concrete.field.memberType
+    kind: enum
+    control: select
+    default: slab
+    order: 10
+    width: half
+    options:
+      - { value: slab, labelKey: concrete.memberType.slab }
+      - { value: footing, labelKey: concrete.memberType.footing }
+      - { value: wall, labelKey: concrete.memberType.wall }
+      - { value: beam, labelKey: concrete.memberType.beam }
+      - { value: column, labelKey: concrete.memberType.column }
+      - { value: circular-column, labelKey: concrete.memberType.circularColumn }
+      - { value: general, labelKey: concrete.memberType.general }
+  unit:
+    labelKey: concrete.field.unit
+    kind: enum
+    control: segmented
+    default: m
+    order: 20
+    width: half
+    options:
+      - { value: mm, labelKey: concrete.unit.mm }
+      - { value: cm, labelKey: concrete.unit.cm }
+      - { value: m, labelKey: concrete.unit.m }
+      - { value: in, labelKey: concrete.unit.in }
+      - { value: ft, labelKey: concrete.unit.ft }
+  length: { labelKey: concrete.field.length, kind: number, required: true, order: 30, width: half, helpKey: concrete.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { memberType: [slab, footing, wall, beam, column, general] } }
+  width: { labelKey: concrete.field.width, kind: number, required: true, order: 40, width: half, helpKey: concrete.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { memberType: [slab, footing, wall, beam, column, general] } }
+  depth: { labelKey: concrete.field.depth, kind: number, required: true, order: 50, width: half, helpKey: concrete.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { memberType: [slab, footing, wall, beam, column, general] } }
+  diameter: { labelKey: concrete.field.diameter, kind: number, required: true, order: 30, width: half, helpKey: concrete.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { memberType: [circular-column] } }
+  height: { labelKey: concrete.field.height, kind: number, required: true, order: 40, width: half, helpKey: concrete.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { memberType: [circular-column] } }
+  quantity: { labelKey: concrete.field.quantity, kind: number, required: true, default: 1, order: 60, width: half, helpKey: concrete.help.quantity, helpMode: disclosure }
+  overagePercent: { labelKey: concrete.field.overagePercent, kind: percent, unit: "%", required: true, default: 0, order: 70, width: half, helpKey: concrete.help.overage, helpMode: disclosure }
+  bagYield: { labelKey: concrete.field.bagYield, kind: number, required: false, order: 80, width: half, helpKey: concrete.help.bagYield, helpMode: disclosure, convert: { unitField: bagYieldUnit, family: volume } }
+  bagYieldUnit:
+    labelKey: concrete.field.bagYieldUnit
+    kind: enum
+    control: segmented
+    default: l
+    order: 90
+    width: half
+    options:
+      - { value: l, labelKey: concrete.yield.l }
+      - { value: m3, labelKey: concrete.yield.m3 }
+      - { value: ft3, labelKey: concrete.yield.ft3 }
+outputs:
+  orderVolumeM3: { labelKey: concrete.out.orderVolumeM3, format: number, order: 10, primaryWhen: { unit: [mm, cm, m] } }
+  orderVolumeYd3: { labelKey: concrete.out.orderVolumeYd3, format: number, order: 11, primaryWhen: { unit: [in, ft] } }
+  orderVolumeFt3: { labelKey: concrete.out.orderVolumeFt3, format: number, order: 12 }
+  netVolumeM3: { labelKey: concrete.out.netVolumeM3, format: number, order: 20 }
+  netVolumeFt3: { labelKey: concrete.out.netVolumeFt3, format: number, order: 21, visibleWhen: { unit: [in, ft] } }
+  netVolumeYd3: { labelKey: concrete.out.netVolumeYd3, format: number, order: 22, visibleWhen: { unit: [in, ft] } }
+  overagePercent: { labelKey: concrete.out.overagePercent, format: percent, order: 30 }
+  overageVolumeM3: { labelKey: concrete.out.overageVolumeM3, format: number, order: 31 }
+  bags: { labelKey: concrete.out.bags, format: number, order: 40 }
+  quantity: { labelKey: concrete.out.quantity, format: number, order: 50 }
+samples:
+  slab-5x4x0.15-m:
+    titleKey: concrete.sample.slab
+    input: { memberType: slab, unit: m, length: "5", width: "4", depth: "0.15", quantity: "1", overagePercent: "5" }
+ui: { archetypes: [B], density: comfortable, compute: live }
+strings:
+  en:
+    concrete.field.memberType: Member type
+    concrete.memberType.slab: Slab
+    concrete.memberType.footing: Footing
+    concrete.memberType.wall: Wall
+    concrete.memberType.beam: Beam
+    concrete.memberType.column: Rectangular column
+    concrete.memberType.circularColumn: Circular column
+    concrete.memberType.general: General rectangular volume
+    concrete.field.unit: Unit
+    concrete.unit.mm: mm
+    concrete.unit.cm: cm
+    concrete.unit.m: m
+    concrete.unit.in: in
+    concrete.unit.ft: ft
+    concrete.field.length: Length
+    concrete.field.width: Width
+    concrete.field.depth: Depth / thickness / height
+    concrete.field.diameter: Diameter
+    concrete.field.height: Height
+    concrete.field.quantity: Number of identical members
+    concrete.field.overagePercent: Overage allowance %
+    concrete.field.bagYield: Yield per bag (optional)
+    concrete.field.bagYieldUnit: Yield unit
+    concrete.yield.l: L
+    concrete.yield.m3: m³
+    concrete.yield.ft3: ft³
+    concrete.help.dimension: One member's size, in the unit chosen above. Changing the unit converts the value.
+    concrete.help.quantity: A whole number from 1 to 1,000,000.
+    concrete.help.overage: An editable estimating allowance for spillage, uneven formwork and over-excavation (0–50%) — not a fixed requirement. Defaults to 0%.
+    concrete.help.bagYield: For pre-mixed bags only. Enter the concrete volume one bag yields, as printed on your product — bags of the same weight can yield different volumes. Leave blank to skip bags.
+    concrete.out.orderVolumeM3: Concrete to order incl. overage (m³)
+    concrete.out.orderVolumeYd3: Concrete to order incl. overage (yd³)
+    concrete.out.orderVolumeFt3: Concrete to order incl. overage (ft³)
+    concrete.out.netVolumeM3: Net geometric volume (m³)
+    concrete.out.netVolumeFt3: Net geometric volume (ft³)
+    concrete.out.netVolumeYd3: Net geometric volume (yd³)
+    concrete.out.overagePercent: Overage allowance
+    concrete.out.overageVolumeM3: Overage volume (m³)
+    concrete.out.bags: Bags to buy (rounded up)
+    concrete.out.quantity: Number of members
+    concrete.sample.slab: 5 × 4 × 0.15 m slab with a 5% overage
+    work.concrete2.rectangularVolume: "One member = {length} {unit} × {width} {unit} × {depth} {unit} = {result:d4} m³"
+    work.concrete2.circularVolume: "One column = π × ({diameter} {unit} ÷ 2)² × {height} {unit} = {result:d4} m³"
+    work.concrete2.netVolume: "Net volume = {member:d4} m³ × {quantity} member(s) = {result:d3} m³"
+    work.concrete2.orderVolume: "Order volume = {net:d3} m³ × (1 + {overagePercent}%) = {result:d3} m³"
+    work.concrete2.bags: "Bags = order volume ÷ {yieldM3:d4} m³ per bag ({yield} as entered), rounded up = {result}"

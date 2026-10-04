@@ -96,6 +96,7 @@ export const EN = {
   'openings.add': 'Add opening',
   'openings.remove': 'Remove {label}',
   'openings.removeShort': 'Remove',
+  'openings.type': 'Type',
   'openings.width': 'Width',
   'openings.height': 'Height',
   'openings.quantity': 'Quantity',

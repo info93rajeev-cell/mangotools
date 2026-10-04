@@ -1,86 +1,83 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-standard-wall
+lastReviewed: 2026-10-01
+example: 001-wall-5x3-m-openings
 ---
 
 ## How to use
 
-This brickwork calculator works out brick count and brickwork volume for a rectangular wall — a
-practical brick quantity calculator for site engineers, contractors, masons, and quantity surveyors
-planning a brick wall.
+This brickwork calculator works out how many bricks to order for a wall — a practical brick quantity
+calculator for site engineers, contractors, masons, and quantity surveyors planning a brick wall.
 
-1. Choose the wall unit and enter the wall's length, height, and thickness.
-2. Enter the number of walls (a whole number, defaults to 1) and, if the wall has doors or windows, the
-   total opening area to deduct (defaults to 0).
-3. Choose the brick unit and enter the brick's length, width, and height, plus the mortar joint thickness
-   (defaults to 10 mm; set it to 0 for a brick-size-only count).
-4. Enter a wastage percentage for site cutting and breakage (defaults to 0%, up to 50%).
-5. Read the total estimated bricks including wastage, the brickwork volume, and the working. Copy or
-   print the result.
+1. Choose the wall unit and enter one wall's length and height. Changing the unit converts the values
+   you already typed.
+2. Enter the number of identical walls and the wall thickness in brick skins (1 skin for a half-brick
+   wall, 2 for a one-brick wall).
+3. Add each door, window or other opening with its width, height and quantity. Leave the list empty for
+   a solid wall.
+4. Pick a brick size preset or enter your own brick face size (length × height) and mortar joint. The
+   presets are regional starting points, not universal standards — every value stays editable.
+5. Set a wastage allowance for cutting and breakage (defaults to 0%, up to 50%).
+6. Read the bricks to order (a whole number, rounded up), the calculated count before wastage, the
+   assumptions used, and the working. Copy or print the result.
 
 ## Method
 
-- Gross wall area = wall length × wall height (per wall), × the number of walls for the total.
-- Opening deduction = the opening area you enter (per wall), × the number of walls.
-- Net wall area = gross wall area − opening deduction. This is your **brick wall calculator with
-  openings**: enter one total opening area for doors and windows and it is subtracted before the brick
-  count is worked out.
-- Brickwork volume = net wall area × wall thickness.
-- Effective brick volume = (brick length + mortar) × (brick width + mortar) × (brick height + mortar) —
-  the common simplified assumption most published bricks-per-square-metre calculators use, adding the
-  mortar joint to all three brick dimensions rather than modelling a specific bond pattern.
-- Estimated brick count = brickwork volume ÷ effective brick volume.
-- Wastage bricks = estimated brick count × wastage %.
-- Total bricks including wastage = estimated brick count + wastage bricks.
+- Gross wall area = wall length × wall height × number of walls.
+- Openings = Σ(width × height × quantity) for one wall, × number of walls.
+- Net wall area = gross wall area − openings. An opening list that equals or exceeds the wall area is
+  rejected, since nothing would be left to build.
+- Brick face with joint = (brick length + joint) × (brick height + joint).
+- Calculated bricks = net wall area × number of skins ÷ brick face with joint.
+- Bricks to order = calculated bricks × (1 + wastage % ÷ 100), **rounded up to a whole brick**.
 
-Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m. The
-wall and the brick can each use their own unit — a wall is commonly measured in metres while a brick is
-commonly measured in millimetres.
+Everything is kept at full precision until the end, and each result is shown at a practical precision:
+areas to 2 decimal places, the calculated count to 2 decimal places, and the order quantity as a whole
+number.
 
-**Gross wall area vs. net wall area.** Gross wall area is the full wall as if it were a solid rectangle.
-Net wall area subtracts the opening deduction you enter for doors and windows — the figure the brick
-count is actually based on, since bricks are not needed where an opening is.
+Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m, so the
+same wall entered in feet and inches or in metres and millimetres gives the same brick count.
 
-**Does brick size affect the result?** Yes. A larger brick needs fewer bricks for the same wall volume,
-and a thicker mortar joint increases each brick's effective volume, which also reduces the brick count
-slightly. Always use your actual brick size, not an assumed standard one, for an accurate estimate.
+**Assumptions you can see and change.** The mortar joint (10 mm, about ⅜ in, by default), the number of
+skins and the wastage allowance all affect the result, so each one is listed under the result as an
+assumption. None of them is a universal standard — use your own brick, joint and site practice.
 
-The brick count is shown as an exact number, not rounded up to a whole brick — round it up yourself when
-ordering material, since you cannot buy a fraction of a brick.
-
-This calculator gives brick count and volume **only**. It does not calculate structural design,
-reinforcement, labour cost, the cement/sand mortar material breakup, a bill of quantities (BOQ), or a
-final billing quantity.
+This calculator gives brick count **only**. It does not calculate structural design, reinforcement, bond
+patterns, labour cost, the cement/sand mortar material breakup, a bill of quantities (BOQ), or a final
+billing quantity.
 
 ## Worked example
 
-A 5 × 3 m wall, 230 mm thick, 1 wall, standard 230 × 110 × 75 mm brick, 10 mm mortar joint, no opening, no
-wastage:
+A 5 × 3 m wall with one 0.9 × 2.1 m door and two 1.2 × 1.2 m windows, single skin, India modular brick
+(190 × 90 mm face) with a 10 mm joint, and a 5% wastage allowance:
 
 ## FAQ
 
 ### How do I calculate bricks for a wall?
 
-Enter the wall's length, height, and thickness, and the brick's length, width, and height. This brickwork
-calculator works out the wall volume and divides it by the effective brick volume (brick size plus mortar
-joint) to estimate the brick count.
+Enter the wall's length and height, your brick's face size and the mortar joint. The calculator divides
+the net wall area by the area of one brick plus its joint, multiplies by the number of skins, adds your
+wastage allowance and rounds up to a whole brick.
 
-### How do I calculate brickwork with openings?
+### How do I calculate brickwork with doors and windows?
 
-Enter the total area of doors and windows in the opening area field. It is deducted from the gross wall
-area, per wall, before the brick count is calculated — a simple way to handle a brickwork calculator with
-openings without needing a separate row for each opening.
+Add each opening as its own row with width, height and quantity — for example one door and two identical
+windows. The total is deducted from every identical wall before the bricks are counted.
 
 ### How many bricks are needed per square metre?
 
-It depends on brick size, mortar joint thickness, and wall thickness — there is no single universal
-figure. Enter your own brick size and mortar joint here rather than relying on a generic bricks-per-square-metre
-number, since brick sizes vary by region and manufacturer.
+It depends on the brick face size and the joint: for a 190 × 90 mm face with a 10 mm joint it is
+1 ÷ (0.2 × 0.1) = 50 bricks per square metre per skin. Brick sizes vary by region and manufacturer, so use
+your own brick rather than a generic figure.
 
-### Should I include mortar joint thickness?
+### What mortar joint should I use?
 
-Yes, for a realistic estimate. A typical mortar joint is around 10 mm, though it varies by site practice.
-Set it to 0 if you want a brick-size-only count without any mortar allowance.
+10 mm (about ⅜ in) is a common starting value and the default here, but it is not universal. Enter the
+joint your mason actually uses; set it to 0 for a brick-size-only count.
+
+### Why is the order quantity higher than the calculated bricks?
+
+The order quantity adds your wastage allowance and rounds up, because you cannot buy part of a brick. The
+calculated count before wastage is shown alongside it so you can check the arithmetic.
 
 ### Can I use this for final billing?
 
@@ -92,13 +89,12 @@ mason, or professional quantity surveyor.
 
 ### Does this calculate cement and sand for mortar?
 
-No. This calculator estimates brick count and brickwork volume only. The cement/sand mortar material
-breakup is a separate calculation this tool does not perform.
+No. This calculator estimates brick count only. Mortar materials depend on mix, joint and site practice,
+and are not calculated here.
 
 ## References
 
-- Rectangular-prism volume: length × width × height (SI, general geometry).
-- International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
-- Cubic foot: 1 ft³ = 0.028316846592 m³, and square foot: 1 ft² = 0.09290304 m², both rounded here to
-  35.3146667 ft³ per m³ and 10.7639104 ft² per m², matching the
-  Concrete Quantity Calculator and CBM Calculator.
+- Face-area brick count: net wall area ÷ (brick length + joint) × (brick height + joint), per skin
+  (general geometry).
+- International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly, so
+  1 ft² = 0.09290304 m² exactly.

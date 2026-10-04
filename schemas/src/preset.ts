@@ -145,6 +145,8 @@ export const presetSchema = z.strictObject({
       transferTo: transferToSchema.optional(),
       /** Shown once, on this tool, when it detects it was opened via another tool's transfer. */
       transferNoticeKey: z.string().optional(),
+      /** Keeps ordinary result assumptions and informational notices in one closed disclosure. */
+      collapseNotices: z.boolean().optional(),
     })
     .optional(),
   strings: z.strictObject({ en: z.record(z.string(), z.string()) }).optional(),

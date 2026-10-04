@@ -1,98 +1,84 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-wall-plaster
+lastReviewed: 2026-10-01
+example: 001-wall-4x3-m
 ---
 
 ## How to use
 
-This plaster calculator works out plaster area and volume for a wall, ceiling, or general rectangular
-surface — a practical plaster quantity calculator for site engineers, contractors, masons, and quantity
-surveyors planning internal or external plaster work.
+This plaster calculator works out the plaster area and application volume for a wall, ceiling, or
+general rectangular surface — a practical plaster quantity calculator for site engineers, contractors,
+masons, and quantity surveyors.
 
-1. Choose the surface type (wall, ceiling, or general rectangular surface) and the unit your dimensions
-   are measured in.
-2. Enter the surface's length and second dimension (height for a wall, width for a ceiling).
-3. Enter the plaster thickness — for example 0.012 m (12 mm) for a typical coat.
-4. Enter the number of surfaces (defaults to 1) and, if there are doors or windows, the total opening
-   area to deduct (defaults to 0).
-5. Enter a wastage percentage for site cutting and waste (defaults to 0%, up to 50%).
-6. Read the total plaster volume including wastage, the net plaster area, and the working. Copy or print
-   the result.
+1. Choose the surface type and the unit your dimensions are in. Changing a unit converts the values you
+   already typed.
+2. Enter the surface's length and height or width, and the number of identical surfaces.
+3. Add each door, window or other unplastered area with its width, height and quantity.
+4. Enter the plaster thickness (in mm or inches) and a wastage allowance.
+5. To also estimate bags, choose a material estimate and enter the yield or coverage **printed on your
+   plaster product**.
+6. Read the plaster volume, the net area, bags when you supplied product data, the assumptions used and
+   the working. Copy or print the result.
 
 ## Method
 
-- Gross plaster area = length × second dimension (per surface), × the number of surfaces for the total.
-- Opening deduction = the opening area you enter (per surface), × the number of surfaces.
-- Net plaster area = gross area − opening deduction.
-- Plaster volume before wastage = net area × plaster thickness.
-- Wastage volume = plaster volume × wastage %.
-- Total plaster volume including wastage = plaster volume + wastage volume.
+- Gross area = length × height or width × number of surfaces.
+- Openings = Σ(width × height × quantity), deducted from each surface. Openings that equal or exceed the
+  surface are rejected.
+- Application (wet) volume = net area × thickness.
+- Volume including wastage = application volume × (1 + wastage % ÷ 100).
+- Bags, from your product's yield = volume including wastage ÷ yield per bag, **rounded up**.
+- Bags, from your product's coverage = volume including wastage ÷ (coverage per bag × the thickness that
+  coverage is quoted for), **rounded up** — so a thicker coat correctly needs more bags.
 
-Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m.
+Unit conversions are exact (1 inch = 25.4 mm, 1 foot = 0.3048 m, 1 ft² = 0.09290304 m², 1 ft³ =
+0.028316846592 m³). Areas are shown to 2 decimal places and m³ volumes to 3.
 
-**Gross plaster area vs. net plaster area.** Gross plaster area is the full surface as if it had no
-openings. Net plaster area subtracts the opening deduction you enter for doors and windows — the figure
-the plaster volume is actually based on, since plaster is not needed where an opening is. This wall
-plaster calculator and ceiling plaster calculator both use the same opening-deduction approach.
+**Why no universal bag figure?** Cement-sand render, gypsum plaster, skim coats and ready-mixed bagged
+plaster have different densities, yields and water demand. Rather than assume one density or bag size for
+all of them, this calculator estimates bags only from the yield or coverage your own product states.
 
-**What plaster thickness should I enter?** A typical internal cement plaster coat is around 12–15 mm, and
-an external coat is often thicker, but actual thickness varies by surface condition and local practice.
-Enter your own project's specified thickness rather than relying on a single assumed figure.
-
-This calculator gives plaster area and volume **only**. It does not calculate the cement/sand material
-breakup, a plaster mix ratio, labour cost, scaffolding, a curing schedule, a bill of quantities (BOQ), or
-a final billing quantity.
+This calculator does not calculate a cement/sand material breakup, a mix ratio, water quantity, labour,
+scaffolding, curing, a bill of quantities (BOQ), or a final billing quantity.
 
 ## Worked example
 
-A 5 × 3 m wall, 12 mm plaster coat, 1 surface, no opening, no wastage:
+A 4 × 3 m wall with one 1 × 2 m door, 12 mm plaster, no wastage, volume only:
 
 ## FAQ
 
 ### How do I calculate plaster quantity?
 
-Enter the surface's length, second dimension, and plaster thickness. This plaster quantity calculator
-multiplies the net area (after any opening deduction) by the thickness to give plaster volume, then adds
-your wastage allowance.
+Enter the surface size, the openings and the plaster thickness. The calculator multiplies the net area by
+the thickness to give the application volume, then adds your wastage allowance.
 
-### How do I calculate wall plaster area?
+### How many bags of plaster do I need?
 
-Choose "Wall" as the surface type and enter the wall's length and height. The gross area is length ×
-height; the net area subtracts any door/window opening you enter.
+Choose a bag estimate and enter the figure from your product — either the wet yield per bag, or the area
+one bag covers and the thickness that coverage is quoted for. The calculator rounds up to whole bags.
 
-### How do I calculate ceiling plaster?
+### Why doesn't it calculate cement and sand?
 
-Choose "Ceiling" as the surface type and enter the ceiling's length and width. A ceiling plaster
-calculator uses the same length × second-dimension formula as a wall — only the label changes.
-
-### Should I deduct doors and windows?
-
-Yes, for an accurate estimate. Enter the total door/window area in the opening deduction field; it is
-subtracted from the gross area before the plaster volume is calculated.
+The split depends on the mix, the dry-volume allowance and site practice, and these vary. This tool keeps
+to the geometric plaster volume and product-stated bag yields rather than presenting a disputed factor
+as fact.
 
 ### What plaster thickness should I enter?
 
-Use your project's specified thickness for internal or external plaster — commonly 12–15 mm for internal
-cement plaster, though this varies by site condition and local practice. Always confirm the thickness
-your project actually specifies.
+Your project's specified average thickness. 12 mm is only a starting value — internal and external work,
+and different plaster systems, use different thicknesses.
 
-### Does this calculate cement and sand?
+### Should I deduct doors and windows?
 
-No. This calculator estimates plaster area and volume only. A cement/sand material breakup for plaster
-mortar is a separate calculation this tool does not perform.
+Yes. Add each one as an opening row; the total is deducted from every identical surface.
 
 ### Can I use this for final billing?
 
 No. This is an estimation aid for planning and quantity checks, not a final billing quantity or a
 certified bill of quantities. Actual plaster quantity can vary due to wall unevenness, surface
 preparation, thickness variation, site cutting, and measurement rules — verify plaster thickness, surface
-dimensions, openings, and wastage before purchase, billing, or construction, and confirm the final
-figures with a licensed engineer, architect, contractor, mason, or professional quantity surveyor.
+dimensions, openings, and wastage before purchase, billing, or construction.
 
 ## References
 
 - Rectangular area and volume: length × width × thickness (SI, general geometry).
 - International yard and pound agreement (1959): 1 inch = 25.4 mm and 1 foot = 304.8 mm exactly.
-- Cubic foot: 1 ft³ = 0.028316846592 m³, and square foot: 1 ft² = 0.09290304 m², both rounded here to
-  35.3146667 ft³ per m³ and 10.7639104 ft² per m², matching the
-  Brickwork Calculator and Concrete Quantity Calculator.

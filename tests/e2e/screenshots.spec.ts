@@ -36,3 +36,20 @@ for (const size of SIZES) {
     });
   }
 }
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '1440x900', width: 1440, height: 900, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
+  test(`brickwork populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/brickwork-calculator');
+    await produceResult(page, 'brickwork-calculator');
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `brickwork-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
