@@ -6,13 +6,14 @@ import { parseRows, serializeRows } from './itemRows.ts';
  * The form holds them as JSON text; fully blank rows are allowed while typing and are ignored by
  * the engine.
  */
-export const OPENING_FIELDS = ['width', 'height', 'quantity'] as const;
+export const OPENING_FIELDS = ['type', 'width', 'height', 'quantity'] as const;
+export const OPENING_MEASURE_FIELDS = ['width', 'height', 'quantity'] as const;
 export type OpeningField = (typeof OPENING_FIELDS)[number];
 export type OpeningRowValues = Record<OpeningField, string>;
 
 export const MAX_OPENING_ROWS = 20;
-const NUMERIC = new Set<string>(OPENING_FIELDS);
-const DEFAULTS = { quantity: '1' };
+const NUMERIC = new Set<string>(OPENING_MEASURE_FIELDS);
+const DEFAULTS = { type: '', quantity: '1' };
 
 /** Rows from the form value; an empty value means no rows (not one blank row). */
 export function readOpeningRows(raw: string): OpeningRowValues[] {
@@ -31,7 +32,12 @@ export function writeOpeningRows(rows: readonly OpeningRowValues[]): string {
   return serializeRows(started, OPENING_FIELDS, NUMERIC);
 }
 
-export const blankOpeningRow = (): OpeningRowValues => ({ width: '', height: '', quantity: '1' });
+export const blankOpeningRow = (): OpeningRowValues => ({
+  type: '',
+  width: '',
+  height: '',
+  quantity: '1',
+});
 
 /** Converts every row's width and height when the length unit changes. */
 export function convertOpeningsText(raw: string, from: string, to: string): string {
@@ -43,7 +49,7 @@ export function convertOpeningsText(raw: string, from: string, to: string): stri
   return writeOpeningRows(rows);
 }
 
-const ROW_PATH = /^openings\[(\d+)\]\.(width|height|quantity)$/;
+const ROW_PATH = /^openings\[(\d+)\]\.(type|width|height|quantity)$/;
 
 /** The row and field an engine error path such as "openings[1].width" points at. */
 export function openingRowError(path: string | undefined) {

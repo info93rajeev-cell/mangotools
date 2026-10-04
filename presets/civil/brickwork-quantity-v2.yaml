@@ -33,13 +33,25 @@ fields:
       - { value: "2", labelKey: brickwork.wythes.2 }
       - { value: "3", labelKey: brickwork.wythes.3 }
       - { value: "4", labelKey: brickwork.wythes.4 }
-  openings: { labelKey: brickwork.field.openings, kind: openings, order: 60, helpKey: brickwork.help.openings, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  openings:
+    labelKey: brickwork.field.openings
+    kind: openings
+    order: 60
+    helpKey: brickwork.help.openings
+    helpMode: disclosure
+    convert: { unitField: unit, family: length }
+    options:
+      - { value: "", labelKey: brickwork.opening.generic }
+      - { value: door, labelKey: brickwork.opening.door }
+      - { value: window, labelKey: brickwork.opening.window }
+      - { value: other, labelKey: brickwork.opening.other }
   brickPreset:
     labelKey: brickwork.field.brickPreset
     kind: enum
     control: select
     default: in-modular
     order: 70
+    width: half
     uiOnly: true
     helpKey: brickwork.help.brickPreset
     helpMode: disclosure
@@ -49,7 +61,7 @@ fields:
       - { value: common-230, labelKey: brickwork.brick.common230, sets: { brickUnit: mm, brickLength: "230", brickHeight: "75", mortarJoint: "10" } }
       - { value: uk-215, labelKey: brickwork.brick.uk215, sets: { brickUnit: mm, brickLength: "215", brickHeight: "65", mortarJoint: "10" } }
       - { value: us-modular, labelKey: brickwork.brick.usModular, sets: { brickUnit: in, brickLength: "7.625", brickHeight: "2.25", mortarJoint: "0.375" } }
-  brickUnit: { labelKey: brickwork.field.brickUnit, kind: enum, control: segmented, default: mm, order: 80, options: *lengthUnits }
+  brickUnit: { labelKey: brickwork.field.brickUnit, kind: enum, control: select, default: mm, order: 80, width: half, options: *lengthUnits }
   brickLength: { labelKey: brickwork.field.brickLength, kind: number, required: true, default: "190", order: 90, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
   brickHeight: { labelKey: brickwork.field.brickHeight, kind: number, required: true, default: "90", order: 100, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
   mortarJoint: { labelKey: brickwork.field.mortarJoint, kind: number, required: true, default: "10", order: 110, width: half, helpKey: brickwork.help.mortarJoint, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
@@ -68,8 +80,8 @@ outputs:
 samples:
   wall-5x3-m-openings:
     titleKey: brickwork.sample.standard
-    input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ width: "0.9", height: "2.1", quantity: "1" }, { width: "1.2", height: "1.2", quantity: "2" }], brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10", wastagePercent: "5" }
-ui: { archetypes: [B], density: comfortable, compute: live }
+    input: { unit: m, wallLength: "5", wallHeight: "3", quantity: "1", wythes: "1", openings: [{ type: door, width: "0.9", height: "2.1", quantity: "1" }, { type: window, width: "1.2", height: "1.2", quantity: "2" }], brickUnit: mm, brickLength: "190", brickHeight: "90", mortarJoint: "10", wastagePercent: "5" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
     brickwork.field.unit: Wall unit
@@ -81,20 +93,24 @@ strings:
     brickwork.field.wallLength: Wall length
     brickwork.field.wallHeight: Wall height
     brickwork.field.quantity: Number of identical walls
-    brickwork.field.wythes: Wall thickness in brick skins
-    brickwork.wythes.1: 1 skin (half-brick / single-wythe wall)
-    brickwork.wythes.2: 2 skins (one-brick wall)
-    brickwork.wythes.3: 3 skins
-    brickwork.wythes.4: 4 skins
+    brickwork.field.wythes: Wall thickness
+    brickwork.wythes.1: ½ brick
+    brickwork.wythes.2: 1 brick
+    brickwork.wythes.3: 1½ brick
+    brickwork.wythes.4: 2 brick
     brickwork.field.openings: Openings in one wall (doors, windows)
     brickwork.field.openings.row: Opening {number}
-    brickwork.field.openings.add: Add door or window
+    brickwork.field.openings.add: Add opening
+    brickwork.opening.generic: Opening
+    brickwork.opening.door: Door
+    brickwork.opening.window: Window
+    brickwork.opening.other: Other
     brickwork.field.brickPreset: Brick size preset
     brickwork.brick.custom: Custom size
-    brickwork.brick.inModular: India modular — 190 × 90 mm face, 10 mm joint
-    brickwork.brick.common230: Common 230 × 75 mm face, 10 mm joint
-    brickwork.brick.uk215: UK 215 × 65 mm face, 10 mm joint
-    brickwork.brick.usModular: US modular — 7⅝ × 2¼ in face, ⅜ in joint
+    brickwork.brick.inModular: India modular — 190 × 90 mm
+    brickwork.brick.common230: Common — 230 × 75 mm
+    brickwork.brick.uk215: UK — 215 × 65 mm
+    brickwork.brick.usModular: US modular — 7⅝ × 2¼ in
     brickwork.field.brickUnit: Brick unit
     brickwork.field.brickLength: Brick length
     brickwork.field.brickHeight: Brick height

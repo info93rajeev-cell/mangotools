@@ -32,10 +32,88 @@ test.describe('Brickwork Calculator', () => {
     await expect(output(page, 'wastagePercent')).toHaveText('5%');
     await expect(page.getByLabel('Wastage allowance %')).toBeVisible();
     await expect(page.getByLabel('Mortar joint')).toHaveValue('10');
-    const assumptions = page.locator('section[data-assumptions]');
-    await expect(assumptions).toBeVisible();
-    await expect(assumptions).toContainText('5% wastage allowance');
-    await expect(assumptions).toContainText('10 mm mortar joint');
+    const notes = page.locator('details[data-notes]');
+    await expect(notes).not.toHaveAttribute('open');
+    await notes.locator('summary').click();
+    await expect(notes).toContainText('5% wastage allowance');
+    await expect(notes).toContainText('10 mm mortar joint');
+  });
+
+  test('offers the four brick-based wall thickness choices', async ({ page }) => {
+    await openTool(page, tool);
+    await expect(page.getByLabel('Wall thickness').locator('option')).toHaveText([
+      '½ brick',
+      '1 brick',
+      '1½ brick',
+      '2 brick',
+    ]);
+  });
+
+  test('keeps semantic opening types through unit conversion without changing deduction', async ({
+    page,
+  }) => {
+    await openTool(page, tool);
+    await page.getByLabel('Wall length').fill('5');
+    await page.getByLabel('Wall height').fill('3');
+    await addOpening(page, tool, 0, '0.9', '2.1', '1');
+    await page.locator('#tool-brickwork-calculator-openings-0-type').selectOption('door');
+    await addOpening(page, tool, 1, '1.2', '1.2', '1');
+    await page.locator('#tool-brickwork-calculator-openings-1-type').selectOption('window');
+    await addOpening(page, tool, 2, '0.5', '0.5', '1');
+    await page.locator('#tool-brickwork-calculator-openings-2-type').selectOption('other');
+    await expect(
+      page.locator('#tool-brickwork-calculator-openings-0-type').locator('option'),
+    ).toHaveText(['Opening', 'Door', 'Window', 'Other']);
+    await expect(primaryResult(page)).toHaveText('571');
+    await choose(page, tool, 'unit', 'ft');
+    await expect(page.locator('#tool-brickwork-calculator-openings-0-type')).toHaveValue('door');
+    await expect(page.locator('#tool-brickwork-calculator-openings-1-type')).toHaveValue('window');
+    await expect(page.locator('#tool-brickwork-calculator-openings-2-type')).toHaveValue('other');
+    await expect(page.locator('#tool-brickwork-calculator-openings-0-width')).toHaveValue(
+      '2.952755905512',
+    );
+    await expect(primaryResult(page)).toHaveText('571');
+  });
+
+  test('fits its populated workspace and secondary controls in target desktop viewports', async ({
+    page,
+  }) => {
+    for (const viewport of [
+      { width: 1366, height: 768 },
+      { width: 1440, height: 900 },
+      { width: 1920, height: 1080 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await openTool(page, tool);
+      await page.getByRole('button', { name: 'Try sample' }).click();
+
+      const bounds = await page.evaluate(() => {
+        const bottom = (selector: string) =>
+          document.querySelector(selector)?.getBoundingClientRect().bottom ??
+          Number.POSITIVE_INFINITY;
+        return {
+          viewport: window.innerHeight,
+          input: bottom('[data-input-panel]'),
+          result: bottom('[data-result-panel]'),
+          secondary: Math.max(
+            ...Array.from(
+              document.querySelectorAll(
+                'details[data-disclaimer] > summary, details[data-tool-content-section] > summary',
+              ),
+              (element) => element.getBoundingClientRect().bottom,
+            ),
+          ),
+        };
+      });
+
+      expect(Math.max(bounds.input, bounds.result, bounds.secondary)).toBeLessThanOrEqual(
+        bounds.viewport,
+      );
+      await expect(page.locator('details[data-notes]')).not.toHaveAttribute('open');
+      for (const section of await page.locator('details[data-tool-content-section]').all()) {
+        await expect(section).not.toHaveAttribute('open');
+      }
+    }
   });
 
   test('changing the wall unit converts values and keeps the result', async ({ page }) => {
@@ -56,7 +134,11 @@ test.describe('Brickwork Calculator', () => {
     await page.getByLabel('Brick size preset').selectOption('us-modular');
     await expect(page.getByLabel('Brick length')).toHaveValue('7.625');
     await expect(page.getByLabel('Mortar joint')).toHaveValue('0.375');
-    await page.getByLabel('Mortar joint').fill('0.5');
+    await page.getByLabel('Brick unit').selectOption('mm');
+    await expect(page.getByLabel('Brick length')).toHaveValue('193.675');
+    await expect(page.getByLabel('Brick height')).toHaveValue('57.15');
+    await expect(page.getByLabel('Mortar joint')).toHaveValue('9.525');
+    await page.getByLabel('Brick length').fill('200');
     await expect(page.getByLabel('Brick size preset')).toHaveValue('custom');
   });
 

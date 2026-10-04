@@ -60,6 +60,10 @@
   gap: var(--space-2);
 }
 
+.openingFields.withType > :first-child {
+  grid-column: 1 / -1;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -97,6 +101,12 @@
     font-weight: var(--weight-semibold);
   }
 
+  .columnHeaders[data-has-type="true"] {
+    grid-template-columns: 4.5rem minmax(6rem, 1fr) repeat(3, minmax(0, 1fr)) var(
+        --control-height-sm
+      );
+  }
+
   .openingRow {
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: var(--space-3);
@@ -117,6 +127,14 @@
     --field-control-column: auto;
     --field-error-column: auto;
     --field-align: stretch;
+  }
+
+  .openingFields.withType {
+    grid-template-columns: minmax(6rem, 1fr) repeat(3, minmax(0, 1fr));
+  }
+
+  .openingFields.withType > :first-child {
+    grid-column: auto;
   }
 
   .openingFields :global(label) {

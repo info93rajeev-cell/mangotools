@@ -91,6 +91,16 @@ interface ResultSectionProps {
   actions: CalculatorWorkspaceActions;
 }
 
+function displayedNotices(preset: ResolvedPreset, warnings: ToolSnapshot['result']) {
+  const notices = partitionNotices(warnings?.warnings ?? []);
+  if (preset.ui.collapseNotices !== true) return notices;
+  return {
+    warnings: notices.warnings,
+    assumptions: [],
+    notes: [...notices.assumptions, ...notices.notes],
+  };
+}
+
 function ResultPanelHead({ idPrefix, actions }: Pick<ResultSectionProps, 'idPrefix' | 'actions'>) {
   return (
     <div class={`${styles.panelHead} no-print`}>
@@ -126,7 +136,7 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
   const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
   const steps = (result?.value.working as WorkingStep[] | undefined) ?? [];
   const current = result && phase !== 'error' ? result : null;
-  const notices = partitionNotices(current?.warnings ?? []);
+  const notices = displayedNotices(preset, current);
   const missingNames = missing.map((key) =>
     label(preset, preset.fields[key]?.labelKey).toLowerCase(),
   );
