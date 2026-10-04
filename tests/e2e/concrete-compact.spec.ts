@@ -1,0 +1,121 @@
+import { expect, type Page, test } from '@playwright/test';
+import { island, openTool, primaryResult } from '../support/tool-page.ts';
+
+const tool = 'concrete-quantity-calculator';
+const output = (page: Page, key: string) => page.locator(`[data-output="${key}"] dd`);
+const choose = (page: Page, field: string, value: string) =>
+  page.locator(`label[for="tool-${tool}-${field}-${value}"]`).click();
+
+async function expectSameMobileRow(page: Page, left: string, right: string) {
+  const boxes = await page.evaluate(
+    ({ left, right }) => {
+      const box = (id: string) =>
+        document
+          .querySelector<HTMLElement>(id)
+          ?.closest<HTMLElement>('[data-width]')
+          ?.getBoundingClientRect()
+          .toJSON();
+      return { left: box(left), right: box(right) };
+    },
+    { left, right },
+  );
+  expect(boxes.left).toBeTruthy();
+  expect(boxes.right).toBeTruthy();
+  expect(Math.abs((boxes.left?.top ?? 0) - (boxes.right?.top ?? 0))).toBeLessThanOrEqual(2);
+  expect(boxes.left?.right ?? 0).toBeLessThan(boxes.right?.left ?? 0);
+}
+
+test.describe('Concrete compact workspace', () => {
+  test('fits populated inputs, results and collapsed disclosures on desktop', async ({ page }) => {
+    for (const viewport of [
+      { width: 1366, height: 768 },
+      { width: 1440, height: 900 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await openTool(page, tool);
+      await page.getByRole('button', { name: 'Try sample' }).click();
+      await page.getByLabel('Yield per bag (optional)').fill('14');
+      await expect(output(page, 'bags')).toHaveText('225');
+      await expect(island(page, tool).locator('[data-density]')).toHaveAttribute(
+        'data-density',
+        'compact',
+      );
+
+      const bounds = await page.evaluate(() => {
+        const bottom = (selector: string) =>
+          document.querySelector(selector)?.getBoundingClientRect().bottom ??
+          Number.POSITIVE_INFINITY;
+        return {
+          viewport: window.innerHeight,
+          input: bottom('[data-input-panel]'),
+          result: bottom('[data-result-panel]'),
+          secondary: Math.max(
+            ...Array.from(
+              document.querySelectorAll(
+                'details[data-disclaimer] > summary, details[data-tool-content-section] > summary',
+              ),
+              (element) => element.getBoundingClientRect().bottom,
+            ),
+          ),
+        };
+      });
+
+      expect(Math.max(bounds.input, bounds.result, bounds.secondary)).toBeLessThanOrEqual(
+        bounds.viewport,
+      );
+      await expect(page.locator('details[data-notes]')).not.toHaveAttribute('open');
+      for (const section of await page.locator('details[data-tool-content-section]').all()) {
+        await expect(section).not.toHaveAttribute('open');
+      }
+    }
+  });
+
+  test('uses readable paired fields without horizontal overflow at 360 px', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+
+    const id = (field: string) => `#tool-${tool}-${field}`;
+    await expectSameMobileRow(page, id('memberType'), `${id('unit')}-m`);
+    await expectSameMobileRow(page, id('length'), id('width'));
+    await expectSameMobileRow(page, id('depth'), id('quantity'));
+    await expectSameMobileRow(page, id('overagePercent'), id('bagYield'));
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  test('keeps contextual help and result notes keyboard operable', async ({ page }) => {
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    for (const details of [
+      island(page, tool).locator('details[data-field-help]').first(),
+      page.locator('details[data-notes]'),
+    ]) {
+      await expect(details).not.toHaveAttribute('open');
+      await details.locator('summary').focus();
+      await page.keyboard.press('Enter');
+      await expect(details).toHaveAttribute('open');
+    }
+  });
+
+  test('converts dimensions and switches to only the selected shape fields', async ({ page }) => {
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(primaryResult(page)).toHaveText('3.150');
+    await choose(page, 'unit', 'ft');
+    await expect(page.getByLabel('Length')).toHaveValue('16.404199475066');
+    await expect(page.getByLabel('Width')).toHaveValue('13.123359580052');
+    await expect(page.getByLabel('Depth / thickness / height')).toHaveValue('0.492125984252');
+    await expect(primaryResult(page)).toHaveText('4.12');
+    await expect(output(page, 'orderVolumeM3')).toHaveText('3.150');
+
+    await page.getByLabel('Member type').selectOption('circular-column');
+    await expect(page.getByLabel('Diameter')).toBeVisible();
+    await expect(page.getByLabel('Height', { exact: true })).toBeVisible();
+    await expect(page.getByLabel('Length')).toHaveCount(0);
+    await expect(page.getByLabel('Width')).toHaveCount(0);
+    await expect(page.getByLabel('Depth / thickness / height')).toHaveCount(0);
+  });
+});

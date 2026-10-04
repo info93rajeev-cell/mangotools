@@ -4,8 +4,9 @@ id: concrete-quantity-calculator
 slug: concrete-quantity-calculator
 status: beta
 tier: T2
-version: 0.2.0
+version: 0.2.1
 changelog:
+  - { version: 0.2.1, date: 2026-10-05, type: changed, summary: "Use the compact application workspace on desktop and paired fields on mobile, with result notes collapsed by default." }
   - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Circular columns, editable overage for an order volume, optional bags from stated yield, yd³ output, converting units, visible assumptions." }
   - { version: 0.1.3, date: 2026-09-27, type: changed, summary: "Add a related link to the new Tile / Flooring Calculator." }
   - { version: 0.1.2, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }

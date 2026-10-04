@@ -53,3 +53,22 @@ for (const size of [
     });
   });
 }
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '1440x900', width: 1440, height: 900, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
+  test(`concrete populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/concrete-quantity-calculator');
+    await produceResult(page, 'concrete-quantity-calculator');
+    await page.getByLabel('Yield per bag (optional)').fill('14');
+    await page.locator('[data-output="bags"] dd').waitFor({ state: 'visible' });
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `concrete-quantity-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
