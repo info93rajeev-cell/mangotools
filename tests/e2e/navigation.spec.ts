@@ -45,6 +45,53 @@ test.describe('navigation', () => {
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
   });
 
+  test('construction category fits its cards, closed support and footer at 1366x768', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await gotoReady(page, '/construction');
+
+    const cards = page.locator('main [data-tool-card]');
+    await expect(cards).toHaveCount(6);
+    await expect(cards.last()).toBeInViewport();
+
+    for (const name of ['about', 'faq']) {
+      const disclosure = page.locator(`details[data-category-support="${name}"]`);
+      await expect(disclosure).toBeInViewport();
+      await expect(disclosure).not.toHaveAttribute('open');
+    }
+    await expect(page.locator('footer')).toBeInViewport();
+
+    const dimensions = await page.evaluate(() => ({
+      clientHeight: document.documentElement.clientHeight,
+      scrollHeight: document.documentElement.scrollHeight,
+    }));
+    expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
+  });
+
+  test('construction category support stays closed without phone-width overflow', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await gotoReady(page, '/construction');
+
+    for (const name of ['about', 'faq']) {
+      const disclosure = page.locator(`details[data-category-support="${name}"]`);
+      const summary = disclosure.locator('summary').first();
+      await expect(disclosure).not.toHaveAttribute('open');
+      await summary.focus();
+      await page.keyboard.press('Enter');
+      await expect(disclosure).toHaveAttribute('open');
+      await expect(disclosure.locator('.support-content')).toBeVisible();
+      await page.keyboard.press('Enter');
+      await expect(disclosure).not.toHaveAttribute('open');
+    }
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
   test('search handles synonyms and typos', async ({ page }) => {
     await gotoReady(page, '/tools');
     const search = page.getByRole('combobox', { name: 'Search tools' }).first();
