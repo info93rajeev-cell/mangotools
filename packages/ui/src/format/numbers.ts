@@ -9,6 +9,7 @@ export type ValueFormat = 'text' | 'money' | 'percent' | 'number' | 'code';
 
 export interface FormatOptions {
   currency?: Currency | undefined;
+  decimalPlaces?: number | undefined;
 }
 
 const DECIMAL = /^(-?)(\d*)(?:\.(\d*))?$/;
@@ -102,7 +103,13 @@ export function formatValue(
     case 'percent':
       return formatPercent(value);
     case 'number':
-      return formatDecimal(value, 'international');
+      return options.decimalPlaces === undefined
+        ? formatDecimal(value, 'international')
+        : formatDecimal(
+            roundDecimalText(value, options.decimalPlaces),
+            'international',
+            options.decimalPlaces,
+          );
     default:
       return value;
   }

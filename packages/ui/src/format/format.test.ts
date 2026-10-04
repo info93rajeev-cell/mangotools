@@ -43,6 +43,13 @@ describe('number formatting', () => {
     expect(formatValue('number', '1234.5')).toBe('1,234.5');
   });
 
+  it('rounds and pads numbers to a selected display precision', () => {
+    expect(formatValue('number', '1234.5678', { decimalPlaces: 2 })).toBe('1,234.57');
+    expect(formatValue('number', '1234.5', { decimalPlaces: 3 })).toBe('1,234.500');
+    expect(formatValue('number', '1234.5', { decimalPlaces: 4 })).toBe('1,234.5000');
+    expect(formatValue('percent', '5', { decimalPlaces: 4 })).toBe('5%');
+  });
+
   it('formats byte sizes', () => {
     expect(formatBytes(10)).toBe('10 B');
     expect(formatBytes(1536)).toBe('1.5 KB');

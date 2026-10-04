@@ -98,6 +98,8 @@ export const fieldSchema = z.strictObject({
 export const outputSchema = z.strictObject({
   labelKey: z.string(),
   format: z.enum(['text', 'money', 'percent', 'number', 'code']),
+  /** Optional UI-only field whose integer value fixes this numeric output's displayed decimals. */
+  decimalPlacesField: z.string().optional(),
   order: z.int(),
   visible: z.boolean().optional(),
   visibleWhen: conditions.optional(),

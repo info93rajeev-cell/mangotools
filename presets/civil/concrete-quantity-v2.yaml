@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/concrete-quantity-v2
-version: 0.2.1
+version: 0.2.2
 operation: civil.concrete.quantity@2
 fields:
   memberType:
@@ -51,15 +51,27 @@ fields:
       - { value: l, labelKey: concrete.yield.l }
       - { value: m3, labelKey: concrete.yield.m3 }
       - { value: ft3, labelKey: concrete.yield.ft3 }
+  decimalPlaces:
+    labelKey: concrete.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 100
+    width: half
+    uiOnly: true
+    options:
+      - { value: 2, labelKey: concrete.decimalPlaces.2 }
+      - { value: 3, labelKey: concrete.decimalPlaces.3 }
+      - { value: 4, labelKey: concrete.decimalPlaces.4 }
 outputs:
-  orderVolumeM3: { labelKey: concrete.out.orderVolumeM3, format: number, order: 10, primaryWhen: { unit: [mm, cm, m] } }
-  orderVolumeYd3: { labelKey: concrete.out.orderVolumeYd3, format: number, order: 11, primaryWhen: { unit: [in, ft] } }
-  orderVolumeFt3: { labelKey: concrete.out.orderVolumeFt3, format: number, order: 12 }
-  netVolumeM3: { labelKey: concrete.out.netVolumeM3, format: number, order: 20 }
-  netVolumeFt3: { labelKey: concrete.out.netVolumeFt3, format: number, order: 21, visibleWhen: { unit: [in, ft] } }
-  netVolumeYd3: { labelKey: concrete.out.netVolumeYd3, format: number, order: 22, visibleWhen: { unit: [in, ft] } }
+  orderVolumeM3: { labelKey: concrete.out.orderVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 10, primaryWhen: { unit: [mm, cm, m] } }
+  orderVolumeYd3: { labelKey: concrete.out.orderVolumeYd3, format: number, decimalPlacesField: decimalPlaces, order: 11, primaryWhen: { unit: [in, ft] } }
+  orderVolumeFt3: { labelKey: concrete.out.orderVolumeFt3, format: number, decimalPlacesField: decimalPlaces, order: 12 }
+  netVolumeM3: { labelKey: concrete.out.netVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 20 }
+  netVolumeFt3: { labelKey: concrete.out.netVolumeFt3, format: number, decimalPlacesField: decimalPlaces, order: 21, visibleWhen: { unit: [in, ft] } }
+  netVolumeYd3: { labelKey: concrete.out.netVolumeYd3, format: number, decimalPlacesField: decimalPlaces, order: 22, visibleWhen: { unit: [in, ft] } }
   overagePercent: { labelKey: concrete.out.overagePercent, format: percent, order: 30 }
-  overageVolumeM3: { labelKey: concrete.out.overageVolumeM3, format: number, order: 31 }
+  overageVolumeM3: { labelKey: concrete.out.overageVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 31 }
   bags: { labelKey: concrete.out.bags, format: number, order: 40 }
   quantity: { labelKey: concrete.out.quantity, format: number, order: 50 }
 samples:
@@ -92,6 +104,10 @@ strings:
     concrete.field.overagePercent: Overage allowance %
     concrete.field.bagYield: Yield per bag (optional)
     concrete.field.bagYieldUnit: Yield unit
+    concrete.field.decimalPlaces: Decimal places
+    concrete.decimalPlaces.2: "2"
+    concrete.decimalPlaces.3: "3"
+    concrete.decimalPlaces.4: "4"
     concrete.yield.l: L
     concrete.yield.m3: m³
     concrete.yield.ft3: ft³

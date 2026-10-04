@@ -80,6 +80,7 @@ test.describe('Concrete compact workspace', () => {
     await expectSameMobileRow(page, id('length'), id('width'));
     await expectSameMobileRow(page, id('depth'), id('quantity'));
     await expectSameMobileRow(page, id('overagePercent'), id('bagYield'));
+    await expectSameMobileRow(page, `${id('bagYieldUnit')}-l`, `${id('decimalPlaces')}-3`);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
@@ -108,7 +109,7 @@ test.describe('Concrete compact workspace', () => {
     await expect(page.getByLabel('Length')).toHaveValue('16.404199475066');
     await expect(page.getByLabel('Width')).toHaveValue('13.123359580052');
     await expect(page.getByLabel('Depth / thickness / height')).toHaveValue('0.492125984252');
-    await expect(primaryResult(page)).toHaveText('4.12');
+    await expect(primaryResult(page)).toHaveText('4.120');
     await expect(output(page, 'orderVolumeM3')).toHaveText('3.150');
 
     await page.getByLabel('Member type').selectOption('circular-column');
@@ -117,5 +118,53 @@ test.describe('Concrete compact workspace', () => {
     await expect(page.getByLabel('Length')).toHaveCount(0);
     await expect(page.getByLabel('Width')).toHaveCount(0);
     await expect(page.getByLabel('Depth / thickness / height')).toHaveCount(0);
+  });
+
+  test('formats decimal quantities with the selected 2, 3 or 4 places', async ({ page }) => {
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await page.getByLabel('Yield per bag (optional)').fill('14');
+    await expect(page.locator(`#tool-${tool}-decimalPlaces-3`)).toBeChecked();
+    await expect(primaryResult(page)).toHaveText('3.150');
+
+    const expected = {
+      '2': {
+        primary: '3.15',
+        orderVolumeYd3: '4.12',
+        orderVolumeFt3: '111.24',
+        netVolumeM3: '3.00',
+        overageVolumeM3: '0.15',
+      },
+      '3': {
+        primary: '3.150',
+        orderVolumeYd3: '4.120',
+        orderVolumeFt3: '111.240',
+        netVolumeM3: '3.000',
+        overageVolumeM3: '0.150',
+      },
+      '4': {
+        primary: '3.1500',
+        orderVolumeYd3: '4.1200',
+        orderVolumeFt3: '111.2400',
+        netVolumeM3: '3.0000',
+        overageVolumeM3: '0.1500',
+      },
+    } as const;
+
+    for (const places of ['2', '3', '4'] as const) {
+      await choose(page, 'decimalPlaces', places);
+      await expect(primaryResult(page)).toHaveText(expected[places].primary);
+      for (const key of [
+        'orderVolumeYd3',
+        'orderVolumeFt3',
+        'netVolumeM3',
+        'overageVolumeM3',
+      ] as const) {
+        await expect(output(page, key)).toHaveText(expected[places][key]);
+      }
+      await expect(output(page, 'overagePercent')).toHaveText('5%');
+      await expect(output(page, 'bags')).toHaveText('225');
+      await expect(output(page, 'quantity')).toHaveText('1');
+    }
   });
 });
