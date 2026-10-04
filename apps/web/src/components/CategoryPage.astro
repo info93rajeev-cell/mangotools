@@ -53,7 +53,7 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
           </nav>
         ) : null
       }
-      <section class="block" aria-labelledby="all-tools">
+      <section class="block tools" aria-labelledby="all-tools">
         <h2 id="all-tools">{fill(copy.allInCategory, { name: category.name })}</h2>
         <CardGrid>
           {
@@ -65,33 +65,41 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
           }
         </CardGrid>
       </section>
-      {
-        category.about && category.about.length > 0 ? (
-          <section class="block prose" aria-labelledby="about">
-            <h2 id="about">{copy.about}</h2>
-            {category.about.map((paragraph) => (
-              <p>{paragraph}</p>
-            ))}
-          </section>
-        ) : null
-      }
-      {
-        category.faq && category.faq.length > 0 ? (
-          <section class="block" aria-labelledby="faq">
-            <h2 id="faq">{copy.faq}</h2>
-            <div class="faq">
-              {category.faq.map((item) => (
-                <details>
-                  <summary>
-                    <h3>{item.q}</h3>
-                  </summary>
-                  <p>{item.a}</p>
-                </details>
-              ))}
-            </div>
-          </section>
-        ) : null
-      }
+      <div class="support">
+        {
+          category.about && category.about.length > 0 ? (
+            <details class="support-detail" data-category-support="about">
+              <summary class="support-summary">
+                <h2>{copy.about}</h2>
+              </summary>
+              <div class="support-content prose">
+                {category.about.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </details>
+          ) : null
+        }
+        {
+          category.faq && category.faq.length > 0 ? (
+            <details class="support-detail" data-category-support="faq">
+              <summary class="support-summary">
+                <h2>{copy.faq}</h2>
+              </summary>
+              <div class="support-content faq">
+                {category.faq.map((item) => (
+                  <details class="faq-item">
+                    <summary class="faq-summary">
+                      <h3>{item.q}</h3>
+                    </summary>
+                    <p>{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </details>
+          ) : null
+        }
+      </div>
     </div>
   </PageContainer>
 </BaseLayout>
@@ -153,47 +161,125 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
     display: grid;
     gap: var(--space-4);
   }
+  .support {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: var(--space-2);
+  }
+  .support-detail {
+    width: fit-content;
+    max-width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+  }
+  .support-detail[open] {
+    width: 100%;
+    border-radius: var(--radius-lg);
+  }
+  .support-summary,
+  .faq-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    list-style: none;
+  }
+  .support-summary {
+    min-height: var(--control-height-sm);
+    padding: var(--space-1) var(--space-3);
+  }
+  .support-summary::-webkit-details-marker,
+  .faq-summary::-webkit-details-marker {
+    display: none;
+  }
+  .support-summary::after,
+  .faq-summary::after {
+    content: '+';
+    color: var(--color-text-subtle);
+  }
+  details[open] > .support-summary::after,
+  details[open] > .faq-summary::after {
+    content: '−';
+  }
+  .support-summary h2 {
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+  }
+  .support-content {
+    padding: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
   .prose {
     max-width: 72ch;
   }
   .prose p {
     color: var(--color-text-muted);
   }
+  .prose p + p {
+    margin-top: var(--space-3);
+  }
   .faq {
     display: grid;
     max-width: 880px;
-    border-top: 1px solid var(--color-border);
   }
-  details {
+  .faq-item {
     border-bottom: 1px solid var(--color-border);
   }
-  summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-4);
+  .faq-item:last-child {
+    border-bottom: 0;
+  }
+  .faq-summary {
     padding: var(--space-4) 0;
-    cursor: pointer;
-    list-style: none;
   }
-  summary::-webkit-details-marker {
-    display: none;
-  }
-  summary::after {
-    content: '+';
-    color: var(--color-text-subtle);
-    font-size: 1.25rem;
-  }
-  details[open] summary::after {
-    content: '−';
-  }
-  summary h3 {
+  .faq-summary h3 {
     font-size: var(--text-body);
     line-height: var(--leading-body);
   }
-  details p {
+  .faq-item p {
     padding-bottom: var(--space-4);
     color: var(--color-text-muted);
     max-width: 72ch;
+  }
+
+  @media (min-width: 768px) {
+    .page {
+      gap: var(--space-3);
+    }
+    .head {
+      gap: var(--space-1);
+    }
+    .head p {
+      line-height: var(--leading-ui);
+    }
+    .block {
+      gap: var(--space-2);
+    }
+    .block > h2 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+    .tools :global(ul) {
+      gap: var(--space-3);
+    }
+    .tools :global([data-tool-card]) {
+      gap: var(--space-1);
+      padding: var(--space-3);
+    }
+    .tools :global([data-tool-card] h3) {
+      font-size: var(--text-body);
+      line-height: 1.25rem;
+    }
+    .tools :global([data-tool-card] > p) {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .tools :global([data-tool-card] > div) {
+      margin-top: 0;
+    }
   }
 </style>

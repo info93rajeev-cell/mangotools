@@ -33,7 +33,7 @@ const { brand, tagline, categories, pages = [] } = Astro.props;
         ) : null
       }
     </div>
-    <nav aria-label={t('site.categories')}>
+    <nav aria-label={t('site.categories')} class="categories">
       <h2 class="heading">{t('site.categories')}</h2>
       <ul>
         <li><a href="/tools">{t('site.allTools')}</a></li>
@@ -51,27 +51,25 @@ const { brand, tagline, categories, pages = [] } = Astro.props;
 
 <style>
   .site-footer {
-    margin-top: var(--space-24);
+    margin-top: 0;
     border-top: 1px solid var(--color-border);
     background: var(--color-surface-subtle);
   }
   .site-footer :global(.inner) {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--space-8);
-    padding-block: var(--space-12);
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-5);
   }
   .brand {
-    display: grid;
-    gap: var(--space-2);
-    max-width: 360px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
   }
   .tagline {
     color: var(--color-text-muted);
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
-    text-wrap: balance;
   }
   .info ul {
     display: flex;
@@ -82,7 +80,7 @@ const { brand, tagline, categories, pages = [] } = Astro.props;
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
     color: var(--color-text);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
   }
   ul {
     display: grid;
@@ -99,5 +97,29 @@ const { brand, tagline, categories, pages = [] } = Astro.props;
   a:hover {
     color: var(--color-text);
     text-decoration: underline;
+  }
+
+  @media (min-width: 768px) {
+    .site-footer :global(.inner) {
+      gap: var(--space-3);
+      padding-block: var(--space-4);
+    }
+    .brand {
+      justify-content: space-between;
+    }
+    .categories {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+    .categories .heading {
+      flex: none;
+      margin: 0;
+    }
+    .categories ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1) var(--space-5);
+    }
   }
 </style>

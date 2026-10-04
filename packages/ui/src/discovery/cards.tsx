@@ -37,6 +37,7 @@ export interface CategoryCardProps {
   icon: string;
   count: number;
   heading?: Heading;
+  compact?: boolean;
 }
 
 export function CategoryCard({
@@ -46,9 +47,10 @@ export function CategoryCard({
   icon,
   count,
   heading: H = 'h3',
+  compact = false,
 }: CategoryCardProps) {
   return (
-    <article class={styles.card}>
+    <article class={`${styles.card} ${compact ? styles.categoryCompact : ''}`}>
       <span class={styles.categoryIcon}>
         <Icon name={icon} />
       </span>
