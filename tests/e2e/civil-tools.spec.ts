@@ -7,6 +7,24 @@ const choose = (page: Page, tool: string, field: string, value: string) =>
 
 const output = (page: Page, key: string) => page.locator(`[data-output="${key}"] dd`);
 
+async function expectSameMobileRow(page: Page, left: string, right: string, fieldSlots = false) {
+  const boxes = await page.evaluate(
+    ({ left, right, fieldSlots }) => {
+      const box = (id: string) => {
+        const control = document.querySelector<HTMLElement>(id);
+        const element = fieldSlots ? control?.closest<HTMLElement>('[data-width]') : control;
+        return element?.getBoundingClientRect().toJSON();
+      };
+      return { left: box(left), right: box(right) };
+    },
+    { left, right, fieldSlots },
+  );
+  expect(boxes.left).toBeTruthy();
+  expect(boxes.right).toBeTruthy();
+  expect(Math.abs((boxes.left?.top ?? 0) - (boxes.right?.top ?? 0))).toBeLessThanOrEqual(2);
+  expect(boxes.left?.right ?? 0).toBeLessThan(boxes.right?.left ?? 0);
+}
+
 /** Fills one opening/deduction row (adding it first). */
 async function addOpening(page: Page, tool: string, row: number, w: string, h: string, q: string) {
   await island(page, tool).locator('[data-openings] > div button').last().click();
@@ -114,6 +132,25 @@ test.describe('Brickwork Calculator', () => {
         await expect(section).not.toHaveAttribute('open');
       }
     }
+  });
+
+  test('uses compact paired rows without overflow on a 360 px phone', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+
+    const id = (field: string) => `#tool-${tool}-${field}`;
+    await expectSameMobileRow(page, id('wallLength'), id('wallHeight'), true);
+    await expectSameMobileRow(page, id('quantity'), id('wythes'), true);
+    await expectSameMobileRow(page, id('brickLength'), id('brickHeight'), true);
+    await expectSameMobileRow(page, id('mortarJoint'), id('wastagePercent'), true);
+    await expectSameMobileRow(page, `${id('openings')}-0-type`, `${id('openings')}-0-quantity`);
+    await expectSameMobileRow(page, `${id('openings')}-0-width`, `${id('openings')}-0-height`);
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 
   test('changing the wall unit converts values and keeps the result', async ({ page }) => {
