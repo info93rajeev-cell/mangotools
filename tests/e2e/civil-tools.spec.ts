@@ -207,7 +207,7 @@ test.describe('Concrete Quantity Calculator', () => {
     await page.getByLabel('Member type').selectOption('circular-column');
     await page.getByLabel('Diameter').fill('0.3');
     await page.getByLabel('Height', { exact: true }).fill('3');
-    await page.getByLabel('Number of identical members').fill('2');
+    await page.getByLabel('Same-size members').fill('2');
     await expect(primaryResult(page)).toHaveText('0.424');
     await page.getByLabel('Yield per bag (optional)').fill('14');
     await expect(output(page, 'bags')).toHaveText('31');

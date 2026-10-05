@@ -7,20 +7,20 @@ example: 001-slab-overage
 
 1. Choose the member type — slab, footing, wall, beam, rectangular column, circular column or a general rectangular volume — and the unit your dimensions are in: millimetres, centimetres, metres, inches or feet. Changing the unit converts the values you already typed.
 2. Enter one member's size: length, width and depth/thickness/height, or diameter and height for a circular column.
-3. Enter the number of identical members and an overage allowance (0 to 50%, defaults to 0%).
+3. Enter how many same-size members you need and an overage allowance (0 to 50%, defaults to 0%).
 4. Optionally, for pre-mixed bags, enter the yield per bag printed on your product to see how many bags to buy.
 5. Read the concrete to order, the net geometric volume, the assumptions used and the working. Copy or print the result.
 
 ## Method
 
-- Rectangular members: volume = length × width × depth × number of members.
-- Circular columns: volume = π × (diameter ÷ 2)² × height × number of members.
+- Rectangular members: volume = length × width × depth × same-size member count.
+- Circular columns: volume = π × (diameter ÷ 2)² × height × same-size member count.
 - Order volume = net volume × (1 + overage % ÷ 100).
 - Bags (only when you enter a yield) = order volume ÷ yield per bag, **rounded up to a whole bag**.
 
 Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m, so 1 ft³ = 0.028316846592 m³ and 1 yd³ = 0.764554857984 m³ exactly. Imperial and metric inputs that describe the same member give the same volume.
 
-The rule is **exact first, round once**: every volume is kept at full precision and rounded only for display — m³ to 3 decimal places, ft³ and yd³ to 2.
+The rule is **exact first, round once**: every volume is kept at full precision and rounded only for display. Choose 2, 3 or 4 decimal places to set both the displayed volume precision and the accepted precision of the overage percentage; unit-converted measurements retain the extra internal precision needed for exact conversion.
 
 **Overage is your estimating allowance, not a rule.** It covers spillage, uneven formwork or over-excavation, and how much is sensible depends on the job, so the percentage is always shown with the result.
 

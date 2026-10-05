@@ -31,9 +31,11 @@ export const concreteQuantityInputV2 = z.strictObject({
   overagePercent: decimal.optional(),
   bagYield: decimal.optional(),
   bagYieldUnit: z.enum(yieldUnits).optional(),
+  /** Optional UI precision metadata. Absence preserves the historical engine contract. */
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
-/** No display params: each output is formatted by what it represents (see lib/present.ts). */
+/** No operation params: precision metadata is an optional, persisted input field. */
 export const concreteQuantityParamsV2 = z.strictObject({});
 
 export const concreteQuantityOutputV2 = z.strictObject({

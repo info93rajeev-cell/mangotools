@@ -23,6 +23,7 @@ export interface Measured {
   shape: Shape;
   quantity: string;
   overagePercent: string;
+  displayDecimals: number | null;
   bag: { yield: string; unit: YieldUnit } | null;
 }
 
@@ -49,10 +50,11 @@ export function measure(input: ConcreteQuantityInputV2): Result<Measured> {
   if (!shape.ok) return shape;
   const quantity = readCount(input.quantity, 'quantity', MAX_COUNT);
   if (!quantity.ok) return quantity;
+  const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : null;
   const overagePercent = readPercent(input.overagePercent, 'overagePercent', {
     min: '0',
     max: '50',
-    maxDecimals: PERCENT_DECIMALS,
+    maxDecimals: displayDecimals ?? PERCENT_DECIMALS,
     rangeCode: 'CIVIL_WASTAGE_OUT_OF_RANGE',
   });
   if (!overagePercent.ok) return overagePercent;
@@ -64,6 +66,7 @@ export function measure(input: ConcreteQuantityInputV2): Result<Measured> {
     shape: shape.value,
     quantity: quantity.value,
     overagePercent: overagePercent.value,
+    displayDecimals,
     bag: bagYield.value ? { yield: bagYield.value, unit: input.bagYieldUnit ?? 'l' } : null,
   });
 }

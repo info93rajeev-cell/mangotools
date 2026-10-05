@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { div, mul, sub } from '@mangotools/engine-numeric';
+import { div, mul, sub, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info } from '../../lib/notices.ts';
 import { amount, ceilWhole, volume } from '../../lib/present.ts';
 import {
@@ -79,6 +79,14 @@ function bagsFor(m: Measured, netVolume: string, working: WorkingStep[]) {
   return { bagYield: m.bag.yield, bagYieldUnit: m.bag.unit, bags };
 }
 
+function displayed(
+  value: string,
+  decimals: number | null,
+  legacy: (exact: string) => string,
+): string {
+  return decimals === null ? legacy(value) : toFixedString(value, decimals, 'half-up');
+}
+
 export const concreteQuantityV2 = defineOperation({
   id: 'civil.concrete.quantity',
   major: 2,
@@ -131,13 +139,13 @@ export const concreteQuantityV2 = defineOperation({
         unit: m.unit,
         quantity: m.quantity,
         overagePercent: m.overagePercent,
-        netVolumeM3: volume(netVolume),
-        netVolumeFt3: amount(toFt3(netVolume)),
-        netVolumeYd3: amount(toYd3(netVolume)),
-        overageVolumeM3: volume(sub(orderVolume, netVolume)),
-        orderVolumeM3: volume(orderVolume),
-        orderVolumeFt3: amount(toFt3(orderVolume)),
-        orderVolumeYd3: amount(toYd3(orderVolume)),
+        netVolumeM3: displayed(netVolume, m.displayDecimals, volume),
+        netVolumeFt3: displayed(toFt3(netVolume), m.displayDecimals, amount),
+        netVolumeYd3: displayed(toYd3(netVolume), m.displayDecimals, amount),
+        overageVolumeM3: displayed(sub(orderVolume, netVolume), m.displayDecimals, volume),
+        orderVolumeM3: displayed(orderVolume, m.displayDecimals, volume),
+        orderVolumeFt3: displayed(toFt3(orderVolume), m.displayDecimals, amount),
+        orderVolumeYd3: displayed(toYd3(orderVolume), m.displayDecimals, amount),
         ...bags,
         working,
       },

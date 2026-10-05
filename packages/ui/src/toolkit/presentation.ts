@@ -42,6 +42,14 @@ export interface OutputRow {
   primary: boolean;
 }
 
+function selectedDecimalPlaces(field: string | undefined, state: FieldValues): number | undefined {
+  if (!field) return undefined;
+  const value = state[field];
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) return undefined;
+  const places = Number(value);
+  return places <= 12 ? places : undefined;
+}
+
 /** Outputs to show for a result: visible, non-empty, formatted, with the primary one first. */
 export function outputRows(
   preset: ResolvedPreset,
@@ -51,15 +59,18 @@ export function outputRows(
   const currency = presetCurrency(preset);
   const rows = visibleEntries(preset.outputs, state)
     .filter(([key]) => value[key] !== null && value[key] !== undefined && value[key] !== '')
-    .map(([key, out]) => ({
-      key,
-      label: label(preset, out.labelKey),
-      value: formatValue(out.format, String(value[key]), { currency }),
-      format: out.format,
-      primary:
-        out.primary === true ||
-        (out.primaryWhen ? matchesConditions(out.primaryWhen, state) : false),
-    }));
+    .map(([key, out]) => {
+      const decimalPlaces = selectedDecimalPlaces(out.decimalPlacesField, state);
+      return {
+        key,
+        label: label(preset, out.labelKey),
+        value: formatValue(out.format, String(value[key]), { currency, decimalPlaces }),
+        format: out.format,
+        primary:
+          out.primary === true ||
+          (out.primaryWhen ? matchesConditions(out.primaryWhen, state) : false),
+      };
+    });
   const primary = rows.findIndex((r) => r.primary);
   if (primary > 0) rows.unshift(...rows.splice(primary, 1));
   return rows;

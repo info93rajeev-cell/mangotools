@@ -19,6 +19,7 @@ const preset = (id: string): ResolvedPreset =>
 const gst = preset('estimate/gst.india');
 const base64 = preset('data/base64');
 const margin = preset('estimate/pricing.margin');
+const concrete = preset('civil/concrete-quantity-v2');
 
 describe('tool presentation', () => {
   it('puts the primary output first and hides outputs for the other supply type', () => {
@@ -68,6 +69,26 @@ describe('tool presentation', () => {
       defaultValues(margin),
     );
     expect(loss.find((r) => r.key === 'profit')?.value).toBe('−₹20.00');
+  });
+
+  it('applies a preset-selected precision only to opted-in Concrete decimal outputs', () => {
+    const value = {
+      orderVolumeM3: '3.150',
+      orderVolumeYd3: '4.12',
+      overagePercent: '5',
+      bags: '225',
+    };
+    for (const [decimalPlaces, expected] of [
+      ['2', ['3.15', '4.12', '5%', '225']],
+      ['3', ['3.150', '4.120', '5%', '225']],
+      ['4', ['3.1500', '4.1200', '5%', '225']],
+    ] as const) {
+      const rows = outputRows(concrete, value, {
+        ...defaultValues(concrete),
+        decimalPlaces,
+      });
+      expect(rows.map((row) => row.value)).toEqual(expected);
+    }
   });
 
   it('offers Auto only when decoding and resets it when switching to encode', () => {
