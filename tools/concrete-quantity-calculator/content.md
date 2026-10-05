@@ -7,14 +7,14 @@ example: 001-slab-overage
 
 1. Choose the member type — slab, footing, wall, beam, rectangular column, circular column or a general rectangular volume — and the unit your dimensions are in: millimetres, centimetres, metres, inches or feet. Changing the unit converts the values you already typed.
 2. Enter one member's size: length, width and depth/thickness/height, or diameter and height for a circular column.
-3. Enter the number of identical members and an overage allowance (0 to 50%, defaults to 0%).
+3. Enter how many same-size members you need and an overage allowance (0 to 50%, defaults to 0%).
 4. Optionally, for pre-mixed bags, enter the yield per bag printed on your product to see how many bags to buy.
 5. Read the concrete to order, the net geometric volume, the assumptions used and the working. Copy or print the result.
 
 ## Method
 
-- Rectangular members: volume = length × width × depth × number of members.
-- Circular columns: volume = π × (diameter ÷ 2)² × height × number of members.
+- Rectangular members: volume = length × width × depth × same-size member count.
+- Circular columns: volume = π × (diameter ÷ 2)² × height × same-size member count.
 - Order volume = net volume × (1 + overage % ÷ 100).
 - Bags (only when you enter a yield) = order volume ÷ yield per bag, **rounded up to a whole bag**.
 

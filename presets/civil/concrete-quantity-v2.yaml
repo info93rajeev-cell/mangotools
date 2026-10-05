@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/concrete-quantity-v2
-version: 0.2.3
+version: 0.2.4
 operation: civil.concrete.quantity@2
 fields:
   memberType:
@@ -99,7 +99,7 @@ strings:
     concrete.field.depth: Depth / thickness / height
     concrete.field.diameter: Diameter
     concrete.field.height: Height
-    concrete.field.quantity: Number of identical members
+    concrete.field.quantity: Same-size members
     concrete.field.overagePercent: Overage allowance %
     concrete.field.bagYield: Yield per bag (optional)
     concrete.field.bagYieldUnit: Yield unit
@@ -123,7 +123,7 @@ strings:
     concrete.out.overagePercent: Overage allowance
     concrete.out.overageVolumeM3: Overage volume (m³)
     concrete.out.bags: Bags to buy (rounded up)
-    concrete.out.quantity: Number of members
+    concrete.out.quantity: Same-size members
     concrete.sample.slab: 5 × 4 × 0.15 m slab with a 5% overage
     work.concrete2.rectangularVolume: "One member = {length} {unit} × {width} {unit} × {depth} {unit} = {result:d4} m³"
     work.concrete2.circularVolume: "One column = π × ({diameter} {unit} ÷ 2)² × {height} {unit} = {result:d4} m³"

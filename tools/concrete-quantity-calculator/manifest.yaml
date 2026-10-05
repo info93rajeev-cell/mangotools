@@ -4,8 +4,9 @@ id: concrete-quantity-calculator
 slug: concrete-quantity-calculator
 status: beta
 tier: T2
-version: 0.2.3
+version: 0.2.4
 changelog:
+  - { version: 0.2.4, date: 2026-10-05, type: fixed, summary: "Clarify the member-count input and result labels as same-size members." }
   - { version: 0.2.3, date: 2026-10-05, type: fixed, summary: "Use the selected 2, 3 or 4 decimal places for Concrete overage input validation as well as decimal result display." }
   - { version: 0.2.2, date: 2026-10-05, type: changed, summary: "Let users display Concrete decimal quantities with 2, 3 or 4 places without changing calculations." }
   - { version: 0.2.1, date: 2026-10-05, type: changed, summary: "Use the compact application workspace on desktop and paired fields on mobile, with result notes collapsed by default." }
