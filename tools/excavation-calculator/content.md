@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-10-01
+lastReviewed: 2026-10-05
 example: 001-trench-swell-trucks
 ---
 
@@ -15,8 +15,8 @@ earthwork quantity checks.
 3. Optionally enter a swell percentage to see the loose volume of the dug soil (0% shows bank volume
    only).
 4. Optionally enter the usable volume one truck carries on your job to see truck loads.
-5. Read the bank (in-place) volume, the loose volume and truck loads when used, the assumptions and the
-   working. Copy or print the result.
+5. Choose 2, 3, or 4 decimal places for volume results and the swell percentage. Read the bank
+   (in-place) volume, loose volume and whole truck loads when used, then copy or print the result.
 
 ## Method
 
@@ -28,7 +28,8 @@ earthwork quantity checks.
 
 Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m, so
 1 ft³ = 0.028316846592 m³ and 1 yd³ = 0.764554857984 m³ exactly. Volumes are kept at full precision and
-rounded only for display — m³ to 3 decimal places, ft³ and yd³ to 2.
+rounded only for display using your 2, 3, or 4 decimal-place selection. That selection also sets the
+accepted decimal precision for the swell percentage; it does not alter existing values or the formula.
 
 **Bank volume vs. loose volume.** Bank volume is the size of the hole itself. Once dug, soil no longer
 packs as tightly, so the same soil occupies more space; that is the loose volume you haul. Swell varies

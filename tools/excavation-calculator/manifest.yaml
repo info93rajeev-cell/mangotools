@@ -4,8 +4,9 @@ id: excavation-calculator
 slug: excavation-calculator
 status: beta
 tier: T2
-version: 0.2.0
+version: 0.2.1
 changelog:
+  - { version: 0.2.1, date: 2026-10-05, type: changed, summary: "Use the compact application workspace, paired mobile fields, collapsed notes and selectable 2–4 place decimal presentation." }
   - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Bank volume shown first, optional editable swell for loose volume, optional truck loads from your truck volume, yd³, converting units." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.1, date: 2026-09-27, type: changed, summary: "Add a related link to the new Brickwork Calculator." }

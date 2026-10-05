@@ -19,6 +19,8 @@ export const excavationVolumeInputV2 = z.strictObject({
   swellPercent: decimal.optional(),
   truckCapacity: decimal.optional(),
   truckCapacityUnit: z.enum(truckUnits).optional(),
+  /** Optional UI precision metadata. Absence preserves the historical engine contract. */
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 /** No display params: each output is formatted by what it represents (see lib/present.ts). */

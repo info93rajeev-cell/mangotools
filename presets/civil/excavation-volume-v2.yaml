@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/excavation-volume-v2
-version: 0.2.0
+version: 0.2.1
 operation: civil.excavation.volume@2
 fields:
   excavationType:
@@ -45,20 +45,31 @@ fields:
       - { value: m3, labelKey: excavation.truck.m3 }
       - { value: yd3, labelKey: excavation.truck.yd3 }
       - { value: ft3, labelKey: excavation.truck.ft3 }
+  decimalPlaces:
+    labelKey: excavation.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 100
+    width: half
+    options:
+      - { value: 2, labelKey: excavation.decimalPlaces.2 }
+      - { value: 3, labelKey: excavation.decimalPlaces.3 }
+      - { value: 4, labelKey: excavation.decimalPlaces.4 }
 outputs:
-  bankVolumeM3: { labelKey: excavation.out.bankVolumeM3, format: number, order: 10, primaryWhen: { unit: [mm, cm, m] } }
-  bankVolumeYd3: { labelKey: excavation.out.bankVolumeYd3, format: number, order: 11, primaryWhen: { unit: [in, ft] } }
-  bankVolumeFt3: { labelKey: excavation.out.bankVolumeFt3, format: number, order: 12 }
+  bankVolumeM3: { labelKey: excavation.out.bankVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 10, primaryWhen: { unit: [mm, cm, m] } }
+  bankVolumeYd3: { labelKey: excavation.out.bankVolumeYd3, format: number, decimalPlacesField: decimalPlaces, order: 11, primaryWhen: { unit: [in, ft] } }
+  bankVolumeFt3: { labelKey: excavation.out.bankVolumeFt3, format: number, decimalPlacesField: decimalPlaces, order: 12 }
   swellPercent: { labelKey: excavation.out.swellPercent, format: percent, order: 20 }
-  looseVolumeM3: { labelKey: excavation.out.looseVolumeM3, format: number, order: 21 }
-  looseVolumeYd3: { labelKey: excavation.out.looseVolumeYd3, format: number, order: 22 }
+  looseVolumeM3: { labelKey: excavation.out.looseVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 21 }
+  looseVolumeYd3: { labelKey: excavation.out.looseVolumeYd3, format: number, decimalPlacesField: decimalPlaces, order: 22 }
   truckLoads: { labelKey: excavation.out.truckLoads, format: number, order: 30 }
   quantity: { labelKey: excavation.out.quantity, format: number, order: 40 }
 samples:
   trench-20x0.6x1-m:
     titleKey: excavation.sample.trench
     input: { excavationType: trench, unit: m, length: "20", width: "0.6", depth: "1", quantity: "1", swellPercent: "25", truckCapacity: "6", truckCapacityUnit: m3 }
-ui: { archetypes: [B], density: comfortable, compute: live }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
     excavation.field.excavationType: Excavation type
@@ -74,10 +85,14 @@ strings:
     excavation.field.length: Length
     excavation.field.width: Width
     excavation.field.depth: Depth
-    excavation.field.quantity: Number of identical pits or trenches
-    excavation.field.swellPercent: Swell % (optional estimate)
-    excavation.field.truckCapacity: Usable truck volume (optional)
+    excavation.field.quantity: Same-size excavations
+    excavation.field.swellPercent: Swell / bulking %
+    excavation.field.truckCapacity: Usable truck volume
     excavation.field.truckCapacityUnit: Truck volume unit
+    excavation.field.decimalPlaces: Decimal places
+    excavation.decimalPlaces.2: "2"
+    excavation.decimalPlaces.3: "3"
+    excavation.decimalPlaces.4: "4"
     excavation.truck.m3: m³
     excavation.truck.yd3: yd³
     excavation.truck.ft3: ft³
@@ -92,7 +107,7 @@ strings:
     excavation.out.looseVolumeM3: Loose volume after swell (m³)
     excavation.out.looseVolumeYd3: Loose volume after swell (yd³)
     excavation.out.truckLoads: Truck loads (rounded up)
-    excavation.out.quantity: Number of pits or trenches
+    excavation.out.quantity: Same-size excavations
     excavation.sample.trench: 20 × 0.6 × 1 m trench, 25% swell, 6 m³ trucks
     work.excavation2.bankVolume: "Bank volume = {length} {unit} × {width} {unit} × {depth} {unit} × {quantity} = {result:d3} m³"
     work.excavation2.looseVolume: "Loose volume = {bank:d3} m³ × (1 + {swellPercent}%) = {result:d3} m³"

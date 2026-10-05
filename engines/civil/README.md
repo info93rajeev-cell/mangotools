@@ -50,6 +50,10 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.10.0 — `civil.excavation.volume@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  from the Excavation preset. It controls the swell percentage's accepted input scale and decimal
+  volume presentation only; exact bank/loose-volume arithmetic and whole truck-load calculation are
+  unchanged. Omitting the field keeps the historical engine validation and presentation contract.
 - 0.9.0 — `civil.concrete.quantity@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
   from the Concrete preset. It controls the overage percentage's accepted input scale and decimal
   quantity presentation only; exact arithmetic and formulas are unchanged. Omitting the field keeps

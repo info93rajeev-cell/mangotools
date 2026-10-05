@@ -59,6 +59,24 @@ for (const size of [
   { name: '1440x900', width: 1440, height: 900, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {
+  test(`excavation populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/excavation-calculator');
+    await produceResult(page, 'excavation-calculator');
+    await page.locator('[data-output="truckLoads"] dd').waitFor({ state: 'visible' });
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `excavation-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '1440x900', width: 1440, height: 900, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
   test(`concrete populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
     await page.setViewportSize(size);
     await gotoReady(page, '/concrete-quantity-calculator');
