@@ -1,8 +1,8 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Registry } from '@mangotools/schemas';
-import { test } from '@playwright/test';
-import { gotoReady, produceResult, TOOL_IDS } from '../support/tool-page.ts';
+import { expect, test } from '@playwright/test';
+import { gotoReady, primaryResult, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const OUT = join(process.cwd(), 'tests/artifacts/screenshots');
 mkdirSync(OUT, { recursive: true });
@@ -63,7 +63,14 @@ for (const size of [
     await page.setViewportSize(size);
     await gotoReady(page, '/excavation-calculator');
     await produceResult(page, 'excavation-calculator');
-    await page.locator('[data-output="truckLoads"] dd').waitFor({ state: 'visible' });
+    await page.getByLabel('Excavation type').selectOption('circular');
+    await page.getByLabel('Diameter').fill('2');
+    await page.getByLabel('Depth').fill('4');
+    await page.getByLabel('Same-size excavations').fill('2');
+    await page.getByLabel('Swell / bulking %').fill('25');
+    await page.getByLabel('Usable truck volume').fill('6');
+    await expect(primaryResult(page)).toHaveText('25.133');
+    await expect(page.locator('[data-output="truckLoads"] dd')).toHaveText('6');
     await page.mouse.move(0, 0);
     await page.screenshot({
       path: join(OUT, `excavation-calculator-${size.name}.png`),

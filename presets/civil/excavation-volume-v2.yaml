@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/excavation-volume-v2
-version: 0.2.1
+version: 0.3.0
 operation: civil.excavation.volume@2
 fields:
   excavationType:
@@ -15,6 +15,7 @@ fields:
       - { value: general, labelKey: excavation.type.general }
       - { value: trench, labelKey: excavation.type.trench }
       - { value: footing, labelKey: excavation.type.footing }
+      - { value: circular, labelKey: excavation.type.circular }
   unit:
     labelKey: excavation.field.unit
     kind: enum
@@ -28,8 +29,9 @@ fields:
       - { value: m, labelKey: excavation.unit.m }
       - { value: in, labelKey: excavation.unit.in }
       - { value: ft, labelKey: excavation.unit.ft }
-  length: { labelKey: excavation.field.length, kind: number, required: true, order: 30, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
-  width: { labelKey: excavation.field.width, kind: number, required: true, order: 40, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  length: { labelKey: excavation.field.length, kind: number, required: true, order: 30, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { excavationType: [general, trench, footing] } }
+  width: { labelKey: excavation.field.width, kind: number, required: true, order: 40, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { excavationType: [general, trench, footing] } }
+  diameter: { labelKey: excavation.field.diameter, kind: number, required: true, order: 30, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length }, visibleWhen: { excavationType: [circular] } }
   depth: { labelKey: excavation.field.depth, kind: number, required: true, order: 50, width: half, helpKey: excavation.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
   quantity: { labelKey: excavation.field.quantity, kind: number, required: true, default: 1, order: 60, width: half, helpKey: excavation.help.quantity, helpMode: disclosure }
   swellPercent: { labelKey: excavation.field.swellPercent, kind: percent, unit: "%", required: true, default: 0, order: 70, width: half, helpKey: excavation.help.swell, helpMode: disclosure }
@@ -76,6 +78,7 @@ strings:
     excavation.type.general: Rectangular pit / general excavation
     excavation.type.trench: Trench
     excavation.type.footing: Footing pit
+    excavation.type.circular: Circular pit / shaft
     excavation.field.unit: Unit
     excavation.unit.mm: mm
     excavation.unit.cm: cm
@@ -84,6 +87,7 @@ strings:
     excavation.unit.ft: ft
     excavation.field.length: Length
     excavation.field.width: Width
+    excavation.field.diameter: Diameter
     excavation.field.depth: Depth
     excavation.field.quantity: Same-size excavations
     excavation.field.swellPercent: Swell / bulking %
@@ -96,7 +100,7 @@ strings:
     excavation.truck.m3: m³
     excavation.truck.yd3: yd³
     excavation.truck.ft3: ft³
-    excavation.help.dimension: One pit or trench, with vertical sides, in the unit chosen above. Changing the unit converts the value.
+    excavation.help.dimension: One excavation with vertical sides, in the unit chosen above. Changing the unit converts the value.
     excavation.help.quantity: A whole number from 1 to 1,000,000.
     excavation.help.swell: How much the dug soil expands once loose, 0–100%. It varies by soil type and moisture — use an approximate figure from your site or supplier. 0% shows bank volume only.
     excavation.help.truckCapacity: The loose volume one truck actually carries on your job. Leave blank to skip truck loads.
@@ -110,5 +114,6 @@ strings:
     excavation.out.quantity: Same-size excavations
     excavation.sample.trench: 20 × 0.6 × 1 m trench, 25% swell, 6 m³ trucks
     work.excavation2.bankVolume: "Bank volume = {length} {unit} × {width} {unit} × {depth} {unit} × {quantity} = {result:d3} m³"
+    work.excavation2.circularBankVolume: "Bank volume = π × ({diameter} {unit} ÷ 2)² × {depth} {unit} × {quantity} = {result:d4} m³"
     work.excavation2.looseVolume: "Loose volume = {bank:d3} m³ × (1 + {swellPercent}%) = {result:d3} m³"
     work.excavation2.truckLoads: "Truck loads = loose volume ÷ {capacityM3:d3} m³ per load, rounded up = {result}"

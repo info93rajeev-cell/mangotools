@@ -6,6 +6,18 @@ const output = (page: Page, key: string) => page.locator(`[data-output="${key}"]
 const choose = (page: Page, field: string, value: string) =>
   page.locator(`label[for="tool-${tool}-${field}-${value}"]`).click();
 
+async function populateCircular(
+  page: Page,
+  values = { diameter: '2', depth: '1', quantity: '1', swell: '25', truck: '2' },
+) {
+  await page.getByLabel('Excavation type').selectOption('circular');
+  await page.getByLabel('Diameter').fill(values.diameter);
+  await page.getByLabel('Depth').fill(values.depth);
+  await page.getByLabel('Same-size excavations').fill(values.quantity);
+  await page.getByLabel('Swell / bulking %').fill(values.swell);
+  await page.getByLabel('Usable truck volume').fill(values.truck);
+}
+
 async function expectSameMobileRow(page: Page, left: string, right: string) {
   const boxes = await page.evaluate(
     ({ left, right }) => {
@@ -26,7 +38,7 @@ async function expectSameMobileRow(page: Page, left: string, right: string) {
 }
 
 test.describe('Excavation compact workspace', () => {
-  test('fits the populated workspace, collapsed disclosures and footer on desktop', async ({
+  test('fits the populated circular workspace, collapsed disclosures and footer on desktop', async ({
     page,
   }) => {
     for (const viewport of [
@@ -35,8 +47,16 @@ test.describe('Excavation compact workspace', () => {
     ]) {
       await page.setViewportSize(viewport);
       await openTool(page, tool);
-      await page.getByRole('button', { name: 'Try sample' }).click();
-      await expect(output(page, 'truckLoads')).toHaveText('3');
+      await populateCircular(page, {
+        diameter: '2',
+        depth: '4',
+        quantity: '2',
+        swell: '25',
+        truck: '6',
+      });
+      await expect(primaryResult(page)).toHaveText('25.133');
+      await expect(output(page, 'looseVolumeM3')).toHaveText('31.416');
+      await expect(output(page, 'truckLoads')).toHaveText('6');
       await expect(island(page, tool).locator('[data-density]')).toHaveAttribute(
         'data-density',
         'compact',
@@ -77,14 +97,15 @@ test.describe('Excavation compact workspace', () => {
   test('uses readable paired rows without horizontal overflow at 360 px', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await openTool(page, tool);
-    await page.getByRole('button', { name: 'Try sample' }).click();
+    await populateCircular(page);
 
     const id = (field: string) => `#tool-${tool}-${field}`;
     await expectSameMobileRow(page, id('excavationType'), `${id('unit')}-m`);
-    await expectSameMobileRow(page, id('length'), id('width'));
-    await expectSameMobileRow(page, id('depth'), id('quantity'));
-    await expectSameMobileRow(page, id('swellPercent'), id('truckCapacity'));
-    await expectSameMobileRow(page, `${id('truckCapacityUnit')}-m3`, `${id('decimalPlaces')}-3`);
+    await expectSameMobileRow(page, id('diameter'), id('depth'));
+    await expectSameMobileRow(page, id('quantity'), id('swellPercent'));
+    await expectSameMobileRow(page, id('truckCapacity'), `${id('truckCapacityUnit')}-m3`);
+    await expect(page.getByLabel('Length')).toBeHidden();
+    await expect(page.getByLabel('Width')).toBeHidden();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -133,6 +154,7 @@ test.describe('Excavation compact workspace', () => {
       'Rectangular pit / general excavation',
       'Trench',
       'Footing pit',
+      'Circular pit / shaft',
     ]);
     for (const mode of ['general', 'trench', 'footing']) {
       await type.selectOption(mode);
@@ -140,6 +162,39 @@ test.describe('Excavation compact workspace', () => {
       await expect(output(page, 'looseVolumeM3')).toHaveText('15.000');
       await expect(output(page, 'truckLoads')).toHaveText('3');
     }
+  });
+
+  test('uses diameter and depth for circular geometry and converts entered values', async ({
+    page,
+  }) => {
+    await openTool(page, tool);
+    await populateCircular(page, {
+      diameter: '2',
+      depth: '1',
+      quantity: '3',
+      swell: '0',
+      truck: '',
+    });
+    await expect(page.getByLabel('Diameter')).toBeVisible();
+    await expect(page.getByLabel('Length')).toBeHidden();
+    await expect(page.getByLabel('Width')).toBeHidden();
+    await expect(primaryResult(page)).toHaveText('9.425');
+
+    await choose(page, 'unit', 'cm');
+    await expect(page.getByLabel('Diameter')).toHaveValue('200');
+    await expect(page.getByLabel('Depth')).toHaveValue('100');
+    await expect(primaryResult(page)).toHaveText('9.425');
+  });
+
+  test('applies circular swell once and rounds optional truck loads upward', async ({ page }) => {
+    await openTool(page, tool);
+    await populateCircular(page);
+    await expect(primaryResult(page)).toHaveText('3.142');
+    await expect(output(page, 'looseVolumeM3')).toHaveText('3.927');
+    await expect(output(page, 'truckLoads')).toHaveText('2');
+
+    await page.getByLabel('Usable truck volume').fill('');
+    await expect(output(page, 'truckLoads')).toHaveCount(0);
   });
 
   test('applies swell once and rounds optional truck loads upward to a whole count', async ({
@@ -165,27 +220,28 @@ test.describe('Excavation compact workspace', () => {
     page,
   }) => {
     await openTool(page, tool);
-    await page.getByRole('button', { name: 'Try sample' }).click();
+    await populateCircular(page);
     const swell = page.getByLabel('Swell / bulking %');
 
     await choose(page, 'decimalPlaces', '2');
     await swell.fill('1.25');
-    await expect(primaryResult(page)).toHaveText('12.00');
-    await expect(output(page, 'looseVolumeM3')).toHaveText('12.15');
-    await expect(output(page, 'truckLoads')).toHaveText('3');
+    await expect(primaryResult(page)).toHaveText('3.14');
+    await expect(output(page, 'looseVolumeM3')).toHaveText('3.18');
+    await expect(output(page, 'truckLoads')).toHaveText('2');
     await swell.fill('1.250');
     await expect(page.getByText('Use at most 2 decimal places.')).toBeVisible();
     await expect(swell).toHaveValue('1.250');
 
     await choose(page, 'decimalPlaces', '3');
     await expect(swell).toHaveValue('1.250');
-    await expect(output(page, 'looseVolumeM3')).toHaveText('12.150');
+    await expect(primaryResult(page)).toHaveText('3.142');
+    await expect(output(page, 'looseVolumeM3')).toHaveText('3.181');
 
     await choose(page, 'decimalPlaces', '4');
     await swell.fill('1.2500');
-    await expect(primaryResult(page)).toHaveText('12.0000');
-    await expect(output(page, 'looseVolumeM3')).toHaveText('12.1500');
+    await expect(primaryResult(page)).toHaveText('3.1416');
+    await expect(output(page, 'looseVolumeM3')).toHaveText('3.1809');
     await expect(output(page, 'swellPercent')).toHaveText('1.25%');
-    await expect(output(page, 'truckLoads')).toHaveText('3');
+    await expect(output(page, 'truckLoads')).toHaveText('2');
   });
 });

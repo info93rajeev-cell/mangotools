@@ -1,0 +1,8 @@
+id: 009-circular-pit-shaft
+operation: civil.excavation.volume@2
+source:
+  type: hand-verified
+  citation: "Diameter 2 m and depth 1 m: π × (2² / 4) × 1 = π m3 bank; +25% swell = 1.25π m3 loose; 1.25π / 2 m3 per load = 1.963... -> 2 loads"
+input: { excavationType: circular, unit: m, diameter: "2", depth: "1", quantity: "1", swellPercent: "25", truckCapacity: "2", truckCapacityUnit: m3 }
+expected: { bankVolumeM3: "3.142", looseVolumeM3: "3.927", truckLoads: "2" }
+expectedWarnings: [CIVIL_ASSUMPTION_SWELL, CIVIL_ASSUMPTION_TRUCK, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_BEFORE_EXCAVATION, CIVIL_EXCAVATION_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR, CIVIL_EXCAVATION_SCOPE_LIMIT_V2]

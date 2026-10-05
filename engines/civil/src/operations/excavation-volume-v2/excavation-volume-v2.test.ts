@@ -13,6 +13,15 @@ const pit = {
   swellPercent: '0',
 };
 
+const circular = {
+  excavationType: 'circular',
+  unit: 'm',
+  diameter: '2',
+  depth: '1',
+  quantity: '1',
+  swellPercent: '0',
+};
+
 async function value(input: Record<string, unknown>) {
   const result = await executeOperation(excavationVolumeV2, input, {}, createTestContext());
   if (!result.ok) throw new Error(result.error.code);
@@ -84,6 +93,62 @@ describe('civil.excavation.volume@2', () => {
       '30.3750',
     ]);
     expect([two.truckLoads, three.truckLoads, four.truckLoads]).toEqual(['5', '5', '5']);
+  });
+
+  it('calculates a circular pit from diameter and depth at full internal precision', async () => {
+    const v = await value(circular);
+    expect(v.bankVolumeM3).toBe('3.142');
+    expect(v.working[0]).toMatchObject({
+      ref: 'bankVolume',
+      result: '3.14159265358979323846',
+    });
+  });
+
+  it('multiplies the circular bank volume by the number of same-size excavations', async () => {
+    const v = await value({ ...circular, quantity: '3' });
+    expect(v.bankVolumeM3).toBe('9.425');
+  });
+
+  it('converts circular dimensions without changing the physical volume', async () => {
+    const metres = await value(circular);
+    const millimetres = await value({ ...circular, unit: 'mm', diameter: '2000', depth: '1000' });
+    expect(millimetres.bankVolumeM3).toBe(metres.bankVolumeM3);
+    expect(millimetres.working[0]?.result).toBe(metres.working[0]?.result);
+  });
+
+  it('applies swell once and rounds circular truck loads upward', async () => {
+    const v = await value({
+      ...circular,
+      swellPercent: '25',
+      truckCapacity: '2',
+      truckCapacityUnit: 'm3',
+    });
+    expect(v.bankVolumeM3).toBe('3.142');
+    expect(v.looseVolumeM3).toBe('3.927');
+    expect(v.truckLoads).toBe('2');
+    expect(v.working.find((entry) => entry.ref === 'looseVolume')?.result).toBe(
+      '3.926990816987241548075',
+    );
+  });
+
+  it('formats circular results with 2, 3 or 4 decimal places without changing geometry', async () => {
+    const values = await Promise.all(
+      ['2', '3', '4'].map((decimalPlaces) => value({ ...circular, decimalPlaces })),
+    );
+    expect(values.map((v) => v.bankVolumeM3)).toEqual(['3.14', '3.142', '3.1416']);
+    expect(values.map((v) => v.working[0]?.result)).toEqual([
+      '3.14159265358979323846',
+      '3.14159265358979323846',
+      '3.14159265358979323846',
+    ]);
+  });
+
+  it('keeps every rectangular excavation type on the original volume formula', async () => {
+    for (const excavationType of ['general', 'trench', 'footing']) {
+      const v = await value({ ...pit, excavationType });
+      expect(v.bankVolumeM3).toBe('30.000');
+      expect(v.working[0]?.formulaKey).toBe('excavation2.bankVolume');
+    }
   });
 
   it('has a message for every code it can return', () => {
