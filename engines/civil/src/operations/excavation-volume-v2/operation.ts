@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { mul, toFixedString } from '@mangotools/engine-numeric';
+import { div, mul, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info } from '../../lib/notices.ts';
 import { amount, ceilWhole, volume } from '../../lib/present.ts';
 import {
@@ -10,9 +10,13 @@ import {
   toYd3,
   withAllowance,
 } from '../../lib/quantities.ts';
-import { CUBIC_METRES_PER_CUBIC_FOOT, CUBIC_METRES_PER_CUBIC_YARD } from '../../lib/units-v2.ts';
+import {
+  CUBIC_METRES_PER_CUBIC_FOOT,
+  CUBIC_METRES_PER_CUBIC_YARD,
+  PI,
+} from '../../lib/units-v2.ts';
 import { step } from '../../lib/working.ts';
-import { type Measured, measure } from './measure.ts';
+import { type Measured, measure, type Shape } from './measure.ts';
 import {
   excavationVolumeInputV2,
   excavationVolumeOutputV2,
@@ -43,10 +47,32 @@ function notices(m: Measured): OpWarning[] {
     info('CIVIL_NOT_PROFESSIONAL_REPLACEMENT_CONTRACTOR'),
     info('CIVIL_EXCAVATION_SCOPE_LIMIT_V2'),
   );
-  if (anyUnrealistic([m.length, m.width, m.depth], m.unit)) {
+  if (anyUnrealistic(dimensions(m.shape), m.unit)) {
     list.push(warning('CIVIL_DIMENSION_UNREALISTIC', { details: { max: '100' } }));
   }
   return list;
+}
+
+function dimensions(shape: Shape): string[] {
+  return shape.kind === 'circular'
+    ? [shape.diameter, shape.depth]
+    : [shape.length, shape.width, shape.depth];
+}
+
+function bankVolume(m: Measured): [string, WorkingStep] {
+  if (m.shape.kind === 'circular') {
+    const { diameter, depth } = m.shape;
+    const radius = div(inMetres(diameter, m.unit), '2', 20);
+    const one = mul(mul(PI, mul(radius, radius)), inMetres(depth, m.unit));
+    const bank = mul(one, m.quantity);
+    const variables = { diameter, depth, unit: m.unit, quantity: m.quantity };
+    return [bank, step('bankVolume', 'excavation2.circularBankVolume', variables, bank)];
+  }
+  const { length, width, depth } = m.shape;
+  const one = mul(mul(inMetres(length, m.unit), inMetres(width, m.unit)), inMetres(depth, m.unit));
+  const bank = mul(one, m.quantity);
+  const variables = { length, width, depth, unit: m.unit, quantity: m.quantity };
+  return [bank, step('bankVolume', 'excavation2.bankVolume', variables, bank)];
 }
 
 function looseOutputs(m: Measured, bank: string, working: WorkingStep[]) {
@@ -84,7 +110,7 @@ export const excavationVolumeV2 = defineOperation({
   major: 2,
   title: 'Excavation volume (bank volume, optional swell and truck loads)',
   summary:
-    'Bank (in-situ) excavation volume for rectangular pits or trenches, with an optional editable swell for loose volume and optional truck loads from a user-supplied usable truck volume.',
+    'Bank (in-situ) excavation volume for rectangular pits, trenches or circular shafts, with an optional editable swell for loose volume and optional truck loads from a user-supplied usable truck volume.',
   input: excavationVolumeInputV2,
   params: excavationVolumeParamsV2,
   output: excavationVolumeOutputV2,
@@ -106,19 +132,15 @@ export const excavationVolumeV2 = defineOperation({
     const measured = measure(input);
     if (!measured.ok) return measured;
     const m = measured.value;
-    const { length, width, depth, unit, quantity } = m;
-    const one = mul(mul(inMetres(length, unit), inMetres(width, unit)), inMetres(depth, unit));
-    const bank = mul(one, quantity);
-    const working = [
-      step('bankVolume', 'excavation2.bankVolume', { length, width, depth, unit, quantity }, bank),
-    ];
+    const [bank, bankStep] = bankVolume(m);
+    const working = [bankStep];
     const loose = looseOutputs(m, bank, working);
     const trucks = truckOutputs(m, bank, working);
     return ok(
       {
         excavationType: m.excavationType,
-        unit,
-        quantity,
+        unit: m.unit,
+        quantity: m.quantity,
         swellPercent: m.swellPercent,
         bankVolumeM3: displayed(bank, m.displayDecimals, volume),
         bankVolumeFt3: displayed(toFt3(bank), m.displayDecimals, amount),

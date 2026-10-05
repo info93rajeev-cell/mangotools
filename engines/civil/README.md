@@ -15,7 +15,7 @@ from its first version.
 | `civil.tile.quantity@1` | Tile count for a rectangular floor or wall, with wastage % and an optional boxes-required calculation |
 | `civil.paint.quantity@1` | Paint litres for a rectangular wall, ceiling or surface, from dimensions, opening deduction, coats, coverage per litre and wastage % |
 | `civil.concrete.quantity@2` | Net geometric volume (rectangular members or circular columns), editable overage → order volume (m³/ft³/yd³), optional bags from a stated yield |
-| `civil.excavation.volume@2` | Bank volume shown on its own, optional editable swell → loose volume, optional truck loads from a user-supplied usable truck volume |
+| `civil.excavation.volume@2` | Rectangular or circular bank volume shown on its own, optional editable swell → loose volume, optional truck loads from a user-supplied usable truck volume |
 | `civil.brickwork.quantity@2` | Face-area brick count: net wall area (repeatable openings) ÷ ((brick length + joint) × (brick height + joint)) × skins, + wastage, rounded up |
 | `civil.plaster.quantity@2` | Net area (repeatable openings) × thickness = application volume, + wastage, optional bags only from the product's own yield or coverage |
 | `civil.tile.quantity@2` | Net area (dimensions or direct area, repeatable deductions) ÷ tile face area, + wastage once, rounded up; boxes by pieces or coverage |
@@ -50,6 +50,10 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.11.0 — `civil.excavation.volume@2` adds Circular pit / shaft geometry using
+  `π × (diameter² ÷ 4) × depth × quantity`. Existing rectangular pit, trench and footing inputs retain
+  their original formula and outputs; swell, truck loads and decimal presentation share the same exact
+  downstream calculation path.
 - 0.10.0 — `civil.excavation.volume@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
   from the Excavation preset. It controls the swell percentage's accepted input scale and decimal
   volume presentation only; exact bank/loose-volume arithmetic and whole truck-load calculation are

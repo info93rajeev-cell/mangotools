@@ -44,6 +44,17 @@ for (const scheme of ['light', 'dark'] as const) {
         expect(await seriousViolations(page)).toEqual([]);
       });
     }
+    test('/excavation-calculator (circular result state)', async ({ page }) => {
+      await gotoReady(page, '/excavation-calculator');
+      await page.getByLabel('Excavation type').selectOption('circular');
+      await page.getByLabel('Diameter').fill('2');
+      await page.getByLabel('Depth').fill('1');
+      await page.getByLabel('Same-size excavations').fill('1');
+      await page.getByLabel('Swell / bulking %').fill('25');
+      await page.getByLabel('Usable truck volume').fill('2');
+      await expect(page.locator('[data-output="truckLoads"] dd')).toHaveText('2');
+      expect(await seriousViolations(page)).toEqual([]);
+    });
     test('/gst-calculator (mobile search open)', async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await gotoReady(page, '/gst-calculator');

@@ -4,8 +4,9 @@ id: excavation-calculator
 slug: excavation-calculator
 status: beta
 tier: T2
-version: 0.2.1
+version: 0.3.0
 changelog:
+  - { version: 0.3.0, date: 2026-10-05, type: added, summary: "Add Circular pit / shaft mode using diameter, depth and quantity." }
   - { version: 0.2.1, date: 2026-10-05, type: changed, summary: "Use the compact application workspace, paired mobile fields, collapsed notes and selectable 2–4 place decimal presentation." }
   - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Bank volume shown first, optional editable swell for loose volume, optional truck loads from your truck volume, yd³, converting units." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
@@ -13,20 +14,20 @@ changelog:
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta with excavation/earthwork volume for a rectangular pit, trench or footing pit, in m³ and ft³, with bulking/swell %." }
 name: Excavation Calculator
 shortName: Excavation
-summary: Excavation volume for a pit, trench or footing, with optional swell for loose volume and truck loads.
+summary: Excavation volume for a rectangular or circular pit, shaft, trench or footing, with optional swell and truck loads.
 archetype: B
 preset: civil/excavation-volume-v2
 sample: trench-20x0.6x1-m
 taxonomy:
   category: construction
   tags: [excavation, earthwork, construction]
-  synonyms: [excavation calculator, earthwork calculator, trench excavation calculator, footing excavation calculator, foundation excavation calculator, pit excavation calculator, excavation quantity calculator, earthwork quantity calculator, civil engineering excavation calculator, quantity survey excavation calculator]
+  synonyms: [excavation calculator, earthwork calculator, trench excavation calculator, footing excavation calculator, foundation excavation calculator, pit excavation calculator, circular pit calculator, shaft volume calculator, excavation quantity calculator, earthwork quantity calculator, civil engineering excavation calculator, quantity survey excavation calculator]
 capabilities: { print: true, share: true }
 privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
   title: Excavation Calculator – Earthwork Volume in m³ and ft³
-  description: Work out excavation volume for a pit, trench or footing in m³, ft³ or yd³, with optional swell and truck loads. Free, and it runs in your browser.
+  description: Work out excavation volume for a rectangular or circular pit, shaft, trench or footing in m³, ft³ or yd³, with optional swell and truck loads.
   primaryKeyword: excavation calculator
   secondaryKeywords: [earthwork volume calculator, trench excavation calculator, footing excavation calculator]
 graph:
@@ -34,5 +35,6 @@ graph:
 quality:
   verifiedAgainst:
     - { citation: "Rectangular-prism volume: length × width × depth; SI unit conversions (1 in = 25.4 mm, 1 ft = 304.8 mm, both international, 1959)", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "civil.excavation.volume@2 engine fixtures 001–008, tool fixtures 001–002" }
-  lastVerified: 2026-10-01
+    - { citation: "Circular-cylinder volume: π × diameter² ÷ 4 × depth × quantity", locator: "Method section" }
+    - { citation: "Hand-verified arithmetic", locator: "civil.excavation.volume@2 engine fixtures 001–009, v2 tool fixtures 001–003" }
+  lastVerified: 2026-10-05

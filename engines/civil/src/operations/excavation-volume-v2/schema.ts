@@ -4,7 +4,7 @@ import { workingStepSchema } from '../../lib/working.ts';
 
 const decimal = z.union([z.string(), z.number()]);
 
-export const excavationTypesV2 = ['general', 'trench', 'footing'] as const;
+export const excavationTypesV2 = ['general', 'trench', 'footing', 'circular'] as const;
 /** Units a usable truck volume can be entered in. */
 export const truckUnits = ['m3', 'yd3', 'ft3'] as const;
 export type TruckUnit = (typeof truckUnits)[number];
@@ -14,6 +14,7 @@ export const excavationVolumeInputV2 = z.strictObject({
   unit: z.enum(lengthUnits),
   length: decimal.optional(),
   width: decimal.optional(),
+  diameter: decimal.optional(),
   depth: decimal.optional(),
   quantity: decimal.optional(),
   swellPercent: decimal.optional(),
