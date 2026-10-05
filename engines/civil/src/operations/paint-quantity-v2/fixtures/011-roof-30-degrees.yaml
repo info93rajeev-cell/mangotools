@@ -1,0 +1,6 @@
+id: 011-roof-30-degrees
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "10 x 8 m plan = 80 m2; 80 / cos(30 degrees) = 92.376043... m2; 1 coat / 10 m2/L = 9.237604... L" }
+input: { mode: roof, unit: m, roofLength: "10", roofWidth: "8", pitchAngle: "30", quantity: "1", coats: "1", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "0", decimalPlaces: "3" }
+expected: { grossAreaM2: "92.376", netAreaM2: "92.376", paintLitres: "9.238", orderLitres: "9.238" }
+expectedWarnings: [CIVIL_ASSUMPTION_COVERAGE, CIVIL_ASSUMPTION_NO_WASTAGE, CIVIL_ESTIMATION_AID_ONLY, CIVIL_VERIFY_PAINT_BEFORE_APPLICATION, CIVIL_PAINT_CONDITIONS_VARY, CIVIL_NOT_PROFESSIONAL_REPLACEMENT_PAINTER, CIVIL_PAINT_SCOPE_LIMIT_V2]

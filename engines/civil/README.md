@@ -19,7 +19,7 @@ from its first version.
 | `civil.brickwork.quantity@2` | Face-area brick count: net wall area (repeatable openings) ÷ ((brick length + joint) × (brick height + joint)) × skins, + wastage, rounded up |
 | `civil.plaster.quantity@2` | Net area (repeatable openings) × thickness = application volume, + wastage, optional bags only from the product's own yield or coverage |
 | `civil.tile.quantity@2` | Net area (dimensions or direct area, repeatable deductions) ÷ tile face area, + wastage once, rounded up; boxes by pieces or coverage |
-| `civil.paint.quantity@2` | Room walls (± ceiling) or a surface, repeatable openings, coats, coverage in m²/L or ft²/US gal, + wastage; optional whole containers |
+| `civil.paint.quantity@2` | Room walls (± ceiling), a surface or a uniformly pitched rectangular roof, repeatable openings, coats, coverage in m²/L or ft²/US gal, + wastage; optional whole containers |
 
 The `@1` operations stay registered unchanged (their golden fixtures remain truth); every tool preset now
 runs the `@2` operation. Shared `@2` building blocks live in `src/lib/`: `openings.ts` (repeatable
@@ -50,6 +50,11 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.12.0 — `civil.paint.quantity@2` adds a rectangular Roof mode using
+  `length × width ÷ cos(pitch) × quantity`, with a validated 0°–89° pitch. It also accepts optional
+  `decimalPlaces` metadata (`2`, `3` or `4`) for wastage input scale and decimal result presentation.
+  Existing Room walls and Single surface formulas and legacy formatting remain unchanged when the
+  metadata is absent.
 - 0.11.0 — `civil.excavation.volume@2` adds Circular pit / shaft geometry using
   `π × (diameter² ÷ 4) × depth × quantity`. Existing rectangular pit, trench and footing inputs retain
   their original formula and outputs; swell, truck loads and decimal presentation share the same exact

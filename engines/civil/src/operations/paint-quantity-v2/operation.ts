@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { div } from '@mangotools/engine-numeric';
+import { div, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info, wastageAssumption } from '../../lib/notices.ts';
 import { amount, area, ceilWhole } from '../../lib/present.ts';
 import { anyUnrealistic, toFt2 } from '../../lib/quantities.ts';
@@ -13,7 +13,9 @@ const COVERAGE_LABEL = { 'm2-per-l': 'm²/L', 'ft2-per-gal': 'ft²/US gal' } as 
 const CONTAINER_LABEL = { l: 'L', gal: 'US gal' } as const;
 
 const dimensionsOf = (s: Surface) =>
-  s.kind === 'room' ? [s.length, s.width, s.height] : [s.length, s.secondDimension];
+  s.kind === 'room'
+    ? [s.length, s.width, s.height]
+    : [s.length, s.kind === 'roof' ? s.width : s.secondDimension];
 
 function notices(m: Measured): OpWarning[] {
   const list = [
@@ -71,14 +73,18 @@ function working(m: Measured, c: Computed, containers: string | null): WorkingSt
   return steps;
 }
 
-const gallons = (litres: string) => amount(div(litres, LITRES_PER_US_GALLON, 20));
+const shown = (value: string, decimals: number | null, legacy: (raw: string) => string) =>
+  decimals === null ? legacy(value) : toFixedString(value, decimals, 'half-up');
+
+const gallons = (litres: string, decimals: number | null) =>
+  shown(div(litres, LITRES_PER_US_GALLON, 20), decimals, amount);
 
 export const paintQuantityV2 = defineOperation({
   id: 'civil.paint.quantity',
   major: 2,
-  title: 'Paint quantity (room or surface, with repeatable openings)',
+  title: 'Paint quantity (room, surface or roof, with repeatable openings)',
   summary:
-    'Paint litres/gallons from room or surface dimensions, repeatable openings, explicit coats, an editable coverage rate and wastage, with optional whole containers of a size you choose.',
+    'Paint litres/gallons from room, surface or pitched-roof dimensions, repeatable openings, explicit coats, an editable coverage rate and wastage, with optional whole containers of a size you choose.',
   input: paintQuantityInputV2,
   params: paintQuantityParamsV2,
   output: paintQuantityOutputV2,
@@ -94,6 +100,7 @@ export const paintQuantityV2 = defineOperation({
     'CIVIL_COATS_NOT_WHOLE',
     'CIVIL_COATS_TOO_LARGE',
     'CIVIL_WASTAGE_OUT_OF_RANGE',
+    'CIVIL_PAINT_PITCH_OUT_OF_RANGE',
     'CIVIL_OPENINGS_INVALID',
     'CIVIL_OPENINGS_TOO_MANY',
     'CIVIL_DEDUCTIONS_EXCEED_AREA',
@@ -109,6 +116,7 @@ export const paintQuantityV2 = defineOperation({
     const computed = computePaint(m);
     if (!computed.ok) return computed;
     const c = computed.value;
+    const decimals = m.displayDecimals;
     const containers = c.containers === null ? null : ceilWhole(c.containers);
     const containerOutputs =
       m.container && containers
@@ -123,16 +131,16 @@ export const paintQuantityV2 = defineOperation({
         coverage: m.coverage,
         coverageUnit: m.coverageUnit,
         wastagePercent: m.wastagePercent,
-        grossAreaM2: area(c.grossAreaM2),
-        openingAreaM2: area(c.openingAreaM2),
-        netAreaM2: area(c.netAreaM2),
-        grossAreaFt2: area(toFt2(c.grossAreaM2)),
-        openingAreaFt2: area(toFt2(c.openingAreaM2)),
-        netAreaFt2: area(toFt2(c.netAreaM2)),
-        paintLitres: amount(c.paintLitres),
-        paintGallons: gallons(c.paintLitres),
-        orderLitres: amount(c.orderLitres),
-        orderGallons: gallons(c.orderLitres),
+        grossAreaM2: shown(c.grossAreaM2, decimals, area),
+        openingAreaM2: shown(c.openingAreaM2, decimals, area),
+        netAreaM2: shown(c.netAreaM2, decimals, area),
+        grossAreaFt2: shown(toFt2(c.grossAreaM2), decimals, area),
+        openingAreaFt2: shown(toFt2(c.openingAreaM2), decimals, area),
+        netAreaFt2: shown(toFt2(c.netAreaM2), decimals, area),
+        paintLitres: shown(c.paintLitres, decimals, amount),
+        paintGallons: gallons(c.paintLitres, decimals),
+        orderLitres: shown(c.orderLitres, decimals, amount),
+        orderGallons: gallons(c.orderLitres, decimals),
         ...containerOutputs,
         working: working(m, c, containers),
       },

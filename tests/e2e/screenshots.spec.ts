@@ -59,6 +59,32 @@ for (const size of [
   { name: '1440x900', width: 1440, height: 900, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {
+  test(`paint Roof evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/paint-calculator');
+    await page.getByLabel('What are you painting?').selectOption('roof');
+    await page.getByLabel('Roof length').fill('10');
+    await page.getByLabel('Roof width').fill('8');
+    await page.getByLabel('Roof pitch angle').fill('30');
+    await page.getByLabel('Same-size areas').fill('1');
+    await page.getByLabel('Coats').fill('2');
+    await page.getByLabel('Wastage %').fill('10');
+    await page.getByLabel('Coverage / coat').fill('10');
+    await page.getByLabel('Container size').fill('5');
+    await expect(primaryResult(page)).toHaveText('20.323');
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `paint-calculator-roof-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '1440x900', width: 1440, height: 900, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
   test(`excavation populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
     await page.setViewportSize(size);
     await gotoReady(page, '/excavation-calculator');
