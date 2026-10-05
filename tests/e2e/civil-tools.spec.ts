@@ -235,8 +235,8 @@ test.describe('Excavation Calculator', () => {
     await page.getByLabel('Depth').fill('1');
     await expect(primaryResult(page)).toHaveText('12.000');
     await expect(output(page, 'looseVolumeM3')).toHaveCount(0);
-    await page.getByLabel('Swell % (optional estimate)').fill('25');
-    await page.getByLabel('Usable truck volume (optional)').fill('6');
+    await page.getByLabel('Swell / bulking %').fill('25');
+    await page.getByLabel('Usable truck volume').fill('6');
     await expect(output(page, 'looseVolumeM3')).toHaveText('15.000');
     await expect(output(page, 'truckLoads')).toHaveText('3');
     await expect(output(page, 'swellPercent')).toHaveText('25%');

@@ -21,6 +21,7 @@ export interface Measured {
   depth: string;
   quantity: string;
   swellPercent: string;
+  displayDecimals: number | null;
   truck: { capacity: string; unit: TruckUnit } | null;
 }
 
@@ -34,10 +35,11 @@ export function measure(input: ExcavationVolumeInputV2): Result<Measured> {
   if (!depth.ok) return depth;
   const quantity = readCount(input.quantity, 'quantity', MAX_COUNT);
   if (!quantity.ok) return quantity;
+  const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : null;
   const swellPercent = readPercent(input.swellPercent, 'swellPercent', {
     min: '0',
     max: '100',
-    maxDecimals: PERCENT_DECIMALS,
+    maxDecimals: displayDecimals ?? PERCENT_DECIMALS,
     rangeCode: 'CIVIL_SWELL_OUT_OF_RANGE',
   });
   if (!swellPercent.ok) return swellPercent;
@@ -51,6 +53,7 @@ export function measure(input: ExcavationVolumeInputV2): Result<Measured> {
     depth: depth.value,
     quantity: quantity.value,
     swellPercent: swellPercent.value,
+    displayDecimals,
     truck: capacity.value
       ? { capacity: capacity.value, unit: input.truckCapacityUnit ?? 'm3' }
       : null,

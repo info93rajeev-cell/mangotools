@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { mul } from '@mangotools/engine-numeric';
+import { mul, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info } from '../../lib/notices.ts';
 import { amount, ceilWhole, volume } from '../../lib/present.ts';
 import {
@@ -56,11 +56,19 @@ function looseOutputs(m: Measured, bank: string, working: WorkingStep[]) {
     step('looseVolume', 'excavation2.looseVolume', { bank, swellPercent: m.swellPercent }, loose),
   );
   const outputs = {
-    looseVolumeM3: volume(loose),
-    looseVolumeFt3: amount(toFt3(loose)),
-    looseVolumeYd3: amount(toYd3(loose)),
+    looseVolumeM3: displayed(loose, m.displayDecimals, volume),
+    looseVolumeFt3: displayed(toFt3(loose), m.displayDecimals, amount),
+    looseVolumeYd3: displayed(toYd3(loose), m.displayDecimals, amount),
   };
   return { loose, outputs };
+}
+
+function displayed(
+  value: string,
+  decimals: number | null,
+  legacy: (exact: string) => string,
+): string {
+  return decimals === null ? legacy(value) : toFixedString(value, decimals, 'half-up');
 }
 
 function truckOutputs(m: Measured, bank: string, working: WorkingStep[]) {
@@ -112,9 +120,9 @@ export const excavationVolumeV2 = defineOperation({
         unit,
         quantity,
         swellPercent: m.swellPercent,
-        bankVolumeM3: volume(bank),
-        bankVolumeFt3: amount(toFt3(bank)),
-        bankVolumeYd3: amount(toYd3(bank)),
+        bankVolumeM3: displayed(bank, m.displayDecimals, volume),
+        bankVolumeFt3: displayed(toFt3(bank), m.displayDecimals, amount),
+        bankVolumeYd3: displayed(toYd3(bank), m.displayDecimals, amount),
         ...loose.outputs,
         ...trucks,
         working,

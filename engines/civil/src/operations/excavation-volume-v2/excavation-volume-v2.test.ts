@@ -19,6 +19,10 @@ async function value(input: Record<string, unknown>) {
   return result.value;
 }
 
+async function outcome(input: Record<string, unknown>) {
+  return executeOperation(excavationVolumeV2, input, {}, createTestContext());
+}
+
 describe('civil.excavation.volume@2', () => {
   it('shows bank volume independently and hides loose volume without swell', async () => {
     const v = await value(pit);
@@ -43,6 +47,43 @@ describe('civil.excavation.volume@2', () => {
     const metres = await value({ ...pit, length: '9.144', width: '6.096', depth: '0.9144' });
     expect(metres.bankVolumeYd3).toBe(feet.bankVolumeYd3);
     expect(metres.bankVolumeYd3).toBe('66.67');
+  });
+
+  it('uses the selected decimal places for volume presentation and swell input precision', async () => {
+    const accepted = [
+      { decimalPlaces: '2', swellPercent: '1.25' },
+      { decimalPlaces: '3', swellPercent: '1.250' },
+      { decimalPlaces: '4', swellPercent: '1.2500' },
+    ];
+    for (const input of accepted)
+      expect(await outcome({ ...pit, ...input })).toMatchObject({ ok: true });
+
+    for (const input of [
+      { decimalPlaces: '2', swellPercent: '1.250' },
+      { decimalPlaces: '3', swellPercent: '1.2500' },
+      { decimalPlaces: '4', swellPercent: '1.25000' },
+    ]) {
+      expect(await outcome({ ...pit, ...input })).toMatchObject({
+        ok: false,
+        error: { code: 'CIVIL_TOO_MANY_DECIMALS', path: 'swellPercent' },
+      });
+    }
+  });
+
+  it('changes presentation only while preserving exact volume and integer truck loads', async () => {
+    const input = { ...pit, swellPercent: '1.25', truckCapacity: '7', truckCapacityUnit: 'm3' };
+    const two = await value({ ...input, decimalPlaces: '2' });
+    const three = await value({ ...input, decimalPlaces: '3' });
+    const four = await value({ ...input, decimalPlaces: '4' });
+    const exact = (result: typeof two) =>
+      result.working.find((step) => step.ref === 'looseVolume')?.result;
+    expect([exact(two), exact(three), exact(four)]).toEqual(['30.375', '30.375', '30.375']);
+    expect([two.looseVolumeM3, three.looseVolumeM3, four.looseVolumeM3]).toEqual([
+      '30.38',
+      '30.375',
+      '30.3750',
+    ]);
+    expect([two.truckLoads, three.truckLoads, four.truckLoads]).toEqual(['5', '5', '5']);
   });
 
   it('has a message for every code it can return', () => {
