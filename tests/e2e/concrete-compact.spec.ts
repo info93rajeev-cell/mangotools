@@ -138,14 +138,14 @@ test.describe('Concrete compact workspace', () => {
       '3': {
         primary: '3.150',
         orderVolumeYd3: '4.120',
-        orderVolumeFt3: '111.240',
+        orderVolumeFt3: '111.241',
         netVolumeM3: '3.000',
         overageVolumeM3: '0.150',
       },
       '4': {
         primary: '3.1500',
         orderVolumeYd3: '4.1200',
-        orderVolumeFt3: '111.2400',
+        orderVolumeFt3: '111.2412',
         netVolumeM3: '3.0000',
         overageVolumeM3: '0.1500',
       },
@@ -166,5 +166,29 @@ test.describe('Concrete compact workspace', () => {
       await expect(output(page, 'bags')).toHaveText('225');
       await expect(output(page, 'quantity')).toHaveText('1');
     }
+  });
+
+  test('uses the selector as the overage input precision without rewriting values', async ({
+    page,
+  }) => {
+    await openTool(page, tool);
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    const overage = page.getByLabel('Overage allowance %');
+
+    await choose(page, 'decimalPlaces', '2');
+    await overage.fill('1.25');
+    await expect(primaryResult(page)).toHaveText('3.04');
+    await overage.fill('1.250');
+    await expect(page.getByText('Use at most 2 decimal places.')).toBeVisible();
+    await expect(overage).toHaveValue('1.250');
+
+    await choose(page, 'decimalPlaces', '3');
+    await expect(overage).toHaveValue('1.250');
+    await expect(primaryResult(page)).toHaveText('3.038');
+
+    await choose(page, 'decimalPlaces', '4');
+    await overage.fill('1.2500');
+    await expect(primaryResult(page)).toHaveText('3.0375');
+    await expect(output(page, 'overagePercent')).toHaveText('1.25%');
   });
 });

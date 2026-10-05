@@ -19,6 +19,10 @@ async function value(input: Record<string, unknown>) {
   return result.value;
 }
 
+async function outcome(input: Record<string, unknown>) {
+  return executeOperation(concreteQuantityV2, input, {}, createTestContext());
+}
+
 describe('civil.concrete.quantity@2', () => {
   it('formats volumes with practical precision only', async () => {
     const v = await value({ ...slab, length: '3.333333', width: '2.777777', depth: '0.123457' });
@@ -49,6 +53,41 @@ describe('civil.concrete.quantity@2', () => {
     const v = await value({ ...slab, overagePercent: '7.5' });
     expect(v.netVolumeM3).toBe('3.000');
     expect(v.orderVolumeM3).toBe('3.225');
+  });
+
+  it('uses the selected decimal places as the overage input precision ceiling', async () => {
+    const accepted = [
+      { decimalPlaces: '2', overagePercent: '1.25' },
+      { decimalPlaces: '3', overagePercent: '1.250' },
+      { decimalPlaces: '4', overagePercent: '1.2500' },
+    ];
+    for (const input of accepted)
+      expect(await outcome({ ...slab, ...input })).toMatchObject({ ok: true });
+
+    for (const input of [
+      { decimalPlaces: '2', overagePercent: '1.250' },
+      { decimalPlaces: '3', overagePercent: '1.2500' },
+      { decimalPlaces: '4', overagePercent: '1.25000' },
+    ]) {
+      expect(await outcome({ ...slab, ...input })).toMatchObject({
+        ok: false,
+        error: { code: 'CIVIL_TOO_MANY_DECIMALS', path: 'overagePercent' },
+      });
+    }
+  });
+
+  it('does not change calculation semantics when precision metadata changes', async () => {
+    const two = await value({ ...slab, decimalPlaces: '2', overagePercent: '1.25' });
+    const three = await value({ ...slab, decimalPlaces: '3', overagePercent: '1.250' });
+    const four = await value({ ...slab, decimalPlaces: '4', overagePercent: '1.2500' });
+    const exact = (result: typeof two) =>
+      result.working.find((step) => step.ref === 'orderVolume')?.result;
+    expect([exact(two), exact(three), exact(four)]).toEqual(['3.0375', '3.0375', '3.0375']);
+    expect([two.orderVolumeM3, three.orderVolumeM3, four.orderVolumeM3]).toEqual([
+      '3.04',
+      '3.038',
+      '3.0375',
+    ]);
   });
 
   it('accepts large but valid quantities', async () => {

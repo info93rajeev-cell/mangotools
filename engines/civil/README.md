@@ -50,6 +50,10 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.9.0 — `civil.concrete.quantity@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  from the Concrete preset. It controls the overage percentage's accepted input scale and decimal
+  quantity presentation only; exact arithmetic and formulas are unchanged. Omitting the field keeps
+  the historical engine validation and per-result presentation contract.
 - 0.8.0 — Civil `@2` opening rows accept and preserve an optional semantic `type` of `door`,
   `window` or `other`. Untyped historical rows remain valid and generic. The metadata does not alter
   the existing width × height × quantity deduction, and no `@1` contract changes.

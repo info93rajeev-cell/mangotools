@@ -20,7 +20,7 @@ example: 001-slab-overage
 
 Unit conversions are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 inch = 0.0254 m and 1 foot = 0.3048 m, so 1 ft³ = 0.028316846592 m³ and 1 yd³ = 0.764554857984 m³ exactly. Imperial and metric inputs that describe the same member give the same volume.
 
-The rule is **exact first, round once**: every volume is kept at full precision and rounded only for display — m³ to 3 decimal places, ft³ and yd³ to 2.
+The rule is **exact first, round once**: every volume is kept at full precision and rounded only for display. Choose 2, 3 or 4 decimal places to set both the displayed volume precision and the accepted precision of the overage percentage; unit-converted measurements retain the extra internal precision needed for exact conversion.
 
 **Overage is your estimating allowance, not a rule.** It covers spillage, uneven formwork or over-excavation, and how much is sensible depends on the job, so the percentage is always shown with the result.
 

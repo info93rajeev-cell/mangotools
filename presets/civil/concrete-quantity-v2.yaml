@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/concrete-quantity-v2
-version: 0.2.2
+version: 0.2.3
 operation: civil.concrete.quantity@2
 fields:
   memberType:
@@ -58,7 +58,6 @@ fields:
     default: 3
     order: 100
     width: half
-    uiOnly: true
     options:
       - { value: 2, labelKey: concrete.decimalPlaces.2 }
       - { value: 3, labelKey: concrete.decimalPlaces.3 }
