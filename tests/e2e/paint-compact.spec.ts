@@ -150,12 +150,18 @@ test.describe('Paint compact Roof workspace', () => {
     await openTool(page, tool);
     await populateRoof(page);
     await addOpening(page);
+    await expect(page.locator(`#tool-${tool}-openings-0-width`)).toHaveValue('2');
+    await expect(page.locator(`#tool-${tool}-openings-0-height`)).toHaveValue('1');
+    await expect(page.locator(`#tool-${tool}-openings-0-quantity`)).toHaveValue('1');
+    await expect(primaryResult(page)).toHaveText('19.883');
     const before = await primaryResult(page).textContent();
     await page.getByLabel('Unit', { exact: true }).selectOption('cm');
     await expect(page.getByLabel('Roof length')).toHaveValue('1000');
     await expect(page.getByLabel('Roof width')).toHaveValue('800');
     await expect(page.getByLabel('Roof pitch angle')).toHaveValue('30');
     await expect(page.locator(`#tool-${tool}-openings-0-width`)).toHaveValue('200');
+    await expect(page.locator(`#tool-${tool}-openings-0-height`)).toHaveValue('100');
+    await expect(page.locator(`#tool-${tool}-openings-0-quantity`)).toHaveValue('1');
     await expect(primaryResult(page)).toHaveText(before ?? '');
   });
 
