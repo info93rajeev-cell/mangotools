@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { mul, sub } from '@mangotools/engine-numeric';
+import { mul, sub, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info, wastageAssumption } from '../../lib/notices.ts';
 import { checkDeductions, openingsArea } from '../../lib/openings.ts';
 import { amount, area, ceilWhole, volume } from '../../lib/present.ts';
@@ -47,6 +47,14 @@ function areas(m: Measured) {
   const gross = mul(grossOne, m.quantity);
   const openings = mul(openingOne, m.quantity);
   return ok({ gross, openings, net: sub(gross, openings) });
+}
+
+function displayed(
+  value: string,
+  decimals: number | null,
+  legacy: (exact: string) => string,
+): string {
+  return decimals === null ? legacy(value) : toFixedString(value, decimals, 'half-up');
 }
 
 export const plasterQuantityV2 = defineOperation({
@@ -104,18 +112,18 @@ export const plasterQuantityV2 = defineOperation({
         thicknessUnit: m.thicknessUnit,
         wastagePercent: m.wastagePercent,
         materialMode: m.materialMode,
-        grossAreaM2: area(gross),
-        openingAreaM2: area(openings),
-        netAreaM2: area(net),
-        grossAreaFt2: area(toFt2(gross)),
-        openingAreaFt2: area(toFt2(openings)),
-        netAreaFt2: area(toFt2(net)),
-        wetVolumeM3: volume(wet),
-        wetVolumeFt3: amount(toFt3(wet)),
-        wetVolumeLitres: amount(mul(wet, '1000')),
-        orderVolumeM3: volume(order),
-        orderVolumeFt3: amount(toFt3(order)),
-        orderVolumeLitres: amount(mul(order, '1000')),
+        grossAreaM2: displayed(gross, m.displayDecimals, area),
+        openingAreaM2: displayed(openings, m.displayDecimals, area),
+        netAreaM2: displayed(net, m.displayDecimals, area),
+        grossAreaFt2: displayed(toFt2(gross), m.displayDecimals, area),
+        openingAreaFt2: displayed(toFt2(openings), m.displayDecimals, area),
+        netAreaFt2: displayed(toFt2(net), m.displayDecimals, area),
+        wetVolumeM3: displayed(wet, m.displayDecimals, volume),
+        wetVolumeFt3: displayed(toFt3(wet), m.displayDecimals, amount),
+        wetVolumeLitres: displayed(mul(wet, '1000'), m.displayDecimals, amount),
+        orderVolumeM3: displayed(order, m.displayDecimals, volume),
+        orderVolumeFt3: displayed(toFt3(order), m.displayDecimals, amount),
+        orderVolumeLitres: displayed(mul(order, '1000'), m.displayDecimals, amount),
         ...(bags ? { bags } : {}),
         working,
       },

@@ -50,6 +50,9 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.12.1 — `civil.plaster.quantity@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  for wastage input scale and decimal result presentation. Exact area, volume, wastage and bag
+  calculations are unchanged; whole bag counts and legacy formatting without the metadata are preserved.
 - 0.12.0 — `civil.paint.quantity@2` adds a rectangular Roof mode using
   `length × width ÷ cos(pitch) × quantity`, with a validated 0°–89° pitch. It also accepts optional
   `decimalPlaces` metadata (`2`, `3` or `4`) for wastage input scale and decimal result presentation.

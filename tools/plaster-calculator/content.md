@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-10-01
+lastReviewed: 2026-10-06
 example: 001-wall-4x3-m
 ---
 
@@ -11,13 +11,13 @@ masons, and quantity surveyors.
 
 1. Choose the surface type and the unit your dimensions are in. Changing a unit converts the values you
    already typed.
-2. Enter the surface's length and height or width, and the number of identical surfaces.
+2. Enter the surface's length and height or width, and the number of same-size surfaces.
 3. Add each door, window or other unplastered area with its width, height and quantity.
 4. Enter the plaster thickness (in mm or inches) and a wastage allowance.
 5. To also estimate bags, choose a material estimate and enter the yield or coverage **printed on your
    plaster product**.
-6. Read the plaster volume, the net area, bags when you supplied product data, the assumptions used and
-   the working. Copy or print the result.
+6. Choose 2, 3 or 4 decimal places for decimal inputs and results, then read the plaster volume, net area,
+   bags when you supplied product data, assumptions and working. Copy or print the result.
 
 ## Method
 
@@ -31,7 +31,8 @@ masons, and quantity surveyors.
   coverage is quoted for), **rounded up** — so a thicker coat correctly needs more bags.
 
 Unit conversions are exact (1 inch = 25.4 mm, 1 foot = 0.3048 m, 1 ft² = 0.09290304 m², 1 ft³ =
-0.028316846592 m³). Areas are shown to 2 decimal places and m³ volumes to 3.
+0.028316846592 m³). Calculations keep full internal precision; the decimal-place control changes only
+accepted wastage precision and decimal result presentation. Whole bags remain whole numbers.
 
 **Why no universal bag figure?** Cement-sand render, gypsum plaster, skim coats and ready-mixed bagged
 plaster have different densities, yields and water demand. Rather than assume one density or bag size for

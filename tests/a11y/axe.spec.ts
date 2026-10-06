@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 import type { Registry } from '@mangotools/schemas';
 import { expect, type Page, test } from '@playwright/test';
 import { approvedSitePages } from '../support/site-pages.ts';
-import { gotoReady, island, produceResult, TOOL_IDS } from '../support/tool-page.ts';
+import { gotoReady, island, primaryResult, produceResult, TOOL_IDS } from '../support/tool-page.ts';
 
 const registry = JSON.parse(
   readFileSync(join(process.cwd(), 'generated/registry.json'), 'utf8'),
@@ -63,6 +63,14 @@ for (const scheme of ['light', 'dark'] as const) {
       await page.getByLabel('Roof pitch angle').fill('30');
       await page.getByLabel('Same-size areas').fill('1');
       await expect(page.locator('[data-output="grossAreaM2"] dd')).toHaveText('92.376');
+      expect(await seriousViolations(page)).toEqual([]);
+    });
+    test('/plaster-calculator (product-yield result state)', async ({ page }) => {
+      await gotoReady(page, '/plaster-calculator');
+      await page.getByRole('button', { name: 'Try sample' }).click();
+      await page.getByLabel('Material estimate').selectOption('bag-yield');
+      await page.getByLabel('Wet yield per bag (from your product)').fill('30');
+      await expect(primaryResult(page)).toHaveText('4');
       expect(await seriousViolations(page)).toEqual([]);
     });
     test('/gst-calculator (mobile search open)', async ({ page }) => {

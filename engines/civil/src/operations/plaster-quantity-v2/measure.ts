@@ -24,6 +24,7 @@ export interface Measured {
   thicknessUnit: ThicknessUnit;
   wastagePercent: string;
   materialMode: PlasterQuantityInputV2['materialMode'];
+  displayDecimals: number | null;
   /** Wet volume one bag yields, in m³ — only when the user supplied their product's figure. */
   bagVolumeM3: string | null;
 }
@@ -53,6 +54,7 @@ function readBagVolume(input: PlasterQuantityInputV2): Result<string | null> {
 
 /** Reads every field in form order, stopping at the first invalid one. */
 export function measure(input: PlasterQuantityInputV2): Result<Measured> {
+  const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : null;
   const length = read(input.length, 'length');
   if (!length.ok) return length;
   const second = read(input.secondDimension, 'secondDimension');
@@ -66,7 +68,7 @@ export function measure(input: PlasterQuantityInputV2): Result<Measured> {
   const wastagePercent = readPercent(input.wastagePercent, 'wastagePercent', {
     min: '0',
     max: '50',
-    maxDecimals: PERCENT_DECIMALS,
+    maxDecimals: displayDecimals ?? PERCENT_DECIMALS,
     rangeCode: 'CIVIL_WASTAGE_OUT_OF_RANGE',
   });
   if (!wastagePercent.ok) return wastagePercent;
@@ -83,6 +85,7 @@ export function measure(input: PlasterQuantityInputV2): Result<Measured> {
     thicknessUnit: input.thicknessUnit,
     wastagePercent: wastagePercent.value,
     materialMode: input.materialMode,
+    displayDecimals,
     bagVolumeM3: bagVolume.value,
   });
 }

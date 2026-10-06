@@ -31,6 +31,7 @@ export const plasterQuantityInputV2 = z.strictObject({
   bagCoverage: decimal.optional(),
   bagCoverageUnit: z.enum(bagCoverageUnits).optional(),
   bagCoverageThickness: decimal.optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 /** No display params: each output is formatted by what it represents (see lib/present.ts). */

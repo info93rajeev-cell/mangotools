@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/plaster-quantity-v2
-version: 0.2.0
+version: 0.2.1
 operation: civil.plaster.quantity@2
 fields:
   surfaceType:
@@ -31,6 +31,7 @@ fields:
   length: { labelKey: plaster.field.length, kind: number, required: true, order: 30, width: half, helpKey: plaster.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
   secondDimension: { labelKey: plaster.field.secondDimension, kind: number, required: true, order: 40, width: half, helpKey: plaster.help.secondDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
   quantity: { labelKey: plaster.field.quantity, kind: number, required: true, default: 1, order: 50, width: half, helpKey: plaster.help.quantity, helpMode: disclosure }
+  wastagePercent: { labelKey: plaster.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 51, width: half, helpKey: plaster.help.wastage, helpMode: disclosure }
   openings: { labelKey: plaster.field.openings, kind: openings, order: 60, helpKey: plaster.help.openings, helpMode: disclosure, convert: { unitField: unit, family: length } }
   thicknessUnit:
     labelKey: plaster.field.thicknessUnit
@@ -43,7 +44,6 @@ fields:
       - { value: mm, labelKey: plaster.unit.mm }
       - { value: in, labelKey: plaster.unit.in }
   thickness: { labelKey: plaster.field.thickness, kind: number, required: true, default: "12", order: 71, width: half, helpKey: plaster.help.thickness, helpMode: disclosure, convert: { unitField: thicknessUnit, family: length } }
-  wastagePercent: { labelKey: plaster.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 80, width: half, helpKey: plaster.help.wastage, helpMode: disclosure }
   materialMode:
     labelKey: plaster.field.materialMode
     kind: enum
@@ -57,6 +57,17 @@ fields:
       - { value: none, labelKey: plaster.material.none }
       - { value: bag-yield, labelKey: plaster.material.bagYield }
       - { value: bag-coverage, labelKey: plaster.material.bagCoverage }
+  decimalPlaces:
+    labelKey: plaster.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 91
+    width: half
+    options:
+      - { value: 2, labelKey: plaster.decimalPlaces.2 }
+      - { value: 3, labelKey: plaster.decimalPlaces.3 }
+      - { value: 4, labelKey: plaster.decimalPlaces.4 }
   bagYield: { labelKey: plaster.field.bagYield, kind: number, required: true, order: 100, width: half, helpKey: plaster.help.bagYield, helpMode: disclosure, convert: { unitField: bagYieldUnit, family: volume }, visibleWhen: { materialMode: [bag-yield] } }
   bagYieldUnit:
     labelKey: plaster.field.bagYieldUnit
@@ -83,24 +94,24 @@ fields:
       - { value: ft2, labelKey: plaster.area.ft2 }
   bagCoverageThickness: { labelKey: plaster.field.bagCoverageThickness, kind: number, required: true, order: 102, width: half, helpKey: plaster.help.bagCoverageThickness, helpMode: disclosure, convert: { unitField: thicknessUnit, family: length }, visibleWhen: { materialMode: [bag-coverage] } }
 outputs:
-  bags: { labelKey: plaster.out.bags, format: number, order: 5, primary: true }
-  orderVolumeM3: { labelKey: plaster.out.orderVolumeM3, format: number, order: 10, primaryWhen: { unit: [mm, cm, m] } }
-  orderVolumeFt3: { labelKey: plaster.out.orderVolumeFt3, format: number, order: 11, primaryWhen: { unit: [in, ft] } }
-  orderVolumeLitres: { labelKey: plaster.out.orderVolumeLitres, format: number, order: 12 }
-  wetVolumeM3: { labelKey: plaster.out.wetVolumeM3, format: number, order: 20 }
+  bags: { labelKey: plaster.out.bags, format: number, order: 5, primaryWhen: { materialMode: [bag-yield, bag-coverage] } }
+  orderVolumeM3: { labelKey: plaster.out.orderVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 10, primaryWhen: { unit: [mm, cm, m], materialMode: [none] } }
+  orderVolumeFt3: { labelKey: plaster.out.orderVolumeFt3, format: number, decimalPlacesField: decimalPlaces, order: 11, primaryWhen: { unit: [in, ft], materialMode: [none] } }
+  orderVolumeLitres: { labelKey: plaster.out.orderVolumeLitres, format: number, decimalPlacesField: decimalPlaces, order: 12 }
+  wetVolumeM3: { labelKey: plaster.out.wetVolumeM3, format: number, decimalPlacesField: decimalPlaces, order: 20 }
   wastagePercent: { labelKey: plaster.out.wastagePercent, format: percent, order: 21 }
-  netAreaM2: { labelKey: plaster.out.netAreaM2, format: number, order: 30, visibleWhen: { unit: [mm, cm, m] } }
-  netAreaFt2: { labelKey: plaster.out.netAreaFt2, format: number, order: 30, visibleWhen: { unit: [in, ft] } }
-  thickness: { labelKey: plaster.out.thickness, format: number, order: 31 }
-  grossAreaM2: { labelKey: plaster.out.grossAreaM2, format: number, order: 32, visibleWhen: { unit: [mm, cm, m] } }
-  grossAreaFt2: { labelKey: plaster.out.grossAreaFt2, format: number, order: 32, visibleWhen: { unit: [in, ft] } }
-  openingAreaM2: { labelKey: plaster.out.openingAreaM2, format: number, order: 33, visibleWhen: { unit: [mm, cm, m] } }
-  openingAreaFt2: { labelKey: plaster.out.openingAreaFt2, format: number, order: 33, visibleWhen: { unit: [in, ft] } }
+  netAreaM2: { labelKey: plaster.out.netAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 30, visibleWhen: { unit: [mm, cm, m] } }
+  netAreaFt2: { labelKey: plaster.out.netAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 30, visibleWhen: { unit: [in, ft] } }
+  thickness: { labelKey: plaster.out.thickness, format: number, decimalPlacesField: decimalPlaces, order: 31 }
+  grossAreaM2: { labelKey: plaster.out.grossAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 32, visibleWhen: { unit: [mm, cm, m] } }
+  grossAreaFt2: { labelKey: plaster.out.grossAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 32, visibleWhen: { unit: [in, ft] } }
+  openingAreaM2: { labelKey: plaster.out.openingAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 33, visibleWhen: { unit: [mm, cm, m] } }
+  openingAreaFt2: { labelKey: plaster.out.openingAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 33, visibleWhen: { unit: [in, ft] } }
 samples:
   wall-4x3-m:
     titleKey: plaster.sample.wall
-    input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", openings: [{ width: "1", height: "2", quantity: "1" }], thicknessUnit: mm, thickness: "12", wastagePercent: "0", materialMode: none }
-ui: { archetypes: [B], density: comfortable, compute: live }
+    input: { surfaceType: wall, unit: m, length: "4", secondDimension: "3", quantity: "1", openings: [{ width: "1", height: "2", quantity: "1" }], thicknessUnit: mm, thickness: "12", wastagePercent: "0", materialMode: none, decimalPlaces: "3" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
     plaster.field.surfaceType: Surface type
@@ -115,13 +126,17 @@ strings:
     plaster.unit.ft: ft
     plaster.field.length: Length
     plaster.field.secondDimension: Height or width
-    plaster.field.quantity: Number of identical surfaces
+    plaster.field.quantity: Same-size surfaces
     plaster.field.openings: Openings in one surface (doors, windows)
     plaster.field.openings.add: Add door or window
     plaster.field.thicknessUnit: Thickness unit
     plaster.field.thickness: Plaster thickness
     plaster.field.wastagePercent: Wastage allowance %
     plaster.field.materialMode: Material estimate
+    plaster.field.decimalPlaces: Decimal places
+    plaster.decimalPlaces.2: "2"
+    plaster.decimalPlaces.3: "3"
+    plaster.decimalPlaces.4: "4"
     plaster.material.none: Volume only (no bag estimate)
     plaster.material.bagYield: Bags — from my product's yield per bag
     plaster.material.bagCoverage: Bags — from my product's coverage per bag
