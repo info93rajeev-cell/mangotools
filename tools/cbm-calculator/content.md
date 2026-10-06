@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-25
+lastReviewed: 2026-10-06
 example: 001-carton-cm
 ---
 
@@ -8,7 +8,8 @@ example: 001-carton-cm
 1. Choose the unit your carton is measured in: centimetres, metres, millimetres or inches.
 2. Enter the outer length, width and height of one carton.
 3. Enter the number of cartons (a whole number from 1 to 1,000,000).
-4. Read the total CBM, the CBM per carton and the same volumes in cubic feet, with the working. Copy or print the result.
+4. Choose 2, 3 or 4 decimal places for the displayed volumes.
+5. Read the total CBM, the CBM per carton and the same volumes in cubic feet, with the working. Copy or print the result.
 
 ## Method
 
@@ -20,7 +21,7 @@ CBM means cubic metres (m³), the volume unit freight forwarders use to price se
 
 Unit conversions are exact: 1 cm = 0.01 m, 1 mm = 0.001 m and 1 inch = 0.0254 m, so one cubic centimetre is 0.000001 m³ and one cubic inch is 0.000016387064 m³.
 
-The rule is **exact first, round once**. Every volume is calculated exactly and rounded to three decimal places only for display. The total is calculated from the exact volume of one carton, not from the rounded figure. For example, a 25 × 25 × 20 cm carton is 0.0125 m³, shown as 0.013, and 100 of them are 1.250 m³, not 1.300.
+The rule is **exact first, round once**. Every volume is calculated exactly and rounded to the selected two, three or four decimal places only for display. The total is calculated from the exact volume of one carton, not from the rounded figure. For example, at three places a 25 × 25 × 20 cm carton is 0.0125 m³, shown as 0.013, and 100 of them are 1.250 m³, not 1.300.
 
 ## Worked example
 

@@ -16,13 +16,16 @@ interface Measured {
   quantity: string;
 }
 
+const CONVERTED_DIMENSION_DECIMALS = 12;
+
 /** Reads the three dimensions and the quantity, stopping at the first invalid field. */
 function measure(input: CbmInput) {
-  const length = readPositive(input.length, 'length', DIMENSION_DECIMALS);
+  const inputDecimals = input.decimalPlaces ? CONVERTED_DIMENSION_DECIMALS : DIMENSION_DECIMALS;
+  const length = readPositive(input.length, 'length', inputDecimals);
   if (!length.ok) return length;
-  const width = readPositive(input.width, 'width', DIMENSION_DECIMALS);
+  const width = readPositive(input.width, 'width', inputDecimals);
   if (!width.ok) return width;
-  const height = readPositive(input.height, 'height', DIMENSION_DECIMALS);
+  const height = readPositive(input.height, 'height', inputDecimals);
   if (!height.ok) return height;
   const quantity = readCount(input.quantity, 'quantity', MAX_QUANTITY);
   if (!quantity.ok) return quantity;
@@ -74,7 +77,8 @@ export const cbmCompute = defineOperation({
     const total = mul(perCarton, quantity);
     const cftPerCarton = mul(perCarton, CUBIC_FEET_PER_CUBIC_METRE);
     const cftTotal = mul(total, CUBIC_FEET_PER_CUBIC_METRE);
-    const shown = (value: string) => toFixedString(value, params.decimals, params.rounding);
+    const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : params.decimals;
+    const shown = (value: string) => toFixedString(value, displayDecimals, params.rounding);
     const cft = CUBIC_FEET_PER_CUBIC_METRE;
     const working = [
       step(
@@ -90,7 +94,7 @@ export const cbmCompute = defineOperation({
     const cbmPerCarton = shown(perCarton);
     const warnings: OpWarning[] = [];
     if (isZero(cbmPerCarton)) {
-      const details = { smallest: smallestStep(params.decimals) };
+      const details = { smallest: smallestStep(displayDecimals) };
       warnings.push(warning('LOGISTICS_VOLUME_ROUNDS_TO_ZERO', { details }));
     }
     return ok(

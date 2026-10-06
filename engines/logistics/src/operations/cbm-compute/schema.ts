@@ -17,6 +17,7 @@ export const cbmInput = z.strictObject({
   width: decimal.optional(),
   height: decimal.optional(),
   quantity: decimal.optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 export const cbmParams = z.strictObject({
