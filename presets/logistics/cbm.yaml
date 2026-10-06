@@ -52,11 +52,11 @@ strings:
     cbm.unit.cm: cm
     cbm.unit.m: m
     cbm.unit.mm: mm
-    cbm.unit.in: inch
+    cbm.unit.in: in
     cbm.field.length: Length
     cbm.field.width: Width
     cbm.field.height: Height
-    cbm.field.quantity: Number of cartons
+    cbm.field.quantity: Cartons
     cbm.help.dimension: Outer carton size in the selected unit. Changing the unit converts this value.
     cbm.help.quantity: A whole number from 1 to 1,000,000.
     cbm.out.totalCbm: Total CBM (m³)

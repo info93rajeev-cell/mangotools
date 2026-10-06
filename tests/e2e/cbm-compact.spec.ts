@@ -116,7 +116,7 @@ test.describe('CBM compact workspace', () => {
   test('preserves quantity and cubic-feet outputs', async ({ page }) => {
     await openTool(page, tool);
     await populateSample(page);
-    await page.getByLabel('Number of cartons').fill('10');
+    await page.getByLabel('Cartons').fill('10');
     await expect(primaryResult(page)).toHaveText('0.600');
     await expect(output(page, 'cbmPerCarton')).toHaveText('0.060');
     await expect(output(page, 'totalCft')).toHaveText('21.189');
