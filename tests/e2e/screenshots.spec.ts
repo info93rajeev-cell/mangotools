@@ -56,6 +56,27 @@ for (const size of [
 
 for (const size of [
   { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
+  test(`plaster populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/plaster-calculator');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await page.getByLabel('Wastage allowance %').fill('10');
+    await page.getByLabel('Material estimate').selectOption('bag-yield');
+    await page.getByLabel('Wet yield per bag (from your product)').fill('30');
+    await expect(primaryResult(page)).toHaveText('5');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `plaster-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
   { name: '1440x900', width: 1440, height: 900, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {
