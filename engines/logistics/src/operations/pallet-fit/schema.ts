@@ -23,6 +23,7 @@ export const palletFitInput = z.strictObject({
   palletLength: decimal.optional(),
   palletWidth: decimal.optional(),
   maxStackHeight: decimal.optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 export const palletFitParams = z.strictObject({

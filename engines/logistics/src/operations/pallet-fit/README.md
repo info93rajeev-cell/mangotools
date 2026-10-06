@@ -73,10 +73,15 @@ pallet, so overhang is impossible by construction, not merely disallowed by a se
 
 ## Validation
 
-- Carton dimensions and quantity: the same rules as the other three logistics operations (positive,
-  ≤ 3 decimal places; quantity a whole number from 1 to 1,000,000).
-- Custom pallet: `palletLength` and `palletWidth` are required and must be positive, ≤ 3 decimal places.
-- `maxStackHeight`: required, positive, ≤ 3 decimal places, always in `palletUnit`.
+- Carton dimensions and quantity: positive measurements and a quantity that is a whole number from
+  1 to 1,000,000. Legacy calls accept at most 3 decimal places; calls with `decimalPlaces` accept the
+  shared converter's 12-place exact converted values.
+- Custom pallet: `palletLength` and `palletWidth` are required and must be positive, with the same
+  legacy or converted-value precision rule.
+- `maxStackHeight`: required, positive, always in `palletUnit`, with the same precision rule.
+- Converted inputs are normalized to the converter's 12-place canonical-centimetre precision before
+  floor-based fit calculations, preventing harmless recurring-decimal residue from changing a whole
+  carton or layer count at an exact boundary.
 - If the carton's footprint does not fit the pallet base in **any** orientation tried (the winning
   orientation's length-axis or width-axis count is 0), the operation returns
   `LOGISTICS_CARTON_EXCEEDS_PALLET_BASE`.
@@ -95,12 +100,16 @@ Every successful result carries three standing notices, plus one when more than 
 - `LOGISTICS_PALLET_DIMENSIONS_VARY` — always
 - `LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED` — when `palletsRequired > 1`
 
+These are tagged as informational result metadata so compact tool pages keep them available in the
+closed Important notes disclosure instead of rendering persistent warning banners.
+
 ## Precision
 
 Multiplication is exact; division keeps 20 decimal places. `usedAreaPercent`, `unusedAreaPercent`,
 `estimatedStackHeight`, `leftoverPalletLength` and `leftoverPalletWidth` are rounded once, from their own
-full-precision value, to `params.decimals` (default 3) with `params.rounding` (default half-up) — the
-same rule as every other operation in this engine. Carton counts (`cartonsAlongPalletLength`,
+full-precision value, to optional input `decimalPlaces` (2, 3 or 4), or otherwise to
+`params.decimals` (default 3), with `params.rounding` (default half-up). Carton counts
+(`cartonsAlongPalletLength`,
 `cartonsAlongPalletWidth`, `cartonsPerLayer`, `layers`, `cartonsPerPallet`, `palletsRequired`,
 `cartonsOnLastPallet`) are exact whole numbers and are never rounded for display.
 

@@ -94,6 +94,24 @@ for (const size of [
   { name: '1366x768', width: 1366, height: 768, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {
+  test(`Pallet Loading populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/pallet-loading-calculator');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(primaryResult(page)).toHaveText('56');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `pallet-loading-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
   test(`plaster populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
     await page.setViewportSize(size);
     await gotoReady(page, '/plaster-calculator');

@@ -4,8 +4,9 @@ id: pallet-loading-calculator
 slug: pallet-loading-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-10-07, type: changed, summary: "Compact logistics workspace with numeric unit conversion and selectable decimal precision." }
   - { version: 0.1.0, date: 2026-09-26, type: added, summary: "First beta with cartons per layer, layers, cartons per pallet and pallets required for a Euro, US or custom pallet." }
 name: Pallet Loading Calculator
 shortName: Pallet Loading

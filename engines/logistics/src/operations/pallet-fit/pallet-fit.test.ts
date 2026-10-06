@@ -55,6 +55,42 @@ describe('logistics.pallet.fit', () => {
     expect(result.value.estimatedStackHeight).toBe('140.000');
   });
 
+  it('formats continuous outputs at 2, 3 and 4 places without changing whole counts', async () => {
+    for (const decimalPlaces of ['2', '3', '4']) {
+      const result = await run({ ...carton, decimalPlaces });
+      if (!result.ok) throw new Error('expected success');
+      expect(result.value.cartonsPerPallet).toBe('56');
+      expect(result.value.palletsRequired).toBe('2');
+      expect(result.value.usedAreaPercent).toBe(`100.${'0'.repeat(Number(decimalPlaces))}`);
+      expect(result.value.estimatedStackHeight).toBe(`140.${'0'.repeat(Number(decimalPlaces))}`);
+    }
+  });
+
+  it('accepts exact converted dimensions while preserving the legacy input limit', async () => {
+    const converted = await run({
+      ...carton,
+      unit: 'in',
+      length: '15.748031496063',
+      width: '11.811023622047',
+      height: '7.874015748031',
+      palletUnit: 'm',
+      maxStackHeight: '1.5',
+      decimalPlaces: '3',
+    });
+    if (!converted.ok) throw new Error('expected success');
+    expect(converted.value.cartonsPerPallet).toBe('56');
+    expect(converted.value.palletsRequired).toBe('2');
+
+    const legacy = await run({ ...carton, length: '40.0001' });
+    expect(legacy.ok).toBe(false);
+    if (legacy.ok) throw new Error('expected error');
+    expect(legacy.error.code).toBe('LOGISTICS_TOO_MANY_DECIMALS');
+  });
+
+  it('rejects unsupported display precision', async () => {
+    expect((await run({ ...carton, decimalPlaces: '5' })).ok).toBe(false);
+  });
+
   it('always carries the three standing warnings', async () => {
     const result = await run(carton);
     if (!result.ok) throw new Error('expected success');
@@ -65,6 +101,7 @@ describe('logistics.pallet.fit', () => {
         'LOGISTICS_PALLET_DIMENSIONS_VARY',
       ]),
     );
+    expect(result.warnings.every((w) => w.details?.severity === 'info')).toBe(true);
   });
 
   it('warns only when more than one pallet is needed', async () => {
