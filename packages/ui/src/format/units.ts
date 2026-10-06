@@ -40,6 +40,7 @@ const FACTORS: Readonly<Record<UnitFamily, Readonly<Record<string, Factor>>>> = 
     'ft2-per-gal': factor('0.09290304', '3.785411784'),
   },
   liquid: { l: factor('1'), gal: factor('3.785411784') },
+  weight: { kg: factor('1'), g: factor('0.001'), lb: factor('0.45359237') },
 };
 
 /** Enough precision for small measurements without displaying binary floating-point drift. */

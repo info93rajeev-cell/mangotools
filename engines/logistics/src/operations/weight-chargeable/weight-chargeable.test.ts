@@ -74,6 +74,67 @@ describe('logistics.weight.chargeable', () => {
     expect(volumetric?.variables).toEqual({ volume: '1000', divisor: '6000' });
   });
 
+  it('formats decimal outputs at 2, 3 or 4 places without changing exact work', async () => {
+    const values = await Promise.all(
+      ['2', '3', '4'].map(async (decimalPlaces) => {
+        const result = await run({
+          ...carton,
+          length: '25',
+          width: '25',
+          height: '20',
+          quantity: '100',
+          weight: '0.1',
+          divisor: '6000',
+          decimalPlaces,
+        });
+        if (!result.ok) throw new Error('expected success');
+        return result.value;
+      }),
+    );
+    expect(values.map((value) => value.chargeablePerPackage)).toEqual(['2.08', '2.083', '2.0833']);
+    expect(values.map((value) => value.chargeableTotal)).toEqual(['208.33', '208.333', '208.3333']);
+    expect(new Set(values.map((value) => value.working[1]?.result))).toEqual(
+      new Set(['2.08333333333333333333']),
+    );
+  });
+
+  it('accepts exact converted dimensions and weights while preserving legacy input limits', async () => {
+    const dimensions = await run({
+      ...carton,
+      unit: 'in',
+      length: '19.685039370079',
+      width: '15.748031496063',
+      height: '11.811023622047',
+      decimalPlaces: '3',
+    });
+    expect(dimensions.ok && dimensions.value.chargeableTotal).toBe('120.000');
+
+    const weight = await run({
+      ...carton,
+      length: '1',
+      width: '1',
+      height: '1',
+      weightUnit: 'lb',
+      weight: '17.63698097479',
+      decimalPlaces: '3',
+    });
+    expect(weight.ok && weight.value.actualTotal).toBe('80.000');
+    expect(weight.ok && weight.value.chargeableTotal).toBe('80.000');
+
+    expect(await run({ ...carton, length: '50.1234' })).toMatchObject({
+      ok: false,
+      error: { code: 'LOGISTICS_TOO_MANY_DECIMALS', path: 'length' },
+    });
+    expect(await run({ ...carton, weight: '8.1234' })).toMatchObject({
+      ok: false,
+      error: { code: 'LOGISTICS_TOO_MANY_DECIMALS', path: 'weight' },
+    });
+  });
+
+  it('rejects unsupported display precision through the input schema', async () => {
+    expect((await run({ ...carton, decimalPlaces: '5' })).ok).toBe(false);
+  });
+
   it('lists every working step in order, with a conversion step for pounds', async () => {
     const result = await run({ ...carton, weight: '22', weightUnit: 'lb', quantity: '1' });
     if (!result.ok) throw new Error('expected success');

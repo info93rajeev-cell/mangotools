@@ -20,6 +20,7 @@ export const chargeableInput = z.strictObject({
   weight: decimal.optional(),
   weightUnit: z.enum(weightUnits),
   divisor: decimal.optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 export const chargeableParams = z.strictObject({

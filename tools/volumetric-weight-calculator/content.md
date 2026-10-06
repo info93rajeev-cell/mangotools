@@ -1,15 +1,16 @@
 ---
-lastReviewed: 2026-09-25
+lastReviewed: 2026-10-07
 example: 001-volumetric-billed
 ---
 
 ## How to use
 
-1. Choose the dimension unit (cm, m, mm or inch) and enter the outer length, width and height of one package.
+1. Choose the dimension unit (cm, m, mm or in) and enter the outer length, width and height of one package.
 2. Enter the number of packages of that size.
 3. Choose the weight unit (kg, g or lb) and enter the actual weight of one package.
 4. Choose the divisor your carrier uses: 5000, 6000 or Custom.
-5. Read the total chargeable weight. The working shows the volumetric and actual weight and which one is used for billing.
+5. Choose 2, 3 or 4 decimal places for the displayed weights.
+6. Read the total chargeable weight. The working shows the volumetric and actual weight and which one is used for billing.
 
 ## Method
 
@@ -29,7 +30,7 @@ Unit conversions are exact: 1 inch = 2.54 cm, 1 mm = 0.1 cm, 1 m = 100 cm, 1 g =
 | Volumetric weight | Volume in cm³ ÷ divisor |
 | Chargeable weight | The higher of the two; this is what carriers bill |
 
-Results are shown in kilograms to three decimal places. Totals are calculated from the unrounded per-package values, and nothing is rounded up to the next 0.5 kg or 1 kg. Carriers often round up; check their rules.
+Results are shown in kilograms at the selected two, three or four decimal places. Totals are calculated from the unrounded per-package values, and nothing is rounded up to the next 0.5 kg or 1 kg. Carriers often round up; check their rules.
 
 ## Worked example
 
@@ -51,11 +52,11 @@ Because the package is light for its size. Carriers bill the higher of actual an
 
 ### Can I use inches and pounds?
 
-Yes. Choose inch for the dimensions and lb for the weight. The calculator converts them exactly and shows the result in kilograms. The divisor is still in cm³ per kg.
+Yes. Choose in for the dimensions and lb for the weight. The calculator converts the entered values and shows the result in kilograms. The divisor is still in cm³ per kg.
 
 ### Does the calculator round up to the next 0.5 kg or 1 kg?
 
-No. It shows the exact result to three decimal places. Many carriers round chargeable weight up, so apply your carrier's rule to the final figure.
+No. It shows the result at your selected display precision without applying a carrier rounding increment. Many carriers round chargeable weight up, so apply your carrier's rule to the final figure.
 
 ### What is the difference from CBM?
 
