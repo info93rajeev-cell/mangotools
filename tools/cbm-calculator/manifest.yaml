@@ -4,8 +4,9 @@ id: cbm-calculator
 slug: cbm-calculator
 status: beta
 tier: T2
-version: 0.1.1
+version: 0.1.2
 changelog:
+  - { version: 0.1.2, date: 2026-10-06, type: changed, summary: "Compact workspace, converting dimension units, selectable 2/3/4-place precision, and collapsed supporting sections." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Link the Export Packing List Generator; clarify that air freight is priced by volumetric weight." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with CBM per carton, total CBM and cubic feet in cm, m, mm or inches." }
 name: CBM Calculator
@@ -32,4 +33,4 @@ quality:
   verifiedAgainst:
     - { citation: "SI definition of the metre; international inch (1959): 1 in = 25.4 mm exactly", locator: "Method section" }
     - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–006, tool fixtures 001–005" }
-  lastVerified: 2026-09-25
+  lastVerified: 2026-10-06

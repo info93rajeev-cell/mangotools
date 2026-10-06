@@ -58,6 +58,24 @@ for (const size of [
   { name: '1366x768', width: 1366, height: 768, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {
+  test(`CBM populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/cbm-calculator');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(primaryResult(page)).toHaveText('6.000');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `cbm-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
   test(`plaster populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
     await page.setViewportSize(size);
     await gotoReady(page, '/plaster-calculator');

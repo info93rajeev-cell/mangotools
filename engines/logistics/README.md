@@ -16,6 +16,10 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.4.2 — `logistics.cbm.compute@1` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  for decimal result presentation while preserving exact working values. Converted dimensions may
+  retain the shared form converter's 12 decimal places; legacy calls without metadata retain the
+  original three-place input limit and output behaviour.
 - 0.4.1 — addition (TASK-003D PR 2): `logistics.pallet.fit@1`'s `pf.layers` working step gains a
   `cartonHeightOnAxis` variable, and `pf.usedArea` gains a `cartonsPerLayer` variable, so the tool's
   preset can write a working-step sentence that actually explains the arithmetic. Working-step

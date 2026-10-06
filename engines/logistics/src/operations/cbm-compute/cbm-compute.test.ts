@@ -61,6 +61,45 @@ describe('logistics.cbm.compute', () => {
     expect(even.ok && even.value.cbmPerCarton).toBe('0.00');
   });
 
+  it('formats decimal outputs at the selected 2, 3 or 4 places without changing exact work', async () => {
+    const values = await Promise.all(
+      ['2', '3', '4'].map(async (decimalPlaces) => {
+        const result = await run({
+          ...carton,
+          length: '25',
+          width: '25',
+          height: '20',
+          decimalPlaces,
+        });
+        if (!result.ok) throw new Error('expected success');
+        return result.value;
+      }),
+    );
+    expect(values.map((value) => value.cbmPerCarton)).toEqual(['0.01', '0.013', '0.0125']);
+    expect(values.map((value) => value.totalCbm)).toEqual(['1.25', '1.250', '1.2500']);
+    expect(new Set(values.map((value) => value.working[0]?.result))).toEqual(new Set(['0.0125']));
+  });
+
+  it('accepts exact converted dimensions while legacy calls keep their 3-place input limit', async () => {
+    const converted = await run({
+      unit: 'in',
+      length: '19.685039370079',
+      width: '15.748031496063',
+      height: '11.811023622047',
+      quantity: '100',
+      decimalPlaces: '3',
+    });
+    expect(converted.ok && converted.value.totalCbm).toBe('6.000');
+    expect(await run({ ...carton, length: '50.1234' })).toMatchObject({
+      ok: false,
+      error: { code: 'LOGISTICS_TOO_MANY_DECIMALS', path: 'length' },
+    });
+  });
+
+  it('rejects unsupported display precision through the input schema', async () => {
+    expect((await run({ ...carton, decimalPlaces: '5' })).ok).toBe(false);
+  });
+
   it('rejects an unknown unit through the input schema', async () => {
     const result = await run({ ...carton, unit: 'ft' });
     expect(result.ok).toBe(false);
