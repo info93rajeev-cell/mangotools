@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-10-01
+lastReviewed: 2026-10-06
 example: 003-v2-room-5x4-m
 ---
 
@@ -10,13 +10,13 @@ flooring calculator for homeowners, contractors, and quantity surveyors planning
 
 1. Enter the surface as length × width, or switch to **Known area** if you already have the area. Changing
    a unit converts the values you already typed.
-2. Enter the number of identical rooms or areas, and add any parts that will not be tiled.
+2. Enter the number of same-size areas, and add any parts that will not be tiled.
 3. Enter one tile's face size in the tile unit — the surface and the tile can use different units.
 4. Pick a layout to suggest a wastage percentage, or type your own. The suggestions are estimating
    guidance only.
 5. Enter the box packing from the label — tiles per box or coverage per box — or skip boxes.
-6. Read the tiles to buy, the boxes to buy, the calculated count before wastage, the assumptions and the
-   working. Copy or print the result.
+6. Choose 2, 3 or 4 decimal places for decimal inputs and results, then read the whole tiles and boxes to
+   buy, the calculated count before wastage, assumptions and working. Copy or print the result.
 
 ## Method
 
@@ -31,7 +31,9 @@ flooring calculator for homeowners, contractors, and quantity surveyors planning
 
 Unit conversions are exact (1 inch = 25.4 mm, 1 foot = 0.3048 m, 1 ft² = 0.09290304 m²). The wastage
 allowance is applied to the exact calculated count and the result is rounded only once, so the order
-never carries a hidden double rounding.
+never carries a hidden double rounding. Calculations keep full internal precision; the decimal-place
+control changes only accepted wastage precision and decimal result presentation. Whole tiles and boxes
+remain whole numbers.
 
 **Why grout joints are not deducted.** A simple "tile + joint" formula does not reliably predict how many
 tiles a real layout uses — cuts at the edges usually matter more. The calculator uses tile face area and

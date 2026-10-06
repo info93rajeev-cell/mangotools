@@ -77,6 +77,25 @@ for (const size of [
 
 for (const size of [
   { name: '1366x768', width: 1366, height: 768, fullPage: false },
+  { name: '360x800', width: 360, height: 800, fullPage: true },
+]) {
+  test(`tile / flooring populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await gotoReady(page, '/tile-flooring-calculator');
+    await page.getByRole('button', { name: 'Try sample' }).click();
+    await expect(primaryResult(page)).toHaveText('245');
+    await expect(page.locator('[data-output="boxes"] dd')).toHaveText('25');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.mouse.move(0, 0);
+    await page.screenshot({
+      path: join(OUT, `tile-flooring-calculator-${size.name}.png`),
+      fullPage: size.fullPage,
+    });
+  });
+}
+
+for (const size of [
+  { name: '1366x768', width: 1366, height: 768, fullPage: false },
   { name: '1440x900', width: 1440, height: 900, fullPage: false },
   { name: '360x800', width: 360, height: 800, fullPage: true },
 ]) {

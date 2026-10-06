@@ -17,10 +17,13 @@ const room = {
 };
 
 async function value(input: Record<string, unknown>) {
-  const result = await executeOperation(tileQuantityV2, input, {}, createTestContext());
+  const result = await run(input);
   if (!result.ok) throw new Error(result.error.code);
   return result.value;
 }
+
+const run = (input: Record<string, unknown>) =>
+  executeOperation(tileQuantityV2, input, {}, createTestContext());
 
 describe('civil.tile.quantity@2', () => {
   it('orders whole tiles and never renders noise like 713.999999', async () => {
@@ -59,6 +62,54 @@ describe('civil.tile.quantity@2', () => {
   it('treats blank tiles per box as "no box count"', async () => {
     const v = await value({ ...room, packMode: 'pieces' });
     expect(v.boxes).toBeUndefined();
+  });
+
+  it('uses the selected decimal places as the wastage input precision ceiling', async () => {
+    for (const input of [
+      { decimalPlaces: '2', wastagePercent: '1.25' },
+      { decimalPlaces: '3', wastagePercent: '1.250' },
+      { decimalPlaces: '4', wastagePercent: '1.2500' },
+    ]) {
+      expect(await run({ ...room, ...input })).toMatchObject({ ok: true });
+    }
+
+    for (const input of [
+      { decimalPlaces: '2', wastagePercent: '1.250' },
+      { decimalPlaces: '3', wastagePercent: '1.2500' },
+      { decimalPlaces: '4', wastagePercent: '1.25000' },
+    ]) {
+      expect(await run({ ...room, ...input })).toMatchObject({
+        ok: false,
+        error: { code: 'CIVIL_TOO_MANY_DECIMALS', path: 'wastagePercent' },
+      });
+    }
+  });
+
+  it('changes decimal presentation without changing exact tile arithmetic', async () => {
+    const values = await Promise.all(
+      ['2', '3', '4'].map((decimalPlaces) =>
+        value({ ...room, decimalPlaces, wastagePercent: '1.25' }),
+      ),
+    );
+    const adjusted = values.map(
+      (result) => result.working.find((item) => item.ref === 'orderTiles')?.variables.adjusted,
+    );
+    expect(new Set(adjusted).size).toBe(1);
+    expect(values.map((result) => result.baseTiles)).toEqual(['222.22', '222.222', '222.2222']);
+    expect(values.map((result) => result.orderTiles)).toEqual(['225', '225', '225']);
+  });
+
+  it('keeps tile and box purchasing quantities as whole numbers at every precision', async () => {
+    for (const decimalPlaces of ['2', '3', '4']) {
+      const v = await value({
+        ...room,
+        decimalPlaces,
+        packMode: 'pieces',
+        tilesPerBox: '10',
+      });
+      expect(v.orderTiles).toMatch(/^\d+$/);
+      expect(v.boxes).toMatch(/^\d+$/);
+    }
   });
 
   it('has a message for every code it can return', () => {
