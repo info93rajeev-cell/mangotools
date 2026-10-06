@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: logistics/pallet
-version: 0.1.0
+version: 0.1.1
 operation: logistics.pallet.fit@1
 params: { decimals: 3, rounding: half-up, stackable: true, allowBaseRotation: true, keepUpright: true }
 userOptions:
@@ -29,17 +29,19 @@ fields:
       - { value: m, labelKey: pf.unit.m }
       - { value: mm, labelKey: pf.unit.mm }
       - { value: in, labelKey: pf.unit.in }
-  length: { labelKey: pf.field.length, kind: number, required: true, order: 20, helpKey: pf.help.dimension }
-  width: { labelKey: pf.field.width, kind: number, required: true, order: 30, helpKey: pf.help.dimension }
-  height: { labelKey: pf.field.height, kind: number, required: true, order: 40, helpKey: pf.help.dimension }
-  quantity: { labelKey: pf.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: pf.help.quantity }
+  length: { labelKey: pf.field.length, kind: number, required: true, order: 20, width: half, helpKey: pf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  width: { labelKey: pf.field.width, kind: number, required: true, order: 30, width: half, helpKey: pf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  height: { labelKey: pf.field.height, kind: number, required: true, order: 40, width: half, helpKey: pf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  quantity: { labelKey: pf.field.quantity, kind: number, required: true, default: 1, order: 50, width: half, helpKey: pf.help.quantity, helpMode: disclosure }
   palletType:
     labelKey: pf.field.palletType
     kind: enum
     control: select
     default: euro
     order: 60
+    width: half
     helpKey: pf.help.palletType
+    helpMode: disclosure
     options:
       - { value: euro, labelKey: pf.palletType.euro }
       - { value: us, labelKey: pf.palletType.us }
@@ -50,62 +52,79 @@ fields:
     control: segmented
     default: cm
     order: 70
+    width: half
     helpKey: pf.help.palletUnit
+    helpMode: disclosure
     options:
       - { value: cm, labelKey: pf.unit.cm }
       - { value: m, labelKey: pf.unit.m }
       - { value: mm, labelKey: pf.unit.mm }
       - { value: in, labelKey: pf.unit.in }
-  palletLength: { labelKey: pf.field.palletLength, kind: number, required: true, order: 80, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension }
-  palletWidth: { labelKey: pf.field.palletWidth, kind: number, required: true, order: 90, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension }
-  maxStackHeight: { labelKey: pf.field.maxStackHeight, kind: number, required: true, default: 150, order: 100, helpKey: pf.help.maxStackHeight }
+  palletLength: { labelKey: pf.field.palletLength, kind: number, required: true, order: 80, width: half, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension, helpMode: disclosure, convert: { unitField: palletUnit, family: length } }
+  palletWidth: { labelKey: pf.field.palletWidth, kind: number, required: true, order: 90, width: half, visibleWhen: { palletType: [custom] }, helpKey: pf.help.palletDimension, helpMode: disclosure, convert: { unitField: palletUnit, family: length } }
+  maxStackHeight: { labelKey: pf.field.maxStackHeight, kind: number, required: true, default: 150, order: 100, width: half, helpKey: pf.help.maxStackHeight, helpMode: disclosure, convert: { unitField: palletUnit, family: length } }
+  decimalPlaces:
+    labelKey: pf.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 110
+    width: half
+    options:
+      - { value: 2, labelKey: pf.decimalPlaces.2 }
+      - { value: 3, labelKey: pf.decimalPlaces.3 }
+      - { value: 4, labelKey: pf.decimalPlaces.4 }
 outputs:
   cartonsPerPallet: { labelKey: pf.out.cartonsPerPallet, format: number, order: 10, primary: true }
   palletsRequired: { labelKey: pf.out.palletsRequired, format: number, order: 20 }
   cartonsPerLayer: { labelKey: pf.out.cartonsPerLayer, format: number, order: 30 }
   layers: { labelKey: pf.out.layers, format: number, order: 40 }
-  cartonsOnLastPallet: { labelKey: pf.out.cartonsOnLastPallet, format: number, order: 50 }
-  cartonsAlongPalletLength: { labelKey: pf.out.cartonsAlongPalletLength, format: number, order: 60 }
-  cartonsAlongPalletWidth: { labelKey: pf.out.cartonsAlongPalletWidth, format: number, order: 70 }
-  usedAreaPercent: { labelKey: pf.out.usedAreaPercent, format: percent, order: 80 }
-  unusedAreaPercent: { labelKey: pf.out.unusedAreaPercent, format: percent, order: 90 }
-  estimatedStackHeight: { labelKey: pf.out.estimatedStackHeight, format: number, order: 100 }
-  leftoverPalletLength: { labelKey: pf.out.leftoverPalletLength, format: number, order: 110 }
-  leftoverPalletWidth: { labelKey: pf.out.leftoverPalletWidth, format: number, order: 120 }
+  cartonsOnLastPallet: { labelKey: pf.out.cartonsOnLastPallet, format: number, order: 50, visible: false }
+  cartonsAlongPalletLength: { labelKey: pf.out.cartonsAlongPalletLength, format: number, order: 60, visible: false }
+  cartonsAlongPalletWidth: { labelKey: pf.out.cartonsAlongPalletWidth, format: number, order: 70, visible: false }
+  usedAreaPercent: { labelKey: pf.out.usedAreaPercent, format: percent, decimalPlacesField: decimalPlaces, order: 80, visible: false }
+  unusedAreaPercent: { labelKey: pf.out.unusedAreaPercent, format: percent, decimalPlacesField: decimalPlaces, order: 90, visible: false }
+  estimatedStackHeight: { labelKey: pf.out.estimatedStackHeight, format: number, decimalPlacesField: decimalPlaces, order: 100 }
+  leftoverPalletLength: { labelKey: pf.out.leftoverPalletLength, format: number, decimalPlacesField: decimalPlaces, order: 110, visible: false }
+  leftoverPalletWidth: { labelKey: pf.out.leftoverPalletWidth, format: number, decimalPlacesField: decimalPlaces, order: 120, visible: false }
 samples:
   carton-40-30-20-euro-x100:
     titleKey: pf.sample.carton
-    input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150" }
-ui: { archetypes: [B], density: comfortable, compute: live }
+    input: { unit: cm, length: "40", width: "30", height: "20", quantity: "100", palletType: euro, palletUnit: cm, maxStackHeight: "150", decimalPlaces: "3" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
-    pf.option.stackable: Cartons can be stacked
-    pf.option.allowBaseRotation: Allow the base footprint to be rotated
-    pf.option.keepUpright: Keep the carton upright (don't rotate its height)
-    pf.field.unit: Carton dimension unit
+    pf.option.stackable: Stackable
+    pf.option.allowBaseRotation: Allow base rotation
+    pf.option.keepUpright: Keep carton upright
+    pf.field.unit: Carton unit
     pf.unit.cm: cm
     pf.unit.m: m
     pf.unit.mm: mm
-    pf.unit.in: inch
+    pf.unit.in: in
     pf.field.length: Carton length
     pf.field.width: Carton width
     pf.field.height: Carton height
-    pf.field.quantity: Number of cartons
+    pf.field.quantity: Cartons
     pf.field.palletType: Pallet type
     pf.palletType.euro: Euro pallet
     pf.palletType.us: US pallet
     pf.palletType.custom: Custom
-    pf.field.palletUnit: Pallet and stack-height unit
+    pf.field.palletUnit: Pallet/stack unit
     pf.field.palletLength: Custom pallet length
     pf.field.palletWidth: Custom pallet width
-    pf.field.maxStackHeight: Maximum stack height
-    pf.help.dimension: Outer size of one carton in the unit chosen above, up to 3 decimal places.
+    pf.field.maxStackHeight: Max stack height
+    pf.field.decimalPlaces: Decimal places
+    pf.decimalPlaces.2: "2"
+    pf.decimalPlaces.3: "3"
+    pf.decimalPlaces.4: "4"
+    pf.help.dimension: Outer size of one carton in the selected unit. Changing the unit converts this value.
     pf.help.quantity: Cartons of this size, a whole number from 1 to 1,000,000.
     pf.help.palletType: Pick a standard pallet, or Custom to enter your own base dimensions.
-    pf.help.palletUnit: Used for a custom pallet's length and width, and always for the maximum stack height.
-    pf.help.palletDimension: Base size of the pallet, up to 3 decimal places.
+    pf.help.palletUnit: Used for a custom pallet's length and width, and for maximum stack height. Changing it converts entered values.
+    pf.help.palletDimension: Base size of the custom pallet in the selected pallet unit.
     pf.help.maxStackHeight: The load height above the pallet deck that you allow, not including the pallet itself. Varies by warehouse, trailer or carrier — check yours.
-    pf.out.cartonsPerPallet: Total cartons per pallet
+    pf.out.cartonsPerPallet: Cartons per pallet
     pf.out.palletsRequired: Pallets required
     pf.out.cartonsPerLayer: Cartons per layer
     pf.out.layers: Layers

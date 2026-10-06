@@ -9,13 +9,22 @@ import { collectWarnings, computePalletStats } from './stats.ts';
 import type { Carton, Measured } from './types.ts';
 import { CM_PER_UNIT, DIMENSION_DECIMALS, MAX_QUANTITY } from './units.ts';
 
+const CONVERTED_INPUT_DECIMALS = 12;
+
+/** Removes sub-precision conversion residue before floor-based fit calculations. */
+function toCentimetres(value: string, factor: string, converted: boolean): string {
+  const centimetres = mul(value, factor);
+  return converted ? toFixedString(centimetres, CONVERTED_INPUT_DECIMALS, 'half-up') : centimetres;
+}
+
 /** Reads the carton's three dimensions and quantity, stopping at the first invalid field. */
 function readCarton(input: PalletFitInput): Result<Carton> {
-  const length = readPositive(input.length, 'length', DIMENSION_DECIMALS);
+  const inputDecimals = input.decimalPlaces ? CONVERTED_INPUT_DECIMALS : DIMENSION_DECIMALS;
+  const length = readPositive(input.length, 'length', inputDecimals);
   if (!length.ok) return length;
-  const width = readPositive(input.width, 'width', DIMENSION_DECIMALS);
+  const width = readPositive(input.width, 'width', inputDecimals);
   if (!width.ok) return width;
-  const height = readPositive(input.height, 'height', DIMENSION_DECIMALS);
+  const height = readPositive(input.height, 'height', inputDecimals);
   if (!height.ok) return height;
   const quantity = readCount(input.quantity, 'quantity', MAX_QUANTITY);
   if (!quantity.ok) return quantity;
@@ -29,24 +38,26 @@ function readCarton(input: PalletFitInput): Result<Carton> {
 
 /** Pallet length, width and max stack height in centimetres: the standard table, or a custom pallet. */
 function readPalletAxes(input: PalletFitInput): Result<readonly [string, string, string]> {
+  const inputDecimals = input.decimalPlaces ? CONVERTED_INPUT_DECIMALS : DIMENSION_DECIMALS;
+  const converted = input.decimalPlaces !== undefined;
   const factor = CM_PER_UNIT[input.palletUnit];
   let lengthCm: string;
   let widthCm: string;
   if (input.palletType === 'custom') {
-    const length = readPositive(input.palletLength, 'palletLength', DIMENSION_DECIMALS);
+    const length = readPositive(input.palletLength, 'palletLength', inputDecimals);
     if (!length.ok) return length;
-    const width = readPositive(input.palletWidth, 'palletWidth', DIMENSION_DECIMALS);
+    const width = readPositive(input.palletWidth, 'palletWidth', inputDecimals);
     if (!width.ok) return width;
-    lengthCm = mul(length.value, factor);
-    widthCm = mul(width.value, factor);
+    lengthCm = toCentimetres(length.value, factor, converted);
+    widthCm = toCentimetres(width.value, factor, converted);
   } else {
     const preset = STANDARD_PALLETS[input.palletType];
     lengthCm = preset.length;
     widthCm = preset.width;
   }
-  const maxStackHeight = readPositive(input.maxStackHeight, 'maxStackHeight', DIMENSION_DECIMALS);
+  const maxStackHeight = readPositive(input.maxStackHeight, 'maxStackHeight', inputDecimals);
   if (!maxStackHeight.ok) return maxStackHeight;
-  return ok([lengthCm, widthCm, mul(maxStackHeight.value, factor)]);
+  return ok([lengthCm, widthCm, toCentimetres(maxStackHeight.value, factor, converted)]);
 }
 
 /** Reads every input, stopping at the first invalid field. */
@@ -56,10 +67,11 @@ function measureAll(input: PalletFitInput): Result<Measured> {
   const palletAxes = readPalletAxes(input);
   if (!palletAxes.ok) return palletAxes;
   const factor = CM_PER_UNIT[input.unit];
+  const converted = input.decimalPlaces !== undefined;
   const cartonCm: [string, string, string] = [
-    mul(carton.value.length, factor),
-    mul(carton.value.width, factor),
-    mul(carton.value.height, factor),
+    toCentimetres(carton.value.length, factor, converted),
+    toCentimetres(carton.value.width, factor, converted),
+    toCentimetres(carton.value.height, factor, converted),
   ];
   return ok({ carton: carton.value, unit: input.unit, cartonCm, palletAxes: palletAxes.value });
 }
@@ -109,7 +121,8 @@ export const palletFit = defineOperation({
     const leftover = leftovers(m.palletAxes, cartonDims, grid);
     const stats = computePalletStats(grid, cartonDims, m.palletAxes, leftover, m.carton.quantity);
     const warnings = collectWarnings(stats.palletsRequired);
-    const shown = (value: string) => toFixedString(value, params.decimals, params.rounding);
+    const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : params.decimals;
+    const shown = (value: string) => toFixedString(value, displayDecimals, params.rounding);
     const working = workingSteps(m, grid, stats, leftover);
     return ok(buildOutput(grid, stats, leftover, m.carton.quantity, shown, working), warnings);
   },

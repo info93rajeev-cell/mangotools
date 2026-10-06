@@ -5,10 +5,10 @@ example: 001-euro-pallet-basic
 
 ## How to use
 
-1. Choose the carton's dimension unit (cm, m, mm or inch) and enter the outer length, width and height of one carton.
+1. Choose the carton's dimension unit (cm, m, mm or in) and enter the outer length, width and height of one carton. Changing the unit converts the entered dimensions.
 2. Enter the number of cartons of that size.
 3. Choose a pallet: Euro, US, or Custom to enter your own base length and width.
-4. Enter the maximum stack height (default 150 cm) — the load height above the pallet deck that you allow, in the pallet unit.
+4. Enter the maximum stack height (default 150 cm) — the load height above the pallet deck that you allow, in the pallet unit. Changing the pallet unit converts custom pallet dimensions and stack height.
 5. Read the results. The main figure is the total cartons the simple grid fits on one pallet; pallets required and every other step are shown below.
 
 ## Method
@@ -29,7 +29,7 @@ This tool gives one estimate — a simple, single-orientation grid fit — as a 
 
 Unit conversions are exact: 1 inch = 2.54 cm, 1 mm = 0.1 cm, 1 m = 100 cm. Euro and US pallet base dimensions are commonly published approximate figures; they vary by pallet condition, manufacturer and region, so confirm the exact figures for your pallets, or use Custom with your own measurements. The maximum stack height has no safe default we can vouch for — 150 cm is only a common planning figure; always confirm the real limit for your warehouse, trailer or carrier.
 
-Results are rounded to three decimal places for display; totals and percentages are calculated from the unrounded values.
+Choose 2, 3 or 4 decimal places for decimal measurements and percentages. Integer carton, layer and pallet counts stay whole; every result is calculated from the unrounded values.
 
 ## Worked example
 

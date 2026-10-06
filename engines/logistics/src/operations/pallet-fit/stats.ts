@@ -65,13 +65,14 @@ export function computePalletStats(
 
 /** The three standing notices, always shown, plus the multiple-pallets notice when it applies. */
 export function collectWarnings(palletsRequired: string): OpWarning[] {
+  const info = (code: string) => warning(code, { details: { severity: 'info' } });
   const warnings: OpWarning[] = [
-    warning('LOGISTICS_PALLET_NOT_LOAD_SAFETY'),
-    warning('LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT'),
-    warning('LOGISTICS_PALLET_DIMENSIONS_VARY'),
+    info('LOGISTICS_PALLET_NOT_LOAD_SAFETY'),
+    info('LOGISTICS_PALLET_VERIFY_BEFORE_SHIPMENT'),
+    info('LOGISTICS_PALLET_DIMENSIONS_VARY'),
   ];
   if (compare(palletsRequired, '1') > 0) {
-    warnings.push(warning('LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED'));
+    warnings.push(info('LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED'));
   }
   return warnings;
 }
