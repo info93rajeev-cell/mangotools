@@ -25,13 +25,16 @@ Units, with exact factors:
 here.
 
 **Precision:** multiplication is exact, and division keeps 20 decimal places. Every output is rounded
-once, from its own full-precision value, to `params.decimals` (default 3) with `params.rounding`
-(default half-up). Totals use the full-precision per-package value, never the rounded one. For
+once, from its own full-precision value, to optional input `decimalPlaces` (2, 3 or 4), or otherwise
+to `params.decimals` (default 3), with `params.rounding` (default half-up). Totals use the
+full-precision per-package value, never the rounded one. For
 example, 1,000 cm³ ÷ 6000 is shown as 0.167 kg, and 3 packages give 0.500 kg, not 0.501. There is no
 round-up to 0.5 kg or 1 kg in this version.
 
 **Validation:**
-- Dimensions and actual weight are required, greater than zero, with at most 3 decimal places.
+- Dimensions and actual weight are required and greater than zero. Legacy calls accept at most 3
+  decimal places; calls carrying display-precision metadata accept the shared converter's 12-place
+  values so unit changes do not invalidate the form.
 - Actual weight is at most 100,000 kg per package after conversion.
 - Quantity follows the CBM rule: a whole number from 1 to 1,000,000.
 

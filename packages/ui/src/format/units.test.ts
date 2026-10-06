@@ -8,6 +8,8 @@ describe('convertUnitText', () => {
     expect(convertUnitText('12', 'length', 'in', 'ft')).toBe('1');
     expect(convertUnitText('1', 'volume', 'yd3', 'ft3')).toBe('27');
     expect(convertUnitText('1', 'liquid', 'gal', 'l')).toBe('3.785411784');
+    expect(convertUnitText('8', 'weight', 'kg', 'g')).toBe('8000');
+    expect(convertUnitText('22', 'weight', 'lb', 'kg')).toBe('9.97903214');
   });
 
   it('round-trips without visible drift', () => {

@@ -4,8 +4,9 @@ id: volumetric-weight-calculator
 slug: volumetric-weight-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-10-07, type: changed, summary: "Compact workspace, converting dimension and weight units, selectable 2/3/4-place precision, and collapsed supporting sections." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with volumetric, actual and chargeable weight per package and in total, divisor 5000, 6000 or custom." }
 name: Volumetric Weight Calculator
 shortName: Volumetric Weight
@@ -32,4 +33,4 @@ quality:
     - { citation: "Volumetric weight = length × width × height in cm ÷ divisor (cm³ per kg); chargeable weight = the higher of actual and volumetric weight", locator: "Method section" }
     - { citation: "International yard and pound agreement (1959): 1 in = 2.54 cm, 1 lb = 0.45359237 kg", locator: "Method section" }
     - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 001–011, tool fixtures 001–005" }
-  lastVerified: 2026-09-25
+  lastVerified: 2026-10-07

@@ -28,17 +28,20 @@ interface Checked {
   divisor: string;
 }
 
+const CONVERTED_INPUT_DECIMALS = 12;
+
 /** Reads every input in field order, stopping at the first invalid one. */
 function check(input: ChargeableInput): Result<Checked> {
-  const length = readPositive(input.length, 'length', INPUT_DECIMALS);
+  const inputDecimals = input.decimalPlaces ? CONVERTED_INPUT_DECIMALS : INPUT_DECIMALS;
+  const length = readPositive(input.length, 'length', inputDecimals);
   if (!length.ok) return length;
-  const width = readPositive(input.width, 'width', INPUT_DECIMALS);
+  const width = readPositive(input.width, 'width', inputDecimals);
   if (!width.ok) return width;
-  const height = readPositive(input.height, 'height', INPUT_DECIMALS);
+  const height = readPositive(input.height, 'height', inputDecimals);
   if (!height.ok) return height;
   const quantity = readCount(input.quantity, 'quantity', MAX_QUANTITY);
   if (!quantity.ok) return quantity;
-  const weight = readPositive(input.weight, 'weight', INPUT_DECIMALS);
+  const weight = readPositive(input.weight, 'weight', inputDecimals);
   if (!weight.ok) return weight;
   const weightKg = mul(weight.value, KG_PER_WEIGHT_UNIT[input.weightUnit]);
   if (compare(weightKg, MAX_WEIGHT_KG) > 0) {
@@ -147,7 +150,8 @@ export const weightChargeable = defineOperation({
     const volumetric = div(volume, c.divisor);
     const billedOn = basis(c.weightKg, volumetric);
     const chargeable = billedOn === 'actual' ? c.weightKg : volumetric;
-    const shown = (value: string) => toFixedString(value, params.decimals, params.rounding);
+    const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : params.decimals;
+    const shown = (value: string) => toFixedString(value, displayDecimals, params.rounding);
     return ok({
       volumetricPerPackage: shown(volumetric),
       volumetricTotal: shown(mul(volumetric, c.quantity)),

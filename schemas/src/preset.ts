@@ -35,7 +35,7 @@ export const userOptionSchema = z.strictObject({
  * Unit families a numeric field's value can be converted within when its unit selector changes
  * (the value is converted, never merely relabelled). Factors live in packages/ui/src/format/units.ts.
  */
-export const unitFamilies = ['length', 'area', 'volume', 'coverage', 'liquid'] as const;
+export const unitFamilies = ['length', 'area', 'volume', 'coverage', 'liquid', 'weight'] as const;
 export type UnitFamily = (typeof unitFamilies)[number];
 
 /** Unit values understood by the shared form converter for each family. */
@@ -45,6 +45,7 @@ export const unitValuesByFamily = {
   volume: ['l', 'm3', 'ft3', 'yd3'],
   coverage: ['m2-per-l', 'ft2-per-gal'],
   liquid: ['l', 'gal'],
+  weight: ['kg', 'g', 'lb'],
 } as const satisfies Record<UnitFamily, readonly string[]>;
 
 export const fieldSchema = z.strictObject({
