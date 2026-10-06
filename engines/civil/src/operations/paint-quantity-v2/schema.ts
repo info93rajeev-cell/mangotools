@@ -5,7 +5,7 @@ import { workingStepSchema } from '../../lib/working.ts';
 
 const decimal = z.union([z.string(), z.number()]);
 
-export const paintModes = ['room', 'surface'] as const;
+export const paintModes = ['room', 'surface', 'roof'] as const;
 export const coverageUnits = ['m2-per-l', 'ft2-per-gal'] as const;
 export type CoverageUnit = (typeof coverageUnits)[number];
 export const containerUnits = ['l', 'gal'] as const;
@@ -20,6 +20,9 @@ export const paintQuantityInputV2 = z.strictObject({
   includeCeiling: z.union([z.boolean(), z.enum(['true', 'false'])]).optional(),
   length: decimal.optional(),
   secondDimension: decimal.optional(),
+  roofLength: decimal.optional(),
+  roofWidth: decimal.optional(),
+  pitchAngle: decimal.optional(),
   quantity: decimal.optional(),
   openings: openingsInput,
   coats: decimal.optional(),
@@ -28,6 +31,7 @@ export const paintQuantityInputV2 = z.strictObject({
   wastagePercent: decimal.optional(),
   containerSize: decimal.optional(),
   containerUnit: z.enum(containerUnits).optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 /** No display params: each output is formatted by what it represents (see lib/present.ts). */

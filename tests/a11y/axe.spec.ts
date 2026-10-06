@@ -55,6 +55,16 @@ for (const scheme of ['light', 'dark'] as const) {
       await expect(page.locator('[data-output="truckLoads"] dd')).toHaveText('2');
       expect(await seriousViolations(page)).toEqual([]);
     });
+    test('/paint-calculator (roof result state)', async ({ page }) => {
+      await gotoReady(page, '/paint-calculator');
+      await page.getByLabel('What are you painting?').selectOption('roof');
+      await page.getByLabel('Roof length').fill('10');
+      await page.getByLabel('Roof width').fill('8');
+      await page.getByLabel('Roof pitch angle').fill('30');
+      await page.getByLabel('Same-size areas').fill('1');
+      await expect(page.locator('[data-output="grossAreaM2"] dd')).toHaveText('92.376');
+      expect(await seriousViolations(page)).toEqual([]);
+    });
     test('/gst-calculator (mobile search open)', async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await gotoReady(page, '/gst-calculator');

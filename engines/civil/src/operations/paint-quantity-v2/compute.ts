@@ -3,6 +3,7 @@ import { add, div, mul, sub } from '@mangotools/engine-numeric';
 import { checkDeductions, openingsArea } from '../../lib/openings.ts';
 import { areaInM2, inMetres, ratioWithAllowance, withAllowance } from '../../lib/quantities.ts';
 import { LITRES_PER_US_GALLON, SQUARE_METRES_PER_SQUARE_FOOT } from '../../lib/units-v2.ts';
+import { cosineDegrees } from './cosine.ts';
 import type { Measured, Surface } from './measure.ts';
 import type { ContainerUnit } from './schema.ts';
 
@@ -25,6 +26,10 @@ const LITRES_PER_CONTAINER_UNIT: Readonly<Record<ContainerUnit, string>> = {
 export function surfaceAreaM2(s: Surface, unit: Measured['unit']): string {
   const m = (v: string) => inMetres(v, unit);
   if (s.kind === 'surface') return mul(m(s.length), m(s.secondDimension));
+  if (s.kind === 'roof') {
+    const planArea = mul(m(s.length), m(s.width));
+    return div(planArea, cosineDegrees(s.pitchDegrees), 20);
+  }
   const walls = mul(mul('2', add(m(s.length), m(s.width))), m(s.height));
   return s.ceiling ? add(walls, mul(m(s.length), m(s.width))) : walls;
 }

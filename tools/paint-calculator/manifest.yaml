@@ -4,27 +4,28 @@ id: paint-calculator
 slug: paint-calculator
 status: beta
 tier: T2
-version: 0.2.0
+version: 0.3.0
 changelog:
+  - { version: 0.3.0, date: 2026-10-05, type: added, summary: "Add compact workspace, Roof mode with uniform pitch, and selectable 2–4 place decimal presentation." }
   - { version: 0.2.0, date: 2026-10-01, type: changed, summary: "Room-dimension mode with optional ceiling, door/window rows, coverage in m²/L or ft²/gal, optional containers, converting units." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Describe limitations without referring to future versions." }
   - { version: 0.1.0, date: 2026-09-27, type: added, summary: "First beta. Paint litres required for a wall, ceiling or general surface, with opening deduction, coats, coverage per litre and wastage %." }
 name: Paint Calculator
 shortName: Paint
-summary: Paint needed for a room or surface, with doors and windows deducted, coats, coverage and wastage.
+summary: Paint needed for a room, surface or pitched roof, with openings deducted, coats, coverage and wastage.
 archetype: B
 preset: civil/paint-quantity-v2
 sample: room-4x3x2.7-m
 taxonomy:
   category: construction
   tags: [paint, construction]
-  synonyms: [paint calculator, wall paint calculator, paint quantity calculator, how much paint do i need, paint litres calculator, paint coverage calculator, room paint calculator, ceiling paint calculator, paint area calculator, paint wastage calculator]
+  synonyms: [paint calculator, wall paint calculator, paint quantity calculator, how much paint do i need, paint litres calculator, paint coverage calculator, room paint calculator, ceiling paint calculator, roof paint calculator, pitched roof paint calculator, paint area calculator, paint wastage calculator]
 capabilities: { print: true, share: true }
 privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
-  title: Paint Calculator – Wall Paint Litres & Coverage
-  description: Work out how much paint you need for a wall, ceiling or surface, with opening deduction, coats, coverage and wastage %. Free, runs in your browser.
+  title: Paint Calculator – Room, Surface & Roof Paint
+  description: Work out paint for a room, wall, ceiling, surface or uniformly pitched roof, with openings, coats, coverage and wastage. Free and local.
   primaryKeyword: paint calculator
   secondaryKeywords: [wall paint calculator, paint quantity calculator, how much paint do i need]
 graph:
@@ -32,5 +33,5 @@ graph:
 quality:
   verifiedAgainst:
     - { citation: "Room wall area 2 × (L + W) × H; (area − openings) × coats ÷ coverage, × (1 + wastage %); exact m²/L ↔ ft²/US gal", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "civil.paint.quantity@2 engine fixtures 001–010, tool fixtures 001–002" }
-  lastVerified: 2026-10-01
+    - { citation: "Rectangular roof surface area = plan area / cos(pitch); hand-verified arithmetic", locator: "civil.paint.quantity@2 engine fixtures 011–012, tool fixture 003" }
+  lastVerified: 2026-10-05

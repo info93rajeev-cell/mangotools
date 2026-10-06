@@ -103,6 +103,7 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool calculates geometric volume only. It does not cover slope stability, shoring design, excavation safety, dewatering, geotechnical design, disposal cost, or backfill compaction.',
   CIVIL_PAINT_SCOPE_LIMIT_V2:
     'This tool does not calculate primer, putty, labour, cost, or a bill of quantities (BOQ). Coverage varies by product and surface.',
+  CIVIL_PAINT_PITCH_OUT_OF_RANGE: 'Enter a roof pitch angle from 0° to 89°.',
   CIVIL_TILE_SCOPE_LIMIT_V2:
     'This tool does not calculate grout or adhesive quantity, skirting, layout-specific cuts, material or labour cost, or a bill of quantities (BOQ).',
   CIVIL_INFO_PLASTER_MATERIAL:

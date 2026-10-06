@@ -248,21 +248,24 @@ test.describe('Paint Calculator', () => {
 
   test('room walls minus openings, coats and coverage', async ({ page }) => {
     await openTool(page, tool);
-    await expect(page.getByLabel('Number of coats')).toHaveValue('2');
+    await expect(page.getByLabel('Coats')).toHaveValue('2');
     await page.getByLabel('Room length').fill('4');
     await page.getByLabel('Room width').fill('3');
     await page.getByLabel('Wall height').fill('2.7');
     await addOpening(page, tool, 0, '0.9', '2.1', '1');
     await addOpening(page, tool, 1, '1.5', '1.2', '1');
-    await expect(primaryResult(page)).toHaveText('7.50');
-    await expect(output(page, 'netAreaM2')).toHaveText('34.11');
-    await expect(page.locator('[data-assumptions]')).toContainText('10 m²/L');
+    await expect(primaryResult(page)).toHaveText('7.504');
+    await expect(output(page, 'netAreaM2')).toHaveText('34.110');
+    const notes = page.locator('details[data-notes]');
+    await expect(notes).not.toHaveAttribute('open');
+    await notes.locator('summary').click();
+    await expect(notes).toContainText('10 m²/L');
   });
 
   test('switching coverage unit converts the rate, not just its label', async ({ page }) => {
     await openTool(page, tool);
-    await choose(page, tool, 'coverageUnit', 'ft2-per-gal');
-    await expect(page.getByLabel('Coverage per coat')).toHaveValue('407.458333333333');
+    await page.getByLabel('Coverage unit').selectOption('ft2-per-gal');
+    await expect(page.getByLabel('Coverage / coat')).toHaveValue('407.458333333333');
   });
 });
 

@@ -1,0 +1,5 @@
+id: 012-roof-invalid-pitch
+operation: civil.paint.quantity@2
+source: { type: hand-verified, citation: "The Roof mode contract accepts a pitch from 0 through 89 degrees; 90 degrees would make cos(pitch) zero." }
+input: { mode: roof, unit: m, roofLength: "10", roofWidth: "8", pitchAngle: "90", quantity: "1", coats: "1", coverage: "10", coverageUnit: m2-per-l, wastagePercent: "0", decimalPlaces: "3" }
+expectedError: { code: CIVIL_PAINT_PITCH_OUT_OF_RANGE, path: pitchAngle }

@@ -12,7 +12,7 @@ export const SAMPLES = {
   'brickwork-calculator': { archetype: 'B', result: '538' },
   'plaster-calculator': { archetype: 'B', result: '0.120' },
   'tile-flooring-calculator': { archetype: 'B', result: '245' },
-  'paint-calculator': { archetype: 'B', result: '7.50' },
+  'paint-calculator': { archetype: 'B', result: '7.504' },
   'export-commercial-invoice-generator': { archetype: 'B', result: '1,750.00' },
   'export-packing-list-generator': { archetype: 'B', result: '10' },
   'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
