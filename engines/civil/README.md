@@ -50,6 +50,9 @@ how the `pdf` and `media` categories were filled by their own waves) and renames
 "Civil & Construction," the name the founder approved, rather than creating a second, duplicate category.
 
 ## Changelog
+- 0.12.2 — `civil.tile.quantity@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  for wastage input scale and decimal result presentation. Exact tile, area, wastage and box
+  calculations are unchanged; whole tile/box counts and legacy formatting without the metadata are preserved.
 - 0.12.1 — `civil.plaster.quantity@2` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
   for wastage input scale and decimal result presentation. Exact area, volume, wastage and bag
   calculations are unchanged; whole bag counts and legacy formatting without the metadata are preserved.

@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: civil/tile-quantity-v2
-version: 0.2.0
+version: 0.2.1
 operation: civil.tile.quantity@2
 fields:
   mode:
@@ -32,7 +32,18 @@ fields:
   surfaceArea: { labelKey: tile.field.surfaceArea, kind: number, required: true, order: 20, width: half, helpKey: tile.help.surfaceArea, helpMode: disclosure, convert: { unitField: unit, family: area }, visibleWhen: { mode: [area] } }
   quantity: { labelKey: tile.field.quantity, kind: number, required: true, default: 1, order: 40, width: half, helpKey: tile.help.quantity, helpMode: disclosure }
   openings: { labelKey: tile.field.openings, kind: openings, order: 50, helpKey: tile.help.openings, helpMode: disclosure, convert: { unitField: unit, family: length } }
-  tileUnit: { labelKey: tile.field.tileUnit, kind: enum, control: segmented, default: mm, order: 60, options: *lengthUnits }
+  tileUnit: { labelKey: tile.field.tileUnit, kind: enum, control: segmented, default: mm, order: 60, width: half, options: *lengthUnits }
+  decimalPlaces:
+    labelKey: tile.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 61
+    width: half
+    options:
+      - { value: 2, labelKey: tile.decimalPlaces.2 }
+      - { value: 3, labelKey: tile.decimalPlaces.3 }
+      - { value: 4, labelKey: tile.decimalPlaces.4 }
   tileLength: { labelKey: tile.field.tileLength, kind: number, required: true, order: 70, width: half, helpKey: tile.help.tile, helpMode: disclosure, convert: { unitField: tileUnit, family: length } }
   tileWidth: { labelKey: tile.field.tileWidth, kind: number, required: true, order: 80, width: half, helpKey: tile.help.tile, helpMode: disclosure, convert: { unitField: tileUnit, family: length } }
   pattern:
@@ -78,20 +89,20 @@ fields:
 outputs:
   orderTiles: { labelKey: tile.out.orderTiles, format: number, order: 10, primary: true }
   boxes: { labelKey: tile.out.boxes, format: number, order: 20 }
-  baseTiles: { labelKey: tile.out.baseTiles, format: number, order: 30 }
+  baseTiles: { labelKey: tile.out.baseTiles, format: number, decimalPlacesField: decimalPlaces, order: 30 }
   wastagePercent: { labelKey: tile.out.wastagePercent, format: percent, order: 31 }
-  wastageTiles: { labelKey: tile.out.wastageTiles, format: number, order: 32 }
-  netAreaM2: { labelKey: tile.out.netAreaM2, format: number, order: 40, visibleWhen: { unit: [mm, cm, m] } }
-  netAreaFt2: { labelKey: tile.out.netAreaFt2, format: number, order: 40, visibleWhen: { unit: [in, ft] } }
-  grossAreaM2: { labelKey: tile.out.grossAreaM2, format: number, order: 41, visibleWhen: { unit: [mm, cm, m] } }
-  grossAreaFt2: { labelKey: tile.out.grossAreaFt2, format: number, order: 41, visibleWhen: { unit: [in, ft] } }
-  openingAreaM2: { labelKey: tile.out.openingAreaM2, format: number, order: 42, visibleWhen: { unit: [mm, cm, m] } }
-  openingAreaFt2: { labelKey: tile.out.openingAreaFt2, format: number, order: 42, visibleWhen: { unit: [in, ft] } }
+  wastageTiles: { labelKey: tile.out.wastageTiles, format: number, decimalPlacesField: decimalPlaces, order: 32 }
+  netAreaM2: { labelKey: tile.out.netAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 40, visibleWhen: { unit: [mm, cm, m] } }
+  netAreaFt2: { labelKey: tile.out.netAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 40, visibleWhen: { unit: [in, ft] } }
+  grossAreaM2: { labelKey: tile.out.grossAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 41, visibleWhen: { unit: [mm, cm, m] } }
+  grossAreaFt2: { labelKey: tile.out.grossAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 41, visibleWhen: { unit: [in, ft] } }
+  openingAreaM2: { labelKey: tile.out.openingAreaM2, format: number, decimalPlacesField: decimalPlaces, order: 42, visibleWhen: { unit: [mm, cm, m] } }
+  openingAreaFt2: { labelKey: tile.out.openingAreaFt2, format: number, decimalPlacesField: decimalPlaces, order: 42, visibleWhen: { unit: [in, ft] } }
 samples:
   room-5x4-m:
     titleKey: tile.sample.room
-    input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: pieces, tilesPerBox: "10" }
-ui: { archetypes: [B], density: comfortable, compute: live }
+    input: { mode: dimensions, unit: m, surfaceLength: "5", surfaceWidth: "4", quantity: "1", tileUnit: mm, tileLength: "300", tileWidth: "300", wastagePercent: "10", packMode: pieces, tilesPerBox: "10", decimalPlaces: "3" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
     tile.field.mode: Surface size
@@ -106,13 +117,17 @@ strings:
     tile.field.surfaceLength: Floor or wall length
     tile.field.surfaceWidth: Floor width or wall height
     tile.field.surfaceArea: Area (surface unit squared, e.g. m² or ft²)
-    tile.field.quantity: Number of identical rooms or areas
+    tile.field.quantity: Same-size areas
     tile.field.openings: Areas not tiled (fixed cabinets, doors, windows)
     tile.field.openings.row: Area {number}
     tile.field.openings.add: Add area to deduct
     tile.field.tileUnit: Tile unit
     tile.field.tileLength: Tile length
     tile.field.tileWidth: Tile width
+    tile.field.decimalPlaces: Decimal places
+    tile.decimalPlaces.2: "2"
+    tile.decimalPlaces.3: "3"
+    tile.decimalPlaces.4: "4"
     tile.field.pattern: Layout (suggests a wastage %)
     tile.pattern.straight: Straight lay — suggests 10%
     tile.pattern.diagonal: Diagonal — suggests 15%

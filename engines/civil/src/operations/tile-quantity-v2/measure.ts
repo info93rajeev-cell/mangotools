@@ -31,6 +31,7 @@ export interface Measured {
   tileWidth: string;
   wastagePercent: string;
   packing: Packing;
+  displayDecimals: number | null;
 }
 
 const read = (raw: string | number | undefined, path: string) =>
@@ -67,6 +68,7 @@ function readPacking(input: TileQuantityInputV2): Result<Packing> {
 
 /** Reads every field in form order, stopping at the first invalid one. */
 export function measure(input: TileQuantityInputV2): Result<Measured> {
+  const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : null;
   const surface = readSurface(input);
   if (!surface.ok) return surface;
   const quantity = readCount(input.quantity, 'quantity', MAX_COUNT);
@@ -80,7 +82,7 @@ export function measure(input: TileQuantityInputV2): Result<Measured> {
   const wastagePercent = readPercent(input.wastagePercent, 'wastagePercent', {
     min: '0',
     max: '50',
-    maxDecimals: PERCENT_DECIMALS,
+    maxDecimals: displayDecimals ?? PERCENT_DECIMALS,
     rangeCode: 'CIVIL_WASTAGE_OUT_OF_RANGE',
   });
   if (!wastagePercent.ok) return wastagePercent;
@@ -96,5 +98,6 @@ export function measure(input: TileQuantityInputV2): Result<Measured> {
     tileWidth: tileWidth.value,
     wastagePercent: wastagePercent.value,
     packing: packing.value,
+    displayDecimals,
   });
 }

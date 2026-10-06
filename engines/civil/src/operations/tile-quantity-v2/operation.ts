@@ -1,5 +1,5 @@
 import { defineOperation, type OpWarning, ok, type WorkingStep, warning } from '@mangotools/core';
-import { div, mul, sub } from '@mangotools/engine-numeric';
+import { div, mul, sub, toFixedString } from '@mangotools/engine-numeric';
 import { assumption, info, wastageAssumption } from '../../lib/notices.ts';
 import { checkDeductions, openingsArea } from '../../lib/openings.ts';
 import { area, calculated, ceilWhole } from '../../lib/present.ts';
@@ -45,6 +45,14 @@ function boxesFor(m: Measured, net: string, orderTiles: string, working: Working
       : ceilWhole(ratioWithAllowance(net, p.coverageM2, m.wastagePercent));
   working.push(step('boxes', `tile2.boxes.${p.kind}`, { orderTiles }, boxes));
   return { boxes };
+}
+
+function displayed(
+  value: string,
+  decimals: number | null,
+  legacy: (exact: string) => string,
+): string {
+  return decimals === null ? legacy(value) : toFixedString(value, decimals, 'half-up');
 }
 
 export const tileQuantityV2 = defineOperation({
@@ -109,14 +117,14 @@ export const tileQuantityV2 = defineOperation({
         quantity: m.quantity,
         wastagePercent: m.wastagePercent,
         packMode: input.packMode,
-        grossAreaM2: area(gross),
-        openingAreaM2: area(openings),
-        netAreaM2: area(net),
-        grossAreaFt2: area(toFt2(gross)),
-        openingAreaFt2: area(toFt2(openings)),
-        netAreaFt2: area(toFt2(net)),
-        baseTiles: calculated(base),
-        wastageTiles: calculated(sub(adjusted, base)),
+        grossAreaM2: displayed(gross, m.displayDecimals, area),
+        openingAreaM2: displayed(openings, m.displayDecimals, area),
+        netAreaM2: displayed(net, m.displayDecimals, area),
+        grossAreaFt2: displayed(toFt2(gross), m.displayDecimals, area),
+        openingAreaFt2: displayed(toFt2(openings), m.displayDecimals, area),
+        netAreaFt2: displayed(toFt2(net), m.displayDecimals, area),
+        baseTiles: displayed(base, m.displayDecimals, calculated),
+        wastageTiles: displayed(sub(adjusted, base), m.displayDecimals, calculated),
         orderTiles,
         ...boxes,
         working,

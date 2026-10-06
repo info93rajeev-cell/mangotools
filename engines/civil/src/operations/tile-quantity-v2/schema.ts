@@ -26,6 +26,7 @@ export const tileQuantityInputV2 = z.strictObject({
   tilesPerBox: decimal.optional(),
   boxCoverage: decimal.optional(),
   boxCoverageUnit: z.enum(boxCoverageUnits).optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 /** No display params: each output is formatted by what it represents (see lib/present.ts). */

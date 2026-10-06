@@ -73,6 +73,14 @@ for (const scheme of ['light', 'dark'] as const) {
       await expect(primaryResult(page)).toHaveText('4');
       expect(await seriousViolations(page)).toEqual([]);
     });
+    test('/tile-flooring-calculator (coverage-per-box result state)', async ({ page }) => {
+      await gotoReady(page, '/tile-flooring-calculator');
+      await page.getByRole('button', { name: 'Try sample' }).click();
+      await page.getByLabel('Box packing').selectOption('coverage');
+      await page.getByLabel('Coverage per box').fill('1.44');
+      await expect(page.locator('[data-output="boxes"] dd')).toHaveText('16');
+      expect(await seriousViolations(page)).toEqual([]);
+    });
     test('/gst-calculator (mobile search open)', async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await gotoReady(page, '/gst-calculator');
