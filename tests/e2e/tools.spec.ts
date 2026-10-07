@@ -87,15 +87,11 @@ test.describe('Profit Margin Calculator', () => {
     await expect(primaryResult(page)).toHaveText('−25.00%');
     await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
 
-    await island(page, 'profit-margin-calculator')
-      .getByText('Price from cost & margin', { exact: true })
-      .click();
+    await page.getByLabel('Calculate').selectOption('price-from-cost-and-margin');
     await page.getByLabel('Margin', { exact: true }).fill('20');
     await expect(primaryResult(page)).toHaveText('₹125.00');
 
-    await island(page, 'profit-margin-calculator')
-      .getByText('Cost from price & margin', { exact: true })
-      .click();
+    await page.getByLabel('Calculate').selectOption('cost-from-price-and-margin');
     await page.getByLabel('Selling price', { exact: true }).fill('200');
     await expect(primaryResult(page)).toHaveText('₹160.00');
     await expect(page.locator('[data-disclaimer]')).toBeVisible();
