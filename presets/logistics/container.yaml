@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: logistics/container
-version: 0.1.0
+version: 0.1.2
 operation: logistics.container.fit@1
 params: { decimals: 3, rounding: half-up, stackable: true, allowRotation: true, keepUpright: false }
 userOptions:
@@ -24,79 +24,100 @@ fields:
     control: segmented
     default: cm
     order: 10
+    width: half
     options:
       - { value: cm, labelKey: cf.unit.cm }
       - { value: m, labelKey: cf.unit.m }
       - { value: mm, labelKey: cf.unit.mm }
       - { value: in, labelKey: cf.unit.in }
-  length: { labelKey: cf.field.length, kind: number, required: true, order: 20, helpKey: cf.help.dimension }
-  width: { labelKey: cf.field.width, kind: number, required: true, order: 30, helpKey: cf.help.dimension }
-  height: { labelKey: cf.field.height, kind: number, required: true, order: 40, helpKey: cf.help.dimension }
-  quantity: { labelKey: cf.field.quantity, kind: number, required: true, default: 1, order: 50, helpKey: cf.help.quantity }
+  decimalPlaces:
+    labelKey: cf.field.decimalPlaces
+    kind: enum
+    control: segmented
+    default: 3
+    order: 11
+    width: half
+    options:
+      - { value: 2, labelKey: cf.decimalPlaces.2 }
+      - { value: 3, labelKey: cf.decimalPlaces.3 }
+      - { value: 4, labelKey: cf.decimalPlaces.4 }
+  length: { labelKey: cf.field.length, kind: number, required: true, order: 20, width: half, helpKey: cf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  width: { labelKey: cf.field.width, kind: number, required: true, order: 30, width: half, helpKey: cf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  height: { labelKey: cf.field.height, kind: number, required: true, order: 40, width: half, helpKey: cf.help.dimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  quantity: { labelKey: cf.field.quantity, kind: number, required: true, default: 1, order: 50, width: half, helpKey: cf.help.quantity, helpMode: disclosure }
   containerType:
     labelKey: cf.field.containerType
     kind: enum
     control: select
     default: 20gp
     order: 60
+    width: half
     helpKey: cf.help.containerType
+    helpMode: disclosure
     options:
       - { value: 20gp, labelKey: cf.containerType.20gp }
       - { value: 40gp, labelKey: cf.containerType.40gp }
       - { value: 40hc, labelKey: cf.containerType.40hc }
       - { value: custom, labelKey: cf.containerType.custom }
+  usablePercent: { labelKey: cf.field.usablePercent, kind: percent, unit: "%", required: true, default: 90, order: 70, width: half, helpKey: cf.help.usablePercent, helpMode: disclosure }
+  containerLength: { labelKey: cf.field.containerLength, kind: number, required: true, order: 80, width: half, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension, helpMode: disclosure, convert: { unitField: containerUnit, family: length } }
+  containerWidth: { labelKey: cf.field.containerWidth, kind: number, required: true, order: 90, width: half, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension, helpMode: disclosure, convert: { unitField: containerUnit, family: length } }
+  containerHeight: { labelKey: cf.field.containerHeight, kind: number, required: true, order: 100, width: half, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension, helpMode: disclosure, convert: { unitField: containerUnit, family: length } }
   containerUnit:
     labelKey: cf.field.containerUnit
     kind: enum
     control: segmented
     default: cm
-    order: 70
+    order: 110
+    width: half
     visibleWhen: { containerType: [custom] }
+    helpKey: cf.help.containerUnit
+    helpMode: disclosure
     options:
       - { value: cm, labelKey: cf.unit.cm }
       - { value: m, labelKey: cf.unit.m }
       - { value: mm, labelKey: cf.unit.mm }
       - { value: in, labelKey: cf.unit.in }
-  containerLength: { labelKey: cf.field.containerLength, kind: number, required: true, order: 80, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
-  containerWidth: { labelKey: cf.field.containerWidth, kind: number, required: true, order: 90, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
-  containerHeight: { labelKey: cf.field.containerHeight, kind: number, required: true, order: 100, visibleWhen: { containerType: [custom] }, helpKey: cf.help.containerDimension }
-  usablePercent: { labelKey: cf.field.usablePercent, kind: percent, unit: "%", required: true, default: 90, order: 110, helpKey: cf.help.usablePercent }
 outputs:
   maxCartonsByGrid: { labelKey: cf.out.maxCartonsByGrid, format: number, order: 10, primary: true }
-  volumeFillPercent: { labelKey: cf.out.volumeFillPercent, format: percent, order: 20 }
-  totalCbm: { labelKey: cf.out.totalCbm, format: number, order: 30 }
-  cartonsByVolume: { labelKey: cf.out.cartonsByVolume, format: number, order: 40 }
-  gridUtilizationPercent: { labelKey: cf.out.gridUtilizationPercent, format: percent, order: 50 }
-  cartonsAlongLength: { labelKey: cf.out.cartonsAlongLength, format: number, order: 60 }
-  cartonsAlongWidth: { labelKey: cf.out.cartonsAlongWidth, format: number, order: 70 }
-  cartonsAlongHeight: { labelKey: cf.out.cartonsAlongHeight, format: number, order: 80 }
-  cartonsLeftAfterGrid: { labelKey: cf.out.cartonsLeftAfterGrid, format: number, order: 90 }
-  leftoverLength: { labelKey: cf.out.leftoverLength, format: number, order: 100 }
-  leftoverWidth: { labelKey: cf.out.leftoverWidth, format: number, order: 110 }
-  leftoverHeight: { labelKey: cf.out.leftoverHeight, format: number, order: 120 }
-  cartonCbm: { labelKey: cf.out.cartonCbm, format: number, order: 130 }
-  containerCbm: { labelKey: cf.out.containerCbm, format: number, order: 140 }
-  usableCbm: { labelKey: cf.out.usableCbm, format: number, order: 150 }
-  remainingCbm: { labelKey: cf.out.remainingCbm, format: number, order: 160 }
+  cartonsByVolume: { labelKey: cf.out.cartonsByVolume, format: number, order: 20 }
+  volumeFillPercent: { labelKey: cf.out.volumeFillPercent, format: percent, decimalPlacesField: decimalPlaces, order: 30 }
+  totalCbm: { labelKey: cf.out.totalCbm, format: number, decimalPlacesField: decimalPlaces, order: 40 }
+  gridUtilizationPercent: { labelKey: cf.out.gridUtilizationPercent, format: percent, decimalPlacesField: decimalPlaces, order: 50, visible: false }
+  cartonsAlongLength: { labelKey: cf.out.cartonsAlongLength, format: number, order: 60, visible: false }
+  cartonsAlongWidth: { labelKey: cf.out.cartonsAlongWidth, format: number, order: 70, visible: false }
+  cartonsAlongHeight: { labelKey: cf.out.cartonsAlongHeight, format: number, order: 80, visible: false }
+  cartonsLeftAfterGrid: { labelKey: cf.out.cartonsLeftAfterGrid, format: number, order: 90, visible: false }
+  leftoverLength: { labelKey: cf.out.leftoverLength, format: number, decimalPlacesField: decimalPlaces, order: 100, visible: false }
+  leftoverWidth: { labelKey: cf.out.leftoverWidth, format: number, decimalPlacesField: decimalPlaces, order: 110, visible: false }
+  leftoverHeight: { labelKey: cf.out.leftoverHeight, format: number, decimalPlacesField: decimalPlaces, order: 120, visible: false }
+  cartonCbm: { labelKey: cf.out.cartonCbm, format: number, decimalPlacesField: decimalPlaces, order: 130, visible: false }
+  containerCbm: { labelKey: cf.out.containerCbm, format: number, decimalPlacesField: decimalPlaces, order: 140, visible: false }
+  usableCbm: { labelKey: cf.out.usableCbm, format: number, decimalPlacesField: decimalPlaces, order: 150, visible: false }
+  remainingCbm: { labelKey: cf.out.remainingCbm, format: number, decimalPlacesField: decimalPlaces, order: 160, visible: false }
 samples:
   carton-60-40-40-40ft-x500:
     titleKey: cf.sample.carton
-    input: { unit: cm, length: "60", width: "40", height: "40", quantity: "500", containerType: 40gp, usablePercent: "90" }
-ui: { archetypes: [B], density: comfortable, compute: live }
+    input: { unit: cm, length: "60", width: "40", height: "40", quantity: "500", containerType: 40gp, usablePercent: "90", decimalPlaces: "3" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
-    cf.option.stackable: Cartons can be stacked
-    cf.option.allowRotation: Allow the carton to be rotated
-    cf.option.keepUpright: Keep the carton upright (don't rotate its height)
-    cf.field.unit: Carton dimension unit
+    cf.option.stackable: Stackable
+    cf.option.allowRotation: Allow rotation
+    cf.option.keepUpright: Keep upright
+    cf.field.unit: Carton unit
+    cf.field.decimalPlaces: Decimal places
+    cf.decimalPlaces.2: "2"
+    cf.decimalPlaces.3: "3"
+    cf.decimalPlaces.4: "4"
     cf.unit.cm: cm
     cf.unit.m: m
     cf.unit.mm: mm
-    cf.unit.in: inch
+    cf.unit.in: in
     cf.field.length: Carton length
     cf.field.width: Carton width
     cf.field.height: Carton height
-    cf.field.quantity: Number of cartons
+    cf.field.quantity: Cartons
     cf.field.containerType: Container type
     cf.containerType.20gp: 20 ft standard
     cf.containerType.40gp: 40 ft standard
@@ -107,14 +128,15 @@ strings:
     cf.field.containerWidth: Custom container width
     cf.field.containerHeight: Custom container height
     cf.field.usablePercent: Usable space (%)
-    cf.help.dimension: Outer size of one carton in the unit chosen above, up to 3 decimal places.
+    cf.help.dimension: Outer size of one carton in the selected unit. Changing the unit converts this value.
     cf.help.quantity: Cartons of this size, a whole number from 1 to 1,000,000.
     cf.help.containerType: Pick a standard container, or Custom to enter your own internal dimensions.
-    cf.help.containerDimension: Internal size of the container, up to 3 decimal places.
+    cf.help.containerUnit: Unit for the custom container dimensions. Changing it converts entered values.
+    cf.help.containerDimension: Internal size of the custom container in the selected unit.
     cf.help.usablePercent: A whole number from 1 to 100. Leaves space for pallets, uneven stacking or handling clearance in the volume estimate.
     cf.out.maxCartonsByGrid: Maximum cartons (simple grid)
     cf.out.volumeFillPercent: Volume fill (%)
-    cf.out.totalCbm: Total shipment volume (m³)
+    cf.out.totalCbm: Total shipment CBM (m³)
     cf.out.cartonsByVolume: Estimated cartons by volume
     cf.out.gridUtilizationPercent: Estimated utilization (%)
     cf.out.cartonsAlongLength: Cartons along container length
