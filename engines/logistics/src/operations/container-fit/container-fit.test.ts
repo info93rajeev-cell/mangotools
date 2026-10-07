@@ -28,6 +28,40 @@ describe('logistics.container.fit', () => {
     expect(fromStrings).toEqual(fromNumbers);
   });
 
+  it('formats decimal outputs at the selected 2, 3 or 4 places without changing counts', async () => {
+    for (const decimalPlaces of ['2', '3', '4']) {
+      const result = await run({ ...carton, decimalPlaces });
+      if (!result.ok) throw new Error('expected success');
+      const places = Number(decimalPlaces);
+      expect(result.value.maxCartonsByGrid).toBe('1078');
+      expect(result.value.cartonsByVolume).toBe('1244');
+      expect(result.value.totalCbm).toBe(
+        `1.200${'0'.repeat(Math.max(0, places - 3))}`.slice(0, 2 + places),
+      );
+      expect(result.value.volumeFillPercent.split('.')[1]).toHaveLength(places);
+      expect(result.value.leftoverLength.split('.')[1]).toHaveLength(places);
+    }
+  });
+
+  it('accepts converted dimension precision without changing the physical fit', async () => {
+    const centimetres = await run({ ...carton, decimalPlaces: '3' });
+    const inches = await run({
+      ...carton,
+      unit: 'in',
+      length: '15.748031496063',
+      width: '11.811023622047',
+      height: '7.874015748031',
+      decimalPlaces: '3',
+    });
+    if (!centimetres.ok || !inches.ok) throw new Error('expected success');
+    expect(inches.value.maxCartonsByGrid).toBe(centimetres.value.maxCartonsByGrid);
+    expect(inches.value.totalCbm).toBe(centimetres.value.totalCbm);
+  });
+
+  it('rejects an unsupported decimal-place selection', async () => {
+    expect((await run({ ...carton, decimalPlaces: '5' })).ok).toBe(false);
+  });
+
   it('defaults stackable and allowRotation to true and keepUpright to false', async () => {
     const withDefaults = await run(carton);
     const explicit = await run(carton, {
@@ -48,6 +82,7 @@ describe('logistics.container.fit', () => {
         'LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL',
       ]),
     );
+    expect(result.warnings.every((w) => w.details?.severity === 'info')).toBe(true);
   });
 
   it('warns only for the capacity that is actually exceeded', async () => {

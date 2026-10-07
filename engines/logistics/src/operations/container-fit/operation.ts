@@ -20,13 +20,22 @@ import {
 } from './units.ts';
 import { collectWarnings, computeVolumeMetrics, gridUtilization } from './volume.ts';
 
+const CONVERTED_INPUT_DECIMALS = 12;
+
+/** Removes sub-precision conversion residue before floor-based fit calculations. */
+function toCentimetres(value: string, factor: string, converted: boolean): string {
+  const centimetres = mul(value, factor);
+  return converted ? toFixedString(centimetres, CONVERTED_INPUT_DECIMALS, 'half-up') : centimetres;
+}
+
 /** Reads the carton's three dimensions and quantity, stopping at the first invalid field. */
 function readCarton(input: ContainerFitInput): Result<Carton> {
-  const length = readPositive(input.length, 'length', DIMENSION_DECIMALS);
+  const inputDecimals = input.decimalPlaces ? CONVERTED_INPUT_DECIMALS : DIMENSION_DECIMALS;
+  const length = readPositive(input.length, 'length', inputDecimals);
   if (!length.ok) return length;
-  const width = readPositive(input.width, 'width', DIMENSION_DECIMALS);
+  const width = readPositive(input.width, 'width', inputDecimals);
   if (!width.ok) return width;
-  const height = readPositive(input.height, 'height', DIMENSION_DECIMALS);
+  const height = readPositive(input.height, 'height', inputDecimals);
   if (!height.ok) return height;
   const quantity = readCount(input.quantity, 'quantity', MAX_QUANTITY);
   if (!quantity.ok) return quantity;
@@ -47,14 +56,20 @@ function readContainerCm(input: ContainerFitInput): Result<readonly [string, str
   if (input.containerUnit === undefined) {
     return err('LOGISTICS_MISSING_INPUT', { path: 'containerUnit' });
   }
-  const length = readPositive(input.containerLength, 'containerLength', DIMENSION_DECIMALS);
+  const inputDecimals = input.decimalPlaces ? CONVERTED_INPUT_DECIMALS : DIMENSION_DECIMALS;
+  const converted = input.decimalPlaces !== undefined;
+  const length = readPositive(input.containerLength, 'containerLength', inputDecimals);
   if (!length.ok) return length;
-  const width = readPositive(input.containerWidth, 'containerWidth', DIMENSION_DECIMALS);
+  const width = readPositive(input.containerWidth, 'containerWidth', inputDecimals);
   if (!width.ok) return width;
-  const height = readPositive(input.containerHeight, 'containerHeight', DIMENSION_DECIMALS);
+  const height = readPositive(input.containerHeight, 'containerHeight', inputDecimals);
   if (!height.ok) return height;
   const factor = CM_PER_UNIT[input.containerUnit];
-  return ok([mul(length.value, factor), mul(width.value, factor), mul(height.value, factor)]);
+  return ok([
+    toCentimetres(length.value, factor, converted),
+    toCentimetres(width.value, factor, converted),
+    toCentimetres(height.value, factor, converted),
+  ]);
 }
 
 /** Reads and defaults every input, stopping at the first invalid field. */
@@ -70,10 +85,11 @@ function measureAll(input: ContainerFitInput): Result<Measured> {
   });
   if (!usable.ok) return usable;
   const factor = CM_PER_UNIT[input.unit];
+  const converted = input.decimalPlaces !== undefined;
   const cartonCm: [string, string, string] = [
-    mul(carton.value.length, factor),
-    mul(carton.value.width, factor),
-    mul(carton.value.height, factor),
+    toCentimetres(carton.value.length, factor, converted),
+    toCentimetres(carton.value.width, factor, converted),
+    toCentimetres(carton.value.height, factor, converted),
   ];
   return ok({
     carton: carton.value,
@@ -131,7 +147,8 @@ export const containerFit = defineOperation({
     const leftover = leftovers(m.containerAxes, cartonDims, grid);
     const utilizationPercent = gridUtilization(grid.total, volume.cartonCbm, volume.usableCbm);
     const warnings = collectWarnings(volume, m.carton.quantity, grid.total);
-    const shown = (value: string) => toFixedString(value, params.decimals, params.rounding);
+    const displayDecimals = input.decimalPlaces ? Number(input.decimalPlaces) : params.decimals;
+    const shown = (value: string) => toFixedString(value, displayDecimals, params.rounding);
     const working = workingSteps(m, volume, grid, leftover);
     return ok(
       buildOutput(volume, grid, leftover, utilizationPercent, m.carton.quantity, shown, working),

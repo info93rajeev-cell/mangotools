@@ -54,10 +54,11 @@ export function collectWarnings(
   quantity: string,
   gridTotal: string,
 ): OpWarning[] {
+  const info = (code: string) => warning(code, { details: { severity: 'info' } });
   const warnings: OpWarning[] = [
-    warning('LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED'),
-    warning('LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING'),
-    warning('LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL'),
+    info('LOGISTICS_CONTAINER_VOLUME_NOT_GUARANTEED'),
+    info('LOGISTICS_CONTAINER_GRID_NOT_ADVANCED_PLANNING'),
+    info('LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL'),
   ];
   if (compare(volume.totalCbm, volume.usableCbm) > 0) {
     warnings.push(warning('LOGISTICS_CONTAINER_OVER_CAPACITY_VOLUME'));

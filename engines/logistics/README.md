@@ -16,6 +16,12 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.4.5 — `logistics.container.fit@1` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
+  for continuous result presentation while preserving exact integer counts and working values.
+  Converted carton and custom-container dimensions may retain the shared converter's 12 decimal
+  places and are normalized at that precision before floor-based fit calculations. Legacy calls
+  without metadata retain the original three-place input and output behaviour. Standing planning
+  notices retain their codes and are tagged as informational metadata for closed-notes presentation.
 - 0.4.4 — `logistics.pallet.fit@1` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
   for continuous result presentation while preserving exact integer counts and working values.
   Converted carton, custom-pallet and stack-height values may retain the shared converter's 12

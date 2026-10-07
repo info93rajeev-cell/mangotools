@@ -24,6 +24,7 @@ export const containerFitInput = z.strictObject({
   containerWidth: decimal.optional(),
   containerHeight: decimal.optional(),
   usablePercent: decimal.optional(),
+  decimalPlaces: z.enum(['2', '3', '4']).optional(),
 });
 
 export const containerFitParams = z.strictObject({

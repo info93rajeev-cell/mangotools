@@ -67,10 +67,12 @@ carton either fits in a grid cell or it does not; "90% usable" does not shrink a
 
 ## Validation
 
-- Carton dimensions and quantity: same rules as `logistics.cbm.compute` (positive, ≤ 3 decimal places;
-  quantity a whole number from 1 to 1,000,000).
+- Carton dimensions and quantity: same rules as `logistics.cbm.compute` (positive; quantity a whole
+  number from 1 to 1,000,000). Legacy calls accept at most 3 decimal places; calls with
+  `decimalPlaces` accept the shared unit converter's 12-place representation.
 - Custom container: `containerUnit`, `containerLength`, `containerWidth` and `containerHeight` are all
-  required and must be positive, ≤ 3 decimal places.
+  required and must be positive. Legacy calls accept at most 3 decimal places; calls with
+  `decimalPlaces` accept the shared unit converter's 12-place representation.
 - `usablePercent`: required, a whole number from 1 to 100 (`LOGISTICS_USABLE_PERCENT_OUT_OF_RANGE`
   otherwise; ≤ 0 is `LOGISTICS_NOT_POSITIVE` instead, as with the other whole-number-range fields).
 - If the carton does not fit the container in **any** orientation tried (every axis floors to 0 in every
@@ -91,8 +93,9 @@ applies:
 ## Precision
 
 Multiplication is exact; division keeps 20 decimal places. Every CBM, percentage and leftover-length
-output is rounded once, from its own full-precision value, to `params.decimals` (default 3) with
-`params.rounding` (default half-up) — the same rule as CBM and Volumetric Weight. Carton counts
+output is rounded once, from its own full-precision value, to optional input `decimalPlaces` (2, 3
+or 4), or otherwise to `params.decimals` (default 3), with `params.rounding` (default half-up).
+Carton counts
 (`cartonsByVolume`, the per-axis grid counts, `maxCartonsByGrid`, `cartonsLeftAfterGrid`) are exact whole
 numbers from `floor` division and are never rounded for display.
 

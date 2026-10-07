@@ -5,7 +5,7 @@ example: 001-40ft-standard-basic
 
 ## How to use
 
-1. Choose the carton's dimension unit (cm, m, mm or inch) and enter the outer length, width and height of one carton.
+1. Choose the carton's dimension unit (cm, m, mm or in) and enter the outer length, width and height of one carton. Changing the unit converts entered dimensions.
 2. Enter the number of cartons of that size.
 3. Choose a container: 20 ft standard, 40 ft standard, 40 ft high cube, or Custom to enter your own internal length, width and height.
 4. Enter the usable space percentage (default 90%) — the share of the container's volume left after pallets, uneven stacking or handling clearance.
@@ -40,7 +40,7 @@ This is still not advanced 3D loading optimisation: it assumes every carton uses
 
 Unit conversions are exact: 1 inch = 2.54 cm, 1 mm = 0.1 cm, 1 m = 100 cm. Container internal dimensions for the 20 ft standard, 40 ft standard and 40 ft high-cube presets are commonly published approximate figures; they vary by carrier, manufacturer and container condition, so confirm the exact figures with your carrier before booking, or use Custom with your own measurements.
 
-Results are rounded to three decimal places for display; totals and percentages are calculated from the unrounded values.
+Choose 2, 3 or 4 decimal places for decimal result display. Counts stay whole numbers, while totals and percentages are calculated from their full-precision values.
 
 ## Worked example
 
