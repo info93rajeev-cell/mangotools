@@ -1,0 +1,9 @@
+id: 006-half-even-percent
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: 1 / 32 × 100 = 3.125%, half-even gives 3.12%" }
+params: { rounding: half-even }
+input: { grossSellingPrice: "32", productCost: "31" }
+expected:
+  economicProfit: "1.00"
+  profitMarginPercent: "3.12"
+  markupPercent: "3.23"

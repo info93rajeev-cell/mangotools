@@ -1,0 +1,17 @@
+id: 005-settlement-only-deduction
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: settlement-only 5 reduces payout, not economic profit" }
+input:
+  grossSellingPrice: "150"
+  productCost: "80"
+  marketplaceFees: "15"
+  shippingLogistics: "10"
+  sellerExpenses: "10"
+  settlementOnlyDeductions: "5"
+expected:
+  economicProfit: "35.00"
+  cashSettlement: "120.00"
+  profitMarginPercent: "23.33"
+  markupPercent: "43.75"
+  totalEconomicCost: "115.00"
+  totalSettlementDeductions: "30.00"

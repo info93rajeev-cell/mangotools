@@ -1,0 +1,11 @@
+id: 004-expected-return-cost
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: expected return cost is economic only" }
+input: { grossSellingPrice: "100", productCost: "50", expectedReturnRtoCost: "10" }
+expected:
+  economicProfit: "40.00"
+  cashSettlement: "100.00"
+  profitMarginPercent: "40.00"
+  markupPercent: "80.00"
+  totalEconomicCost: "60.00"
+  totalSettlementDeductions: "0.00"

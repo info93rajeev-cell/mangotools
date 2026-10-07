@@ -1,0 +1,5 @@
+id: 009-negative-product-cost
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B validation: product cost is non-negative" }
+input: { grossSellingPrice: "100", productCost: "-1" }
+expectedError: { code: ESTIMATE_NEGATIVE_VALUE, path: productCost }

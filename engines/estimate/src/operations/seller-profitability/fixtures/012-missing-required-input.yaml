@@ -1,0 +1,5 @@
+id: 012-missing-required-input
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B requires productCost" }
+input: { grossSellingPrice: "100" }
+expectedError: { code: ESTIMATE_MISSING_INPUT, path: productCost }

@@ -1,0 +1,5 @@
+id: 011-excessive-precision
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B money precision is two decimal places" }
+input: { grossSellingPrice: "100", productCost: "10.001" }
+expectedError: { code: ESTIMATE_TOO_MANY_DECIMALS, path: productCost, details: { max: 2 } }

@@ -1,0 +1,6 @@
+id: 014-unsupported-rounding
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B supports only half-up and half-even rounding" }
+params: { rounding: half-down }
+input: { grossSellingPrice: "100", productCost: "50" }
+expectedError: { code: INVALID_PARAMS, path: rounding }
