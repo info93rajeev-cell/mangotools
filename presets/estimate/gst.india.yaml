@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: estimate/gst.india
-version: 0.1.0
+version: 0.1.1
 operation: estimate.tax.gst@1
 params:
   rounding: { mode: half-up, decimals: 2 }
@@ -13,6 +13,7 @@ fields:
     control: segmented
     default: add
     order: 10
+    width: half
     options:
       - { value: add, labelKey: gst.mode.add }
       - { value: remove, labelKey: gst.mode.remove }
@@ -22,10 +23,11 @@ fields:
     control: segmented
     default: intra
     order: 20
+    width: half
     options:
       - { value: intra, labelKey: gst.supply.intra }
       - { value: inter, labelKey: gst.supply.inter }
-  amount: { labelKey: gst.field.amount, kind: money, currency: INR, required: true, order: 30, helpKey: gst.help.amount }
+  amount: { labelKey: gst.field.amount, kind: money, currency: INR, required: true, order: 30, width: half, helpKey: gst.help.amount, helpMode: disclosure }
   rate:
     labelKey: gst.field.rate
     kind: enum-or-number
@@ -33,6 +35,7 @@ fields:
     allowCustom: true
     default: 18
     order: 40
+    width: half
     control: select
     options: [{ value: 0 }, { value: 0.25 }, { value: 3 }, { value: 5 }, { value: 18 }, { value: 40 }]
 outputs:
@@ -44,7 +47,7 @@ outputs:
   totalTax: { labelKey: gst.out.totalTax, format: money, order: 60 }
 samples:
   invoice-18: { titleKey: gst.sample.invoice18, input: { amount: "1000.00", rate: 18, mode: add, supply: intra } }
-ui: { archetypes: [B], density: comfortable, compute: live }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
 strings:
   en:
     gst.field.mode: Calculation

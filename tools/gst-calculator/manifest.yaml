@@ -4,8 +4,9 @@ id: gst-calculator
 slug: gst-calculator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-10-07, type: changed, summary: "Compact workspace with paired controls and collapsed supporting sections." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with add/remove GST, CGST/SGST and IGST split." }
 name: GST Calculator
 shortName: GST
