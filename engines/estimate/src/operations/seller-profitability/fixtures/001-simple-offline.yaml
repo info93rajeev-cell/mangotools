@@ -1,0 +1,11 @@
+id: 001-simple-offline
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: 100 - 60 = 40; margin 40%; markup 66.67%" }
+input: { grossSellingPrice: "100", productCost: "60" }
+expected:
+  economicProfit: "40.00"
+  cashSettlement: "100.00"
+  profitMarginPercent: "40.00"
+  markupPercent: "66.67"
+  totalEconomicCost: "60.00"
+  totalSettlementDeductions: "0.00"

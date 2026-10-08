@@ -1,0 +1,5 @@
+id: 008-zero-selling-price
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B validation: gross selling price must be greater than zero" }
+input: { grossSellingPrice: "0", productCost: "10" }
+expectedError: { code: ESTIMATE_PRICE_ZERO, path: grossSellingPrice }

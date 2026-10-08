@@ -1,0 +1,11 @@
+id: 002-marketplace-fee
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: cost 100 + fee 20; fee also reduces settlement" }
+input: { grossSellingPrice: "200", productCost: "100", marketplaceFees: "20" }
+expected:
+  economicProfit: "80.00"
+  cashSettlement: "180.00"
+  profitMarginPercent: "40.00"
+  markupPercent: "80.00"
+  totalEconomicCost: "120.00"
+  totalSettlementDeductions: "20.00"

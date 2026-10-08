@@ -1,0 +1,5 @@
+id: 010-negative-optional-cost
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B validation: optional monetary inputs are non-negative" }
+input: { grossSellingPrice: "100", productCost: "50", marketplaceFees: "-1" }
+expectedError: { code: ESTIMATE_NEGATIVE_VALUE, path: marketplaceFees }

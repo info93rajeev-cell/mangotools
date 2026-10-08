@@ -1,0 +1,15 @@
+id: 003-shipping-and-expenses
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B approved formulas: economic cost 100 + 25 + 15 = 140" }
+input:
+  grossSellingPrice: "250"
+  productCost: "100"
+  shippingLogistics: "25"
+  sellerExpenses: "15"
+expected:
+  economicProfit: "110.00"
+  cashSettlement: "225.00"
+  profitMarginPercent: "44.00"
+  markupPercent: "110.00"
+  totalEconomicCost: "140.00"
+  totalSettlementDeductions: "25.00"

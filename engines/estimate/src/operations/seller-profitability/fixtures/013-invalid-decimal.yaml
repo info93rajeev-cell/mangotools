@@ -1,0 +1,5 @@
+id: 013-invalid-decimal
+operation: estimate.seller.profitability@1
+source: { type: hand-verified, citation: "TASK-008B monetary inputs must be decimal strings" }
+input: { grossSellingPrice: "one hundred", productCost: "50" }
+expectedError: { code: ESTIMATE_INVALID_NUMBER, path: grossSellingPrice }
