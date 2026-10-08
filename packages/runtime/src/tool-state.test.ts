@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { isShown } from '@mangotools/schemas/conditions';
 import { describe, expect, it } from 'vitest';
 import type { RunOutcome } from './protocol.ts';
 import { buildRequest, defaultValues, normalizeNumberText, sampleValues } from './tool-input.ts';
@@ -13,6 +14,28 @@ const preset = (id: string): ResolvedPreset =>
 const gst = preset('estimate/gst.india');
 const margin = preset('estimate/pricing.margin');
 const json = preset('data/json.format');
+
+function withSampleUiState(): ResolvedPreset {
+  const invoice = gst.samples['invoice-18'];
+  if (!invoice) throw new Error('missing GST sample');
+  return {
+    ...gst,
+    fields: {
+      ...gst.fields,
+      showAdvancedCosts: {
+        labelKey: 'field.showAdvancedCosts',
+        kind: 'boolean',
+        order: 100,
+        default: 'false',
+        uiOnly: true,
+      },
+    },
+    samples: {
+      ...gst.samples,
+      advanced: { ...invoice, uiState: { showAdvancedCosts: true } },
+    },
+  };
+}
 
 function manualTimer() {
   const queue: (() => void)[] = [];
@@ -95,6 +118,15 @@ describe('tool input', () => {
     const values = sampleValues(withItems, 'two-items');
     expect(values?.items).toBe(JSON.stringify([{ description: 'A' }, { description: 'B' }]));
   });
+
+  it('applies optional sample UI state while legacy samples remain unchanged', () => {
+    const withUiState = withSampleUiState();
+    const legacy = sampleValues(withUiState, 'invoice-18');
+    const advanced = sampleValues(withUiState, 'advanced');
+    expect(legacy?.showAdvancedCosts).toBe('false');
+    expect(advanced?.showAdvancedCosts).toBe(true);
+    expect(isShown({ visibleWhen: { showAdvancedCosts: ['true'] } }, advanced ?? {})).toBe(true);
+  });
 });
 
 describe('tool store', () => {
@@ -171,5 +203,20 @@ describe('tool store', () => {
     await store.loadSample('invoice-18');
     store.reset();
     expect(store.get()).toMatchObject({ phase: 'idle', result: null, values: defaultValues(gst) });
+  });
+
+  it('never sends sample UI state to the engine and reset restores UI defaults', async () => {
+    const withUiState = withSampleUiState();
+    let receivedInput: unknown;
+    const run: RunFn = async (_operation, input) => {
+      receivedInput = input;
+      return { ok: true, value: {}, warnings: [] };
+    };
+    const store = createToolStore({ preset: withUiState, run, timer: manualTimer().timer });
+    await store.loadSample('advanced');
+    expect(store.get().values.showAdvancedCosts).toBe(true);
+    expect(receivedInput).toEqual({ mode: 'add', supply: 'intra', amount: '1000.00', rate: '18' });
+    store.reset();
+    expect(store.get().values.showAdvancedCosts).toBe('false');
   });
 });

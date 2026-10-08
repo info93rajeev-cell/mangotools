@@ -8,7 +8,7 @@ Runs tools in the browser. The only package through which `packages/ui` and `app
 | `engine.worker.ts` | Worker entry. Loads engines lazily through `generated/engine-loaders.ts`. |
 | `worker-handler.ts` | The worker's message logic, testable in Node. |
 | `context.ts` | Production `OperationContext` (clock, Web Crypto random bytes, abort signal). |
-| `tool-input.ts` | Preset → form defaults, sample values, and the operation request (hidden fields left out, `₹1,00,000` normalised). |
+| `tool-input.ts` | Preset → form defaults, engine-backed sample input plus optional validated UI-only sample state, and the operation request (`uiOnly` fields excluded, `₹1,00,000` normalised). |
 | `tool-state.ts` | Store per tool island: `idle → editing → running → result | error`, live compute debounced 150 ms, new input aborts the run in flight. |
 | `preferences.ts` | Theme and recent tools in `localStorage`, every access guarded, in-memory fallback. |
 | `analytics.ts` | Event catalogue and validation. No network calls; the web app installs a `console.debug` sink in development only. |
