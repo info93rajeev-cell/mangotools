@@ -9,6 +9,7 @@ import {
 import type { Conditions, Preset, ResolvedPreset } from '@mangotools/schemas';
 import { type Issue, issue } from './issues.ts';
 import { checkFieldReferences } from './preset-field-references.ts';
+import { checkSampleUiState } from './preset-sample-ui-state.ts';
 
 const shapeKeys = (schema: unknown): Set<string> | null => {
   const shape = (schema as { shape?: Record<string, unknown> }).shape;
@@ -231,6 +232,7 @@ export function checkPresetAgainstOperation(
     ...checkStrings(file, p),
     ...checkDefaults(file, p),
     ...checkFieldReferences(file, p),
+    ...checkSampleUiState(file, p),
   ];
 }
 

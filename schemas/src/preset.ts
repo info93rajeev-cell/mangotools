@@ -3,6 +3,7 @@ import { kebabId, operationRef, presetId, semver } from './common.ts';
 
 const conditions = z.record(z.string(), z.array(z.string()));
 const archetype = z.enum(['A', 'B', 'C', 'D', 'E']);
+const sampleUiStateValue = z.union([z.string(), z.number(), z.boolean()]);
 
 /**
  * A one-shot, same-tab handoff of named field values to another tool, initiated by a button on this
@@ -127,6 +128,8 @@ export const presetSchema = z.strictObject({
         titleKey: z.string(),
         input: z.record(z.string(), z.unknown()),
         params: z.record(z.string(), z.unknown()).optional(),
+        /** Form-only sample values. Generator checks restrict keys to fields marked `uiOnly`. */
+        uiState: z.record(z.string(), sampleUiStateValue).optional(),
       }),
     )
     .optional(),
