@@ -21,13 +21,13 @@ test.describe('keyboard-only completion', () => {
     await expect(primaryResult(page)).toHaveText('₹2,118.64');
   });
 
-  test('Profit Margin Calculator', async ({ page }) => {
+  test('Seller Profitability Calculator', async ({ page }) => {
     await gotoReady(page, '/profit-margin-calculator');
-    await tabTo(page, '#tool-profit-margin-calculator-cost');
-    await page.keyboard.type('60');
-    await page.keyboard.press('Tab');
+    await tabTo(page, '#tool-profit-margin-calculator-grossSellingPrice');
     await page.keyboard.type('100');
-    await expect(primaryResult(page)).toHaveText('40.00%');
+    await page.keyboard.press('Tab');
+    await page.keyboard.type('60');
+    await expect(primaryResult(page)).toHaveText('₹40.00');
   });
 
   for (const [id, input, output] of [

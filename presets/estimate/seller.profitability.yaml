@@ -1,0 +1,144 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/seller.profitability
+version: 0.1.0
+operation: estimate.seller.profitability@1
+params: { rounding: half-up }
+fields:
+  grossSellingPrice:
+    labelKey: sellerProfitability.field.grossSellingPrice
+    kind: money
+    currency: INR
+    required: true
+    order: 10
+    width: half
+  productCost:
+    labelKey: sellerProfitability.field.productCost
+    kind: money
+    currency: INR
+    required: true
+    order: 20
+    width: half
+  showSellerCosts:
+    labelKey: sellerProfitability.field.showSellerCosts
+    kind: boolean
+    default: "false"
+    order: 30
+    width: half
+    uiOnly: true
+  showSettlementDeductions:
+    labelKey: sellerProfitability.field.showSettlementDeductions
+    kind: boolean
+    default: "false"
+    order: 40
+    width: half
+    uiOnly: true
+  marketplaceFees:
+    labelKey: sellerProfitability.field.marketplaceFees
+    kind: money
+    currency: INR
+    default: "0"
+    order: 50
+    width: half
+    visibleWhen: { showSellerCosts: ["true"] }
+    helpKey: sellerProfitability.help.marketplaceFees
+    helpMode: disclosure
+  shippingLogistics:
+    labelKey: sellerProfitability.field.shippingLogistics
+    kind: money
+    currency: INR
+    default: "0"
+    order: 60
+    width: half
+    visibleWhen: { showSellerCosts: ["true"] }
+  sellerExpenses:
+    labelKey: sellerProfitability.field.sellerExpenses
+    kind: money
+    currency: INR
+    default: "0"
+    order: 70
+    width: half
+    visibleWhen: { showSellerCosts: ["true"] }
+    helpKey: sellerProfitability.help.sellerExpenses
+    helpMode: disclosure
+  expectedReturnRtoCost:
+    labelKey: sellerProfitability.field.expectedReturnRtoCost
+    kind: money
+    currency: INR
+    default: "0"
+    order: 80
+    width: half
+    visibleWhen: { showSellerCosts: ["true"] }
+    helpKey: sellerProfitability.help.expectedReturnRtoCost
+    helpMode: disclosure
+  nonRecoverableTaxCost:
+    labelKey: sellerProfitability.field.nonRecoverableTaxCost
+    kind: money
+    currency: INR
+    default: "0"
+    order: 90
+    width: half
+    visibleWhen: { showSellerCosts: ["true"] }
+    helpKey: sellerProfitability.help.nonRecoverableTaxCost
+    helpMode: disclosure
+  settlementOnlyDeductions:
+    labelKey: sellerProfitability.field.settlementOnlyDeductions
+    kind: money
+    currency: INR
+    default: "0"
+    order: 100
+    width: half
+    visibleWhen: { showSettlementDeductions: ["true"] }
+    helpKey: sellerProfitability.help.settlementOnlyDeductions
+    helpMode: disclosure
+outputs:
+  economicProfit: { labelKey: sellerProfitability.out.economicProfit, format: money, order: 10, primary: true }
+  cashSettlement: { labelKey: sellerProfitability.out.cashSettlement, format: money, order: 20 }
+  profitMarginPercent: { labelKey: sellerProfitability.out.profitMarginPercent, format: percent, order: 30 }
+  markupPercent: { labelKey: sellerProfitability.out.markupPercent, format: percent, order: 40 }
+  totalEconomicCost: { labelKey: sellerProfitability.out.totalEconomicCost, format: money, order: 50 }
+  totalSettlementDeductions: { labelKey: sellerProfitability.out.totalSettlementDeductions, format: money, order: 60 }
+samples:
+  seller-costs:
+    titleKey: sellerProfitability.sample.sellerCosts
+    input:
+      grossSellingPrice: "1000"
+      productCost: "500"
+      marketplaceFees: "100"
+      shippingLogistics: "50"
+      sellerExpenses: "25"
+      expectedReturnRtoCost: "0"
+      nonRecoverableTaxCost: "0"
+      settlementOnlyDeductions: "20"
+    uiState: { showSellerCosts: true, showSettlementDeductions: true }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
+strings:
+  en:
+    sellerProfitability.field.grossSellingPrice: Selling price
+    sellerProfitability.field.productCost: Product cost
+    sellerProfitability.field.showSellerCosts: Seller / marketplace costs
+    sellerProfitability.field.showSettlementDeductions: Settlement deductions
+    sellerProfitability.field.marketplaceFees: Marketplace fees
+    sellerProfitability.help.marketplaceFees: Enter the total marketplace fees you have already resolved.
+    sellerProfitability.field.shippingLogistics: Shipping / logistics
+    sellerProfitability.field.sellerExpenses: Seller expenses
+    sellerProfitability.help.sellerExpenses: Combine packaging, ads, labour, rent allocation and other operating expenses here.
+    sellerProfitability.field.expectedReturnRtoCost: Expected return / RTO cost
+    sellerProfitability.help.expectedReturnRtoCost: Enter a probability-adjusted expected return or RTO cost.
+    sellerProfitability.field.nonRecoverableTaxCost: Non-recoverable tax cost
+    sellerProfitability.help.nonRecoverableTaxCost: Include only tax or service-tax amounts that are genuine economic costs.
+    sellerProfitability.field.settlementOnlyDeductions: Settlement-only deductions
+    sellerProfitability.help.settlementOnlyDeductions: TCS, TDS or other recoverable deductions that reduce payout but not economic profit.
+    sellerProfitability.out.economicProfit: Economic profit
+    sellerProfitability.out.cashSettlement: Cash settlement / payout
+    sellerProfitability.out.profitMarginPercent: Profit margin
+    sellerProfitability.out.markupPercent: Markup
+    sellerProfitability.out.totalEconomicCost: Total economic cost
+    sellerProfitability.out.totalSettlementDeductions: Total settlement deductions
+    sellerProfitability.sample.sellerCosts: Seller costs and settlement example
+    work.sellerProfitability.totalEconomicCost: "Total economic cost = {productCost:money} + {marketplaceFees:money} + {shippingLogistics:money} + {sellerExpenses:money} + {expectedReturnRtoCost:money} + {nonRecoverableTaxCost:money} = {result:money}"
+    work.sellerProfitability.economicProfit: "Economic profit = {grossSellingPrice:money} − {totalEconomicCost:money} = {result:money}"
+    work.sellerProfitability.totalSettlementDeductions: "Settlement deductions = {marketplaceFees:money} + {shippingLogistics:money} + {settlementOnlyDeductions:money} = {result:money}"
+    work.sellerProfitability.cashSettlement: "Cash settlement = {grossSellingPrice:money} − {totalSettlementDeductions:money} = {result:money}"
+    work.sellerProfitability.profitMarginPercent: "Profit margin = {economicProfit:money} ÷ {grossSellingPrice:money} × 100 = {result}%"
+    work.sellerProfitability.markupPercent: "Markup = {economicProfit:money} ÷ {productCost:money} × 100 = {result}%"

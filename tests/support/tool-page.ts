@@ -4,7 +4,7 @@ import { expect, type Page } from '@playwright/test';
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
 export const SAMPLES = {
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
-  'profit-margin-calculator': { archetype: 'B', result: '20.00%' },
+  'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', result: '6.000' },
   'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },
