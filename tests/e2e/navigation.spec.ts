@@ -99,7 +99,7 @@ test.describe('navigation', () => {
       ['jsn formatter', 'JSON Formatter & Validator'],
       ['b64', 'Base64 Encode & Decode'],
       ['percent encoding', 'URL Encode & Decode'],
-      ['gross margin', 'Profit Margin Calculator'],
+      ['gross margin', 'Seller Profitability Calculator'],
     ]) {
       await search.fill(query);
       await expect(page.getByRole('option').first()).toContainText(name);
