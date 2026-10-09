@@ -1,52 +1,57 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-cost-and-price
+lastReviewed: 2026-10-09
+example: 007-seller-costs-and-settlement
 ---
 
 ## How to use
 
-1. Choose what to calculate: the margin from cost and price, the selling price from cost and a target margin, or the cost from price and margin.
-2. Enter the two known values.
-3. Read the result. Profit, margin and markup are shown together, with the working.
-4. Copy or print the result.
+1. Enter the selling price and product cost for one sale.
+2. Open **Seller / marketplace costs** to include fees, shipping, operating expenses, expected return/RTO cost or non-recoverable tax.
+3. Open **Settlement deductions** to include recoverable cash-flow deductions such as TCS or TDS.
+4. Compare economic profit with the expected cash settlement. Copy or print the result if needed.
+
+All rates and amounts are entered manually. The calculator does not import products or fetch live marketplace fees.
 
 ## Method
 
-- Profit = selling price − cost.
-- Margin % = profit ÷ selling price × 100.
-- Markup % = profit ÷ cost × 100.
-- Selling price from a target margin = cost ÷ (1 − margin ÷ 100).
-- Cost from price and margin = selling price × (1 − margin ÷ 100).
+- Total economic cost is product cost plus marketplace fees, shipping/logistics, seller expenses, expected return/RTO cost and non-recoverable tax cost.
+- Economic profit is selling price minus total economic cost.
+- Cash settlement is selling price minus marketplace fees, shipping/logistics and settlement-only deductions.
+- Profit margin compares economic profit with selling price. Markup compares economic profit with product cost.
 
-The rule is **round money first, then percentages**. Cost and selling price are rounded to two decimal places (half-up) first. Profit is calculated from those rounded amounts, and margin and markup are calculated from the rounded profit and amounts, then rounded to two decimal places. The figures you see therefore always reconcile: profit is exactly the selling price minus the cost as displayed.
+Settlement-only deductions reduce expected cash payout but do not reduce economic profit. TCS/TDS-style deductions are not automatically treated as business expenses.
 
 ## Worked example
 
-Buying at ₹80 and selling at ₹100:
+A ₹1,000 sale has ₹500 product cost, ₹100 marketplace fees, ₹50 shipping, ₹25 seller expenses and a ₹20 settlement-only deduction. Economic profit is ₹325, while expected cash settlement is ₹830 because the settlement-only deduction affects payout, not profit.
 
 ## FAQ
 
-### What is the difference between margin and markup?
+### Why are economic profit and cash settlement different?
 
-Both compare profit with something else. Margin compares profit with the selling price; markup compares it with the cost. Buying at ₹80 and selling at ₹100 gives a profit of ₹20 — a 20% margin (20 ÷ 100) but a 25% markup (20 ÷ 80). For a profitable sale, markup is always higher than margin.
+Economic profit subtracts economic costs. Cash settlement shows the expected payout after marketplace, logistics and settlement-only deductions. A recoverable deduction can reduce today’s payout without reducing profit.
 
-### Why can't the margin be 100% or more?
+### Does the calculator know marketplace fee rates?
 
-Margin is profit as a share of the selling price. A 100% margin would mean the whole price is profit and the cost is zero; anything above 100% would need a negative cost. When you solve for a price or a cost, a margin of 100% or more has no answer, so the tool asks for a lower value.
+No. Marketplace fees vary by platform, category, seller agreement and time. Enter the total fee amount you have already resolved.
 
-### What does a negative margin mean?
+### How should I enter return or RTO cost?
 
-A negative margin means you are selling below cost, at a loss. For example, a cost of ₹100 and a selling price of ₹80 give a profit of −₹20, a margin of −25% and a markup of −20%.
+Enter a probability-adjusted expected amount for the sale. Do not enter a platform-wide return rate unless you have already converted it into an expected monetary cost.
+
+### What happens when product cost is zero?
+
+Profit, payout and margin are still calculated. Markup is omitted because dividing by a zero product cost is undefined.
 
 ### Does this include GST?
 
-No. Enter cost and selling price on the same basis, normally both excluding GST. To add or remove GST, use the [GST Calculator](tool:gst-calculator).
+Enter selling price and costs on a consistent tax basis. Use the [GST Calculator](tool:gst-calculator) to add or remove GST before comparing the amounts.
 
-### Is this pricing, tax or accounting advice?
+### Is this accounting or tax advice?
 
-No. The calculator does the arithmetic and shows every step so you can check it. Confirm prices, tax
-treatment and accounting figures with your accountant before you rely on them.
+No. The calculator applies the amounts you enter. Confirm fee, tax and accounting treatment with a qualified professional before relying on the result.
 
 ## References
 
-- Standard definitions: margin = profit ÷ selling price; markup = profit ÷ cost.
+- TASK-008B approved deterministic seller-profitability formulas.
+- Hand-verified arithmetic in the linked worked-example fixture.

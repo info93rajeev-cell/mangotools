@@ -1,0 +1,12 @@
+id: 008-zero-product-cost
+preset: estimate/seller.profitability
+source: { type: hand-verified, citation: "TASK-008B zero-cost rule: profit and margin calculate; markup is undefined" }
+input: { grossSellingPrice: "50", productCost: "0" }
+expected:
+  economicProfit: "50.00"
+  cashSettlement: "50.00"
+  profitMarginPercent: "100.00"
+  markupPercent: null
+  totalEconomicCost: "0.00"
+  totalSettlementDeductions: "0.00"
+expectedWarnings: [ESTIMATE_MARKUP_UNDEFINED]

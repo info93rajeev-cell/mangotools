@@ -1,0 +1,19 @@
+id: 007-seller-costs-and-settlement
+preset: estimate/seller.profitability
+source: { type: hand-verified, citation: "TASK-008B formulas: economic cost 500 + 100 + 50 + 25 = 675; profit 325; settlement deductions 100 + 50 + 20 = 170; payout 830" }
+input:
+  grossSellingPrice: "1000"
+  productCost: "500"
+  marketplaceFees: "100"
+  shippingLogistics: "50"
+  sellerExpenses: "25"
+  expectedReturnRtoCost: "0"
+  nonRecoverableTaxCost: "0"
+  settlementOnlyDeductions: "20"
+expected:
+  economicProfit: "325.00"
+  cashSettlement: "830.00"
+  profitMarginPercent: "32.50"
+  markupPercent: "65.00"
+  totalEconomicCost: "675.00"
+  totalSettlementDeductions: "170.00"
