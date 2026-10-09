@@ -1,0 +1,11 @@
+id: 024-duplicate-record-id
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G input: ids are unique within records; the second 'rate-a' fails." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: rate-a, effectiveFrom: "2026-01-01", status: verified }
+    - { id: rate-a, effectiveFrom: "2026-02-01", status: verified }
+  conditions: {}
+expectedError: { code: REFERENCE_DUPLICATE_RECORD_ID, path: records.1.id }

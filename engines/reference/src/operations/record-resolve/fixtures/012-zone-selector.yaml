@@ -1,0 +1,14 @@
+id: 012-zone-selector
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 8: zone is an ordinary exact selector." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: zone-n, effectiveFrom: "2026-01-01", status: verified, match: { zone: zone-north } }
+    - { id: zone-s, effectiveFrom: "2026-01-01", status: verified, match: { zone: zone-south } }
+  conditions: { selectors: { zone: zone-south } }
+expected:
+  resolution: matched
+  record: { id: zone-s }
+  candidateIds: [zone-s]

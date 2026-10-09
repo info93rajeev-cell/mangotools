@@ -1,0 +1,16 @@
+id: 008-price-slab-upper-bound-inclusive
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 6: min < value <= max. 300 is in (0, 300] and not in (300, 500]." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: slab-1, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "0", max: "300" } } }
+    - { id: slab-2, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "300", max: "500" } } }
+    - { id: slab-3, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "500" } } }
+  conditions: { values: { price: { value: "300" } } }
+expected:
+  resolution: matched
+  record: { id: slab-1 }
+  candidateIds: [slab-1]
+  matchedOn: { selectors: [], ranges: [price] }

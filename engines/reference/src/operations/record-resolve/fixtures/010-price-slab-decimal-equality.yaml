@@ -1,0 +1,14 @@
+id: 010-price-slab-decimal-equality
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 6 with decimal comparison: 500.00 equals 500, so it is in (300, 500] and not in (500, open)." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: slab-2, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "300", max: "500" } } }
+    - { id: slab-3, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "500" } } }
+  conditions: { values: { price: { value: "500.00" } } }
+expected:
+  resolution: matched
+  record: { id: slab-2 }
+  candidateIds: [slab-2]

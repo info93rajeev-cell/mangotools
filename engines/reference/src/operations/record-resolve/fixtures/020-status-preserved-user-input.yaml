@@ -1,0 +1,22 @@
+id: 020-status-preserved-user-input
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G Status handling: status 'user-input' is returned unchanged; value (including null) and meta are verbatim." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: rec-verified, effectiveFrom: "2026-01-01", status: verified, match: { tier: tier-verified } }
+    - { id: rec-conditional, effectiveFrom: "2026-01-01", status: conditional, match: { tier: tier-conditional } }
+    - { id: rec-user-input, effectiveFrom: "2026-01-01", status: user-input, match: { tier: tier-user-input } }
+    - { id: rec-unverified, effectiveFrom: "2026-01-01", status: unverified, match: { tier: tier-unverified } }
+    - { id: rec-user-input-payload, effectiveFrom: "2026-01-01", status: user-input, match: { tier: payload-user-input }, value: { percent: "2.5", flatAmount: null }, meta: { sourceId: src-synthetic, verifiedOn: "2026-01-02" } }
+  conditions: { selectors: { tier: payload-user-input } }
+expected:
+  resolution: matched
+  record:
+    id: rec-user-input-payload
+    status: user-input
+    effectiveFrom: "2026-01-01"
+    value: { percent: "2.5", flatAmount: null }
+    meta: { sourceId: src-synthetic, verifiedOn: "2026-01-02" }
+  candidateIds: [rec-user-input-payload]

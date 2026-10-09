@@ -172,6 +172,18 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
+  engines/reference:
+    dependencies:
+      '@mangotools/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@mangotools/engine-numeric':
+        specifier: workspace:*
+        version: link:../numeric
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+
   engines/search:
     dependencies:
       '@mangotools/core':

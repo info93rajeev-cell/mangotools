@@ -1,0 +1,16 @@
+id: 004-category-selector-match
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 4: every key in record.match must equal the query selector exactly." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: cat-x, effectiveFrom: "2026-01-01", status: verified, match: { category: category-x }, value: { percent: "5" } }
+    - { id: cat-y, effectiveFrom: "2026-01-01", status: verified, match: { category: category-y }, value: { percent: "7" } }
+  conditions: { selectors: { category: category-x } }
+expected:
+  resolution: matched
+  record: { id: cat-x }
+  candidateIds: [cat-x]
+  matchedOn: { selectors: [category], ranges: [] }
+  counts: { records: 2, dateEligible: 2, conditionEligible: 1 }

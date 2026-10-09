@@ -1,0 +1,11 @@
+id: 015-invalid-interval
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G errors: effectiveTo 2026-04-30 is before effectiveFrom 2026-05-01. The whole dataset is validated, so this non-matching record still fails the call." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-01-15"
+  records:
+    - { id: rate-a, effectiveFrom: "2026-01-01", status: verified }
+    - { id: rate-b, effectiveFrom: "2026-05-01", effectiveTo: "2026-04-30", status: verified }
+  conditions: {}
+expectedError: { code: REFERENCE_INVALID_INTERVAL, path: records.1.effectiveTo }

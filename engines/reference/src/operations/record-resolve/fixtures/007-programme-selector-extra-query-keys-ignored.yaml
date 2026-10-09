@@ -1,0 +1,15 @@
+id: 007-programme-selector-extra-query-keys-ignored
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rules 4, 5 and 8: seller programme is an ordinary selector; query keys no record uses are ignored." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: prog-1, effectiveFrom: "2026-01-01", status: verified, match: { platform: platform-a, sellerProgramme: programme-1 } }
+    - { id: prog-2, effectiveFrom: "2026-01-01", status: verified, match: { platform: platform-a, sellerProgramme: programme-2 } }
+  conditions: { selectors: { platform: platform-a, sellerProgramme: programme-2, fulfilmentMode: mode-self } }
+expected:
+  resolution: matched
+  record: { id: prog-2 }
+  candidateIds: [prog-2]
+  matchedOn: { selectors: [platform, sellerProgramme], ranges: [] }

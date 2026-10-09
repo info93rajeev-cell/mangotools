@@ -1,0 +1,8 @@
+id: 034-missing-dataset-version
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G inputs: datasetVersion is required." }
+input:
+  effectiveDate: "2026-06-15"
+  records: []
+  conditions: {}
+expectedError: { code: REFERENCE_MISSING_INPUT, path: datasetVersion }
