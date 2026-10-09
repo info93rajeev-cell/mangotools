@@ -5,6 +5,7 @@ import {
   checkLength,
   checkNoDirectEngineImport,
   checkRelativeEscape,
+  ENGINE_IMPORTS,
   importSpecifiers,
   stripCommentsAndStrings,
 } from './rules.ts';
@@ -56,6 +57,31 @@ describe('architecture rules', () => {
       'engines/data may not import "@mangotools/engine-numeric".',
     ]);
     expect(checkEngineSource('engines/estimate/src/a.ts', 'estimate', src).length).toBe(1);
+  });
+
+  it('lets engines/reference import only engines/numeric (DECISION-REFERENCE-ENGINE)', () => {
+    const numeric = "import { compare } from '@mangotools/engine-numeric';";
+    expect(checkEngineSource('engines/reference/src/a.ts', 'reference', numeric)).toEqual([]);
+    const other =
+      "import { engine } from '@mangotools/engine-estimate';\nimport Big from 'big.js';";
+    expect(rulesOf(checkEngineSource('engines/reference/src/a.ts', 'reference', other))).toEqual([
+      'engines/reference may not import "@mangotools/engine-estimate".',
+      'engines/reference may not import "big.js".',
+    ]);
+  });
+
+  it('keeps every engine import allowance exactly as approved', () => {
+    expect(ENGINE_IMPORTS).toEqual({
+      numeric: ['big.js'],
+      data: [],
+      estimate: ['@mangotools/engine-numeric'],
+      logistics: ['@mangotools/engine-numeric'],
+      civil: ['@mangotools/engine-numeric'],
+      export: ['@mangotools/engine-numeric'],
+      reference: ['@mangotools/engine-numeric'],
+      search: ['minisearch'],
+      pdf: ['pdf-lib'],
+    });
   });
 
   it('keeps big.js inside engines/numeric', () => {
