@@ -265,7 +265,7 @@ Data folders (tools, presets, taxonomy, content) are never imported by code — 
 | report | core, units |
 | pdf, image | core |
 | analytics | core, settings |
-
+| reference | core, numeric |
 Additional hard rules:
 - Portable engines (units, grid, survey, data, pdf, image, privacy, import, report, search) compile with `lib: ["ES2023"]` only — no DOM, no WebWorker types. The two browser-bound engines (storage, ai) add only the `WebWorker` lib (IndexedDB, OPFS, WebGPU are available in workers) and declare `runtimes: [worker]`. Settings and analytics are pure logic that talk to the outside world through **ports** (a key-value store port, a transport port); `packages/runtime` injects the browser adapters (localStorage, `sendBeacon`). **No engine ever compiles with DOM types.** Engines use `types: []`; the few cross-runtime globals they may touch (Web Crypto digest, `TextEncoder`/`TextDecoder`, `WebAssembly` instantiation, `structuredClone`) are declared in one audited file, `packages/core/platform-globals.d.ts`. Network globals (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`) are banned in `engines/` by a lint rule; model and WASM downloads go through `ctx.assets`, which the runtime implements.
 - `packages/ui` and `apps/web` never import an engine directly — only through `packages/runtime`.
