@@ -32,6 +32,7 @@ export interface Sources {
   tools: ToolSource[];
   /** Engine fixtures, read only to learn which working-step formula keys an operation emits. */
   engineFixtures: SourceFile[];
+  marketplaceFeeDatasets: SourceFile[];
 }
 
 const toRel = (root: string, path: string) => relative(root, path).split('\\').join('/');
@@ -93,6 +94,9 @@ export function loadSources(root: string = ROOT): { sources: Sources; issues: Is
     presets: walkFiles(join(root, 'presets'), '.yaml').map((f) => readYamlFile(root, f, issues)),
     tools: listDirs(join(root, 'tools')).map((folder) => loadTool(root, folder, issues)),
     engineFixtures: engineFixtureFiles().map((f) => readFixtureFile(ROOT, f, issues)),
+    marketplaceFeeDatasets: walkFiles(join(root, 'reference', 'marketplace-fees'), '.yaml').map(
+      (f) => readYamlFile(root, f, issues),
+    ),
   };
   return { sources, issues };
 }

@@ -6,6 +6,8 @@ import {
   contentFrontMatterSchema,
   fixtureSchema,
   manifestSchema,
+  marketplaceFeeDatasetSchema,
+  marketplaceFeeIndexSchema,
   presetSchema,
   professionsFileSchema,
   reservedSlugsFileSchema,
@@ -14,6 +16,7 @@ import {
   tagsFileSchema,
 } from '@mangotools/schemas';
 import { z } from 'zod';
+import type { MarketplaceFeeOutput } from './marketplace-fees.ts';
 import type { PipelineOutput } from './pipeline.ts';
 
 const EDITOR_SCHEMAS: Record<string, z.ZodType> = {
@@ -27,6 +30,8 @@ const EDITOR_SCHEMAS: Record<string, z.ZodType> = {
   synonyms: synonymsFileSchema,
   'reserved-slugs': reservedSlugsFileSchema,
   'site-config': siteConfigSchema,
+  'marketplace-fee-dataset': marketplaceFeeDatasetSchema,
+  'marketplace-fee-index': marketplaceFeeIndexSchema,
 };
 
 const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
@@ -54,7 +59,11 @@ export function engineLoadersSource(engineIds: string[]): string {
 }
 
 /** Replaces generated/ with fresh outputs. */
-export function writeOutputs(dir: string, output: PipelineOutput): string[] {
+export function writeOutputs(
+  dir: string,
+  output: PipelineOutput,
+  marketplaceFees: MarketplaceFeeOutput,
+): string[] {
   rmSync(dir, { recursive: true, force: true });
   const written: string[] = [];
   const put = (rel: string, text: string) => {
@@ -67,6 +76,10 @@ export function writeOutputs(dir: string, output: PipelineOutput): string[] {
   put('search-index.json', json(output.searchIndex));
   put('determinism-fixtures.json', json(toJsonSafe(output.determinism)));
   put('engine-loaders.ts', engineLoadersSource(output.engineIds));
+  put('reference/marketplace-fees/index.json', json(marketplaceFees.index));
+  for (const dataset of marketplaceFees.datasets) {
+    put(dataset.outputPath, json(dataset.data));
+  }
   writeSchemas(dir, put);
   return written;
 }
