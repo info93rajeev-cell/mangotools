@@ -241,6 +241,7 @@ mangotools/
 | `apps/api/` | Server endpoints (P2+) | platform | core, adapters | R | Always, security-sensitive | ~60–120 files |
 | `apps/mcp/` | MCP server shell (P5) | platform | adapters, engines | R | Always | ~15–30 files |
 | `scripts/` | Build, validate, generate, check | platform | schemas, core, engines | R | Always | ~80–120 files |
+| `reference/` | Versioned public reference datasets | tools | `schemas/` | **R** | Always | Versioned YAML datasets; read only by `scripts/generate` |
 | `tests/` | Cross-cutting tests | platform | built site | S | Yes | ~120–200 specs (grows with archetypes, not tools) |
 | `assets/` | Brand, fonts, icons, OG templates | ui | — | S | Yes | ~200–400 files |
 | `generated/` | Build outputs | — | everything | **G** | Never | ~1,200–1,500 pages; not in git |
