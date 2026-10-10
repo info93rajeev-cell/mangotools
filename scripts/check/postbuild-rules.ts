@@ -207,6 +207,11 @@ export function headersFile({ scriptHashes, indexable }: HeadersOptions): string
     '/assets/*',
     '  Cache-Control: public, max-age=31536000, immutable',
     '',
+    // Each marketplace fee dataset version file never changes. The index sits one level higher
+    // (/reference/marketplace-fees/index.json), so it does not match and stays revalidated.
+    '/reference/marketplace-fees/*/*',
+    '  Cache-Control: public, max-age=31536000, immutable',
+    '',
     // The production build is also reachable on Cloudflare's *.pages.dev hosts; keep those out of
     // search results so only the canonical domain is indexed.
     ...(indexable
@@ -265,4 +270,27 @@ export function staticImports(code: string): string[] {
   for (const m of code.matchAll(/\bexport\s*(?:\*|\{[^}]*\})\s*from\s*["'](\.{1,2}\/[^"']+)["']/g))
     found.add(m[1] ?? '');
   return [...found].filter(Boolean);
+}
+
+const FEE_DIR = '/reference/marketplace-fees/';
+
+/**
+ * Marketplace fee reference data in a built site (TASK-008E Task A): the index and every version it
+ * lists must be built, and nothing else may be served under /reference/marketplace-fees/ — so a
+ * draft, unlisted or unknown platform/version can never become reachable.
+ */
+export function referenceDataProblems(
+  listedPaths: readonly string[],
+  builtPaths: readonly string[],
+): string[] {
+  const expected = [`${FEE_DIR}index.json`, ...listedPaths];
+  const built = new Set(builtPaths);
+  const missing = expected
+    .filter((p) => !built.has(p))
+    .map((p) => `${p} is listed but was not built`);
+  const allowed = new Set(expected);
+  const extra = builtPaths
+    .filter((p) => p.startsWith(FEE_DIR) && !allowed.has(p))
+    .map((p) => `${p} is served but not listed in the marketplace fee index`);
+  return [...missing, ...extra];
 }

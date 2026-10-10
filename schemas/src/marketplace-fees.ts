@@ -147,8 +147,12 @@ export const marketplaceFeeIndexSchema = z
           family: marketplaceFeeFamilySchema,
           platform: marketplacePlatformSchema,
           version: datasetVersion,
+          /** `withdrawn` versions stay listed for reproducibility but must not be used as current. */
+          publicationStatus: z.enum(['published', 'withdrawn']),
           publishedDate: isoDate,
-          path: z.string().min(1),
+          supersedes: datasetVersion.optional(),
+          /** Same-origin URL path of the immutable version artefact. */
+          path: z.string().regex(/^\/reference\/marketplace-fees\/[a-z-]+\/[A-Za-z0-9._-]+\.json$/),
         })
         .strict(),
     ),

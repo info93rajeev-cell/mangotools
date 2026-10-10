@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix, relative, resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import type { Registry } from '@mangotools/schemas';
+import type { MarketplaceFeeIndex, Registry } from '@mangotools/schemas';
 import { walkFiles } from '../lib/files.ts';
 import { paths, ROOT } from '../lib/paths.ts';
 import {
@@ -18,6 +18,7 @@ import {
   headersLimitProblems,
   type PageFacts,
   pageFacts,
+  referenceDataProblems,
   staticImports,
 } from './postbuild-rules.ts';
 
@@ -116,6 +117,20 @@ function budgetProblems(dist: string, bundles: Record<string, number>): string[]
   });
 }
 
+/** Compares the built /reference/marketplace-fees/ files with the generated index. */
+function checkReferenceData(dist: string): string[] {
+  const index = JSON.parse(
+    readFileSync(join(paths.generated, 'reference/marketplace-fees/index.json'), 'utf8'),
+  ) as MarketplaceFeeIndex;
+  const built = walkFiles(join(dist, 'reference', 'marketplace-fees'), '').map(
+    (file) => `/${relative(dist, file).split('\\').join('/')}`,
+  );
+  return referenceDataProblems(
+    index.datasets.map((d) => d.path),
+    built,
+  );
+}
+
 export function runPostbuild(distDir: string, env: string): PostbuildResult {
   const dist = resolve(distDir);
   const registry = loadRegistry();
@@ -141,6 +156,7 @@ export function runPostbuild(distDir: string, env: string): PostbuildResult {
   problems.push(...duplicateProblems(seoFacts));
   problems.push(...budgetProblems(dist, bundles));
   problems.push(...checkRobotsAndSitemap(dist, registry, siteUrl, environment.indexable));
+  problems.push(...checkReferenceData(dist));
   const headers = headersFile({ scriptHashes: hashes, indexable: environment.indexable });
   problems.push(...headersLimitProblems(headers));
   writeFileSync(join(dist, '_headers'), headers);

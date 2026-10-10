@@ -13,9 +13,14 @@ export interface GeneratedMarketplaceFeeDataset {
 }
 
 export interface MarketplaceFeeOutput {
+  /** Servable (published or withdrawn) versions only; these are the files written to generated/. */
   datasets: GeneratedMarketplaceFeeDataset[];
   index: MarketplaceFeeIndex;
 }
+
+const isServable = (data: MarketplaceFeeDataset) =>
+  (data.publicationStatus === 'published' || data.publicationStatus === 'withdrawn') &&
+  data.publishedDate !== undefined;
 
 const PATH = /^reference\/marketplace-fees\/([^/]+)\/([^/]+)\.yaml$/;
 const familyPlatform = (family: MarketplaceFeeDataset['family']) =>
@@ -69,17 +74,21 @@ export function validateMarketplaceFeeDatasets(sources: SourceFile[]): {
     });
   }
   datasets.sort((a, b) => a.outputPath.localeCompare(b.outputPath, 'en'));
-  const published = datasets
-    .filter(({ data }) => data.publicationStatus === 'published' && data.publishedDate)
-    .map(({ data, outputPath }) => ({
-      family: data.family,
-      platform: familyPlatform(data.family) as MarketplaceFeeIndex['datasets'][number]['platform'],
-      version: data.version,
-      publishedDate: data.publishedDate as string,
-      path: outputPath,
-    }));
+  // Only published and withdrawn versions are user-servable (TASK-008E: only a published version may
+  // be offered; DECISION §6.2 rule 6: withdrawn version files are kept for reproducibility and the
+  // index marks them withdrawn). Draft and verified versions are validated but never emitted.
+  const servable = datasets.filter(({ data }) => isServable(data));
+  const index = servable.map(({ data, outputPath }) => ({
+    family: data.family,
+    platform: familyPlatform(data.family) as MarketplaceFeeIndex['datasets'][number]['platform'],
+    version: data.version,
+    publicationStatus: data.publicationStatus as 'published' | 'withdrawn',
+    publishedDate: data.publishedDate as string,
+    ...(data.supersedes !== undefined ? { supersedes: data.supersedes } : {}),
+    path: `/${outputPath}`,
+  }));
   return {
-    output: { datasets, index: { marketplaceFeeIndexVersion: 1, datasets: published } },
+    output: { datasets: servable, index: { marketplaceFeeIndexVersion: 1, datasets: index } },
     issues,
   };
 }

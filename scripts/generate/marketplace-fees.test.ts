@@ -19,8 +19,15 @@ describe('marketplace fee generation', () => {
     const result = validateMarketplaceFeeDatasets(sources.marketplaceFeeDatasets);
     expect(issues).toEqual([]);
     expect(result.issues).toEqual([]);
-    expect(result.output.datasets).toHaveLength(4);
-    expect(result.output.datasets.every(({ data }) => data.records.length === 0)).toBe(true);
+    expect(sources.marketplaceFeeDatasets).toHaveLength(4);
+    for (const { data } of sources.marketplaceFeeDatasets) {
+      const d = data as { publicationStatus: string; records: unknown[]; sources: unknown[] };
+      expect(d.publicationStatus).toBe('draft');
+      expect(d.records).toEqual([]);
+      expect(d.sources).toEqual([]);
+    }
+    // Drafts validate but are never emitted or listed, so none becomes user-facing.
+    expect(result.output.datasets).toEqual([]);
     expect(result.output.index.datasets).toEqual([]);
   });
 
@@ -39,9 +46,56 @@ describe('marketplace fee generation', () => {
         family: 'marketplace-fees.amazon-in',
         platform: 'amazon-in',
         version: '0.0.0',
+        publicationStatus: 'published',
         publishedDate: '2026-10-10',
-        path: 'reference/marketplace-fees/amazon-in/0.0.0.json',
+        path: '/reference/marketplace-fees/amazon-in/0.0.0.json',
       },
+    ]);
+    expect(result.output.datasets.map((d) => d.outputPath)).toEqual([
+      'reference/marketplace-fees/amazon-in/0.0.0.json',
+    ]);
+  });
+
+  it('never emits draft or verified versions', () => {
+    const result = validateMarketplaceFeeDatasets([
+      { file: 'reference/marketplace-fees/amazon-in/0.0.0.yaml', data: draft() },
+      {
+        file: 'reference/marketplace-fees/flipkart/0.0.0.yaml',
+        data: { ...draft('marketplace-fees.flipkart'), publicationStatus: 'verified' },
+      },
+    ]);
+    expect(result.issues).toEqual([]);
+    expect(result.output.datasets).toEqual([]);
+    expect(result.output.index.datasets).toEqual([]);
+  });
+
+  it('keeps withdrawn versions identifiable but marked withdrawn, after their successor', () => {
+    const published = (version: string, extra: Record<string, unknown> = {}) => ({
+      ...draft('marketplace-fees.myntra', version),
+      publicationStatus: 'published',
+      publishedDate: '2026-10-10',
+      ...extra,
+    });
+    const result = validateMarketplaceFeeDatasets([
+      {
+        file: 'reference/marketplace-fees/myntra/2026.2.yaml',
+        data: published('2026.2', { supersedes: '2026.1' }),
+      },
+      {
+        file: 'reference/marketplace-fees/myntra/2026.1.yaml',
+        data: published('2026.1', { publicationStatus: 'withdrawn' }),
+      },
+    ]);
+    expect(result.issues).toEqual([]);
+    expect(
+      result.output.index.datasets.map((d) => [d.version, d.publicationStatus, d.supersedes]),
+    ).toEqual([
+      ['2026.1', 'withdrawn', undefined],
+      ['2026.2', 'published', '2026.1'],
+    ]);
+    expect(result.output.datasets.map((d) => d.outputPath)).toEqual([
+      'reference/marketplace-fees/myntra/2026.1.json',
+      'reference/marketplace-fees/myntra/2026.2.json',
     ]);
   });
 

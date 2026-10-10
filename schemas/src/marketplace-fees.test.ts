@@ -161,6 +161,35 @@ describe('marketplaceFeeDatasetSchema', () => {
     expect(result.some((message) => message.includes('Effective period overlaps'))).toBe(true);
   });
 
+  it('applies overlap rejection only to records inside date resolution (TASK-008E)', () => {
+    const overlapsMessage = (records: unknown[]) =>
+      messages({ ...published(), records }).some((m) => m.includes('Effective period overlaps'));
+    const first = {
+      ...record,
+      id: 'fee-a',
+      effectiveFrom: '2026-01-01',
+      effectiveTo: '2026-03-31',
+    };
+    // Inclusive boundaries: the next period may start the day after effectiveTo, not on it.
+    expect(overlapsMessage([first, { ...record, id: 'fee-b', effectiveFrom: '2026-04-01' }])).toBe(
+      false,
+    );
+    expect(overlapsMessage([first, { ...record, id: 'fee-b', effectiveFrom: '2026-03-31' }])).toBe(
+      true,
+    );
+    // An absent effectiveTo is open-ended, so a later record with the same conditions overlaps it.
+    const openEnded = { ...record, id: 'fee-a', effectiveFrom: '2026-01-01' };
+    expect(
+      overlapsMessage([openEnded, { ...record, id: 'fee-b', effectiveFrom: '2030-01-01' }]),
+    ).toBe(true);
+    // A record without effectiveFrom is never selected by date resolution, so it has no effective
+    // period that could overlap.
+    const undated = { ...record, id: 'fee-b', effectiveFrom: undefined };
+    expect(overlapsMessage([openEnded, undated])).toBe(false);
+    // Different condition values never conflict.
+    expect(overlapsMessage([openEnded, { ...record, id: 'fee-b', category: 'Books' }])).toBe(false);
+  });
+
   it('requires notes for the other calculation basis', () => {
     const other = { ...record, calculationBasis: 'other' };
     expect(messages({ ...published(), records: [other] })).toContain(
