@@ -1,6 +1,7 @@
 import { loadEngines } from '../lib/engines.ts';
 import { paths } from '../lib/paths.ts';
 import { formatIssue } from './issues.ts';
+import { validateMarketplaceFeeDatasets } from './marketplace-fees.ts';
 import { writeOutputs } from './outputs.ts';
 import { runPipeline } from './pipeline.ts';
 import { loadSources } from './sources.ts';
@@ -9,7 +10,8 @@ const started = performance.now();
 const { sources, issues: loadIssues } = loadSources();
 const engines = await loadEngines();
 const { output, issues } = await runPipeline(sources, engines);
-const all = [...loadIssues, ...issues];
+const marketplaceFees = validateMarketplaceFeeDatasets(sources.marketplaceFeeDatasets);
+const all = [...loadIssues, ...issues, ...marketplaceFees.issues];
 
 if (all.length > 0 || !output) {
   console.error(all.map(formatIssue).join('\n'));
@@ -19,7 +21,7 @@ if (all.length > 0 || !output) {
   process.exit(1);
 }
 
-const written = writeOutputs(paths.generated, output);
+const written = writeOutputs(paths.generated, output, marketplaceFees.output);
 const visible = output.registry.categories.filter((c) => c.visible).length;
 console.log(
   `pnpm gen: ${output.registry.tools.length} tools, ${Object.keys(output.registry.presets).length} presets, ` +

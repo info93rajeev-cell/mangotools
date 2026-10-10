@@ -7,6 +7,7 @@ import {
   headersFile,
   headersLimitProblems,
   pageFacts,
+  referenceDataProblems,
   sha256,
   staticImports,
 } from './postbuild-rules.ts';
@@ -109,6 +110,28 @@ describe('post-build page checks', () => {
     expect(
       cspScriptHashes("default-src 'self'; script-src 'self' 'sha256-x'; style-src 'self'"),
     ).toEqual(["'sha256-x'"]);
+  });
+
+  it('caches marketplace fee version files as immutable, but not their index', () => {
+    const text = headersFile({ scriptHashes: [], indexable: true });
+    expect(text).toContain(
+      '/reference/marketplace-fees/*/*\n  Cache-Control: public, max-age=31536000, immutable',
+    );
+    const rule = /^\/reference\/marketplace-fees\/.*\/.*$/;
+    expect(rule.test('/reference/marketplace-fees/meesho/2026.1.json')).toBe(true);
+    expect(rule.test('/reference/marketplace-fees/index.json')).toBe(false);
+  });
+
+  it('requires every listed marketplace fee version in the build and nothing else', () => {
+    const index = '/reference/marketplace-fees/index.json';
+    const v1 = '/reference/marketplace-fees/meesho/2026.1.json';
+    expect(referenceDataProblems([v1], [index, v1, '/gst-calculator.html'])).toEqual([]);
+    expect(referenceDataProblems([v1], [index])).toEqual([`${v1} is listed but was not built`]);
+    expect(referenceDataProblems([], [])).toEqual([`${index} is listed but was not built`]);
+    const draft = '/reference/marketplace-fees/meesho/0.0.0.json';
+    expect(referenceDataProblems([], [index, draft])).toEqual([
+      `${draft} is served but not listed in the marketplace fee index`,
+    ]);
   });
 
   it('keeps _headers within the Cloudflare Pages limits', () => {

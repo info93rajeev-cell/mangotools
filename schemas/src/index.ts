@@ -3,6 +3,7 @@ export * from './conditions.ts';
 export * from './content.ts';
 export * from './fixture.ts';
 export * from './manifest.ts';
+export * from './marketplace-fees.ts';
 export * from './page.ts';
 export * from './preset.ts';
 export type * from './registry.ts';
