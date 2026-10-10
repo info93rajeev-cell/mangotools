@@ -1,0 +1,14 @@
+id: 026-missing-effective-from-only-record
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 3: the only record has no effectiveFrom, so the outcome is no-match." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: undated, status: verified }
+  conditions: {}
+expected:
+  resolution: no-match
+  candidateIds: []
+  counts: { records: 1, dateEligible: 0, conditionEligible: 0 }
+expectedWarnings: [REFERENCE_NO_MATCH]

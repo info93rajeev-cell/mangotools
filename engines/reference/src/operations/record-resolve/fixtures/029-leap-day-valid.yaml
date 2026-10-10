@@ -1,0 +1,12 @@
+id: 029-leap-day-valid
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "2028 is a leap year, so 2028-02-29 is valid and on the record's last day." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2028-02-29"
+  records:
+    - { id: rate-a, effectiveFrom: "2028-01-01", effectiveTo: "2028-02-29", status: verified }
+  conditions: {}
+expected:
+  resolution: matched
+  record: { id: rate-a, effectiveTo: "2028-02-29" }

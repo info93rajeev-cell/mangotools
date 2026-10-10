@@ -1,0 +1,15 @@
+id: 013-no-match-warning
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G outcome: zero matches is a valid no-match with REFERENCE_NO_MATCH, not an error. 50 is not in (100, open)." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: slab-high, effectiveFrom: "2026-01-01", status: verified, ranges: { price: { min: "100" } } }
+  conditions: { values: { price: { value: "50" } } }
+expected:
+  resolution: no-match
+  candidateIds: []
+  matchedOn: { selectors: [], ranges: [] }
+  counts: { records: 1, dateEligible: 1, conditionEligible: 0 }
+expectedWarnings: [REFERENCE_NO_MATCH]

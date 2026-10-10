@@ -1,0 +1,14 @@
+id: 017-historical-lookup-new-record
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G fixture 11: a later date selects the new record." }
+input:
+  datasetVersion: synthetic-v2
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: fee-2025, effectiveFrom: "2025-01-01", effectiveTo: "2025-12-31", status: verified, match: { feeType: fee-type-1 }, value: { percent: "4.5" } }
+    - { id: fee-2026, effectiveFrom: "2026-01-01", status: verified, match: { feeType: fee-type-1 }, value: { percent: "5" } }
+  conditions: { selectors: { feeType: fee-type-1 } }
+expected:
+  resolution: matched
+  record: { id: fee-2026, value: { percent: "5" } }
+  candidateIds: [fee-2026]

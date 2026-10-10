@@ -1,0 +1,10 @@
+id: 023-unit-absent-on-query
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 6: only both-absent units count as equal; a record unit kg against a query with no unit is a mismatch." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: weight-1, effectiveFrom: "2026-01-01", status: verified, ranges: { weight: { max: "0.5", unit: kg } } }
+  conditions: { values: { weight: { value: "0.4" } } }
+expectedError: { code: REFERENCE_UNIT_MISMATCH, path: conditions.values.weight.unit }

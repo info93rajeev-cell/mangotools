@@ -1,0 +1,9 @@
+id: 027-invalid-calendar-effective-date
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G input: 2026 is not a leap year, so 2026-02-29 is not a real date." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-02-29"
+  records: []
+  conditions: {}
+expectedError: { code: REFERENCE_INVALID_DATE, path: effectiveDate }

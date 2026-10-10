@@ -1,0 +1,32 @@
+id: 003-open-ended-effective-to
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 2: absent effectiveTo means still in effect. Full output pinned, including working steps." }
+match: exact
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2030-12-31"
+  records:
+    - { id: rate-old, effectiveFrom: "2026-01-01", effectiveTo: "2026-03-31", status: verified, value: { amount: "10" } }
+    - { id: rate-new, effectiveFrom: "2026-04-01", status: verified, value: { amount: "12" }, meta: { sourceId: src-001 } }
+  conditions: {}
+expected:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2030-12-31"
+  resolution: matched
+  record: { id: rate-new, status: verified, effectiveFrom: "2026-04-01", value: { amount: "12" }, meta: { sourceId: src-001 } }
+  candidateIds: [rate-new]
+  matchedOn: { selectors: [], ranges: [] }
+  counts: { records: 2, dateEligible: 1, conditionEligible: 1 }
+  working:
+    - ref: dateEligible
+      formulaKey: referenceRecordResolve.dateFilter
+      variables: { effectiveDate: "2030-12-31", records: "2" }
+      result: "1"
+    - ref: conditionEligible
+      formulaKey: referenceRecordResolve.conditionFilter
+      variables: { dateEligible: "1", selectors: "", values: "" }
+      result: "1"
+    - ref: resolution
+      formulaKey: referenceRecordResolve.outcome
+      variables: { conditionEligible: "1" }
+      result: matched

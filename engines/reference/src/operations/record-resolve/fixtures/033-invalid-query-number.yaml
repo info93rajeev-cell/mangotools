@@ -1,0 +1,9 @@
+id: 033-invalid-query-number
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G errors: a query value must be a decimal string." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records: []
+  conditions: { values: { price: { value: "abc" } } }
+expectedError: { code: REFERENCE_INVALID_NUMBER, path: conditions.values.price.value }

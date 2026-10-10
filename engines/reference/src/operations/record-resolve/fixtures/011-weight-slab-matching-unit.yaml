@@ -1,0 +1,15 @@
+id: 011-weight-slab-matching-unit
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rules 6 and 7: units equal (kg = kg); 0.75 is in (0.5, 1]." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: weight-1, effectiveFrom: "2026-01-01", status: verified, ranges: { weight: { max: "0.5", unit: kg } } }
+    - { id: weight-2, effectiveFrom: "2026-01-01", status: verified, ranges: { weight: { min: "0.5", max: "1", unit: kg } } }
+  conditions: { values: { weight: { value: "0.75", unit: kg } } }
+expected:
+  resolution: matched
+  record: { id: weight-2 }
+  candidateIds: [weight-2]
+  matchedOn: { selectors: [], ranges: [weight] }

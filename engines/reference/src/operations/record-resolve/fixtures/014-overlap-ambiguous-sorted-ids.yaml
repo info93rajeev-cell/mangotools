@@ -1,0 +1,17 @@
+id: 014-overlap-ambiguous-sorted-ids
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G outcome and Specificity: a general and two specific records all match; no most-specific-wins. Code-point order puts 'Rec-c' (R = U+0052) before 'rec-a' and 'rec-b'." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: rec-b, effectiveFrom: "2026-01-01", status: verified, match: { category: category-x } }
+    - { id: rec-a, effectiveFrom: "2026-01-01", status: conditional }
+    - { id: Rec-c, effectiveFrom: "2026-01-01", status: unverified, match: { category: category-x }, ranges: { price: { max: "1000" } } }
+  conditions: { selectors: { category: category-x }, values: { price: { value: "250" } } }
+expected:
+  resolution: ambiguous
+  candidateIds: [Rec-c, rec-a, rec-b]
+  matchedOn: { selectors: [], ranges: [] }
+  counts: { records: 3, dateEligible: 3, conditionEligible: 3 }
+expectedWarnings: [REFERENCE_AMBIGUOUS]

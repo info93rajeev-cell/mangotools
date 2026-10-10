@@ -1,0 +1,15 @@
+id: 025-missing-effective-from-never-selected
+operation: reference.record.resolve@1
+source: { type: hand-verified, citation: "TASK-008G rule 3: a record without effectiveFrom is never date-eligible, even when its conditions match." }
+input:
+  datasetVersion: synthetic-v1
+  effectiveDate: "2026-06-15"
+  records:
+    - { id: undated, status: unverified, match: { category: category-x } }
+    - { id: dated, effectiveFrom: "2026-01-01", status: verified, match: { category: category-x } }
+  conditions: { selectors: { category: category-x } }
+expected:
+  resolution: matched
+  record: { id: dated }
+  candidateIds: [dated]
+  counts: { records: 2, dateEligible: 1, conditionEligible: 1 }
