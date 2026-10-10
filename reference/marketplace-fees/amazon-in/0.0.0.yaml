@@ -1,0 +1,8 @@
+family: marketplace-fees.amazon-in
+type: marketplace-fee-schedule
+version: 0.0.0
+currency: INR
+licence: public
+publicationStatus: draft
+sources: []
+records: []
