@@ -77,8 +77,32 @@ One dataset version per platform. Fields:
 - `licence` — one of the architecture licence classes; a legal/terms check is required before any
   record from a source is published (see **Governance**)
 - `publicationStatus` — `draft` · `verified` · `published` · `withdrawn` (architecture §3.1)
+- `publishedDate` — ISO `YYYY-MM-DD` publication date of this exact dataset version. Required when
+  `publicationStatus` is `published` or `withdrawn`; absent when it is `draft` or `verified`;
+  immutable once assigned to a published version. It is authored data, never derived from build
+  time, filesystem time, git time or a runtime clock
 - `supersedes` — previous dataset version, when any
+- `sources` — strict array of source-review entries (the register below)
 - `records` — the fee records below
+
+### Source-review register
+
+`sources` carries the source register decided in `DECISION-MARKETPLACE-FEE-REFERENCE-DATA.md` §6.1 as
+explicit contract data. Each entry (strict object):
+
+- `id` — kebab-case id, unique within the dataset version
+- `title` — title of the source document or page
+- `url` — URL or other stable reference (document id, notice number)
+- `authority` — who published it
+- `official` — `true` only when published by the platform or a government authority
+- `licenceClass` — `public` · `government-open` · `licensed` · `customer-provided` (architecture §3.3)
+- `termsReview` — strict object:
+  - `status` — `approved` · `pending` · `blocked`
+  - `reviewer` — who reviewed the terms (only the founder may record `approved`)
+  - `date` — ISO `YYYY-MM-DD` review date
+  - `basis` — one-line reason for the decision
+
+The register stores no copied source text, tables or documents.
 
 Only a `published` dataset version may ever be offered to users.
 
@@ -147,6 +171,8 @@ All numbers are decimal strings, never JavaScript numbers (platform money rule).
 
 **Source / provenance**
 
+- `sourceId` — `id` of the entry in this dataset version's `sources` register; required whenever any
+  other source/provenance field is present
 - `sourceTitle` — title of the source document or page
 - `sourceURL` — URL or other stable reference (document id, notice number)
 - `sourceAuthority` — who published it (for example the platform itself)
@@ -177,11 +203,24 @@ kebab enum convention.
 3. A non-official source (`sourceOfficial: false`) cannot support `verified` or `conditional`.
 4. A `user-input` record must carry **no** numeric amount fields.
 5. `effectiveTo`, when present, must not be before `effectiveFrom`.
-6. `verifiedDate` must not be in the future relative to the dataset's publication.
+6. When the dataset has `publishedDate`, every record's `verifiedDate` must be on or before
+   `publishedDate`. Draft and verified dataset versions have no `publishedDate`, so this comparison
+   does not apply to them.
 7. `weightUnit` is required when a weight bound is present; `min ≤ max` for every range present.
 8. Within one dataset version, two records with the same `platform`, `feeType` and identical
    condition values must not have overlapping effective periods.
 9. Unknown keys fail validation (strict objects, existing schema rule).
+10. `publishedDate` is present exactly when `publicationStatus` is `published` or `withdrawn`.
+11. Source ids are unique within a dataset version; a duplicate id is invalid.
+12. A record's `sourceId` must resolve to exactly one register entry, and its `sourceTitle`,
+    `sourceURL`, `sourceAuthority` and `sourceOfficial` must equal that entry's `title`, `url`,
+    `authority` and `official`.
+13. A dataset with `publicationStatus: published` may only use sources whose `termsReview.status` is
+    `approved` and whose `licenceClass` is `public` or `government-open`.
+14. Sources with `licenceClass` `licensed` or `customer-provided` must not ship in this public
+    repository (decision §6.2 rule 2).
+15. A non-official source cannot support `verified` or `conditional`; an approved secondary source may
+    only support `unverified` records (rule 3; decision §6.2 rule 5).
 
 Validation failures are build-time data problems reported through the existing generator issue
 mechanism — not engine error codes.
@@ -244,8 +283,9 @@ task may define optional, user-authorized online refresh.
 
 Within the `platform` lane only:
 
-- `schemas/src/marketplace-fees.ts` — dataset envelope and record schemas, statuses, provenance
-  refinements; exported from `schemas/src/index.ts`
+- `schemas/src/marketplace-fees.ts` — dataset envelope (including `publishedDate`), source-review
+  register and record schemas, statuses, `sourceId` linkage and provenance refinements (rules 1–15);
+  exported from `schemas/src/index.ts`
 - a colocated schema test (pattern: `schemas/src/page.test.ts`)
 - `scripts/generate/marketplace-fees.ts` — load, validate (rules above) and emit a generated
   artefact, plus a colocated test; wired into the existing generate pipeline
