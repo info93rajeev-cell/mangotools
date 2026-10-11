@@ -1,5 +1,7 @@
 import type { PresetField, ResolvedPreset } from '@mangotools/schemas';
 import { isShown } from '@mangotools/schemas/conditions';
+import { normalizeNumberText } from './number-text.ts';
+import { initialRows, parseRows, rowsRequest, serializeRows } from './rows.ts';
 
 /** A value as held by a tool form: text as typed, option values as strings, switches as booleans. */
 export type FieldValue = string | boolean;
@@ -12,12 +14,10 @@ const NUMERIC_KINDS = new Set<PresetField['kind']>([
   'enum-or-number',
 ]);
 
-/** Removes grouping and symbols people type ("₹1,00,000", "18 %") before the engine parses it. */
-export function normalizeNumberText(raw: string): string {
-  return raw.replace(/[\s,_₹%]/g, '');
-}
+export { normalizeNumberText };
 
 function fieldDefault(field: PresetField): string {
+  if (field.rows) return serializeRows(field.rows, initialRows(field.rows));
   if (field.default !== undefined) return String(field.default);
   if (field.kind === 'enum' && field.options?.[0]) return String(field.options[0].value);
   return '';
@@ -78,6 +78,18 @@ function fieldText(field: PresetField, raw: FieldValue | undefined): string {
 const mustChoose = (field: PresetField) =>
   field.required === true || field.kind === 'enum' || field.kind === 'enum-or-number';
 
+/** The value sent to the engine for one field, or null when it is empty. */
+function fieldInput(field: PresetField, raw: FieldValue | undefined): unknown {
+  const text = fieldText(field, raw);
+  if (field.rows) {
+    const rows = rowsRequest(field.rows, parseRows(field.rows, text));
+    return rows.length > 0 ? rows : null;
+  }
+  return text.trim() !== '' ? text : null;
+}
+
+const mustFill = (field: PresetField) => (field.rows ? field.required === true : mustChoose(field));
+
 /** Turns form values into the operation's input and params. Hidden fields are left out. */
 export function buildRequest(preset: ResolvedPreset, values: FieldValues): ToolRequest {
   const params = optionParams(preset, values);
@@ -86,9 +98,26 @@ export function buildRequest(preset: ResolvedPreset, values: FieldValues): ToolR
   const missing: string[] = [];
   for (const [key, field] of Object.entries(preset.fields)) {
     if (field.uiOnly === true || !isShown(field, state)) continue;
-    const value = fieldText(field, values[key]);
-    if (value.trim() !== '') input[key] = value;
-    else if (mustChoose(field)) missing.push(key);
+    const value = fieldInput(field, values[key]);
+    if (value !== null) input[key] = value;
+    else if (mustFill(field)) missing.push(key);
   }
   return { input, params, missing };
+}
+
+/**
+ * Form values for previously saved values (for example a user preset): defaults overlaid with each
+ * saved value whose key is a field or option of this preset and whose type fits it. Unknown keys and
+ * wrongly typed values are ignored, so stale or tampered data can never reach the engine unchecked.
+ */
+export function restoreValues(
+  preset: ResolvedPreset,
+  saved: Readonly<Record<string, unknown>>,
+): FieldValues {
+  const values = defaultValues(preset);
+  for (const [key, current] of Object.entries(values)) {
+    const v = saved[key];
+    if (typeof v === typeof current) values[key] = v as FieldValue;
+  }
+  return values;
 }
