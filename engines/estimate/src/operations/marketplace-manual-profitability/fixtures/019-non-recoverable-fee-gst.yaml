@@ -1,0 +1,60 @@
+id: 019-non-recoverable-fee-gst
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '1'
+  productCostPerUnit: '500'
+  marketplaceFeeGstRatePercent: '18'
+  feeLines:
+  - id: referral
+    enabled: true
+    mode: percent
+    ratePercent: '10'
+    percentageBase: realized-customer-value
+    gstTreatment: non-recoverable
+expected:
+  grossCustomerValue: '1000.00'
+  sellerFundedReduction: '0.00'
+  realizedCustomerValue: '1000.00'
+  customerInvoiceValue: '1000.00'
+  orderProductGstAmount: '0.00'
+  taxExclusiveRevenue: '1000.00'
+  productCostTotal: '500.00'
+  revenueRecognised: '1000.00'
+  invoiceValueSettled: '1000.00'
+  productCostRecognised: '500.00'
+  productGstLiabilityRecognised: '0.00'
+  marketplaceFees:
+  - id: referral
+    mode: percent
+    applicable: true
+    percentageBase: realized-customer-value
+    base: '1000.00'
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '100.00'
+    gstAmount: '18.00'
+    gstTreatment: non-recoverable
+  marketplaceFeesTotal: '100.00'
+  marketplaceFeeGstTotal: '18.00'
+  recoverableMarketplaceFeeGst: '0.00'
+  nonRecoverableMarketplaceFeeGst: '18.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '118.00'
+  estimatedSettlement: '882.00'
+  totalEconomicInvestment: '618.00'
+  economicProfit: '382.00'
+  profitMarginPercent: '38.20'
+  roiPercent: '61.81'
+  effectiveMarketplaceFeePercent: '11.80'
+  breakEvenSellingPrice: '566.89'

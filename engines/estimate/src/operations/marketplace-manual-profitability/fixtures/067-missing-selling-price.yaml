@@ -1,0 +1,7 @@
+id: 067-missing-selling-price
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  quantity: '1'
+  productCostPerUnit: '500'
+expectedError: { code: ESTIMATE_MISSING_INPUT, path: sellingPricePerUnit }

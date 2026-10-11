@@ -1,0 +1,16 @@
+id: 084-adjustment-without-effect
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '1'
+  productCostPerUnit: '500'
+  scenarioAdjustments:
+  - id: noop
+    direction: charge
+    amount: '10'
+    economic: false
+    settlement: false
+    scenarios:
+    - rto
+expectedError: { code: ESTIMATE_INVALID_SCENARIO_LIST, path: scenarioAdjustments.0.scenarios }

@@ -10,4 +10,22 @@ export const messages: Readonly<Record<string, string>> = {
   ESTIMATE_MARGIN_OUT_OF_RANGE: 'The margin must be less than 100%.',
   ESTIMATE_MARKUP_OUT_OF_RANGE: 'The markup must be greater than −100%.',
   ESTIMATE_MARKUP_UNDEFINED: 'Markup cannot be calculated when the cost is zero.',
+  ESTIMATE_INVALID_QUANTITY: 'Enter a whole number of units from 1 to 10,000.',
+  ESTIMATE_PERCENT_OUT_OF_RANGE: 'The percentage must be between 0% and 100%.',
+  ESTIMATE_DISCOUNT_EXCEEDS_VALUE: 'Discounts and coupons cannot be more than the selling value.',
+  ESTIMATE_DUPLICATE_ID: 'Each row needs a different id.',
+  ESTIMATE_TOO_MANY_ITEMS: 'Use at most 20 rows here.',
+  ESTIMATE_MISSING_FEE_VALUE: 'This fee needs a value for this setting.',
+  ESTIMATE_MALFORMED_SLAB:
+    'Each slab needs a lower or upper limit, and the lower limit must be below the upper.',
+  ESTIMATE_OVERLAPPING_SLABS: 'Slabs in one fee must not overlap.',
+  ESTIMATE_NO_MATCHING_SLAB: 'No slab covers this value. Add a slab for it.',
+  ESTIMATE_MISSING_WEIGHT: 'Enter the chargeable weight to use weight slabs.',
+  ESTIMATE_UNIT_MISMATCH: 'Use the same weight unit for every slab and the chargeable weight.',
+  ESTIMATE_INVALID_SCENARIO_LIST: 'Choose at least one valid scenario for this row.',
+  ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE:
+    'A break-even price cannot be calculated for these settings.',
+  ESTIMATE_MARGIN_UNDEFINED: 'Margin cannot be calculated when recognised revenue is zero.',
+  ESTIMATE_ROI_UNDEFINED: 'ROI cannot be calculated when total investment is zero.',
+  ESTIMATE_EFFECTIVE_FEE_UNDEFINED: 'The effective fee cannot be calculated when revenue is zero.',
 };

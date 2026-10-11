@@ -1,0 +1,59 @@
+id: 005-fixed-fee-per-order
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '4'
+  productCostPerUnit: '500'
+  feeLines:
+  - id: closing
+    enabled: true
+    mode: fixed
+    amount: '15'
+    quantityScope: per-order
+    gstTreatment: none
+expected:
+  grossCustomerValue: '4000.00'
+  sellerFundedReduction: '0.00'
+  realizedCustomerValue: '4000.00'
+  customerInvoiceValue: '4000.00'
+  orderProductGstAmount: '0.00'
+  taxExclusiveRevenue: '4000.00'
+  productCostTotal: '2000.00'
+  revenueRecognised: '4000.00'
+  invoiceValueSettled: '4000.00'
+  productCostRecognised: '2000.00'
+  productGstLiabilityRecognised: '0.00'
+  marketplaceFees:
+  - id: closing
+    mode: fixed
+    applicable: true
+    percentageBase: null
+    base: null
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '15.00'
+    gstAmount: '0.00'
+    gstTreatment: none
+  marketplaceFeesTotal: '15.00'
+  marketplaceFeeGstTotal: '0.00'
+  recoverableMarketplaceFeeGst: '0.00'
+  nonRecoverableMarketplaceFeeGst: '0.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '15.00'
+  estimatedSettlement: '3985.00'
+  totalEconomicInvestment: '2015.00'
+  economicProfit: '1985.00'
+  profitMarginPercent: '49.63'
+  roiPercent: '98.51'
+  effectiveMarketplaceFeePercent: '0.38'
+  breakEvenSellingPrice: '503.75'
