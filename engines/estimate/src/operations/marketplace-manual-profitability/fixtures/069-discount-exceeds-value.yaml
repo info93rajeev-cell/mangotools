@@ -1,0 +1,10 @@
+id: 069-discount-exceeds-value
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '1'
+  productCostPerUnit: '500'
+  promotionalDiscount: '600'
+  couponDiscount: '500'
+expectedError: { code: ESTIMATE_DISCOUNT_EXCEEDS_VALUE, path: couponDiscount }

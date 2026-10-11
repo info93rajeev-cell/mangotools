@@ -1,0 +1,77 @@
+id: 042-effective-fee-percent
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '1'
+  productCostPerUnit: '500'
+  marketplaceFeeGstRatePercent: '18'
+  feeLines:
+  - id: referral
+    enabled: true
+    mode: percent
+    ratePercent: '10'
+    percentageBase: realized-customer-value
+    gstTreatment: non-recoverable
+  - id: closing
+    enabled: true
+    mode: fixed
+    amount: '20'
+    quantityScope: per-order
+    gstTreatment: recoverable
+expected:
+  grossCustomerValue: '1000.00'
+  sellerFundedReduction: '0.00'
+  realizedCustomerValue: '1000.00'
+  customerInvoiceValue: '1000.00'
+  orderProductGstAmount: '0.00'
+  taxExclusiveRevenue: '1000.00'
+  productCostTotal: '500.00'
+  revenueRecognised: '1000.00'
+  invoiceValueSettled: '1000.00'
+  productCostRecognised: '500.00'
+  productGstLiabilityRecognised: '0.00'
+  marketplaceFees:
+  - id: referral
+    mode: percent
+    applicable: true
+    percentageBase: realized-customer-value
+    base: '1000.00'
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '100.00'
+    gstAmount: '18.00'
+    gstTreatment: non-recoverable
+  - id: closing
+    mode: fixed
+    applicable: true
+    percentageBase: null
+    base: null
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '20.00'
+    gstAmount: '3.60'
+    gstTreatment: recoverable
+  marketplaceFeesTotal: '120.00'
+  marketplaceFeeGstTotal: '21.60'
+  recoverableMarketplaceFeeGst: '3.60'
+  nonRecoverableMarketplaceFeeGst: '18.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '141.60'
+  estimatedSettlement: '858.40'
+  totalEconomicInvestment: '638.00'
+  economicProfit: '362.00'
+  profitMarginPercent: '36.20'
+  roiPercent: '56.74'
+  effectiveMarketplaceFeePercent: '13.80'
+  breakEvenSellingPrice: '589.57'

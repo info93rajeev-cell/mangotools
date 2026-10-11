@@ -1,0 +1,73 @@
+id: 056-percent-slab-tax-exclusive-base
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1180'
+  quantity: '1'
+  productCostPerUnit: '500'
+  productGstRatePercent: '18'
+  feeLines:
+  - id: referral
+    enabled: true
+    mode: price-slabs
+    slabPriceBase: entered-unit-selling-price
+    priceSlabs:
+    - max: '500'
+      chargeMode: fixed
+      value: '10'
+    - min: '500'
+      max: '2000'
+      chargeMode: percent
+      value: '5'
+    - min: '2000'
+      chargeMode: fixed
+      value: '100'
+    gstTreatment: none
+    percentageBase: tax-exclusive-revenue
+    quantityScope: per-order
+expected:
+  grossCustomerValue: '1180.00'
+  sellerFundedReduction: '0.00'
+  realizedCustomerValue: '1180.00'
+  customerInvoiceValue: '1180.00'
+  orderProductGstAmount: '180.00'
+  taxExclusiveRevenue: '1000.00'
+  productCostTotal: '500.00'
+  revenueRecognised: '1000.00'
+  invoiceValueSettled: '1180.00'
+  productCostRecognised: '500.00'
+  productGstLiabilityRecognised: '180.00'
+  marketplaceFees:
+  - id: referral
+    mode: price-slabs
+    applicable: true
+    percentageBase: tax-exclusive-revenue
+    base: '1000.00'
+    slabPriceBase: entered-unit-selling-price
+    slabMatchValue: '1180.00'
+    matchedSlabIndex: 1
+    amount: '50.00'
+    gstAmount: '0.00'
+    gstTreatment: none
+  marketplaceFeesTotal: '50.00'
+  marketplaceFeeGstTotal: '0.00'
+  recoverableMarketplaceFeeGst: '0.00'
+  nonRecoverableMarketplaceFeeGst: '0.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '50.00'
+  estimatedSettlement: '1130.00'
+  totalEconomicInvestment: '550.00'
+  economicProfit: '450.00'
+  profitMarginPercent: '45.00'
+  roiPercent: '81.82'
+  effectiveMarketplaceFeePercent: '5.00'
+  breakEvenSellingPrice: null
+expectedWarnings: ["ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE"]

@@ -1,0 +1,68 @@
+id: 010-realized-unit-slab-discount
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '2'
+  productCostPerUnit: '500'
+  couponDiscount: '400'
+  feeLines:
+  - id: closing
+    enabled: true
+    mode: price-slabs
+    slabPriceBase: realized-unit-selling-price
+    priceSlabs:
+    - max: '900'
+      chargeMode: fixed
+      value: '15'
+    - min: '900'
+      chargeMode: fixed
+      value: '25'
+    gstTreatment: none
+    quantityScope: per-unit
+expected:
+  grossCustomerValue: '2000.00'
+  sellerFundedReduction: '400.00'
+  realizedCustomerValue: '1600.00'
+  customerInvoiceValue: '1600.00'
+  orderProductGstAmount: '0.00'
+  taxExclusiveRevenue: '1600.00'
+  productCostTotal: '1000.00'
+  revenueRecognised: '1600.00'
+  invoiceValueSettled: '1600.00'
+  productCostRecognised: '1000.00'
+  productGstLiabilityRecognised: '0.00'
+  marketplaceFees:
+  - id: closing
+    mode: price-slabs
+    applicable: true
+    percentageBase: null
+    base: null
+    slabPriceBase: realized-unit-selling-price
+    slabMatchValue: '800.00'
+    matchedSlabIndex: 0
+    amount: '30.00'
+    gstAmount: '0.00'
+    gstTreatment: none
+  marketplaceFeesTotal: '30.00'
+  marketplaceFeeGstTotal: '0.00'
+  recoverableMarketplaceFeeGst: '0.00'
+  nonRecoverableMarketplaceFeeGst: '0.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '30.00'
+  estimatedSettlement: '1570.00'
+  totalEconomicInvestment: '1030.00'
+  economicProfit: '570.00'
+  profitMarginPercent: '35.63'
+  roiPercent: '55.34'
+  effectiveMarketplaceFeePercent: '1.88'
+  breakEvenSellingPrice: null
+expectedWarnings: ["ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE"]

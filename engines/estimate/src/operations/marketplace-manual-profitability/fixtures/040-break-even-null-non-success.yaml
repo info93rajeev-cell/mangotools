@@ -1,0 +1,78 @@
+id: 040-break-even-null-non-success
+operation: estimate.marketplace.manual-profitability@1
+source: { type: hand-verified, citation: "TASK-008L contract formulas; expected values recomputed independently with Python Decimal" }
+input:
+  sellingPricePerUnit: '1000'
+  quantity: '1'
+  productCostPerUnit: '500'
+  scenario: rto
+  feeLines:
+  - id: referral
+    enabled: true
+    mode: percent
+    ratePercent: '10'
+    percentageBase: realized-customer-value
+    gstTreatment: none
+  - id: closing
+    enabled: true
+    mode: fixed
+    amount: '20'
+    quantityScope: per-order
+    gstTreatment: none
+expected:
+  grossCustomerValue: '1000.00'
+  sellerFundedReduction: '0.00'
+  realizedCustomerValue: '1000.00'
+  customerInvoiceValue: '1000.00'
+  orderProductGstAmount: '0.00'
+  taxExclusiveRevenue: '1000.00'
+  productCostTotal: '500.00'
+  revenueRecognised: '0.00'
+  invoiceValueSettled: '0.00'
+  productCostRecognised: '0.00'
+  productGstLiabilityRecognised: '0.00'
+  marketplaceFees:
+  - id: referral
+    mode: percent
+    applicable: false
+    percentageBase: null
+    base: null
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '0.00'
+    gstAmount: '0.00'
+    gstTreatment: none
+  - id: closing
+    mode: fixed
+    applicable: false
+    percentageBase: null
+    base: null
+    slabPriceBase: null
+    slabMatchValue: null
+    matchedSlabIndex: null
+    amount: '0.00'
+    gstAmount: '0.00'
+    gstTreatment: none
+  marketplaceFeesTotal: '0.00'
+  marketplaceFeeGstTotal: '0.00'
+  recoverableMarketplaceFeeGst: '0.00'
+  nonRecoverableMarketplaceFeeGst: '0.00'
+  sellerControlledCostsTotal: '0.00'
+  scenarioEconomicCosts: '0.00'
+  scenarioEconomicCredits: '0.00'
+  scenarioSettlementDeductions: '0.00'
+  scenarioSettlementCredits: '0.00'
+  tcsAmount: '0.00'
+  tdsAmount: '0.00'
+  otherSettlementDeductionsApplied: '0.00'
+  settlementCreditsApplied: '0.00'
+  totalSettlementDeductions: '0.00'
+  estimatedSettlement: '0.00'
+  totalEconomicInvestment: '0.00'
+  economicProfit: '0.00'
+  profitMarginPercent: null
+  roiPercent: null
+  effectiveMarketplaceFeePercent: '0.00'
+  breakEvenSellingPrice: null
+expectedWarnings: ["ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE", "ESTIMATE_MARGIN_UNDEFINED", "ESTIMATE_ROI_UNDEFINED"]
