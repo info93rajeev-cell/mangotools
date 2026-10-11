@@ -14,17 +14,25 @@ const draft = (family = 'marketplace-fees.amazon-in', version = '0.0.0') => ({
 });
 
 describe('marketplace fee generation', () => {
-  it('loads all four structure-only repository datasets without publishing rates', () => {
+  it('loads the repository datasets as drafts and never emits them', () => {
     const { sources, issues } = loadSources();
     const result = validateMarketplaceFeeDatasets(sources.marketplaceFeeDatasets);
     expect(issues).toEqual([]);
     expect(result.issues).toEqual([]);
-    expect(sources.marketplaceFeeDatasets).toHaveLength(4);
-    for (const { data } of sources.marketplaceFeeDatasets) {
-      const d = data as { publicationStatus: string; records: unknown[]; sources: unknown[] };
+    const files = sources.marketplaceFeeDatasets.map(({ file }) => file).sort();
+    expect(files).toEqual([
+      'reference/marketplace-fees/amazon-in/0.0.0.yaml',
+      'reference/marketplace-fees/amazon-in/2026-10-11.yaml',
+      'reference/marketplace-fees/flipkart/0.0.0.yaml',
+      'reference/marketplace-fees/meesho/0.0.0.yaml',
+      'reference/marketplace-fees/myntra/0.0.0.yaml',
+    ]);
+    for (const { file, data } of sources.marketplaceFeeDatasets) {
+      const d = data as { publicationStatus: string; records: unknown[]; publishedDate?: string };
       expect(d.publicationStatus).toBe('draft');
-      expect(d.records).toEqual([]);
-      expect(d.sources).toEqual([]);
+      expect(d.publishedDate).toBeUndefined();
+      // Only the Amazon India pilot draft (TASK-008J) carries records; other marketplaces have none.
+      if (!file.endsWith('amazon-in/2026-10-11.yaml')) expect(d.records).toEqual([]);
     }
     // Drafts validate but are never emitted or listed, so none becomes user-facing.
     expect(result.output.datasets).toEqual([]);

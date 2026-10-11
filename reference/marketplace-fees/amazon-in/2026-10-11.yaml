@@ -1,0 +1,38 @@
+family: marketplace-fees.amazon-in
+type: marketplace-fee-schedule
+version: '2026-10-11'
+currency: INR
+licence: public
+publicationStatus: draft
+sources:
+  - id: amazon-in-fees-and-pricing
+    title: Amazon.in Seller Fees & Pricing
+    url: https://sell.amazon.in/fees-and-pricing
+    authority: Amazon.in
+    official: true
+    licenceClass: public
+    termsReview:
+      status: approved
+      reviewer: Founder
+      date: 2026-10-11
+      basis: Official Amazon India public seller fees/pricing page, accessible without seller login; repository stores only derived fee facts, conditions, dates and provenance, not copied tables/text.
+records:
+  - id: amazon-in-referral-automotive-tyres-rims-above-1000-from-2026-06-10
+    platform: amazon-in
+    feeType: referral-commission
+    officialFeeName: Referral fee
+    category: Automotive - Tyres & Rims
+    priceMin: '1000'
+    ratePercent: '7.00'
+    calculationBasis: percent-of-item-price
+    gstRateOnFee: '18'
+    taxTreatment: gst-extra
+    effectiveFrom: 2026-06-10
+    verifiedDate: 2026-10-11
+    sourceId: amazon-in-fees-and-pricing
+    sourceTitle: Amazon.in Seller Fees & Pricing
+    sourceURL: https://sell.amazon.in/fees-and-pricing
+    sourceAuthority: Amazon.in
+    sourceOfficial: true
+    status: conditional
+    notes: Source wording "item price > 1,000", marked "From June 10, 2026"; listed under Automotive, Car & Accessories. Fee base is item price per the page formula; source does not say whether shipping or GST is included. Fees shown exclude GST; 18% GST applies.
