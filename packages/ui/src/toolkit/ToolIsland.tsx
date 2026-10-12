@@ -44,6 +44,11 @@ export interface ToolIslandProps {
   sampleId: string | null;
   /** Offer Print (calculators with capabilities.print). */
   print: boolean;
+  /**
+   * Shows the browser-local saved-preset manager on a standard calculator. Off by default; no
+   * current page sets it. The preset opt-in flag arrives with TASK-008L PR 4B.
+   */
+  enableUserPresets?: boolean;
 }
 
 interface TopBarProps {
@@ -125,6 +130,7 @@ interface ArchetypeProps {
   notify: (message: string) => void;
   onFilePhase: (phase: FilePhase) => void;
   calculatorActions: CalculatorWorkspaceActions;
+  enableUserPresets?: boolean | undefined;
 }
 
 const isStandardCalculator = (archetype: ToolIslandProps['archetype'], presetId: string) =>
@@ -178,6 +184,7 @@ function ArchetypeLayout({
   notify,
   onFilePhase,
   calculatorActions,
+  enableUserPresets,
 }: ArchetypeProps) {
   if (archetype === 'A') {
     return (
@@ -224,12 +231,20 @@ function ArchetypeLayout({
       snapshot={snapshot}
       store={store}
       actions={calculatorActions}
+      userPresets={enableUserPresets ? { toolId } : undefined}
     />
   );
 }
 
 /** The interactive part of a tool page: sample, archetype layout, actions and notifications. */
-export function ToolIsland({ toolId, archetype, preset, sampleId, print }: ToolIslandProps) {
+export function ToolIsland({
+  toolId,
+  archetype,
+  preset,
+  sampleId,
+  print,
+  enableUserPresets,
+}: ToolIslandProps) {
   const [snapshot, store] = useToolStore(preset);
   const [message, notify] = useToast();
   const ran = useRef(false);
@@ -276,6 +291,7 @@ export function ToolIsland({ toolId, archetype, preset, sampleId, print }: ToolI
       transferred={transferred}
       actionBar={actionBar}
       message={message}
+      enableUserPresets={enableUserPresets === true && standardCalculator}
     />
   );
 }

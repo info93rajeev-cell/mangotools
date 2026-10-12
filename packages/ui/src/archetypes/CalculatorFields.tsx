@@ -7,6 +7,7 @@ import { NumberField, Select, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
 import { OpeningRows } from '../toolkit/OpeningRows.tsx';
 import { label } from '../toolkit/presentation.ts';
+import { RepeatableRows } from '../toolkit/RepeatableRows.tsx';
 import styles from '../toolkit/toolkit.module.css';
 
 const CUSTOM = '__custom__';
@@ -148,6 +149,21 @@ export function FieldControl(props: FieldControlProps) {
         error={error}
         errorPath={props.errorPath}
         unitLabel={unitLabel}
+        onValue={onValue}
+      />
+    );
+  }
+  if (field.kind === 'rows' && field.rows) {
+    return (
+      <RepeatableRows
+        id={id}
+        name={props.name}
+        field={field}
+        spec={field.rows}
+        preset={preset}
+        value={value}
+        error={error}
+        errorPath={props.errorPath}
         onValue={onValue}
       />
     );

@@ -19,6 +19,8 @@ import {
   partitionNotices,
   WarningAlerts,
 } from '../toolkit/ResultNotices.tsx';
+import { isRowsFieldPath } from '../toolkit/repeatableRows.ts';
+import { ToolPresetManager } from '../toolkit/ToolPresetManager.tsx';
 import styles from '../toolkit/toolkit.module.css';
 import { type WorkingStep, WorkingSteps } from '../toolkit/WorkingSteps.tsx';
 import { CalculatorFields } from './CalculatorFields.tsx';
@@ -29,6 +31,8 @@ export interface CalculatorLayoutProps {
   snapshot: ToolSnapshot;
   store: ToolStore;
   actions: CalculatorWorkspaceActions;
+  /** Shows the saved-preset manager. Off unless a caller opts in (TASK-008L PR 4B adds the flag). */
+  userPresets?: { toolId: string } | undefined;
 }
 
 export interface CalculatorWorkspaceActions {
@@ -175,6 +179,7 @@ export function CalculatorLayout({
   snapshot,
   store,
   actions,
+  userPresets,
 }: CalculatorLayoutProps) {
   const { values, error } = snapshot;
   const fields = visibleEntries(preset.fields, values);
@@ -182,13 +187,27 @@ export function CalculatorLayout({
   const fieldError =
     fields
       .map(([key]) => key)
-      .find((key) => error?.path === key || error?.path?.startsWith(`${key}[`)) ?? null;
+      .find(
+        (key) =>
+          error?.path === key ||
+          error?.path?.startsWith(`${key}[`) ||
+          (preset.fields[key]?.kind === 'rows' && isRowsFieldPath(key, error?.path)),
+      ) ?? null;
   const errorFor = (key: string) =>
     error && key === fieldError ? messageFor(preset, error) : null;
   return (
     <div class={styles.calculator} data-density={preset.ui.density ?? 'comfortable'}>
       <section class={styles.panel} aria-label={t('input.label')} data-input-panel="">
         <InputPanelHead actions={actions} />
+        {userPresets ? (
+          <ToolPresetManager
+            idPrefix={idPrefix}
+            toolId={userPresets.toolId}
+            preset={preset}
+            values={values}
+            onApply={(next) => store.setMany(next)}
+          />
+        ) : null}
         <OptionControls
           idPrefix={idPrefix}
           preset={preset}
