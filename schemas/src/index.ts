@@ -6,6 +6,7 @@ export * from './manifest.ts';
 export * from './marketplace-fees.ts';
 export * from './page.ts';
 export * from './preset.ts';
+export * from './preset-rows.ts';
 export type * from './registry.ts';
 export * from './site-config.ts';
 export * from './taxonomy.ts';

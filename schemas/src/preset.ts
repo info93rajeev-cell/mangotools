@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { kebabId, operationRef, presetId, semver } from './common.ts';
+import { rowsSpecSchema } from './preset-rows.ts';
 
 const conditions = z.record(z.string(), z.array(z.string()));
 const archetype = z.enum(['A', 'B', 'C', 'D', 'E']);
@@ -49,53 +50,75 @@ export const unitValuesByFamily = {
   weight: ['kg', 'g', 'lb'],
 } as const satisfies Record<UnitFamily, readonly string[]>;
 
-export const fieldSchema = z.strictObject({
-  labelKey: z.string(),
-  /** 'boolean' is a genuine boolean *input* field (rendered as a switch); contrast with
-   * `userOptionSchema`'s `control: 'switch'`, which is a boolean routed to operation *params*. */
-  /** 'openings' is a repeatable list of width × height × quantity rows (JSON in the form value). */
-  kind: z.enum([
-    'text',
-    'number',
-    'money',
-    'percent',
-    'enum',
-    'enum-or-number',
-    'boolean',
-    'openings',
-  ]),
-  control: z.enum(['segmented', 'select']).optional(),
-  options: z
-    .array(
-      z.strictObject({
-        value: z.union([z.string(), z.number()]),
-        labelKey: z.string().optional(),
-        /** Choosing this option fills these fields (an editable preset, never a locked value). */
-        sets: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
-      }),
-    )
-    .optional(),
-  allowCustom: z.boolean().optional(),
-  currency: z.enum(['INR']).optional(),
-  unit: z.string().optional(),
-  required: z.boolean().optional(),
-  /** Initial value shown before the user types (for example the most common rate). */
-  default: z.union([z.string(), z.number()]).optional(),
-  order: z.int(),
-  visible: z.boolean().optional(),
-  visibleWhen: conditions.optional(),
-  helpKey: z.string().optional(),
-  /** Keep essential entry guidance inline; put explanatory guidance in a native disclosure. */
-  helpMode: z.enum(['inline', 'disclosure']).optional(),
-  placeholderKey: z.string().optional(),
-  /** The enum field holding this value's unit: changing it converts this value, and its label
-   * becomes this field's suffix. */
-  convert: z.strictObject({ unitField: z.string(), family: z.enum(unitFamilies) }).optional(),
-  /** A form-only helper (such as a preset picker) that is never sent to the engine. */
-  uiOnly: z.boolean().optional(),
-  /** Allows related short controls to share a row on wider calculator forms. */
-  width: z.enum(['full', 'half']).optional(),
-});
+export const fieldSchema = z
+  .strictObject({
+    labelKey: z.string(),
+    /** 'boolean' is a genuine boolean *input* field (rendered as a switch); contrast with
+     * `userOptionSchema`'s `control: 'switch'`, which is a boolean routed to operation *params*. */
+    /** 'openings' is a repeatable list of width × height × quantity rows (JSON in the form value). */
+    /** 'rows' is a generic repeatable list of primitive-column rows described by `rows`. */
+    kind: z.enum([
+      'text',
+      'number',
+      'money',
+      'percent',
+      'enum',
+      'enum-or-number',
+      'boolean',
+      'openings',
+      'rows',
+    ]),
+    control: z.enum(['segmented', 'select']).optional(),
+    options: z
+      .array(
+        z.strictObject({
+          value: z.union([z.string(), z.number()]),
+          labelKey: z.string().optional(),
+          /** Choosing this option fills these fields (an editable preset, never a locked value). */
+          sets: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+        }),
+      )
+      .optional(),
+    allowCustom: z.boolean().optional(),
+    currency: z.enum(['INR']).optional(),
+    unit: z.string().optional(),
+    required: z.boolean().optional(),
+    /** Initial value shown before the user types (for example the most common rate). */
+    default: z.union([z.string(), z.number()]).optional(),
+    order: z.int(),
+    visible: z.boolean().optional(),
+    visibleWhen: conditions.optional(),
+    helpKey: z.string().optional(),
+    /** Keep essential entry guidance inline; put explanatory guidance in a native disclosure. */
+    helpMode: z.enum(['inline', 'disclosure']).optional(),
+    placeholderKey: z.string().optional(),
+    /** The enum field holding this value's unit: changing it converts this value, and its label
+     * becomes this field's suffix. */
+    convert: z.strictObject({ unitField: z.string(), family: z.enum(unitFamilies) }).optional(),
+    /** A form-only helper (such as a preset picker) that is never sent to the engine. */
+    uiOnly: z.boolean().optional(),
+    /** Allows related short controls to share a row on wider calculator forms. */
+    width: z.enum(['full', 'half']).optional(),
+    /** Row columns and limits; required exactly when `kind` is 'rows' (see preset-rows.ts). */
+    rows: rowsSpecSchema.optional(),
+  })
+  .superRefine((field, ctx) => {
+    const isRows = field.kind === 'rows';
+    if (isRows !== (field.rows !== undefined)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['rows'],
+        message: "Set 'rows' exactly when kind is 'rows'.",
+      });
+    }
+    if (isRows && (field.default !== undefined || field.options !== undefined)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['default'],
+        message: "A 'rows' field uses rows.defaultRows, not default or options.",
+      });
+    }
+  });
 
 export const outputSchema = z.strictObject({
   labelKey: z.string(),
