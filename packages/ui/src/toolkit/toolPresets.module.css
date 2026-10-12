@@ -1,0 +1,48 @@
+/* Saved-preset manager: one compact block above a calculator's fields. */
+.manager {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+}
+
+.toolbar,
+.inline,
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.toolbar > :first-child,
+.inline > :first-child {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.question,
+.note,
+.status {
+  margin: 0;
+  font-size: var(--text-ui);
+}
+
+.note,
+.status {
+  color: var(--color-text-muted);
+}
+
+.footer {
+  align-items: center;
+  justify-content: space-between;
+}
