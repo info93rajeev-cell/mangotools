@@ -24,6 +24,7 @@ import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
 import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import { RowsHarness } from '../../dev/RowsHarness.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { COPY } from '../../lib/copy.ts';
 import { brand, isDevelopment, registry, toolById, toolLink } from '../../lib/site.ts';
@@ -116,6 +117,17 @@ const sizes = ['sm', 'md', 'lg'] as const;
       <section><h2>Archetype A (live)</h2>
         {json && jsonPreset ? <ToolIsland client:load toolId="json-formatter" archetype="A" preset={jsonPreset} sampleId={json.sample} print={false} howToId={null} /> : null}
       </section>
+
+      <section data-dev-rows-section><h2>Repeatable rows browser harness</h2>
+        {gstPreset ? <RowsHarness client:load preset={gstPreset} /> : null}
+      </section>
+
+      <section data-dev-presets-section><h2>Saved presets browser harness</h2>
+        <div class="tool-grid">
+          {gstPreset ? <ToolIsland client:load toolId="dev-preset-alpha" archetype="B" preset={gstPreset} sampleId="invoice-18" print={false} enableUserPresets /> : null}
+          {gstPreset ? <ToolIsland client:load toolId="dev-preset-beta" archetype="B" preset={gstPreset} sampleId="invoice-18" print={false} enableUserPresets /> : null}
+        </div>
+      </section>
     </div>
   </PageContainer>
 </BaseLayout>
@@ -143,5 +155,21 @@ const sizes = ['sm', 'md', 'lg'] as const;
   }
   .search {
     max-width: 480px;
+  }
+  .tool-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  :global([data-rows-harness]) {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  :global(.dev-rows-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
   }
 </style>
