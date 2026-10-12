@@ -11,6 +11,7 @@ import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categoryById, presetFor, toolLinks, toolTitle } from '../lib/site.ts';
 import { breadcrumbList, faqPage, webApplication } from '../lib/structured-data.ts';
+import { userPresetsEnabled } from '../lib/user-presets.ts';
 
 interface Props {
   tool: RegistryTool;
@@ -43,6 +44,7 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
         preset={preset}
         sampleId={tool.sample}
         print={tool.capabilities.print === true}
+        enableUserPresets={userPresetsEnabled(preset)}
       />
       <section
         class="supporting"

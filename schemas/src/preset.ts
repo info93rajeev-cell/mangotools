@@ -176,6 +176,8 @@ export const presetSchema = z.strictObject({
       transferNoticeKey: z.string().optional(),
       /** Keeps ordinary result assumptions and informational notices in one closed disclosure. */
       collapseNotices: z.boolean().optional(),
+      /** Opts this calculator into browser-local named form presets. Off unless exactly true. */
+      userPresets: z.boolean().optional(),
     })
     .optional(),
   strings: z.strictObject({ en: z.record(z.string(), z.string()) }).optional(),
