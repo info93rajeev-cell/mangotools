@@ -5,7 +5,8 @@ import { FieldControl } from '../archetypes/CalculatorFields.tsx';
 import { OpeningRows } from './OpeningRows.tsx';
 import { RepeatableRows } from './RepeatableRows.tsx';
 import {
-  focusIndexAfterRemove,
+  focusAfterAdd,
+  focusAfterRemove,
   isRowsFieldPath,
   rowCellError,
   rowsState,
@@ -113,10 +114,27 @@ describe('repeatable rows logic', () => {
     expect(isRowsFieldPath('slabs', 'slabsExtra.0')).toBe(false);
   });
 
-  it('chooses a sensible focus target after removing a row', () => {
-    expect(focusIndexAfterRemove(1, 3)).toBe(1);
-    expect(focusIndexAfterRemove(2, 3)).toBe(1);
-    expect(focusIndexAfterRemove(0, 1)).toBeNull();
+  it('focuses the nearest remaining Remove button when removing above minRows', () => {
+    expect(focusAfterRemove(1, 4, 1)).toEqual({ kind: 'remove', index: 1 });
+    expect(focusAfterRemove(3, 4, 1)).toEqual({ kind: 'remove', index: 2 });
+    expect(focusAfterRemove(0, 3, 1)).toEqual({ kind: 'remove', index: 0 });
+  });
+
+  it('focuses Add row when a removal reaches minRows (Remove buttons are disabled there)', () => {
+    expect(focusAfterRemove(1, 2, 1)).toEqual({ kind: 'add' });
+    expect(focusAfterRemove(0, 2, 1)).toEqual({ kind: 'add' });
+    expect(focusAfterRemove(2, 3, 2)).toEqual({ kind: 'add' });
+  });
+
+  it('keeps minRows 0 behaviour: nearest Remove, then Add once no rows remain', () => {
+    expect(focusAfterRemove(0, 2, 0)).toEqual({ kind: 'remove', index: 0 });
+    expect(focusAfterRemove(1, 2)).toEqual({ kind: 'remove', index: 0 });
+    expect(focusAfterRemove(0, 1, 0)).toEqual({ kind: 'add' });
+  });
+
+  it('focuses the first editable cell of a newly added row', () => {
+    expect(focusAfterAdd(2)).toEqual({ kind: 'cell', index: 2 });
+    expect(focusAfterAdd(0)).toEqual({ kind: 'cell', index: 0 });
   });
 });
 

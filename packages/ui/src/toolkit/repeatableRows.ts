@@ -90,9 +90,24 @@ export function isRowsFieldPath(fieldKey: string, path: string | undefined): boo
   );
 }
 
-/** After removing row `index` from `count` rows, the row whose remove control should get focus. */
-export function focusIndexAfterRemove(index: number, count: number): number | null {
+/** Where keyboard focus goes after an add or remove, so it never falls back to the page body. */
+export type RowsFocusTarget =
+  | { kind: 'cell'; index: number }
+  | { kind: 'remove'; index: number }
+  | { kind: 'add' };
+
+/** After adding a row to `count` rows: the first editable cell of the new row. */
+export function focusAfterAdd(count: number): RowsFocusTarget {
+  return { kind: 'cell', index: count };
+}
+
+/**
+ * After removing row `index` from `count` rows: the nearest remaining Remove button while removal
+ * is still possible, otherwise (at `minRows`, where every Remove button is disabled and cannot take
+ * focus) the Add-row button.
+ */
+export function focusAfterRemove(index: number, count: number, minRows = 0): RowsFocusTarget {
   const remaining = count - 1;
-  if (remaining <= 0) return null;
-  return Math.min(index, remaining - 1);
+  if (remaining <= 0 || remaining <= minRows) return { kind: 'add' };
+  return { kind: 'remove', index: Math.min(index, remaining - 1) };
 }
