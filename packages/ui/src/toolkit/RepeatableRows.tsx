@@ -10,8 +10,10 @@ import { t } from '../strings/en.ts';
 import { label } from './presentation.ts';
 import styles from './repeatableRows.module.css';
 import {
-  focusIndexAfterRemove,
+  focusAfterAdd,
+  focusAfterRemove,
   type RowCellError,
+  type RowsFocusTarget,
   rowCellError,
   rowsState,
   valueAfterAdd,
@@ -31,8 +33,6 @@ export interface RepeatableRowsProps {
   errorPath: string | undefined;
   onValue: (value: string) => void;
 }
-
-type Focus = { kind: 'cell'; index: number } | { kind: 'remove'; index: number } | { kind: 'add' };
 
 /** Preset text for `${labelKey}.row` / `.add`, else the shared default. */
 const nounText = (preset: ResolvedPreset, field: PresetField, part: 'row' | 'add') =>
@@ -152,7 +152,7 @@ function RowEditor(props: RowEditorProps) {
 
 /** Moves focus to the requested control after the rows re-render. */
 function useFocusAfter(id: string, spec: RowsSpec, value: string) {
-  const pending = useRef<Focus | null>(null);
+  const pending = useRef<RowsFocusTarget | null>(null);
   useEffect(() => {
     const target = pending.current;
     pending.current = null;
@@ -183,12 +183,11 @@ export function RepeatableRows(props: RepeatableRowsProps) {
   const fieldError = error && !cellError ? error : null;
   const remove = (index: number) => {
     keys.splice(index, 1);
-    const after = focusIndexAfterRemove(index, rows.length);
-    focus.current = after === null ? { kind: 'add' } : { kind: 'remove', index: after };
+    focus.current = focusAfterRemove(index, rows.length, spec.minRows ?? 0);
     onValue(valueAfterRemove(spec, value, index));
   };
   const add = () => {
-    focus.current = { kind: 'cell', index: rows.length };
+    focus.current = focusAfterAdd(rows.length);
     onValue(valueAfterAdd(spec, value));
   };
   return (
