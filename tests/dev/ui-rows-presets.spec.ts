@@ -1,7 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
-import { expect, type Locator, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, type Request, test } from '@playwright/test';
 import { gotoReady } from '../support/tool-page.ts';
 
 const OUT = join(process.cwd(), 'tests/artifacts/screenshots');
@@ -25,6 +25,28 @@ async function savePreset(manager: Locator, name: string) {
 
 async function stored(page: Page) {
   return page.evaluate((key) => window.localStorage.getItem(key), STORAGE_KEY);
+}
+
+async function exercisePrivatePresetActions(page: Page, name: string) {
+  const manager = alpha(page);
+  await page.locator('[data-rows-harness]').getByLabel('Description').fill(name);
+  await manager.getByLabel('Amount (₹)').fill('8462');
+  expect(await stored(page)).toBeNull();
+  await savePreset(manager, name);
+  await manager.getByLabel('Amount (₹)').fill('99');
+  await manager.getByRole('button', { name: 'Load', exact: true }).click();
+  await expect(manager.getByLabel('Amount (₹)')).toHaveValue('8462');
+  await manager.getByRole('button', { name: 'Rename', exact: true }).click();
+  await manager.getByLabel('Preset name').fill(`${name}-renamed`);
+  await manager.getByRole('button', { name: 'Save name', exact: true }).click();
+  await manager.getByRole('button', { name: 'Reset', exact: true }).click();
+  await manager.getByRole('button', { name: 'Delete', exact: true }).click();
+  await manager.getByRole('button', { name: 'Delete preset', exact: true }).click();
+  await savePreset(manager, name);
+  expect(await stored(page)).toContain(name);
+  await manager.getByRole('button', { name: 'Delete all saved presets' }).click();
+  await manager.getByRole('button', { name: 'Delete all', exact: true }).click();
+  await expect(presetSelect(manager)).toBeDisabled();
 }
 
 test('saved presets support explicit save, load, rename, delete, reset, and duplicate names', async ({
@@ -102,15 +124,11 @@ test('saved presets reject over-limit, newer-version, and corrupt browser data s
 test('preset actions stay local and never put entered values in requests, URLs, or console', async ({
   page,
 }) => {
-  const browserCalls: string[] = [];
+  const requests: Request[] = [];
   const messages: string[] = [];
-  page.on('request', (request) => {
-    if (request.resourceType() === 'fetch' || request.resourceType() === 'xhr') {
-      browserCalls.push(`${request.method()} ${request.url()} ${request.postData() ?? ''}`);
-    }
-  });
   page.on('console', (message) => messages.push(message.text()));
   await gotoHarness(page);
+  page.on('request', (request) => requests.push(request));
   await page.evaluate(() => {
     const probe = { beacons: 0, history: 0 };
     Object.assign(window, { __privacyProbe: probe });
@@ -132,10 +150,20 @@ test('preset actions stay local and never put entered values in requests, URLs, 
   });
   const initialUrl = page.url();
   const secret = 'private-value-8462';
-  await alpha(page).getByLabel('Amount (₹)').fill('8462');
-  await savePreset(alpha(page), secret);
-  expect(browserCalls).toEqual([]);
+  await exercisePrivatePresetActions(page, secret);
+  // WebKit reports lazy worker/module downloads as fetch. Permit only bundled static GETs,
+  // never arbitrary same-origin endpoints, query strings, or requests carrying form data.
+  for (const request of requests) {
+    const url = new URL(request.url());
+    expect(url.origin, request.url()).toBe(new URL(initialUrl).origin);
+    expect(url.pathname, request.url()).toMatch(/^\/assets\/[\w.-]+\.(js|css|woff2)$/);
+    expect(url.search, request.url()).toBe('');
+    expect(url.hash, request.url()).toBe('');
+    expect(request.method(), request.url()).toBe('GET');
+    expect(request.postData(), request.url()).toBeNull();
+  }
   expect(messages.join('\n')).not.toContain(secret);
+  expect(messages.join('\n')).not.toContain('8462');
   expect(page.url()).toBe(initialUrl);
   expect(
     await page.evaluate(
@@ -144,7 +172,6 @@ test('preset actions stay local and never put entered values in requests, URLs, 
           .__privacyProbe,
     ),
   ).toEqual({ beacons: 0, history: 0 });
-  expect(await stored(page)).toContain(secret);
 });
 
 test('preset managers are keyboard accessible and have no serious accessibility violations', async ({
