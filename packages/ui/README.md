@@ -23,11 +23,20 @@ Strict row decoding is local: the shared codec's fallback/defaulting would conce
 input. Unknown row keys are stripped; no rows are dropped/truncated. Bounds, numeric limits,
 precision, overlap and fee calculation remain engine-owned.
 
-This core is not activated in ToolIsland. Costs, withholding, settlement, adjustments and
-activation await PR 6A2b; grouped/result presentation awaits 6A2c. Real-operation integration
-is later platform evidence. No production preset, tool or page is added here.
+Seller costs, TCS/TDS, settlement deductions/credits and the five controlled adjustments
+are also shaped from explicit form values. Blank amounts are omitted; explicit zero is
+preserved. Withholding bases and adjustment effects/applicability are never inferred.
+Ordinary items keep sale/return/RTO/cancellation order; adjustments exclude sale and keep
+return/RTO/cancellation order. Empty required controls use `missing[]`; unsupported controls
+use `INVALID_INPUT`. Financial validation and unsigned amount rules remain engine-owned.
+
+This adapter is not activated in ToolIsland (PR 6A2b2). Grouped/result presentation awaits
+6A2c; real-operation integration is later platform evidence. No production preset, tool
+or page is added here.
 
 ## Changelog
 
+- TASK-008L PR 6A2b1: added seller costs, withholding, settlement and scenario-adjustment
+  shaping with pure tests and an advanced fixture; no activation or result presentation.
 - TASK-008L PR 6A2a: added pure fee/slab/resolved-weight adapter core and focused tests.
   Phase-1 private packages use documentation records; changesets are not configured.
