@@ -1,4 +1,4 @@
-import type { OpError, OpWarning } from '@mangotools/core';
+import { type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { RunOutcome } from './protocol.ts';
 import {
@@ -7,6 +7,7 @@ import {
   type FieldValue,
   type FieldValues,
   sampleValues,
+  type ToolRequest,
 } from './tool-input.ts';
 
 export type ToolPhase = 'idle' | 'editing' | 'running' | 'result' | 'error';
@@ -35,6 +36,8 @@ export interface Timer {
 export interface ToolStoreOptions {
   preset: ResolvedPreset;
   run: RunFn;
+  /** Synchronously shape one immutable current-value snapshot; absent uses buildRequest. */
+  prepareRequest?: (preset: ResolvedPreset, values: Readonly<FieldValues>) => Result<ToolRequest>;
   /** Live-compute delay after the last keystroke. */
   debounceMs?: number;
   timer?: Timer;
@@ -63,6 +66,7 @@ interface Machine {
   compute(): Promise<void>;
   edited(): void;
   stop(): void;
+  dispose(): void;
 }
 
 function createMachine(options: ToolStoreOptions): Machine {
@@ -80,6 +84,7 @@ function createMachine(options: ToolStoreOptions): Machine {
   let pendingTimer: unknown = null;
   let inflight: AbortController | null = null;
   let generation = 0;
+  let disposed = false;
 
   const emit = (next: Partial<ToolSnapshot>) => {
     snapshot = { ...snapshot, ...next };
@@ -102,8 +107,15 @@ function createMachine(options: ToolStoreOptions): Machine {
     } else if (outcome.error.code !== 'ABORTED') emit({ phase: 'error', error: outcome.error });
   };
   const compute = async () => {
+    if (disposed) return;
     stop();
-    const request = buildRequest(preset, snapshot.values);
+    const values = Object.freeze({ ...snapshot.values });
+    const prepared = options.prepareRequest
+      ? options.prepareRequest(preset, values)
+      : ok(buildRequest(preset, values));
+    if (!prepared.ok)
+      return emit({ phase: 'error', error: prepared.error, result: null, missing: [] });
+    const request = prepared.value;
     if (request.missing.length > 0)
       return emit({ phase: 'idle', result: null, error: null, missing: request.missing });
     const mine = generation;
@@ -116,11 +128,17 @@ function createMachine(options: ToolStoreOptions): Machine {
     settle(outcome);
   };
   const edited = () => {
+    if (disposed) return;
     stop();
     emit({ phase: 'editing' });
     if (live) pendingTimer = timer.set(() => void compute(), options.debounceMs ?? 150);
   };
-  return { listeners, current: () => snapshot, emit, compute, edited, stop };
+  const dispose = () => {
+    disposed = true;
+    stop();
+    listeners.clear();
+  };
+  return { listeners, current: () => snapshot, emit, compute, edited, stop, dispose };
 }
 
 /** State machine for one tool island: idle → editing → running → result | error. */
@@ -158,9 +176,6 @@ export function createToolStore(options: ToolStoreOptions): ToolStore {
         missing: [],
       });
     },
-    dispose() {
-      m.stop();
-      m.listeners.clear();
-    },
+    dispose: m.dispose,
   };
 }
