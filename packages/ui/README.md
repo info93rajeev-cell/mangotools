@@ -30,12 +30,16 @@ Ordinary items keep sale/return/RTO/cancellation order; adjustments exclude sale
 return/RTO/cancellation order. Empty required controls use `missing[]`; unsupported controls
 use `INVALID_INPUT`. Financial validation and unsigned amount rules remain engine-owned.
 
-This adapter is not activated in ToolIsland (PR 6A2b2). Grouped/result presentation awaits
-6A2c; real-operation integration is later platform evidence. No production preset, tool
-or page is added here.
+ToolIsland supplies this adapter to the existing runtime `prepareRequest` hook only for
+exact preset id `estimate/amazon.manual-profitability`. Other ids, including those using
+the same operation, retain generic preparation. Grouped/result presentation awaits 6A2c;
+real-operation/browser integration remains later platform evidence. No production preset,
+tool or page is added here.
 
 ## Changelog
 
+- TASK-008L PR 6A2b2: added exact-id ToolIsland activation through the existing runtime
+  preparation hook and focused wiring/lifecycle tests; no result presentation or public tool.
 - TASK-008L PR 6A2b1: added seller costs, withholding, settlement and scenario-adjustment
   shaping with pure tests and an advanced fixture; no activation or result presentation.
 - TASK-008L PR 6A2a: added pure fee/slab/resolved-weight adapter core and focused tests.

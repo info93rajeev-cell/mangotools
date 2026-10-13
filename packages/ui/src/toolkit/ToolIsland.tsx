@@ -19,6 +19,7 @@ import { Button } from '../primitives/Button.tsx';
 import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
+import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
 import { shapeIncomingPackingTransfer } from './packingItems.ts';
@@ -28,7 +29,7 @@ import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 
 /**
- * The two tools with per-tool UI logic on the platform: their item rows can't be described by a flat
+ * The two tools with custom item layouts on the platform: their rows can't be described by a flat
  * preset field, so each gets its own layout (see `InvoiceItemsLayout.tsx`/`PackingListItemsLayout.tsx`
  * and TASK-009G/TASK-009I's reports for why this is a small, explicit special case rather than a new
  * generic archetype or field kind). Every other tool renders through the ordinary `ArchetypeLayout`
@@ -245,7 +246,13 @@ export function ToolIsland({
   print,
   enableUserPresets,
 }: ToolIslandProps) {
-  const [snapshot, store] = useToolStore(preset);
+  const [snapshot, store] = useToolStore(
+    preset,
+    undefined,
+    preset.id === 'estimate/amazon.manual-profitability'
+      ? amazonManualProfitabilityInput
+      : undefined,
+  );
   const [message, notify] = useToast();
   const ran = useRef(false);
   const idPrefix = `tool-${toolId}`;
