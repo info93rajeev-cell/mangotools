@@ -1,0 +1,103 @@
+{
+  "id": "001-amazon-fee-adapter-core-advanced",
+  "preset": "estimate/amazon.manual-profitability",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-008L Amazon manual fee calculator contract: marketplace fee mapping, slab fields, applicability and resolved weight; shape-only expected request."
+  },
+  "synthetic": true,
+  "match": "exact",
+  "input": {
+    "referralMode": "price-slabs",
+    "referralPriceSlabs": "[{\"min\":\"\",\"max\":\"500.00\",\"chargeMode\":\"percent\",\"value\":\"2.5000\",\"unknown\":\"ignored\"},{\"min\":\"500.00\",\"max\":\"\",\"chargeMode\":\"percent\",\"value\":\"3\"}]",
+    "referralGstTreatment": "none",
+    "referralApplySale": true,
+    "closingMode": "price-slabs",
+    "closingPriceSlabs": "[{\"max\":\"1000\",\"chargeMode\":\"fixed\",\"value\":\"7.00\"}]",
+    "closingGstTreatment": "none",
+    "closingApplySale": true,
+    "weightHandlingMode": "weight-slabs",
+    "weightHandlingWeightSlabs": "[{\"max\":\"1.000\",\"amount\":\"20.00\",\"unit\":\"g\"},{\"min\":\"1.000\",\"amount\":\"30.00\"}]",
+    "weightHandlingGstTreatment": "none",
+    "weightHandlingApplySale": true,
+    "weightHandlingQuantityScope": "per-unit",
+    "chargeableWeightValue": "0.500",
+    "chargeableWeightUnit": "kg",
+    "pickPackMode": "fixed",
+    "pickPackAmount": "1.00",
+    "pickPackQuantityScope": "per-unit",
+    "pickPackGstTreatment": "none",
+    "pickPackApplySale": true,
+    "otherServiceMode": "fixed",
+    "otherServiceAmount": "2.00",
+    "otherServiceQuantityScope": "per-unit",
+    "otherServiceGstTreatment": "none",
+    "otherServiceApplySale": true
+  },
+  "expected": {
+    "sellingPricePerUnit": "1000.00",
+    "quantity": "2",
+    "productCostPerUnit": "400.00",
+    "promotionalDiscount": "10.00",
+    "couponDiscount": "5.00",
+    "productGstRatePercent": "0",
+    "sellingPriceTaxMode": "gst-inclusive",
+    "scenario": "successful-sale",
+    "chargeableWeight": { "value": "0.500", "unit": "kg" },
+    "feeLines": [
+      {
+        "id": "referral",
+        "enabled": true,
+        "mode": "price-slabs",
+        "percentageBase": "realized-customer-value",
+        "slabPriceBase": "entered-unit-selling-price",
+        "gstTreatment": "none",
+        "scenarios": ["successful-sale"],
+        "priceSlabs": [
+          { "max": "500.00", "chargeMode": "percent", "value": "2.5000" },
+          { "min": "500.00", "chargeMode": "percent", "value": "3" }
+        ]
+      },
+      {
+        "id": "closing",
+        "enabled": true,
+        "mode": "price-slabs",
+        "quantityScope": "per-order",
+        "slabPriceBase": "entered-unit-selling-price",
+        "gstTreatment": "none",
+        "scenarios": ["successful-sale"],
+        "priceSlabs": [{ "max": "1000", "chargeMode": "fixed", "value": "7.00" }]
+      },
+      {
+        "id": "weight-handling",
+        "enabled": true,
+        "mode": "weight-slabs",
+        "quantityScope": "per-unit",
+        "gstTreatment": "none",
+        "scenarios": ["successful-sale"],
+        "weightSlabs": [
+          { "max": "1.000", "amount": "20.00", "unit": "kg" },
+          { "min": "1.000", "amount": "30.00", "unit": "kg" }
+        ]
+      },
+      {
+        "id": "pick-pack",
+        "enabled": true,
+        "mode": "fixed",
+        "quantityScope": "per-unit",
+        "amount": "1.00",
+        "gstTreatment": "none",
+        "scenarios": ["successful-sale"]
+      },
+      {
+        "id": "other-service",
+        "enabled": true,
+        "mode": "fixed",
+        "quantityScope": "per-unit",
+        "amount": "2.00",
+        "gstTreatment": "none",
+        "scenarios": ["successful-sale"]
+      }
+    ]
+  }
+}
