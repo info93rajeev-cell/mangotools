@@ -1,0 +1,181 @@
+{
+  "id": "001-amazon-result-display",
+  "operation": "estimate.marketplace.manual-profitability@1",
+  "source": {
+    "type": "synthetic",
+    "citation": "TASK-008L PR6A2c presentation contract. Deliberately independent display values, not calculated financial expectations; INR grouping and labels checked by hand."
+  },
+  "synthetic": true,
+  "match": "exact",
+  "input": {
+    "value": {
+      "economicProfit": "-1234567.89",
+      "estimatedSettlement": "-20.50",
+      "profitMarginPercent": "12.34",
+      "roiPercent": "56.78",
+      "breakEvenSellingPrice": "777.77",
+      "effectiveMarketplaceFeePercent": "9.87",
+      "grossCustomerValue": "1000.00",
+      "sellerFundedReduction": "10.00",
+      "customerInvoiceValue": "990.00",
+      "taxExclusiveRevenue": "900.00",
+      "orderProductGstAmount": "90.00",
+      "productGstLiabilityRecognised": "0.00",
+      "marketplaceFeesTotal": "45.00",
+      "marketplaceFeeGstTotal": "5.40",
+      "recoverableMarketplaceFeeGst": "1.80",
+      "nonRecoverableMarketplaceFeeGst": "3.60",
+      "sellerControlledCostsTotal": "50.00",
+      "tcsAmount": "1.00",
+      "tdsAmount": "2.00",
+      "otherSettlementDeductionsApplied": "3.00",
+      "settlementCreditsApplied": "4.00",
+      "totalSettlementDeductions": "56.40",
+      "scenarioEconomicCosts": "6.00",
+      "scenarioEconomicCredits": "7.00",
+      "scenarioSettlementDeductions": "8.00",
+      "scenarioSettlementCredits": "9.00",
+      "marketplaceFees": [
+        {
+          "id": "referral",
+          "mode": "percent",
+          "applicable": true,
+          "percentageBase": "realized-customer-value",
+          "base": "1000.00",
+          "slabPriceBase": null,
+          "slabMatchValue": null,
+          "matchedSlabIndex": null,
+          "amount": "10.00",
+          "gstAmount": "1.80",
+          "gstTreatment": "recoverable"
+        },
+        {
+          "id": "closing",
+          "mode": "fixed",
+          "applicable": false,
+          "percentageBase": null,
+          "base": null,
+          "slabPriceBase": null,
+          "slabMatchValue": null,
+          "matchedSlabIndex": null,
+          "amount": "0.00",
+          "gstAmount": "0.00",
+          "gstTreatment": "none"
+        },
+        {
+          "id": "weight-handling",
+          "mode": "weight-slabs",
+          "applicable": true,
+          "percentageBase": null,
+          "base": null,
+          "slabPriceBase": null,
+          "slabMatchValue": "0.500",
+          "matchedSlabIndex": 0,
+          "amount": "20.00",
+          "gstAmount": "3.60",
+          "gstTreatment": "non-recoverable"
+        },
+        {
+          "id": "pick-pack",
+          "mode": "fixed",
+          "applicable": true,
+          "percentageBase": null,
+          "base": null,
+          "slabPriceBase": null,
+          "slabMatchValue": null,
+          "matchedSlabIndex": null,
+          "amount": "3.00",
+          "gstAmount": "0.00",
+          "gstTreatment": "none"
+        },
+        {
+          "id": "other-service",
+          "mode": "price-slabs",
+          "applicable": true,
+          "percentageBase": null,
+          "base": null,
+          "slabPriceBase": "entered-unit-selling-price",
+          "slabMatchValue": "1000.00",
+          "matchedSlabIndex": 1,
+          "amount": "4.00",
+          "gstAmount": "0.00",
+          "gstTreatment": "none"
+        },
+        {
+          "id": "fixed",
+          "mode": "fixed",
+          "applicable": true,
+          "percentageBase": null,
+          "base": null,
+          "slabPriceBase": null,
+          "slabMatchValue": null,
+          "matchedSlabIndex": null,
+          "amount": "8.00",
+          "gstAmount": "0.00",
+          "gstTreatment": "none"
+        }
+      ],
+      "working": [
+        {
+          "ref": "display-only",
+          "formulaKey": "display-only",
+          "variables": {},
+          "result": "17.00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "metrics": {
+      "economicProfit": "Estimated profit −₹12,34,567.89",
+      "estimatedSettlement": "Estimated Amazon settlement −₹20.50",
+      "profitMarginPercent": "Profit margin 12.34%",
+      "roiPercent": "ROI 56.78%",
+      "breakEvenSellingPrice": "Break-even selling price ₹777.77",
+      "effectiveMarketplaceFeePercent": "Effective marketplace fee 9.87%"
+    },
+    "feeText": [
+      "Referral fee",
+      "Closing fee",
+      "Weight handling",
+      "Pick & pack",
+      "Other Amazon service charge",
+      "Fee fixed",
+      "Not applied",
+      "Fixed",
+      "Percentage",
+      "Price slab",
+      "Weight slab",
+      "₹1.80",
+      "No GST",
+      "Recoverable",
+      "Non-recoverable",
+      "0.500",
+      "Entered unit selling price",
+      "₹1,000.00",
+      "Slab index (0-based) 1"
+    ],
+    "breakdown": {
+      "grossCustomerValue": "Gross customer value ₹1,000.00",
+      "sellerFundedReduction": "Seller-funded discounts ₹10.00",
+      "customerInvoiceValue": "Customer invoice value ₹990.00",
+      "taxExclusiveRevenue": "Tax-exclusive revenue ₹900.00",
+      "orderProductGstAmount": "Product GST (original order) ₹90.00",
+      "productGstLiabilityRecognised": "Recognized product GST liability ₹0.00",
+      "marketplaceFeesTotal": "Amazon fees total ₹45.00",
+      "marketplaceFeeGstTotal": "GST on Amazon fees ₹5.40",
+      "recoverableMarketplaceFeeGst": "Recoverable fee GST ₹1.80",
+      "nonRecoverableMarketplaceFeeGst": "Non-recoverable fee GST ₹3.60",
+      "sellerControlledCostsTotal": "Seller-controlled costs ₹50.00",
+      "tcsAmount": "TCS ₹1.00",
+      "tdsAmount": "TDS ₹2.00",
+      "otherSettlementDeductionsApplied": "Other settlement deductions ₹3.00",
+      "settlementCreditsApplied": "Settlement credits ₹4.00",
+      "totalSettlementDeductions": "Total settlement deductions ₹56.40",
+      "scenarioEconomicCosts": "Scenario economic costs ₹6.00",
+      "scenarioEconomicCredits": "Scenario economic credits ₹7.00",
+      "scenarioSettlementDeductions": "Scenario settlement deductions ₹8.00",
+      "scenarioSettlementCredits": "Scenario settlement credits ₹9.00"
+    }
+  }
+}

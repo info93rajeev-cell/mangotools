@@ -3,6 +3,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
+import { AmazonManualProfitabilityResult } from '../toolkit/AmazonManualProfitabilityResult.tsx';
 import { applyFieldEdit } from '../toolkit/fieldEffects.ts';
 import { OptionControls } from '../toolkit/OptionControls.tsx';
 import {
@@ -86,6 +87,11 @@ function ResultRows({ rows }: { rows: OutputRow[] }) {
   );
 }
 
+function ResultContent({ rows, amazon }: { rows: OutputRow[]; amazon: ToolSnapshot['result'] }) {
+  if (amazon) return <AmazonManualProfitabilityResult result={amazon} />;
+  return rows.length > 0 ? <ResultRows rows={rows} /> : null;
+}
+
 interface ResultSectionProps {
   idPrefix: string;
   preset: ResolvedPreset;
@@ -140,6 +146,7 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
   const rows = result && phase !== 'error' ? outputRows(preset, result.value, values) : [];
   const steps = (result?.value.working as WorkingStep[] | undefined) ?? [];
   const current = result && phase !== 'error' ? result : null;
+  const amazon = preset.id === 'estimate/amazon.manual-profitability' ? current : null;
   const notices = displayedNotices(preset, current);
   const missingNames = missing.map((key) =>
     label(preset, preset.fields[key]?.labelKey).toLowerCase(),
@@ -155,8 +162,8 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
       data-result-panel=""
     >
       <ResultPanelHead idPrefix={idPrefix} actions={actions} />
-      {rows.length > 0 ? <ResultRows rows={rows} /> : null}
-      {rows.length === 0 && phase !== 'error' ? (
+      <ResultContent rows={rows} amazon={amazon} />
+      {!amazon && rows.length === 0 && phase !== 'error' ? (
         <p class={styles.placeholder}>{placeholder}</p>
       ) : null}
       {phase === 'error' && error ? (
@@ -164,7 +171,12 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
           {fieldError ? null : <p>{messageFor(preset, error)}</p>}
         </InlineAlert>
       ) : null}
-      <WarningAlerts preset={preset} notices={notices.warnings} />
+      <WarningAlerts
+        preset={preset}
+        notices={notices.warnings.filter(
+          (w) => !amazon || w.code !== 'ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE',
+        )}
+      />
       <AssumptionList preset={preset} notices={notices.assumptions} />
       {current ? <WorkingSteps preset={preset} steps={steps} /> : null}
       <NoteList preset={preset} notices={notices.notes} />

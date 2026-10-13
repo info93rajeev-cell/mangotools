@@ -1,0 +1,72 @@
+/** Bounded result-view strings; production form/content strings remain a later tool task. */
+export const AMAZON_BREAKDOWN_LABELS = {
+  grossCustomerValue: 'Gross customer value',
+  sellerFundedReduction: 'Seller-funded discounts',
+  customerInvoiceValue: 'Customer invoice value',
+  taxExclusiveRevenue: 'Tax-exclusive revenue',
+  orderProductGstAmount: 'Product GST (original order)',
+  productGstLiabilityRecognised: 'Recognized product GST liability',
+  marketplaceFeesTotal: 'Amazon fees total',
+  marketplaceFeeGstTotal: 'GST on Amazon fees',
+  recoverableMarketplaceFeeGst: 'Recoverable fee GST',
+  nonRecoverableMarketplaceFeeGst: 'Non-recoverable fee GST',
+  sellerControlledCostsTotal: 'Seller-controlled costs',
+  tcsAmount: 'TCS',
+  tdsAmount: 'TDS',
+  otherSettlementDeductionsApplied: 'Other settlement deductions',
+  settlementCreditsApplied: 'Settlement credits',
+  totalSettlementDeductions: 'Total settlement deductions',
+  scenarioEconomicCosts: 'Scenario economic costs',
+  scenarioEconomicCredits: 'Scenario economic credits',
+  scenarioSettlementDeductions: 'Scenario settlement deductions',
+  scenarioSettlementCredits: 'Scenario settlement credits',
+} as const;
+export const AMAZON_FEE_COLUMNS = {
+  id: 'Fee',
+  mode: 'Type',
+  baseSlab: 'Base / slab',
+  amount: 'Fee amount',
+  gstAmount: 'GST',
+  gstTreatment: 'GST treatment',
+} as const;
+const FEES: Readonly<Record<string, string>> = {
+  referral: 'Referral fee',
+  closing: 'Closing fee',
+  'weight-handling': 'Weight handling',
+  'pick-pack': 'Pick & pack',
+  'other-service': 'Other Amazon service charge',
+};
+const TEXT: Readonly<Record<string, string>> = {
+  ...AMAZON_BREAKDOWN_LABELS,
+  economicProfit: 'Estimated profit',
+  estimatedSettlement: 'Estimated Amazon settlement',
+  profitMarginPercent: 'Profit margin',
+  roiPercent: 'ROI',
+  breakEvenSellingPrice: 'Break-even selling price',
+  effectiveMarketplaceFeePercent: 'Effective marketplace fee',
+  unavailable: 'Not available',
+  indeterminate: 'Not determinable',
+  scenario: 'Not determinable for this scenario',
+  'price-slabs-reason': 'Not determinable with price-slab fees',
+  'no-positive-solution': 'No positive break-even price',
+  feeBreakdown: 'Amazon fee breakdown',
+  detailedBreakdown: 'Detailed breakdown',
+  notApplied: 'Not applied',
+  slabIndex: 'Slab index (0-based)',
+  fixed: 'Fixed',
+  percent: 'Percentage',
+  'price-slabs': 'Price slab',
+  'weight-slabs': 'Weight slab',
+  none: 'No GST',
+  recoverable: 'Recoverable',
+  'non-recoverable': 'Non-recoverable',
+  'realized-customer-value': 'After discounts',
+  'tax-exclusive-revenue': 'Tax-exclusive revenue',
+  'customer-invoice-value': 'Customer invoice value',
+  'entered-unit-selling-price': 'Entered unit selling price',
+  'realized-unit-selling-price': 'Realized unit selling price',
+};
+export const amazonResultLabel = (key: string): string =>
+  Object.hasOwn(TEXT, key) ? (TEXT[key] ?? key) : key;
+export const amazonFeeLabel = (id: string): string =>
+  Object.hasOwn(FEES, id) ? (FEES[id] ?? id) : id;
