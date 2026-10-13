@@ -15,6 +15,21 @@ const SCENARIOS = [
   ['ApplyRto', 'rto'],
   ['ApplyCancellation', 'cancellation'],
 ] as const;
+const SCOPED_AMOUNTS = [
+  ['packaging', 'packagingCost'],
+  ['sellerShipping', 'sellerShippingCost'],
+  ['advertising', 'advertisingCost'],
+  ['otherTransaction', 'otherTransactionCost'],
+  ['otherSettlement', 'otherSettlementDeductions'],
+  ['settlementCredit', 'settlementCredits'],
+] as const;
+const ADJUSTMENTS = [
+  ['returnCharge', 'return-charge', 'charge'],
+  ['reverseLogistics', 'reverse-logistics', 'charge'],
+  ['reimbursement', 'reimbursement', 'credit'],
+  ['inventoryWriteOff', 'inventory-write-off', 'charge'],
+  ['otherAdjustment', 'other-adjustment', undefined],
+] as const;
 const invalid = (path: string): OpError => ({
   code: 'INVALID_INPUT',
   messageKey: 'errors.INVALID_INPUT',
@@ -88,14 +103,18 @@ function required(form: FeeForm, key: string, choices?: readonly string[]): stri
   return value;
 }
 
-function scenarios(form: FeeForm, prefix: string): string[] {
-  const selected = SCENARIOS.filter(([suffix]) => {
-    const value = form.values[`${prefix}${suffix}`];
-    if (value !== undefined && ![true, false, 'true', 'false'].includes(value))
-      form.error ??= invalid(`${prefix}${suffix}`);
-    return value === true || value === 'true';
-  }).map(([, scenario]) => scenario);
-  if (selected.length === 0) form.missing.push(`${prefix}ApplySale`);
+function scenarios(form: FeeForm, prefix: string, nonSuccess = false): string[] {
+  const options = nonSuccess ? SCENARIOS.slice(1) : SCENARIOS;
+  const selected = options
+    .filter(([suffix]) => {
+      const value = form.values[`${prefix}${suffix}`];
+      if (value !== undefined && ![true, false, 'true', 'false'].includes(value))
+        form.error ??= invalid(`${prefix}${suffix}`);
+      return value === true || value === 'true';
+    })
+    .map(([, scenario]) => scenario);
+  if (selected.length === 0)
+    form.missing.push(`${prefix}${nonSuccess ? 'ApplyReturn' : 'ApplySale'}`);
   return selected;
 }
 
@@ -146,7 +165,62 @@ function fee(form: FeeForm, group: (typeof GROUPS)[number]): Record<string, unkn
   return [line];
 }
 
-/** Fee/weight core only; integration and other scoped objects belong to subsequent UI PRs. */
+function withholding(form: FeeForm, prefix: 'tcs' | 'tds'): Record<string, unknown> | undefined {
+  const mode = text(form, `${prefix}Mode`);
+  if (mode.trim() === '' || mode === 'off') return;
+  const output: Record<string, unknown> = {
+    mode: required(form, `${prefix}Mode`, ['fixed', 'percent']),
+    value: required(form, `${prefix}Value`),
+    scenarios: scenarios(form, prefix),
+  };
+  if (mode === 'percent')
+    output.percentageBase = required(form, `${prefix}PercentageBase`, [
+      'tax-exclusive-revenue',
+      'customer-invoice-value',
+    ]);
+  return output;
+}
+
+function adjustment(form: FeeForm, group: (typeof ADJUSTMENTS)[number]): Record<string, unknown>[] {
+  const [prefix, id, fixedDirection] = group;
+  const amount = text(form, `${prefix}Amount`);
+  if (amount.trim() === '') return [];
+  const effects =
+    prefix === 'inventoryWriteOff'
+      ? 'economic'
+      : required(form, `${prefix}Effects`, ['economic', 'settlement', 'both']);
+  const direction = fixedDirection ?? required(form, `${prefix}Direction`, ['charge', 'credit']);
+  const applicable = scenarios(form, prefix, true);
+  if (!['economic', 'settlement', 'both'].includes(effects)) return [];
+  return [
+    {
+      id,
+      direction,
+      amount,
+      economic: effects !== 'settlement',
+      settlement: effects !== 'economic',
+      scenarios: applicable,
+    },
+  ];
+}
+
+function scopedInput(form: FeeForm, input: Record<string, unknown>): void {
+  for (const [prefix, key] of SCOPED_AMOUNTS) {
+    const amount = text(form, `${prefix}Amount`);
+    delete input[key];
+    if (amount.trim() !== '') input[key] = { amount, scenarios: scenarios(form, prefix) };
+  }
+  for (const prefix of ['tcs', 'tds'] as const) {
+    delete input[prefix];
+    const item = withholding(form, prefix);
+    if (item) input[prefix] = item;
+  }
+  const adjustments = ADJUSTMENTS.flatMap((group) => adjustment(form, group));
+  delete input.scenarioAdjustments;
+  if (adjustments.length > 0) input.scenarioAdjustments = adjustments;
+}
+
+/** Shape the bounded form contract only; all financial validation/calculation stays engine-owned. */
 export function amazonManualProfitabilityInput(
   preset: ResolvedPreset,
   values: Readonly<FieldValues>,
@@ -162,6 +236,7 @@ export function amazonManualProfitabilityInput(
       unit: required(form, 'chargeableWeightUnit', ['g', 'kg']),
     };
   const feeLines = GROUPS.flatMap((group) => fee(form, group));
+  scopedInput(form, input);
   if (form.error) return { ok: false, error: form.error };
   return {
     ok: true,
