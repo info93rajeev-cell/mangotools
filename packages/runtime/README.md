@@ -18,6 +18,31 @@ Runs tools in the browser. The only package through which `packages/ui` and `app
 
 Protocol: `{ id, type: 'run', operationId, input, params }` → `{ id, ok: true, value, warnings }` or `{ id, ok: false, error }`; `{ id, type: 'abort' }`.
 
+## Atomic request preparation
+
+`ToolStoreOptions.prepareRequest` is optional:
+`(preset: ResolvedPreset, values: Readonly<FieldValues>) => Result<ToolRequest>`.
+The existing public entry exports these runtime types; `Result` comes from core and
+`ResolvedPreset` from schemas. Preparation is synchronous, once per compute, using a
+fresh shallow-frozen copy of current form values (strings/booleans). The live store is
+not frozen. Callbacks must not mutate the preset, retain mutable store state, perform
+async work or mutate the returned request after preparation.
+
+When absent, existing `buildRequest` behavior is unchanged. `runNow`, debounced live
+compute and sample loading use the same path. Success returns the complete existing
+`input`, `params`, `missing` request; missing fields clear result/error and remain idle
+without execution. Typed failure clears result/missing, exposes the error and never runs
+or falls back to a generic request. Programmer exceptions are not silently caught.
+Reset cancels work and restores defaults without preparation or changing saved presets;
+dispose cancels work and prevents further preparation. Existing abort/generation guards
+reject late outcomes. Preparation adds no engine/UI imports, storage, network or logging.
+
+## Changelog
+
+- Added optional synchronous atomic request preparation to `ToolStoreOptions`, preserving
+  the default request builder and cancellation/sample/reset behavior (TASK-008L PR 6A1).
+  Phase 1 has no changesets/package release automation; this additive API is recorded here.
+
 ## Repeatable rows (`kind: 'rows'`)
 
 A preset field with `kind: 'rows'` and a `rows` spec (`schemas/src/preset-rows.ts`) holds an ordered
