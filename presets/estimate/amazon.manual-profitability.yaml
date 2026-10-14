@@ -11,8 +11,8 @@ fields:
   productCostPerUnit: {"labelKey":"amazon.field.productCostPerUnit","kind":"money","order":20,"width":"half","currency":"INR","required":true}
   quantity: {"labelKey":"amazon.field.quantity","kind":"number","order":30,"width":"half","required":true,"default":"1"}
   scenario: {"labelKey":"amazon.field.scenario","kind":"enum","order":40,"width":"half","control":"select","options":[{"value":"successful-sale","labelKey":"amazon.option.successful-sale"},{"value":"customer-return","labelKey":"amazon.option.customer-return"},{"value":"rto","labelKey":"amazon.option.rto"},{"value":"cancellation","labelKey":"amazon.option.cancellation"}],"default":"successful-sale","required":true}
-  showProductDetails: {"labelKey":"amazon.field.showProductDetails","kind":"boolean","order":50,"width":"half","uiOnly":true,"default":"false"}
-  showAmazonFees: {"labelKey":"amazon.field.showAmazonFees","kind":"boolean","order":100,"width":"half","uiOnly":true,"default":"false"}
+  showProductDetails: {"labelKey":"amazon.field.showProductDetails","kind":"boolean","order":50,"width":"half","uiOnly":true,"default":"true"}
+  showAmazonFees: {"labelKey":"amazon.field.showAmazonFees","kind":"boolean","order":100,"width":"half","uiOnly":true,"default":"true"}
   showShipping: {"labelKey":"amazon.field.showShipping","kind":"boolean","order":400,"width":"half","uiOnly":true,"default":"false"}
   showAdjustments: {"labelKey":"amazon.field.showAdjustments","kind":"boolean","order":700,"width":"half","uiOnly":true,"default":"false"}
   showTaxes: {"labelKey":"amazon.field.showTaxes","kind":"boolean","order":1000,"width":"half","uiOnly":true,"default":"false"}

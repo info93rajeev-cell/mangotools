@@ -86,10 +86,32 @@ describe('TASK-008L production tool', () => {
     }
     expect(defaults.tcsValue).toBe('');
     expect(defaults.tdsValue).toBe('');
-    for (const key of sections) expect(defaults[key]).toBe('false');
     expect(preset.fields.productCategoryLabel.kind).toBe('text');
     expect(preset.fields.shippingZoneLabel.kind).toBe('text');
     expect(Object.values(preset.fields).some((field) => field.convert)).toBe(false);
+  });
+  it('opens only Product Details and Amazon Fees without configuring financial inputs', () => {
+    expect(defaults).toMatchObject({
+      showProductDetails: 'true',
+      showAmazonFees: 'true',
+      showShipping: 'false',
+      showAdjustments: 'false',
+      showTaxes: 'false',
+    });
+    const legacy = {
+      ...defaults,
+      ...Object.fromEntries(sections.map((key) => [key, 'false'])),
+    };
+    const actual = amazonManualProfitabilityInput(preset, defaults);
+    expect(actual).toEqual(amazonManualProfitabilityInput(preset, legacy));
+    expect(actual).toMatchObject({ ok: true, value: { input: { feeLines: [] } } });
+    for (const key of sections) expect(preset.fields[key].uiOnly).toBe(true);
+    for (const prefix of ['referral', 'closing', 'weightHandling', 'pickPack', 'otherService']) {
+      expect(defaults[`${prefix}Mode`]).toBe('off');
+      for (const suffix of ['Amount', 'RatePercent']) {
+        if (preset.fields[`${prefix}${suffix}`]) expect(defaults[`${prefix}${suffix}`]).toBe('');
+      }
+    }
   });
   it('declares all approved fee modes, primitive slab rows and explicit GST/applicability', () => {
     for (const [prefix, modes] of [
@@ -149,7 +171,10 @@ describe('TASK-008L production tool', () => {
   });
   it('executes configured real form values against hand-verified fixture truth without collapse changes', async () => {
     const before = { ...configured };
-    const closed = prepare(configured);
+    const closed = prepare({
+      ...configured,
+      ...Object.fromEntries(sections.map((key) => [key, false])),
+    });
     const opened = prepare({
       ...configured,
       ...Object.fromEntries(sections.map((key) => [key, true])),
@@ -171,6 +196,7 @@ describe('TASK-008L production tool', () => {
   it('keeps engine input strict and preserves taxes/discounts when every section closes', () => {
     const typed = {
       ...configured,
+      ...Object.fromEntries(sections.map((key) => [key, false])),
       promotionalDiscount: '50.00',
       productGstRatePercent: '12',
       sellingPriceTaxMode: 'gst-exclusive',

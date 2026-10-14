@@ -8,10 +8,15 @@ test('production Amazon form activates existing results, preserves collapsed val
   page,
 }) => {
   await gotoReady(page, `/${slug}`);
+  await expect(page.getByRole('switch', { name: 'Amazon Fees', exact: true })).toBeChecked();
+  await expect(page.getByRole('switch', { name: 'Product Details', exact: true })).toBeChecked();
+  for (const name of ['Shipping & Fulfillment', 'Returns & Adjustments', 'Taxes']) {
+    await expect(page.getByRole('switch', { name, exact: true })).not.toBeChecked();
+  }
+  await expect(page.getByLabel('Referral fee', { exact: true })).toHaveValue('off');
   await produceResult(page, slug);
   await expect(page.locator('[data-amazon-result]')).toBeVisible();
   await expect(page.getByText('No Amazon fees are configured.', { exact: false })).toBeVisible();
-  await page.getByRole('switch', { name: 'Amazon Fees', exact: true }).click();
   await page.getByLabel('Closing fee', { exact: true }).selectOption('fixed');
   await page.getByLabel('Closing fee amount', { exact: true }).fill('10');
   await page.getByLabel('Closing fee GST treatment', { exact: true }).selectOption('none');
@@ -31,7 +36,7 @@ test('production Amazon form activates existing results, preserves collapsed val
 test('production price-slab rows reach the existing operation and renderer', async ({ page }) => {
   await gotoReady(page, `/${slug}`);
   await produceResult(page, slug);
-  await page.getByRole('switch', { name: 'Amazon Fees', exact: true }).click();
+  await expect(page.getByRole('switch', { name: 'Amazon Fees', exact: true })).toBeChecked();
   await page.getByLabel('Referral fee', { exact: true }).selectOption('price-slabs');
   await page.getByLabel('Referral fee GST treatment', { exact: true }).selectOption('none');
   const rows = page.locator('[data-rows-field="referralPriceSlabs"]');
