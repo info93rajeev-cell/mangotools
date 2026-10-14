@@ -225,7 +225,16 @@ export function amazonManualProfitabilityInput(
   preset: ResolvedPreset,
   values: Readonly<FieldValues>,
 ): Result<ToolRequest> {
-  const base = buildRequest(preset, values);
+  // Disclosure switches affect rendering, not charging. Project them open only for request
+  // building, retaining normal normalization, missing checks and all non-section conditions.
+  const base = buildRequest(preset, {
+    ...values,
+    showProductDetails: true,
+    showTaxes: true,
+    showAmazonFees: true,
+    showShipping: true,
+    showAdjustments: true,
+  });
   const form: FeeForm = { values, missing: [...base.missing], error: null };
   const input = { ...base.input };
   const weight = text(form, 'chargeableWeightValue');
