@@ -32,12 +32,17 @@ use `INVALID_INPUT`. Financial validation and unsigned amount rules remain engin
 
 ToolIsland supplies this adapter to the existing runtime `prepareRequest` hook only for
 exact preset id `estimate/amazon.manual-profitability`. Other ids, including those using
-the same operation, retain generic preparation. Grouped/result presentation awaits 6A2c;
-real-operation/browser integration remains later platform evidence. No production preset,
-tool or page is added here.
+the same operation, retain generic preparation. That exact id also selects a bounded result
+view: profit is primary, estimated settlement prominent, ratios/break-even compact, and
+the fee table and supporting totals closed initially. Values come only from engine output;
+null metrics show unavailable/indeterminate text and break-even reasons use engine warnings.
+The 20-row fee table uses responsive two-column rows with native table headers. Real-operation/
+browser integration remains PR 6C evidence. No production preset, tool or page is added here.
 
 ## Changelog
 
+- TASK-008L PR 6A2c: added bounded profit/settlement/metrics, nullable warning reasons,
+  fee table and detailed breakdown; existing working disclosure reused, other presets unchanged.
 - TASK-008L PR 6A2b2: added exact-id ToolIsland activation through the existing runtime
   preparation hook and focused wiring/lifecycle tests; no result presentation or public tool.
 - TASK-008L PR 6A2b1: added seller costs, withholding, settlement and scenario-adjustment
