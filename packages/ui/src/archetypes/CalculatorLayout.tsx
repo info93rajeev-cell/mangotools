@@ -3,7 +3,9 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
+import { AmazonErrorCorrection } from '../toolkit/AmazonErrorCorrection.tsx';
 import { AmazonManualProfitabilityResult } from '../toolkit/AmazonManualProfitabilityResult.tsx';
+import { AmazonConfigurationNotices, amazonErrorTarget } from '../toolkit/amazonFormFeedback.tsx';
 import { applyFieldEdit } from '../toolkit/fieldEffects.ts';
 import { OptionControls } from '../toolkit/OptionControls.tsx';
 import {
@@ -163,6 +165,7 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
     >
       <ResultPanelHead idPrefix={idPrefix} actions={actions} />
       <ResultContent rows={rows} amazon={amazon} />
+      <AmazonConfigurationNotices id={preset.id} values={values} active={phase === 'result'} />
       {!amazon && rows.length === 0 && phase !== 'error' ? (
         <p class={styles.placeholder}>{placeholder}</p>
       ) : null}
@@ -194,6 +197,8 @@ export function CalculatorLayout({
   userPresets,
 }: CalculatorLayoutProps) {
   const { values, error } = snapshot;
+  const target = snapshot.phase === 'error' ? amazonErrorTarget(preset, values, error?.path) : null;
+  const errorPath = target?.path ?? error?.path;
   const fields = visibleEntries(preset.fields, values);
   // A list field's own error path points inside it (e.g. "openings[0].width").
   const fieldError =
@@ -201,15 +206,24 @@ export function CalculatorLayout({
       .map(([key]) => key)
       .find(
         (key) =>
-          error?.path === key ||
-          error?.path?.startsWith(`${key}[`) ||
-          (preset.fields[key]?.kind === 'rows' && isRowsFieldPath(key, error?.path)),
+          errorPath === key ||
+          errorPath?.startsWith(`${key}[`) ||
+          (preset.fields[key]?.kind === 'rows' && isRowsFieldPath(key, errorPath)),
       ) ?? null;
   const errorFor = (key: string) =>
     error && key === fieldError ? messageFor(preset, error) : null;
   return (
     <div class={styles.calculator} data-density={preset.ui.density ?? 'comfortable'}>
       <section class={styles.panel} aria-label={t('input.label')} data-input-panel="">
+        {target ? (
+          <AmazonErrorCorrection
+            target={target}
+            preset={preset}
+            values={values}
+            store={store}
+            idPrefix={idPrefix}
+          />
+        ) : null}
         <InputPanelHead actions={actions} />
         {userPresets ? (
           <ToolPresetManager
@@ -234,7 +248,7 @@ export function CalculatorLayout({
           fields={fields}
           values={values}
           errorFor={errorFor}
-          errorPath={error?.path}
+          errorPath={errorPath}
           onValue={(key, next) => store.setMany(applyFieldEdit(preset, values, key, next))}
         />
       </section>
@@ -242,7 +256,7 @@ export function CalculatorLayout({
         idPrefix={idPrefix}
         preset={preset}
         snapshot={snapshot}
-        fieldError={fieldError}
+        fieldError={target ? null : fieldError}
         actions={actions}
       />
     </div>

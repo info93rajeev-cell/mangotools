@@ -1,0 +1,296 @@
+{
+  "source": {
+    "type": "synthetic",
+    "citation": "TASK-008L approved flat form keys and disclosure ownership; rendering-only test data, not a production preset."
+  },
+  "values": {
+    "sellingPricePerUnit": "1000",
+    "productCostPerUnit": "400",
+    "quantity": "2",
+    "productGstRatePercent": "18",
+    "marketplaceFeeGstRatePercent": "12",
+    "promotionalDiscount": "10",
+    "sellingPriceTaxMode": "gst-exclusive",
+    "showProductDetails": "false",
+    "showAmazonFees": "false",
+    "showShipping": "false",
+    "showTaxes": "false",
+    "showAdjustments": "false"
+  },
+  "fields": {
+    "sellingPricePerUnit": {
+      "labelKey": "sellingPricePerUnit",
+      "kind": "money",
+      "order": 0,
+      "uiOnly": false
+    },
+    "productCostPerUnit": {
+      "labelKey": "productCostPerUnit",
+      "kind": "money",
+      "order": 1,
+      "uiOnly": false
+    },
+    "quantity": {
+      "labelKey": "quantity",
+      "kind": "money",
+      "order": 2,
+      "uiOnly": false
+    },
+    "showProductDetails": {
+      "labelKey": "showProductDetails",
+      "kind": "boolean",
+      "order": 3,
+      "uiOnly": true
+    },
+    "showAmazonFees": {
+      "labelKey": "showAmazonFees",
+      "kind": "boolean",
+      "order": 4,
+      "uiOnly": true
+    },
+    "showShipping": {
+      "labelKey": "showShipping",
+      "kind": "boolean",
+      "order": 5,
+      "uiOnly": true
+    },
+    "showTaxes": {
+      "labelKey": "showTaxes",
+      "kind": "boolean",
+      "order": 6,
+      "uiOnly": true
+    },
+    "showAdjustments": {
+      "labelKey": "showAdjustments",
+      "kind": "boolean",
+      "order": 7,
+      "uiOnly": true
+    },
+    "productGstRatePercent": {
+      "labelKey": "productGstRatePercent",
+      "kind": "text",
+      "order": 8,
+      "uiOnly": false,
+      "visibleWhen": {
+        "showTaxes": ["true"]
+      }
+    },
+    "marketplaceFeeGstRatePercent": {
+      "labelKey": "marketplaceFeeGstRatePercent",
+      "kind": "text",
+      "order": 9,
+      "uiOnly": false,
+      "visibleWhen": {
+        "showTaxes": ["true"]
+      }
+    },
+    "sellingPriceTaxMode": {
+      "labelKey": "sellingPriceTaxMode",
+      "kind": "enum",
+      "options": [{ "value": "gst-inclusive" }, { "value": "gst-exclusive" }],
+      "order": 10,
+      "uiOnly": false,
+      "visibleWhen": {
+        "showTaxes": ["true"]
+      }
+    },
+    "promotionalDiscount": {
+      "labelKey": "promotionalDiscount",
+      "kind": "money",
+      "order": 11,
+      "uiOnly": false,
+      "visibleWhen": {
+        "showProductDetails": ["true"]
+      }
+    },
+    "chargeableWeightValue": {
+      "labelKey": "chargeableWeightValue",
+      "kind": "text",
+      "order": 12,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showShipping": ["true"]
+      }
+    },
+    "chargeableWeightUnit": {
+      "labelKey": "chargeableWeightUnit",
+      "kind": "text",
+      "order": 13,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showShipping": ["true"]
+      }
+    },
+    "packagingAmount": {
+      "labelKey": "packagingAmount",
+      "kind": "text",
+      "order": 14,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showShipping": ["true"]
+      }
+    },
+    "tcsValue": {
+      "labelKey": "tcsValue",
+      "kind": "text",
+      "order": 15,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showTaxes": ["true"]
+      }
+    },
+    "otherSettlementAmount": {
+      "labelKey": "otherSettlementAmount",
+      "kind": "text",
+      "order": 16,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showTaxes": ["true"]
+      }
+    },
+    "referralMode": {
+      "labelKey": "referralMode",
+      "kind": "text",
+      "order": 17,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      }
+    },
+    "closingMode": {
+      "labelKey": "closingMode",
+      "kind": "text",
+      "order": 18,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      }
+    },
+    "weightHandlingMode": {
+      "labelKey": "weightHandlingMode",
+      "kind": "text",
+      "order": 19,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      }
+    },
+    "pickPackMode": {
+      "labelKey": "pickPackMode",
+      "kind": "text",
+      "order": 20,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      }
+    },
+    "otherServiceMode": {
+      "labelKey": "otherServiceMode",
+      "kind": "text",
+      "order": 21,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      }
+    },
+    "returnChargeAmount": {
+      "labelKey": "returnChargeAmount",
+      "kind": "text",
+      "order": 22,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAdjustments": ["true"]
+      }
+    },
+    "reverseLogisticsAmount": {
+      "labelKey": "reverseLogisticsAmount",
+      "kind": "text",
+      "order": 23,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAdjustments": ["true"]
+      }
+    },
+    "reimbursementAmount": {
+      "labelKey": "reimbursementAmount",
+      "kind": "text",
+      "order": 24,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAdjustments": ["true"]
+      }
+    },
+    "inventoryWriteOffAmount": {
+      "labelKey": "inventoryWriteOffAmount",
+      "kind": "text",
+      "order": 25,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAdjustments": ["true"]
+      }
+    },
+    "otherAdjustmentAmount": {
+      "labelKey": "otherAdjustmentAmount",
+      "kind": "text",
+      "order": 26,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAdjustments": ["true"]
+      }
+    },
+    "referralPriceSlabs": {
+      "labelKey": "referralPriceSlabs",
+      "kind": "rows",
+      "order": 27,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      },
+      "rows": {
+        "maxRows": 20,
+        "columns": {
+          "value": {
+            "kind": "money",
+            "labelKey": "value"
+          }
+        }
+      }
+    },
+    "closingPriceSlabs": {
+      "labelKey": "closingPriceSlabs",
+      "kind": "rows",
+      "order": 28,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      },
+      "rows": {
+        "maxRows": 20,
+        "columns": {
+          "value": {
+            "kind": "money",
+            "labelKey": "value"
+          }
+        }
+      }
+    },
+    "weightHandlingWeightSlabs": {
+      "labelKey": "weightHandlingWeightSlabs",
+      "kind": "rows",
+      "order": 29,
+      "uiOnly": true,
+      "visibleWhen": {
+        "showAmazonFees": ["true"]
+      },
+      "rows": {
+        "maxRows": 20,
+        "columns": {
+          "amount": {
+            "kind": "money",
+            "labelKey": "amount"
+          }
+        }
+      }
+    }
+  }
+}

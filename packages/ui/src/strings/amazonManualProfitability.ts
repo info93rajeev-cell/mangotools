@@ -38,6 +38,8 @@ const FEES: Readonly<Record<string, string>> = {
 };
 const TEXT: Readonly<Record<string, string>> = {
   ...AMAZON_BREAKDOWN_LABELS,
+  noFees: 'No Amazon fees are configured. Profit and settlement exclude Amazon marketplace fees.',
+  noProductGst: 'Product GST is not modelled. GST liability is excluded from this estimate.',
   economicProfit: 'Estimated profit',
   estimatedSettlement: 'Estimated Amazon settlement',
   profitMarginPercent: 'Profit margin',
