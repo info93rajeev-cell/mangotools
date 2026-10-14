@@ -31,6 +31,7 @@ describe('privacy.dataClass classification', () => {
 
   it('matches the reviewed classification of every current tool', () => {
     const personal = [
+      'amazon-india-seller-fee-profit-estimator',
       'base64-encode-decode',
       'csv-to-json',
       'export-commercial-invoice-generator',

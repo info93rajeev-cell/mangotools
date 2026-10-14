@@ -1,0 +1,224 @@
+# Static field declarations shared only by the Amazon production preset; no executable mappings.
+presetVersion: 1
+id: estimate/amazon.manual-financial-fields
+version: 0.1.0
+abstract: true
+fields:
+  packagingAmount: {"labelKey":"amazon.field.packagingAmount","kind":"money","order":450,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.packagingAmount","helpMode":"disclosure"}
+  packagingApplySale: {"labelKey":"amazon.field.packagingApplySale","kind":"boolean","order":451,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"true"}
+  packagingApplyReturn: {"labelKey":"amazon.field.packagingApplyReturn","kind":"boolean","order":452,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  packagingApplyRto: {"labelKey":"amazon.field.packagingApplyRto","kind":"boolean","order":453,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  packagingApplyCancellation: {"labelKey":"amazon.field.packagingApplyCancellation","kind":"boolean","order":454,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  sellerShippingAmount: {"labelKey":"amazon.field.sellerShippingAmount","kind":"money","order":480,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.sellerShippingAmount","helpMode":"disclosure"}
+  sellerShippingApplySale: {"labelKey":"amazon.field.sellerShippingApplySale","kind":"boolean","order":481,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"true"}
+  sellerShippingApplyReturn: {"labelKey":"amazon.field.sellerShippingApplyReturn","kind":"boolean","order":482,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  sellerShippingApplyRto: {"labelKey":"amazon.field.sellerShippingApplyRto","kind":"boolean","order":483,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  sellerShippingApplyCancellation: {"labelKey":"amazon.field.sellerShippingApplyCancellation","kind":"boolean","order":484,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  advertisingAmount: {"labelKey":"amazon.field.advertisingAmount","kind":"money","order":510,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.advertisingAmount","helpMode":"disclosure"}
+  advertisingApplySale: {"labelKey":"amazon.field.advertisingApplySale","kind":"boolean","order":511,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"true"}
+  advertisingApplyReturn: {"labelKey":"amazon.field.advertisingApplyReturn","kind":"boolean","order":512,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  advertisingApplyRto: {"labelKey":"amazon.field.advertisingApplyRto","kind":"boolean","order":513,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  advertisingApplyCancellation: {"labelKey":"amazon.field.advertisingApplyCancellation","kind":"boolean","order":514,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  otherTransactionAmount: {"labelKey":"amazon.field.otherTransactionAmount","kind":"money","order":540,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.otherTransactionAmount","helpMode":"disclosure"}
+  otherTransactionApplySale: {"labelKey":"amazon.field.otherTransactionApplySale","kind":"boolean","order":541,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"true"}
+  otherTransactionApplyReturn: {"labelKey":"amazon.field.otherTransactionApplyReturn","kind":"boolean","order":542,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  otherTransactionApplyRto: {"labelKey":"amazon.field.otherTransactionApplyRto","kind":"boolean","order":543,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  otherTransactionApplyCancellation: {"labelKey":"amazon.field.otherTransactionApplyCancellation","kind":"boolean","order":544,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"default":"false"}
+  returnChargeAmount: {"labelKey":"amazon.field.returnChargeAmount","kind":"money","order":710,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.returnChargeAmount","helpMode":"disclosure"}
+  returnChargeEffects: {"labelKey":"amazon.field.returnChargeEffects","kind":"enum","order":711,"width":"half","visibleWhen":{"showAdjustments":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"economic","labelKey":"amazon.option.economic"},{"value":"settlement","labelKey":"amazon.option.settlement"},{"value":"both","labelKey":"amazon.option.both"}],"default":"unselected","uiOnly":true}
+  returnChargeApplyReturn: {"labelKey":"amazon.field.returnChargeApplyReturn","kind":"boolean","order":714,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  returnChargeApplyRto: {"labelKey":"amazon.field.returnChargeApplyRto","kind":"boolean","order":715,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  returnChargeApplyCancellation: {"labelKey":"amazon.field.returnChargeApplyCancellation","kind":"boolean","order":716,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reverseLogisticsAmount: {"labelKey":"amazon.field.reverseLogisticsAmount","kind":"money","order":750,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.reverseLogisticsAmount","helpMode":"disclosure"}
+  reverseLogisticsEffects: {"labelKey":"amazon.field.reverseLogisticsEffects","kind":"enum","order":751,"width":"half","visibleWhen":{"showAdjustments":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"economic","labelKey":"amazon.option.economic"},{"value":"settlement","labelKey":"amazon.option.settlement"},{"value":"both","labelKey":"amazon.option.both"}],"default":"unselected","uiOnly":true}
+  reverseLogisticsApplyReturn: {"labelKey":"amazon.field.reverseLogisticsApplyReturn","kind":"boolean","order":754,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reverseLogisticsApplyRto: {"labelKey":"amazon.field.reverseLogisticsApplyRto","kind":"boolean","order":755,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reverseLogisticsApplyCancellation: {"labelKey":"amazon.field.reverseLogisticsApplyCancellation","kind":"boolean","order":756,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reimbursementAmount: {"labelKey":"amazon.field.reimbursementAmount","kind":"money","order":790,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.reimbursementAmount","helpMode":"disclosure"}
+  reimbursementEffects: {"labelKey":"amazon.field.reimbursementEffects","kind":"enum","order":791,"width":"half","visibleWhen":{"showAdjustments":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"economic","labelKey":"amazon.option.economic"},{"value":"settlement","labelKey":"amazon.option.settlement"},{"value":"both","labelKey":"amazon.option.both"}],"default":"unselected","uiOnly":true}
+  reimbursementApplyReturn: {"labelKey":"amazon.field.reimbursementApplyReturn","kind":"boolean","order":794,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reimbursementApplyRto: {"labelKey":"amazon.field.reimbursementApplyRto","kind":"boolean","order":795,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  reimbursementApplyCancellation: {"labelKey":"amazon.field.reimbursementApplyCancellation","kind":"boolean","order":796,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  inventoryWriteOffAmount: {"labelKey":"amazon.field.inventoryWriteOffAmount","kind":"money","order":830,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.inventoryWriteOffAmount","helpMode":"disclosure"}
+  inventoryWriteOffApplyReturn: {"labelKey":"amazon.field.inventoryWriteOffApplyReturn","kind":"boolean","order":834,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  inventoryWriteOffApplyRto: {"labelKey":"amazon.field.inventoryWriteOffApplyRto","kind":"boolean","order":835,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  inventoryWriteOffApplyCancellation: {"labelKey":"amazon.field.inventoryWriteOffApplyCancellation","kind":"boolean","order":836,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  otherAdjustmentAmount: {"labelKey":"amazon.field.otherAdjustmentAmount","kind":"money","order":870,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.otherAdjustmentAmount","helpMode":"disclosure"}
+  otherAdjustmentEffects: {"labelKey":"amazon.field.otherAdjustmentEffects","kind":"enum","order":871,"width":"half","visibleWhen":{"showAdjustments":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"economic","labelKey":"amazon.option.economic"},{"value":"settlement","labelKey":"amazon.option.settlement"},{"value":"both","labelKey":"amazon.option.both"}],"default":"unselected","uiOnly":true}
+  otherAdjustmentDirection: {"labelKey":"amazon.field.otherAdjustmentDirection","kind":"enum","order":872,"width":"half","visibleWhen":{"showAdjustments":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"charge","labelKey":"amazon.option.charge"},{"value":"credit","labelKey":"amazon.option.credit"}],"default":"unselected","uiOnly":true}
+  otherAdjustmentApplyReturn: {"labelKey":"amazon.field.otherAdjustmentApplyReturn","kind":"boolean","order":874,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  otherAdjustmentApplyRto: {"labelKey":"amazon.field.otherAdjustmentApplyRto","kind":"boolean","order":875,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  otherAdjustmentApplyCancellation: {"labelKey":"amazon.field.otherAdjustmentApplyCancellation","kind":"boolean","order":876,"width":"half","visibleWhen":{"showAdjustments":["true"]},"uiOnly":true,"default":"false"}
+  sellingPriceTaxMode: {"labelKey":"amazon.field.sellingPriceTaxMode","kind":"enum","order":1010,"width":"half","visibleWhen":{"showTaxes":["true"]},"control":"select","options":[{"value":"gst-inclusive","labelKey":"amazon.option.gst-inclusive"},{"value":"gst-exclusive","labelKey":"amazon.option.gst-exclusive"}],"default":"gst-inclusive","required":true}
+  productGstRatePercent: {"labelKey":"amazon.field.productGstRatePercent","kind":"percent","order":1020,"width":"half","visibleWhen":{"showTaxes":["true"]},"unit":"%","helpKey":"amazon.help.productGstRatePercent","helpMode":"disclosure"}
+  marketplaceFeeGstRatePercent: {"labelKey":"amazon.field.marketplaceFeeGstRatePercent","kind":"percent","order":1030,"width":"half","visibleWhen":{"showTaxes":["true"]},"unit":"%","helpKey":"amazon.help.marketplaceFeeGstRatePercent","helpMode":"disclosure"}
+  tcsMode: {"labelKey":"amazon.field.tcsMode","kind":"enum","order":1040,"width":"half","visibleWhen":{"showTaxes":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"},{"value":"percent","labelKey":"amazon.option.percent"}],"default":"off","uiOnly":true}
+  tcsValue: {"labelKey":"amazon.field.tcsValue","kind":"number","order":1041,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["fixed","percent"]},"uiOnly":true,"helpKey":"amazon.help.tcsValue","helpMode":"disclosure"}
+  tcsPercentageBase: {"labelKey":"amazon.field.tcsPercentageBase","kind":"enum","order":1042,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["percent"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"tax-exclusive-revenue","labelKey":"amazon.option.tax-exclusive-revenue"},{"value":"customer-invoice-value","labelKey":"amazon.option.customer-invoice-value"}],"default":"unselected","uiOnly":true}
+  tcsApplySale: {"labelKey":"amazon.field.tcsApplySale","kind":"boolean","order":1043,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["fixed","percent"]},"uiOnly":true,"default":"true"}
+  tcsApplyReturn: {"labelKey":"amazon.field.tcsApplyReturn","kind":"boolean","order":1044,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  tcsApplyRto: {"labelKey":"amazon.field.tcsApplyRto","kind":"boolean","order":1045,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  tcsApplyCancellation: {"labelKey":"amazon.field.tcsApplyCancellation","kind":"boolean","order":1046,"width":"half","visibleWhen":{"showTaxes":["true"],"tcsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  tdsMode: {"labelKey":"amazon.field.tdsMode","kind":"enum","order":1070,"width":"half","visibleWhen":{"showTaxes":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"},{"value":"percent","labelKey":"amazon.option.percent"}],"default":"off","uiOnly":true}
+  tdsValue: {"labelKey":"amazon.field.tdsValue","kind":"number","order":1071,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["fixed","percent"]},"uiOnly":true,"helpKey":"amazon.help.tdsValue","helpMode":"disclosure"}
+  tdsPercentageBase: {"labelKey":"amazon.field.tdsPercentageBase","kind":"enum","order":1072,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["percent"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"tax-exclusive-revenue","labelKey":"amazon.option.tax-exclusive-revenue"},{"value":"customer-invoice-value","labelKey":"amazon.option.customer-invoice-value"}],"default":"unselected","uiOnly":true}
+  tdsApplySale: {"labelKey":"amazon.field.tdsApplySale","kind":"boolean","order":1073,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["fixed","percent"]},"uiOnly":true,"default":"true"}
+  tdsApplyReturn: {"labelKey":"amazon.field.tdsApplyReturn","kind":"boolean","order":1074,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  tdsApplyRto: {"labelKey":"amazon.field.tdsApplyRto","kind":"boolean","order":1075,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  tdsApplyCancellation: {"labelKey":"amazon.field.tdsApplyCancellation","kind":"boolean","order":1076,"width":"half","visibleWhen":{"showTaxes":["true"],"tdsMode":["fixed","percent"]},"uiOnly":true,"default":"false"}
+  otherSettlementAmount: {"labelKey":"amazon.field.otherSettlementAmount","kind":"money","order":1110,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.otherSettlementAmount","helpMode":"disclosure"}
+  otherSettlementApplySale: {"labelKey":"amazon.field.otherSettlementApplySale","kind":"boolean","order":1111,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"true"}
+  otherSettlementApplyReturn: {"labelKey":"amazon.field.otherSettlementApplyReturn","kind":"boolean","order":1112,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+  otherSettlementApplyRto: {"labelKey":"amazon.field.otherSettlementApplyRto","kind":"boolean","order":1113,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+  otherSettlementApplyCancellation: {"labelKey":"amazon.field.otherSettlementApplyCancellation","kind":"boolean","order":1114,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+  settlementCreditAmount: {"labelKey":"amazon.field.settlementCreditAmount","kind":"money","order":1140,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"currency":"INR","helpKey":"amazon.help.settlementCreditAmount","helpMode":"disclosure"}
+  settlementCreditApplySale: {"labelKey":"amazon.field.settlementCreditApplySale","kind":"boolean","order":1141,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"true"}
+  settlementCreditApplyReturn: {"labelKey":"amazon.field.settlementCreditApplyReturn","kind":"boolean","order":1142,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+  settlementCreditApplyRto: {"labelKey":"amazon.field.settlementCreditApplyRto","kind":"boolean","order":1143,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+  settlementCreditApplyCancellation: {"labelKey":"amazon.field.settlementCreditApplyCancellation","kind":"boolean","order":1144,"width":"half","visibleWhen":{"showTaxes":["true"]},"uiOnly":true,"default":"false"}
+strings:
+  en:
+    amazon.option.off: "Off"
+    amazon.option.percent: "Percentage"
+    amazon.option.price-slabs: "Price slabs"
+    amazon.option.fixed: "Fixed"
+    amazon.option.weight-slabs: "Weight slabs"
+    amazon.option.unselected: "Choose…"
+    amazon.option.none: "No GST"
+    amazon.option.recoverable: "Recoverable"
+    amazon.option.non-recoverable: "Non-recoverable"
+    amazon.option.per-order: "Whole order"
+    amazon.option.per-unit: "Per unit"
+    amazon.option.gst-inclusive: "GST inclusive"
+    amazon.option.gst-exclusive: "GST exclusive"
+    amazon.option.successful-sale: "Successful sale"
+    amazon.option.customer-return: "Customer return"
+    amazon.option.rto: "RTO"
+    amazon.option.cancellation: "Cancellation"
+    amazon.option.easy-ship: "Easy Ship"
+    amazon.option.self-ship: "Self Ship"
+    amazon.option.fba: "FBA"
+    amazon.option.kg: "kg"
+    amazon.option.g: "g"
+    amazon.option.economic: "Economic only"
+    amazon.option.settlement: "Settlement only"
+    amazon.option.both: "Economic and settlement"
+    amazon.option.charge: "Charge"
+    amazon.option.credit: "Credit"
+    amazon.option.tax-exclusive-revenue: "Tax-exclusive revenue"
+    amazon.option.customer-invoice-value: "Customer invoice value"
+    amazon.field.packagingAmount: "Packaging cost (whole order)"
+    amazon.field.packagingApplySale: "Packaging cost — Successful sale"
+    amazon.field.packagingApplyReturn: "Packaging cost — Customer return"
+    amazon.field.packagingApplyRto: "Packaging cost — RTO"
+    amazon.field.packagingApplyCancellation: "Packaging cost — Cancellation"
+    amazon.help.packagingAmount: "Whole-order economic cost, not automatically deducted from Amazon settlement. Select every applicable scenario. Do not enter the same charge twice as both an Amazon fee and a seller cost."
+    amazon.field.sellerShippingAmount: "Seller shipping cost (whole order)"
+    amazon.field.sellerShippingApplySale: "Seller shipping cost — Successful sale"
+    amazon.field.sellerShippingApplyReturn: "Seller shipping cost — Customer return"
+    amazon.field.sellerShippingApplyRto: "Seller shipping cost — RTO"
+    amazon.field.sellerShippingApplyCancellation: "Seller shipping cost — Cancellation"
+    amazon.help.sellerShippingAmount: "Whole-order economic cost, not automatically deducted from Amazon settlement. Select every applicable scenario. Do not enter the same charge twice as both an Amazon fee and a seller cost."
+    amazon.field.advertisingAmount: "Advertising cost (whole order)"
+    amazon.field.advertisingApplySale: "Advertising cost — Successful sale"
+    amazon.field.advertisingApplyReturn: "Advertising cost — Customer return"
+    amazon.field.advertisingApplyRto: "Advertising cost — RTO"
+    amazon.field.advertisingApplyCancellation: "Advertising cost — Cancellation"
+    amazon.help.advertisingAmount: "Whole-order economic cost, not automatically deducted from Amazon settlement. Select every applicable scenario. Do not enter the same charge twice as both an Amazon fee and a seller cost."
+    amazon.field.otherTransactionAmount: "Other transaction cost (whole order)"
+    amazon.field.otherTransactionApplySale: "Other transaction cost — Successful sale"
+    amazon.field.otherTransactionApplyReturn: "Other transaction cost — Customer return"
+    amazon.field.otherTransactionApplyRto: "Other transaction cost — RTO"
+    amazon.field.otherTransactionApplyCancellation: "Other transaction cost — Cancellation"
+    amazon.help.otherTransactionAmount: "Whole-order economic cost, not automatically deducted from Amazon settlement. Select every applicable scenario. Do not enter the same charge twice as both an Amazon fee and a seller cost."
+    amazon.field.returnChargeAmount: "Return charge (whole order)"
+    amazon.field.returnChargeEffects: "Return charge effect"
+    amazon.field.returnChargeApplyReturn: "Return charge — Customer return"
+    amazon.field.returnChargeApplyRto: "Return charge — RTO"
+    amazon.field.returnChargeApplyCancellation: "Return charge — Cancellation"
+    amazon.help.returnChargeAmount: "Select applicable customer-return, RTO or cancellation scenarios and the intended effect. No adjustment is inferred automatically."
+    amazon.field.reverseLogisticsAmount: "Reverse logistics (whole order)"
+    amazon.field.reverseLogisticsEffects: "Reverse logistics effect"
+    amazon.field.reverseLogisticsApplyReturn: "Reverse logistics — Customer return"
+    amazon.field.reverseLogisticsApplyRto: "Reverse logistics — RTO"
+    amazon.field.reverseLogisticsApplyCancellation: "Reverse logistics — Cancellation"
+    amazon.help.reverseLogisticsAmount: "Select applicable customer-return, RTO or cancellation scenarios and the intended effect. No adjustment is inferred automatically."
+    amazon.field.reimbursementAmount: "Reimbursement (whole order)"
+    amazon.field.reimbursementEffects: "Reimbursement effect"
+    amazon.field.reimbursementApplyReturn: "Reimbursement — Customer return"
+    amazon.field.reimbursementApplyRto: "Reimbursement — RTO"
+    amazon.field.reimbursementApplyCancellation: "Reimbursement — Cancellation"
+    amazon.help.reimbursementAmount: "Select applicable customer-return, RTO or cancellation scenarios and the intended effect. No adjustment is inferred automatically."
+    amazon.field.inventoryWriteOffAmount: "Inventory write-off (whole order)"
+    amazon.field.inventoryWriteOffApplyReturn: "Inventory write-off — Customer return"
+    amazon.field.inventoryWriteOffApplyRto: "Inventory write-off — RTO"
+    amazon.field.inventoryWriteOffApplyCancellation: "Inventory write-off — Cancellation"
+    amazon.help.inventoryWriteOffAmount: "Explicit lost or damaged inventory cost. Economic only; never a settlement deduction. Select applicable non-success scenarios."
+    amazon.field.otherAdjustmentAmount: "Other adjustment (whole order)"
+    amazon.field.otherAdjustmentEffects: "Other adjustment effect"
+    amazon.field.otherAdjustmentDirection: "Other adjustment direction"
+    amazon.field.otherAdjustmentApplyReturn: "Other adjustment — Customer return"
+    amazon.field.otherAdjustmentApplyRto: "Other adjustment — RTO"
+    amazon.field.otherAdjustmentApplyCancellation: "Other adjustment — Cancellation"
+    amazon.help.otherAdjustmentAmount: "Select applicable customer-return, RTO or cancellation scenarios and the intended effect. No adjustment is inferred automatically."
+    amazon.field.sellingPriceTaxMode: "Selling price tax mode"
+    amazon.field.productGstRatePercent: "Product GST rate %"
+    amazon.help.productGstRatePercent: "Enter your applicable rate. Blank means product GST is not modelled, not that the product is exempt."
+    amazon.field.marketplaceFeeGstRatePercent: "Amazon fee GST rate %"
+    amazon.help.marketplaceFeeGstRatePercent: "Enter your applicable rate; none is assumed. Required for applicable fees marked recoverable or non-recoverable. Recoverable fee GST reduces settlement only; non-recoverable fee GST also reduces economic profit."
+    amazon.field.tcsMode: "TCS"
+    amazon.field.tcsValue: "TCS amount / rate"
+    amazon.field.tcsPercentageBase: "TCS percentage base"
+    amazon.field.tcsApplySale: "TCS — Successful sale"
+    amazon.field.tcsApplyReturn: "TCS — Customer return"
+    amazon.field.tcsApplyRto: "TCS — RTO"
+    amazon.field.tcsApplyCancellation: "TCS — Cancellation"
+    amazon.help.tcsValue: "Fixed: whole-order INR amount, at most 2 decimals. Percentage: rate, at most 4 decimals. Settlement only; does not reduce economic profit. No legal applicability or rate is assumed."
+    amazon.field.tdsMode: "TDS"
+    amazon.field.tdsValue: "TDS amount / rate"
+    amazon.field.tdsPercentageBase: "TDS percentage base"
+    amazon.field.tdsApplySale: "TDS — Successful sale"
+    amazon.field.tdsApplyReturn: "TDS — Customer return"
+    amazon.field.tdsApplyRto: "TDS — RTO"
+    amazon.field.tdsApplyCancellation: "TDS — Cancellation"
+    amazon.help.tdsValue: "Fixed: whole-order INR amount, at most 2 decimals. Percentage: rate, at most 4 decimals. Settlement only; does not reduce economic profit. No legal applicability or rate is assumed."
+    amazon.field.otherSettlementAmount: "Other settlement deductions (whole order)"
+    amazon.field.otherSettlementApplySale: "Other settlement deductions — Successful sale"
+    amazon.field.otherSettlementApplyReturn: "Other settlement deductions — Customer return"
+    amazon.field.otherSettlementApplyRto: "Other settlement deductions — RTO"
+    amazon.field.otherSettlementApplyCancellation: "Other settlement deductions — Cancellation"
+    amazon.help.otherSettlementAmount: "A whole-order cash settlement line, not an economic cost or profit credit. Select applicable scenarios explicitly."
+    amazon.field.settlementCreditAmount: "Settlement credits (whole order)"
+    amazon.field.settlementCreditApplySale: "Settlement credits — Successful sale"
+    amazon.field.settlementCreditApplyReturn: "Settlement credits — Customer return"
+    amazon.field.settlementCreditApplyRto: "Settlement credits — RTO"
+    amazon.field.settlementCreditApplyCancellation: "Settlement credits — Cancellation"
+    amazon.help.settlementCreditAmount: "A whole-order cash settlement line, not an economic cost or profit credit. Select applicable scenarios explicitly."
+    work.marketplaceManualProfitability.grossCustomerValue: "Gross customer value = {sellingPricePerUnit:money} × {quantity} = {result:money}"
+    work.marketplaceManualProfitability.sellerFundedReduction: "Seller-funded reductions = {promotionalDiscount:money} + {couponDiscount:money} = {result:money}"
+    work.marketplaceManualProfitability.realizedCustomerValue: "Value after discounts = {grossCustomerValue:money} − {sellerFundedReduction:money} = {result:money}"
+    work.marketplaceManualProfitability.taxExclusiveRevenue: "Tax-exclusive revenue from {realizedCustomerValue:money} using product GST {productGstRatePercent}% and the selected tax mode: {result:money}"
+    work.marketplaceManualProfitability.orderProductGstAmount: "Original-order product GST: {result:money}"
+    work.marketplaceManualProfitability.customerInvoiceValue: "Customer invoice value in the selected tax mode: {result:money}"
+    work.marketplaceManualProfitability.productCostTotal: "Product cost = {productCostPerUnit:money} × {quantity} = {result:money}"
+    work.marketplaceManualProfitability.productGstLiabilityRecognised: "Recognized product GST for {scenario}: {result:money}"
+    work.marketplaceManualProfitability.sellerControlledCostsTotal: "Applicable whole-order seller-controlled economic costs: {result:money}"
+    work.marketplaceManualProfitability.scenarioEconomicCosts: "Applicable scenario economic charges: {result:money}"
+    work.marketplaceManualProfitability.scenarioEconomicCredits: "Applicable scenario economic credits: {result:money}"
+    work.marketplaceManualProfitability.scenarioSettlementDeductions: "Applicable scenario settlement charges: {result:money}"
+    work.marketplaceManualProfitability.scenarioSettlementCredits: "Applicable scenario settlement credits: {result:money}"
+    work.marketplaceManualProfitability.marketplaceFeeGstTotal: "Amazon fee GST = {recoverableMarketplaceFeeGst:money} recoverable + {nonRecoverableMarketplaceFeeGst:money} non-recoverable = {result:money}"
+    work.marketplaceManualProfitability.tcsAmount: "Configured settlement-only TCS: {result:money}"
+    work.marketplaceManualProfitability.tdsAmount: "Configured settlement-only TDS: {result:money}"
+    work.marketplaceManualProfitability.totalSettlementDeductions: "Amazon fees, fee GST, TCS, TDS and applicable settlement charges: {result:money}"
+    work.marketplaceManualProfitability.estimatedSettlement: "Estimated settlement = {invoiceValueSettled:money} − {totalSettlementDeductions:money} + {settlementCreditsApplied:money} + {scenarioSettlementCredits:money} = {result:money}"
+    work.marketplaceManualProfitability.totalEconomicInvestment: "Product, Amazon fees, non-recoverable fee GST, seller costs and scenario economic costs: {result:money}"
+    work.marketplaceManualProfitability.economicProfit: "Estimated profit = {revenueRecognised:money} − {totalEconomicInvestment:money} + {scenarioEconomicCredits:money} = {result:money}"
+    work.marketplaceManualProfitability.profitMarginPercent: "Profit margin = {economicProfit:money} ÷ {revenueRecognised:money} × 100 = {result}%"
+    work.marketplaceManualProfitability.roiPercent: "ROI = {economicProfit:money} ÷ {totalEconomicInvestment:money} × 100 = {result}%"
+    work.marketplaceManualProfitability.effectiveMarketplaceFeePercent: "Effective fee = (Amazon fees + non-recoverable fee GST) ÷ tax-exclusive revenue × 100 = {result}%"
+    work.marketplaceManualProfitability.breakEvenSellingPrice: "Closed-form break-even unit price, holding all other entered values fixed: {result:money}"
+    work.marketplaceManualProfitability.fee.fixed: "Fixed fee = {amount:money} × {multiplier} = {result:money}; GST: {gstAmount:money}"
+    work.marketplaceManualProfitability.fee.percent: "Percentage fee on {base:money} at {ratePercent}% = {result:money}; GST: {gstAmount:money}"
+    work.marketplaceManualProfitability.fee.price-slabs: "Manually configured price-slab fee: {result:money}; GST: {gstAmount:money}"
+    work.marketplaceManualProfitability.fee.weight-slabs: "Manually configured fee at resolved weight {chargeableWeight}: {result:money}; GST: {gstAmount:money}"

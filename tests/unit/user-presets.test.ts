@@ -16,8 +16,12 @@ describe('user preset page wiring', () => {
     expect(userPresetsEnabled(withFlag(true))).toBe(true);
   });
 
-  it('does not opt any current public preset in', () => {
+  it('opts in only the explicitly approved Amazon public preset', () => {
     const registry = JSON.parse(readFileSync('generated/registry.json', 'utf8')) as Registry;
-    expect(Object.values(registry.presets).filter(userPresetsEnabled)).toEqual([]);
+    expect(
+      Object.values(registry.presets)
+        .filter(userPresetsEnabled)
+        .map((p) => p.id),
+    ).toEqual(['estimate/amazon.manual-profitability']);
   });
 });

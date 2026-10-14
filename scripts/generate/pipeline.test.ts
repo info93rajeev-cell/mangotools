@@ -42,6 +42,7 @@ describe('registry pipeline — valid repository', () => {
   it('builds every tool and preset plus the seven visible categories', () => {
     const registry = result.output?.registry;
     expect(registry?.tools.map((t) => t.id).sort()).toEqual([
+      'amazon-india-seller-fee-profit-estimator',
       'base64-encode-decode',
       'brickwork-calculator',
       'cbm-calculator',
@@ -74,7 +75,9 @@ describe('registry pipeline — valid repository', () => {
       'url-encode-decode',
       'volumetric-weight-calculator',
     ]);
-    expect(Object.keys(registry?.presets ?? {}).length).toBe(real.presets.length);
+    expect(Object.keys(registry?.presets ?? {}).length).toBe(
+      real.presets.filter((p) => (p.data as { abstract?: boolean }).abstract !== true).length,
+    );
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
       'construction',
       'logistics',
@@ -451,7 +454,7 @@ describe('category visibility threshold', () => {
       'pdf',
       'media',
     ]);
-    expect(visibleAt(4)).toEqual(['construction', 'logistics', 'developer', 'media']);
+    expect(visibleAt(4)).toEqual(['construction', 'logistics', 'business', 'developer', 'media']);
     expect(visibleAt(5)).toEqual(['construction', 'developer', 'media']);
     expect(visibleAt(6)).toEqual(['construction', 'developer', 'media']);
     expect(visibleAt(7)).toEqual(['media']);

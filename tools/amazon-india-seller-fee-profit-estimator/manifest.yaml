@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: amazon-india-seller-fee-profit-estimator
+slug: amazon-india-seller-fee-profit-estimator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-14, type: added, summary: "Manual Amazon India profit, settlement, fee, tax and scenario estimates with local saved presets." }
+name: Amazon India Seller Fee & Profit Estimator
+shortName: Amazon Seller Estimate
+summary: "Manual Amazon India profit and settlement estimate using your own fees and costs. Actual Amazon charges and settlement may differ."
+archetype: B
+preset: estimate/amazon.manual-profitability
+sample: manual-example
+taxonomy:
+  category: business
+  tags: [pricing, profit, tax]
+  synonyms: [amazon seller profit calculator india, amazon referral fee calculator, amazon closing fee calculator, amazon fba profit calculator india, amazon seller settlement estimate]
+capabilities: { print: true }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: Amazon India Seller Fee Calculator – Profit & Settlement
+  description: Estimate Amazon India seller profit and settlement using your own fees, costs, GST and return adjustments. Browser-local calculation; no fee lookup.
+  primaryKeyword: amazon india seller fee calculator
+  secondaryKeywords: [amazon seller profit calculator india, amazon referral fee calculator, amazon closing fee calculator, amazon fba profit calculator india, amazon seller settlement estimate]
+  h1: Amazon India Seller Fee & Profit Estimator
+graph:
+  related: [profit-margin-calculator, gst-calculator, markup-calculator]
+quality:
+  verifiedAgainst:
+    - { citation: "TASK-008L approved manual marketplace profitability contract", locator: "Calculation steps 1–7; hand-verified tool fixtures 001–002" }
+  lastVerified: 2026-10-14

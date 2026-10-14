@@ -1,0 +1,213 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/amazon.manual-profitability
+version: 0.1.0
+extends: estimate/amazon.manual-financial-fields
+operation: estimate.marketplace.manual-profitability@1
+params: { rounding: half-up }
+locked: [rounding]
+fields:
+  sellingPricePerUnit: {"labelKey":"amazon.field.sellingPricePerUnit","kind":"money","order":10,"width":"half","currency":"INR","required":true}
+  productCostPerUnit: {"labelKey":"amazon.field.productCostPerUnit","kind":"money","order":20,"width":"half","currency":"INR","required":true}
+  quantity: {"labelKey":"amazon.field.quantity","kind":"number","order":30,"width":"half","required":true,"default":"1"}
+  scenario: {"labelKey":"amazon.field.scenario","kind":"enum","order":40,"width":"half","control":"select","options":[{"value":"successful-sale","labelKey":"amazon.option.successful-sale"},{"value":"customer-return","labelKey":"amazon.option.customer-return"},{"value":"rto","labelKey":"amazon.option.rto"},{"value":"cancellation","labelKey":"amazon.option.cancellation"}],"default":"successful-sale","required":true}
+  showProductDetails: {"labelKey":"amazon.field.showProductDetails","kind":"boolean","order":50,"width":"half","uiOnly":true,"default":"false"}
+  showAmazonFees: {"labelKey":"amazon.field.showAmazonFees","kind":"boolean","order":100,"width":"half","uiOnly":true,"default":"false"}
+  showShipping: {"labelKey":"amazon.field.showShipping","kind":"boolean","order":400,"width":"half","uiOnly":true,"default":"false"}
+  showAdjustments: {"labelKey":"amazon.field.showAdjustments","kind":"boolean","order":700,"width":"half","uiOnly":true,"default":"false"}
+  showTaxes: {"labelKey":"amazon.field.showTaxes","kind":"boolean","order":1000,"width":"half","uiOnly":true,"default":"false"}
+  promotionalDiscount: {"labelKey":"amazon.field.promotionalDiscount","kind":"money","order":60,"width":"half","visibleWhen":{"showProductDetails":["true"]},"currency":"INR","helpKey":"amazon.help.promotionalDiscount","helpMode":"disclosure"}
+  couponDiscount: {"labelKey":"amazon.field.couponDiscount","kind":"money","order":70,"width":"half","visibleWhen":{"showProductDetails":["true"]},"currency":"INR","helpKey":"amazon.help.couponDiscount","helpMode":"disclosure"}
+  productCategoryLabel: {"labelKey":"amazon.field.productCategoryLabel","kind":"text","order":80,"width":"half","visibleWhen":{"showProductDetails":["true"]},"uiOnly":true,"helpKey":"amazon.help.productCategoryLabel","helpMode":"disclosure"}
+  referralMode: {"labelKey":"amazon.field.referralMode","kind":"enum","order":110,"width":"half","visibleWhen":{"showAmazonFees":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"percent","labelKey":"amazon.option.percent"},{"value":"price-slabs","labelKey":"amazon.option.price-slabs"}],"default":"off","uiOnly":true,"helpKey":"amazon.help.referralMode","helpMode":"disclosure"}
+  referralRatePercent: {"labelKey":"amazon.field.referralRatePercent","kind":"percent","order":112,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent"]},"uiOnly":true,"unit":"%"}
+  referralGstTreatment: {"labelKey":"amazon.field.referralGstTreatment","kind":"enum","order":114,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent","price-slabs"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"none","labelKey":"amazon.option.none"},{"value":"recoverable","labelKey":"amazon.option.recoverable"},{"value":"non-recoverable","labelKey":"amazon.option.non-recoverable"}],"default":"unselected","uiOnly":true}
+  referralPriceSlabs: {"labelKey":"amazon.field.referralPriceSlabs","kind":"rows","order":115,"width":"full","visibleWhen":{"showAmazonFees":["true"],"referralMode":["price-slabs"]},"uiOnly":true,"rows":{"minRows":0,"maxRows":20,"columns":{"min":{"labelKey":"amazon.column.minPrice","kind":"money"},"max":{"labelKey":"amazon.column.maxPrice","kind":"money"},"chargeMode":{"labelKey":"amazon.column.chargeMode","kind":"enum","required":true,"options":[{"value":"percent","labelKey":"amazon.option.percent"}],"default":"percent"},"value":{"labelKey":"amazon.column.rate","kind":"percent","required":true}}},"helpKey":"amazon.help.referralPriceSlabs","helpMode":"disclosure"}
+  referralApplySale: {"labelKey":"amazon.field.referralApplySale","kind":"boolean","order":120,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent","price-slabs"]},"uiOnly":true,"default":"true"}
+  referralApplyReturn: {"labelKey":"amazon.field.referralApplyReturn","kind":"boolean","order":121,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent","price-slabs"]},"uiOnly":true,"default":"false"}
+  referralApplyRto: {"labelKey":"amazon.field.referralApplyRto","kind":"boolean","order":122,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent","price-slabs"]},"uiOnly":true,"default":"false"}
+  referralApplyCancellation: {"labelKey":"amazon.field.referralApplyCancellation","kind":"boolean","order":123,"width":"half","visibleWhen":{"showAmazonFees":["true"],"referralMode":["percent","price-slabs"]},"uiOnly":true,"default":"false"}
+  closingMode: {"labelKey":"amazon.field.closingMode","kind":"enum","order":160,"width":"half","visibleWhen":{"showAmazonFees":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"},{"value":"price-slabs","labelKey":"amazon.option.price-slabs"}],"default":"off","uiOnly":true,"helpKey":"amazon.help.closingMode","helpMode":"disclosure"}
+  closingAmount: {"labelKey":"amazon.field.closingAmount","kind":"money","order":161,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed"]},"uiOnly":true,"currency":"INR"}
+  closingGstTreatment: {"labelKey":"amazon.field.closingGstTreatment","kind":"enum","order":164,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed","price-slabs"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"none","labelKey":"amazon.option.none"},{"value":"recoverable","labelKey":"amazon.option.recoverable"},{"value":"non-recoverable","labelKey":"amazon.option.non-recoverable"}],"default":"unselected","uiOnly":true}
+  closingPriceSlabs: {"labelKey":"amazon.field.closingPriceSlabs","kind":"rows","order":165,"width":"full","visibleWhen":{"showAmazonFees":["true"],"closingMode":["price-slabs"]},"uiOnly":true,"rows":{"minRows":0,"maxRows":20,"columns":{"min":{"labelKey":"amazon.column.minPrice","kind":"money"},"max":{"labelKey":"amazon.column.maxPrice","kind":"money"},"chargeMode":{"labelKey":"amazon.column.chargeMode","kind":"enum","required":true,"options":[{"value":"fixed","labelKey":"amazon.option.fixed"}],"default":"fixed"},"value":{"labelKey":"amazon.column.amount","kind":"money","required":true}}},"helpKey":"amazon.help.closingPriceSlabs","helpMode":"disclosure"}
+  closingApplySale: {"labelKey":"amazon.field.closingApplySale","kind":"boolean","order":170,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed","price-slabs"]},"uiOnly":true,"default":"true"}
+  closingApplyReturn: {"labelKey":"amazon.field.closingApplyReturn","kind":"boolean","order":171,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed","price-slabs"]},"uiOnly":true,"default":"false"}
+  closingApplyRto: {"labelKey":"amazon.field.closingApplyRto","kind":"boolean","order":172,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed","price-slabs"]},"uiOnly":true,"default":"false"}
+  closingApplyCancellation: {"labelKey":"amazon.field.closingApplyCancellation","kind":"boolean","order":173,"width":"half","visibleWhen":{"showAmazonFees":["true"],"closingMode":["fixed","price-slabs"]},"uiOnly":true,"default":"false"}
+  weightHandlingMode: {"labelKey":"amazon.field.weightHandlingMode","kind":"enum","order":210,"width":"half","visibleWhen":{"showAmazonFees":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"},{"value":"weight-slabs","labelKey":"amazon.option.weight-slabs"}],"default":"off","uiOnly":true}
+  weightHandlingAmount: {"labelKey":"amazon.field.weightHandlingAmount","kind":"money","order":211,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed"]},"uiOnly":true,"currency":"INR"}
+  weightHandlingQuantityScope: {"labelKey":"amazon.field.weightHandlingQuantityScope","kind":"enum","order":213,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"control":"select","options":[{"value":"per-order","labelKey":"amazon.option.per-order"},{"value":"per-unit","labelKey":"amazon.option.per-unit"}],"default":"per-order","uiOnly":true}
+  weightHandlingGstTreatment: {"labelKey":"amazon.field.weightHandlingGstTreatment","kind":"enum","order":214,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"none","labelKey":"amazon.option.none"},{"value":"recoverable","labelKey":"amazon.option.recoverable"},{"value":"non-recoverable","labelKey":"amazon.option.non-recoverable"}],"default":"unselected","uiOnly":true}
+  weightHandlingWeightSlabs: {"labelKey":"amazon.field.weightHandlingWeightSlabs","kind":"rows","order":215,"width":"full","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["weight-slabs"]},"uiOnly":true,"rows":{"minRows":0,"maxRows":20,"columns":{"min":{"labelKey":"amazon.column.minWeight","kind":"number"},"max":{"labelKey":"amazon.column.maxWeight","kind":"number"},"amount":{"labelKey":"amazon.column.amount","kind":"money","required":true}}},"helpKey":"amazon.help.weightHandlingWeightSlabs","helpMode":"disclosure"}
+  weightHandlingApplySale: {"labelKey":"amazon.field.weightHandlingApplySale","kind":"boolean","order":220,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"uiOnly":true,"default":"true"}
+  weightHandlingApplyReturn: {"labelKey":"amazon.field.weightHandlingApplyReturn","kind":"boolean","order":221,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"uiOnly":true,"default":"false"}
+  weightHandlingApplyRto: {"labelKey":"amazon.field.weightHandlingApplyRto","kind":"boolean","order":222,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"uiOnly":true,"default":"false"}
+  weightHandlingApplyCancellation: {"labelKey":"amazon.field.weightHandlingApplyCancellation","kind":"boolean","order":223,"width":"half","visibleWhen":{"showAmazonFees":["true"],"weightHandlingMode":["fixed","weight-slabs"]},"uiOnly":true,"default":"false"}
+  pickPackMode: {"labelKey":"amazon.field.pickPackMode","kind":"enum","order":260,"width":"half","visibleWhen":{"showAmazonFees":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"}],"default":"off","uiOnly":true}
+  pickPackAmount: {"labelKey":"amazon.field.pickPackAmount","kind":"money","order":261,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"uiOnly":true,"currency":"INR"}
+  pickPackQuantityScope: {"labelKey":"amazon.field.pickPackQuantityScope","kind":"enum","order":263,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"control":"select","options":[{"value":"per-order","labelKey":"amazon.option.per-order"},{"value":"per-unit","labelKey":"amazon.option.per-unit"}],"default":"per-order","uiOnly":true}
+  pickPackGstTreatment: {"labelKey":"amazon.field.pickPackGstTreatment","kind":"enum","order":264,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"none","labelKey":"amazon.option.none"},{"value":"recoverable","labelKey":"amazon.option.recoverable"},{"value":"non-recoverable","labelKey":"amazon.option.non-recoverable"}],"default":"unselected","uiOnly":true}
+  pickPackApplySale: {"labelKey":"amazon.field.pickPackApplySale","kind":"boolean","order":270,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"uiOnly":true,"default":"true"}
+  pickPackApplyReturn: {"labelKey":"amazon.field.pickPackApplyReturn","kind":"boolean","order":271,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"uiOnly":true,"default":"false"}
+  pickPackApplyRto: {"labelKey":"amazon.field.pickPackApplyRto","kind":"boolean","order":272,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"uiOnly":true,"default":"false"}
+  pickPackApplyCancellation: {"labelKey":"amazon.field.pickPackApplyCancellation","kind":"boolean","order":273,"width":"half","visibleWhen":{"showAmazonFees":["true"],"pickPackMode":["fixed"]},"uiOnly":true,"default":"false"}
+  otherServiceMode: {"labelKey":"amazon.field.otherServiceMode","kind":"enum","order":310,"width":"half","visibleWhen":{"showAmazonFees":["true"]},"control":"select","options":[{"value":"off","labelKey":"amazon.option.off"},{"value":"fixed","labelKey":"amazon.option.fixed"}],"default":"off","uiOnly":true}
+  otherServiceAmount: {"labelKey":"amazon.field.otherServiceAmount","kind":"money","order":311,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"uiOnly":true,"currency":"INR"}
+  otherServiceQuantityScope: {"labelKey":"amazon.field.otherServiceQuantityScope","kind":"enum","order":313,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"control":"select","options":[{"value":"per-order","labelKey":"amazon.option.per-order"},{"value":"per-unit","labelKey":"amazon.option.per-unit"}],"default":"per-order","uiOnly":true}
+  otherServiceGstTreatment: {"labelKey":"amazon.field.otherServiceGstTreatment","kind":"enum","order":314,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"none","labelKey":"amazon.option.none"},{"value":"recoverable","labelKey":"amazon.option.recoverable"},{"value":"non-recoverable","labelKey":"amazon.option.non-recoverable"}],"default":"unselected","uiOnly":true}
+  otherServiceApplySale: {"labelKey":"amazon.field.otherServiceApplySale","kind":"boolean","order":320,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"uiOnly":true,"default":"true"}
+  otherServiceApplyReturn: {"labelKey":"amazon.field.otherServiceApplyReturn","kind":"boolean","order":321,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"uiOnly":true,"default":"false"}
+  otherServiceApplyRto: {"labelKey":"amazon.field.otherServiceApplyRto","kind":"boolean","order":322,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"uiOnly":true,"default":"false"}
+  otherServiceApplyCancellation: {"labelKey":"amazon.field.otherServiceApplyCancellation","kind":"boolean","order":323,"width":"half","visibleWhen":{"showAmazonFees":["true"],"otherServiceMode":["fixed"]},"uiOnly":true,"default":"false"}
+  fulfillmentMethod: {"labelKey":"amazon.field.fulfillmentMethod","kind":"enum","order":410,"width":"half","visibleWhen":{"showShipping":["true"]},"control":"select","options":[{"value":"unselected","labelKey":"amazon.option.unselected"},{"value":"easy-ship","labelKey":"amazon.option.easy-ship"},{"value":"self-ship","labelKey":"amazon.option.self-ship"},{"value":"fba","labelKey":"amazon.option.fba"}],"default":"unselected","uiOnly":true}
+  shippingZoneLabel: {"labelKey":"amazon.field.shippingZoneLabel","kind":"text","order":420,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"helpKey":"amazon.help.shippingZoneLabel","helpMode":"disclosure"}
+  chargeableWeightValue: {"labelKey":"amazon.field.chargeableWeightValue","kind":"number","order":430,"width":"half","visibleWhen":{"showShipping":["true"]},"uiOnly":true,"helpKey":"amazon.help.chargeableWeightValue","helpMode":"disclosure"}
+  chargeableWeightUnit: {"labelKey":"amazon.field.chargeableWeightUnit","kind":"enum","order":440,"width":"half","visibleWhen":{"showShipping":["true"]},"control":"select","options":[{"value":"kg","labelKey":"amazon.option.kg"},{"value":"g","labelKey":"amazon.option.g"}],"default":"kg","uiOnly":true}
+outputs:
+  economicProfit: {"labelKey":"amazon.out.economicProfit","format":"money","order":0,"primary":true}
+  estimatedSettlement: {"labelKey":"amazon.out.estimatedSettlement","format":"money","order":1}
+  profitMarginPercent: {"labelKey":"amazon.out.profitMarginPercent","format":"percent","order":2}
+  roiPercent: {"labelKey":"amazon.out.roiPercent","format":"percent","order":3}
+  breakEvenSellingPrice: {"labelKey":"amazon.out.breakEvenSellingPrice","format":"money","order":4}
+  effectiveMarketplaceFeePercent: {"labelKey":"amazon.out.effectiveMarketplaceFeePercent","format":"percent","order":5}
+  grossCustomerValue: {"labelKey":"amazon.out.grossCustomerValue","format":"money","order":6}
+  sellerFundedReduction: {"labelKey":"amazon.out.sellerFundedReduction","format":"money","order":7}
+  realizedCustomerValue: {"labelKey":"amazon.out.realizedCustomerValue","format":"money","order":8}
+  customerInvoiceValue: {"labelKey":"amazon.out.customerInvoiceValue","format":"money","order":9}
+  taxExclusiveRevenue: {"labelKey":"amazon.out.taxExclusiveRevenue","format":"money","order":10}
+  orderProductGstAmount: {"labelKey":"amazon.out.orderProductGstAmount","format":"money","order":11}
+  productGstLiabilityRecognised: {"labelKey":"amazon.out.productGstLiabilityRecognised","format":"money","order":12}
+  productCostTotal: {"labelKey":"amazon.out.productCostTotal","format":"money","order":13}
+  revenueRecognised: {"labelKey":"amazon.out.revenueRecognised","format":"money","order":14}
+  invoiceValueSettled: {"labelKey":"amazon.out.invoiceValueSettled","format":"money","order":15}
+  productCostRecognised: {"labelKey":"amazon.out.productCostRecognised","format":"money","order":16}
+  totalEconomicInvestment: {"labelKey":"amazon.out.totalEconomicInvestment","format":"money","order":17}
+  marketplaceFeesTotal: {"labelKey":"amazon.out.marketplaceFeesTotal","format":"money","order":18}
+  marketplaceFeeGstTotal: {"labelKey":"amazon.out.marketplaceFeeGstTotal","format":"money","order":19}
+  recoverableMarketplaceFeeGst: {"labelKey":"amazon.out.recoverableMarketplaceFeeGst","format":"money","order":20}
+  nonRecoverableMarketplaceFeeGst: {"labelKey":"amazon.out.nonRecoverableMarketplaceFeeGst","format":"money","order":21}
+  sellerControlledCostsTotal: {"labelKey":"amazon.out.sellerControlledCostsTotal","format":"money","order":22}
+  tcsAmount: {"labelKey":"amazon.out.tcsAmount","format":"money","order":23}
+  tdsAmount: {"labelKey":"amazon.out.tdsAmount","format":"money","order":24}
+  otherSettlementDeductionsApplied: {"labelKey":"amazon.out.otherSettlementDeductionsApplied","format":"money","order":25}
+  settlementCreditsApplied: {"labelKey":"amazon.out.settlementCreditsApplied","format":"money","order":26}
+  totalSettlementDeductions: {"labelKey":"amazon.out.totalSettlementDeductions","format":"money","order":27}
+  scenarioEconomicCosts: {"labelKey":"amazon.out.scenarioEconomicCosts","format":"money","order":28}
+  scenarioEconomicCredits: {"labelKey":"amazon.out.scenarioEconomicCredits","format":"money","order":29}
+  scenarioSettlementDeductions: {"labelKey":"amazon.out.scenarioSettlementDeductions","format":"money","order":30}
+  scenarioSettlementCredits: {"labelKey":"amazon.out.scenarioSettlementCredits","format":"money","order":31}
+samples:
+  manual-example:
+    titleKey: amazon.sample.manual
+    input: { sellingPricePerUnit: "1000.00", productCostPerUnit: "400.00", quantity: "1", scenario: successful-sale, sellingPriceTaxMode: gst-inclusive }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true, userPresets: true }
+strings:
+  en:
+    amazon.field.sellingPricePerUnit: "Selling price per unit"
+    amazon.field.productCostPerUnit: "Product cost per unit"
+    amazon.field.quantity: "Quantity"
+    amazon.field.scenario: "Scenario"
+    amazon.field.showProductDetails: "Product Details"
+    amazon.field.showAmazonFees: "Amazon Fees"
+    amazon.field.showShipping: "Shipping & Fulfillment"
+    amazon.field.showAdjustments: "Returns & Adjustments"
+    amazon.field.showTaxes: "Taxes"
+    amazon.field.promotionalDiscount: "Seller-funded promotional discount"
+    amazon.field.couponDiscount: "Coupon discount"
+    amazon.help.promotionalDiscount: "Whole-order total, deducted once from customer value; not a per-unit cost."
+    amazon.help.couponDiscount: "Whole-order seller-funded coupon total. Do not enter it again as a seller cost."
+    amazon.field.productCategoryLabel: "Category label (manual context)"
+    amazon.help.productCategoryLabel: "Optional label only. No category taxonomy or automatic fee selection."
+    amazon.field.referralMode: "Referral fee"
+    amazon.field.referralRatePercent: "Referral rate %"
+    amazon.help.referralMode: "Enter your own fees. Percentage base is whole-order customer value after discounts, before GST-exclusive additions. Price slabs match entered unit selling price before discounts; this is a manual modelling choice, not Amazon policy."
+    amazon.field.referralGstTreatment: "Referral fee GST treatment"
+    amazon.field.referralPriceSlabs: "Referral fee slabs"
+    amazon.help.referralPriceSlabs: "Manually entered intervals: above the lower bound, up to and including the upper bound. Leave either bound open, but not both; no overlapping intervals. No rates are supplied."
+    amazon.field.referralApplySale: "Referral fee — Successful sale"
+    amazon.field.referralApplyReturn: "Referral fee — Customer return"
+    amazon.field.referralApplyRto: "Referral fee — RTO"
+    amazon.field.referralApplyCancellation: "Referral fee — Cancellation"
+    amazon.field.closingMode: "Closing fee"
+    amazon.field.closingAmount: "Closing fee amount"
+    amazon.help.closingMode: "Always a whole-order fee. Price slabs match entered unit selling price before discounts, independently of quantity."
+    amazon.field.closingGstTreatment: "Closing fee GST treatment"
+    amazon.field.closingPriceSlabs: "Closing fee slabs"
+    amazon.help.closingPriceSlabs: "Manually entered intervals: above the lower bound, up to and including the upper bound. Leave either bound open, but not both; no overlapping intervals. No rates are supplied."
+    amazon.field.closingApplySale: "Closing fee — Successful sale"
+    amazon.field.closingApplyReturn: "Closing fee — Customer return"
+    amazon.field.closingApplyRto: "Closing fee — RTO"
+    amazon.field.closingApplyCancellation: "Closing fee — Cancellation"
+    amazon.field.weightHandlingMode: "Weight handling"
+    amazon.field.weightHandlingAmount: "Weight handling amount"
+    amazon.field.weightHandlingQuantityScope: "Weight handling scope"
+    amazon.field.weightHandlingGstTreatment: "Weight handling GST treatment"
+    amazon.field.weightHandlingWeightSlabs: "Weight-handling slabs"
+    amazon.help.weightHandlingWeightSlabs: "Use the resolved chargeable-weight unit selected in Shipping & Fulfillment. Changing g/kg does not convert entered weight or slab bounds: review all values. Finite manual intervals only, above min through max inclusive."
+    amazon.field.weightHandlingApplySale: "Weight handling — Successful sale"
+    amazon.field.weightHandlingApplyReturn: "Weight handling — Customer return"
+    amazon.field.weightHandlingApplyRto: "Weight handling — RTO"
+    amazon.field.weightHandlingApplyCancellation: "Weight handling — Cancellation"
+    amazon.field.pickPackMode: "Pick & pack"
+    amazon.field.pickPackAmount: "Pick & pack amount"
+    amazon.field.pickPackQuantityScope: "Pick & pack scope"
+    amazon.field.pickPackGstTreatment: "Pick & pack GST treatment"
+    amazon.field.pickPackApplySale: "Pick & pack — Successful sale"
+    amazon.field.pickPackApplyReturn: "Pick & pack — Customer return"
+    amazon.field.pickPackApplyRto: "Pick & pack — RTO"
+    amazon.field.pickPackApplyCancellation: "Pick & pack — Cancellation"
+    amazon.field.otherServiceMode: "Other Amazon service charge"
+    amazon.field.otherServiceAmount: "Other Amazon service charge amount"
+    amazon.field.otherServiceQuantityScope: "Other Amazon service charge scope"
+    amazon.field.otherServiceGstTreatment: "Other Amazon service charge GST treatment"
+    amazon.field.otherServiceApplySale: "Other Amazon service charge — Successful sale"
+    amazon.field.otherServiceApplyReturn: "Other Amazon service charge — Customer return"
+    amazon.field.otherServiceApplyRto: "Other Amazon service charge — RTO"
+    amazon.field.otherServiceApplyCancellation: "Other Amazon service charge — Cancellation"
+    amazon.field.fulfillmentMethod: "Fulfillment method (manual context)"
+    amazon.field.shippingZoneLabel: "Shipping zone (manual context)"
+    amazon.help.shippingZoneLabel: "Context only. Fulfillment, category and zone never select fee rates automatically."
+    amazon.field.chargeableWeightValue: "Resolved chargeable weight"
+    amazon.field.chargeableWeightUnit: "Weight unit (no conversion)"
+    amazon.help.chargeableWeightValue: "Enter the weight you intend to use for fee calculation. No volumetric calculation is performed. Review the weight and slab bounds when changing units; values are not converted."
+    amazon.column.minPrice: "Above price (exclusive)"
+    amazon.column.maxPrice: "Up to price (inclusive)"
+    amazon.column.minWeight: "Above weight (exclusive)"
+    amazon.column.maxWeight: "Up to weight (inclusive)"
+    amazon.column.chargeMode: "Slab charge type"
+    amazon.column.rate: "Rate %"
+    amazon.column.amount: "Amount (INR)"
+    amazon.out.economicProfit: "Estimated profit"
+    amazon.out.estimatedSettlement: "Estimated Amazon settlement"
+    amazon.out.profitMarginPercent: "Profit margin"
+    amazon.out.roiPercent: "ROI"
+    amazon.out.breakEvenSellingPrice: "Break-even selling price"
+    amazon.out.effectiveMarketplaceFeePercent: "Effective marketplace fee %"
+    amazon.out.grossCustomerValue: "Gross customer value"
+    amazon.out.sellerFundedReduction: "Seller-funded discounts"
+    amazon.out.realizedCustomerValue: "Value after discounts"
+    amazon.out.customerInvoiceValue: "Customer invoice value"
+    amazon.out.taxExclusiveRevenue: "Tax-exclusive revenue"
+    amazon.out.orderProductGstAmount: "Product GST (original order)"
+    amazon.out.productGstLiabilityRecognised: "Recognized product GST liability"
+    amazon.out.productCostTotal: "Product cost total"
+    amazon.out.revenueRecognised: "Recognized revenue"
+    amazon.out.invoiceValueSettled: "Invoice value settled"
+    amazon.out.productCostRecognised: "Recognized product cost"
+    amazon.out.totalEconomicInvestment: "Economic investment"
+    amazon.out.marketplaceFeesTotal: "Amazon fees"
+    amazon.out.marketplaceFeeGstTotal: "GST on Amazon fees"
+    amazon.out.recoverableMarketplaceFeeGst: "Recoverable fee GST"
+    amazon.out.nonRecoverableMarketplaceFeeGst: "Non-recoverable fee GST"
+    amazon.out.sellerControlledCostsTotal: "Seller-controlled costs"
+    amazon.out.tcsAmount: "TCS"
+    amazon.out.tdsAmount: "TDS"
+    amazon.out.otherSettlementDeductionsApplied: "Other settlement deductions"
+    amazon.out.settlementCreditsApplied: "Settlement credits"
+    amazon.out.totalSettlementDeductions: "Total settlement deductions"
+    amazon.out.scenarioEconomicCosts: "Scenario economic costs"
+    amazon.out.scenarioEconomicCredits: "Scenario economic credits"
+    amazon.out.scenarioSettlementDeductions: "Scenario settlement deductions"
+    amazon.out.scenarioSettlementCredits: "Scenario settlement credits"
+    amazon.sample.manual: "Illustrative manual estimate — no Amazon fees configured"
