@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- TASK-008L collapse fix: configured financial values survive section collapse/expand;
+  the adapter projects only the five disclosure switches open for request building,
+  without changing form state, financial defaults or generic runtime visibility rules.
 - TASK-008L PR 6A2c: added bounded profit/settlement/metrics, nullable warning reasons,
   fee table and detailed breakdown; existing working disclosure reused, other presets unchanged.
 - TASK-008L PR 6A2b2: added exact-id ToolIsland activation through the existing runtime
