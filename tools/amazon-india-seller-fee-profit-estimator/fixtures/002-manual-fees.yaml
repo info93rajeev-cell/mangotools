@@ -1,0 +1,26 @@
+id: 002-manual-fees
+preset: estimate/amazon.manual-profitability
+source:
+  type: hand-verified
+  citation: "TASK-008L formulas, illustrative manual values only: referral 7% of 1000 = 70, closing 10; economic investment 400+70+10+5 = 485; profit 515; settlement 1000-70-10-2 = 918. Margin 51.50%, ROI 515/485*100 = 106.19%; break-even 415/0.93 = 446.24. Not Amazon rates."
+input:
+  sellingPricePerUnit: "1000.00"
+  productCostPerUnit: "400.00"
+  quantity: "1"
+  feeLines:
+    - { id: referral, enabled: true, mode: percent, ratePercent: "7", percentageBase: realized-customer-value, gstTreatment: none, scenarios: [successful-sale] }
+    - { id: closing, enabled: true, mode: fixed, amount: "10", quantityScope: per-order, gstTreatment: none, scenarios: [successful-sale] }
+  packagingCost: { amount: "5", scenarios: [successful-sale] }
+  tcs: { mode: fixed, value: "2", scenarios: [successful-sale] }
+expected:
+  marketplaceFeesTotal: "80.00"
+  marketplaceFeeGstTotal: "0.00"
+  sellerControlledCostsTotal: "5.00"
+  totalEconomicInvestment: "485.00"
+  economicProfit: "515.00"
+  estimatedSettlement: "918.00"
+  totalSettlementDeductions: "82.00"
+  profitMarginPercent: "51.50"
+  roiPercent: "106.19"
+  effectiveMarketplaceFeePercent: "8.00"
+  breakEvenSellingPrice: "446.24"

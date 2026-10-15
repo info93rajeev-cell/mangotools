@@ -1,0 +1,46 @@
+id: 001-sample
+preset: estimate/amazon.manual-profitability
+source:
+  type: hand-verified
+  citation: "TASK-008L approved formulas, hand verified: sale 1000, product cost 400, quantity 1, no configured fees/GST. Profit 600; settlement 1000; margin 60%; ROI 150%; break-even 400. All omitted charges are neutral, not official fee or tax rates."
+input:
+  sellingPricePerUnit: "1000.00"
+  productCostPerUnit: "400.00"
+  quantity: "1"
+  scenario: successful-sale
+  sellingPriceTaxMode: gst-inclusive
+expected:
+  scenario: successful-sale
+  grossCustomerValue: "1000.00"
+  sellerFundedReduction: "0.00"
+  realizedCustomerValue: "1000.00"
+  customerInvoiceValue: "1000.00"
+  orderProductGstAmount: "0.00"
+  taxExclusiveRevenue: "1000.00"
+  productCostTotal: "400.00"
+  revenueRecognised: "1000.00"
+  invoiceValueSettled: "1000.00"
+  productCostRecognised: "400.00"
+  productGstLiabilityRecognised: "0.00"
+  marketplaceFees: []
+  marketplaceFeesTotal: "0.00"
+  marketplaceFeeGstTotal: "0.00"
+  recoverableMarketplaceFeeGst: "0.00"
+  nonRecoverableMarketplaceFeeGst: "0.00"
+  sellerControlledCostsTotal: "0.00"
+  scenarioEconomicCosts: "0.00"
+  scenarioEconomicCredits: "0.00"
+  scenarioSettlementDeductions: "0.00"
+  scenarioSettlementCredits: "0.00"
+  tcsAmount: "0.00"
+  tdsAmount: "0.00"
+  otherSettlementDeductionsApplied: "0.00"
+  settlementCreditsApplied: "0.00"
+  totalSettlementDeductions: "0.00"
+  estimatedSettlement: "1000.00"
+  totalEconomicInvestment: "400.00"
+  economicProfit: "600.00"
+  profitMarginPercent: "60.00"
+  roiPercent: "150.00"
+  effectiveMarketplaceFeePercent: "0.00"
+  breakEvenSellingPrice: "400.00"
