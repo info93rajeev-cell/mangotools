@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- TASK-008L production prerequisites: exact-preset configuration notices near Amazon results;
+  canonical errors resolve through emitted fee/adjustment ids to existing form/row controls,
+  reopening only the owning disclosure and focusing correction without changing financial values.
 - TASK-008L collapse fix: configured financial values survive section collapse/expand;
   the adapter projects only the five disclosure switches open for request building,
   without changing form state, financial defaults or generic runtime visibility rules.
