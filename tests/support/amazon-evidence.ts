@@ -44,7 +44,10 @@ export async function openEvidence(page: Page) {
   const driver = new AmazonEvidence(page);
   page.on('request', (r) => driver.requests.push(r));
   page.on('pageerror', (e) => driver.errors.push(e.message));
-  page.on('console', (m) => driver.errors.push(m.text()));
+  page.on('console', (m) => {
+    if (m.type() === 'error' || /hydration|content[- ]security[- ]policy|\bCSP\b/i.test(m.text()))
+      driver.errors.push(m.text());
+  });
   await gotoReady(page, `/${slug}`);
   await driver.configure({ sellingPricePerUnit: '1000', productCostPerUnit: '400' });
   return driver;
@@ -71,9 +74,10 @@ export class AmazonEvidence {
   async rows(key: string, rows: Record<string, string>[]) {
     const source = preset.fields[key].rows;
     if (!source) throw new Error('Rows missing');
+    const required = Object.keys(source.columns).findLast((k) => source.columns[k]?.required);
     for (const [index, row] of rows.entries()) {
       await control(this.page, `${key}-add`).press('Enter');
-      await expect(this.page.locator(`[data-row="${index}"] input:focus`)).toHaveCount(1);
+      await expect(control(this.page, `${key}-${index}-${required}`)).toBeFocused();
       for (const [cell, value] of Object.entries(row))
         await control(this.page, `${key}-${index}-${cell}`).fill(value);
     }
@@ -118,16 +122,16 @@ export class AmazonEvidence {
     const output = result.value as Record<string, unknown>;
     await expect(primaryResult(this.page)).toHaveText(money(output.economicProfit));
     const root = this.page.locator('[data-amazon-result]');
-    const keys = await root
-      .locator('[data-output]')
-      .evaluateAll((els) => els.map((el) => el.getAttribute('data-output') ?? ''));
-    for (const key of keys) {
-      const value = output[key];
-      if (typeof value !== 'string' || key === 'economicProfit') continue;
-      await expect(root.locator(`[data-output="${key}"] dd`)).toHaveText(
-        key.endsWith('Percent') ? formatPercent(value) : money(value),
-      );
-    }
+    const keys = (
+      await root
+        .locator('[data-output]')
+        .evaluateAll((els) => els.map((el) => el.getAttribute('data-output') ?? ''))
+    ).filter((key) => typeof output[key] === 'string' && key !== 'economicProfit');
+    await expect(root.locator(keys.map((key) => `[data-output="${key}"] dd`).join(','))).toHaveText(
+      keys.map((key) =>
+        key.endsWith('Percent') ? formatPercent(String(output[key])) : money(output[key]),
+      ),
+    );
     await expect(root.locator('[data-fee-row] td:nth-child(4)')).toHaveText(
       (output.marketplaceFees as { amount: string }[]).map(
         (fee) => `Fee amount${money(fee.amount)}`,

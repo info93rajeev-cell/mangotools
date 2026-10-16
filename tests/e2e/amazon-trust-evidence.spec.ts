@@ -1,4 +1,3 @@
-import { mkdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { control, manualFees, openEvidence } from '../support/amazon-evidence.ts';
 
@@ -13,7 +12,7 @@ test('Amazon final evidence: private editing, scenario changes and local presets
     await expect(control(page, key)).toBeFocused();
   }
   await d.configure(manualFees);
-  await d.configure({ referralMode: 'price-slabs' });
+  await d.set('referralMode', 'price-slabs');
   await d.rows('referralPriceSlabs', [{ max: '2000', value: '7' }]);
   await d.verify();
   const runs = await page.evaluate(() => Reflect.get(window, 'amazonRuns').length);
@@ -21,8 +20,7 @@ test('Amazon final evidence: private editing, scenario changes and local presets
   await d.verify();
   expect(await page.evaluate(() => Reflect.get(window, 'amazonRuns').length)).toBe(runs + 1);
   const manager = page.locator('[data-tool-presets]');
-  await manager.getByRole('button', { name: 'Save as new', exact: true }).focus();
-  await page.keyboard.press('Enter');
+  await manager.getByRole('button', { name: 'Save as new', exact: true }).press('Enter');
   await manager.getByLabel('Preset name').fill('Final synthetic evidence');
   await page.keyboard.press('Enter');
   const saved = await page.evaluate(() => localStorage.getItem('mt.toolPresets'));
@@ -35,10 +33,7 @@ test('Amazon final evidence: private editing, scenario changes and local presets
   expect(await context.cookies()).toEqual([]);
 });
 for (const width of [320, 390, 1366]) {
-  test(`Amazon final evidence: ${width}px populated rows and trust copy`, async ({
-    page,
-    browserName,
-  }) => {
+  test(`Amazon evidence: ${width}px populated rows`, async ({ page, browserName }) => {
     await page.setViewportSize({ width, height: width === 1366 ? 768 : 844 });
     const d = await openEvidence(page);
     await d.configure({ referralMode: 'price-slabs', referralGstTreatment: 'none' });
@@ -50,7 +45,6 @@ for (const width of [320, 390, 1366]) {
     for (const key of ['showProductDetails', 'showAmazonFees'])
       await expect(control(page, key)).toBeChecked();
     if (browserName === 'chromium') {
-      mkdirSync('tests/artifacts/screenshots', { recursive: true });
       await page.emulateMedia({ colorScheme: 'light' });
       await page.evaluate(() => scrollTo(0, 0));
       await page.screenshot({

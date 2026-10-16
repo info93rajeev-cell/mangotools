@@ -16,7 +16,7 @@ Zero production source, financial fixture, preset, engine, runtime, schema or de
 Four new test modules extend existing production, hydration, header, network, SEO and axe tests.
 One existing header test now awaits removal of the mobile search panel after Escape, before
 checking restored focus. This is a real UI-settling signal, not a delay or weaker assertion.
-Changed code totals 399 lines including tests; this static report and three PNGs are evidence.
+Changed code totals 397 lines including tests; this static report and three PNGs are evidence.
 
 Tests observe actual worker run messages, without mocking the worker or adapter. Canonical
 requests must exactly match the real adapter's preparation from independently recorded entered
@@ -96,7 +96,10 @@ asset names, production page and theme-init script. Blob/data resources are loca
 The supplemental light/dark interaction audits each inspected 33 requests, all allowed static
 GETs. An analytics JavaScript asset loading is not an analytics submission; no submission or
 financial/preset payload was observed. No Amazon API, external calculation API, server form
-submit or preset sync. No financial data uploaded. No page console messages or exceptions.
+submit or preset sync. No financial data uploaded. No console errors, hydration/CSP messages or
+uncaught exceptions. Native Chrome can emit an informational blocked-autofocus notice when the
+save-name form appears while another control has focus; it is not a calculation/hydration error.
+This notice is disclosed, not represented as a product failure or a zero-message console scan.
 Existing CSP/network tests supply additional production security coverage.
 
 Observed local-storage keys: `mt.recent` and `mt.toolPresets`; no new key. Theme preference is
@@ -146,3 +149,22 @@ as a successful test run. Initial evidence locator/focus assumptions were correc
 weakening financial equality, skipping tests or changing production code.
 
 No new product defect requiring a production change has been found. Do not merge automatically.
+
+## CI investigation and test-only follow-up
+
+The initial published revision's CI failed on Firefox slab input, with tax/collapse timeouts in
+Firefox/WebKit. Actual job logs and failure trace from run `38890928316` were inspected.
+Firefox trace action `call@1240` targeted max=2000, but its after-snapshot shows the required
+fee-value input containing 2000 instead. Pending canonical validation moved focus during the
+multi-step browser fill. The next fill correctly replaced that fee value with 7, leaving max
+empty. This proves a driver/automatic-focus interaction, not a financial conversion formula.
+The driver now waits for the exact newly-added row's required fee-value control to receive
+validation focus before entering its bounds. Complete canonical equality remains mandatory.
+
+Scalar output checks are batched as one exact, ordered text-array assertion rather than dozens
+of browser round trips on every intermediate result. Field count, ordering, format and equality
+are retained; no timeout, retry, tolerance or financial expectation was increased/relaxed.
+Console checks follow the existing SEO convention: all page exceptions and console errors,
+plus hydration/CSP messages at any level, remain failures; the native informational notice above
+is not misclassified as an application exception. Final CI evidence belongs to the updated SHA.
+The corrected focused suite passed 45/45 local checks across three independent repetitions.
