@@ -157,4 +157,19 @@ const { brand, categories, showSearch = true } = Astro.props;
       max-width: calc(100vw - (2 * var(--space-4)));
     }
   }
+  /* The unshrunk wordmark/menu/actions cannot share one row below 360 px. */
+  @media (max-width: 359px) {
+    .site-header :global(.bar) {
+      flex-wrap: wrap;
+      row-gap: var(--space-1);
+      padding-block: var(--space-2);
+    }
+    .home {
+      flex-basis: 100%;
+    }
+    .panel {
+      right: auto;
+      left: 0;
+    }
+  }
 </style>
