@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Shared header: below 360 px, place the full wordmark above navigation/actions and
+  anchor the Tools dropdown within the viewport. Existing controls, focus space and
+  wider layouts are retained without horizontal overflow clipping.
 - TASK-008L saved-preset hydration: render an empty, storage-free initial list on server
   and client, then refresh through the existing preset store after mount so persisted
   options enable the native selector. Storage, load and reset semantics are unchanged.
