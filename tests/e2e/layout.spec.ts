@@ -96,6 +96,7 @@ async function checkMobileSearch(page: Page) {
   expect(await overflow(page)).toEqual({ scroll: 0, clipped: [] });
   expect((await headerBounds(page)).clipped).toEqual([]);
   await page.keyboard.press('Escape');
+  await expect(page.locator('#mobile-search-input')).toHaveCount(0);
   await expect(search).toBeFocused();
 }
 
