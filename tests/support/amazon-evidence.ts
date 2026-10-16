@@ -7,7 +7,7 @@ import { marketplaceManualProfitability as realOperation } from '../../engines/e
 import { defaultValues, type FieldValues } from '../../packages/runtime/src/tool-input.ts';
 import { formatMoney, formatPercent } from '../../packages/ui/src/format/numbers.ts';
 import { amazonManualProfitabilityInput } from '../../packages/ui/src/toolkit/amazonManualProfitabilityInput.ts';
-import { gotoReady, primaryResult } from './tool-page.ts';
+import { gotoReady, primaryResult, waitForResult } from './tool-page.ts';
 
 export const slug = 'amazon-india-seller-fee-profit-estimator';
 const assets = new Set(readdirSync('apps/web/dist-prod/assets').map((name) => `/assets/${name}`));
@@ -117,6 +117,7 @@ export class AmazonEvidence {
         }),
       )
       .toEqual({ input, params, operationId: preset.operation });
+    await waitForResult(this.page, slug);
     const result = await executeOperation(realOperation, input, params, createTestContext());
     if (!result.ok) throw new Error(`${result.error.code}: ${result.error.path}`);
     const output = result.value as Record<string, unknown>;

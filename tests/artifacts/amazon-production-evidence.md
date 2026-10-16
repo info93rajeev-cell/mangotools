@@ -16,7 +16,7 @@ Zero production source, financial fixture, preset, engine, runtime, schema or de
 Four new test modules extend existing production, hydration, header, network, SEO and axe tests.
 One existing header test now awaits removal of the mobile search panel after Escape, before
 checking restored focus. This is a real UI-settling signal, not a delay or weaker assertion.
-Changed code totals 397 lines including tests; this static report and three PNGs are evidence.
+Changed code totals 398 lines including tests; this static report and three PNGs are evidence.
 
 Tests observe actual worker run messages, without mocking the worker or adapter. Canonical
 requests must exactly match the real adapter's preparation from independently recorded entered
@@ -168,3 +168,6 @@ Console checks follow the existing SEO convention: all page exceptions and conso
 plus hydration/CSP messages at any level, remain failures; the native informational notice above
 is not misclassified as an application exception. Final CI evidence belongs to the updated SHA.
 The corrected focused suite passed 45/45 local checks across three independent repetitions.
+The broader installed-Chrome E2E project then passed 454/454. The reviewer additionally required
+the existing result-phase settling assertion before reading outputs, so unchanged collapse
+requests cannot accidentally validate a previous result during the 150ms live-compute debounce.
