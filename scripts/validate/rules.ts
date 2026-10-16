@@ -61,6 +61,7 @@ export const ENGINE_IMPORTS: Readonly<Record<string, readonly string[]>> = {
   civil: ['@mangotools/engine-numeric'],
   export: ['@mangotools/engine-numeric'],
   reference: ['@mangotools/engine-numeric'],
+  survey: ['@mangotools/engine-numeric'],
   search: ['minisearch'],
   pdf: ['pdf-lib'],
 };
