@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- TASK-008L saved-preset hydration: render an empty, storage-free initial list on server
+  and client, then refresh through the existing preset store after mount so persisted
+  options enable the native selector. Storage, load and reset semantics are unchanged.
 - TASK-008L production prerequisites: exact-preset configuration notices near Amazon results;
   canonical errors resolve through emitted fee/adjustment ids to existing form/row controls,
   reopening only the owning disclosure and focusing correction without changing financial values.

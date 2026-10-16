@@ -6,7 +6,7 @@ import {
   type ToolPresetStore,
 } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { Button } from '../primitives/Button.tsx';
 import { Field } from '../primitives/Field.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
@@ -49,14 +49,19 @@ interface ManagerState {
 
 function usePresetManager(props: ToolPresetManagerProps) {
   const { toolId, preset, values, onApply } = props;
-  const store = useMemo(() => props.store ?? createToolPresetStore(), [props.store]);
+  const [store, setStore] = useState(() => props.store ?? createToolPresetStore({ storage: null }));
   const [state, setState] = useState<ManagerState>(() => ({
-    presets: store.list(toolId),
+    presets: [],
     selectedId: null,
     mode: 'idle',
     name: '',
     status: null,
   }));
+  useEffect(() => {
+    const mountedStore = props.store ?? createToolPresetStore();
+    setStore(mountedStore);
+    setState((s) => ({ ...s, presets: mountedStore.list(toolId) }));
+  }, [props.store, toolId]);
   const selected = state.presets.find((p) => p.id === state.selectedId) ?? null;
   const finish = (outcome: PresetOutcome, keepMode = false) => {
     setState((s) => ({
