@@ -79,9 +79,32 @@ describe('architecture rules', () => {
       civil: ['@mangotools/engine-numeric'],
       export: ['@mangotools/engine-numeric'],
       reference: ['@mangotools/engine-numeric'],
+      survey: ['@mangotools/engine-numeric'],
       search: ['minisearch'],
       pdf: ['pdf-lib'],
     });
+  });
+
+  it('allows only the approved Survey numeric package boundary', () => {
+    const file = 'engines/survey/src/a.ts';
+    const numeric = "import { sub } from '@mangotools/engine-numeric';";
+    expect(checkEngineSource(file, 'survey', numeric)).toEqual([]);
+    const denied = [
+      '@mangotools/engine-numeric/src/decimal.ts',
+      '@mangotools/engine-numeric-extra',
+      'big.js',
+      '@mangotools/engine-logistics',
+      '@mangotools/engine-estimate',
+      '@mangotools/engine-civil',
+      '@mangotools/engine-reference',
+      '@mangotools/engine-grid',
+      '@mangotools/engine-units',
+      '@mangotools/runtime',
+    ];
+    const source = denied.map((name) => `import '${name}';`).join('\n');
+    expect(rulesOf(checkEngineSource(file, 'survey', source))).toEqual(
+      denied.map((name) => `engines/survey may not import "${name}".`),
+    );
   });
 
   it('keeps big.js inside engines/numeric', () => {
