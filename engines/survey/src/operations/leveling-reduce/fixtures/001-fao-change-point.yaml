@@ -1,0 +1,87 @@
+{
+  "id": "001-fao-change-point",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "textbook",
+    "citation": "FAO / A. G. Coche, Simple Methods for Aquaculture—Topography §8.1(5–8). Published readings/RLs; Rise/Fall derived per TASK-010A."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "station": "A",
+        "bs": "1.89"
+      },
+      {
+        "station": "C",
+        "fs": "0.72",
+        "bs": "1.96"
+      },
+      {
+        "station": "B",
+        "fs": "0.87"
+      }
+    ]
+  },
+  "expected": {
+    "rows": [
+      {
+        "station": "A",
+        "bs": "1.89",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false
+      },
+      {
+        "station": "C",
+        "bs": "1.96",
+        "fs": "0.72",
+        "is": null,
+        "rise": "1.17",
+        "fall": "0",
+        "rl": "101.17",
+        "isChangePoint": true
+      },
+      {
+        "station": "B",
+        "fs": "0.87",
+        "bs": null,
+        "is": null,
+        "rise": "1.09",
+        "fall": "0",
+        "rl": "102.26",
+        "isChangePoint": false
+      }
+    ],
+    "startingRL": "100",
+    "endingRL": "102.26",
+    "sumBS": "3.85",
+    "sumFS": "1.59",
+    "sumRise": "2.26",
+    "sumFall": "0",
+    "bsFsDelta": "2.26",
+    "riseFallDelta": "2.26",
+    "rlDelta": "2.26",
+    "closingRL": null,
+    "misclosure": null,
+    "checks": [
+      {
+        "id": "arithmetic-rise-fall",
+        "labelKey": "leveling.check.riseFall",
+        "status": "pass",
+        "expected": "2.26",
+        "actual": "2.26"
+      },
+      {
+        "id": "arithmetic-first-last",
+        "labelKey": "leveling.check.firstLast",
+        "status": "pass",
+        "expected": "2.26",
+        "actual": "2.26"
+      }
+    ]
+  }
+}

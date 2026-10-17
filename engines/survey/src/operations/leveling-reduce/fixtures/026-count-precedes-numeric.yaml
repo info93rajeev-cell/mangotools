@@ -1,0 +1,16 @@
+{
+  "id": "026-count-precedes-numeric",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "bad",
+    "observations": []
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_EMPTY_OBSERVATIONS",
+    "path": "observations"
+  }
+}

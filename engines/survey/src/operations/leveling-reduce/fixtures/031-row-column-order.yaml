@@ -1,0 +1,25 @@
+{
+  "id": "031-row-column-order",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": "-1",
+        "is": "bad",
+        "fs": "bad"
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_NEGATIVE_READING",
+    "path": "observations.0.bs"
+  }
+}

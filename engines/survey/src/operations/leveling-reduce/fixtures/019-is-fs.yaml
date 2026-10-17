@@ -1,0 +1,27 @@
+{
+  "id": "019-is-fs",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": "1"
+      },
+      {
+        "is": "1",
+        "fs": "1"
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_READING_COMBINATION",
+    "path": "observations.1"
+  }
+}

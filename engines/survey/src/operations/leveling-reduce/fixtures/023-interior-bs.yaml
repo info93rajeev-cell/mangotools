@@ -1,0 +1,26 @@
+{
+  "id": "023-interior-bs",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": "1"
+      },
+      {
+        "bs": "1"
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_CHANGE_POINT_INCONSISTENT",
+    "path": "observations.1"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": "003-nptel-consecutive-change-points",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "textbook",
+    "citation": "Prof. J. K. Ghosh, IIT Roorkee / NPTEL, Surveying, Module 4 Lesson 13 Table 13.1 and arithmetic-check section."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "station": "A",
+        "bs": "2.365"
+      },
+      {
+        "station": "S1",
+        "fs": "1.235",
+        "bs": "0.685"
+      },
+      {
+        "station": "S2",
+        "fs": "3.570",
+        "bs": "1.745"
+      },
+      {
+        "station": "B",
+        "fs": "2.340"
+      }
+    ]
+  },
+  "expected": {
+    "rows": [
+      {
+        "station": "A",
+        "bs": "2.365",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false
+      },
+      {
+        "station": "S1",
+        "bs": "0.685",
+        "fs": "1.235",
+        "is": null,
+        "rise": "1.13",
+        "fall": "0",
+        "rl": "101.13",
+        "isChangePoint": true
+      },
+      {
+        "station": "S2",
+        "bs": "1.745",
+        "fs": "3.57",
+        "is": null,
+        "rise": "0",
+        "fall": "2.885",
+        "rl": "98.245",
+        "isChangePoint": true
+      },
+      {
+        "station": "B",
+        "fs": "2.34",
+        "bs": null,
+        "is": null,
+        "rise": "0",
+        "fall": "0.595",
+        "rl": "97.65",
+        "isChangePoint": false
+      }
+    ],
+    "startingRL": "100",
+    "endingRL": "97.65",
+    "sumBS": "4.795",
+    "sumFS": "7.145",
+    "sumRise": "1.13",
+    "sumFall": "3.48",
+    "bsFsDelta": "-2.35",
+    "riseFallDelta": "-2.35",
+    "rlDelta": "-2.35",
+    "closingRL": null,
+    "misclosure": null,
+    "checks": [
+      {
+        "id": "arithmetic-rise-fall",
+        "labelKey": "leveling.check.riseFall",
+        "status": "pass",
+        "expected": "-2.35",
+        "actual": "-2.35"
+      },
+      {
+        "id": "arithmetic-first-last",
+        "labelKey": "leveling.check.firstLast",
+        "status": "pass",
+        "expected": "-2.35",
+        "actual": "-2.35"
+      }
+    ]
+  }
+}

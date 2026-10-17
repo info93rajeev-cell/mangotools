@@ -1,0 +1,23 @@
+{
+  "id": "022-bad-final",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": "1"
+      },
+      {
+        "bs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_SEQUENCE",
+    "path": "observations.1"
+  }
+}

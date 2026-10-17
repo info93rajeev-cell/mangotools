@@ -1,0 +1,24 @@
+{
+  "id": "033-unknown-row",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": "1",
+        "extra": "private"
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "INVALID_INPUT",
+    "path": "observations.0"
+  }
+}
