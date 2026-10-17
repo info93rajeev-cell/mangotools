@@ -1,0 +1,29 @@
+[
+  { "id": "exact-add", "exportName": "add", "args": ["0.1", "0.2"], "expected": "0.3" },
+  { "id": "exact-sub", "exportName": "sub", "args": ["1.00", "0.99"], "expected": "0.01" },
+  { "id": "exact-mul", "exportName": "mul", "args": ["2.5", "4"], "expected": "10" },
+  { "id": "division", "exportName": "div", "args": ["1", "8"], "expected": "0.125" },
+  { "id": "half-up", "exportName": "round", "args": ["2.345", 2, "half-up"], "expected": "2.35" },
+  {
+    "id": "half-even",
+    "exportName": "round",
+    "args": ["2.345", 2, "half-even"],
+    "expected": "2.34"
+  },
+  { "id": "numeric-bits-negative", "exportName": "compare", "args": ["1", "2"], "expected": -1 },
+  { "id": "numeric-bits-zero", "exportName": "compare", "args": ["1.0", "1"], "expected": 0 },
+  { "id": "numeric-bits-positive", "exportName": "compare", "args": ["2", "1"], "expected": 1 },
+  {
+    "id": "tagged-result",
+    "exportName": "parseDecimal",
+    "args": ["1.250"],
+    "expected": { "ok": true, "value": "1.25", "decimals": 3 }
+  },
+  {
+    "id": "tagged-error",
+    "exportName": "parseDecimal",
+    "args": ["invalid"],
+    "expected": { "ok": false, "code": "NOT_A_NUMBER" }
+  },
+  { "id": "fixed-zero", "exportName": "toFixedString", "args": ["-0.001", 2], "expected": "0.00" }
+]
