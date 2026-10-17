@@ -1,8 +1,17 @@
 # engines/survey
 
-Pure Survey calculations through `@mangotools/core` operation descriptors. Decimal strings cross
-the boundary; only the public `@mangotools/engine-numeric` API performs arithmetic. No Grid/Units,
-DOM, network, storage, clock, randomness or logging. Optional station/remarks make inputs personal.
+Pure Survey calculations through `@mangotools/core` operation descriptors.
+For the implemented `survey.leveling.reduce@1` Rise & Fall operation, measurements/RLs cross the
+boundary as decimal strings and arithmetic uses only the existing exact public Numeric family.
+Its behavior, checks, rounding and fixtures remain unchanged.
+The separately approved future closed-traverse design (#158) uses binary64 metre/decimal-degree
+geometry through Numeric's narrowly governed `degreesToRadians`, `sinDegrees`, `cosDegrees` and
+`hypot2` family. Those geometry APIs and the proposed `survey.traverse.compute@1` /
+`survey.traverse.adjust.bowditch@1` operations are not implemented by this reconciliation.
+See [Numeric geometry decision](../../docs/decisions/DECISION-NUMERIC-GEOMETRY-KERNEL.md);
+#161's harness, governance, analytic and source gates still apply before separate implementation.
+No Grid/Units, DOM, network, storage, clock, randomness or logging.
+Optional station/remarks make inputs personal.
 
 | Operation | Scope |
 |---|---|
