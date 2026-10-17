@@ -75,6 +75,11 @@ These convert the frozen architecture's Appendix A into exact choices, so no age
 | 0010 | Analytics provider | Written before public beta |
 | 0011 | Sync encryption & key recovery | Written before Phase 3 |
 
+**Survey Leveling exception to ADR-0003:** `survey.leveling.reduce@1` uses decimal-string
+measurements/RLs and exact Numeric operations for Rise & Fall arithmetic/checks, without floating-point
+tolerance (see §4.3). This does not change the repository-wide numeric model or prescribe the numeric
+model for future Survey operations.
+
 ---
 
 ## 2. Repository structure
@@ -261,12 +266,18 @@ Data folders (tools, presets, taxonomy, content) are never imported by code — 
 | Engine | May import |
 |---|---|
 | units, data, search, settings, storage, ai | core only |
-| grid, survey, import | core, units |
+| grid, import | core, units |
+| survey | core, numeric |
 | privacy | core, ai (lazy, optional NER) |
 | report | core, units |
 | pdf, image | core |
 | analytics | core, settings |
 | reference | core, numeric |
+
+Survey uses Numeric only through the public `@mangotools/engine-numeric` package entry; direct
+`big.js` imports and Grid/Units dependencies are not allowed. Other Survey capabilities remain separately approved
+future work under the [Survey Leveling decision](../decisions/DECISION-SURVEY-LEVELING-ENGINE.md).
+
 Additional hard rules:
 - Portable engines (units, grid, survey, data, pdf, image, privacy, import, report, search) compile with `lib: ["ES2023"]` only — no DOM, no WebWorker types. The two browser-bound engines (storage, ai) add only the `WebWorker` lib (IndexedDB, OPFS, WebGPU are available in workers) and declare `runtimes: [worker]`. Settings and analytics are pure logic that talk to the outside world through **ports** (a key-value store port, a transport port); `packages/runtime` injects the browser adapters (localStorage, `sendBeacon`). **No engine ever compiles with DOM types.** Engines use `types: []`; the few cross-runtime globals they may touch (Web Crypto digest, `TextEncoder`/`TextDecoder`, `WebAssembly` instantiation, `structuredClone`) are declared in one audited file, `packages/core/platform-globals.d.ts`. Network globals (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`) are banned in `engines/` by a lint rule; model and WASM downloads go through `ctx.assets`, which the runtime implements.
 - `packages/ui` and `apps/web` never import an engine directly — only through `packages/runtime`.
@@ -338,6 +349,9 @@ Engines return **data about results**, never prose or pixels. The UI, report eng
 | `ReportDocument` | metadata, brand, sections (tables, checks, working, plots, text blocks), template id | Report engine |
 
 **Units rule for operations:** operation inputs and outputs carry **plain numbers in one declared base unit per field** (metres for lengths, decimal degrees for bearings), recorded as `unit` metadata in the schema and in the field description. Field names carry a unit suffix only where several units are plausible (`bearingDeg`, `distanceM`); leveling readings stay `bs`, `is`, `fs` (metres). `Quantity` and `Angle` are used at the UI/grid boundary, where the units engine parses "5' 3\"" or "N 45°30′ E" into those numbers. This keeps operations trivially callable by AI clients and APIs.
+
+For `survey.leveling.reduce@1` only, the decimal-string boundary and exact arithmetic in
+[TASK-010A](../../tasks/TASK-010A-SURVEY-LEVELING-CONTRACT.md) supersede this plain-number sketch.
 
 `PlotSpec` resolves the frozen architecture's separate "Plot engine" (E11) into a shared IR plus one UI component plus one report renderer — no extra engine to maintain (see §13).
 
@@ -425,17 +439,24 @@ Notation: operations are listed as `id@major`. "MCP" states the future exposure 
 
 ### 4.3 Survey engine — `engines/survey`
 
+The first implementation is Rise & Fall only, using Numeric, as defined by
+[TASK-010A](../../tasks/TASK-010A-SURVEY-LEVELING-CONTRACT.md) and the accepted
+[Survey Leveling decision](../decisions/DECISION-SURVEY-LEVELING-ENGINE.md).
+Broader capabilities/exposure below and the §6.5 preset sketches remain roadmap illustrations:
+HI, Bowditch/traverse and other extensions require separate approval. This reconciliation does not
+authorize implementation; the decision's existing gates still apply.
+
 | Aspect | Specification |
 |---|---|
 | **Responsibilities** | Leveling reduction (rise & fall, height of instrument), arithmetic checks, misclosure and allowable misclosure, closing-error distribution; traverse closure and adjustment (Bowditch, Transit), coordinates, relative precision, area by coordinates; COGO inverse/forward; later curves, profiles, cut/fill. Produces `Check`, `WorkingStep` and `PlotSpec` IR |
 | **Public API** | Phase 1: `survey.leveling.reduce@1` · `survey.traverse.adjust@1` · `survey.traverse.closure@1` · `survey.cogo.inverse@1` · `survey.cogo.forward@1` · `survey.area.coordinates@1`. Phase 3+: `survey.curve.horizontal@1` · `survey.profile.build@1` · `survey.volume.cutfill@1` |
-| **Input** (leveling) | Observations: station, BS?, IS?, FS?, distance?, remarks (blank ≠ zero) |
-| **Params** (leveling) | `method` (`rise-fall` \| `height-of-instrument`), `startRL`, `closingRL?`, `misclosure` (`none` \| `constant-root-k` \| `constant-root-n`, constant in mm), `distribution` (`none` \| `equal-per-setup` \| `proportional-distance`), `showWorking` |
-| **Output** (leveling) | Rows (rise, fall, HI, RL, correction, adjusted RL), checks (method-specific arithmetic checks), misclosure (value, allowable, pass), working steps, profile `PlotSpec`, warnings |
+| **Input** (first leveling implementation) | Required `startRL`, optional `closingRL`, ordered observations with station?, BS?, IS?, FS?, remarks?; decimal-string measurements/RLs in metres, blank ≠ zero. Exact contract: TASK-010A. |
+| **Params** (first leveling implementation) | `method` remains a parameter, default/only value `rise-fall`; `startRL` and `closingRL` are inputs, not params. HI and other options are not accepted. |
+| **Output** (first leveling implementation) | Reduced rows, exact arithmetic checks, optional signed misclosure and working steps per TASK-010A; no HI, adjustment, allowable-error assessment or profile plot. |
 | **Input / params** (traverse) | Legs (from, to, `bearingDeg` as decimal whole-circle bearing, `distanceM`), start coordinates (E, N); params `type` (`closed-loop` \| `link`), `method` (`bowditch` \| `transit`), end coordinates (link), precision target 1:N |
 | **Output** (traverse) | Latitudes/departures, corrections, adjusted values, coordinates, linear misclosure, misclosure bearing, relative precision, area (closed loop), checks, working, traverse `PlotSpec` |
-| **Dependencies** | `core`, `units` |
-| **Tests** | Property: zero-misclosure input ⇒ zero corrections; rotating a traverse leaves misclosure magnitude unchanged; reversing loop direction preserves area magnitude; for any valid level book, ΣBS − ΣFS = ΣRise − ΣFall = Last RL − First RL within tolerance |
+| **Dependencies** | `core`, `numeric`, public package entries only (§2.4); no Grid/Units dependency. |
+| **Tests** | First leveling implementation: ΣBS − ΣFS = ΣRise − ΣFall = Last RL − First RL exactly, without floating-point tolerance. Future separately approved adjustment/traverse tests: zero-misclosure ⇒ zero corrections; rotation preserves misclosure magnitude; reversal preserves area magnitude. |
 | **Golden fixtures** | ≥ 3 per operation from recognised textbooks (e.g. Indian and international university surveying texts), cited with edition and example number; plus hand-verified spreadsheet cases for edge cases (change points, IS on first row, missing closing BM) |
 | **Future MCP** | All Phase 1 operations: exposure `mcp`, `public`, portable, light. Highest-value tools for AI clients |
 
@@ -1424,7 +1445,7 @@ Weaknesses found in the frozen architecture and in the plan, each with the small
 |---|---|---|---|
 | 1 | The architecture's generic tools need a text/data engine and generators, but the engine list omitted them | JSON formatter, Base64, UUID, QR would have no home and end up as one-off code | **Data engine** (§4.4) merging E5 + E6 into one package |
 | 2 | "Plot engine" (E11) listed separately | A 15th engine for what is mostly rendering | `PlotSpec` IR in core + one UI component + one report renderer (§3.4) |
-| 3 | Floating-point arithmetic in survey checks | Checks "fail" by 1e-13 | ADR-0003: float64, explicit tolerances everywhere, rounding only at display |
+| 3 | Floating-point arithmetic in survey checks | Checks "fail" by 1e-13 | `survey.leveling.reduce@1`: exact decimal-string arithmetic/checks (§1.1/§4.3); the broader ADR-0003 model is unchanged for other operations |
 | 4 | Engines that depend on browser-only APIs cannot run on a server later | API/MCP would need rewrites | `runtimes` field + WASM codecs instead of canvas + Node fixture runs in CI (§12.6) |
 | 5 | AI agents "fix" tests to match buggy code | Wrong professional results ship | Fixture immutability guard (§9.6) |
 | 6 | One human reviewer is a bottleneck | Agents idle; founder burns out | Autonomy levels + path-computed auto-merge + AI pre-review (§9.8, §9.13) |
