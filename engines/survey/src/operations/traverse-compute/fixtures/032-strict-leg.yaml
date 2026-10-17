@@ -1,0 +1,39 @@
+{
+  "id": "032-strict-leg",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0,
+        "extra": true
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "INVALID_INPUT",
+    "path": "legs.0"
+  }
+}

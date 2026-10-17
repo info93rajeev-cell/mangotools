@@ -1,0 +1,38 @@
+{
+  "id": "025-disconnected-before-final",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "X",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "Z",
+        "distanceM": 1,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_TRAVERSE_DISCONNECTED_SEQUENCE",
+    "path": "legs.1.from"
+  }
+}

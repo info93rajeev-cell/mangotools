@@ -1,0 +1,326 @@
+{
+  "id": "011-too-many",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_TRAVERSE_TOO_MANY_LEGS",
+    "path": "legs"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "035-params-before-domain",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": []
+  },
+  "params": {
+    "extra": true
+  },
+  "expectedError": {
+    "code": "INVALID_PARAMS",
+    "path": ""
+  }
+}

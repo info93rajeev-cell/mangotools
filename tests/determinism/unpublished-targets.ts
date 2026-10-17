@@ -6,4 +6,10 @@ export const unpublishedTargets = [
     operation: 'survey.leveling.reduce@1',
     minimumFixtures: 37,
   },
+  {
+    packageName: '@mangotools/engine-survey',
+    directory: 'engines/survey',
+    operation: 'survey.traverse.compute@1',
+    minimumFixtures: 38,
+  },
 ] as const;

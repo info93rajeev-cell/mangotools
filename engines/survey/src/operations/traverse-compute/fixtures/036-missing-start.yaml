@@ -1,0 +1,34 @@
+{
+  "id": "036-missing-start",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 strict required primitive input contract; structural validation before domain."
+  },
+  "input": {
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "INVALID_INPUT",
+    "path": "start"
+  }
+}
