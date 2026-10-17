@@ -25,5 +25,773 @@
     "args": ["invalid"],
     "expected": { "ok": false, "code": "NOT_A_NUMBER" }
   },
-  { "id": "fixed-zero", "exportName": "toFixedString", "args": ["-0.001", 2], "expected": "0.00" }
+  { "id": "fixed-zero", "exportName": "toFixedString", "args": ["-0.001", 2], "expected": "0.00" },
+  {
+    "id": "geometry-0",
+    "exportName": "degreesToRadians",
+    "args": [0],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-1",
+    "exportName": "sinDegrees",
+    "args": [0],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-2",
+    "exportName": "cosDegrees",
+    "args": [0],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-3",
+    "exportName": "degreesToRadians",
+    "args": [5e-324],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-4",
+    "exportName": "sinDegrees",
+    "args": [5e-324],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-5",
+    "exportName": "cosDegrees",
+    "args": [5e-324],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-6",
+    "exportName": "degreesToRadians",
+    "args": [1.43e-322],
+    "expected": { "ok": true, "value": 5e-324 }
+  },
+  {
+    "id": "geometry-7",
+    "exportName": "sinDegrees",
+    "args": [1.43e-322],
+    "expected": { "ok": true, "value": 5e-324 }
+  },
+  {
+    "id": "geometry-8",
+    "exportName": "cosDegrees",
+    "args": [1.43e-322],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-9",
+    "exportName": "degreesToRadians",
+    "args": [2.2250738585072014e-308],
+    "expected": { "ok": true, "value": 3.8834864931005e-310 }
+  },
+  {
+    "id": "geometry-10",
+    "exportName": "sinDegrees",
+    "args": [2.2250738585072014e-308],
+    "expected": { "ok": true, "value": 3.8834864931005e-310 }
+  },
+  {
+    "id": "geometry-11",
+    "exportName": "cosDegrees",
+    "args": [2.2250738585072014e-308],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-12",
+    "exportName": "degreesToRadians",
+    "args": [1.4901161193847655e-8],
+    "expected": { "ok": true, "value": 2.6007432520305055e-10 }
+  },
+  {
+    "id": "geometry-13",
+    "exportName": "sinDegrees",
+    "args": [1.4901161193847655e-8],
+    "expected": { "ok": true, "value": 2.6007432520305055e-10 }
+  },
+  {
+    "id": "geometry-14",
+    "exportName": "cosDegrees",
+    "args": [1.4901161193847655e-8],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-15",
+    "exportName": "degreesToRadians",
+    "args": [1.4901161193847656e-8],
+    "expected": { "ok": true, "value": 2.600743252030506e-10 }
+  },
+  {
+    "id": "geometry-16",
+    "exportName": "sinDegrees",
+    "args": [1.4901161193847656e-8],
+    "expected": { "ok": true, "value": 2.600743252030506e-10 }
+  },
+  {
+    "id": "geometry-17",
+    "exportName": "cosDegrees",
+    "args": [1.4901161193847656e-8],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-18",
+    "exportName": "degreesToRadians",
+    "args": [1.490116119384766e-8],
+    "expected": { "ok": true, "value": 2.6007432520305066e-10 }
+  },
+  {
+    "id": "geometry-19",
+    "exportName": "sinDegrees",
+    "args": [1.490116119384766e-8],
+    "expected": { "ok": true, "value": 2.6007432520305066e-10 }
+  },
+  {
+    "id": "geometry-20",
+    "exportName": "cosDegrees",
+    "args": [1.490116119384766e-8],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-21",
+    "exportName": "degreesToRadians",
+    "args": [0.025],
+    "expected": { "ok": true, "value": 0.0004363323129985824 }
+  },
+  {
+    "id": "geometry-22",
+    "exportName": "sinDegrees",
+    "args": [0.025],
+    "expected": { "ok": true, "value": 0.0004363322991533301 }
+  },
+  {
+    "id": "geometry-23",
+    "exportName": "cosDegrees",
+    "args": [0.025],
+    "expected": { "ok": true, "value": 0.9999999048070578 }
+  },
+  {
+    "id": "geometry-24",
+    "exportName": "degreesToRadians",
+    "args": [30],
+    "expected": { "ok": true, "value": 0.5235987755982989 }
+  },
+  {
+    "id": "geometry-25",
+    "exportName": "sinDegrees",
+    "args": [30],
+    "expected": { "ok": true, "value": 0.5 }
+  },
+  {
+    "id": "geometry-26",
+    "exportName": "cosDegrees",
+    "args": [30],
+    "expected": { "ok": true, "value": 0.8660254037844387 }
+  },
+  {
+    "id": "geometry-27",
+    "exportName": "degreesToRadians",
+    "args": [44.99999999999999],
+    "expected": { "ok": true, "value": 0.7853981633974482 }
+  },
+  {
+    "id": "geometry-28",
+    "exportName": "sinDegrees",
+    "args": [44.99999999999999],
+    "expected": { "ok": true, "value": 0.7071067811865475 }
+  },
+  {
+    "id": "geometry-29",
+    "exportName": "cosDegrees",
+    "args": [44.99999999999999],
+    "expected": { "ok": true, "value": 0.7071067811865477 }
+  },
+  {
+    "id": "geometry-30",
+    "exportName": "degreesToRadians",
+    "args": [45],
+    "expected": { "ok": true, "value": 0.7853981633974483 }
+  },
+  {
+    "id": "geometry-31",
+    "exportName": "sinDegrees",
+    "args": [45],
+    "expected": { "ok": true, "value": 0.7071067811865475 }
+  },
+  {
+    "id": "geometry-32",
+    "exportName": "cosDegrees",
+    "args": [45],
+    "expected": { "ok": true, "value": 0.7071067811865476 }
+  },
+  {
+    "id": "geometry-33",
+    "exportName": "degreesToRadians",
+    "args": [45.00000000000001],
+    "expected": { "ok": true, "value": 0.7853981633974484 }
+  },
+  {
+    "id": "geometry-34",
+    "exportName": "sinDegrees",
+    "args": [45.00000000000001],
+    "expected": { "ok": true, "value": 0.7071067811865477 }
+  },
+  {
+    "id": "geometry-35",
+    "exportName": "cosDegrees",
+    "args": [45.00000000000001],
+    "expected": { "ok": true, "value": 0.7071067811865475 }
+  },
+  {
+    "id": "geometry-36",
+    "exportName": "degreesToRadians",
+    "args": [60],
+    "expected": { "ok": true, "value": 1.0471975511965979 }
+  },
+  {
+    "id": "geometry-37",
+    "exportName": "sinDegrees",
+    "args": [60],
+    "expected": { "ok": true, "value": 0.8660254037844387 }
+  },
+  {
+    "id": "geometry-38",
+    "exportName": "cosDegrees",
+    "args": [60],
+    "expected": { "ok": true, "value": 0.5 }
+  },
+  {
+    "id": "geometry-39",
+    "exportName": "degreesToRadians",
+    "args": [89.99999999999999],
+    "expected": { "ok": true, "value": 1.5707963267948963 }
+  },
+  {
+    "id": "geometry-40",
+    "exportName": "sinDegrees",
+    "args": [89.99999999999999],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-41",
+    "exportName": "cosDegrees",
+    "args": [89.99999999999999],
+    "expected": { "ok": true, "value": 2.4802620430283604e-16 }
+  },
+  {
+    "id": "geometry-42",
+    "exportName": "degreesToRadians",
+    "args": [90],
+    "expected": { "ok": true, "value": 1.5707963267948966 }
+  },
+  {
+    "id": "geometry-43",
+    "exportName": "sinDegrees",
+    "args": [90],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-44",
+    "exportName": "cosDegrees",
+    "args": [90],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-45",
+    "exportName": "degreesToRadians",
+    "args": [90.00000000000001],
+    "expected": { "ok": true, "value": 1.5707963267948968 }
+  },
+  {
+    "id": "geometry-46",
+    "exportName": "sinDegrees",
+    "args": [90.00000000000001],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-47",
+    "exportName": "cosDegrees",
+    "args": [90.00000000000001],
+    "expected": { "ok": true, "value": -2.4802620430283604e-16 }
+  },
+  {
+    "id": "geometry-48",
+    "exportName": "degreesToRadians",
+    "args": [120],
+    "expected": { "ok": true, "value": 2.0943951023931957 }
+  },
+  {
+    "id": "geometry-49",
+    "exportName": "sinDegrees",
+    "args": [120],
+    "expected": { "ok": true, "value": 0.8660254037844387 }
+  },
+  {
+    "id": "geometry-50",
+    "exportName": "cosDegrees",
+    "args": [120],
+    "expected": { "ok": true, "value": -0.5 }
+  },
+  {
+    "id": "geometry-51",
+    "exportName": "degreesToRadians",
+    "args": [134.99999999999997],
+    "expected": { "ok": true, "value": 2.3561944901923444 }
+  },
+  {
+    "id": "geometry-52",
+    "exportName": "sinDegrees",
+    "args": [134.99999999999997],
+    "expected": { "ok": true, "value": 0.7071067811865479 }
+  },
+  {
+    "id": "geometry-53",
+    "exportName": "cosDegrees",
+    "args": [134.99999999999997],
+    "expected": { "ok": true, "value": -0.7071067811865472 }
+  },
+  {
+    "id": "geometry-54",
+    "exportName": "degreesToRadians",
+    "args": [135],
+    "expected": { "ok": true, "value": 2.356194490192345 }
+  },
+  {
+    "id": "geometry-55",
+    "exportName": "sinDegrees",
+    "args": [135],
+    "expected": { "ok": true, "value": 0.7071067811865476 }
+  },
+  {
+    "id": "geometry-56",
+    "exportName": "cosDegrees",
+    "args": [135],
+    "expected": { "ok": true, "value": -0.7071067811865475 }
+  },
+  {
+    "id": "geometry-57",
+    "exportName": "degreesToRadians",
+    "args": [135.00000000000003],
+    "expected": { "ok": true, "value": 2.3561944901923453 }
+  },
+  {
+    "id": "geometry-58",
+    "exportName": "sinDegrees",
+    "args": [135.00000000000003],
+    "expected": { "ok": true, "value": 0.7071067811865472 }
+  },
+  {
+    "id": "geometry-59",
+    "exportName": "cosDegrees",
+    "args": [135.00000000000003],
+    "expected": { "ok": true, "value": -0.7071067811865479 }
+  },
+  {
+    "id": "geometry-60",
+    "exportName": "degreesToRadians",
+    "args": [179.99999999999997],
+    "expected": { "ok": true, "value": 3.1415926535897927 }
+  },
+  {
+    "id": "geometry-61",
+    "exportName": "sinDegrees",
+    "args": [179.99999999999997],
+    "expected": { "ok": true, "value": 4.960524086056721e-16 }
+  },
+  {
+    "id": "geometry-62",
+    "exportName": "cosDegrees",
+    "args": [179.99999999999997],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-63",
+    "exportName": "degreesToRadians",
+    "args": [180],
+    "expected": { "ok": true, "value": 3.141592653589793 }
+  },
+  {
+    "id": "geometry-64",
+    "exportName": "sinDegrees",
+    "args": [180],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-65",
+    "exportName": "cosDegrees",
+    "args": [180],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-66",
+    "exportName": "degreesToRadians",
+    "args": [180.00000000000003],
+    "expected": { "ok": true, "value": 3.1415926535897936 }
+  },
+  {
+    "id": "geometry-67",
+    "exportName": "sinDegrees",
+    "args": [180.00000000000003],
+    "expected": { "ok": true, "value": -4.960524086056721e-16 }
+  },
+  {
+    "id": "geometry-68",
+    "exportName": "cosDegrees",
+    "args": [180.00000000000003],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-69",
+    "exportName": "degreesToRadians",
+    "args": [224.99999999999997],
+    "expected": { "ok": true, "value": 3.926990816987241 }
+  },
+  {
+    "id": "geometry-70",
+    "exportName": "sinDegrees",
+    "args": [224.99999999999997],
+    "expected": { "ok": true, "value": -0.7071067811865472 }
+  },
+  {
+    "id": "geometry-71",
+    "exportName": "cosDegrees",
+    "args": [224.99999999999997],
+    "expected": { "ok": true, "value": -0.7071067811865479 }
+  },
+  {
+    "id": "geometry-72",
+    "exportName": "degreesToRadians",
+    "args": [225],
+    "expected": { "ok": true, "value": 3.9269908169872414 }
+  },
+  {
+    "id": "geometry-73",
+    "exportName": "sinDegrees",
+    "args": [225],
+    "expected": { "ok": true, "value": -0.7071067811865475 }
+  },
+  {
+    "id": "geometry-74",
+    "exportName": "cosDegrees",
+    "args": [225],
+    "expected": { "ok": true, "value": -0.7071067811865476 }
+  },
+  {
+    "id": "geometry-75",
+    "exportName": "degreesToRadians",
+    "args": [225.00000000000003],
+    "expected": { "ok": true, "value": 3.926990816987242 }
+  },
+  {
+    "id": "geometry-76",
+    "exportName": "sinDegrees",
+    "args": [225.00000000000003],
+    "expected": { "ok": true, "value": -0.7071067811865479 }
+  },
+  {
+    "id": "geometry-77",
+    "exportName": "cosDegrees",
+    "args": [225.00000000000003],
+    "expected": { "ok": true, "value": -0.7071067811865472 }
+  },
+  {
+    "id": "geometry-78",
+    "exportName": "degreesToRadians",
+    "args": [269.99999999999994],
+    "expected": { "ok": true, "value": 4.712388980384689 }
+  },
+  {
+    "id": "geometry-79",
+    "exportName": "sinDegrees",
+    "args": [269.99999999999994],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-80",
+    "exportName": "cosDegrees",
+    "args": [269.99999999999994],
+    "expected": { "ok": true, "value": -9.921048172113442e-16 }
+  },
+  {
+    "id": "geometry-81",
+    "exportName": "degreesToRadians",
+    "args": [270],
+    "expected": { "ok": true, "value": 4.71238898038469 }
+  },
+  {
+    "id": "geometry-82",
+    "exportName": "sinDegrees",
+    "args": [270],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-83",
+    "exportName": "cosDegrees",
+    "args": [270],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-84",
+    "exportName": "degreesToRadians",
+    "args": [270.00000000000006],
+    "expected": { "ok": true, "value": 4.712388980384691 }
+  },
+  {
+    "id": "geometry-85",
+    "exportName": "sinDegrees",
+    "args": [270.00000000000006],
+    "expected": { "ok": true, "value": -1 }
+  },
+  {
+    "id": "geometry-86",
+    "exportName": "cosDegrees",
+    "args": [270.00000000000006],
+    "expected": { "ok": true, "value": 9.921048172113442e-16 }
+  },
+  {
+    "id": "geometry-87",
+    "exportName": "degreesToRadians",
+    "args": [314.99999999999994],
+    "expected": { "ok": true, "value": 5.497787143782137 }
+  },
+  {
+    "id": "geometry-88",
+    "exportName": "sinDegrees",
+    "args": [314.99999999999994],
+    "expected": { "ok": true, "value": -0.7071067811865482 }
+  },
+  {
+    "id": "geometry-89",
+    "exportName": "cosDegrees",
+    "args": [314.99999999999994],
+    "expected": { "ok": true, "value": 0.7071067811865468 }
+  },
+  {
+    "id": "geometry-90",
+    "exportName": "degreesToRadians",
+    "args": [315],
+    "expected": { "ok": true, "value": 5.497787143782138 }
+  },
+  {
+    "id": "geometry-91",
+    "exportName": "sinDegrees",
+    "args": [315],
+    "expected": { "ok": true, "value": -0.7071067811865476 }
+  },
+  {
+    "id": "geometry-92",
+    "exportName": "cosDegrees",
+    "args": [315],
+    "expected": { "ok": true, "value": 0.7071067811865475 }
+  },
+  {
+    "id": "geometry-93",
+    "exportName": "degreesToRadians",
+    "args": [315.00000000000006],
+    "expected": { "ok": true, "value": 5.497787143782139 }
+  },
+  {
+    "id": "geometry-94",
+    "exportName": "sinDegrees",
+    "args": [315.00000000000006],
+    "expected": { "ok": true, "value": -0.7071067811865468 }
+  },
+  {
+    "id": "geometry-95",
+    "exportName": "cosDegrees",
+    "args": [315.00000000000006],
+    "expected": { "ok": true, "value": 0.7071067811865482 }
+  },
+  {
+    "id": "geometry-96",
+    "exportName": "degreesToRadians",
+    "args": [359.99999999999994],
+    "expected": { "ok": true, "value": 6.283185307179585 }
+  },
+  {
+    "id": "geometry-97",
+    "exportName": "sinDegrees",
+    "args": [359.99999999999994],
+    "expected": { "ok": true, "value": -9.921048172113442e-16 }
+  },
+  {
+    "id": "geometry-98",
+    "exportName": "cosDegrees",
+    "args": [359.99999999999994],
+    "expected": { "ok": true, "value": 1 }
+  },
+  {
+    "id": "geometry-99",
+    "exportName": "hypot2",
+    "args": [0, 0],
+    "expected": { "ok": true, "value": 0 }
+  },
+  {
+    "id": "geometry-100",
+    "exportName": "hypot2",
+    "args": [-0, 3],
+    "expected": { "ok": true, "value": 3 }
+  },
+  {
+    "id": "geometry-101",
+    "exportName": "hypot2",
+    "args": [-3, 0],
+    "expected": { "ok": true, "value": 3 }
+  },
+  {
+    "id": "geometry-102",
+    "exportName": "hypot2",
+    "args": [3, 4],
+    "expected": { "ok": true, "value": 5 }
+  },
+  {
+    "id": "geometry-103",
+    "exportName": "hypot2",
+    "args": [4, 3],
+    "expected": { "ok": true, "value": 5 }
+  },
+  {
+    "id": "geometry-104",
+    "exportName": "hypot2",
+    "args": [-3, -4],
+    "expected": { "ok": true, "value": 5 }
+  },
+  {
+    "id": "geometry-105",
+    "exportName": "hypot2",
+    "args": [100000000, 100000000],
+    "expected": { "ok": true, "value": 141421356.2373095 }
+  },
+  {
+    "id": "geometry-106",
+    "exportName": "hypot2",
+    "args": [100000000, 5e-324],
+    "expected": { "ok": true, "value": 100000000 }
+  },
+  {
+    "id": "geometry-107",
+    "exportName": "hypot2",
+    "args": [1e-300, 1e-300],
+    "expected": { "ok": true, "value": 1.414213562373095e-300 }
+  },
+  {
+    "id": "geometry-108",
+    "exportName": "hypot2",
+    "args": [5e-324, 5e-324],
+    "expected": { "ok": true, "value": 5e-324 }
+  },
+  {
+    "id": "geometry-109",
+    "exportName": "hypot2",
+    "args": [5e-324, 0],
+    "expected": { "ok": true, "value": 5e-324 }
+  },
+  {
+    "id": "geometry-110",
+    "exportName": "hypot2",
+    "args": [1e-323, 1e-323],
+    "expected": { "ok": true, "value": 1.5e-323 }
+  },
+  {
+    "id": "geometry-111",
+    "exportName": "hypot2",
+    "args": [1e-323, 5e-324],
+    "expected": { "ok": true, "value": 1e-323 }
+  },
+  {
+    "id": "geometry-112",
+    "exportName": "hypot2",
+    "args": [2.2250738585072014e-308, 2.2250738585072014e-308],
+    "expected": { "ok": true, "value": 3.146729627982717e-308 }
+  },
+  {
+    "id": "geometry-113",
+    "exportName": "hypot2",
+    "args": [2.2250738585072014e-308, 1.1125369292536007e-308],
+    "expected": { "ok": true, "value": 2.4877082012899256e-308 }
+  },
+  {
+    "id": "geometry-114",
+    "exportName": "hypot2",
+    "args": [9.332636185032189e-302, 9.332636185032189e-302],
+    "expected": { "ok": true, "value": 1.3198340665566422e-301 }
+  },
+  {
+    "id": "geometry-115",
+    "exportName": "hypot2",
+    "args": [9.332636185032189e-302, 4.6663180925160944e-302],
+    "expected": { "ok": true, "value": 1.043420445950314e-301 }
+  },
+  {
+    "id": "geometry-116",
+    "exportName": "hypot2",
+    "args": [3.054936363499605e-151, 3.054936363499605e-151],
+    "expected": { "ok": true, "value": 4.320332437447884e-151 }
+  },
+  {
+    "id": "geometry-117",
+    "exportName": "hypot2",
+    "args": [3.054936363499605e-151, 1.5274681817498023e-151],
+    "expected": { "ok": true, "value": 3.415522687860562e-151 }
+  },
+  {
+    "id": "geometry-118",
+    "exportName": "hypot2",
+    "args": [0.5, 0.5],
+    "expected": { "ok": true, "value": 0.7071067811865475 }
+  },
+  {
+    "id": "geometry-119",
+    "exportName": "hypot2",
+    "args": [0.5, 0.25],
+    "expected": { "ok": true, "value": 0.5590169943749475 }
+  },
+  {
+    "id": "geometry-120",
+    "exportName": "hypot2",
+    "args": [1, 1],
+    "expected": { "ok": true, "value": 1.414213562373095 }
+  },
+  {
+    "id": "geometry-121",
+    "exportName": "hypot2",
+    "args": [1, 0.5],
+    "expected": { "ok": true, "value": 1.118033988749895 }
+  },
+  {
+    "id": "geometry-122",
+    "exportName": "hypot2",
+    "args": [67108864, 67108864],
+    "expected": { "ok": true, "value": 94906265.62425154 }
+  },
+  {
+    "id": "geometry-123",
+    "exportName": "hypot2",
+    "args": [67108864, 33554432],
+    "expected": { "ok": true, "value": 75029990.89839423 }
+  },
+  {
+    "id": "geometry-invalid-degreesToRadians",
+    "exportName": "degreesToRadians",
+    "args": [360],
+    "expected": { "ok": false, "code": "NUMERIC_GEOMETRY_OUT_OF_RANGE", "argument": "degrees" }
+  },
+  {
+    "id": "geometry-invalid-sinDegrees",
+    "exportName": "sinDegrees",
+    "args": [360],
+    "expected": { "ok": false, "code": "NUMERIC_GEOMETRY_OUT_OF_RANGE", "argument": "degrees" }
+  },
+  {
+    "id": "geometry-invalid-cosDegrees",
+    "exportName": "cosDegrees",
+    "args": [360],
+    "expected": { "ok": false, "code": "NUMERIC_GEOMETRY_OUT_OF_RANGE", "argument": "degrees" }
+  },
+  {
+    "id": "geometry-invalid-hypot-order",
+    "exportName": "hypot2",
+    "args": [100000001, null],
+    "expected": { "ok": false, "code": "NUMERIC_GEOMETRY_INVALID_NUMBER", "argument": "y" }
+  }
 ]
