@@ -1,0 +1,23 @@
+{
+  "id": "006-whitespace-start",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": " \t ",
+    "observations": [
+      {
+        "bs": "1"
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_MISSING_START_RL",
+    "path": "startRL"
+  }
+}

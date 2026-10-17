@@ -1,0 +1,23 @@
+{
+  "id": "011-blank-staff",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": [
+      {
+        "bs": ""
+      },
+      {
+        "fs": "1"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_DECIMAL",
+    "path": "observations.0.bs"
+  }
+}

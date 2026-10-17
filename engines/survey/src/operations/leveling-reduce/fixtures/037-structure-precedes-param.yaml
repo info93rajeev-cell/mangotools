@@ -1,0 +1,19 @@
+{
+  "id": "037-structure-precedes-param",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010A exact validation stages and decimal/sequence contract; hand-verified."
+  },
+  "input": {
+    "startRL": "100",
+    "observations": "bad"
+  },
+  "params": {
+    "method": "unsupported"
+  },
+  "expectedError": {
+    "code": "INVALID_INPUT",
+    "path": "observations"
+  }
+}

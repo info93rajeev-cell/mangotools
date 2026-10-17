@@ -1,0 +1,200 @@
+{
+  "id": "002-nimi-intermediate-sights",
+  "operation": "survey.leveling.reduce@1",
+  "source": {
+    "type": "textbook",
+    "citation": "NIMI / DGT Government of India, Surveyor 1st Year Trade Practical NSQF4, first edition October 2022, Exercise 1.8.54, printed p.168."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "station": "A",
+        "bs": "0.535"
+      },
+      {
+        "station": "B",
+        "is": "2.145"
+      },
+      {
+        "station": "C",
+        "is": "2.435"
+      },
+      {
+        "station": "D",
+        "is": "1.585"
+      },
+      {
+        "station": "E",
+        "fs": "0.630",
+        "bs": "1.535"
+      },
+      {
+        "station": "F",
+        "is": "2.015"
+      },
+      {
+        "station": "G",
+        "fs": "3.510",
+        "bs": "3.340"
+      },
+      {
+        "station": "H",
+        "is": "2.910"
+      },
+      {
+        "station": "I",
+        "is": "2.755"
+      },
+      {
+        "station": "J",
+        "is": "1.990"
+      },
+      {
+        "station": "K",
+        "fs": "3.010"
+      }
+    ]
+  },
+  "expected": {
+    "rows": [
+      {
+        "station": "A",
+        "bs": "0.535",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false
+      },
+      {
+        "station": "B",
+        "is": "2.145",
+        "bs": null,
+        "fs": null,
+        "rise": "0",
+        "fall": "1.61",
+        "rl": "98.39",
+        "isChangePoint": false
+      },
+      {
+        "station": "C",
+        "is": "2.435",
+        "bs": null,
+        "fs": null,
+        "rise": "0",
+        "fall": "0.29",
+        "rl": "98.1",
+        "isChangePoint": false
+      },
+      {
+        "station": "D",
+        "is": "1.585",
+        "bs": null,
+        "fs": null,
+        "rise": "0.85",
+        "fall": "0",
+        "rl": "98.95",
+        "isChangePoint": false
+      },
+      {
+        "station": "E",
+        "bs": "1.535",
+        "fs": "0.63",
+        "is": null,
+        "rise": "0.955",
+        "fall": "0",
+        "rl": "99.905",
+        "isChangePoint": true
+      },
+      {
+        "station": "F",
+        "is": "2.015",
+        "bs": null,
+        "fs": null,
+        "rise": "0",
+        "fall": "0.48",
+        "rl": "99.425",
+        "isChangePoint": false
+      },
+      {
+        "station": "G",
+        "bs": "3.34",
+        "fs": "3.51",
+        "is": null,
+        "rise": "0",
+        "fall": "1.495",
+        "rl": "97.93",
+        "isChangePoint": true
+      },
+      {
+        "station": "H",
+        "is": "2.91",
+        "bs": null,
+        "fs": null,
+        "rise": "0.43",
+        "fall": "0",
+        "rl": "98.36",
+        "isChangePoint": false
+      },
+      {
+        "station": "I",
+        "is": "2.755",
+        "bs": null,
+        "fs": null,
+        "rise": "0.155",
+        "fall": "0",
+        "rl": "98.515",
+        "isChangePoint": false
+      },
+      {
+        "station": "J",
+        "is": "1.99",
+        "bs": null,
+        "fs": null,
+        "rise": "0.765",
+        "fall": "0",
+        "rl": "99.28",
+        "isChangePoint": false
+      },
+      {
+        "station": "K",
+        "fs": "3.01",
+        "bs": null,
+        "is": null,
+        "rise": "0",
+        "fall": "1.02",
+        "rl": "98.26",
+        "isChangePoint": false
+      }
+    ],
+    "startingRL": "100",
+    "endingRL": "98.26",
+    "sumBS": "5.41",
+    "sumFS": "7.15",
+    "sumRise": "3.155",
+    "sumFall": "4.895",
+    "bsFsDelta": "-1.74",
+    "riseFallDelta": "-1.74",
+    "rlDelta": "-1.74",
+    "closingRL": null,
+    "misclosure": null,
+    "checks": [
+      {
+        "id": "arithmetic-rise-fall",
+        "labelKey": "leveling.check.riseFall",
+        "status": "pass",
+        "expected": "-1.74",
+        "actual": "-1.74"
+      },
+      {
+        "id": "arithmetic-first-last",
+        "labelKey": "leveling.check.firstLast",
+        "status": "pass",
+        "expected": "-1.74",
+        "actual": "-1.74"
+      }
+    ]
+  }
+}
