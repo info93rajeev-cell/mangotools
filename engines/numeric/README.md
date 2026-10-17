@@ -1,10 +1,55 @@
 # engines/numeric
 
-Deterministic decimal arithmetic used by every engine that handles money or percentages.
-Library engine: it exposes functions, not operations.
+Library engine: public functions, not operation descriptors.
 
-- Values in and out are decimal strings. `big.js` is used internally and never leaves this package.
-- `half-up` rounds halves away from zero (commercial rounding); `half-even` is available where a rule requires it.
-- Division keeps 20 decimal places before any presentation rounding.
+## Existing exact decimal family
+
+Deterministic decimal arithmetic for money, percentages and the existing Survey Leveling contract.
+Values in and out of arithmetic functions are decimal strings. `big.js` is isolated internally and
+never leaves the package. Existing parse/status/comparison return types remain unchanged.
+`half-up` rounds halves away from zero; `half-even` remains available.
+Division retains 20 decimal places before explicit presentation rounding.
+No API, rounding configuration, existing calculation, fixture expectation or tolerance changes.
+
+## Approved future deterministic geometry family — not implemented
+
+Route A and its boundary were approved through #159/#160; #161 governs production preparation.
+The following are proposed additive public exports, not APIs available in the current 0.1.0 package:
+
+```ts
+type GeometryResult =
+  | { ok: true; value: number }
+  | {
+      ok: false;
+      code: 'NUMERIC_GEOMETRY_INVALID_NUMBER' | 'NUMERIC_GEOMETRY_OUT_OF_RANGE';
+      argument: 'degrees' | 'x' | 'y';
+    };
+degreesToRadians(degrees: number): GeometryResult;
+sinDegrees(degrees: number): GeometryResult;
+cosDegrees(degrees: number): GeometryResult;
+hypot2(x: number, y: number): GeometryResult;
+```
+
+Geometry uses primitive binary64 numbers, not decimal strings or money arithmetic.
+Degree inputs must be finite and in [0,360); -0 is accepted as zero. Norm components must be finite
+with absolute value <=1e8; signed, tiny and subnormal values are supported. No coercion or clamping.
+Check all types/finiteness in argument order before ranges in argument order. Failures identify the
+argument without echoing its value; never throw for invalid user inputs. Only output -0 becomes +0.
+Exact cardinal sine/cosine outputs are specified at 0/90/180/270; adjacent inputs must not be snapped.
+
+With epsilon=2^-52 and q=Number.MIN_VALUE, approved acceptance targets against exact-input real
+references are: conversion absolute error <=2*epsilon*abs(d*pi/180)+q; sine/cosine <=2*epsilon;
+hypot <=4*epsilon*sqrt(x*x+y*y)+q. Tiny/subnormal cases also require reference-scale/ULP checks.
+These are production proof gates, not a universal correct-rounding claim or proof already delivered.
+No native Math.sin/cos/hypot/sqrt may determine geometry answers. Use pinned degree reduction,
+constants/evaluation order, polynomials and fixed software sqrt/scaled norm; no runtime dependency.
+
+See [Numeric geometry decision](../../docs/decisions/DECISION-NUMERIC-GEOMETRY-KERNEL.md),
+[API decision #159](https://github.com/info93rajeev-cell/mangotools/issues/159) and
+[MPFR/prototype evidence #160](https://github.com/info93rajeev-cell/mangotools/issues/160#issuecomment-6234395920).
+Prototype measurements do not establish all-domain error bounds. Production publication additionally
+requires the unchanged #158 tauM proof, independent static reference vectors and exact public-export
+equality in Node24/Chromium/Firefox/WebKit under the merged library harness prerequisite.
+This documentation authorizes neither Traverse nor Bowditch implementation.
 
 Changelog: 0.1.0 — first version (TASK-001).
