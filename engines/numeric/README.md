@@ -11,10 +11,10 @@ never leaves the package. Existing parse/status/comparison return types remain u
 Division retains 20 decimal places before explicit presentation rounding.
 No API, rounding configuration, existing calculation, fixture expectation or tolerance changes.
 
-## Approved future deterministic geometry family — not implemented
+## Deterministic geometry family (0.2.0)
 
-Route A and its boundary were approved through #159/#160; #161 governs production preparation.
-The following are proposed additive public exports, not APIs available in the current 0.1.0 package:
+Route A and its boundary were approved through #159/#160. These additive public exports follow
+#161; the existing decimal implementation and its isolated big.js configuration are unchanged:
 
 ```ts
 type GeometryResult =
@@ -40,16 +40,24 @@ Exact cardinal sine/cosine outputs are specified at 0/90/180/270; adjacent input
 With epsilon=2^-52 and q=Number.MIN_VALUE, approved acceptance targets against exact-input real
 references are: conversion absolute error <=2*epsilon*abs(d*pi/180)+q; sine/cosine <=2*epsilon;
 hypot <=4*epsilon*sqrt(x*x+y*y)+q. Tiny/subnormal cases also require reference-scale/ULP checks.
-These are production proof gates, not a universal correct-rounding claim or proof already delivered.
+These are bounded approximation guarantees, not a universal correct-rounding claim.
 No native Math.sin/cos/hypot/sqrt may determine geometry answers. Use pinned degree reduction,
 constants/evaluation order, polynomials and fixed software sqrt/scaled norm; no runtime dependency.
 
 See [Numeric geometry decision](../../docs/decisions/DECISION-NUMERIC-GEOMETRY-KERNEL.md),
 [API decision #159](https://github.com/info93rajeev-cell/mangotools/issues/159) and
 [MPFR/prototype evidence #160](https://github.com/info93rajeev-cell/mangotools/issues/160#issuecomment-6234395920).
-Prototype measurements do not establish all-domain error bounds. Production publication additionally
-requires the unchanged #158 tauM proof, independent static reference vectors and exact public-export
-equality in Node24/Chromium/Firefox/WebKit under the merged library harness prerequisite.
-This documentation authorizes neither Traverse nor Bowditch implementation.
+Prototype measurements do not establish all-domain error bounds. The production algorithm, scalar
+error argument, constants, independent MPFR references and reproduction instructions are pinned in
+[geometry-analysis.md](geometry-analysis.md). The merged library harness checks actual public exports
+bit-for-bit in Node24/Chromium/Firefox/WebKit; mathematical accuracy is tested separately.
+The [founder separation](https://github.com/info93rajeev-cell/mangotools/issues/161#issuecomment-6238338554)
+supersedes Numeric's former obligation to prove every Bowditch residual fits tauM. The accepted
+counterexample and unchanged tauM belong to [TASK-011A4 / #171](https://github.com/info93rajeev-cell/mangotools/issues/171).
+No Traverse/Bowditch code or policy change is included or authorized here.
 
-Changelog: 0.1.0 — first version (TASK-001).
+## Changelog
+
+- 0.2.0 — Add bounded deterministic binary64 geometry APIs with independent MPFR vectors and
+  public-library cross-runtime checks (#161). Decimal APIs, rounding and Leveling unchanged.
+- 0.1.0 — First version (TASK-001).
