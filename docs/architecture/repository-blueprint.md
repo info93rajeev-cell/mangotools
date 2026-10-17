@@ -80,6 +80,11 @@ measurements/RLs and exact Numeric operations for Rise & Fall arithmetic/checks,
 tolerance (see §4.3). This does not change the repository-wide numeric model or prescribe the numeric
 model for future Survey operations.
 
+**Numeric geometry boundary:** the narrowly approved future binary64 library family and Route A
+policy are recorded in [Numeric geometry decision](../decisions/DECISION-NUMERIC-GEOMETRY-KERNEL.md)
+and #159/#160. This is separate from the unchanged exact-decimal Leveling exception above.
+Production publication remains subject to #161's governance, harness and analytic gates.
+
 ---
 
 ## 2. Repository structure
@@ -353,6 +358,11 @@ Engines return **data about results**, never prose or pixels. The UI, report eng
 For `survey.leveling.reduce@1` only, the decimal-string boundary and exact arithmetic in
 [TASK-010A](../../tasks/TASK-010A-SURVEY-LEVELING-CONTRACT.md) supersede this plain-number sketch.
 
+Future closed-traverse geometry follows #158's metre/decimal-degree binary64 contract through the
+four separately governed public Numeric geometry functions; it does not inherit Leveling's
+decimal-string exception. See [Numeric geometry decision](../decisions/DECISION-NUMERIC-GEOMETRY-KERNEL.md).
+This cross-reference changes no shared IR/schema or existing operation.
+
 `PlotSpec` resolves the frozen architecture's separate "Plot engine" (E11) into a shared IR plus one UI component plus one report renderer — no extra engine to maintain (see §13).
 
 ### 3.5 Identical internal layout for every engine
@@ -449,12 +459,12 @@ authorize implementation; the decision's existing gates still apply.
 | Aspect | Specification |
 |---|---|
 | **Responsibilities** | Leveling reduction (rise & fall, height of instrument), arithmetic checks, misclosure and allowable misclosure, closing-error distribution; traverse closure and adjustment (Bowditch, Transit), coordinates, relative precision, area by coordinates; COGO inverse/forward; later curves, profiles, cut/fill. Produces `Check`, `WorkingStep` and `PlotSpec` IR |
-| **Public API** | Phase 1: `survey.leveling.reduce@1` · `survey.traverse.adjust@1` · `survey.traverse.closure@1` · `survey.cogo.inverse@1` · `survey.cogo.forward@1` · `survey.area.coordinates@1`. Phase 3+: `survey.curve.horizontal@1` · `survey.profile.build@1` · `survey.volume.cutfill@1` |
+| **Public API** | Implemented: `survey.leveling.reduce@1`. Approved future closed-traverse design (#158): `survey.traverse.compute@1` · `survey.traverse.adjust.bowditch@1` (not implemented; separate prerequisite/approval gates apply). COGO, area, curves, profile and cut/fill remain later roadmap, not part of this design. |
 | **Input** (first leveling implementation) | Required `startRL`, optional `closingRL`, ordered observations with station?, BS?, IS?, FS?, remarks?; decimal-string measurements/RLs in metres, blank ≠ zero. Exact contract: TASK-010A. |
 | **Params** (first leveling implementation) | `method` remains a parameter, default/only value `rise-fall`; `startRL` and `closingRL` are inputs, not params. HI and other options are not accepted. |
 | **Output** (first leveling implementation) | Reduced rows, exact arithmetic checks, optional signed misclosure and working steps per TASK-010A; no HI, adjustment, allowable-error assessment or profile plot. |
-| **Input / params** (traverse) | Legs (from, to, `bearingDeg` as decimal whole-circle bearing, `distanceM`), start coordinates (E, N); params `type` (`closed-loop` \| `link`), `method` (`bowditch` \| `transit`), end coordinates (link), precision target 1:N |
-| **Output** (traverse) | Latitudes/departures, corrections, adjusted values, coordinates, linear misclosure, misclosure bearing, relative precision, area (closed loop), checks, working, traverse `PlotSpec` |
+| **Input / params** (approved future closed traverse) | Exact strict contract in #158: `start` (`northingM`, `eastingM`), 3–50 connected closed-loop legs (`from`, `to`, `distanceM`, `azimuthDeg`); finite binary64 metres and decimal-degree WCB; empty strict params. No link/open traverse, DMS/quadrant parser or Transit Rule. |
+| **Output** (approved future closed traverse) | #158 defines independently auditable unadjusted latitude/departure, coordinates, northing/easting/linear misclosure, perimeter and closure precision; separate Bowditch output preserves that computation and reports length-proportional corrections, adjusted components/coordinates and deterministic final-leg rounding residual. No area, misclosure-bearing or plot capability in this first contract. |
 | **Dependencies** | `core`, `numeric`, public package entries only (§2.4); no Grid/Units dependency. |
 | **Tests** | First leveling implementation: ΣBS − ΣFS = ΣRise − ΣFall = Last RL − First RL exactly, without floating-point tolerance. Future separately approved adjustment/traverse tests: zero-misclosure ⇒ zero corrections; rotation preserves misclosure magnitude; reversal preserves area magnitude. |
 | **Golden fixtures** | ≥ 3 per operation from recognised textbooks (e.g. Indian and international university surveying texts), cited with edition and example number; plus hand-verified spreadsheet cases for edge cases (change points, IS on first row, missing closing BM) |
