@@ -13,6 +13,24 @@ export function publicLibraryEntry(packageName: string, packageDirectory: string
 }
 
 export async function bundlePublicLibrary(packageName: string, packageDirectory: string) {
+  const runner = join(ROOT, 'tests/support/library-observation.ts').replaceAll('\\', '/');
+  return bundleTestEntry(
+    packageName,
+    packageDirectory,
+    `import * as library from ${JSON.stringify(packageName)};
+     import { runLibraryCases } from ${JSON.stringify(runner)};
+     export const run = cases => runLibraryCases(library, cases);`,
+    'PublicLibraryHarness',
+  );
+}
+
+/** Shared in-memory test bundler; never writes or publishes a route/asset. */
+export async function bundleTestEntry(
+  packageName: string,
+  packageDirectory: string,
+  source: string,
+  globalName: string,
+) {
   const entry = publicLibraryEntry(packageName, packageDirectory);
   // Reuse Astro's build dependency without importing app code or adding a dependency.
   const webRequire = createRequire(join(ROOT, 'apps/web/package.json'));
@@ -21,7 +39,6 @@ export async function bundlePublicLibrary(packageName: string, packageDirectory:
     build(options: unknown): Promise<BundleOutput | BundleOutput[]>;
   };
   const virtual = 'virtual:public-library-test';
-  const runner = join(ROOT, 'tests/support/library-observation.ts').replaceAll('\\', '/');
   const result = await build({
     configFile: false,
     publicDir: false,
@@ -31,12 +48,7 @@ export async function bundlePublicLibrary(packageName: string, packageDirectory:
       {
         name: 'public-library-test',
         resolveId: (id: string) => (id === virtual ? virtual : undefined),
-        load: (id: string) =>
-          id === virtual
-            ? `import * as library from ${JSON.stringify(packageName)};
-         import { runLibraryCases } from ${JSON.stringify(runner)};
-         export const run = cases => runLibraryCases(library, cases);`
-            : undefined,
+        load: (id: string) => (id === virtual ? source : undefined),
       },
     ],
     build: {
@@ -44,7 +56,7 @@ export async function bundlePublicLibrary(packageName: string, packageDirectory:
       minify: false,
       target: 'es2023',
       rolldownOptions: { input: virtual },
-      lib: { entry: virtual, formats: ['iife'], name: 'PublicLibraryHarness' },
+      lib: { entry: virtual, formats: ['iife'], name: globalName },
     },
   });
   const chunks = (Array.isArray(result) ? result : [result]).flatMap((item) => item.output);
