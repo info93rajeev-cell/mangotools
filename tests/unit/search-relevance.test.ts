@@ -11,6 +11,8 @@ const top = (q: string) => search(q, 3)[0]?.id;
 
 describe('search relevance over the generated index', () => {
   const cases: [string, string][] = [
+    ['passport photo resizer', 'passport-photo-resizer'],
+    ['id photo resizer', 'passport-photo-resizer'],
     ['JSON Formatter', 'json-formatter'],
     ['Base64 Encode & Decode', 'base64-encode-decode'],
     ['URL Encode & Decode', 'url-encode-decode'],

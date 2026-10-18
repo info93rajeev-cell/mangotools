@@ -1,0 +1,13 @@
+id: 001-sample
+preset: image/passport-photo
+source:
+  type: synthetic
+  citation: "Existing image.resize@1 missing-file contract: a valid pixel-size request without a photo returns IMAGE_NO_FILE_SELECTED before decoding. Successful dimensions/downloads are checked in browser tests."
+input:
+  targetWidth: 6
+  targetHeight: 4
+  keepAspectRatio: true
+  outputFormat: jpg
+  quality: 85
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

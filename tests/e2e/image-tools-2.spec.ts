@@ -340,7 +340,7 @@ test.describe('Favicon Generator', () => {
 });
 
 test.describe('Image & Media category', () => {
-  test('shows exactly seven tools and no future image tools', async ({ page }) => {
+  test('shows exactly eight tools and no future image tools', async ({ page }) => {
     await gotoReady(page, '/media');
     await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
@@ -351,8 +351,9 @@ test.describe('Image & Media category', () => {
     await expect(allTools.getByRole('link', { name: 'Image Watermark' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Crop' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Favicon Generator' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(7);
-    for (const future of ['Background Remover', 'Passport Photo']) {
+    await expect(allTools.getByRole('link', { name: 'Passport Photo Resizer' })).toBeVisible();
+    await expect(allTools.getByRole('link')).toHaveCount(8);
+    for (const future of ['Background Remover', 'Signature Resizer', 'Photo Size Reducer']) {
       await expect(page.getByText(future, { exact: true })).toHaveCount(0);
     }
   });

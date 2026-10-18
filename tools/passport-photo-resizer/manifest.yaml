@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: passport-photo-resizer
+slug: passport-photo-resizer
+status: beta
+tier: T4
+variantOf: image-resize
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-18, type: added, summary: "Resize an already prepared passport photo to user-entered pixel dimensions, locally." }
+name: Passport Photo Resizer
+shortName: Passport Photo Resizer
+summary: "Resize an already prepared passport photo to your application's pixel dimensions. Check the downloaded size; nothing is uploaded."
+archetype: D
+preset: image/passport-photo
+taxonomy:
+  category: media
+  tags: [images, resize]
+  synonyms: [passport photo resizer, resize passport photo, id photo resizer, passport photo pixels, application photo resize]
+privacy: { dataClass: personal, network: none }
+disclaimer: none
+seo:
+  title: "Passport Photo Resizer – Resize Photo Pixels Locally"
+  description: "Free Passport Photo Resizer for an already prepared photo. Enter required pixel dimensions, choose format and check output size. No upload or sign-up."
+  primaryKeyword: passport photo resizer
+  secondaryKeywords: [resize passport photo, id photo resizer, passport photo dimensions]
+graph:
+  related: [image-crop, image-resize, image-compress]

@@ -46,6 +46,7 @@ describe('privacy.dataClass classification', () => {
       'jpg-to-pdf',
       'json-formatter',
       'json-to-csv',
+      'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
       'url-encode-decode',

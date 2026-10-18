@@ -66,6 +66,7 @@ describe('registry pipeline — valid repository', () => {
       'markup-calculator',
       'paint-calculator',
       'pallet-loading-calculator',
+      'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
       'plaster-calculator',
@@ -458,7 +459,8 @@ describe('category visibility threshold', () => {
     expect(visibleAt(5)).toEqual(['construction', 'developer', 'media']);
     expect(visibleAt(6)).toEqual(['construction', 'developer', 'media']);
     expect(visibleAt(7)).toEqual(['media']);
-    expect(visibleAt(8)).toEqual([]);
+    expect(visibleAt(8)).toEqual(['media']);
+    expect(visibleAt(9)).toEqual([]);
   });
 });
 

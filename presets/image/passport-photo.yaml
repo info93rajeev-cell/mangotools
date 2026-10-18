@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/passport-photo
+version: 0.1.0
+extends: image/resize
+operation: image.resize@1
+params:
+  outputFileNameSuffix: "-passport"
+  outputFileNameFallback: "passport-photo"
+fields:
+  outputFormat: { labelKey: field.outputFormat, kind: enum, control: select, order: 4, default: jpg }
+  quality: { labelKey: field.quality, kind: number, order: 5, default: 85, helpKey: field.quality.help }
+strings:
+  en:
+    fileTool.dropHint: "Choose an already prepared passport photo in JPG, PNG, or WebP format."
+    fileTool.queueLabel: "Selected photo"
+    fileTool.outputNamePlaceholder: "passport-photo.jpg"
+    fileTool.downloadCta: "Download passport photo"
+    fileTool.noFilesYet: "Add a photo, then enter the pixel dimensions required by your application."
+    field.targetWidth: "Photo width"
+    field.targetHeight: "Photo height"
+    field.quality.help: "Encoder quality is not a file-size target. Check the downloaded size against your application's limit."
+    output.outputWidth: "Photo width (px)"
+    output.outputHeight: "Photo height (px)"
