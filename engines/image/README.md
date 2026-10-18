@@ -11,6 +11,7 @@ network, no server upload — selecting files, previews, and downloading the res
 | `image.watermark@1` | Draws a text watermark onto a JPG, PNG, or WebP image at a chosen position |
 | `image.crop@1` | Crops a JPG, PNG, or WebP image to a pixel rectangle |
 | `image.favicon@1` | Generates a square PNG favicon from a JPG, PNG, or WebP image |
+| `image.prepare-upload@1` | Aspect-safe sizing/padding and verified maximum bytes for upload preparation |
 
 ## Runtime: this engine is browser/worker-only, by design and by necessity
 
@@ -66,6 +67,11 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
 "Validation, in order" for the exact sequence and codes.
 
 ## Changelog
+
+- 0.8.0 — Add `image.prepare-upload@1` (#185), reusing the bounded #184 policy. It supports
+  JPEG/PNG, contained or exact padded dimensions, optional real maximum KB, explicit-only downscaling,
+  actual-byte verification and typed unreachable-target failure. Existing operations are unchanged.
+  See [upload preparation](src/operations/prepare-upload/README.md) for limits and browser evidence.
 
 - 0.7.1 — Add an internal, bounded upload-size candidate search with synthetic policy tests
   (#184). This does not add a public operation or change existing image behavior. Real encoding,

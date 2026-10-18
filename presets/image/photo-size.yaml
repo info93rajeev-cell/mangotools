@@ -1,0 +1,12 @@
+presetVersion: 1
+id: image/photo-size
+version: 0.1.0
+extends: image/upload-preparation.base
+params: { outputFileNameSuffix: "-reduced", outputFileNameFallback: reduced-photo }
+fields:
+  maxFileSizeKB: { labelKey: field.limit, kind: number, required: true, default: 100, order: 7 }
+strings:
+  en:
+    fileTool.noFilesYet: "Choose a photo and set your maximum KB. Smaller dimensions require your permission."
+    fileTool.downloadCta: "Download reduced photo"
+    fileTool.outputNamePlaceholder: "reduced-photo.jpg"

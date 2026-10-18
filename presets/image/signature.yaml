@@ -1,0 +1,18 @@
+presetVersion: 1
+id: image/signature
+version: 0.1.0
+extends: image/upload-preparation.base
+params: { outputFileNameSuffix: "-signature", outputFileNameFallback: signature }
+fields:
+  maxFileSizeKB: { labelKey: field.limit, kind: number, order: 7, placeholderKey: limit.optional }
+  padToTarget: { labelKey: field.pad, kind: boolean, default: "true", visible: false, order: 4 }
+  allowDimensionReduction: { labelKey: field.reduce, kind: boolean, default: "false", visible: false, order: 8 }
+strings:
+  en:
+    limit.optional: "Optional"
+    field.width: "Signature width"
+    field.height: "Signature height"
+    help.limit: "Optional maximum KB (1000 bytes each). Exact canvas dimensions stay fixed; an impossible limit returns an error."
+    fileTool.noFilesYet: "Choose your signature image, then enter the pixels required by your application."
+    fileTool.downloadCta: "Download signature"
+    fileTool.outputNamePlaceholder: "signature.jpg"

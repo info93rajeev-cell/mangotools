@@ -69,8 +69,10 @@ describe('registry pipeline — valid repository', () => {
       'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
+      'photo-size-reducer',
       'plaster-calculator',
       'profit-margin-calculator',
+      'signature-resizer',
       'tile-flooring-calculator',
       'timestamp-converter',
       'url-encode-decode',
@@ -460,7 +462,9 @@ describe('category visibility threshold', () => {
     expect(visibleAt(6)).toEqual(['construction', 'developer', 'media']);
     expect(visibleAt(7)).toEqual(['media']);
     expect(visibleAt(8)).toEqual(['media']);
-    expect(visibleAt(9)).toEqual([]);
+    expect(visibleAt(9)).toEqual(['media']);
+    expect(visibleAt(10)).toEqual(['media']);
+    expect(visibleAt(11)).toEqual([]);
   });
 });
 

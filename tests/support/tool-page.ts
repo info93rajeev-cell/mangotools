@@ -36,6 +36,18 @@ export const SAMPLES = {
  * pattern is generic for any future file-based tool, not specific to PDF Merge.
  */
 export const FILE_TOOLS = {
+  'signature-resizer': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
+    downloadCta: 'Download signature',
+    resultPattern: /^\d+$/,
+  },
+  'photo-size-reducer': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
+    downloadCta: 'Download reduced photo',
+    resultPattern: /^\d+$/,
+  },
   'pdf-merge': {
     archetype: 'D',
     files: [

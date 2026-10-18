@@ -49,6 +49,8 @@ describe('privacy.dataClass classification', () => {
       'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
+      'photo-size-reducer',
+      'signature-resizer',
       'url-encode-decode',
     ];
     const actual = tools

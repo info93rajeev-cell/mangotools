@@ -1,0 +1,52 @@
+presetVersion: 1
+id: image/upload-preparation.base
+version: 0.1.0
+abstract: true
+operation: image.prepare-upload@1
+ui: { archetypes: [D], fileAccept: "image/jpeg,image/png,image/webp", maxFiles: 1, collapseNotices: true }
+fields:
+  targetWidth: { labelKey: field.width, kind: number, required: true, order: 1, unit: px, default: 800, width: half }
+  targetHeight: { labelKey: field.height, kind: number, required: true, order: 2, unit: px, default: 600, width: half }
+  keepAspectRatio: { labelKey: field.aspect, kind: boolean, default: "true", visible: false, order: 3 }
+  padToTarget: { labelKey: field.pad, kind: boolean, default: "false", visible: false, order: 4 }
+  outputFormat:
+    labelKey: field.format
+    kind: enum
+    control: select
+    default: jpg
+    order: 5
+    width: half
+    options: [{ value: jpg, labelKey: format.jpg }, { value: png, labelKey: format.png }]
+  quality: { labelKey: field.quality, kind: number, default: 90, order: 6, width: half, visibleWhen: { outputFormat: [jpg] }, helpKey: help.quality }
+  maxFileSizeKB: { labelKey: field.limit, kind: number, order: 7, width: half, unit: KB, helpKey: help.limit }
+  allowDimensionReduction: { labelKey: field.reduce, kind: boolean, default: "false", order: 8, width: half, helpKey: help.reduce }
+outputs:
+  outputFileSize: { labelKey: output.bytes, format: number, order: 1, primary: true }
+  outputWidth: { labelKey: output.width, format: number, order: 2 }
+  outputHeight: { labelKey: output.height, format: number, order: 3 }
+  outputFormat: { labelKey: output.format, format: text, order: 4 }
+  originalFileSize: { labelKey: output.original, format: number, order: 5 }
+  fileName: { labelKey: output.name, format: text, order: 6 }
+strings:
+  en:
+    field.width: "Maximum width"
+    field.height: "Maximum height"
+    field.aspect: "Preserve proportions"
+    field.pad: "Exact canvas with padding"
+    field.format: "Output format"
+    field.quality: "Maximum JPEG quality"
+    field.limit: "Maximum file size"
+    field.reduce: "Allow smaller dimensions"
+    format.jpg: "JPG (white background)"
+    format.png: "PNG (retain transparency)"
+    help.quality: "50–100. The bounded search may lower quality to 50; PNG ignores quality. Inspect the downloaded image."
+    help.limit: "1 KB = 1000 bytes. Try 20, 50, 100, 200 or your own limit. No oversized file is downloaded if the search fails."
+    help.reduce: "Off keeps the fitted dimensions. On permits smaller dimensions if quality alone cannot meet the limit (64 px short-side floor)."
+    output.bytes: "Output size (bytes)"
+    output.width: "Output width (px)"
+    output.height: "Output height (px)"
+    output.format: "Output format"
+    output.original: "Original size (bytes)"
+    output.name: "Output file"
+    fileTool.dropHint: "Choose one JPG, PNG or WebP image. Processing stays on your device."
+    fileTool.queueLabel: "Selected image"
