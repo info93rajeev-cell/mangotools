@@ -36,6 +36,7 @@ describe('file-tool collapsed notes opt-in', () => {
         const rendered = NoteList({ preset, notices: result.warnings });
         expect(rendered?.type).toBe('details');
         expect(rendered?.props.open).not.toBe(true);
+        expect(NoteList({ preset, notices: [] })).toBeNull();
       } else expect(tree.some((node) => node.type === InlineAlert)).toBe(true);
     },
   );
