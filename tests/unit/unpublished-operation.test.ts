@@ -17,7 +17,10 @@ const cases = fixtures.map(({ file, fixture }) => ({
 }));
 
 it('explicitly covers every merged Leveling fixture, including successes and errors', () => {
-  expect(unpublishedTargets.map((t) => t.operation)).toEqual(['survey.leveling.reduce@1']);
+  expect(unpublishedTargets.map((t) => t.operation)).toEqual([
+    'survey.leveling.reduce@1',
+    'survey.traverse.compute@1',
+  ]);
   expect(fixtures).toHaveLength(37);
   expect(fixtures.filter((f) => f.fixture.expected)).toHaveLength(3);
   expect(fixtures.filter((f) => f.fixture.expectedError)).toHaveLength(34);

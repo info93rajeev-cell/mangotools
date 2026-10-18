@@ -1,0 +1,108 @@
+{
+  "id": "003-unsw-loop-example2-raw-bearings",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "textbook",
+    "citation": "https://www.unsw.edu.au/content/dam/pdfs/engineering/civil-environmental/sage/teaching-and-learning/textbook-and-theses/BRH_Survey_Comps_Textbook.pdf; approved Issue #173 dossier comment 6239556277, founder-cleared raw stage. Observations published; expected derived by independent MPFR fixed-order binary64 model. See SOURCES.md."
+  },
+  "input": {
+    "start": {
+      "northingM": 3000,
+      "eastingM": 1000
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 95.027,
+        "azimuthDeg": 104.92222222222222
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 32.785,
+        "azimuthDeg": 5.528611111111111
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 81.071,
+        "azimuthDeg": 284.6125
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 33.044,
+        "azimuthDeg": 209.9911111111111
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 95.027,
+        "azimuthDeg": 104.92222222222222,
+        "latitudeM": -24.470173154430565,
+        "departureM": 91.82233581646781
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 32.785,
+        "azimuthDeg": 5.528611111111111,
+        "latitudeM": 32.632491160315205,
+        "departureM": 3.158598688018131
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 81.071,
+        "azimuthDeg": 284.6125,
+        "latitudeM": 20.4526302778982,
+        "departureM": -78.44868995538168
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 33.044,
+        "azimuthDeg": 209.9911111111111,
+        "latitudeM": -28.6195063275833,
+        "departureM": -16.517560157766013
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 3000,
+        "eastingM": 1000
+      },
+      {
+        "northingM": 2975.5298268455695,
+        "eastingM": 1091.8223358164678
+      },
+      {
+        "northingM": 3008.1623180058846,
+        "eastingM": 1094.980934504486
+      },
+      {
+        "northingM": 3028.6149482837827,
+        "eastingM": 1016.5322445491042
+      },
+      {
+        "northingM": 2999.9954419561996,
+        "eastingM": 1000.0146843913383
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": -0.004558043800457767,
+      "eastingMisclosureM": 0.014684391338249725,
+      "linearMisclosureM": 0.015375536161765383,
+      "perimeterM": 241.92699999999996,
+      "relativePrecision": 0.00006355444477782714,
+      "closureRatioDenominator": 15734.540731113111,
+      "closureStatus": "finite"
+    }
+  }
+}

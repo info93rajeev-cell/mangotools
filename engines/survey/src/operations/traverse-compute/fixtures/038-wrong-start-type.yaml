@@ -1,0 +1,38 @@
+{
+  "id": "038-wrong-start-type",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 strict required primitive input contract; structural validation before domain."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": "0"
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "INVALID_INPUT",
+    "path": "start.eastingM"
+  }
+}

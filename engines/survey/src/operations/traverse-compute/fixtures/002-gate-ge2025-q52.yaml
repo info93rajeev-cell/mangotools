@@ -1,0 +1,126 @@
+{
+  "id": "002-gate-ge2025-q52",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "textbook",
+    "citation": "https://gate2026.iitg.ac.in/doc/download/2025/GE2025.pdf; approved Issue #173 dossier comment 6239556277, founder-cleared raw stage. Observations published; expected derived by independent MPFR fixed-order binary64 model. See SOURCES.md."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "P",
+        "to": "Q",
+        "distanceM": 201.54,
+        "azimuthDeg": 62.7
+      },
+      {
+        "from": "Q",
+        "to": "R",
+        "distanceM": 189.68,
+        "azimuthDeg": 154.9
+      },
+      {
+        "from": "R",
+        "to": "S",
+        "distanceM": 231.94,
+        "azimuthDeg": 202.53333333333333
+      },
+      {
+        "from": "S",
+        "to": "T",
+        "distanceM": 272.55,
+        "azimuthDeg": 281.73333333333335
+      },
+      {
+        "from": "T",
+        "to": "P",
+        "distanceM": 256.83,
+        "azimuthDeg": 22
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "P",
+        "to": "Q",
+        "distanceM": 201.54,
+        "azimuthDeg": 62.7,
+        "latitudeM": 92.43623121076882,
+        "departureM": 179.0919170692784
+      },
+      {
+        "from": "Q",
+        "to": "R",
+        "distanceM": 189.68,
+        "azimuthDeg": 154.9,
+        "latitudeM": -171.76828979643298,
+        "departureM": 80.46214650634559
+      },
+      {
+        "from": "R",
+        "to": "S",
+        "distanceM": 231.94,
+        "azimuthDeg": 202.53333333333333,
+        "latitudeM": -214.23294427042964,
+        "departureM": -88.88424601256955
+      },
+      {
+        "from": "S",
+        "to": "T",
+        "distanceM": 272.55,
+        "azimuthDeg": 281.73333333333335,
+        "latitudeM": 55.42493665295361,
+        "departureM": -266.854977276078
+      },
+      {
+        "from": "T",
+        "to": "P",
+        "distanceM": 256.83,
+        "azimuthDeg": 22,
+        "latitudeM": 238.128629368388,
+        "departureM": 96.21021138700867
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": 92.43623121076882,
+        "eastingM": 179.0919170692784
+      },
+      {
+        "northingM": -79.33205858566416,
+        "eastingM": 259.554063575624
+      },
+      {
+        "northingM": -293.56500285609377,
+        "eastingM": 170.66981756305447
+      },
+      {
+        "northingM": -238.14006620314015,
+        "eastingM": -96.18515971302352
+      },
+      {
+        "northingM": -0.011436834752146297,
+        "eastingM": 0.025051673985146294
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": -0.011436834752146297,
+      "eastingMisclosureM": 0.025051673985146294,
+      "linearMisclosureM": 0.027538837277669457,
+      "perimeterM": 1152.54,
+      "relativePrecision": 0.000023894040361002184,
+      "closureRatioDenominator": 41851.44014538934,
+      "closureStatus": "finite"
+    }
+  }
+}

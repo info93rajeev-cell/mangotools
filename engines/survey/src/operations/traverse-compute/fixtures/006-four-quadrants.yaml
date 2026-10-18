@@ -1,0 +1,108 @@
+{
+  "id": "006-four-quadrants",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 hand-verified cardinal/minimum/quadrant geometry; independent MPFR fixed-order binary64 model."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "0",
+        "to": "1",
+        "distanceM": 1,
+        "azimuthDeg": 45
+      },
+      {
+        "from": "1",
+        "to": "2",
+        "distanceM": 1,
+        "azimuthDeg": 135
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "distanceM": 1,
+        "azimuthDeg": 225
+      },
+      {
+        "from": "3",
+        "to": "0",
+        "distanceM": 1,
+        "azimuthDeg": 315
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "0",
+        "to": "1",
+        "distanceM": 1,
+        "azimuthDeg": 45,
+        "latitudeM": 0.7071067811865476,
+        "departureM": 0.7071067811865475
+      },
+      {
+        "from": "1",
+        "to": "2",
+        "distanceM": 1,
+        "azimuthDeg": 135,
+        "latitudeM": -0.7071067811865475,
+        "departureM": 0.7071067811865476
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "distanceM": 1,
+        "azimuthDeg": 225,
+        "latitudeM": -0.7071067811865476,
+        "departureM": -0.7071067811865475
+      },
+      {
+        "from": "3",
+        "to": "0",
+        "distanceM": 1,
+        "azimuthDeg": 315,
+        "latitudeM": 0.7071067811865475,
+        "departureM": -0.7071067811865476
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": 0.7071067811865476,
+        "eastingM": 0.7071067811865475
+      },
+      {
+        "northingM": 1.1102230246251565e-16,
+        "eastingM": 1.414213562373095
+      },
+      {
+        "northingM": -0.7071067811865475,
+        "eastingM": 0.7071067811865475
+      },
+      {
+        "northingM": 0,
+        "eastingM": -1.1102230246251565e-16
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": 0,
+      "eastingMisclosureM": -1.1102230246251565e-16,
+      "linearMisclosureM": 1.1102230246251565e-16,
+      "perimeterM": 4,
+      "relativePrecision": 2.7755575615628914e-17,
+      "closureRatioDenominator": 36028797018963970,
+      "closureStatus": "finite"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "010-too-few",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 10000000000,
+      "eastingM": 0
+    },
+    "legs": []
+  },
+  "expectedError": {
+    "code": "SURVEY_TRAVERSE_TOO_FEW_LEGS",
+    "path": "legs"
+  }
+}

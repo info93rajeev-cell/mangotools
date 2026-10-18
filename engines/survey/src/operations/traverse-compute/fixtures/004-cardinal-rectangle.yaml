@@ -1,0 +1,108 @@
+{
+  "id": "004-cardinal-rectangle",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 hand-verified cardinal/minimum/quadrant geometry; independent MPFR fixed-order binary64 model."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 10,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 20,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 10,
+        "azimuthDeg": 180
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 20,
+        "azimuthDeg": 270
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 10,
+        "azimuthDeg": 0,
+        "latitudeM": 10,
+        "departureM": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 20,
+        "azimuthDeg": 90,
+        "latitudeM": 0,
+        "departureM": 20
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 10,
+        "azimuthDeg": 180,
+        "latitudeM": -10,
+        "departureM": 0
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 20,
+        "azimuthDeg": 270,
+        "latitudeM": 0,
+        "departureM": -20
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": 10,
+        "eastingM": 0
+      },
+      {
+        "northingM": 10,
+        "eastingM": 20
+      },
+      {
+        "northingM": 0,
+        "eastingM": 20
+      },
+      {
+        "northingM": 0,
+        "eastingM": 0
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": 0,
+      "eastingMisclosureM": 0,
+      "linearMisclosureM": 0,
+      "perimeterM": 60,
+      "relativePrecision": 0,
+      "closureRatioDenominator": null,
+      "closureStatus": "zero-misclosure"
+    }
+  }
+}

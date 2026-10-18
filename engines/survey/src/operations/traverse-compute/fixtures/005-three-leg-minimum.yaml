@@ -1,0 +1,90 @@
+{
+  "id": "005-three-leg-minimum",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 hand-verified cardinal/minimum/quadrant geometry; independent MPFR fixed-order binary64 model."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 0.5,
+        "azimuthDeg": 180
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 0.5,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0,
+        "latitudeM": 1,
+        "departureM": 0
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 0.5,
+        "azimuthDeg": 180,
+        "latitudeM": -0.5,
+        "departureM": 0
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 0.5,
+        "azimuthDeg": 180,
+        "latitudeM": -0.5,
+        "departureM": 0
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": 1,
+        "eastingM": 0
+      },
+      {
+        "northingM": 0.5,
+        "eastingM": 0
+      },
+      {
+        "northingM": 0,
+        "eastingM": 0
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": 0,
+      "eastingMisclosureM": 0,
+      "linearMisclosureM": 0,
+      "perimeterM": 2,
+      "relativePrecision": 0,
+      "closureRatioDenominator": null,
+      "closureStatus": "zero-misclosure"
+    }
+  }
+}

@@ -1,0 +1,936 @@
+{
+  "id": "007-issue-171-pathological",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "regression",
+    "citation": "Issue #171 accepted 50-leg scale-disparity counterexample; raw compute only; MPFR fixed-order basic-operation model, no Bowditch residual gate."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "0",
+        "to": "1",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "1",
+        "to": "2",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "4",
+        "to": "5",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "5",
+        "to": "6",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "6",
+        "to": "7",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "7",
+        "to": "8",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "8",
+        "to": "9",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "9",
+        "to": "10",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "10",
+        "to": "11",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "11",
+        "to": "12",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "12",
+        "to": "13",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "13",
+        "to": "14",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "14",
+        "to": "15",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "15",
+        "to": "16",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "16",
+        "to": "17",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "17",
+        "to": "18",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "18",
+        "to": "19",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "19",
+        "to": "20",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "20",
+        "to": "21",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "21",
+        "to": "22",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "22",
+        "to": "23",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "23",
+        "to": "24",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "24",
+        "to": "25",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "25",
+        "to": "26",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "26",
+        "to": "27",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "27",
+        "to": "28",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "28",
+        "to": "29",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "29",
+        "to": "30",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "30",
+        "to": "31",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "31",
+        "to": "32",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "32",
+        "to": "33",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "33",
+        "to": "34",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "34",
+        "to": "35",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "35",
+        "to": "36",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "36",
+        "to": "37",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "37",
+        "to": "38",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "38",
+        "to": "39",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "39",
+        "to": "40",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "40",
+        "to": "41",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "41",
+        "to": "42",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "42",
+        "to": "43",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "43",
+        "to": "44",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "44",
+        "to": "45",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "45",
+        "to": "46",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "46",
+        "to": "47",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "47",
+        "to": "48",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "48",
+        "to": "49",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      },
+      {
+        "from": "49",
+        "to": "0",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "0",
+        "to": "1",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025,
+        "latitudeM": 699050.7667886278,
+        "departureM": 305.01845733338473
+      },
+      {
+        "from": "1",
+        "to": "2",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025,
+        "latitudeM": 699050.7667886278,
+        "departureM": 305.01845733338473
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "distanceM": 699050.8333333334,
+        "azimuthDeg": 0.025,
+        "latitudeM": 699050.7667886278,
+        "departureM": 305.01845733338473
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "4",
+        "to": "5",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "5",
+        "to": "6",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "6",
+        "to": "7",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "7",
+        "to": "8",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "8",
+        "to": "9",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "9",
+        "to": "10",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "10",
+        "to": "11",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "11",
+        "to": "12",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "12",
+        "to": "13",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "13",
+        "to": "14",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "14",
+        "to": "15",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "15",
+        "to": "16",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "16",
+        "to": "17",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "17",
+        "to": "18",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "18",
+        "to": "19",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "19",
+        "to": "20",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "20",
+        "to": "21",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "21",
+        "to": "22",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "22",
+        "to": "23",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "23",
+        "to": "24",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "24",
+        "to": "25",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "25",
+        "to": "26",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "26",
+        "to": "27",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "27",
+        "to": "28",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "28",
+        "to": "29",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "29",
+        "to": "30",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "30",
+        "to": "31",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "31",
+        "to": "32",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "32",
+        "to": "33",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "33",
+        "to": "34",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "34",
+        "to": "35",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "35",
+        "to": "36",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "36",
+        "to": "37",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "37",
+        "to": "38",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "38",
+        "to": "39",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "39",
+        "to": "40",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "40",
+        "to": "41",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "41",
+        "to": "42",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "42",
+        "to": "43",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "43",
+        "to": "44",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "44",
+        "to": "45",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "45",
+        "to": "46",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "46",
+        "to": "47",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "47",
+        "to": "48",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "48",
+        "to": "49",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      },
+      {
+        "from": "49",
+        "to": "0",
+        "distanceM": 2.3283064365386984e-10,
+        "azimuthDeg": 0.025,
+        "latitudeM": 2.3283062149003583e-10,
+        "departureM": 1.0159153005884273e-13
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": 699050.7667886278,
+        "eastingM": 305.01845733338473
+      },
+      {
+        "northingM": 1398101.5335772557,
+        "eastingM": 610.0369146667695
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001542
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001543
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001544
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001545
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001546
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001548
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001549
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.055372000155
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001551
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001552
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001553
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001554
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001556
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001557
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001558
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001559
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.055372000156
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001561
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001562
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001564
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001565
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001566
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001567
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001568
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001569
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.055372000157
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001571
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001573
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001574
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001575
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001576
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001577
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001578
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.055372000158
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001581
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001582
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001583
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001584
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001585
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001586
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001587
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001589
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.055372000159
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001591
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001592
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001593
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001594
+      },
+      {
+        "northingM": 2097152.3003658834,
+        "eastingM": 915.0553720001595
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": 2097152.3003658834,
+      "eastingMisclosureM": 915.0553720001595,
+      "linearMisclosureM": 2097152.5,
+      "perimeterM": 2097152.500000022,
+      "relativePrecision": 0.9999999999999896,
+      "closureRatioDenominator": 1.0000000000000104,
+      "closureStatus": "finite"
+    }
+  }
+}

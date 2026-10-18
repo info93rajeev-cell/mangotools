@@ -1,0 +1,44 @@
+{
+  "id": "027-repeated-interior",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "B",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "A",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 0
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_TRAVERSE_REPEATED_STATION",
+    "path": "legs.2.from"
+  }
+}

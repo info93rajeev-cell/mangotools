@@ -1,0 +1,108 @@
+{
+  "id": "001-ssgec-lab-p18",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "textbook",
+    "citation": "https://ssgec.ac.in/admin/upload_nb/5bade8a23963b0.64745605.pdf; approved Issue #173 dossier comment 6239556277, founder-cleared raw stage. Observations published; expected derived by independent MPFR fixed-order binary64 model. See SOURCES.md."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 110,
+        "azimuthDeg": 110
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 80,
+        "azimuthDeg": 170
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 95,
+        "azimuthDeg": 250
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 160,
+        "azimuthDeg": 350
+      }
+    ]
+  },
+  "expected": {
+    "type": "closed-loop",
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 110,
+        "azimuthDeg": 110,
+        "latitudeM": -37.62221576582356,
+        "departureM": 103.36618828644993
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 80,
+        "azimuthDeg": 170,
+        "latitudeM": -78.78462024097664,
+        "departureM": 13.891854213354426
+      },
+      {
+        "from": "C",
+        "to": "D",
+        "distanceM": 95,
+        "azimuthDeg": 250,
+        "latitudeM": -32.49191361593853,
+        "departureM": -89.2707989746613
+      },
+      {
+        "from": "D",
+        "to": "A",
+        "distanceM": 160,
+        "azimuthDeg": 350,
+        "latitudeM": 157.56924048195327,
+        "departureM": -27.783708426708852
+      }
+    ],
+    "coordinates": [
+      {
+        "northingM": 0,
+        "eastingM": 0
+      },
+      {
+        "northingM": -37.62221576582356,
+        "eastingM": 103.36618828644993
+      },
+      {
+        "northingM": -116.4068360068002,
+        "eastingM": 117.25804249980435
+      },
+      {
+        "northingM": -148.89874962273873,
+        "eastingM": 27.987243525143043
+      },
+      {
+        "northingM": 8.670490859214539,
+        "eastingM": 0.20353509843419104
+      }
+    ],
+    "closure": {
+      "northingMisclosureM": 8.670490859214539,
+      "eastingMisclosureM": 0.20353509843419104,
+      "linearMisclosureM": 8.672879468551232,
+      "perimeterM": 445,
+      "relativePrecision": 0.019489616783261193,
+      "closureRatioDenominator": 51.30937211956151,
+      "closureStatus": "finite"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "017-zero-distance-before-angle",
+  "operation": "survey.traverse.compute@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Issue #173 / #158 locked validation order; strict core input then params; see operation README."
+  },
+  "input": {
+    "start": {
+      "northingM": 0,
+      "eastingM": 0
+    },
+    "legs": [
+      {
+        "from": "A",
+        "to": "B",
+        "distanceM": 0,
+        "azimuthDeg": 360
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "distanceM": 1,
+        "azimuthDeg": 90
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "distanceM": 1,
+        "azimuthDeg": 180
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_TRAVERSE_NON_POSITIVE_DISTANCE",
+    "path": "legs.0.distanceM"
+  }
+}
