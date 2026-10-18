@@ -1,0 +1,11 @@
+id: 001-no-file-selected
+operation: image.prepare-upload@1
+source:
+  type: synthetic
+  citation: "Issue #185: missing file uses the existing image validation catalogue before decode."
+input:
+  targetWidth: 200
+  targetHeight: 100
+  outputFormat: jpg
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

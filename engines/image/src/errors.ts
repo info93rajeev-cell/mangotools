@@ -1,5 +1,9 @@
 /** English messages for every error and warning code this engine can return. */
 export const messages: Readonly<Record<string, string>> = {
+  IMAGE_SIZE_TARGET_UNREACHABLE:
+    'The size limit was not reached within these settings. Smallest tested: {bytes} bytes at {width} × {height} px ({attempts} attempts). No file was downloaded. Relax the limit or allow smaller dimensions.',
+  IMAGE_DIMENSIONS_REDUCED:
+    'Dimensions were reduced to meet the file-size limit. Inspect the result before using it.',
   IMAGE_NO_FILE_SELECTED: 'Select an image to resize.',
   IMAGE_INVALID_FILE_TYPE: '"{name}" is not a JPG, PNG, or WebP image.',
   IMAGE_FILE_TOO_LARGE: '"{name}" is larger than the {max} MB limit.',
