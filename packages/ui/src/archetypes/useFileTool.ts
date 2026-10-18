@@ -1,6 +1,6 @@
-import type { OpError, OpWarning } from '@mangotools/core';
+import { err, type OpError, type OpWarning } from '@mangotools/core';
 import type { FieldValues } from '@mangotools/runtime';
-import { defaultValues, getWorkerHost, track } from '@mangotools/runtime';
+import { buildRequest, defaultValues, getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import { t } from '../strings/en.ts';
@@ -81,12 +81,16 @@ function resultMime(value: FileToolResult, presetMime: string | undefined): stri
   return presetMime ?? 'application/pdf';
 }
 
-function runOperation(
+export async function runFileOperation(
   preset: ResolvedPreset,
   files: QueuedFile[],
   outputFileName: string,
   values: FieldValues,
 ) {
+  const missing = buildRequest(preset, values).missing.find(
+    (key) => preset.fields[key]?.kind === 'number',
+  );
+  if (missing) return err('INVALID_INPUT', { path: missing });
   const maxFiles = preset.ui.maxFiles;
   const input: Record<string, unknown> = {
     ...extraInputValues(preset, values),
@@ -219,7 +223,7 @@ export function useFileTool(
   };
   const runConversion = async () => {
     setPhaseAndNotify('running');
-    const outcome = await runOperation(preset, files, outputFileName, values);
+    const outcome = await runFileOperation(preset, files, outputFileName, values);
     if (outcome.ok) {
       const value = {
         ...(outcome.value as Record<string, unknown>),

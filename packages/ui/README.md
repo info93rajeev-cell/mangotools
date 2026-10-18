@@ -41,6 +41,10 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- File tools enforce existing preset required-number rules before worker dispatch. A missing
+  active numeric field returns `INVALID_INPUT` with its field path; optional blanks and explicit
+  zero/false remain unchanged. Existing engine-specific text validation/messages are retained (#189).
+
 - Shared header: below 360 px, place the full wordmark above navigation/actions and
   anchor the Tools dropdown within the viewport. Existing controls, focus space and
   wider layouts are retained without horizontal overflow clipping.
