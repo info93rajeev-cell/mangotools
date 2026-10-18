@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: signature-resizer
+slug: signature-resizer
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-18, type: added, summary: "Exact signature canvas, safe proportions and optional verified maximum KB." }
+name: Signature Resizer
+summary: "Prepare a signature to exact pixels with undistorted padding, JPG or PNG and an optional verified maximum KB, locally."
+archetype: D
+preset: image/signature
+taxonomy:
+  category: media
+  tags: [images, resize]
+  synonyms: [resize signature, signature size, signature dimensions, signature kb]
+privacy: { dataClass: personal, network: none }
+disclaimer: none
+seo:
+  title: "Signature Resizer – Exact Pixels and Maximum KB"
+  description: "Free Signature Resizer with exact pixel canvas, undistorted padding, JPG or PNG and a verified maximum KB limit. Browser-local, no upload or sign-up."
+  primaryKeyword: signature resizer
+  secondaryKeywords: [resize signature, signature size in kb]
+graph:
+  related: [image-crop, photo-size-reducer, passport-photo-resizer]

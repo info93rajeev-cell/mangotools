@@ -129,13 +129,13 @@ for (const tool of listed) {
   });
 }
 
-test('Round 1 contract: 7 visible categories, 33 listed tools, 42 sitemap URLs', async ({
+test('Round 1 contract: 7 visible categories, 35 listed tools, 44 sitemap URLs', async ({
   request,
 }) => {
   expect(categories).toHaveLength(7);
-  expect(listed).toHaveLength(33);
+  expect(listed).toHaveLength(35);
   const pages = await (await request.get('/sitemap-pages.xml')).text();
-  expect([...pages.matchAll(/<loc>/g)]).toHaveLength(1 + 1 + 7 + 33);
+  expect([...pages.matchAll(/<loc>/g)]).toHaveLength(1 + 1 + 7 + 35);
 });
 
 test('one canonical per page, absolute on the production host, no trailing slash', async ({

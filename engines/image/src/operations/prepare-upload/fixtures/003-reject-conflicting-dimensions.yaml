@@ -1,0 +1,14 @@
+id: 003-reject-conflicting-dimensions
+operation: image.prepare-upload@1
+source:
+  type: synthetic
+  citation: "Issue #185: exact padded canvas and automatic dimension reduction are mutually exclusive."
+input:
+  targetWidth: 200
+  targetHeight: 100
+  outputFormat: png
+  padToTarget: true
+  allowDimensionReduction: true
+expectedError:
+  code: INVALID_INPUT
+  path: allowDimensionReduction
