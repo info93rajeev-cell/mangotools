@@ -2,6 +2,7 @@ import type { OpError } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { messageFor, outputRows } from '../toolkit/presentation.ts';
+import { NoteList } from '../toolkit/ResultNotices.tsx';
 import styles from '../toolkit/toolkit.module.css';
 import type { FilePhase, FileToolResult } from './useFileTool.ts';
 
@@ -45,11 +46,15 @@ export function FileToolOutcome({ preset, phase, result, error }: FileToolOutcom
           </div>
         ))}
       </dl>
-      {result.warnings.map((w) => (
-        <InlineAlert key={w.code} tone="warning">
-          {messageFor(preset, w)}
-        </InlineAlert>
-      ))}
+      {preset.ui.collapseNotices === true ? (
+        <NoteList preset={preset} notices={result.warnings} />
+      ) : (
+        result.warnings.map((w) => (
+          <InlineAlert key={w.code} tone="warning">
+            {messageFor(preset, w)}
+          </InlineAlert>
+        ))
+      )}
     </div>
   );
 }
