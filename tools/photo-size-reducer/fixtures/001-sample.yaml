@@ -1,0 +1,7 @@
+id: 001-sample
+preset: image/photo-size
+source:
+  type: hand-verified
+  citation: "Issue #188: real 100 KB target is optional to the engine but required by this tool; missing file remains a typed pre-decode error."
+input: { targetWidth: 800, targetHeight: 600, outputFormat: jpg, maxFileSizeKB: 100 }
+expectedError: { code: IMAGE_NO_FILE_SELECTED }

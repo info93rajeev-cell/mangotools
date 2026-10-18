@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: photo-size-reducer
+slug: photo-size-reducer
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-18, type: added, summary: "Real maximum-KB search with opt-in dimension reduction and honest failure." }
+name: Photo Size Reducer
+summary: "Reduce a photo below your maximum KB with actual byte checks and optional smaller dimensions. No uploads or oversized downloads."
+archetype: D
+preset: image/photo-size
+taxonomy:
+  category: media
+  tags: [images, resize]
+  synonyms: [reduce photo kb, photo compressor, reduce image to 20kb, reduce image to 50kb, reduce image to 100kb]
+privacy: { dataClass: personal, network: none }
+disclaimer: none
+seo:
+  title: "Photo Size Reducer – Verified Maximum KB, No Upload"
+  description: "Free Photo Size Reducer for 20, 50, 100, 200 or custom KB limits. Check actual bytes, optionally reduce dimensions and download locally without sign-up."
+  primaryKeyword: photo size reducer
+  secondaryKeywords: [reduce photo kb, reduce image size]
+graph:
+  related: [signature-resizer, image-crop, image-compress]

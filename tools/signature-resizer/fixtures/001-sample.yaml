@@ -1,0 +1,7 @@
+id: 001-sample
+preset: image/signature
+source:
+  type: hand-verified
+  citation: "Issue #188: exact signature canvas preserves proportions; no file produces the existing typed missing-file error."
+input: { targetWidth: 200, targetHeight: 100, outputFormat: jpg, padToTarget: true }
+expectedError: { code: IMAGE_NO_FILE_SELECTED }
