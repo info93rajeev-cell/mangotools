@@ -71,6 +71,13 @@ export const FILE_TOOLS = {
     // "keep aspect ratio" on (the default) an 8x8 target on an 8x8 source is an exact fit.
     result: '8',
   },
+  'passport-photo-resizer': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
+    downloadCta: 'Download passport photo',
+    // Existing 8x8 source dimensions initialize the fields; no official passport size is assumed.
+    result: '8',
+  },
   'image-compress': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg')],
