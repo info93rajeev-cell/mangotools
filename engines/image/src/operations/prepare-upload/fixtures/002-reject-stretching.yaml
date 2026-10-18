@@ -1,0 +1,13 @@
+id: 002-reject-stretching
+operation: image.prepare-upload@1
+source:
+  type: synthetic
+  citation: "Issue #185 strict schema: signature strokes cannot be stretched by disabling aspect preservation."
+input:
+  targetWidth: 200
+  targetHeight: 100
+  outputFormat: jpg
+  keepAspectRatio: false
+expectedError:
+  code: INVALID_INPUT
+  path: keepAspectRatio
