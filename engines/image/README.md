@@ -67,6 +67,11 @@ TASK-005A's own planning pass, not discovered mid-implementation. See `src/opera
 
 ## Changelog
 
+- 0.7.1 — Add an internal, bounded upload-size candidate search with synthetic policy tests
+  (#184). This does not add a public operation or change existing image behavior. Real encoding,
+  strict inputs and tool publication remain separate prerequisites; see
+  [search policy](src/operations/prepare-upload/README.md).
+
 - 0.1.0 — `image.resize@1` foundation (TASK-005B PR 1). No preset used by a manifest yet; no visible tool.
   See `src/operations/resize/README.md` for the full operation contract.
 - 0.2.0 — `image.resize@1` reused by the visible Image Resize tool (TASK-005B PR 2). No operation
