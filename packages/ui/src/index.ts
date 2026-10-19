@@ -18,6 +18,8 @@ export * from './primitives/Icon.tsx';
 export * from './primitives/inputs.tsx';
 export * from './strings/en.ts';
 export * from './toolkit/ActionBar.tsx';
+export * from './toolkit/ImageWorkbench.tsx';
+export * from './toolkit/imageWorkbenchGeometry.ts';
 export * from './toolkit/presentation.ts';
 export * from './toolkit/RepeatableRows.tsx';
 export * from './toolkit/repeatableRows.ts';
