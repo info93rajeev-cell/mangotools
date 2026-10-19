@@ -41,6 +41,11 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- #195: add bounded, unactivated Survey form bindings for existing Rise & Fall and raw Traverse.
+  Preserve decimal strings, binary64 geometry, blank row indices and opaque labels; samples reuse
+  existing UI-only state handling. No engine imports or arithmetic in UI. Workbench rendering,
+  archetype C activation and tool publication are separate prerequisites, not shipped here.
+
 - File tools now honor the existing `ui.collapseNotices: true` opt-in using the shared,
   closed Important notes disclosure. Notices are preserved; errors and default/false tools
   keep their existing visible alert behavior (#189).
