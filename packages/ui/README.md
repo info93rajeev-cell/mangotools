@@ -41,6 +41,13 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- #198: add bounded result tables for the two merged Survey operations using ScrollableItemTable.
+  Callers provide `survey.section.*` / `survey.column.*` strings and existing engine check labels.
+  Quantities use three-place display, with exact raw values retained in cell titles; opaque labels,
+  unavailable values and tiny nonzero closure remain distinct. Existing WorkingSteps stays separate.
+  Test-only browser interception exercises actual public Survey exports, not a shipped tool/route.
+  Archetype-C activation, request/error focus and publication are a separate bounded follow-up.
+
 - #195: add bounded, unactivated Survey form bindings for existing Rise & Fall and raw Traverse.
   Preserve decimal strings, binary64 geometry, blank row indices and opaque labels; samples reuse
   existing UI-only state handling. No engine imports or arithmetic in UI. Workbench rendering,
