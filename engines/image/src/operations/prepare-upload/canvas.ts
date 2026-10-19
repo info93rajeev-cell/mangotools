@@ -1,5 +1,6 @@
 import { encodeCanvas } from '../../lib/codec.ts';
 import type { Dimensions } from '../resize/dimensions.ts';
+import { type BoundingBox, calculatePaddedFittedBounds } from './ink.ts';
 import type { UploadInput } from './schema.ts';
 
 /** Contain without upscaling. Padding changes the canvas, not the signature's proportions. */
@@ -17,6 +18,7 @@ export async function encodePrepared(
   width: number,
   height: number,
   quality: number,
+  inkBounds?: BoundingBox,
 ): Promise<Uint8Array> {
   const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext('2d');
@@ -25,14 +27,32 @@ export async function encodePrepared(
     context.fillStyle = '#ffffff';
     context.fillRect(0, 0, width, height);
   }
-  const content = fittedDimensions(bitmap, { width, height });
-  context.drawImage(
-    bitmap,
-    (width - content.width) / 2,
-    (height - content.height) / 2,
-    content.width,
-    content.height,
-  );
+
+  if (input.padToTarget) {
+    const box = inkBounds ?? { x: 0, y: 0, width: bitmap.width, height: bitmap.height };
+    const padded = calculatePaddedFittedBounds(box, { width, height });
+    context.drawImage(
+      bitmap,
+      box.x,
+      box.y,
+      box.width,
+      box.height,
+      padded.destX,
+      padded.destY,
+      padded.destWidth,
+      padded.destHeight,
+    );
+  } else {
+    const content = fittedDimensions(bitmap, { width, height });
+    context.drawImage(
+      bitmap,
+      (width - content.width) / 2,
+      (height - content.height) / 2,
+      content.width,
+      content.height,
+    );
+  }
+
   const encoded = await encodeCanvas(canvas, input.outputFormat, quality / 100);
   if (encoded.finalFormat !== input.outputFormat)
     throw new Error('Requested output format unavailable');

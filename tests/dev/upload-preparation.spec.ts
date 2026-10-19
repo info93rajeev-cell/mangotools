@@ -50,7 +50,7 @@ test('upload preparation verifies real worker bytes, padding, scaling and typed 
         ok: true, width: bitmap.width, height: bitmap.height, bytes: value.bytes.byteLength,
         reportedBytes: value.outputFileSize, target: value.targetFileSizeBytes, attempts: value.encodeAttempts,
         format: value.bytes[0] === 255 && value.bytes[1] === 216 ? 'jpg' : value.bytes[0] === 137 ? 'png' : 'unknown',
-        pixels: [[0, 0], [33, 20], [34, 20], [50, 20], [63, 20]].map(([x, y]) => Array.from(pixels.getImageData(x, y, 1, 1).data)),
+        pixels: [[0, 0], [4, 20], [34, 20], [50, 20], [96, 20]].map(([x, y]) => Array.from(pixels.getImageData(x, y, 1, 1).data)),
       };
       if (bitmap.width !== value.outputWidth || bitmap.height !== value.outputHeight) throw new Error('Reported dimensions differ');
       bitmap.close();

@@ -39,6 +39,12 @@ interface TextMetrics {
   readonly width: number;
 }
 
+interface ImageData {
+  readonly data: Uint8ClampedArray;
+  readonly width: number;
+  readonly height: number;
+}
+
 interface OffscreenCanvasRenderingContext2D {
   fillStyle: string;
   /** `'top'` is the only value this engine ever sets (Image Watermark), so `fillText`'s `y` can be
@@ -69,6 +75,7 @@ interface OffscreenCanvasRenderingContext2D {
   ): void;
   measureText(text: string): TextMetrics;
   fillText(text: string, x: number, y: number): void;
+  getImageData(sx: number, sy: number, sw: number, sh: number): ImageData;
 }
 
 declare class OffscreenCanvas {
