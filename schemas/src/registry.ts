@@ -54,7 +54,7 @@ export interface FaqItem {
   answerText: string;
 }
 
-export type ExampleFormat = 'text' | 'money' | 'percent' | 'number' | 'code';
+export type ExampleFormat = 'text' | 'money' | 'percent' | 'number' | 'code' | 'bytes';
 
 export interface ExampleRow {
   key: string;

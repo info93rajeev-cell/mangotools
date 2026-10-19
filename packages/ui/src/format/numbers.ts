@@ -5,7 +5,7 @@
 
 export type Grouping = 'indian' | 'international' | 'none';
 export type Currency = 'INR';
-export type ValueFormat = 'text' | 'money' | 'percent' | 'number' | 'code';
+export type ValueFormat = 'text' | 'money' | 'percent' | 'number' | 'code' | 'bytes';
 
 export interface FormatOptions {
   currency?: Currency | undefined;
@@ -102,6 +102,10 @@ export function formatValue(
       return formatMoney(value, options);
     case 'percent':
       return formatPercent(value);
+    case 'bytes': {
+      const num = Number(value);
+      return Number.isNaN(num) ? value : formatBytes(num);
+    }
     case 'number':
       return options.decimalPlaces === undefined
         ? formatDecimal(value, 'international')

@@ -122,7 +122,7 @@ export const fieldSchema = z
 
 export const outputSchema = z.strictObject({
   labelKey: z.string(),
-  format: z.enum(['text', 'money', 'percent', 'number', 'code']),
+  format: z.enum(['text', 'money', 'percent', 'number', 'code', 'bytes']),
   /** Optional UI-only field whose integer value fixes this numeric output's displayed decimals. */
   decimalPlacesField: z.string().optional(),
   order: z.int(),

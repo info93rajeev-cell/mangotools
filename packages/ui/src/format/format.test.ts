@@ -54,6 +54,8 @@ describe('number formatting', () => {
     expect(formatBytes(10)).toBe('10 B');
     expect(formatBytes(1536)).toBe('1.5 KB');
     expect(formatBytes(5 * 1024 * 1024)).toBe('5 MB');
+    expect(formatValue('bytes', '1536')).toBe('1.5 KB');
+    expect(formatValue('bytes', String(5 * 1024 * 1024))).toBe('5 MB');
   });
 });
 

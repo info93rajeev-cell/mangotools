@@ -1,5 +1,9 @@
 /** English messages for every error and warning code this engine can return. */
 export const messages: Readonly<Record<string, string>> = {
+  IMAGE_COMPRESSION_NOT_SMALLER:
+    'No smaller result was achieved without degrading quality below {minQuality}%. Smallest tested: {bytes} bytes ({attempts} attempts). The original file is already optimal.',
+  IMAGE_COMPRESSION_FAILED:
+    'The image could not be compressed. Please try again with a different image.',
   IMAGE_SIZE_TARGET_UNREACHABLE:
     'The size limit was not reached within these settings. Smallest tested: {bytes} bytes at {width} × {height} px ({attempts} attempts). No file was downloaded. Relax the limit or allow smaller dimensions.',
   IMAGE_DIMENSIONS_REDUCED:

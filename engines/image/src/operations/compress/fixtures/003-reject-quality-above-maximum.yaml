@@ -1,0 +1,11 @@
+id: 003-reject-quality-above-maximum
+operation: image.compress@1
+source:
+  type: synthetic
+  citation: "Quality above 100 exceeds the 100% ceiling and must be rejected."
+input:
+  outputFormat: same
+  quality: 105
+expectedError:
+  code: INVALID_INPUT
+  path: quality

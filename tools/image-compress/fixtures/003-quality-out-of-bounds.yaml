@@ -1,0 +1,11 @@
+id: 003-quality-out-of-bounds
+preset: image/compress
+source:
+  type: synthetic
+  citation: "Quality below 50 violates the minimum quality contract and must be rejected."
+input:
+  outputFormat: same
+  quality: 40
+expectedError:
+  code: INVALID_INPUT
+  path: quality

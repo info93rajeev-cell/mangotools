@@ -1,0 +1,11 @@
+id: 002-reject-quality-below-minimum
+operation: image.compress@1
+source:
+  type: synthetic
+  citation: "Quality below 50 violates the minimum quality contract and must be rejected."
+input:
+  outputFormat: same
+  quality: 40
+expectedError:
+  code: INVALID_INPUT
+  path: quality
