@@ -53,4 +53,7 @@ export const messages: Readonly<Record<string, string>> = {
     'Different browsers may produce slightly different file sizes when encoding PNG images.',
   IMAGE_FAVICON_NOT_LOGO_TOOL:
     'This tool creates favicon image files from your image. It is not a logo design tool.',
+  IMAGE_ANIMATED_UNSUPPORTED:
+    '"{name}" is an animated image. Animated images are not supported for this operation.',
+  IMAGE_WEBP_UNSUPPORTED: 'WebP export is not supported in this browser.',
 };

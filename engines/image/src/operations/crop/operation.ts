@@ -5,6 +5,7 @@ import { deriveOutputFileName } from '../../lib/file-name.ts';
 import { computeSizeChange } from '../../lib/size-change.ts';
 import { renderCropped } from './canvas-pipeline.ts';
 import {
+  type ImageCropInput,
   type ImageFile,
   imageCropInput,
   imageCropOutput,
@@ -19,6 +20,41 @@ const SUPPORTS_ALPHA: Record<ResolvedImageFormat, boolean> = { jpg: false, png: 
 
 function qualityFraction(quality: number | undefined): number | undefined {
   return quality === undefined ? undefined : quality / 100;
+}
+
+function buildCropPayload(
+  file: ImageFile,
+  bytes: Uint8Array,
+  sourceType: ResolvedImageFormat,
+  finalFormat: ResolvedImageFormat,
+  input: ImageCropInput,
+  width: number,
+  height: number,
+) {
+  const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
+  return {
+    payload: {
+      bytes,
+      fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
+        suffix: '-cropped',
+        fallbackBase: 'cropped-image',
+      }),
+      originalWidth: width,
+      originalHeight: height,
+      outputWidth: input.cropWidth,
+      outputHeight: input.cropHeight,
+      cropX: input.cropX,
+      cropY: input.cropY,
+      cropWidth: input.cropWidth,
+      cropHeight: input.cropHeight,
+      originalFileSize: file.bytes.byteLength,
+      outputFileSize: bytes.byteLength,
+      ...sizeChange,
+      originalFormat: sourceType,
+      outputFormat: finalFormat,
+    },
+    outputLarger: sizeChange.sizeDifferenceBytes < 0,
+  };
 }
 
 export const imageCrop = defineOperation({
@@ -39,6 +75,8 @@ export const imageCrop = defineOperation({
     'IMAGE_SOURCE_PIXELS_TOO_LARGE',
     'IMAGE_CROP_OUT_OF_BOUNDS',
     'IMAGE_MEMORY_LIMIT_EXCEEDED',
+    'IMAGE_ANIMATED_UNSUPPORTED',
+    'IMAGE_WEBP_UNSUPPORTED',
     'IMAGE_CROP_FAILED',
   ],
   // Browser/worker-only: OffscreenCanvas and createImageBitmap do not exist in Node. See
@@ -67,8 +105,6 @@ export const imageCrop = defineOperation({
     const flattenToWhite = SUPPORTS_ALPHA[sourceType] && !SUPPORTS_ALPHA[requestedFormat];
     const warnings = [...STANDING_WARNINGS];
     if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
-    // Only for an *explicit* same-format request, never for 'same' itself — matching image.resize@1's
-    // own IMAGE_SAME_FORMAT_REENCODED logic exactly (see its own operation.ts and README.md).
     if (input.outputFormat !== 'same' && input.outputFormat === sourceType) {
       warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
     }
@@ -93,39 +129,26 @@ export const imageCrop = defineOperation({
     let finalFormat: ResolvedImageFormat;
     try {
       const encoded = await encodeCanvas(canvas, requestedFormat, qualityFraction(input.quality));
-      if (encoded.fellBackFromWebp) warnings.push(warning('IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG'));
+      if (encoded.fellBackFromWebp) {
+        if (requestedFormat === 'webp') return err('IMAGE_WEBP_UNSUPPORTED');
+        warnings.push(warning('IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG'));
+      }
       finalFormat = encoded.finalFormat;
       bytes = new Uint8Array(await encoded.blob.arrayBuffer());
     } catch {
       return err('IMAGE_CROP_FAILED');
     }
 
-    const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
-    if (sizeChange.sizeDifferenceBytes < 0)
-      warnings.push(warning('IMAGE_OUTPUT_LARGER_THAN_INPUT'));
-
-    return ok(
-      {
-        bytes,
-        fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
-          suffix: '-cropped',
-          fallbackBase: 'cropped-image',
-        }),
-        originalWidth: width,
-        originalHeight: height,
-        outputWidth: input.cropWidth,
-        outputHeight: input.cropHeight,
-        cropX: input.cropX,
-        cropY: input.cropY,
-        cropWidth: input.cropWidth,
-        cropHeight: input.cropHeight,
-        originalFileSize: file.bytes.byteLength,
-        outputFileSize: bytes.byteLength,
-        ...sizeChange,
-        originalFormat: sourceType,
-        outputFormat: finalFormat,
-      },
-      warnings,
+    const { payload, outputLarger } = buildCropPayload(
+      file,
+      bytes,
+      sourceType,
+      finalFormat,
+      input,
+      width,
+      height,
     );
+    if (outputLarger) warnings.push(warning('IMAGE_OUTPUT_LARGER_THAN_INPUT'));
+    return ok(payload, warnings);
   },
 });

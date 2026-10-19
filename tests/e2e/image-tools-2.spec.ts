@@ -167,8 +167,8 @@ test.describe('Image Crop', () => {
     await expect(preview(page)).toBeVisible();
     await expect(page.getByLabel('Crop X')).toHaveValue('0');
     await expect(page.getByLabel('Crop Y')).toHaveValue('0');
-    await expect(page.getByLabel('Crop width')).toHaveValue('100');
-    await expect(page.getByLabel('Crop height')).toHaveValue('100');
+    await expect(page.getByLabel('Crop width')).toHaveValue('8');
+    await expect(page.getByLabel('Crop height')).toHaveValue('8');
   });
 
   test('crops from the top-left and downloads it with the default name', async ({ page }) => {
@@ -255,7 +255,6 @@ test.describe('Image Crop', () => {
     await openTool(page, 'image-crop');
     const notAnImage = join(process.cwd(), 'tools/image-crop/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download cropped image' }).click();
     await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
   });
 });

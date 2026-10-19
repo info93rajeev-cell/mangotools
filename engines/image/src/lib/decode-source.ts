@@ -1,4 +1,5 @@
 import { err, ok, type Result } from '@mangotools/core';
+import { isAnimatedImage } from './animation.ts';
 import { decodeImage } from './codec.ts';
 import type { ImageFile, ResolvedImageFormat } from './formats.ts';
 import { MAX_SOURCE_MEGAPIXELS, MAX_SOURCE_PIXELS } from './limits.ts';
@@ -20,6 +21,9 @@ export interface DecodedSource {
 export async function decodeAndCheckSource(file: ImageFile): Promise<Result<DecodedSource>> {
   const sourceType = detectImageType(file.bytes);
   if (!sourceType) return err('IMAGE_INVALID_FILE_TYPE', { details: { name: file.name } });
+  if (isAnimatedImage(file.bytes)) {
+    return err('IMAGE_ANIMATED_UNSUPPORTED', { details: { name: file.name } });
+  }
   let bitmap: ImageBitmap;
   try {
     bitmap = await decodeImage(file.bytes, MIME_FOR_TYPE[sourceType]);
