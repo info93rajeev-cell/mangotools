@@ -2,7 +2,7 @@ import type { OpWarning } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageCrop.module.css';
-import { messageFor } from './presentation.ts';
+import { label, messageFor } from './presentation.ts';
 
 export interface ImageCropResultData {
   fileName: string;
@@ -116,7 +116,7 @@ export function ImageCropResult({ preset, result, resultUrl, onDownload }: Image
 
       <div class={styles.actions}>
         <Button variant="primary" icon="download" onClick={onDownload} data-download-cropped="">
-          Download {result.fileName} ({formatBytes(result.outputFileSize)})
+          {label(preset, 'fileTool.downloadCta')}
         </Button>
       </div>
     </section>

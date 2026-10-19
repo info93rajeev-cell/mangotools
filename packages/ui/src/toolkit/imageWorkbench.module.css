@@ -54,7 +54,7 @@
 .ratioButton[aria-pressed="true"] {
   background: color-mix(in srgb, var(--color-accent) 15%, var(--color-bg));
   border-color: var(--color-accent);
-  color: var(--color-on-accent);
+  color: var(--color-text);
   font-weight: var(--weight-medium);
 }
 
