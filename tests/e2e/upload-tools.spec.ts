@@ -66,10 +66,10 @@ async function downloaded(page: Page, id: ToolId) {
       height: bitmap.height,
       pixels: [
         [0, 0],
-        [33, 20],
-        [34, 20],
+        [4, 20],
         [50, 20],
-        [63, 20],
+        [96, 20],
+        [99, 39],
       ].map(([x, y]) => Array.from(context.getImageData(x, y, 1, 1).data)),
     };
     bitmap.close();
@@ -101,7 +101,9 @@ test('signature downloads exact centered pixels with white JPEG or preserved PNG
     signature: [255, 216, 255],
   });
   expect(jpg.pixels[0].slice(0, 3).every((value) => value >= 250)).toBe(true);
-  expect(jpg.pixels[3].slice(0, 3).every((value) => value <= 10)).toBe(true);
+  expect(jpg.pixels[1].slice(0, 3).every((value) => value >= 250)).toBe(true);
+  expect(jpg.pixels[2].slice(0, 3).every((value) => value <= 10)).toBe(true);
+  expect(jpg.pixels[3].slice(0, 3).every((value) => value >= 250)).toBe(true);
   expect(jpg.pixels[4].slice(0, 3).every((value) => value >= 250)).toBe(true);
   await page.getByLabel('Output format').selectOption('png');
   const png = await downloaded(page, 'signature-resizer');
@@ -115,7 +117,7 @@ test('signature downloads exact centered pixels with white JPEG or preserved PNG
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 255],
-    [0, 0, 0, 255],
+    [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
 });

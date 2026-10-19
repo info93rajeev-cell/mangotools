@@ -11,10 +11,11 @@ Input reuses the Resize file/target dimensions/filename shape, but accepts only 
 `maxFileSizeKB` is an integer 1–25000; **1 KB = 1000 bytes**. `padToTarget` and
 `allowDimensionReduction` default false and cannot both be true. Params reuse filename suffix/fallback.
 
-Contained output fits within target dimensions without content upscaling. Padded output uses the
-exact requested canvas, centers contained content and never stretches/upscales it. JPEG uses white;
-PNG retains alpha. The original bitmap is decoded once, sampled afresh for every candidate, and closed
-on success/failure. Input uses the existing 25 MiB, 20000-axis and 40 MP limits. Padded output is capped
+Contained output fits within target dimensions without content upscaling. Padded output (`padToTarget: true`)
+detects ink bounding boxes, trims surrounding paper/empty background, scales strokes proportionally to fit
+the target canvas with ~8% controlled padding without distortion, and centers the result (white background
+for JPEG, transparent for PNG). The original bitmap is decoded once, sampled afresh for every candidate,
+and closed on success/failure. Input uses the existing 25 MiB, 20000-axis and 40 MP limits. Padded output is capped
 before decoding; contained output cannot exceed the already checked source pixel count.
 
 Success is the existing downloadable Resize output plus nullable `targetFileSizeBytes` and

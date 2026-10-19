@@ -8,6 +8,7 @@ import { imageResize } from '../resize/operation.ts';
 import { validateRequest } from '../resize/validate.ts';
 import { STANDING_WARNINGS } from '../resize/warnings.ts';
 import { encodePrepared, fittedDimensions } from './canvas.ts';
+import { detectBitmapInkBounds } from './ink.ts';
 import { type UploadInput, uploadInput, uploadOutput, uploadParams } from './schema.ts';
 import { findUploadCandidate, type UploadSearchResult } from './search.ts';
 
@@ -88,6 +89,7 @@ export const imagePrepareUpload = defineOperation({
     try {
       const initial = input.padToTarget ? target : fittedDimensions(bitmap, target);
       const maxBytes = input.maxFileSizeKB === undefined ? undefined : input.maxFileSizeKB * 1000;
+      const inkBounds = input.padToTarget ? detectBitmapInkBounds(bitmap) : undefined;
       const searched = await findUploadCandidate(
         {
           ...initial,
@@ -98,7 +100,7 @@ export const imagePrepareUpload = defineOperation({
         },
         (width, height, quality) => {
           if (ctx.signal.aborted) throw new Error('Cancelled');
-          return encodePrepared(bitmap, input, width, height, quality);
+          return encodePrepared(bitmap, input, width, height, quality, inkBounds);
         },
       );
       if (ctx.signal.aborted) return err('ABORTED');
