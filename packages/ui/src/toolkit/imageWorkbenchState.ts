@@ -62,7 +62,11 @@ export function useWorkbenchState({
   const currentRect = value ?? internalRect;
 
   useEffect(() => {
-    if (!value) setInternalRect(defaultSelectionRect(bounds, activeRatio));
+    if (!value) {
+      const initial = defaultSelectionRect(bounds, activeRatio);
+      setInternalRect(initial);
+      onChange?.(initial);
+    }
   }, [imageSrc, sourceWidth, sourceHeight]);
 
   const updateRect = (next: PixelRect) => {

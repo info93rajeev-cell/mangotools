@@ -1,4 +1,4 @@
-import { useRef } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import type {
   AspectRatioPreset,
   HandlePosition,
@@ -37,20 +37,6 @@ export function useWorkbenchDrag({
 }: UseWorkbenchDragOptions) {
   const sessionRef = useRef<DragSession | null>(null);
 
-  const startDrag = (e: PointerEvent, mode: 'move' | HandlePosition) => {
-    if (disabled || scale <= 0) return;
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    sessionRef.current = {
-      pointerId: e.pointerId,
-      mode,
-      startX: e.clientX,
-      startY: e.clientY,
-      startRect: rect,
-      scale,
-    };
-    e.stopPropagation();
-  };
-
   const onPointerMove = (e: PointerEvent) => {
     const session = sessionRef.current;
     if (!session || session.pointerId !== e.pointerId) return;
@@ -73,7 +59,45 @@ export function useWorkbenchDrag({
       // Ignored if capture already lost
     }
     sessionRef.current = null;
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', endDrag);
+      window.removeEventListener('pointercancel', endDrag);
+    }
   };
+
+  const startDrag = (e: PointerEvent, mode: 'move' | HandlePosition) => {
+    if (disabled || scale <= 0) return;
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // Ignored
+    }
+    sessionRef.current = {
+      pointerId: e.pointerId,
+      mode,
+      startX: e.clientX,
+      startY: e.clientY,
+      startRect: rect,
+      scale,
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', endDrag);
+      window.addEventListener('pointercancel', endDrag);
+    }
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', endDrag);
+        window.removeEventListener('pointercancel', endDrag);
+      }
+    };
+  }, []);
 
   return {
     onMoveStart: (e: PointerEvent) => startDrag(e, 'move'),

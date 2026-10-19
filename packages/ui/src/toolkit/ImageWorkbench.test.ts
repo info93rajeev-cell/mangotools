@@ -86,8 +86,18 @@ describe('ImageWorkbench Component & Interactions', () => {
       expect(fieldset).toBeDefined();
 
       const buttons = nodes.filter((n) => n.type === 'button' || n.type === Button);
-      // 5 ratio buttons (free, 1:1, 4:3, 16:9, 35:45) + 1 Button (reset button)
       expect(buttons.length).toBeGreaterThanOrEqual(6);
+
+      // Verify aria-pressed on ratio buttons: default active ratio is 'free'
+      const freeBtn = buttons.find((b) => b.props?.['aria-pressed'] === true);
+      expect(freeBtn).toBeDefined();
+      expect(freeBtn?.props?.children).toBe('Free');
+
+      // Verify handle slider accessibility values
+      const handleSliders = nodes.filter((n) => n.props?.role === 'slider');
+      expect(handleSliders[0]?.props['aria-valuemin']).toBe(10);
+      expect(handleSliders[0]?.props['aria-valuemax']).toBeGreaterThanOrEqual(800);
+      expect(handleSliders[0]?.props['aria-valuetext']).toContain('pixels');
     });
 
     it('renders custom selection and image overlays when provided', () => {
