@@ -1,7 +1,7 @@
 import { err, type OpError, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import type { ImageCropResultData } from './ImageCropResult.tsx';
@@ -168,6 +168,7 @@ async function handleRunCrop(
     resolvedFormat: 'jpg' | 'png' | 'webp';
     setPhase: (p: FilePhase) => void;
     notify: (msg: string) => void;
+    isCurrent: () => boolean;
   },
 ) {
   if (!s.file || s.sourceDims.width <= 0) return;
@@ -182,6 +183,7 @@ async function handleRunCrop(
     quality: s.quality,
     customFileName: s.customFileName,
   });
+  if (!cfg.isCurrent()) return;
   if (out.ok) {
     const mime = MIME_MAP[out.value.outputFormat] ?? 'image/jpeg';
     s.setResultUrl(bytesToBlobUrl(out.value.bytes, mime));
@@ -204,11 +206,13 @@ export function useImageCrop(
   onPhase: (phase: FilePhase) => void,
 ) {
   const s = useCropState();
+  const runTokenRef = useRef(0);
   const setPhase = (p: FilePhase) => {
     s.setPhaseState(p);
     onPhase(p);
   };
   const clearOutcome = () => {
+    runTokenRef.current++;
     s.setResult(null);
     if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
     s.setResultUrl(null);
@@ -262,7 +266,17 @@ export function useImageCrop(
     },
     updateNumeric: (k: 'x' | 'y' | 'width' | 'height', v: number) =>
       updateCropNumeric(k, v, s, clearOutcome),
-    runCrop: () => handleRunCrop(s, { preset, toolId, resolvedFormat, setPhase, notify }),
+    runCrop: () => {
+      const runToken = ++runTokenRef.current;
+      void handleRunCrop(s, {
+        preset,
+        toolId,
+        resolvedFormat,
+        setPhase,
+        notify,
+        isCurrent: () => runTokenRef.current === runToken,
+      });
+    },
     downloadCurrentResult: () => s.result && downloadCropResult(s.result, toolId, notify),
   };
 }

@@ -2,7 +2,7 @@ import { err, type OpError, type OpWarning } from '@mangotools/core';
 import type { FieldValues } from '@mangotools/runtime';
 import { buildRequest, defaultValues, getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../strings/en.ts';
 import { downloadBytes, readFileBytes } from '../toolkit/actions.ts';
 import { moveItem, type QueuedFile } from './FileQueue.tsx';
@@ -206,12 +206,14 @@ export function useFileTool(
   const [result, setResult] = useState<FileToolResult | null>(null);
   const [error, setError] = useState<OpError | null>(null);
   const previewUrl = useSingleFilePreview(preset, files);
+  const runTokenRef = useRef(0);
 
   const setPhaseAndNotify = (next: FilePhase) => {
     setPhase(next);
     onPhase(next);
   };
   const clearOutcome = () => {
+    runTokenRef.current++;
     setResult(null);
     setError(null);
     setPhaseAndNotify('idle');
@@ -222,8 +224,10 @@ export function useFileTool(
     track('tool_complete', { toolId, method: 'download' });
   };
   const runConversion = async () => {
+    const currentToken = ++runTokenRef.current;
     setPhaseAndNotify('running');
     const outcome = await runFileOperation(preset, files, outputFileName, values);
+    if (currentToken !== runTokenRef.current) return;
     if (outcome.ok) {
       const value = {
         ...(outcome.value as Record<string, unknown>),

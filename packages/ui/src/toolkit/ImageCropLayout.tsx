@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { FileDropZone } from '../archetypes/FileDropZone.tsx';
+import { formatFileSize } from '../archetypes/FileQueue.tsx';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
@@ -190,7 +191,8 @@ export function ImageCropLayout({
           <div class={fileToolStyles.queueRow} data-file-row="">
             <span class={fileToolStyles.queueName}>{crop.file.name}</span>
             <span class={fileToolStyles.queueSize}>
-              {crop.sourceDims.width} × {crop.sourceDims.height} px
+              {formatFileSize(crop.file.size)} • {crop.sourceDims.width} × {crop.sourceDims.height}{' '}
+              px
             </span>
             <Button
               variant="ghost"

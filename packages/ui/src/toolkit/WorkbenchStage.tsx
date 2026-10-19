@@ -62,7 +62,10 @@ function WorkbenchHandles({
             aria-valuenow={valueNow}
             aria-valuemin={minSize}
             aria-valuemax={valueMax}
-            aria-valuetext={`${currentRect.width} by ${currentRect.height} pixels`}
+            aria-valuetext={t('imageWorkbench.dimensionsValueText', {
+              width: currentRect.width,
+              height: currentRect.height,
+            })}
             tabIndex={disabled ? -1 : 0}
             onPointerDown={(e) => onHandleStart(e, pos)}
             onPointerMove={onPointerMove}
@@ -107,7 +110,7 @@ function WorkbenchSelection({
     <section
       class={styles.selection}
       aria-label={t('imageWorkbench.selection')}
-      aria-roledescription="crop selection"
+      aria-roledescription={t('imageWorkbench.cropSelectionRole')}
       tabIndex={disabled ? -1 : 0}
       style={{
         left: `${displayRect.left}px`,

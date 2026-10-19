@@ -1,4 +1,5 @@
 import type { ComponentChild, ComponentChildren } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import { Button } from '../primitives/Button.tsx';
 import { type StringKey, t } from '../strings/en.ts';
 import styles from './imageWorkbench.module.css';
@@ -67,8 +68,8 @@ function WorkbenchToolbar({
   return (
     <div class={styles.toolbar}>
       {showRatio && (
-        <fieldset class={styles.ratioGroup} aria-label={t('imageWorkbench.ratioLabel')}>
-          <span class={styles.ratioLabel}>{t('imageWorkbench.ratioLabel')}</span>
+        <fieldset class={styles.ratioGroup}>
+          <legend class={styles.ratioLabel}>{t('imageWorkbench.ratioLabel')}</legend>
           {RATIOS.map((item) => (
             <button
               key={item.value}
@@ -100,17 +101,39 @@ interface FooterProps {
 }
 
 function WorkbenchFooter({ showCoordinates, rect, children }: FooterProps) {
+  const [debouncedStatus, setDebouncedStatus] = useState('');
+
+  useEffect(() => {
+    if (!showCoordinates) return;
+    const timer = setTimeout(() => {
+      setDebouncedStatus(
+        t('imageWorkbench.selectionStatus', {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+        }),
+      );
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [showCoordinates, rect.x, rect.y, rect.width, rect.height]);
+
   return (
     <div class={styles.footer}>
       {showCoordinates && (
-        <span class={styles.status} aria-live="polite">
-          {t('imageWorkbench.selectionStatus', {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height,
-          })}
-        </span>
+        <>
+          <span class={styles.status} aria-hidden="true">
+            {t('imageWorkbench.selectionStatus', {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height,
+            })}
+          </span>
+          <span class="visually-hidden" role="status" aria-live="polite">
+            {debouncedStatus}
+          </span>
+        </>
       )}
       <span class={styles.hint}>{t('imageWorkbench.dragHint')}</span>
       {children}

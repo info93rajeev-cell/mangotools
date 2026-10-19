@@ -31,7 +31,19 @@ declare class ImageBitmap {
   close(): void;
 }
 
-declare function createImageBitmap(source: Blob): Promise<ImageBitmap>;
+declare interface ImageBitmapOptions {
+  imageOrientation?: 'from-image' | 'flipY' | 'none';
+  premultiplyAlpha?: 'none' | 'premultiply' | 'default';
+  colorSpaceConversion?: 'none' | 'default';
+  resizeWidth?: number;
+  resizeHeight?: number;
+  resizeQuality?: 'pixelated' | 'low' | 'medium' | 'high';
+}
+
+declare function createImageBitmap(
+  source: Blob,
+  options?: ImageBitmapOptions,
+): Promise<ImageBitmap>;
 
 type ImageEncodeMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 

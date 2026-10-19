@@ -167,6 +167,8 @@ export const EN = {
   'imageWorkbench.handleLeft': 'Resize selection from left',
   'imageWorkbench.reset': 'Reset selection',
   'imageWorkbench.dragHint': 'Drag the box to move, drag handles to resize, or use arrow keys.',
+  'imageWorkbench.dimensionsValueText': '{width} by {height} pixels',
+  'imageWorkbench.cropSelectionRole': 'crop selection',
 } as const;
 
 export type StringKey = keyof typeof EN;
