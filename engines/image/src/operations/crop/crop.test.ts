@@ -44,6 +44,119 @@ describe('image.crop validation (Node-testable, pre-decode paths only)', () => {
     expect(result.error.code).toBe('IMAGE_FILE_TOO_LARGE');
   });
 
+  it('rejects an animated PNG (APNG) file', async () => {
+    const apng = new Uint8Array([
+      0x89,
+      0x50,
+      0x4e,
+      0x47,
+      0x0d,
+      0x0a,
+      0x1a,
+      0x0a,
+      0x00,
+      0x00,
+      0x00,
+      0x0d,
+      0x49,
+      0x48,
+      0x44,
+      0x52,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      8,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0x00,
+      0x00,
+      0x00,
+      0x08,
+      0x61,
+      0x63,
+      0x54,
+      0x4c, // acTL
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x49,
+      0x44,
+      0x41,
+      0x54,
+      0,
+      0,
+      0,
+      0,
+    ]);
+    const result = await run({ ...baseInput, file: { name: 'animation.png', bytes: apng } });
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('expected error');
+    expect(result.error.code).toBe('IMAGE_ANIMATED_UNSUPPORTED');
+  });
+
+  it('rejects an animated WebP file', async () => {
+    const animWebp = new Uint8Array([
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      0x20,
+      0x00,
+      0x00,
+      0x00,
+      0x57,
+      0x45,
+      0x42,
+      0x50,
+      0x56,
+      0x50,
+      0x38,
+      0x58, // VP8X
+      0x0a,
+      0x00,
+      0x00,
+      0x00,
+      0x02, // animation flag set
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+    ]);
+    const result = await run({ ...baseInput, file: { name: 'animation.webp', bytes: animWebp } });
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('expected error');
+    expect(result.error.code).toBe('IMAGE_ANIMATED_UNSUPPORTED');
+  });
+
   it('rejects a negative or non-integer crop position', async () => {
     const file = { name: 'photo.jpg', bytes: JPEG_BYTES };
     const negative = await run({ ...baseInput, cropX: -1, file });

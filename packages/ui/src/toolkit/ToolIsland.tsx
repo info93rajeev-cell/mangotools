@@ -20,6 +20,7 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
+import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
 import { shapeIncomingPackingTransfer } from './packingItems.ts';
@@ -28,15 +29,9 @@ import { configureToolActions } from './toolActions.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 
-/**
- * The two tools with custom item layouts on the platform: their rows can't be described by a flat
- * preset field, so each gets its own layout (see `InvoiceItemsLayout.tsx`/`PackingListItemsLayout.tsx`
- * and TASK-009G/TASK-009I's reports for why this is a small, explicit special case rather than a new
- * generic archetype or field kind). Every other tool renders through the ordinary `ArchetypeLayout`
- * switch below, completely unaffected.
- */
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
+const IMAGE_CROP_PRESET_ID = 'image/crop';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -45,10 +40,7 @@ export interface ToolIslandProps {
   sampleId: string | null;
   /** Offer Print (calculators with capabilities.print). */
   print: boolean;
-  /**
-   * Shows the browser-local saved-preset manager on a standard calculator. Off by default; no
-   * current page sets it. The preset opt-in flag arrives with TASK-008L PR 4B.
-   */
+  /** Shows browser-local saved-preset manager on standard calculator. */
   enableUserPresets?: boolean;
 }
 
@@ -89,18 +81,8 @@ function TransferNotice({
 }
 
 /**
- * Consumes a one-shot transfer hash on mount, if this page was opened via another tool's transfer
- * button (see preset `ui.transferTo`). The payload lives only in the URL's hash fragment, which the
- * browser never sends to any server, so it never reaches a log, an analytics call, or MangoTools
- * itself. Consumed once, then the hash is always stripped so a later reload of this same URL never
- * re-applies it. Returns whether a transfer was applied, for a one-time "review these" notice.
- *
- * The Packing List Generator's own flat `itemDescription`/`itemSku`/`itemUnit`/`itemCountryOfOrigin`
- * fields were replaced by its `items` array (TASK-009I); the Invoice's transfer payload still sends
- * those exact flat keys (its `transferTo.fields` list is unchanged), so without shaping them first they
- * would be silently dropped by `filterTransferValues` below and a previously-working single-item
- * transfer would stop populating any item at all. `shapeIncomingPackingTransfer` folds them into one
- * row instead — see its own comment for why this is not a new multi-row transfer.
+ * Consumes a one-shot transfer hash on mount without server round-trip. Strips hash once consumed.
+ * Shapes flat items for packing list transfers if necessary.
  */
 function useIncomingTransfer(preset: ResolvedPreset, store: ToolStore): boolean {
   const [transferred, setTransferred] = useState(false);
@@ -196,6 +178,17 @@ function ArchetypeLayout({
         snapshot={snapshot}
         store={store}
         notify={notify}
+      />
+    );
+  }
+  if (preset.id === IMAGE_CROP_PRESET_ID) {
+    return (
+      <ImageCropLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
       />
     );
   }
