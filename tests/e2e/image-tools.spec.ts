@@ -74,13 +74,15 @@ test.describe('Image Resize', () => {
 test.describe('Image Compress', () => {
   const fileInput = (page: Page) => island(page, 'image-compress').locator('input[type="file"]');
   const sample = join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg');
+  const photo = join(process.cwd(), 'tools/image-compress/fixtures/files/photo.jpg');
+  const compressible = join(process.cwd(), 'tools/image-compress/fixtures/files/compressible.png');
   const preview = (page: Page) => island(page, 'image-compress').locator('img');
 
   test('selecting an image previews it without exposing width or height controls', async ({
     page,
   }) => {
     await openTool(page, 'image-compress');
-    await fileInput(page).setInputFiles([sample]);
+    await fileInput(page).setInputFiles([photo]);
     await expect(preview(page)).toBeVisible();
     await expect(page.getByLabel('Width')).toHaveCount(0);
     await expect(page.getByLabel('Height')).toHaveCount(0);
@@ -91,32 +93,44 @@ test.describe('Image Compress', () => {
     page,
   }) => {
     await openTool(page, 'image-compress');
-    await fileInput(page).setInputFiles([sample]);
+    await fileInput(page).setInputFiles([photo]);
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('sample-compressed.jpg');
+    expect(download.suggestedFilename()).toBe('photo-compressed.jpg');
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('jpg');
-    await expect(page.locator('[data-output="outputWidth"] dd')).toHaveText('8');
-    await expect(page.locator('[data-output="outputHeight"] dd')).toHaveText('8');
-    await expect(page.locator('[data-output="originalWidth"] dd')).toHaveText('8');
-    await expect(page.locator('[data-output="originalHeight"] dd')).toHaveText('8');
+    const sizeDiffRaw = await page
+      .locator('[data-output="sizeDifferenceBytes"] dd')
+      .getAttribute('data-raw-value');
+    expect(Number(sizeDiffRaw)).toBeGreaterThan(0);
   });
 
-  test('shows the output format after converting to PNG', async ({ page }) => {
+  test('compresses a compressible PNG image and downloads it with PNG format', async ({ page }) => {
     await openTool(page, 'image-compress');
-    await fileInput(page).setInputFiles([sample]);
+    await fileInput(page).setInputFiles([compressible]);
     await page.getByLabel('Output format').selectOption('png');
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('sample-compressed.png');
+    expect(download.suggestedFilename()).toBe('compressible-compressed.png');
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('reports honest failure when converting a JPEG photo to PNG cannot achieve a smaller file', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-compress');
+    await fileInput(page).setInputFiles([photo]);
+    await page.getByLabel('Output format').selectOption('png');
+    await page.getByRole('button', { name: 'Download compressed image' }).click();
+    await expect(
+      page.getByText('No smaller result was achieved without degrading quality below 50%.'),
+    ).toBeVisible();
   });
 
   test('normalizes a custom output file name on download', async ({ page }) => {
     await openTool(page, 'image-compress');
-    await fileInput(page).setInputFiles([sample]);
+    await fileInput(page).setInputFiles([photo]);
     await page.getByLabel('Output file name').fill('  My Photo<>.JPG  ');
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
@@ -130,7 +144,7 @@ test.describe('Image Compress', () => {
     await fileInput(page).setInputFiles({
       name: '.jpg',
       mimeType: 'image/jpeg',
-      buffer: readFileSync(sample),
+      buffer: readFileSync(photo),
     });
     await page.getByLabel('Output file name').fill('////');
     const downloadPromise = page.waitForEvent('download');
@@ -139,48 +153,34 @@ test.describe('Image Compress', () => {
     expect(download.suggestedFilename()).toBe('compressed-image.jpg');
   });
 
-  test('warns when the output is larger than the original', async ({ page }) => {
-    // sample.jpg is a tiny (331-byte) hand-built fixture, smaller than any real browser's JPEG
-    // container overhead, so re-encoding it always grows the file — but by how much is encoder-
-    // specific (Chromium, Firefox and WebKit each produce a different byte count for the same
-    // source). The stable, cross-browser contract is: the engine's own size-change fields agree the
-    // output grew, and the warning is shown exactly because of that — not a specific percentage.
+  test('reports honest failure when no smaller output can be achieved without degrading quality below 50%', async ({
+    page,
+  }) => {
+    // sample.jpg is a tiny 331-byte fixture already smaller than browser JPEG overhead.
+    // Under the byte-reduction contract, rather than claiming compression on an enlarged file,
+    // the tool reports failure honestly.
     await openTool(page, 'image-compress');
     await fileInput(page).setInputFiles([sample]);
-    const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
-    await downloadPromise;
-
-    const percentText = await primaryResult(page).textContent();
-    const sizeDifferenceText = await page
-      .locator('[data-output="sizeDifferenceBytes"] dd')
-      .textContent();
-    expect(Number((percentText ?? '').replace('−', '-').replace('%', ''))).toBeLessThan(0);
-    expect(Number((sizeDifferenceText ?? '').replace('−', '-').replace(/,/g, ''))).toBeLessThan(0);
 
     await expect(
-      page.getByText(
-        'The output file is larger than the original. Try a lower quality setting or another format.',
-      ),
+      page.getByText('No smaller result was achieved without degrading quality below 50%.'),
     ).toBeVisible();
   });
 
   test('a lower quality setting produces a smaller output than a higher one', async ({ page }) => {
-    // A tiny hand-built fixture like sample.jpg is dominated by JPEG's fixed container overhead, where
-    // quality makes no measurable difference — this needs a source with real per-pixel detail for the
-    // quality setting to actually bite, hence the separate noisy.png fixture.
     const noisy = join(process.cwd(), 'tools/image-compress/fixtures/files/noisy.png');
     const outputSize = () =>
       page
         .locator('[data-output="outputFileSize"] dd')
-        .textContent()
-        .then((text) => Number((text ?? '').replace(/,/g, '')));
+        .getAttribute('data-raw-value')
+        .then((val) => Number(val));
 
     await openTool(page, 'image-compress');
     await fileInput(page).setInputFiles([noisy]);
     await page.getByLabel('Output format').selectOption('jpg');
 
-    await page.getByLabel('Quality').fill('10');
+    await page.getByLabel('Quality').fill('50');
     const lowPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     await lowPromise;

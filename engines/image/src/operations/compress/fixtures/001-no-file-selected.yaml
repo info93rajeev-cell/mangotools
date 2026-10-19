@@ -1,0 +1,9 @@
+id: 001-no-file-selected
+operation: image.compress@1
+source:
+  type: synthetic
+  citation: "A missing file must return IMAGE_NO_FILE_SELECTED before any decode attempt"
+input:
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

@@ -35,14 +35,21 @@ export function FileToolOutcome({ preset, phase, result, error }: FileToolOutcom
       {primary ? (
         <div class={styles.primary} aria-live="polite" aria-atomic="true" data-primary-result="">
           <span class={styles.primaryLabel}>{primary.label}</span>
-          <output class={styles.primaryValue}>{primary.value}</output>
+          <output
+            class={styles.primaryValue}
+            data-raw-value={primary.rawValue !== undefined ? String(primary.rawValue) : undefined}
+          >
+            {primary.value}
+          </output>
         </div>
       ) : null}
       <dl class={styles.rows}>
         {secondary.map((row) => (
           <div class={styles.row} key={row.key} data-output={row.key}>
             <dt>{row.label}</dt>
-            <dd>{row.value}</dd>
+            <dd data-raw-value={row.rawValue !== undefined ? String(row.rawValue) : undefined}>
+              {row.value}
+            </dd>
           </div>
         ))}
       </dl>
