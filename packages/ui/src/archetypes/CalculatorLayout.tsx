@@ -80,7 +80,9 @@ function ResultRows({ rows }: { rows: OutputRow[] }) {
           {rest.map((row) => (
             <div key={row.key} class={styles.row} data-output={row.key}>
               <dt>{row.label}</dt>
-              <dd>{row.value}</dd>
+              <dd data-raw-value={row.rawValue !== undefined ? String(row.rawValue) : undefined}>
+                {row.value}
+              </dd>
             </div>
           ))}
         </dl>

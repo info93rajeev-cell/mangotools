@@ -75,6 +75,7 @@ test.describe('Image Compress', () => {
   const fileInput = (page: Page) => island(page, 'image-compress').locator('input[type="file"]');
   const sample = join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg');
   const photo = join(process.cwd(), 'tools/image-compress/fixtures/files/photo.jpg');
+  const compressible = join(process.cwd(), 'tools/image-compress/fixtures/files/compressible.png');
   const preview = (page: Page) => island(page, 'image-compress').locator('img');
 
   test('selecting an image previews it without exposing width or height controls', async ({
@@ -98,19 +99,33 @@ test.describe('Image Compress', () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('photo-compressed.jpg');
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('jpg');
-    const sizeDiffText = await page.locator('[data-output="sizeDifferenceBytes"] dd').textContent();
-    expect(Number((sizeDiffText ?? '').replace(/,/g, ''))).toBeGreaterThan(0);
+    const sizeDiffRaw = await page
+      .locator('[data-output="sizeDifferenceBytes"] dd')
+      .getAttribute('data-raw-value');
+    expect(Number(sizeDiffRaw)).toBeGreaterThan(0);
   });
 
-  test('shows the output format after converting to PNG', async ({ page }) => {
+  test('compresses a compressible PNG image and downloads it with PNG format', async ({ page }) => {
     await openTool(page, 'image-compress');
-    await fileInput(page).setInputFiles([photo]);
+    await fileInput(page).setInputFiles([compressible]);
     await page.getByLabel('Output format').selectOption('png');
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('photo-compressed.png');
+    expect(download.suggestedFilename()).toBe('compressible-compressed.png');
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('reports honest failure when converting a JPEG photo to PNG cannot achieve a smaller file', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-compress');
+    await fileInput(page).setInputFiles([photo]);
+    await page.getByLabel('Output format').selectOption('png');
+    await page.getByRole('button', { name: 'Download compressed image' }).click();
+    await expect(
+      page.getByText('No smaller result was achieved without degrading quality below 50%.'),
+    ).toBeVisible();
   });
 
   test('normalizes a custom output file name on download', async ({ page }) => {
@@ -158,8 +173,8 @@ test.describe('Image Compress', () => {
     const outputSize = () =>
       page
         .locator('[data-output="outputFileSize"] dd')
-        .textContent()
-        .then((text) => Number((text ?? '').replace(/,/g, '')));
+        .getAttribute('data-raw-value')
+        .then((val) => Number(val));
 
     await openTool(page, 'image-compress');
     await fileInput(page).setInputFiles([noisy]);

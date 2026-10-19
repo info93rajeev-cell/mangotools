@@ -38,6 +38,7 @@ export interface OutputRow {
   key: string;
   label: string;
   value: string;
+  rawValue?: unknown;
   format: ValueFormat;
   primary: boolean;
 }
@@ -65,6 +66,7 @@ export function outputRows(
         key,
         label: label(preset, out.labelKey),
         value: formatValue(out.format, String(value[key]), { currency, decimalPlaces }),
+        rawValue: value[key],
         format: out.format,
         primary:
           out.primary === true ||
