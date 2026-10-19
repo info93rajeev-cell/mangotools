@@ -24,6 +24,7 @@ import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
 import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import { ImageWorkbenchHarness } from '../../dev/ImageWorkbenchHarness.tsx';
 import { RowsHarness } from '../../dev/RowsHarness.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { COPY } from '../../lib/copy.ts';
@@ -120,6 +121,10 @@ const sizes = ['sm', 'md', 'lg'] as const;
 
       <section data-dev-rows-section><h2>Repeatable rows browser harness</h2>
         {gstPreset ? <RowsHarness client:load preset={gstPreset} /> : null}
+      </section>
+
+      <section data-dev-workbench-section><h2>Image workbench browser harness</h2>
+        <ImageWorkbenchHarness client:load />
       </section>
 
       <section data-dev-presets-section><h2>Saved presets browser harness</h2>
