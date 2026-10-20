@@ -13,7 +13,7 @@ import {
 } from './imageFileInspection.ts';
 import type { AspectRatioPreset, PixelRect } from './imageWorkbenchGeometry.ts';
 import { applyAspectRatio, defaultSelectionRect } from './imageWorkbenchGeometry.ts';
-import { createPalaceSample, SAMPLE_HEIGHT, SAMPLE_WIDTH } from './samplePalaceImage.ts';
+import { createPalaceSample } from './samplePalaceImage.ts';
 
 export type CropOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
 export type { CropFile };
@@ -169,11 +169,23 @@ async function handleLoadPalaceSample(
   clearOutcome();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   const sample = await createPalaceSample();
-  s.setSourceDims({ width: SAMPLE_WIDTH, height: SAMPLE_HEIGHT });
-  s.setFile(sample.file);
+  const fileObj = new File([sample.file.bytes], sample.file.name, { type: 'image/jpeg' });
+  const res = await inspectAndDecodeImage(fileObj);
+  if (!res.ok) {
+    s.setError(res.error);
+    setPhase('error');
+    return;
+  }
+  const dims = res.value.dims;
+  s.setSourceDims(dims);
+  s.setFile(res.value.file);
   s.setSourceFormat('jpg');
-  s.setImageSrc(sample.blobUrl);
-  s.setCropRectState({ x: 200, y: 0, width: 1200, height: 1200 });
+  s.setImageSrc(res.value.blobUrl);
+  const cropW = Math.min(dims.width, dims.height);
+  const cropH = cropW;
+  const cropX = Math.round((dims.width - cropW) / 2);
+  const cropY = Math.round((dims.height - cropH) / 2);
+  s.setCropRectState({ x: cropX, y: cropY, width: cropW, height: cropH });
   s.setRatioState('1:1');
   setPhase('idle');
 }
