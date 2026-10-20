@@ -7,6 +7,7 @@ import {
   track,
 } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import type { ComponentType } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import {
   CalculatorLayout,
@@ -22,7 +23,7 @@ import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { ImageCompressLayout } from './ImageCompressLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
-import { ImageResizeLayout } from './ImageResizeLayout.tsx';
+import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
 import { shapeIncomingPackingTransfer } from './packingItems.ts';
@@ -30,6 +31,19 @@ import { label } from './presentation.ts';
 import { configureToolActions } from './toolActions.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
+
+function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageResizeLayout.tsx').then((m) => {
+      setComp(() => m.ImageResizeLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
 
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
@@ -180,7 +194,7 @@ function renderCustomFileLayout({ idPrefix, toolId, preset, notify, onFilePhase 
   }
   if (preset.id === IMAGE_RESIZE_PRESET_ID) {
     return (
-      <ImageResizeLayout
+      <DynamicImageResizeLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}
