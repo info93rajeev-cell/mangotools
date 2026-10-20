@@ -450,23 +450,11 @@
 .canvasStageWrapper {
   overflow: hidden;
   border-radius: var(--radius-md);
-  background:
-    repeating-conic-gradient(var(--color-border) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 280px;
-  max-height: 280px;
-}
-
-.canvasStageWrapper :global(.viewport) {
-  height: 280px;
-  max-height: 280px;
-  min-height: 180px;
-}
-
-.canvasStageWrapper :global(.image) {
-  max-height: 270px;
+  width: 100%;
+  min-height: 200px;
 }
 
 .canvasFooter {

@@ -118,6 +118,8 @@ function WorkbenchFooter({ showCoordinates, rect, children }: FooterProps) {
     return () => clearTimeout(timer);
   }, [showCoordinates, rect.x, rect.y, rect.width, rect.height]);
 
+  if (!showCoordinates && !children) return null;
+
   return (
     <div class={styles.footer}>
       {showCoordinates && (
