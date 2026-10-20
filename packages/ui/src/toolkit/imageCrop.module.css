@@ -2,7 +2,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-3);
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -12,7 +12,7 @@
 .workbench3Panel {
   display: grid;
   grid-template-columns: minmax(280px, 320px) minmax(360px, 1fr) minmax(280px, 320px);
-  gap: var(--space-4);
+  gap: var(--space-3);
   align-items: start;
   min-width: 0;
   max-width: 100%;
@@ -28,7 +28,7 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
     width: 100%;
   }
 }
@@ -37,7 +37,7 @@
 .controlPanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   min-width: 0;
 }
 
@@ -51,6 +51,14 @@
   gap: var(--space-2);
   min-width: 0;
   box-sizing: border-box;
+}
+
+.controlSection {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .panelCardHead {
@@ -67,6 +75,13 @@
   font-weight: var(--weight-bold);
   color: var(--color-text-muted);
   margin: 0;
+}
+
+.activeRatioHint,
+.activeFormatHint {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  color: var(--color-accent);
 }
 
 .samplePillBtn {
@@ -88,7 +103,7 @@
 .compactDropZone {
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
+  padding: var(--space-2);
   text-align: center;
   cursor: pointer;
   background: var(--color-bg);
@@ -103,7 +118,8 @@
   border-color: var(--color-accent);
 }
 
-.hiddenFileInput {
+.hiddenFileInput,
+.hiddenSelect {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -115,7 +131,7 @@
 }
 
 .dropIcon {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
 .dropText {
@@ -132,7 +148,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
+  padding: 4px 8px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -146,7 +162,7 @@
 }
 
 .activeFileName {
-  font-size: var(--text-ui);
+  font-size: var(--text-caption);
   font-weight: var(--weight-semibold);
   white-space: nowrap;
   overflow: hidden;
@@ -154,8 +170,29 @@
 }
 
 .activeFileMeta {
-  font-size: var(--text-caption);
+  font-size: 10px;
   color: var(--color-text-muted);
+}
+
+.fileActionBtns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.changeFileBtn {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.changeFileBtn:hover {
+  background: var(--color-surface-subtle);
 }
 
 .removeFileBtn {
@@ -164,7 +201,8 @@
   color: var(--color-text-muted);
   font-weight: bold;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px 4px;
+  font-size: 11px;
 }
 
 .removeFileBtn:hover {
@@ -182,7 +220,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);
-  padding: 6px 2px;
+  padding: 4px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -221,8 +259,8 @@
 
 .numericGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -237,23 +275,24 @@
 }
 
 .numericLabel {
-  font-size: var(--text-caption);
+  font-size: 10px;
   color: var(--color-text-muted);
 }
 
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
 }
 
 .formatCard {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);
-  padding: 6px 8px;
+  padding: 4px 4px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -269,22 +308,43 @@
 }
 
 .formatCardSub {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--color-text-muted);
 }
 
-.qualityRow,
-.filenameRow {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.settingsSubGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.numericField :global(input) {
+  padding: 3px 6px;
+  font-size: 11px;
+  height: 26px;
+  min-height: 26px;
 }
 
 .panelActions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.resetGhostBtn {
+  background: transparent;
+  border: 0;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  padding: 2px 4px;
+  text-align: center;
+  transition: color 0.15s;
+}
+
+.resetGhostBtn:hover {
+  color: var(--color-text);
 }
 
 /* PANEL 2: CANVAS WORKBENCH */
@@ -295,7 +355,7 @@
   padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   min-width: 0;
   box-sizing: border-box;
 }
@@ -327,7 +387,7 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 4px 8px;
+  padding: 2px 6px;
   font-size: var(--text-caption);
   cursor: pointer;
   transition: background 0.15s;
@@ -345,13 +405,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 280px;
+  height: 280px;
+  max-height: 280px;
+}
+
+.canvasStageWrapper :global(.viewport) {
+  height: 280px;
+  max-height: 280px;
+  min-height: 180px;
+}
+
+.canvasStageWrapper :global(.image) {
+  max-height: 270px;
 }
 
 .canvasFooter {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   align-items: center;
   text-align: center;
 }
@@ -361,14 +432,14 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
-  padding: 2px 10px;
+  padding: 2px 8px;
   font-size: var(--text-caption);
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
 }
 
 .canvasHint {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-text-muted);
 }
 
@@ -376,7 +447,7 @@
 .resultPanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   min-width: 0;
 }
 
@@ -385,7 +456,7 @@
   color: #065f46;
   border: 1px solid #a7f3d0;
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 6px 10px;
   font-size: var(--text-caption);
   font-weight: var(--weight-bold);
   display: flex;
@@ -404,7 +475,7 @@
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 6px 10px;
   font-size: var(--text-caption);
   font-weight: var(--weight-semibold);
   display: flex;
@@ -412,59 +483,68 @@
   gap: 6px;
 }
 
-.previewThumbWrapper {
+.previewThumbWrapper,
+.resultPreviewWrap {
   display: flex;
   justify-content: center;
   align-items: center;
   background:
     repeating-conic-gradient(var(--color-border) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
   border-radius: var(--radius-md);
-  padding: var(--space-3);
+  padding: 6px;
   overflow: hidden;
-  max-height: 180px;
+  height: 110px;
+  max-height: 110px;
 }
 
-.previewThumbImg {
+.previewThumbImg,
+.resultImage {
   max-width: 100%;
-  max-height: 160px;
+  max-height: 98px;
   border-radius: var(--radius-sm);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  object-fit: contain;
 }
 
-.specTable {
+.specTable,
+.resultDetails {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 4px;
   margin: 0;
   padding: 0;
 }
 
-.specItem {
+.specItem,
+.resultRow {
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
-  padding: 6px 8px;
+  padding: 4px 6px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
 }
 
-.specLabel {
-  font-size: 10px;
+.specLabel,
+.resultRow dt {
+  font-size: 9px;
   color: var(--color-text-muted);
 }
 
-.specValue {
-  font-size: var(--text-caption);
+.specValue,
+.resultRow dd {
+  font-size: 11px;
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
+  margin: 0;
 }
 
 .privacyShield {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 8px;
-  font-size: 11px;
+  padding: 6px;
+  font-size: 10px;
   color: var(--color-text-muted);
   text-align: center;
   display: flex;
@@ -473,21 +553,11 @@
   gap: 6px;
 }
 
-/* BOTTOM 5 DOC CARDS */
-.docCardsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-  min-width: 0;
-  max-width: 100%;
-}
-
-.docCard {
+.resultCard {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -495,101 +565,28 @@
   box-sizing: border-box;
 }
 
-.docCardTitle {
-  font-size: var(--text-ui);
-  font-weight: var(--weight-bold);
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin: 0;
-}
-
-.docCardIcon {
-  font-size: 1.125rem;
-}
-
-.stepList,
-.noteList {
-  margin: 0;
-  padding-left: var(--space-4);
-  font-size: var(--text-caption);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--color-text-muted);
-}
-
-.stepList strong,
-.noteList strong {
-  color: var(--color-text);
-}
-
-.docCardText {
-  font-size: var(--text-caption);
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.faqList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.faqDetails {
+.notesDisclosure {
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
   background: var(--color-bg);
 }
 
-.faqSummary {
-  font-size: var(--text-caption);
+.notesSummary {
+  font-size: 10px;
   font-weight: var(--weight-semibold);
   cursor: pointer;
 }
 
-.faqAnswer {
-  font-size: var(--text-caption);
+.notesList {
+  margin: 4px 0 0;
+  padding-left: var(--space-4);
+  font-size: 10px;
   color: var(--color-text-muted);
-  margin: 6px 0 0;
-  line-height: 1.4;
 }
 
-.relatedLinksGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-}
-
-.relatedLink {
+.actions {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  text-decoration: none;
-  color: var(--color-text);
-  transition: border-color 0.15s;
-}
-
-.relatedLink:hover {
-  border-color: var(--color-accent);
-}
-
-.relatedLinkIcon {
-  font-size: 1.125rem;
-}
-
-.relatedLinkName {
-  font-size: 11px;
-  font-weight: var(--weight-bold);
-}
-
-.relatedLinkDesc {
-  font-size: 9px;
-  color: var(--color-text-muted);
+  flex-direction: column;
+  gap: var(--space-2);
 }

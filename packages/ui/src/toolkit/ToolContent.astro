@@ -15,6 +15,15 @@ interface Props {
 const { content, related, currency } = Astro.props;
 const beforeReferences = content.sections.filter((s) => s.id !== 'references');
 const references = content.sections.find((s) => s.id === 'references');
+
+const SECTION_ICONS: Record<string, string> = {
+  'how-to-use': '📖',
+  'method': '⚙️',
+  'worked-example': '🧮',
+  'faq': '❓',
+  'references': '📚',
+  'related-tools': '🔗',
+};
 ---
 
 <div class="tool-content">
@@ -27,6 +36,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">{SECTION_ICONS[section.id] ?? '📄'}</span>
           <h2 id={`${section.id}-title`}>{section.title}</h2>
         </summary>
         <div class="content-body">
@@ -51,6 +61,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">🔗</span>
           <h2 id="related-tools-title">{t('related.title')}</h2>
         </summary>
         <div class="content-body">
@@ -74,6 +85,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">📚</span>
           <h2 id={`${references.id}-title`}>{references.title}</h2>
         </summary>
         <div class="content-body">

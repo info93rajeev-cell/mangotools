@@ -5,7 +5,6 @@ import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { ImageCropCanvas } from './ImageCropCanvas.tsx';
 import { ImageCropControls } from './ImageCropControls.tsx';
-import { ImageCropDocCards } from './ImageCropDocCards.tsx';
 import { ImageCropResult } from './ImageCropResult.tsx';
 import styles from './imageCrop.module.css';
 import { defaultSelectionRect } from './imageWorkbenchGeometry.ts';
@@ -140,9 +139,6 @@ export function ImageCropLayout({
           {messageFor(preset, crop.error)}
         </InlineAlert>
       )}
-
-      {/* 5 INFORMATIONAL GUIDE CARDS */}
-      <ImageCropDocCards />
     </div>
   );
 }
