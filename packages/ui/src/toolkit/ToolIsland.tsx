@@ -20,6 +20,7 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
+import { ImageCompressLayout } from './ImageCompressLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -32,6 +33,7 @@ import { useToolStore } from './useToolStore.ts';
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
+const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -44,12 +46,7 @@ export interface ToolIslandProps {
   enableUserPresets?: boolean;
 }
 
-interface TopBarProps {
-  sampleId: string | null;
-  onTrySample: () => void;
-}
-
-function TopBar({ sampleId, onTrySample }: TopBarProps) {
+function TopBar({ sampleId, onTrySample }: { sampleId: string | null; onTrySample: () => void }) {
   if (!sampleId) return null;
   return (
     <div class={`${styles.topRow} no-print`}>
@@ -156,19 +153,48 @@ function ToolIslandView(props: ToolIslandViewProps) {
   );
 }
 
+function renderCustomFileLayout({ idPrefix, toolId, preset, notify, onFilePhase }: ArchetypeProps) {
+  if (preset.id === IMAGE_CROP_PRESET_ID) {
+    return (
+      <ImageCropLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_COMPRESS_PRESET_ID) {
+    return (
+      <ImageCompressLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  return null;
+}
+
 /** The one layout matching this tool's archetype. */
-function ArchetypeLayout({
-  archetype,
-  idPrefix,
-  toolId,
-  preset,
-  snapshot,
-  store,
-  notify,
-  onFilePhase,
-  calculatorActions,
-  enableUserPresets,
-}: ArchetypeProps) {
+function ArchetypeLayout(props: ArchetypeProps) {
+  const custom = renderCustomFileLayout(props);
+  if (custom) return custom;
+  const {
+    archetype,
+    idPrefix,
+    toolId,
+    preset,
+    snapshot,
+    store,
+    notify,
+    onFilePhase,
+    calculatorActions,
+    enableUserPresets,
+  } = props;
   if (archetype === 'A') {
     return (
       <TransformLayout
@@ -178,17 +204,6 @@ function ArchetypeLayout({
         snapshot={snapshot}
         store={store}
         notify={notify}
-      />
-    );
-  }
-  if (preset.id === IMAGE_CROP_PRESET_ID) {
-    return (
-      <ImageCropLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
       />
     );
   }

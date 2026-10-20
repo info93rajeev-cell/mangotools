@@ -18,6 +18,8 @@ export * from './primitives/Icon.tsx';
 export * from './primitives/inputs.tsx';
 export * from './strings/en.ts';
 export * from './toolkit/ActionBar.tsx';
+export * from './toolkit/ImageCompressLayout.tsx';
+export * from './toolkit/ImageCompressResult.tsx';
 export * from './toolkit/ImageCropLayout.tsx';
 export * from './toolkit/ImageWorkbench.tsx';
 export * from './toolkit/imageWorkbenchGeometry.ts';

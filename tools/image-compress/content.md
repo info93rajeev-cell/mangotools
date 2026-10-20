@@ -15,6 +15,14 @@ lastReviewed: 2026-09-30
 
 **Processed locally in your browser.** No file upload is required for this tool — the image you select is read and re-encoded on your own device, and the result downloads without ever leaving it.
 
+### Compression Pipeline Comparison
+
+| Format | Encoding Type | Primary Mechanism | Best Use Case | Quality Control |
+| :--- | :--- | :--- | :--- | :--- |
+| **JPG** | Lossy (DCT) | Discards high-frequency color variations imperceptible to human eyes | Photographs, rich textures | 50%–100% slider |
+| **PNG** | Lossless (Deflate) | Finds repeating byte patterns (LZ77 + Huffman) without altering pixels | Screenshots, line art, transparency | Fixed lossless |
+| **WebP** | Lossy / Lossless | Predictive intra-frame block coding + entropy compression | Modern web images, maximum byte reduction | 50%–100% slider |
+
 **Why compression results vary.** An image that is already tightly compressed, or one saved in a format with no quality knob, may not get smaller no matter what settings you choose — sometimes re-encoding even makes a file larger. Always compare the original and output size shown, and use a lower quality setting or a different format if the result isn't smaller.
 
 **JPG vs PNG vs WebP.** JPG and WebP support an adjustable quality setting and are usually the better choice for photographs, where some quality loss is visually hard to notice. PNG is lossless and has no quality knob, so it does not reduce file size for photo-like images — it works best for graphics, screenshots, and images with flat color or transparency. JPG has no transparency channel; converting a transparent image to JPG fills the transparent areas with white and shows a warning.

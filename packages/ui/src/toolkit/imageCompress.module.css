@@ -1,0 +1,590 @@
+/* ---------- Image Compress 3-Stage Layout Styles ---------- */
+
+.container {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.emptyState {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.trustStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ---------- 2-Column Stage 1 & 2 Grid ---------- */
+.topGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-5);
+  align-items: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .topGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.stageCard {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.stage1Column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.stepTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.stepBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  flex-shrink: 0;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.textAction {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--color-accent-text);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.textAction:hover {
+  opacity: 0.8;
+}
+
+/* ---------- Preview Thumbnail ---------- */
+.previewWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-conic-gradient(var(--color-border) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-height: 14rem;
+  min-width: 0;
+}
+
+.previewImg {
+  display: block;
+  max-width: 100%;
+  max-height: 14rem;
+  object-fit: contain;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.fileName {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.fileMeta {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.statusBadge {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: rgba(21, 128, 61, 0.1);
+  border: 1px solid rgba(21, 128, 61, 0.25);
+  border-radius: var(--radius-md);
+  font-size: var(--text-caption);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .statusBadge {
+  background: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.statusCheck {
+  color: var(--color-success);
+  font-weight: var(--weight-semibold);
+  flex-shrink: 0;
+}
+
+.statusTitle {
+  display: block;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.statusSub {
+  color: var(--color-text-muted);
+  font-size: var(--text-caption);
+}
+
+/* ---------- Related Action Card ---------- */
+.relatedCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+}
+
+.relatedLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.relatedIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(185, 28, 28, 0.12);
+  color: var(--color-danger);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-caption);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.relatedText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.relatedTitle {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.relatedSub {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.relatedLink {
+  color: var(--color-accent-text);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.relatedLink:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Stage 2 Settings ---------- */
+.formatCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.formatCard {
+  position: relative;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-2);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+  min-width: 0;
+}
+
+.formatCard:hover {
+  border-color: var(--color-border-input);
+}
+
+.formatCardActive {
+  border-color: var(--color-accent);
+  background: rgba(255, 176, 0, 0.08);
+}
+
+:root[data-theme="dark"] .formatCardActive {
+  background: rgba(255, 176, 0, 0.12);
+}
+
+.formatCardCheck {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.7rem;
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-text);
+}
+
+.formatCardName {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.formatCardDesc {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+.formatSelectRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.formatSelectRow label {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.sliderSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.sliderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.sliderLabel {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.sliderValueBadge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-text);
+}
+
+.rangeSlider {
+  width: 100%;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.sliderCaptions {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.guidanceCallout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(29, 78, 216, 0.08);
+  border: 1px solid rgba(29, 78, 216, 0.2);
+  border-radius: var(--radius-md);
+  font-size: 0.72rem;
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .guidanceCallout {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.25);
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.fieldLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  min-width: 0;
+}
+
+.trustNote {
+  margin: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Stage 3 Result Presentation ---------- */
+.resultSection {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.heroBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: rgba(21, 128, 61, 0.08);
+  border: 1px solid rgba(21, 128, 61, 0.25);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+}
+
+:root[data-theme="dark"] .heroBanner {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.heroLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.checkCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--color-success);
+  color: #ffffff;
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.heroTitleGroup {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.heroTitle {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.heroSub {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.metricsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.metricBadge {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metricLabel {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.metricValue {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.metricValueSaved {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--color-success);
+  margin: 0;
+}
+
+.reductionPill {
+  display: inline-block;
+  padding: 3px var(--space-2);
+  background: #15803d;
+  color: #ffffff;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .reductionPill {
+    background: #4ade80;
+    color: #052e16;
+  }
+}
+
+:root[data-theme="dark"] .reductionPill {
+  background: #4ade80;
+  color: #052e16;
+}
+
+.honestCallout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: rgba(29, 78, 216, 0.06);
+  border: 1px solid rgba(29, 78, 216, 0.2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-caption);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .honestCallout {
+  background: rgba(96, 165, 250, 0.08);
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.honestTitle {
+  font-weight: var(--weight-semibold);
+  flex-shrink: 0;
+}
+
+.resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
