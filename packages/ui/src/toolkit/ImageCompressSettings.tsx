@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
+import type { QueuedFile } from '../archetypes/FileQueue.tsx';
 import type { FileToolState } from '../archetypes/useFileTool.ts';
 import { Button } from '../primitives/Button.tsx';
 import { NumberField, Select, TextInput } from '../primitives/inputs.tsx';
@@ -11,6 +12,7 @@ export interface StageTwoCardProps {
   idPrefix: string;
   preset: ResolvedPreset;
   tool: FileToolState;
+  file?: QueuedFile;
 }
 
 const FORMAT_OPTIONS = [
@@ -21,9 +23,10 @@ const FORMAT_OPTIONS = [
 ];
 
 const FORMAT_CARDS = [
-  { value: 'jpg', name: 'JPG', desc: 'Best for photos · Smaller file size' },
-  { value: 'png', name: 'PNG', desc: 'Lossless quality · Larger file size' },
-  { value: 'webp', name: 'WebP', desc: 'Modern format · Smallest size' },
+  { value: 'same', name: 'Auto', desc: 'Same as input format' },
+  { value: 'jpg', name: 'JPG', desc: 'Best for photos · Smaller' },
+  { value: 'png', name: 'PNG', desc: 'Lossless · Crisp graphics' },
+  { value: 'webp', name: 'WebP', desc: 'Modern · Smallest size' },
 ] as const;
 
 const TARGET_PRESETS = [
@@ -213,13 +216,18 @@ function QualitySlider({ idPrefix, quality, onQualityChange }: QualitySliderProp
   );
 }
 
-export function StageTwoCard({ idPrefix, preset, tool }: StageTwoCardProps) {
+export function StageTwoCard({ idPrefix, preset, tool, file }: StageTwoCardProps) {
   const selectedFormat = String(tool.values.outputFormat ?? 'same');
   const qualityVal = Number(tool.values.quality ?? 80);
   const currentMaxKb = tool.values.maxFileSizeKB ? String(tool.values.maxFileSizeKB) : '';
   const [compressMode, setCompressMode] = useState<'target' | 'manual'>('target');
   const isRunning = tool.phase === 'running';
   const isPng = selectedFormat === 'png';
+
+  const ext = selectedFormat === 'same' ? file?.name.split('.').pop() || 'jpg' : selectedFormat;
+  const defaultPlaceholder = file
+    ? `${file.name.replace(/\.[^.]+$/, '')}-compressed.${ext}`
+    : label(preset, 'fileTool.outputNamePlaceholder');
 
   const handleModeSwitch = (mode: 'target' | 'manual') => {
     setCompressMode(mode);
@@ -300,7 +308,7 @@ export function StageTwoCard({ idPrefix, preset, tool }: StageTwoCardProps) {
             aria-label="Output file name"
             value={tool.outputFileName}
             onValue={tool.setOutputFileName}
-            placeholder={label(preset, 'fileTool.outputNamePlaceholder')}
+            placeholder={defaultPlaceholder}
           />
         </label>
       </div>

@@ -54,7 +54,7 @@ export function ImageCompressLayout({
     <div class={styles.container}>
       <div class={styles.topGrid}>
         <StageOneCard file={file} previewUrl={tool.previewUrl} onClear={tool.clearAll} />
-        <StageTwoCard idPrefix={idPrefix} preset={preset} tool={tool} />
+        <StageTwoCard idPrefix={idPrefix} preset={preset} tool={tool} file={file} />
       </div>
 
       <ImageCompressResult
