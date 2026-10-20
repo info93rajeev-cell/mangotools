@@ -5,7 +5,6 @@ import { NumberField, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
 import styles from './imageCrop.module.css';
 import type { AspectRatioPreset } from './imageWorkbenchGeometry.ts';
-import { label } from './presentation.ts';
 import type { CropOutputFormat, useImageCrop } from './useImageCrop.ts';
 
 export interface ImageCropControlsProps {
@@ -72,20 +71,17 @@ function UploadSection({
       />
 
       {crop.file ? (
-        <div class={styles.activeFileBadge} data-file-row="">
-          <div class={styles.activeFileInfo}>
-            <div class={styles.activeFileName} title={crop.file.name}>
-              {crop.file.name}
+        <div class={styles.activeFileWrapper}>
+          <div class={styles.activeFileBadge} data-file-row="">
+            <div class={styles.activeFileInfo}>
+              <div class={styles.activeFileName} title={crop.file.name}>
+                {crop.file.name}
+              </div>
+              <div class={styles.activeFileMeta}>
+                {crop.sourceFormat?.toUpperCase() ?? 'JPG'} • {crop.sourceDims.width} ×{' '}
+                {crop.sourceDims.height} px • {formatFileSize(crop.file.size)}
+              </div>
             </div>
-            <div class={styles.activeFileMeta}>
-              {crop.sourceFormat?.toUpperCase() ?? 'JPG'} • {crop.sourceDims.width} ×{' '}
-              {crop.sourceDims.height} px • {formatFileSize(crop.file.size)}
-            </div>
-          </div>
-          <div class={styles.fileActionBtns}>
-            <label for={fileInputId} class={styles.changeFileBtn}>
-              Change
-            </label>
             <button
               type="button"
               class={styles.removeFileBtn}
@@ -96,16 +92,14 @@ function UploadSection({
               ✕
             </button>
           </div>
+          <label for={fileInputId} class={styles.uploadNewBtn}>
+            📁 Upload Another Image
+          </label>
         </div>
       ) : (
         <label class={styles.compactDropZone} for={fileInputId} data-compact-dropzone="">
-          <span class={styles.dropIcon} aria-hidden="true">
-            📁
-          </span>
-          <span class={styles.dropText}>
-            <strong>Choose image</strong> or drop here
-          </span>
-          <span class={styles.dropSub}>JPG, PNG, WebP up to 25 MB</span>
+          <span class={styles.uploadMainBtn}>📁 Upload Image</span>
+          <span class={styles.dropSub}>or drag & drop here (JPG, PNG, WebP up to 25 MB)</span>
         </label>
       )}
     </div>
@@ -234,11 +228,9 @@ function FormatOptionCards({ crop }: { crop: ReturnType<typeof useImageCrop> }) 
 
 function OutputFormatSection({
   idPrefix,
-  preset,
   crop,
 }: {
   idPrefix: string;
-  preset: ResolvedPreset;
   crop: ReturnType<typeof useImageCrop>;
 }) {
   return (
@@ -299,7 +291,7 @@ function OutputFormatSection({
           disabled={crop.phase === 'running'}
           data-crop-button=""
         >
-          {label(preset, 'fileTool.downloadCta')}
+          Crop Image
         </Button>
         <button type="button" class={styles.resetGhostBtn} onClick={crop.clearAll}>
           ↺ Reset Settings
@@ -331,7 +323,7 @@ export function ImageCropControls(props: ImageCropControlsProps) {
           lockRatio={lockRatio}
           onToggleLockRatio={onToggleLockRatio}
         />
-        <OutputFormatSection idPrefix={idPrefix} preset={preset} crop={crop} />
+        <OutputFormatSection idPrefix={idPrefix} crop={crop} />
       </div>
     </aside>
   );

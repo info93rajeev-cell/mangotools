@@ -169,7 +169,9 @@ async function handleLoadPalaceSample(
   clearOutcome();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   const sample = await createPalaceSample();
-  const fileObj = new File([sample.file.bytes], sample.file.name, { type: 'image/jpeg' });
+  const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
+    type: 'image/jpeg',
+  });
   const res = await inspectAndDecodeImage(fileObj);
   if (!res.ok) {
     s.setError(res.error);

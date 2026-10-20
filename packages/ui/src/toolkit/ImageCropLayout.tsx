@@ -1,14 +1,13 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
-import { Button } from '../primitives/Button.tsx';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { ImageCropCanvas } from './ImageCropCanvas.tsx';
 import { ImageCropControls } from './ImageCropControls.tsx';
 import { ImageCropResult } from './ImageCropResult.tsx';
 import styles from './imageCrop.module.css';
 import { defaultSelectionRect } from './imageWorkbenchGeometry.ts';
-import { label, messageFor } from './presentation.ts';
+import { messageFor } from './presentation.ts';
 import { useImageCrop } from './useImageCrop.ts';
 
 export interface ImageCropLayoutProps {
@@ -113,17 +112,6 @@ export function ImageCropLayout({
                   <dd class={styles.specValue}>~{estSizeKb} KB</dd>
                 </div>
               </dl>
-
-              <Button
-                variant="primary"
-                icon="download"
-                onClick={crop.runCrop}
-                loading={crop.phase === 'running'}
-                disabled={crop.phase === 'running'}
-                data-crop-button=""
-              >
-                {label(preset, 'fileTool.downloadCta')}
-              </Button>
 
               <div class={styles.privacyShield}>
                 <span>🔒</span>
