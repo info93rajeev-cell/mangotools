@@ -13,6 +13,7 @@ import {
 } from './imageFileInspection.ts';
 import type { AspectRatioPreset, PixelRect } from './imageWorkbenchGeometry.ts';
 import { applyAspectRatio, defaultSelectionRect } from './imageWorkbenchGeometry.ts';
+import { createPalaceSample, SAMPLE_HEIGHT, SAMPLE_WIDTH } from './samplePalaceImage.ts';
 
 export type CropOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
 export type { CropFile };
@@ -160,6 +161,23 @@ async function handleLoadFile(
   setPhase('idle');
 }
 
+async function handleLoadPalaceSample(
+  s: CropState,
+  clearOutcome: () => void,
+  setPhase: (p: FilePhase) => void,
+) {
+  clearOutcome();
+  if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+  const sample = await createPalaceSample();
+  s.setSourceDims({ width: SAMPLE_WIDTH, height: SAMPLE_HEIGHT });
+  s.setFile(sample.file);
+  s.setSourceFormat('jpg');
+  s.setImageSrc(sample.blobUrl);
+  s.setCropRectState({ x: 200, y: 0, width: 1200, height: 1200 });
+  s.setRatioState('1:1');
+  setPhase('idle');
+}
+
 async function handleRunCrop(
   s: CropState,
   cfg: {
@@ -199,43 +217,17 @@ async function handleRunCrop(
   }
 }
 
-export function useImageCrop(
+function createCropActions(
+  s: CropState,
   preset: ResolvedPreset,
   toolId: string,
+  resolvedFormat: 'jpg' | 'png' | 'webp',
+  runTokenRef: { current: number },
+  clearOutcome: () => void,
+  setPhase: (p: FilePhase) => void,
   notify: (msg: string) => void,
-  onPhase: (phase: FilePhase) => void,
 ) {
-  const s = useCropState();
-  const runTokenRef = useRef(0);
-  const setPhase = (p: FilePhase) => {
-    s.setPhaseState(p);
-    onPhase(p);
-  };
-  const clearOutcome = () => {
-    runTokenRef.current++;
-    s.setResult(null);
-    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
-    s.setResultUrl(null);
-    s.setError(null);
-    setPhase('idle');
-  };
-  const resolvedFormat: 'jpg' | 'png' | 'webp' =
-    s.outputFormat === 'same' ? (s.sourceFormat ?? 'jpg') : s.outputFormat;
-  const suggestedFileName = s.file
-    ? `${stripExt(s.customFileName.trim() || s.file.name)}-cropped.${resolvedFormat}`
-    : `cropped-image.${resolvedFormat}`;
-
-  useEffect(() => {
-    return () => {
-      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
-      if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
-    };
-  }, [s.imageSrc, s.resultUrl]);
-
   return {
-    ...s,
-    resolvedFormat,
-    suggestedFileName,
     clearAll: () => {
       if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
       s.setImageSrc(null);
@@ -244,6 +236,7 @@ export function useImageCrop(
       s.setCustomFileName('');
       clearOutcome();
     },
+    loadPalaceSample: () => handleLoadPalaceSample(s, clearOutcome, setPhase),
     loadFile: (f: File) => handleLoadFile(f, s, clearOutcome, setPhase),
     setCropRect: (next: PixelRect) => {
       s.setCropRectState(next);
@@ -278,5 +271,63 @@ export function useImageCrop(
       });
     },
     downloadCurrentResult: () => s.result && downloadCropResult(s.result, toolId, notify),
+  };
+}
+
+export function useImageCrop(
+  preset: ResolvedPreset,
+  toolId: string,
+  notify: (msg: string) => void,
+  onPhase: (phase: FilePhase) => void,
+) {
+  const s = useCropState();
+  const runTokenRef = useRef(0);
+  const setPhase = (p: FilePhase) => {
+    s.setPhaseState(p);
+    onPhase(p);
+  };
+  const clearOutcome = () => {
+    runTokenRef.current++;
+    s.setResult(null);
+    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+    s.setResultUrl(null);
+    s.setError(null);
+    setPhase('idle');
+  };
+  const resolvedFormat: 'jpg' | 'png' | 'webp' =
+    s.outputFormat === 'same' ? (s.sourceFormat ?? 'jpg') : s.outputFormat;
+  const suggestedFileName = s.file
+    ? `${stripExt(s.customFileName.trim() || s.file.name)}-cropped.${resolvedFormat}`
+    : `cropped-image.${resolvedFormat}`;
+
+  useEffect(() => {
+    return () => {
+      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+      if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+    };
+  }, [s.imageSrc, s.resultUrl]);
+
+  useEffect(() => {
+    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
+      void handleLoadPalaceSample(s, clearOutcome, setPhase);
+    }
+  }, []);
+
+  const actions = createCropActions(
+    s,
+    preset,
+    toolId,
+    resolvedFormat,
+    runTokenRef,
+    clearOutcome,
+    setPhase,
+    notify,
+  );
+
+  return {
+    ...s,
+    resolvedFormat,
+    suggestedFileName,
+    ...actions,
   };
 }

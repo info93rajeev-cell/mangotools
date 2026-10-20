@@ -36,6 +36,9 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
         <div class="title-row">
           <h1>{category.name}</h1>
           <span class="count">{count}</span>
+          {category.slug === 'construction' && (
+            <span class="badge-suite">IS 1200 / SI Compliant · 100% In-Browser</span>
+          )}
         </div>
         <p>{category.summary}</p>
       </header>
@@ -122,6 +125,17 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
   .count {
     color: var(--color-text-subtle);
     font-size: var(--text-ui);
+  }
+  .badge-suite {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success, #059669);
+    border: 1px solid var(--color-border);
+    font-size: var(--text-caption);
+    font-weight: var(--weight-semibold);
   }
   .head p {
     color: var(--color-text-muted);

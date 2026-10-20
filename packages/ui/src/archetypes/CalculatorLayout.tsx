@@ -6,6 +6,7 @@ import { t } from '../strings/en.ts';
 import { AmazonErrorCorrection } from '../toolkit/AmazonErrorCorrection.tsx';
 import { AmazonManualProfitabilityResult } from '../toolkit/AmazonManualProfitabilityResult.tsx';
 import { AmazonConfigurationNotices, amazonErrorTarget } from '../toolkit/amazonFormFeedback.tsx';
+import { CivilDiagram } from '../toolkit/CivilDiagram.tsx';
 import { applyFieldEdit } from '../toolkit/fieldEffects.ts';
 import { OptionControls } from '../toolkit/OptionControls.tsx';
 import {
@@ -227,6 +228,9 @@ export function CalculatorLayout({
           />
         ) : null}
         <InputPanelHead actions={actions} />
+        {preset.id.startsWith('civil/') ? (
+          <CivilDiagram preset={preset} values={values} result={snapshot.result?.value} />
+        ) : null}
         {userPresets ? (
           <ToolPresetManager
             idPrefix={idPrefix}

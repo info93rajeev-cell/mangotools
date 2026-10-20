@@ -16,8 +16,8 @@ fields:
       - { value: m, labelKey: brickwork.unit.m }
       - { value: in, labelKey: brickwork.unit.in }
       - { value: ft, labelKey: brickwork.unit.ft }
-  wallLength: { labelKey: brickwork.field.wallLength, kind: number, required: true, order: 20, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
-  wallHeight: { labelKey: brickwork.field.wallHeight, kind: number, required: true, order: 30, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  wallLength: { labelKey: brickwork.field.wallLength, kind: number, required: true, default: "5", order: 20, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
+  wallHeight: { labelKey: brickwork.field.wallHeight, kind: number, required: true, default: "3", order: 30, width: half, helpKey: brickwork.help.wallDimension, helpMode: disclosure, convert: { unitField: unit, family: length } }
   quantity: { labelKey: brickwork.field.quantity, kind: number, required: true, default: 1, order: 40, width: half, helpKey: brickwork.help.quantity, helpMode: disclosure }
   wythes:
     labelKey: brickwork.field.wythes
@@ -65,7 +65,7 @@ fields:
   brickLength: { labelKey: brickwork.field.brickLength, kind: number, required: true, default: "190", order: 90, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
   brickHeight: { labelKey: brickwork.field.brickHeight, kind: number, required: true, default: "90", order: 100, width: half, helpKey: brickwork.help.brickDimension, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
   mortarJoint: { labelKey: brickwork.field.mortarJoint, kind: number, required: true, default: "10", order: 110, width: half, helpKey: brickwork.help.mortarJoint, helpMode: disclosure, convert: { unitField: brickUnit, family: length } }
-  wastagePercent: { labelKey: brickwork.field.wastagePercent, kind: percent, unit: "%", required: true, default: 0, order: 120, width: half, helpKey: brickwork.help.wastage, helpMode: disclosure }
+  wastagePercent: { labelKey: brickwork.field.wastagePercent, kind: percent, unit: "%", required: true, default: 5, order: 120, width: half, helpKey: brickwork.help.wastage, helpMode: disclosure }
 outputs:
   orderBricks: { labelKey: brickwork.out.orderBricks, format: number, order: 10, primary: true }
   baseBricks: { labelKey: brickwork.out.baseBricks, format: number, order: 20 }

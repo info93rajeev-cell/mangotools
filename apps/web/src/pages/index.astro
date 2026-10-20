@@ -1,14 +1,22 @@
 ---
-import { CardGrid, CategoryCard } from '@mangotools/ui/discovery/cards.tsx';
+import { CardGrid, CategoryCard, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
 import { SearchBox } from '@mangotools/ui/discovery/SearchBox.tsx';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import logoUrl from '../../../../assets/brand/logo.svg?url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { organization, webSite } from '../lib/structured-data.ts';
 import { COPY } from '../lib/copy.ts';
-import { HOME, visibleCategories } from '../lib/site.ts';
+import { HOME, visibleCategories, toolLinks } from '../lib/site.ts';
 
 const copy = COPY.home;
+const popularIds = [
+  'image-crop',
+  'brickwork-calculator',
+  'concrete-quantity-calculator',
+  'cbm-calculator',
+  'image-compress',
+];
+const popularTools = toolLinks(popularIds);
 ---
 
 <BaseLayout
@@ -27,6 +35,22 @@ const copy = COPY.home;
         <div class="hero-search">
           <SearchBox client:load idPrefix="home-search" />
         </div>
+      </section>
+
+      <section class="block" aria-labelledby="popular-tools-title">
+        <div class="block-head">
+          <h2 id="popular-tools-title">Popular Tools</h2>
+          <span class="trust-badge">🔒 100% Client-Side · Zero Uploads</span>
+        </div>
+        <CardGrid>
+          {
+            popularTools.map((tool) => (
+              <li>
+                <ToolCard tool={tool} />
+              </li>
+            ))
+          }
+        </CardGrid>
       </section>
 
       <section class="block" aria-labelledby="categories-title">
@@ -85,6 +109,22 @@ const copy = COPY.home;
   .block {
     display: grid;
     gap: var(--space-3);
+  }
+  .block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .trust-badge {
+    font-size: var(--text-caption);
+    font-weight: var(--weight-semibold);
+    color: var(--color-success, #059669);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
   }
   .trust {
     color: var(--color-text-muted);

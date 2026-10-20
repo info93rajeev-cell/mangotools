@@ -278,6 +278,12 @@ export function ToolIsland({
     ran.current = true;
     track('tool_run', { toolId });
   }, [snapshot.phase, toolId]);
+
+  useEffect(() => {
+    if (sampleId && !transferred && snapshot.phase === 'idle') {
+      void store.loadSample(sampleId);
+    }
+  }, [sampleId, transferred, store]);
   const standardCalculator = isStandardCalculator(archetype, preset.id);
   const { workspace, actionBar } = configureToolActions({
     toolId,

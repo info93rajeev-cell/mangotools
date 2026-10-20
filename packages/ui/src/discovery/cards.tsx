@@ -7,25 +7,55 @@ import styles from './cards.module.css';
 
 type Heading = 'h2' | 'h3';
 
+const TOOL_META: Record<string, { icon: string; tags: string[] }> = {
+  'brickwork-calculator': { icon: '🧱', tags: ['3D Wall Blueprint', 'Openings Deduction'] },
+  'concrete-quantity-calculator': { icon: '🏗️', tags: ['3D Slab & Column', 'Cement Bags'] },
+  'excavation-calculator': { icon: '⛏️', tags: ['3D Pit Cut', 'Swell Factor'] },
+  'tile-flooring-calculator': { icon: '🔲', tags: ['Floor & Wall Grid', 'Box Estimator'] },
+  'plaster-calculator': { icon: '🪵', tags: ['Wall & Ceiling', 'Mix Ratio'] },
+  'paint-calculator': { icon: '🎨', tags: ['Multi-Coat Area', 'Litres to Order'] },
+  'image-crop': { icon: '✂️', tags: ['3-Panel Visual Studio', 'Zero Uploads'] },
+  'image-compress': { icon: '📉', tags: ['3-Stage Card', 'Target KB Presets'] },
+  'passport-photo-resizer': { icon: '🛂', tags: ['Official Specs', '35×45mm / 2×2in'] },
+  'signature-resizer': { icon: '✍️', tags: ['Exam Specs', 'Ink Optimizer'] },
+  'image-resize': { icon: '📐', tags: ['Exact Pixels', 'Aspect Lock'] },
+  'cbm-calculator': { icon: '📦', tags: ['3D Freight Carton', 'CBM & CFT'] },
+  'container-loading-calculator': { icon: '🚢', tags: ['20ft & 40ft HQ', 'Pallet Space'] },
+  'gst-calculator': { icon: '💰', tags: ['CGST & SGST', 'Instant Invoicing'] },
+  'amazon-india-seller-fee-profit-estimator': {
+    icon: '🛒',
+    tags: ['FBA & Easy Ship', 'Profit Margin'],
+  },
+};
+
 export interface ToolCardProps {
   tool: ToolLink;
   heading?: Heading;
 }
 
 export function ToolCard({ tool, heading: H = 'h3' }: ToolCardProps) {
+  const meta = TOOL_META[tool.id];
   return (
     <article class={styles.card} data-tool-card={tool.id}>
       <H class={styles.title}>
+        {meta?.icon && (
+          <span class={styles.toolIcon} aria-hidden="true">
+            {meta.icon}
+          </span>
+        )}
         <a class={styles.link} href={tool.url}>
           {tool.name}
         </a>
       </H>
       <p class={styles.summary}>{tool.summary}</p>
-      {tool.professional ? (
-        <div class={styles.meta}>
-          <Badge tone="accent">{t('card.pro')}</Badge>
-        </div>
-      ) : null}
+      <div class={styles.metaRow}>
+        {meta?.tags.map((tag) => (
+          <span key={tag} class={styles.tagPill}>
+            {tag}
+          </span>
+        ))}
+        {tool.professional ? <Badge tone="accent">{t('card.pro')}</Badge> : null}
+      </div>
     </article>
   );
 }
