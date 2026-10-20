@@ -340,6 +340,157 @@
   white-space: nowrap;
 }
 
+/* ---------- Target Size (KB) Presets ---------- */
+.targetSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.targetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.targetLabel {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.modeToggle {
+  display: inline-flex;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.modeBtn {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 3px var(--space-2);
+  font-size: 0.72rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.modeBtnActive {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.targetPillsGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+@media (max-width: 600px) {
+  .targetPillsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .targetPillsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.targetPill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-1);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-width: 0;
+  text-align: center;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.targetPill:hover {
+  border-color: var(--color-border-input);
+}
+
+.targetPillActive {
+  border-color: var(--color-accent);
+  background: rgba(255, 176, 0, 0.08);
+}
+
+:root[data-theme="dark"] .targetPillActive {
+  background: rgba(255, 176, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .targetPillActive {
+    background: rgba(255, 176, 0, 0.12);
+  }
+}
+
+.targetPillValue {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.targetPillHint {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+.customInputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  min-width: 0;
+}
+
+.customInputLabel {
+  font-size: var(--text-caption);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.customInput {
+  max-width: 7rem;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-caption);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.customUnit {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
 .sliderSection {
   display: flex;
   flex-direction: column;

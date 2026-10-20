@@ -20,6 +20,8 @@ export * from './strings/en.ts';
 export * from './toolkit/ActionBar.tsx';
 export * from './toolkit/ImageCompressLayout.tsx';
 export * from './toolkit/ImageCompressResult.tsx';
+export * from './toolkit/ImageCompressSettings.tsx';
+export * from './toolkit/ImageCompressStageOne.tsx';
 export * from './toolkit/ImageCropLayout.tsx';
 export * from './toolkit/ImageWorkbench.tsx';
 export * from './toolkit/imageWorkbenchGeometry.ts';
