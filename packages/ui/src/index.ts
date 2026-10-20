@@ -23,6 +23,7 @@ export * from './toolkit/ImageCompressResult.tsx';
 export * from './toolkit/ImageCompressSettings.tsx';
 export * from './toolkit/ImageCompressStageOne.tsx';
 export * from './toolkit/ImageCropLayout.tsx';
+export * from './toolkit/ImageResizeLayout.tsx';
 export * from './toolkit/ImageWorkbench.tsx';
 export * from './toolkit/imageWorkbenchGeometry.ts';
 export * from './toolkit/presentation.ts';
