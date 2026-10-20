@@ -95,9 +95,22 @@ function ReadyCockpit({ resize }: { resize: UseImageResizeReturn }) {
       </div>
 
       <div class={styles.previewThumbContainer}>
-        <div style={{ color: 'var(--color-text-muted)', fontSize: '24px' }}>
-          {hasFile ? '🖼️' : '⏳'}
-        </div>
+        {hasFile && resize.imageSrc ? (
+          <div
+            role="presentation"
+            aria-hidden="true"
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${resize.imageSrc})`,
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+        ) : (
+          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Image</div>
+        )}
       </div>
 
       <table class={styles.metricsTable} aria-label="Target Resize Specifications">

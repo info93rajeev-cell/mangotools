@@ -340,6 +340,12 @@ export function useImageResize(
     };
   }, []);
 
+  useEffect(() => {
+    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
+      void handleSample(s, invalidate);
+    }
+  }, []);
+
   const actions = useResizeActions(s, invalidate, preset, toolId, onPhase, notify);
 
   return {
