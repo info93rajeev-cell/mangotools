@@ -23,6 +23,7 @@ import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { ImageCompressLayout } from './ImageCompressLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
+import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -45,11 +46,25 @@ function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
   return <Comp {...props} />;
 }
 
+function DynamicImageFormatConverterLayout(props: ImageFormatConverterLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageFormatConverterLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageFormatConverterLayout.tsx').then((m) => {
+      setComp(() => m.ImageFormatConverterLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
 const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
 const IMAGE_RESIZE_PRESET_ID = 'image/resize';
+const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -195,6 +210,17 @@ function renderCustomFileLayout({ idPrefix, toolId, preset, notify, onFilePhase 
   if (preset.id === IMAGE_RESIZE_PRESET_ID) {
     return (
       <DynamicImageResizeLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
+    return (
+      <DynamicImageFormatConverterLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}
