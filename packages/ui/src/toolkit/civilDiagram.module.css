@@ -92,6 +92,15 @@
   display: block;
 }
 
+.realisticDiagramImg {
+  max-width: 100%;
+  max-height: 175px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
 .diagramFooter {
   display: flex;
   justify-content: center;
