@@ -92,9 +92,63 @@ function ResultRows({ rows }: { rows: OutputRow[] }) {
   );
 }
 
-function ResultContent({ rows, amazon }: { rows: OutputRow[]; amazon: ToolSnapshot['result'] }) {
+function CivilResultCards({ rows }: { rows: OutputRow[] }) {
+  const [primary, ...rest] = rows;
+  if (!primary) return null;
+  const cards = [primary, ...rest.slice(0, 3)];
+  const remaining = rest.slice(3);
+
+  return (
+    <div class={styles.civilResultWrapper}>
+      <div class={styles.kpiGrid}>
+        {cards.map((card, i) => (
+          <div
+            key={card.key}
+            class={styles.kpiCard}
+            data-primary={String(i === 0)}
+            data-primary-result={i === 0 ? '' : undefined}
+            aria-live={i === 0 ? 'polite' : undefined}
+            data-output={card.key}
+          >
+            <span class={styles.kpiLabel}>{card.label}</span>
+            <output
+              class={styles.kpiValue}
+              data-raw-value={card.rawValue !== undefined ? String(card.rawValue) : undefined}
+            >
+              {card.value}
+            </output>
+          </div>
+        ))}
+      </div>
+      {remaining.length > 0 ? (
+        <dl class={styles.rows}>
+          {remaining.map((row) => (
+            <div key={row.key} class={styles.row} data-output={row.key}>
+              <dt>{row.label}</dt>
+              <dd data-raw-value={row.rawValue !== undefined ? String(row.rawValue) : undefined}>
+                {row.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+    </div>
+  );
+}
+
+function ResultContent({
+  preset,
+  rows,
+  amazon,
+}: {
+  preset: ResolvedPreset;
+  rows: OutputRow[];
+  amazon: ToolSnapshot['result'];
+}) {
   if (amazon) return <AmazonManualProfitabilityResult result={amazon} />;
-  return rows.length > 0 ? <ResultRows rows={rows} /> : null;
+  if (rows.length === 0) return null;
+  if (preset.id.startsWith('civil/')) return <CivilResultCards rows={rows} />;
+  return <ResultRows rows={rows} />;
 }
 
 interface ResultSectionProps {
@@ -167,7 +221,7 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
       data-result-panel=""
     >
       <ResultPanelHead idPrefix={idPrefix} actions={actions} />
-      <ResultContent rows={rows} amazon={amazon} />
+      <ResultContent preset={preset} rows={rows} amazon={amazon} />
       <AmazonConfigurationNotices id={preset.id} values={values} active={phase === 'result'} />
       {!amazon && rows.length === 0 && phase !== 'error' ? (
         <p class={styles.placeholder}>{placeholder}</p>

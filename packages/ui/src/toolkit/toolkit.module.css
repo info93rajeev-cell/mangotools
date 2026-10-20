@@ -432,3 +432,44 @@
     display: none;
   }
 }
+
+/* ---------- Civil KPI Metric Cards (ChatGPT Layout) ---------- */
+.civilResultWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.kpiCard {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpiCard[data-primary="true"] {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface, #ffffff));
+}
+
+.kpiLabel {
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.kpiValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-success, #059669);
+  line-height: 1.1;
+}
