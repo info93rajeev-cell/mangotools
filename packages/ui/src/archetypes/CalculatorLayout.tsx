@@ -221,6 +221,9 @@ function ResultSection({ idPrefix, preset, snapshot, fieldError, actions }: Resu
       data-result-panel=""
     >
       <ResultPanelHead idPrefix={idPrefix} actions={actions} />
+      {preset.id.startsWith('civil/') ? (
+        <CivilDiagram preset={preset} values={values} result={snapshot.result?.value} />
+      ) : null}
       <ResultContent preset={preset} rows={rows} amazon={amazon} />
       <AmazonConfigurationNotices id={preset.id} values={values} active={phase === 'result'} />
       {!amazon && rows.length === 0 && phase !== 'error' ? (
@@ -282,9 +285,6 @@ export function CalculatorLayout({
           />
         ) : null}
         <InputPanelHead actions={actions} />
-        {preset.id.startsWith('civil/') ? (
-          <CivilDiagram preset={preset} values={values} result={snapshot.result?.value} />
-        ) : null}
         {userPresets ? (
           <ToolPresetManager
             idPrefix={idPrefix}
