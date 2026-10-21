@@ -1,0 +1,6 @@
+id: 007-shipment-partial-weight
+preset: logistics/cbm-shipment
+source: { type: hand-verified, citation: "Hand arithmetic: 0.06 × 10 + 1 = 1.6 m³; × 35.3146667 = 56.50346672 ft³; known weight 10 × 2 = 20 kg; one piece unweighted." }
+input:
+  packages: [{ length: "50", width: "40", height: "30", unit: cm, quantity: "10", weightPerItem: "2", weightUnit: kg }, { length: "1", width: "1", height: "1", unit: m, quantity: "1" }]
+expected: { totalCbm: "1.600", totalCft: "56.503", totalPieces: "11", knownPackedWeightKg: "20.000", weightCoverage: partial }

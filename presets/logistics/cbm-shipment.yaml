@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+# #213 activation. The dedicated workspace owns row UI and calls optional cost separately.
+presetVersion: 1
+id: logistics/cbm-shipment
+version: 0.1.0
+operation: logistics.cbm.shipment@1
+params: { decimals: 3, rounding: half-up }
+fields:
+  packages:
+    labelKey: shipment.packages
+    kind: rows
+    order: 10
+    required: true
+    rows:
+      minRows: 1
+      maxRows: 50
+      columns:
+        length: { labelKey: shipment.length, kind: number, required: true }
+        width: { labelKey: shipment.width, kind: number, required: true }
+        height: { labelKey: shipment.height, kind: number, required: true }
+        unit:
+          labelKey: shipment.unit
+          kind: enum
+          default: cm
+          options: [{ value: mm }, { value: cm }, { value: m }, { value: in }, { value: ft }]
+        quantity: { labelKey: shipment.quantity, kind: number, required: true, default: "1" }
+        weightPerItem: { labelKey: shipment.weight, kind: number }
+        weightUnit:
+          labelKey: shipment.weightUnit
+          kind: enum
+          default: kg
+          options: [{ value: kg }, { value: g }, { value: lb }]
+      defaultRows:
+        - { length: "50", width: "40", height: "30", unit: cm, quantity: "100" }
+  decimalPlaces:
+    labelKey: shipment.precision
+    kind: enum
+    order: 20
+    default: "3"
+    options: [{ value: "2" }, { value: "3" }, { value: "4" }]
+outputs:
+  totalCbm: { labelKey: shipment.totalCbm, format: number, primary: true, order: 10 }
+  totalCft: { labelKey: shipment.totalCft, format: number, order: 20 }
+  totalPieces: { labelKey: shipment.totalPieces, format: number, order: 30 }
+  knownPackedWeightKg: { labelKey: shipment.knownWeight, format: number, order: 40 }
+samples:
+  carton-50-40-30-x100:
+    titleKey: shipment.sample
+    input:
+      packages: [{ length: "50", width: "40", height: "30", unit: cm, quantity: "100" }]
+      decimalPlaces: "3"
+  weighted-mixed:
+    titleKey: shipment.mixedSample
+    input:
+      packages:
+        - { length: "50", width: "40", height: "30", unit: cm, quantity: "10", weightPerItem: "2", weightUnit: kg }
+        - { length: "1", width: "1", height: "1", unit: m, quantity: "1" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
+strings:
+  en:
+    shipment.packages: Shipment Packages
+    shipment.length: Length
+    shipment.width: Width
+    shipment.height: Height
+    shipment.unit: Dimension unit
+    shipment.quantity: Quantity
+    shipment.weight: Weight / item
+    shipment.weightUnit: Weight unit
+    shipment.precision: Decimal places
+    shipment.totalCbm: Total CBM (m³)
+    shipment.totalCft: Total Cubic Feet (ft³)
+    shipment.totalPieces: Total Pieces
+    shipment.knownWeight: Known packed weight (kg)
+    shipment.sample: 100 packages of 50 × 40 × 30 cm
+    shipment.mixedSample: Two package types with partial weight coverage
+    work.cbmShipment.perPiece: "Package volume in m³: {result} (exact)."
+    work.cbmShipment.rowTotal: "Package type volume: {result} m³ (exact)."
+    work.cbmShipment.rowWeight: "Known package type weight: {result} kg."
+    work.cbmShipment.total: "Shipment volume: {result} m³ (exact)."
+    work.cbmShipment.cft: "Shipment volume: {result} ft³ (exact)."
+    work.cbmShipment.pieces: "Total pieces: {result}."
+    work.cbmShipment.knownWeight: "Known packed weight: {result} kg."

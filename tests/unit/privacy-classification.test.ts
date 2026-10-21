@@ -33,6 +33,7 @@ describe('privacy.dataClass classification', () => {
     const personal = [
       'amazon-india-seller-fee-profit-estimator',
       'base64-encode-decode',
+      'cbm-calculator',
       'csv-to-json',
       'export-commercial-invoice-generator',
       'export-packing-list-generator',

@@ -1,0 +1,6 @@
+id: 006-shipment-sample
+preset: logistics/cbm-shipment
+source: { type: hand-verified, citation: "Hand arithmetic: 0.5 × 0.4 × 0.3 × 100 = 6 m³; × 35.3146667 = 211.8880002 ft³." }
+input:
+  packages: [{ length: "50", width: "40", height: "30", unit: cm, quantity: "100" }]
+expected: { totalCbm: "6.000", totalCft: "211.888", totalPieces: "100", weightCoverage: none }
