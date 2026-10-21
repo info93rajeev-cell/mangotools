@@ -1,0 +1,6 @@
+id: 010-piece-heavier-than-payload
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "One piece of 30 t exceeds a 28,000 kg payload on its own, so it can never load" }
+input: { packages: [{ length: "200", width: "200", height: "200", unit: cm, quantity: "1", weight: "30000", weightUnit: kg }], containerType: 20gp, maxPayload: "28000", payloadUnit: kg }
+expected: {status: "none", containersRequired: "0", loadedPieces: "0", packages: [{index: 0, description: "", length: "200", width: "200", height: "200", unit: "cm", requested: "1", loaded: "0", unloaded: "1", unitVolume: "8.000", requestedVolume: "8.000", loadedVolume: "0.000", unitWeight: "30000.00", loadedWeight: "0.00", unloadedReason: "weight-exceeds-payload", byContainer: []}]}
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_LOAD_PARTIAL]

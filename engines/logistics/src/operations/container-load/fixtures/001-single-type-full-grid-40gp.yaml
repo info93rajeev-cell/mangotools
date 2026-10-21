@@ -1,0 +1,6 @@
+id: 001-single-type-full-grid-40gp
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "60×40×40 cm in a 40 ft standard (approximate internal 1203.2×235.2×239.3 cm, TASK-003C decision 13): floor(1203.2/60)=20, floor(235.2/40)=5, floor(239.3/40)=5 → one 20×5×5 block of 500 at the back-left floor corner. 500 × 0.096 m³ = 48 m³; 48 ÷ 67.720138752 × 100 = 70.88… → 70.9%" }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "500" }], containerType: 40gp }
+expected: { status: complete, containersRequired: "1", totalPieces: "500", loadedPieces: "500", unloadedPieces: "0", containerVolume: "67.720", requestedVolume: "48.000", loadedVolume: "48.000", volumeUtilizationPercent: "70.9", weightStatus: none, loadedWeight: null, blocks: [{ container: 0, package: 0, orientation: lwh, x: "0", y: "0", z: "0", pieceLength: "60", pieceWidth: "40", pieceHeight: "40", countX: 20, countY: 5, countZ: 5, count: 500 }] }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

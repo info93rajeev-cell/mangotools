@@ -1,0 +1,6 @@
+id: 002-exact-fit-custom
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "Custom 120×100×100 cm container, 8 pieces of 60×50×50 cm: 2×2×2 fills it exactly; 8 × 0.15 = 1.2 m³ = 100% of 1.2 m³" }
+input: { packages: [{ length: "60", width: "50", height: "50", unit: cm, quantity: "8" }], containerType: custom, containerUnit: cm, containerLength: "120", containerWidth: "100", containerHeight: "100" }
+expected: { status: complete, containersRequired: "1", loadedPieces: "8", containerVolume: "1.200", volumeUtilizationPercent: "100.0", blocks: [{ container: 0, package: 0, orientation: lwh, x: "0", y: "0", z: "0", pieceLength: "60", pieceWidth: "50", pieceHeight: "50", countX: 2, countY: 2, countZ: 2, count: 8 }] }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

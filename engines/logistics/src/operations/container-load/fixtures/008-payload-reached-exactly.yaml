@@ -1,0 +1,6 @@
+id: 008-payload-reached-exactly
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "56 pieces × 500 kg = 28,000 kg = the 28,000 kg payload exactly; geometrically 11×4×4 = 704 would fit, so weight is the limit but nothing is left over: one container, weight utilization 100.0%" }
+input: { packages: [{ length: "50", width: "50", height: "50", unit: cm, quantity: "56", weight: "500", weightUnit: kg }], containerType: 20gp, maxPayload: "28000", payloadUnit: kg }
+expected: {status: "complete", containersRequired: "1", loadedPieces: "56", weightStatus: "complete", loadedWeight: "28000.00", maxPayload: "28000.00", payloadCapacity: "28000.00", weightUtilizationPercent: "100.0", containers: [{index: 0, pieces: "56", loadedVolume: "7.000", volumeUtilizationPercent: "21.1", loadedWeight: "28000.00", weightUtilizationPercent: "100.0", weightLimitReached: false, spaceLimitReached: false}]}
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

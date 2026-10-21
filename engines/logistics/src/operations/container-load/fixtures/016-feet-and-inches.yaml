@@ -1,0 +1,6 @@
+id: 016-feet-and-inches
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "2 ft cubes (60.96 cm) in a custom 48 in cube (121.92 cm): exactly 2×2×2 = 8, 100%; 1 in = 2.54 cm and 1 ft = 30.48 cm exactly" }
+input: { packages: [{ length: "2", width: "2", height: "2", unit: ft, quantity: "8" }], containerType: custom, containerUnit: in, containerLength: "48", containerWidth: "48", containerHeight: "48" }
+expected: { status: complete, containerLength: "121.92", loadedPieces: "8", volumeUtilizationPercent: "100.0", blocks: [{ container: 0, package: 0, orientation: lwh, x: "0", y: "0", z: "0", pieceLength: "60.96", pieceWidth: "60.96", pieceHeight: "60.96", countX: 2, countY: 2, countZ: 2, count: 8 }] }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]
