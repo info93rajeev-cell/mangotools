@@ -1,0 +1,27 @@
+{
+  "id": "003-feet-and-pounds",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "International yard and pound (1959): foot 0.3048 m and pound 0.45359237 kg exactly; cube foot and multiply by two."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "1",
+        "width": "1",
+        "height": "1",
+        "unit": "ft",
+        "quantity": "2",
+        "weightPerItem": "1",
+        "weightUnit": "lb"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.056633693184",
+    "totalCft": "2.000",
+    "knownPackedWeightKgExact": "0.90718474",
+    "weightCoverage": "complete"
+  }
+}

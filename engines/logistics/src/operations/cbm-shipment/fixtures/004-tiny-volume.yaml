@@ -1,0 +1,27 @@
+{
+  "id": "004-tiny-volume",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "SI millimetre 0.001 m; cube = 0.000000001 m3."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "1",
+        "width": "1",
+        "height": "1",
+        "unit": "mm",
+        "quantity": "1"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.000000001",
+    "totalCbm": "0.000"
+  },
+  "expectedWarnings": [
+    "LOGISTICS_VOLUME_ROUNDS_TO_ZERO",
+    "LOGISTICS_VOLUME_ROUNDS_TO_ZERO"
+  ]
+}

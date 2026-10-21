@@ -1,0 +1,23 @@
+{
+  "id": "008-inches",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "International inch exactly 0.0254 m: (12 x 0.0254)^3 = 0.028316846592 m3; approved CFT factor rounds to 1.000."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "12",
+        "width": "12",
+        "height": "12",
+        "unit": "in",
+        "quantity": "1"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.028316846592",
+    "totalCft": "1.000"
+  }
+}

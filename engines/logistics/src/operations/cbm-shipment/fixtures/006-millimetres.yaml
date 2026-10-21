@@ -1,0 +1,25 @@
+{
+  "id": "006-millimetres",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "SI millimetre = 0.001 m: 600 x 400 x 400 mm x 10 = 0.96 m3."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "600",
+        "width": "400",
+        "height": "400",
+        "unit": "mm",
+        "quantity": "10"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.96",
+    "totalPieces": "10",
+    "weightCoverage": "none",
+    "knownPackedWeightKgExact": null
+  }
+}

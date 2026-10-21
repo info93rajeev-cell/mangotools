@@ -1,0 +1,38 @@
+{
+  "id": "005-mixed-partial-weight",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Hand arithmetic: 0.6 x 0.4 x 0.4 x 10 + 1.2 x 1 x 1.2 x 2 = 3.84 m3; CFT factor 35.3146667. Known weight 5 x 10 = 50 kg for 10 of 12 pieces."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "60",
+        "width": "40",
+        "height": "40",
+        "unit": "cm",
+        "quantity": "10",
+        "weightPerItem": "5",
+        "weightUnit": "kg"
+      },
+      {
+        "length": "1.2",
+        "width": "1",
+        "height": "1.2",
+        "unit": "m",
+        "quantity": "2"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "3.84",
+    "totalCbm": "3.840",
+    "totalCftExact": "135.608320128",
+    "totalPieces": "12",
+    "knownPackedWeightKgExact": "50",
+    "weightCoverage": "partial",
+    "weightedPieces": "10",
+    "weightedRowCount": 1
+  }
+}
