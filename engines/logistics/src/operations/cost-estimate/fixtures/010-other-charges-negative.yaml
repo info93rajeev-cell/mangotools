@@ -1,0 +1,5 @@
+id: 010-other-charges-negative
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "Negative other charges are rejected" }
+input: { rateBasis: per-container, quantity: "1", rate: "100", otherCharges: "-1", currency: INR }
+expectedError: { code: LOGISTICS_AMOUNT_NEGATIVE, path: otherCharges }

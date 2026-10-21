@@ -1,0 +1,5 @@
+id: 011-minimum-negative
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "A negative minimum charge is rejected" }
+input: { rateBasis: per-container, quantity: "1", rate: "100", minimumCharge: "-5", currency: INR }
+expectedError: { code: LOGISTICS_AMOUNT_NEGATIVE, path: minimumCharge }

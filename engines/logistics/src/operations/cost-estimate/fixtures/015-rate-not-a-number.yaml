@@ -1,0 +1,5 @@
+id: 015-rate-not-a-number
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "Text that is not a number is rejected" }
+input: { rateBasis: per-cbm, quantity: "1", rate: "abc", currency: INR }
+expectedError: { code: LOGISTICS_INVALID_NUMBER, path: rate }

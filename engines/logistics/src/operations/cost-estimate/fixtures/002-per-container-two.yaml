@@ -1,0 +1,6 @@
+id: 002-per-container-two
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "2 containers × 145,000 = 290,000; + other charges 12,000 = 302,000 (founder example)" }
+input: { rateBasis: per-container, quantity: "2", rate: "145000", otherCharges: "12000", currency: INR }
+expected: { quantity: "2", baseCharge: "290000.00", minimumApplied: false, freightCharge: "290000.00", otherCharges: "12000.00", estimatedTotal: "302000.00" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

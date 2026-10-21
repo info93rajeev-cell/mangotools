@@ -1,0 +1,5 @@
+id: 014-rate-too-many-decimals
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "Money inputs use two decimal places" }
+input: { rateBasis: per-cbm, quantity: "1", rate: "10.555", currency: INR }
+expectedError: { code: LOGISTICS_TOO_MANY_DECIMALS, path: rate, details: { max: 2 } }

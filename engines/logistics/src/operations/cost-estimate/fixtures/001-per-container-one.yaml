@@ -1,0 +1,6 @@
+id: 001-per-container-one
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "1 container × 145,000 = 145,000; + other charges 12,000 = 157,000 (founder example)" }
+input: { rateBasis: per-container, quantity: "1", rate: "145000", otherCharges: "12000", currency: INR }
+expected: { rateBasis: per-container, currency: INR, quantity: "1", rate: "145000.00", baseCharge: "145000.00", minimumCharge: null, minimumApplied: false, freightCharge: "145000.00", otherCharges: "12000.00", estimatedTotal: "157000.00" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

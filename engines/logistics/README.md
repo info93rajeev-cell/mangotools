@@ -9,6 +9,7 @@ decimal strings via `engines/numeric`.
 | `logistics.cbm.compute@1` | CBM per carton, total CBM and cubic feet from carton dimensions (cm, m, mm or inch) and quantity |
 | `logistics.weight.chargeable@1` | Volumetric, actual and chargeable weight (kg) per package and in total, and which one is billed |
 | `logistics.container.fit@1` | Volume estimate and a simple axis-aligned loading grid for one carton type inside a 20 ft, 40 ft, 40 ft high-cube or custom container |
+| `logistics.cost.estimate@1` | Shared freight-cost estimate from the user's own rate: per m³ or per container, with an optional minimum and other charges |
 | `logistics.pallet.fit@1` | Cartons per layer, layers, cartons per pallet and pallets required, from a simple axis-aligned footprint fit on a Euro, US or custom pallet |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
@@ -17,6 +18,15 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.5.1 — `logistics.cost.estimate@1`, the shared Logistics freight-cost model (founder-approved
+  rate bases `per-cbm` and `per-container`; per-kg and per-pallet are out of scope; Phase 1
+  currencies INR, USD, EUR, GBP and AED, never converted). The formula and its notices live once in
+  `src/lib/freight-cost.ts` (`max(quantity × rate, minimum) + other charges`, exact decimals, each
+  output rounded once) so other Logistics operations reuse it rather than re-implementing it.
+  New codes `LOGISTICS_AMOUNT_NEGATIVE`, `LOGISTICS_AMOUNT_TOO_LARGE`,
+  `LOGISTICS_RATE_QUANTITY_NOT_POSITIVE`, `LOGISTICS_CONTAINER_COUNT_NOT_WHOLE`,
+  `LOGISTICS_RATE_QUANTITY_TOO_LARGE`, `LOGISTICS_COST_USER_RATE` and
+  `LOGISTICS_COST_MINIMUM_APPLIED`. Existing operations are unchanged.
 - 0.5.0 - add `logistics.cbm.shipment@1` with bounded ordered package rows, exact CBM/CFT
   aggregation, optional kg/g/lb packed weights, explicit weight coverage and typed row errors.
   Shipment feet support is isolated; legacy CBM, weight, container and pallet contracts are unchanged.

@@ -1,0 +1,5 @@
+id: 009-rate-missing
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "The rate is required" }
+input: { rateBasis: per-cbm, quantity: "1", currency: INR }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: rate }

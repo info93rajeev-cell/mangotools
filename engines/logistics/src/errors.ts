@@ -37,4 +37,13 @@ export const messages: Readonly<Record<string, string>> = {
   LOGISTICS_PALLET_DIMENSIONS_VARY:
     'Pallet dimensions, safe stack height and load capacity vary by pallet type, condition, packaging, warehouse practice and carrier requirements.',
   LOGISTICS_PALLET_MULTIPLE_PALLETS_REQUIRED: 'This quantity needs more than one pallet.',
+  LOGISTICS_AMOUNT_NEGATIVE: 'This amount cannot be negative.',
+  LOGISTICS_AMOUNT_TOO_LARGE: 'Enter at most {max}.',
+  LOGISTICS_RATE_QUANTITY_NOT_POSITIVE: 'The quantity must be greater than zero.',
+  LOGISTICS_CONTAINER_COUNT_NOT_WHOLE: 'The number of containers must be a whole number.',
+  LOGISTICS_RATE_QUANTITY_TOO_LARGE: 'Enter a quantity of at most {max}.',
+  LOGISTICS_COST_USER_RATE:
+    'This estimate uses the rate you entered. Actual freight charges may depend on carrier, route, surcharges, taxes and other terms.',
+  LOGISTICS_COST_MINIMUM_APPLIED:
+    'The minimum charge is higher than quantity × rate, so the minimum charge is used.',
 };
