@@ -18,6 +18,7 @@ const FORMAT_OPTIONS: { id: ResizeOutputFormat; name: string; desc: string }[] =
   { id: 'jpg', name: 'JPG', desc: 'Photo' },
   { id: 'png', name: 'PNG', desc: 'Lossless' },
   { id: 'webp', name: 'WebP', desc: 'Small' },
+  { id: 'pdf', name: 'PDF', desc: 'Document' },
 ];
 
 function UploadSection({
@@ -56,29 +57,22 @@ function UploadSection({
         }}
       />
 
-      {!resize.file ? (
-        <div class={styles.uploadRow}>
-          <label for={fileInputId} class={styles.uploadMainBtn}>
-            📁 Upload Image
-          </label>
+      <div class={styles.uploadRow}>
+        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
+          📁 Upload Image
+        </label>
+      </div>
+
+      {resize.file ? (
+        <div class={styles.activeFileBadge}>
+          <span class={styles.activeFileName} title={resize.file?.name}>
+            {resize.file?.name}
+          </span>
+          <span class={styles.activeFileMeta}>
+            {resize.sourceDims.width} × {resize.sourceDims.height} px
+          </span>
         </div>
       ) : (
-        <div class={styles.activeFileWrapper}>
-          <div class={styles.activeFileBadge}>
-            <span class={styles.activeFileName} title={resize.file?.name}>
-              {resize.file?.name}
-            </span>
-            <span class={styles.activeFileMeta}>
-              {resize.sourceDims.width} × {resize.sourceDims.height} px
-            </span>
-          </div>
-          <label for={fileInputId} class={styles.uploadNewBtn}>
-            📁 Upload Another Image
-          </label>
-        </div>
-      )}
-
-      {!resize.file && (
         <label
           for={fileInputId}
           class={styles.compactDropZone}
@@ -214,6 +208,7 @@ function FormatSection({ idPrefix, resize }: { idPrefix: string; resize: UseImag
         <option value="jpg">JPG</option>
         <option value="png">PNG</option>
         <option value="webp">WebP</option>
+        <option value="pdf">PDF</option>
       </select>
 
       <fieldset class={styles.formatGrid} style={{ border: 'none', padding: 0, margin: 0 }}>

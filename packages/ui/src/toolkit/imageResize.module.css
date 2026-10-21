@@ -86,24 +86,25 @@
 }
 
 .uploadMainBtn {
-  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--color-bg);
   color: var(--color-text);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 5px 10px;
-  font-size: var(--text-caption);
-  font-weight: var(--weight-semibold);
+  padding: 6px 12px;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .uploadMainBtn:hover {
-  background: var(--color-surface-hover, rgba(0, 0, 0, 0.05));
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
   border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .compactDropZone {
@@ -281,8 +282,8 @@
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
 }
 
 .formatCard {

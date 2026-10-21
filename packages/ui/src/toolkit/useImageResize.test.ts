@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { ok } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -187,5 +189,53 @@ describe('useImageResize Hook', () => {
     const completedHook = useImageResize(dummyPreset, 'image-resize', notify, onPhase);
     completedHook.downloadResult();
     expect(mockDownloadBytes).toHaveBeenCalled();
+  });
+
+  it('resizes to PDF format and downloads .pdf', async () => {
+    const notify = vi.fn();
+    const onPhase = vi.fn();
+
+    const sampleJpg = readFileSync(
+      join(process.cwd(), 'tools/image-format-converter/fixtures/files/sample.jpg'),
+    );
+
+    mockRun.mockResolvedValueOnce(
+      ok({
+        fileName: 'test-resized.png',
+        bytes: new Uint8Array(sampleJpg),
+        originalWidth: 1600,
+        originalHeight: 1200,
+        outputWidth: 800,
+        outputHeight: 600,
+        originalFileSize: 1000,
+        outputFileSize: 800,
+        sizeDifferenceBytes: 200,
+        sizeChangePercent: -20,
+        originalFormat: 'jpg',
+        outputFormat: 'png',
+      }),
+    );
+
+    hooks.values[0] = {
+      name: 'test.jpg',
+      bytes: new Uint8Array(sampleJpg),
+      size: sampleJpg.byteLength,
+    } as ResizeFile;
+    hooks.values[2] = { width: 1600, height: 1200 };
+    hooks.values[3] = 800;
+    hooks.values[4] = 600;
+    hooks.values[7] = 'pdf'; // outputFormat
+
+    hooks.stateIndex = 0;
+    hooks.refIndex = 0;
+    const hook = useImageResize(dummyPreset, 'image-resize', notify, onPhase);
+
+    await hook.executeResizeAndDownload();
+
+    expect(mockDownloadBytes).toHaveBeenCalledWith(
+      expect.any(Uint8Array),
+      'test-resized.pdf',
+      'application/pdf',
+    );
   });
 });

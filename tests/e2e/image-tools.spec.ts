@@ -53,6 +53,17 @@ test.describe('Image Resize', () => {
     expect(download.suggestedFilename()).toBe('My Photo.jpg');
   });
 
+  test('resizes the image to PDF and downloads .pdf', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output format').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-resized.pdf');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('pdf');
+  });
+
   test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
     await openTool(page, 'image-resize');
     const notAnImage = join(process.cwd(), 'tools/image-resize/manifest.yaml');

@@ -1,6 +1,7 @@
 import { err, type OpError, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import type { PDFImage } from 'pdf-lib';
 import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
@@ -11,8 +12,13 @@ import {
 } from './imageFileInspection.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 
-export type ResizeOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
+export type ResizeOutputFormat = 'same' | 'jpg' | 'png' | 'webp' | 'pdf';
 export type { ResizeFile };
+
+const FORMAT_MIME_MAP: Record<string, string> = {
+  ...MIME_MAP,
+  pdf: 'application/pdf',
+};
 
 export interface ImageResizeResultData {
   fileName: string;
@@ -40,7 +46,68 @@ interface ResizeRunConfig {
   customFileName: string;
 }
 
+async function convertResizedToPdf(
+  cfg: ResizeRunConfig,
+  resized: ImageResizeResultData,
+): Promise<Result<ImageResizeResultData>> {
+  try {
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.create();
+    doc.setCreationDate(new Date(0));
+    doc.setModificationDate(new Date(0));
+    let pdfImg: PDFImage;
+    try {
+      pdfImg = await doc.embedPng(resized.bytes);
+    } catch {
+      try {
+        const safeJpg =
+          resized.bytes.byteOffset === 0 &&
+          resized.bytes.buffer.byteLength === resized.bytes.byteLength
+            ? resized.bytes
+            : new Uint8Array(resized.bytes);
+        pdfImg = await doc.embedJpg(safeJpg);
+      } catch {
+        return err('IMAGE_RESIZE_FAILED');
+      }
+    }
+    const page = doc.addPage([pdfImg.width, pdfImg.height]);
+    page.drawImage(pdfImg, { x: 0, y: 0, width: pdfImg.width, height: pdfImg.height });
+    const pdfBytes = await doc.save();
+
+    const rawBase = cfg.customFileName.trim() || cfg.file.name.replace(/\.[^.]+$/, '');
+    const cleanBase = rawBase.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'image';
+    const fileName = `${cleanBase.replace(/-resized$/, '')}-resized.pdf`;
+
+    return ok({
+      fileName,
+      bytes: pdfBytes,
+      originalWidth: resized.originalWidth,
+      originalHeight: resized.originalHeight,
+      outputWidth: resized.outputWidth,
+      outputHeight: resized.outputHeight,
+      originalFileSize: cfg.file.size,
+      outputFileSize: pdfBytes.byteLength,
+      sizeDifferenceBytes: cfg.file.size - pdfBytes.byteLength,
+      sizeChangePercent: Math.round(((pdfBytes.byteLength - cfg.file.size) / cfg.file.size) * 100),
+      originalFormat: resized.originalFormat,
+      outputFormat: 'pdf',
+    });
+  } catch {
+    return err('IMAGE_RESIZE_FAILED');
+  }
+}
+
 async function executeResizeWorker(cfg: ResizeRunConfig): Promise<Result<ImageResizeResultData>> {
+  if (cfg.outputFormat === 'pdf') {
+    const pngConfig: ResizeRunConfig = {
+      ...cfg,
+      outputFormat: 'png',
+    };
+    const outcome = await executeResizeWorker(pngConfig);
+    if (!outcome.ok) return outcome;
+    return convertResizedToPdf(cfg, outcome.value);
+  }
+
   const input = {
     file: { name: cfg.file.name, bytes: cfg.file.bytes },
     targetWidth: Math.round(cfg.targetWidth),
@@ -218,7 +285,7 @@ async function handleRun(
     outcome.value.bytes.byteOffset,
     outcome.value.bytes.byteOffset + outcome.value.bytes.byteLength,
   ) as ArrayBuffer;
-  const mime = MIME_MAP[outcome.value.outputFormat] ?? 'image/jpeg';
+  const mime = FORMAT_MIME_MAP[outcome.value.outputFormat] ?? 'image/jpeg';
   s.setResultUrl(URL.createObjectURL(new Blob([safeBuffer], { type: mime })));
   s.setResult(outcome.value);
   s.setPhase('result');
@@ -237,7 +304,7 @@ async function handleRunAndDownload(
   if (s.error) return;
   const res = await handleRun(s, preset, toolId, onPhase, notify);
   if (!res) return;
-  downloadBytes(res.bytes, res.fileName, MIME_MAP[res.outputFormat] ?? 'image/jpeg');
+  downloadBytes(res.bytes, res.fileName, FORMAT_MIME_MAP[res.outputFormat] ?? 'image/jpeg');
   track('tool_complete', { toolId, method: 'download' });
 }
 
@@ -296,7 +363,7 @@ function useResizeActions(
       downloadBytes(
         s.result.bytes,
         s.result.fileName,
-        MIME_MAP[s.result.outputFormat] ?? 'image/jpeg',
+        FORMAT_MIME_MAP[s.result.outputFormat] ?? 'image/jpeg',
       );
       track('tool_complete', { toolId, method: 'download' });
     },
