@@ -20,6 +20,7 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
+import { DynamicCbmShipmentLayout } from './DynamicCbmShipmentLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -31,8 +32,8 @@ import { useToolStore } from './useToolStore.ts';
 
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
+const CBM_SHIPMENT_PRESET_ID = 'logistics/cbm-shipment';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
-
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -43,12 +44,10 @@ export interface ToolIslandProps {
   /** Shows browser-local saved-preset manager on standard calculator. */
   enableUserPresets?: boolean;
 }
-
 interface TopBarProps {
   sampleId: string | null;
   onTrySample: () => void;
 }
-
 function TopBar({ sampleId, onTrySample }: TopBarProps) {
   if (!sampleId) return null;
   return (
@@ -61,7 +60,6 @@ function TopBar({ sampleId, onTrySample }: TopBarProps) {
     </div>
   );
 }
-
 /** Shown once, only when this page's fields were just seeded via another tool's transfer button. */
 function TransferNotice({
   preset,
@@ -79,7 +77,6 @@ function TransferNotice({
     </InlineAlert>
   );
 }
-
 /**
  * Consumes a one-shot transfer hash on mount without server round-trip. Strips hash once consumed.
  * Shapes flat items for packing list transfers if necessary.
@@ -102,7 +99,6 @@ function useIncomingTransfer(preset: ResolvedPreset, store: ToolStore): boolean 
   }, [preset, store]);
   return transferred;
 }
-
 interface ArchetypeProps {
   archetype: ToolIslandProps['archetype'];
   idPrefix: string;
@@ -115,12 +111,10 @@ interface ArchetypeProps {
   calculatorActions: CalculatorWorkspaceActions;
   enableUserPresets?: boolean | undefined;
 }
-
 const isStandardCalculator = (archetype: ToolIslandProps['archetype'], presetId: string) =>
   archetype === 'B' &&
   presetId !== INVOICE_MULTI_ITEM_PRESET_ID &&
   presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID;
-
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -231,7 +225,7 @@ function ArchetypeLayout({
 }
 
 /** The interactive part of a tool page: sample, archetype layout, actions and notifications. */
-export function ToolIsland({
+function StandardToolIsland({
   toolId,
   archetype,
   preset,
@@ -294,4 +288,10 @@ export function ToolIsland({
       enableUserPresets={enableUserPresets === true && standardCalculator}
     />
   );
+}
+
+export function ToolIsland(props: ToolIslandProps) {
+  if (props.preset.id === CBM_SHIPMENT_PRESET_ID)
+    return <DynamicCbmShipmentLayout preset={props.preset} />;
+  return <StandardToolIsland {...props} />;
 }

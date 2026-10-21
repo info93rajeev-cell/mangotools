@@ -81,3 +81,13 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
   shaping with pure tests and an advanced fixture; no activation or result presentation.
 - TASK-008L PR 6A2a: added pure fee/slab/resolved-weight adapter core and focused tests.
   Phase-1 private packages use documentation records; changesets are not configured.
+
+## CBM shipment workspace (#212)
+
+The lazy `logistics/cbm-shipment` UI supports ordered package rows, exact shipment/cost worker calls,
+optional weight coverage, dimensional views, composition and current-only copy/print. It remains
+inactive until tools issue #213 binds that preset. The legacy `logistics/cbm` renderer is unchanged.
+Descriptions stay in browser memory and are stripped from numeric worker payloads. Shipment and cost
+revisions reject late responses, including after disabling cost or disposing the controller.
+No import, placement, persistence or new dependency. Support content remains in the page's existing
+full-width collapsed area.
