@@ -1,0 +1,5 @@
+id: 020-dimension-negative
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "Negative dimensions are rejected" }
+input: { packages: [{ length: "60", width: "-40", height: "40", unit: cm, quantity: "1" }], containerType: 20gp }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: packages.0.width }

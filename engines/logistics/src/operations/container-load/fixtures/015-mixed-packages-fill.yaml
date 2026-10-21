@@ -1,0 +1,6 @@
+id: 015-mixed-packages-fill
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "Custom 200×100×100 cm: a 1 m³ crate (block volume 1 m³) ties with 8 boxes of 50 cm (2×2×2 = 1 m³), so the earlier package wins the back corner; the 8 boxes fill the 100×100×100 space in front at x = 100: 100% utilization" }
+input: { packages: [{ description: Crate, length: "100", width: "100", height: "100", unit: cm, quantity: "1" }, { description: Box, length: "50", width: "50", height: "50", unit: cm, quantity: "8" }], containerType: custom, containerUnit: cm, containerLength: "200", containerWidth: "100", containerHeight: "100" }
+expected: { status: complete, loadedPieces: "9", volumeUtilizationPercent: "100.0", blocks: [{ container: 0, package: 0, orientation: lwh, x: "0", y: "0", z: "0", pieceLength: "100", pieceWidth: "100", pieceHeight: "100", countX: 1, countY: 1, countZ: 1, count: 1 }, { container: 0, package: 1, orientation: lwh, x: "100", y: "0", z: "0", pieceLength: "50", pieceWidth: "50", pieceHeight: "50", countX: 2, countY: 2, countZ: 2, count: 8 }] }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

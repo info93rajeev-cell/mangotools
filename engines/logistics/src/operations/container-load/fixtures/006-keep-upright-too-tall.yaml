@@ -1,0 +1,7 @@
+id: 006-keep-upright-too-tall
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "Keep upright allows only orientations with the piece's own height vertical (lwh, wlh); 250 cm > 239.3 cm, so no feasible orientation" }
+params: { keepUpright: true }
+input: { packages: [{ length: "60", width: "40", height: "250", unit: cm, quantity: "2" }], containerType: 20gp }
+expected: {status: "none", loadedPieces: "0", packages: [{index: 0, description: "", length: "60", width: "40", height: "250", unit: "cm", requested: "2", loaded: "0", unloaded: "2", unitVolume: "0.600", requestedVolume: "1.200", loadedVolume: "0.000", unitWeight: null, loadedWeight: null, unloadedReason: "no-feasible-orientation", byContainer: []}]}
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_LOAD_PARTIAL]

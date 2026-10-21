@@ -46,4 +46,27 @@ export const messages: Readonly<Record<string, string>> = {
     'This estimate uses the rate you entered. Actual freight charges may depend on carrier, route, surcharges, taxes and other terms.',
   LOGISTICS_COST_MINIMUM_APPLIED:
     'The minimum charge is higher than quantity × rate, so the minimum charge is used.',
+  LOGISTICS_NO_PACKAGES: 'Add at least one package with its dimensions and quantity.',
+  LOGISTICS_TOO_MANY_PACKAGES: 'Use at most {max} package types in one calculation.',
+  LOGISTICS_TOTAL_PIECES_TOO_LARGE: 'Enter at most {max} pieces in total.',
+  LOGISTICS_DESCRIPTION_TOO_LONG: 'Use at most {max} characters.',
+  LOGISTICS_PIECES_NOT_POSITIVE: 'Enter at least 1 piece.',
+  LOGISTICS_PIECES_NOT_WHOLE: 'The number of pieces must be a whole number.',
+  LOGISTICS_PIECES_TOO_LARGE: 'Enter at most {max} pieces.',
+  LOGISTICS_PAYLOAD_TOO_LARGE: 'Enter a payload of at most {max} kg.',
+  LOGISTICS_LOAD_PLANNING_AID:
+    'This plan places rectangular packages with a fixed, repeatable method. It is a planning aid, not necessarily the most efficient arrangement, and it does not check weight distribution, load securing, door access or crushing.',
+  LOGISTICS_CONTAINER_NOMINAL_REFERENCE:
+    'Nominal reference capacities vary by carrier, manufacturer and container series. Confirm the specification of the actual container with your carrier.',
+  LOGISTICS_LOAD_PARTIAL: '{unloaded} pieces could not be loaded. See each package for the reason.',
+  LOGISTICS_LOAD_MULTIPLE_CONTAINERS:
+    'This cargo needs {containers} containers of the selected type.',
+  LOGISTICS_LOAD_WEIGHT_LIMIT_REACHED:
+    'The weight limit was reached before the space was full, so more containers are needed.',
+  LOGISTICS_LOAD_STACK_HEIGHT_ABOVE_CONTAINER:
+    'The maximum stack height is higher than the container, so the container height is used.',
+  LOGISTICS_LOAD_WEIGHTS_INCOMPLETE:
+    'Some packages have no weight, so the payload check covers only the packages that have a weight.',
+  LOGISTICS_LOAD_PAYLOAD_NOT_CHECKED:
+    'No maximum payload was entered, so weights are totalled but not checked against a limit.',
 };

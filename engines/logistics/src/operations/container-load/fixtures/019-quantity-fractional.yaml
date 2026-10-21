@@ -1,0 +1,5 @@
+id: 019-quantity-fractional
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "Fractional pieces are rejected" }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "2" }, { length: "60", width: "40", height: "40", unit: cm, quantity: "1.5" }], containerType: 20gp }
+expectedError: { code: LOGISTICS_PIECES_NOT_WHOLE, path: packages.1.quantity }

@@ -1,0 +1,5 @@
+id: 026-unit-missing
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "A package needs its dimension unit" }
+input: { packages: [{ length: "60", width: "40", height: "40", quantity: "1" }], containerType: 20gp }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: packages.0.unit }

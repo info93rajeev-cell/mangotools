@@ -1,0 +1,5 @@
+id: 017-no-packages
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "At least one package is required" }
+input: { packages: [], containerType: 20gp }
+expectedError: { code: LOGISTICS_NO_PACKAGES, path: packages }

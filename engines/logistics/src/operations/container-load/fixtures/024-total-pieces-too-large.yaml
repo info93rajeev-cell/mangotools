@@ -1,0 +1,5 @@
+id: 024-total-pieces-too-large
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "At most 250,000 pieces per calculation" }
+input: { packages: [{ length: "10", width: "10", height: "10", unit: cm, quantity: "100000" }, { length: "10", width: "10", height: "10", unit: cm, quantity: "100000" }, { length: "10", width: "10", height: "10", unit: cm, quantity: "50001" }], containerType: 20gp }
+expectedError: { code: LOGISTICS_TOTAL_PIECES_TOO_LARGE, path: packages }

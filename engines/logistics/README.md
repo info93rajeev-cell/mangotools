@@ -9,6 +9,7 @@ decimal strings via `engines/numeric`.
 | `logistics.cbm.compute@1` | CBM per carton, total CBM and cubic feet from carton dimensions (cm, m, mm or inch) and quantity |
 | `logistics.weight.chargeable@1` | Volumetric, actual and chargeable weight (kg) per package and in total, and which one is billed |
 | `logistics.container.fit@1` | Volume estimate and a simple axis-aligned loading grid for one carton type inside a 20 ft, 40 ft, 40 ft high-cube or custom container |
+| `logistics.container.load@1` | Actual axis-aligned placement of one or more package types into identical 20 ft, 40 ft, 40 ft high-cube or custom containers: loaded and unloaded pieces, containers required, utilization and the placement for a viewer |
 | `logistics.cost.estimate@1` | Shared freight-cost estimate from the user's own rate: per m³ or per container, with an optional minimum and other charges |
 | `logistics.pallet.fit@1` | Cartons per layer, layers, cartons per pallet and pallets required, from a simple axis-aligned footprint fit on a Euro, US or custom pallet |
 
@@ -18,6 +19,13 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.7.0 — `logistics.container.load@1`: deterministic block-building placement of up to 50 package
+  types (mm, cm, m, in, ft; kg, g, lb) into as many identical containers as needed (up to 20), with
+  payload, stack-height, rotation, keep-upright and stackable constraints. Geometry is exact bigint
+  arithmetic; every piece is inside the container, never overlaps and is fully supported. Outputs
+  per-package allocation, per-container utilization and the block coordinates a viewer can draw.
+  No cost: the shared `logistics.cost.estimate@1` is a separate operation. New codes for the
+  package, payload and planning notices. `logistics.container.fit@1` is unchanged.
 - 0.5.1 — `logistics.cost.estimate@1`, the shared Logistics freight-cost model (founder-approved
   rate bases `per-cbm` and `per-container`; per-kg and per-pallet are out of scope; Phase 1
   currencies INR, USD, EUR, GBP and AED, never converted). The formula and its notices live once in

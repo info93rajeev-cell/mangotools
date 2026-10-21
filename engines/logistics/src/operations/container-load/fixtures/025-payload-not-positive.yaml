@@ -1,0 +1,5 @@
+id: 025-payload-not-positive
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "A zero payload is rejected" }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "1" }], containerType: 20gp, maxPayload: "0", payloadUnit: kg }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: maxPayload }

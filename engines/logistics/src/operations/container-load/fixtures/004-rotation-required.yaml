@@ -1,0 +1,6 @@
+id: 004-rotation-required
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "A 250 cm tall piece cannot stand in a 239.3 cm high container; with rotation allowed it lies with 250 along the length and 40 vertical: 2 stack (80 cm ≤ 239.3)" }
+input: { packages: [{ length: "60", width: "40", height: "250", unit: cm, quantity: "2" }], containerType: 20gp }
+expected: { status: complete, loadedPieces: "2", blocks: [{ container: 0, package: 0, orientation: hlw, x: "0", y: "0", z: "0", pieceLength: "250", pieceWidth: "60", pieceHeight: "40", countX: 1, countY: 1, countZ: 2, count: 2 }] }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL]

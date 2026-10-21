@@ -1,0 +1,6 @@
+id: 012-weights-without-payload
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "Weights are totalled (20 × 2.5 lb = 50 lb = 22.6796185 kg) but, with no payload entered, not checked" }
+input: { packages: [{ length: "30", width: "30", height: "30", unit: cm, quantity: "20", weight: "2.5", weightUnit: lb }], containerType: 20gp }
+expected: { status: complete, weightStatus: complete, loadedWeight: "22.68", maxPayload: null, payloadCapacity: null, weightUtilizationPercent: null }
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_LOAD_PAYLOAD_NOT_CHECKED]

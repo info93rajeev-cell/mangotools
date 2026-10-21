@@ -1,0 +1,7 @@
+id: 014-not-stackable-single-layer
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "Not stackable: one layer only. Standing on the 40×40 end, floor(1203.2/40) × floor(235.2/40) = 30 × 5 = 150 per 40 ft container; 200 pieces need 2" }
+params: { stackable: false }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "200" }], containerType: 40gp }
+expected: {status: "complete", containersRequired: "2", packages: [{index: 0, description: "", length: "60", width: "40", height: "40", unit: "cm", requested: "200", loaded: "200", unloaded: "0", unitVolume: "0.096", requestedVolume: "19.200", loadedVolume: "19.200", unitWeight: null, loadedWeight: null, unloadedReason: null, byContainer: ["150", "50"]}], blocks: [{container: 0, package: 0, orientation: "whl", x: "0", y: "0", z: "0", pieceLength: "40", pieceWidth: "40", pieceHeight: "60", countX: 30, countY: 5, countZ: 1, count: 150}, {container: 1, package: 0, orientation: "lwh", x: "0", y: "0", z: "0", pieceLength: "60", pieceWidth: "40", pieceHeight: "40", countX: 10, countY: 5, countZ: 1, count: 50}]}
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_LOAD_MULTIPLE_CONTAINERS]

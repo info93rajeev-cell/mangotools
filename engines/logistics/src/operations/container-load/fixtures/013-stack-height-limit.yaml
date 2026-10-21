@@ -1,0 +1,6 @@
+id: 013-stack-height-limit
+operation: logistics.container.load@1
+source: { type: hand-verified, citation: "A 1.5 m stack height limits 40 cm layers to floor(150/40) = 3: one 40 ft takes 20×5×3 = 300 (no orientation does better); the other 200 need a second container" }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "500" }], containerType: 40gp, maxStackHeight: "1.5", stackHeightUnit: m }
+expected: {status: "complete", usableHeight: "150", containersRequired: "2", packages: [{index: 0, description: "", length: "60", width: "40", height: "40", unit: "cm", requested: "500", loaded: "500", unloaded: "0", unitVolume: "0.096", requestedVolume: "48.000", loadedVolume: "48.000", unitWeight: null, loadedWeight: null, unloadedReason: null, byContainer: ["300", "200"]}]}
+expectedWarnings: [LOGISTICS_LOAD_PLANNING_AID, LOGISTICS_CONTAINER_NOMINAL_REFERENCE, LOGISTICS_CONTAINER_VERIFY_PROFESSIONAL, LOGISTICS_LOAD_MULTIPLE_CONTAINERS]

@@ -1,0 +1,5 @@
+id: 023-custom-missing-unit
+operation: logistics.container.load@1
+source: { type: synthetic, citation: "A custom container needs its unit" }
+input: { packages: [{ length: "60", width: "40", height: "40", unit: cm, quantity: "1" }], containerType: custom, containerLength: "500", containerWidth: "200", containerHeight: "200" }
+expectedError: { code: LOGISTICS_MISSING_INPUT, path: containerUnit }
