@@ -21,7 +21,7 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
-import { ImageCompressLayout } from './ImageCompressLayout.tsx';
+import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
@@ -52,6 +52,19 @@ function DynamicImageFormatConverterLayout(props: ImageFormatConverterLayoutProp
   useEffect(() => {
     void import('./ImageFormatConverterLayout.tsx').then((m) => {
       setComp(() => m.ImageFormatConverterLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+function DynamicImageCompressLayout(props: ImageCompressLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageCompressLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageCompressLayout.tsx').then((m) => {
+      setComp(() => m.ImageCompressLayout);
     });
   }, []);
 
@@ -198,7 +211,7 @@ function renderCustomFileLayout({ idPrefix, toolId, preset, notify, onFilePhase 
   }
   if (preset.id === IMAGE_COMPRESS_PRESET_ID) {
     return (
-      <ImageCompressLayout
+      <DynamicImageCompressLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}

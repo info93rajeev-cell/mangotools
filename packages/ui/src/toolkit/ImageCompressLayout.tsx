@@ -1,12 +1,10 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { FileDropZone } from '../archetypes/FileDropZone.tsx';
-import { type FilePhase, useFileTool } from '../archetypes/useFileTool.ts';
-import { InlineAlert } from '../primitives/feedback.tsx';
+import type { FilePhase } from '../archetypes/useFileTool.ts';
+import { ImageCompressCanvas } from './ImageCompressCanvas.tsx';
+import { ImageCompressControls } from './ImageCompressControls.tsx';
 import { ImageCompressResult } from './ImageCompressResult.tsx';
-import { StageTwoCard } from './ImageCompressSettings.tsx';
-import { StageOneCard } from './ImageCompressStageOne.tsx';
 import styles from './imageCompress.module.css';
-import { label, messageFor } from './presentation.ts';
+import { useImageCompress } from './useImageCompress.ts';
 
 export interface ImageCompressLayoutProps {
   idPrefix: string;
@@ -23,47 +21,27 @@ export function ImageCompressLayout({
   notify,
   onPhase,
 }: ImageCompressLayoutProps) {
-  const tool = useFileTool(preset, toolId, notify, onPhase);
-  const file = tool.files[0];
-
-  if (!file) {
-    return (
-      <div class={styles.emptyState}>
-        <FileDropZone
-          accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
-          dropHint={label(preset, 'fileTool.dropHint')}
-          multiple={false}
-          onFiles={(list) => void tool.addFiles(list)}
-        />
-        {tool.error && (
-          <InlineAlert tone="danger" role="alert">
-            {messageFor(preset, tool.error)}
-          </InlineAlert>
-        )}
-        <div class={styles.trustStrip}>
-          <span class={styles.trustItem}>🔒 100% Client-Side In-Browser Processing</span>
-          <span class={styles.trustItem}>✓ Zero Server Uploads</span>
-          <span class={styles.trustItem}>✓ Bounded Quality Search</span>
-          <span class={styles.trustItem}>✓ Free & Unlimited</span>
-        </div>
-      </div>
-    );
-  }
+  const compress = useImageCompress(preset, toolId, notify, onPhase);
 
   return (
-    <div class={styles.container}>
-      <div class={styles.topGrid}>
-        <StageOneCard file={file} previewUrl={tool.previewUrl} onClear={tool.clearAll} />
-        <StageTwoCard idPrefix={idPrefix} preset={preset} tool={tool} file={file} />
-      </div>
+    <div class={styles.container} data-image-compress-layout="">
+      {/* 3-PANEL COMPRESS WORKBENCH */}
+      <div class={styles.workbench3Panel}>
+        {/* PANEL 1: CONTROLS & INPUTS */}
+        <ImageCompressControls
+          idPrefix={idPrefix}
+          preset={preset}
+          compress={compress}
+          onSelectFile={(file) => void compress.loadFile(file)}
+          onTrySample={() => void compress.loadSample()}
+        />
 
-      <ImageCompressResult
-        preset={preset}
-        result={tool.result}
-        error={tool.error}
-        onDownload={tool.primaryAction}
-        onClear={tool.clearAll}
-      />
+        {/* PANEL 2: INTERACTIVE CANVAS */}
+        <ImageCompressCanvas idPrefix={idPrefix} compress={compress} />
+
+        {/* PANEL 3: LIVE SPECS & RESULT */}
+        <ImageCompressResult idPrefix={idPrefix} preset={preset} compress={compress} />
+      </div>
     </div>
   );
 }

@@ -127,6 +127,17 @@ test.describe('Image Compress', () => {
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
   });
 
+  test('compresses the image to PDF and downloads .pdf', async ({ page }) => {
+    await openTool(page, 'image-compress');
+    await fileInput(page).setInputFiles([photo]);
+    await page.getByLabel('Output format').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download compressed image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('photo-compressed.pdf');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('pdf');
+  });
+
   test('reports honest failure when converting a JPEG photo to PNG cannot achieve a smaller file', async ({
     page,
   }) => {
@@ -212,6 +223,32 @@ test.describe('Image Compress', () => {
     await fileInput(page).setInputFiles([notAnImage]);
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+
+  test('fits strictly within 900px desktop viewport without page scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openTool(page, 'image-compress');
+    await page.waitForTimeout(500);
+    const scrollH = await page.evaluate(() => document.documentElement.scrollHeight);
+    const innerH = await page.evaluate(() => window.innerHeight);
+    const info = await page.evaluate(() => {
+      return {
+        bodyScroll: document.body.scrollHeight,
+        docScroll: document.documentElement.scrollHeight,
+        header: document.querySelector('header')?.getBoundingClientRect().height,
+        main: document.querySelector('main')?.getBoundingClientRect().height,
+        footer: document.querySelector('footer')?.getBoundingClientRect().height,
+        controls: document.querySelector('[class*="controlsPanel"]')?.getBoundingClientRect()
+          .height,
+        canvas: document.querySelector('[class*="canvasPanel"]')?.getBoundingClientRect().height,
+        result: document.querySelector('[class*="resultPanel"]')?.getBoundingClientRect().height,
+      };
+    });
+    console.log('LAYOUT INFO:', JSON.stringify(info));
+    expect(scrollH).toBeLessThanOrEqual(innerH);
+    await page.screenshot({
+      path: 'C:/Users/user/.gemini/antigravity/brain/69dd2223-e082-499a-9544-d181fd76ffa1/compress_desktop_900.png',
+    });
   });
 });
 
