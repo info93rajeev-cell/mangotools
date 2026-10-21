@@ -92,18 +92,20 @@
   justify-content: center;
   background: var(--color-bg);
   color: var(--color-text);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 5px 10px;
-  font-size: var(--text-caption);
-  font-weight: var(--weight-semibold);
+  padding: 6px 12px;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .uploadMainBtn:hover {
   background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
   border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .compactDropZone {
@@ -143,7 +145,7 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 3px 6px;
+  padding: 4px 8px;
   font-size: 11px;
 }
 
@@ -161,31 +163,11 @@
   font-size: 10px;
 }
 
-.uploadNewBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg);
-  color: var(--color-text);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 3px 6px;
-  font-size: 11px;
-  font-weight: var(--weight-semibold);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.uploadNewBtn:hover {
-  border-color: var(--color-accent);
-  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
-}
-
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
 }
 
 .formatCard {

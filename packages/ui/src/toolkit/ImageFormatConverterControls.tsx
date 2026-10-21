@@ -18,6 +18,7 @@ const FORMAT_OPTIONS: { id: TargetImageFormat; name: string; desc: string }[] = 
   { id: 'jpg', name: 'JPG', desc: 'Photo' },
   { id: 'png', name: 'PNG', desc: 'Lossless' },
   { id: 'webp', name: 'WebP', desc: 'Small' },
+  { id: 'pdf', name: 'PDF', desc: 'Document' },
 ];
 
 function UploadSection({
@@ -56,29 +57,22 @@ function UploadSection({
         }}
       />
 
-      {!converter.file ? (
-        <div class={styles.uploadRow}>
-          <label for={fileInputId} class={styles.uploadMainBtn}>
-            📁 Upload Image
-          </label>
+      <div class={styles.uploadRow}>
+        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
+          📁 Upload Image
+        </label>
+      </div>
+
+      {converter.file ? (
+        <div class={styles.activeFileBadge}>
+          <span class={styles.activeFileName} title={converter.file?.name}>
+            {converter.file?.name}
+          </span>
+          <span class={styles.activeFileMeta}>
+            {converter.sourceDims.width} × {converter.sourceDims.height} px
+          </span>
         </div>
       ) : (
-        <div class={styles.activeFileWrapper}>
-          <div class={styles.activeFileBadge}>
-            <span class={styles.activeFileName} title={converter.file?.name}>
-              {converter.file?.name}
-            </span>
-            <span class={styles.activeFileMeta}>
-              {converter.sourceDims.width} × {converter.sourceDims.height} px
-            </span>
-          </div>
-          <label for={fileInputId} class={styles.uploadNewBtn}>
-            📁 Upload Another Image
-          </label>
-        </div>
-      )}
-
-      {!converter.file && (
         <label
           for={fileInputId}
           class={styles.compactDropZone}
@@ -178,6 +172,7 @@ function FormatSection({
         <option value="jpg">JPG</option>
         <option value="png">PNG</option>
         <option value="webp">WebP</option>
+        <option value="pdf">PDF</option>
       </select>
 
       <fieldset class={styles.formatGrid} style={{ border: 'none', padding: 0, margin: 0 }}>

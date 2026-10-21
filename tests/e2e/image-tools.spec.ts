@@ -225,7 +225,7 @@ test.describe('Image Format Converter', () => {
     await openTool(page, 'image-format-converter');
     await fileInput(page).setInputFiles([sample]);
     const options = await page.getByLabel('Convert to').locator('option').allTextContents();
-    expect(options).toEqual(['JPG', 'PNG', 'WebP']);
+    expect(options).toEqual(['JPG', 'PNG', 'WebP', 'PDF']);
   });
 
   test('converts to PNG (the default) and downloads it with the default name', async ({ page }) => {
@@ -276,6 +276,17 @@ test.describe('Image Format Converter', () => {
     await page.getByRole('button', { name: 'Download converted image' }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('My Photo.png');
+  });
+
+  test('converts to PDF and downloads it with .pdf extension', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Convert to').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-converted.pdf');
+    await expect(primaryResult(page)).toHaveText('pdf');
   });
 
   test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { ok } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -166,6 +168,37 @@ describe('useImageFormatConverter Hook', () => {
       expect.any(Uint8Array),
       'test-converted.png',
       'image/png',
+    );
+  });
+
+  it('converts to PDF directly via pdf-lib and downloads .pdf', async () => {
+    const notify = vi.fn();
+    const onPhase = vi.fn();
+
+    const sampleJpg = readFileSync(
+      join(process.cwd(), 'tools/image-format-converter/fixtures/files/sample.jpg'),
+    );
+
+    const mockFile: ConvertFile = {
+      name: 'photo.jpg',
+      size: sampleJpg.byteLength,
+      bytes: new Uint8Array(sampleJpg),
+    };
+
+    hooks.values[0] = mockFile;
+    hooks.values[3] = { width: 8, height: 8 };
+    hooks.values[4] = 'pdf';
+    hooks.stateIndex = 0;
+    hooks.refIndex = 0;
+
+    const hook = useImageFormatConverter(dummyPreset, 'image-format-converter', notify, onPhase);
+
+    await hook.executeConvertAndDownload();
+
+    expect(mockDownloadBytes).toHaveBeenCalledWith(
+      expect.any(Uint8Array),
+      'photo-converted.pdf',
+      'application/pdf',
     );
   });
 });
