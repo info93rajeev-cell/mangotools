@@ -1,0 +1,26 @@
+{
+  "id": "007-metres-grams",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "SI gram = 0.001 kg: 500 g x 2 = 1 kg; 0.6 x 0.4 x 0.4 x 2 = 0.192 m3."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "0.6",
+        "width": "0.4",
+        "height": "0.4",
+        "unit": "m",
+        "quantity": "2",
+        "weightPerItem": "500",
+        "weightUnit": "g"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.192",
+    "knownPackedWeightKgExact": "1",
+    "weightCoverage": "complete"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "001-one-package",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "SI metre factors; hand calculation 0.6 x 0.4 x 0.4 = 0.096 m3; approved Phase 1 CFT factor 35.3146667."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "60",
+        "width": "40",
+        "height": "40",
+        "unit": "cm",
+        "quantity": "1"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.096",
+    "totalCbm": "0.096",
+    "totalCft": "3.390",
+    "totalPieces": "1"
+  }
+}

@@ -5,6 +5,7 @@ decimal strings via `engines/numeric`.
 
 | Operation | Purpose |
 |---|---|
+| `logistics.cbm.shipment@1` | Ordered exact volume, pieces and optional weight coverage for 1-50 package types, including feet |
 | `logistics.cbm.compute@1` | CBM per carton, total CBM and cubic feet from carton dimensions (cm, m, mm or inch) and quantity |
 | `logistics.weight.chargeable@1` | Volumetric, actual and chargeable weight (kg) per package and in total, and which one is billed |
 | `logistics.container.fit@1` | Volume estimate and a simple axis-aligned loading grid for one carton type inside a 20 ft, 40 ft, 40 ft high-cube or custom container |
@@ -16,6 +17,9 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.5.0 - add `logistics.cbm.shipment@1` with bounded ordered package rows, exact CBM/CFT
+  aggregation, optional kg/g/lb packed weights, explicit weight coverage and typed row errors.
+  Shipment feet support is isolated; legacy CBM, weight, container and pallet contracts are unchanged.
 - 0.4.5 — `logistics.container.fit@1` accepts optional `decimalPlaces` metadata (`2`, `3` or `4`)
   for continuous result presentation while preserving exact integer counts and working values.
   Converted carton and custom-container dimensions may retain the shared converter's 12 decimal

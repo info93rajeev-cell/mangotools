@@ -1,0 +1,31 @@
+{
+  "id": "002-exact-before-rounding",
+  "operation": "logistics.cbm.shipment@1",
+  "source": {
+    "type": "hand-verified",
+    "citation": "Hand calculation: 0.25 x 0.25 x 0.2 = 0.0125 m3; two rows total 0.025, not rounded-row sum 0.026."
+  },
+  "input": {
+    "packages": [
+      {
+        "length": "25",
+        "width": "25",
+        "height": "20",
+        "unit": "cm",
+        "quantity": "1"
+      },
+      {
+        "length": "25",
+        "width": "25",
+        "height": "20",
+        "unit": "cm",
+        "quantity": "1"
+      }
+    ]
+  },
+  "expected": {
+    "totalCbmExact": "0.025",
+    "totalCbm": "0.025",
+    "totalPieces": "2"
+  }
+}

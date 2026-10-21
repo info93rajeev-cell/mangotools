@@ -1,5 +1,8 @@
 /** English messages for every error and warning code this engine can return. */
 export const messages: Readonly<Record<string, string>> = {
+  LOGISTICS_VALUE_TOO_LONG: 'Use at most 64 characters for a numeric value.',
+  LOGISTICS_MEASUREMENT_TOO_LARGE: 'Use a measurement smaller than 1,000,000,000,000.',
+  LOGISTICS_WEIGHT_UNIT_REQUIRED: 'Choose a unit for the supplied weight.',
   LOGISTICS_MISSING_INPUT: 'Enter a value here.',
   LOGISTICS_INVALID_NUMBER: 'Enter a number such as 45 or 45.5.',
   LOGISTICS_TOO_MANY_DECIMALS: 'Use at most {max} decimal places.',
