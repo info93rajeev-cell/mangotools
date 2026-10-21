@@ -110,13 +110,17 @@ const preparedInput = {
 };
 const stores: ToolStore[] = [];
 function island(preset: ResolvedPreset) {
-  const node = ToolIsland({
+  const boundary = ToolIsland({
     toolId: 'synthetic-only',
     archetype: 'B',
     preset,
     sampleId: 'example',
     print: false,
-  }) as VNode<{
+  });
+  // Resolve the shared preset boundary before inspecting the unchanged standard island.
+  const node = (
+    typeof boundary.type === 'function' ? boundary.type(boundary.props) : boundary
+  ) as VNode<{
     store: ToolStore;
     calculatorActions: { onReset: () => void };
   }>;
