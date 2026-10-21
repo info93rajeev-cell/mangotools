@@ -1,0 +1,6 @@
+id: 006-per-cbm-exact-quantity-rounded-once
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "0.072 m³ × 100.55 = 7.2396 exactly; shown once at 2 places (half-up) = 7.24; total 7.2396 + 0.01 = 7.2496 → 7.25" }
+input: { rateBasis: per-cbm, quantity: "0.072", rate: "100.55", otherCharges: "0.01", currency: EUR }
+expected: { quantity: "0.072", baseCharge: "7.24", freightCharge: "7.24", estimatedTotal: "7.25" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

@@ -1,0 +1,5 @@
+id: 008-rate-zero
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "A zero rate is rejected" }
+input: { rateBasis: per-cbm, quantity: "1", rate: "0", currency: INR }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: rate }

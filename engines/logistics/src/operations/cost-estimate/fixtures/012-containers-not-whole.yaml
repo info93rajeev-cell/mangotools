@@ -1,0 +1,5 @@
+id: 012-containers-not-whole
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "A fractional container count is rejected" }
+input: { rateBasis: per-container, quantity: "1.5", rate: "100", currency: INR }
+expectedError: { code: LOGISTICS_CONTAINER_COUNT_NOT_WHOLE, path: quantity }

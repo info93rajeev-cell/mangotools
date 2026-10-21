@@ -1,0 +1,6 @@
+id: 005-zero-optional-charges
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "3 containers × 98,500.50 = 295,501.50; minimum 0 and other charges 0 change nothing" }
+input: { rateBasis: per-container, quantity: "3", rate: "98500.50", minimumCharge: "0", otherCharges: "0", currency: INR }
+expected: { baseCharge: "295501.50", minimumCharge: "0.00", minimumApplied: false, freightCharge: "295501.50", otherCharges: "0.00", estimatedTotal: "295501.50" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

@@ -1,0 +1,6 @@
+id: 016-currency-aed
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "AED is an approved Phase 1 currency and only labels the result: 4 containers × 8,250.75 = 33,003.00; + 150 = 33,153.00 — the same numbers as in any other currency" }
+input: { rateBasis: per-container, quantity: "4", rate: "8250.75", otherCharges: "150", currency: AED }
+expected: { currency: AED, quantity: "4", rate: "8250.75", baseCharge: "33003.00", freightCharge: "33003.00", otherCharges: "150.00", estimatedTotal: "33153.00" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]
