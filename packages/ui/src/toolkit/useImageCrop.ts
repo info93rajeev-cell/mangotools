@@ -143,7 +143,9 @@ async function handleLoadFile(
   s: CropState,
   clearOutcome: () => void,
   setPhase: (p: FilePhase) => void,
+  userInteractedRef?: { current: boolean },
 ) {
+  if (userInteractedRef) userInteractedRef.current = true;
   clearOutcome();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   const res = await inspectAndDecodeImage(selected);
@@ -165,10 +167,13 @@ async function handleLoadPalaceSample(
   s: CropState,
   clearOutcome: () => void,
   setPhase: (p: FilePhase) => void,
+  userInteractedRef?: { current: boolean },
 ) {
+  if (userInteractedRef?.current || s.file) return;
+  const sample = await createPalaceSample();
+  if (userInteractedRef?.current || s.file) return;
   clearOutcome();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
-  const sample = await createPalaceSample();
   const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
     type: 'image/jpeg',
   });
@@ -178,6 +183,7 @@ async function handleLoadPalaceSample(
     setPhase('error');
     return;
   }
+  if (userInteractedRef?.current || s.file) return;
   const dims = res.value.dims;
   s.setSourceDims(dims);
   s.setFile(res.value.file);
@@ -240,6 +246,7 @@ function createCropActions(
   clearOutcome: () => void,
   setPhase: (p: FilePhase) => void,
   notify: (msg: string) => void,
+  userInteractedRef: { current: boolean },
 ) {
   return {
     clearAll: () => {
@@ -250,8 +257,8 @@ function createCropActions(
       s.setCustomFileName('');
       clearOutcome();
     },
-    loadPalaceSample: () => handleLoadPalaceSample(s, clearOutcome, setPhase),
-    loadFile: (f: File) => handleLoadFile(f, s, clearOutcome, setPhase),
+    loadPalaceSample: () => handleLoadPalaceSample(s, clearOutcome, setPhase, userInteractedRef),
+    loadFile: (f: File) => handleLoadFile(f, s, clearOutcome, setPhase, userInteractedRef),
     setCropRect: (next: PixelRect) => {
       s.setCropRectState(next);
       clearOutcome();
@@ -296,6 +303,7 @@ export function useImageCrop(
 ) {
   const s = useCropState();
   const runTokenRef = useRef(0);
+  const userInteractedRef = useRef(false);
   const setPhase = (p: FilePhase) => {
     s.setPhaseState(p);
     onPhase(p);
@@ -323,7 +331,7 @@ export function useImageCrop(
 
   useEffect(() => {
     if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleLoadPalaceSample(s, clearOutcome, setPhase);
+      void handleLoadPalaceSample(s, clearOutcome, setPhase, userInteractedRef);
     }
   }, []);
 
@@ -336,6 +344,7 @@ export function useImageCrop(
     clearOutcome,
     setPhase,
     notify,
+    userInteractedRef,
   );
 
   return {
