@@ -45,7 +45,7 @@ export interface Scene {
   arrows: Arrow[];
 }
 
-export const VIEW_BOX = { width: 360, height: 220 } as const;
+export const VIEW_BOX = { width: 400, height: 210 } as const;
 const GRID = 2;
 const MARGIN_X = 56;
 const MARGIN_Y = 26;

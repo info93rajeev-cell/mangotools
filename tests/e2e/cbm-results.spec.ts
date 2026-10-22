@@ -63,6 +63,13 @@ async function noBodyOverflow(page: Page) {
   expect(overflow).toBe(0);
 }
 
+async function expectValuesOnOneLine(page: Page) {
+  const heights = await summary(page)
+    .locator('[data-kpi] dd:first-of-type')
+    .evaluateAll((values) => values.map((value) => value.getBoundingClientRect().height));
+  for (const height of heights) expect(height).toBeLessThan(28);
+}
+
 async function noInternalOverflow(section: Locator) {
   const widths = await section.evaluate((node) => [node.scrollWidth, node.clientWidth]);
   expect(widths[0]).toBeLessThanOrEqual((widths[1] ?? 0) + 1);
@@ -101,11 +108,14 @@ test.describe('CBM results presentation (#219 B)', () => {
     await fillShipment(page);
     const legend = composition(page).locator('ol li');
     await expect(legend).toHaveText([
-      '1. Carton A9.600 m³ (20.5%)',
-      '2. Carton B3.600 m³ (7.7%)',
-      '3. Wooden Crate21.600 m³ (46.2%)',
-      '4. Pallet (Boxed)12.000 m³ (25.6%)',
+      '1. Carton A9.600 (20.5%)',
+      '2. Carton B3.600 (7.7%)',
+      '3. Wooden Crate21.600 (46.2%)',
+      '4. Pallet (Boxed)12.000 (25.6%)',
     ]);
+    await expect(composition(page).getByRole('heading')).toHaveText(
+      'Load Composition by Package (m³)',
+    );
     const widths = await composition(page)
       .locator('[aria-hidden="true"] > span')
       .evaluateAll((spans) => spans.map((span) => span.getBoundingClientRect().width));
@@ -118,13 +128,15 @@ test.describe('CBM results presentation (#219 B)', () => {
     await expect(composition(page)).toHaveCount(0);
   });
 
-  test('visualization is large, illustrative and independent of quantity', async ({ page }) => {
+  test('visualization is compact, illustrative and independent of quantity', async ({ page }) => {
     await ready(page);
     await expect(
       visual(page).getByText('Illustrative dimensions — not a loading plan.', { exact: true }),
     ).toBeVisible();
     const drawing = visual(page).getByRole('img');
-    expect((await drawing.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(180);
+    const drawn = (await drawing.boundingBox())?.height ?? 0;
+    expect(drawn).toBeGreaterThanOrEqual(160);
+    expect(drawn).toBeLessThanOrEqual(200);
     await expect(drawing).toHaveAttribute('aria-label', /not a loading plan/);
     const shapes = () => drawing.locator('polygon').count();
     const before = await shapes();
@@ -168,9 +180,9 @@ test.describe('CBM results presentation (#219 B)', () => {
     await fillShipment(page);
     await enableCost(page, '4500', { other: '2000' });
     const totalTile = cost(page).locator('[data-cost-total]');
-    await expect(totalTile).toHaveText('Estimated TotalINR 2,12,600.00');
-    await expect(cost(page)).toContainText('Freight (46.8 m³ × INR 4,500.00)INR 2,10,600.00');
-    await expect(cost(page)).toContainText('Other chargesINR 2,000.00');
+    await expect(totalTile).toHaveText('Estimated Total₹2,12,600.00');
+    await expect(cost(page)).toContainText('Freight (46.8 m³ × ₹4,500.00)₹2,10,600.00');
+    await expect(cost(page)).toContainText('Other charges₹2,000.00');
     await expect(cost(page)).toContainText('Estimate calculated');
 
     await page.evaluate(() => {
@@ -184,12 +196,12 @@ test.describe('CBM results presentation (#219 B)', () => {
     });
     await field(page, 0, 'quantity').fill('50');
     await expect(total(page)).toHaveText('42.000 m³');
-    await expect(totalTile).toHaveText('Estimated TotalINR 1,91,000.00');
+    await expect(totalTile).toHaveText('Estimated Total₹1,91,000.00');
     const seen = await page.evaluate(
       () => (window as unknown as { __costSeen: string[] }).__costSeen,
     );
     expect(
-      seen.some((entry) => entry.endsWith('INR 2,12,600.00') && !entry.startsWith('46.800')),
+      seen.some((entry) => entry.endsWith('₹2,12,600.00') && !entry.startsWith('46.800')),
     ).toBe(false);
 
     await page.getByLabel('Currency').selectOption('USD');
@@ -199,11 +211,11 @@ test.describe('CBM results presentation (#219 B)', () => {
   test('minimum charge keeps the engine semantics', async ({ page }) => {
     await ready(page);
     await enableCost(page, '100', { minimum: '1000' });
-    await expect(cost(page)).toContainText('Freight (minimum charge applied)INR 1,000.00');
+    await expect(cost(page)).toContainText('Freight (minimum charge applied)₹1,000.00');
     await expect(cost(page)).toContainText(
-      'Rate × CBM = INR 600.00, below your minimum of INR 1,000.00.',
+      'Rate × CBM = ₹600.00, below your minimum of ₹1,000.00.',
     );
-    await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated TotalINR 1,000.00');
+    await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated Total₹1,000.00');
   });
 
   test('Print / Save PDF is primary and Copy Summary secondary, both for current results only', async ({
@@ -260,6 +272,16 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
         .locator('[data-kpi]')
         .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
       expect(new Set(tops).size).toBe(2);
+      await expectValuesOnOneLine(page);
+      const select = visual(page).getByLabel('Dimensions shown for');
+      const label = visual(page).getByText('Dimensions shown for', { exact: true });
+      const [labelBox, selectBox, panel] = [
+        await label.boundingBox(),
+        await select.boundingBox(),
+        await visual(page).boundingBox(),
+      ];
+      expect((labelBox?.y ?? 0) + (labelBox?.height ?? 0)).toBeLessThanOrEqual(selectBox?.y ?? 0);
+      expect(selectBox?.width ?? 0).toBeGreaterThan((panel?.width ?? 0) - 40);
       await page.screenshot({
         path: test.info().outputPath(`cbm-results-${width}.png`),
         fullPage: true,
@@ -285,6 +307,40 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
         await page.screenshot({ path: test.info().outputPath('cbm-results-1366.png') });
     });
   }
+
+  test('desktop: tabs on the title row, four KPIs and the cost result in one row', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await ready(page);
+    await fillShipment(page);
+    await enableCost(page, '4500', { other: '2000' });
+    const totalTile = cost(page).locator('[data-cost-total]');
+    await expect(totalTile).toBeVisible();
+    const top = async (target: Locator) => Math.round((await target.boundingBox())?.y ?? 0);
+    const [title, views] = [
+      visual(page).getByRole('heading', { name: 'Shipment Visualization' }),
+      visual(page).getByRole('group'),
+    ];
+    expect(Math.abs((await top(title)) - (await top(views)))).toBeLessThan(12);
+    const tops = async (target: Locator) =>
+      new Set(
+        await target.evaluateAll((nodes) =>
+          nodes.map((node) => Math.round(node.getBoundingClientRect().top)),
+        ),
+      ).size;
+    expect(await tops(summary(page).locator('[data-kpi]'))).toBe(1);
+    expect(await tops(cost(page).locator('dl > div'))).toBe(1);
+    await expectValuesOnOneLine(page);
+    const size = (target: Locator) =>
+      target.evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
+    const freight = cost(page).locator('dl > div').first().locator('dd').first();
+    expect(await size(totalTile.locator('dd'))).toBeGreaterThan(await size(freight));
+    const cbm = kpi(page, 'volume');
+    expect(await size(cbm.locator('dd').first())).toBeGreaterThan(
+      await size(cbm.locator('dd').nth(1)),
+    );
+  });
 
   test('keyboard operates the views and actions with a visible focus ring', async ({ page }) => {
     await ready(page);

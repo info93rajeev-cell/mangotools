@@ -46,7 +46,7 @@ function Value({ value, unit }: { value: string; unit?: string }) {
   return (
     <>
       <span class={s.number}>{value}</span>
-      {unit ? ` ${unit}` : null}
+      {unit ? <span class={s.unit}>{` ${unit}`}</span> : null}
     </>
   );
 }
@@ -93,9 +93,13 @@ function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
 function Composition({ items }: { items: CompositionItem[] }) {
   return (
     <section class={s.composition} aria-labelledby="cbm-composition-title">
-      <h3 id="cbm-composition-title" class={s.subTitle}>
-        {t.composition}
-      </h3>
+      <div class={s.compositionHead}>
+        <h3 class={s.subTitle}>
+          <span id="cbm-composition-title">{t.composition}</span>{' '}
+          <span class={s.subUnit}>{r.compositionUnit}</span>
+        </h3>
+        <p class={s.note}>{r.sharesRounded}</p>
+      </div>
       <div class={s.bar} aria-hidden="true">
         {items.map((item) => (
           <span
@@ -118,7 +122,6 @@ function Composition({ items }: { items: CompositionItem[] }) {
           </li>
         ))}
       </ol>
-      <p class={s.note}>{t.rounding}</p>
     </section>
   );
 }

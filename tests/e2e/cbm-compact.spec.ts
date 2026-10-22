@@ -88,12 +88,12 @@ test.describe('Active CBM shipment workspace', () => {
     await expect(total(page)).toHaveText('0.000 m³');
     await page.getByLabel('Enable cost estimate').check();
     await page.getByLabel('Freight rate', { exact: true }).fill('1000000');
-    await expect(cost(page)).toContainText('INR 1.00');
+    await expect(cost(page)).toContainText('₹1.00');
     await field(page, 0, 'length').fill('');
     await expect(total(page)).toHaveCount(0);
-    await expect(cost(page)).not.toContainText('INR 1.00');
+    await expect(cost(page)).not.toContainText('₹1.00');
     await field(page, 0, 'length').fill('2');
-    await expect(cost(page)).toContainText('INR 2.00');
+    await expect(cost(page)).toContainText('₹2.00');
     await page.getByLabel('Enable cost estimate').uncheck();
     await expect(cost(page)).toHaveCount(0);
   });
@@ -137,7 +137,7 @@ test.describe('Active CBM shipment workspace', () => {
       });
       await page.getByLabel('Enable cost estimate').check();
       await page.getByLabel('Freight rate', { exact: true }).fill('100');
-      await expect(cost(page)).toContainText('INR 600.00');
+      await expect(cost(page)).toContainText('₹600.00');
       await noOverflow(page);
     });
   }

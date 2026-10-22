@@ -46,9 +46,11 @@ describe('CBM result figures', () => {
     expect(groupFigure('1234567')).toBe('1,234,567');
   });
 
-  it('formats amounts with the currency code, Indian grouping for INR and two decimals', () => {
-    expect(formatAmount('212600', 'INR')).toBe('INR 2,12,600.00');
-    expect(formatAmount('600.00', 'INR')).toBe('INR 600.00');
+  it('formats INR with the rupee sign and Indian grouping, other currencies with their code', () => {
+    expect(formatAmount('212600', 'INR')).toBe('₹2,12,600.00');
+    expect(formatAmount('600.00', 'INR')).toBe('₹600.00');
+    expect(formatAmount('0.5', 'INR')).toBe('₹0.50');
+    expect(formatAmount('12345678.9', 'INR')).toBe('₹1,23,45,678.90');
     expect(formatAmount('1234567.5', 'USD')).toBe('USD 1,234,567.50');
     for (const currency of ['EUR', 'GBP', 'AED'])
       expect(formatAmount('2000.00', currency)).toBe(`${currency} 2,000.00`);
@@ -139,8 +141,8 @@ describe('CBM load composition', () => {
 describe('CBM freight line', () => {
   it('shows the rate basis when the minimum does not apply', () => {
     expect(freightView(cost())).toEqual({
-      label: 'Freight (46.8 m³ × INR 4,500.00)',
-      value: 'INR 2,10,600.00',
+      label: 'Freight (46.8 m³ × ₹4,500.00)',
+      value: '₹2,10,600.00',
       note: null,
     });
   });
@@ -158,8 +160,8 @@ describe('CBM freight line', () => {
     );
     expect(view).toEqual({
       label: 'Freight (minimum charge applied)',
-      value: 'INR 10,000.00',
-      note: 'Rate × CBM = INR 8,750.00, below your minimum of INR 10,000.00.',
+      value: '₹10,000.00',
+      note: 'Rate × CBM = ₹8,750.00, below your minimum of ₹10,000.00.',
     });
   });
 });
