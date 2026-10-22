@@ -1,60 +1,66 @@
 ---
-lastReviewed: 2026-10-06
-example: 001-carton-cm
+lastReviewed: 2026-10-21
+example: 006-shipment-sample
 ---
 
 ## How to use
 
-1. Choose the unit your carton is measured in: centimetres, metres, millimetres or inches.
-2. Enter the outer length, width and height of one carton.
-3. Enter the number of cartons (a whole number from 1 to 1,000,000).
-4. Choose 2, 3 or 4 decimal places for the displayed volumes.
-5. Read the total CBM, the CBM per carton and the same volumes in cubic feet, with the working. Copy or print the result.
+1. Enter one or multiple package types in Shipment Packages. Description / SKU is optional and stays in browser memory.
+2. Use OUTER packed length, width and height, including packaging and protrusions. Choose mm, cm, m, in or ft per row.
+3. Enter a whole-number quantity. Optionally enter weight per item in kg, g or lb.
+4. Add, duplicate or delete package rows; Clear All starts a blank worksheet. Up to 50 package types are supported as a technical limit.
+5. Read shipment CBM, cubic feet, total pieces, known packed weight and volume composition. Display precision changes do not change the exact totals used for pricing.
+6. Optionally enable Cost Estimate and enter your own per-CBM freight rate, currency, minimum charge and other charges.
+7. Copy the current validated summary or use Print / Save PDF. Calculations run locally in your browser; there is no upload.
 
 ## Method
 
-CBM means cubic metres (m³), the volume unit freight forwarders use to price sea (LCL) freight and to plan cargo; for air and courier shipments the volume is converted to volumetric weight.
+Each package volume uses outer packed dimensions converted to metres, multiplied by quantity. Package types aggregate in worksheet order. The engine uses exact decimal arithmetic first and rounds only for display; pricing uses the exact current shipment CBM, never rounded displayed CBM. A changed input clears previous results until the current calculation succeeds.
 
-- CBM per carton = length × width × height, converted to cubic metres.
-- Total CBM = CBM per carton × number of cartons.
-- Cubic feet (ft³) = CBM × 35.3146667.
+Length factors are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 in = 0.0254 m and 1 ft = 0.3048 m. Cubic feet use the approved factor 35.3146667 per m³. Weight factors are 1 g = 0.001 kg and 1 lb = 0.45359237 kg.
 
-Unit conversions are exact: 1 cm = 0.01 m, 1 mm = 0.001 m and 1 inch = 0.0254 m, so one cubic centimetre is 0.000001 m³ and one cubic inch is 0.000016387064 m³.
+Without weights, packed weight is not provided. With weights for some rows, only their known packed weight is shown and labelled partial; missing weights are never treated as a complete zero-weight shipment. Complete coverage includes every package row.
 
-The rule is **exact first, round once**. Every volume is calculated exactly and rounded to the selected two, three or four decimal places only for display. The total is calculated from the exact volume of one carton, not from the rounded figure. For example, at three places a 25 × 25 × 20 cm carton is 0.0125 m³, shown as 0.013, and 100 of them are 1.250 m³, not 1.300.
+Optional freight cost uses your entered rate multiplied by exact CBM, applies your minimum when higher, then adds other charges. There are no live freight rates and no FX conversion; changing currency relabels amounts. Actual freight charges may differ due to carrier terms, route, taxes, surcharges and minimums. CBM is volume, not chargeable weight.
+
+The dimensional visualization is illustrative, not a loading plan. Volume comparison only — not a guarantee of physical fit. Nominal dry-container reference volumes are Maersk 20 ft standard 33.2 m³, 40 ft standard 67.7 m³ and 40 ft High Cube 76.4 m³. Capacities vary by carrier, manufacturer and container series; confirm actual equipment specifications with your carrier.
 
 ## Worked example
 
-100 cartons of 50 × 40 × 30 cm:
+100 packages of 50 × 40 × 30 cm give 6.000 m³ and 211.888 ft³, totalling 100 pieces. Weight is not provided. At a user-entered rate of INR 100 per CBM, with no minimum or other charges, estimated freight is INR 600.00.
 
 ## FAQ
 
-### What does CBM mean?
+### Can I calculate multiple package types?
 
-CBM stands for cubic metre (m³). One CBM is the volume of a box 1 m long, 1 m wide and 1 m high. Freight forwarders quote sea (LCL) shipments by CBM; for air and courier shipments they convert the volume to volumetric weight.
+Yes. Add a row for each package type, with its own dimensions, unit and quantity. Duplicate copies a row for independent editing.
 
-### How do I convert CBM to cubic feet?
+### Why can displayed row volumes differ from the shipment total?
 
-Multiply by 35.3146667. For example, 6 CBM is 6 × 35.3146667 = 211.888 cubic feet. The calculator shows both.
+Rows and totals round independently for display. Exact row values determine the shipment total and optional freight estimate. A 25 × 25 × 20 cm package has 0.0125 m³; 100 give 1.250 m³ even when one displays as 0.013 m³.
 
-### Why is the total not exactly the rounded CBM per carton × cartons?
+### What does partial packed weight mean?
 
-The total uses the exact volume of one carton and is rounded only at the end. The per-carton figure you see is rounded to three decimal places, so multiplying that rounded figure can differ slightly. The exact total is the correct one.
-
-### How should I measure a carton?
-
-Measure the outer dimensions of the packed carton, including any bulge, handles or pallet overhang, because carriers charge for the space the carton takes up.
-
-### Can I enter the dimensions in inches?
-
-Yes. Choose inch as the unit. The calculator uses the international inch (exactly 25.4 mm) and still shows the result in cubic metres and cubic feet.
+Only packages with weight per item contribute to known packed weight. Partial means some package rows have no weight; it is not the complete shipment weight.
 
 ### Is CBM the same as chargeable weight?
 
-No. CBM is the volume only. Carriers also compare volume with actual weight to decide the chargeable weight, and apply their own minimums and rounding, so confirm the final figures with your forwarder.
+No. CBM measures volume. Carriers may compare actual and volumetric weight and apply their own minimums and rounding. Use [Volumetric Weight Calculator](tool:volumetric-weight-calculator) and confirm billing rules with your forwarder.
+
+### Does the freight estimate include live prices or currency conversion?
+
+No. It uses your own per-CBM rate, optional minimum and other charges in the selected currency. No live rates or FX conversion are supplied, and actual charges may differ.
+
+### Will this shipment physically load into a container?
+
+Volume comparison only — not a guarantee of physical fit. Dimensions, orientations, stacking, door access and securing need separate assessment. Check actual fit → [Container Loading Calculator](tool:container-loading-calculator).
+
+### Are descriptions or shipment data uploaded?
+
+No. Processing is browser-local with no network upload. Descriptions/SKUs remain in browser memory and are excluded from numeric engine payloads. Copy and print include the current worksheet when you choose those actions.
 
 ## References
 
-- SI definition of the metre and the cubic metre (International System of Units).
-- International yard and pound agreement (1959): 1 inch = 25.4 mm exactly.
-- Cubic foot: 1 ft³ = 0.028316846592 m³, rounded here to 35.3146667 ft³ per m³.
+- SI definition of metre and cubic metre; international yard and pound agreement (1959): inch 0.0254 m, foot 0.3048 m, pound 0.45359237 kg exactly.
+- Approved CBM conversion reference: 35.3146667 cubic feet per cubic metre.
+- Maersk, A handy guide to Maersk’s fleet of containers, Dry Cargo; equipment-flyer.pdf, Greece local-information import reference. Checked 21 October 2026. Nominal volume references only; actual equipment varies.

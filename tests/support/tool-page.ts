@@ -7,7 +7,7 @@ export const SAMPLES = {
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
   'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
-  'cbm-calculator': { archetype: 'B', result: '6.000' },
+  'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
   'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },
   'excavation-calculator': { archetype: 'B', result: '12.000' },
   'brickwork-calculator': { archetype: 'B', result: '538' },
@@ -153,8 +153,10 @@ export const TOOL_IDS = [...Object.keys(SAMPLES), ...Object.keys(FILE_TOOLS)] as
 
 export const hasSample = (id: string): id is keyof typeof SAMPLES => id in SAMPLES;
 
-export const island = (page: Page, id: string) => page.locator(`[data-tool-island="${id}"]`);
-export const primaryResult = (page: Page) => page.locator('[data-primary-result] output');
+export const island = (page: Page, id: string) =>
+  page.locator(id === 'cbm-calculator' ? '[data-cbm-workspace]' : `[data-tool-island="${id}"]`);
+export const primaryResult = (page: Page) =>
+  page.locator('[data-primary-result] output, [data-cbm-total]');
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
 
@@ -178,6 +180,10 @@ export async function openRelatedTools(page: Page): Promise<void> {
 }
 
 export async function waitForResult(page: Page, id: string): Promise<void> {
+  if (id === 'cbm-calculator') {
+    await expect(page.locator('[data-cbm-total]')).toBeVisible();
+    return;
+  }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
 }
 

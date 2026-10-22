@@ -1,153 +1,144 @@
 import { expect, type Page, test } from '@playwright/test';
-import { island, openTool, primaryResult } from '../support/tool-page.ts';
+import { copiedTexts, openTool, stubClipboard } from '../support/tool-page.ts';
 
-const tool = 'cbm-calculator';
-const output = (page: Page, key: string) => page.locator(`[data-output="${key}"] dd`);
-const choose = (page: Page, field: string, value: string) =>
-  page.locator(`label[for="tool-${tool}-${field}-${value}"]`).click();
+const total = (page: Page) => page.locator('[data-cbm-total]');
+const rows = (page: Page) => page.locator('[data-package-row]');
+const field = (page: Page, index: number, key: string) =>
+  rows(page).nth(index).locator(`[id$="-${key}"]`);
+const summary = (page: Page) => page.getByRole('region', { name: 'Results Summary' });
+const cost = (page: Page) => page.getByRole('region', { name: 'Estimated freight cost' });
 
-async function populateSample(page: Page) {
-  await page.getByRole('button', { name: 'Try sample' }).click();
-  await expect(primaryResult(page)).toHaveText('6.000');
+async function ready(page: Page) {
+  await openTool(page, 'cbm-calculator');
+  await expect(total(page)).toHaveText('6.000 m³');
 }
-
-async function expectSameMobileRow(page: Page, left: string, right: string) {
-  const boxes = await page.evaluate(
-    ({ left, right }) => {
-      const box = (id: string) =>
-        document
-          .querySelector<HTMLElement>(id)
-          ?.closest<HTMLElement>('[data-width]')
-          ?.getBoundingClientRect()
-          .toJSON();
-      return { left: box(left), right: box(right) };
-    },
-    { left, right },
+async function noOverflow(page: Page) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    await page.evaluate(() => innerWidth),
   );
-  expect(boxes.left).toBeTruthy();
-  expect(boxes.right).toBeTruthy();
-  expect(Math.abs((boxes.left?.top ?? 0) - (boxes.right?.top ?? 0))).toBeLessThanOrEqual(2);
-  expect(boxes.left?.right ?? 0).toBeLessThan(boxes.right?.left ?? 0);
 }
 
-test.describe('CBM compact workspace', () => {
-  test('fits populated inputs, results and collapsed supporting content on desktop', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1366, height: 768 });
-    await openTool(page, tool);
-    await populateSample(page);
-    await expect(island(page, tool).locator('[data-density]')).toHaveAttribute(
-      'data-density',
-      'compact',
+test.describe('Active CBM shipment workspace', () => {
+  test('activates shipment results and keeps support sections collapsed', async ({ page }) => {
+    await ready(page);
+    await expect(page.locator('[data-cbm-workspace]')).toBeVisible();
+    await expect(page.locator('[data-input-panel], [data-output="cbmPerCarton"]')).toHaveCount(0);
+    await expect(summary(page)).toContainText('211.888 ft³');
+    await expect(summary(page)).toContainText('100');
+    await expect(summary(page)).toContainText('Not provided');
+    await expect(page.getByRole('region', { name: 'Load Composition by Package' })).toContainText(
+      '100.0%',
     );
-    const notes = page.locator('details[data-notes]');
-    if ((await notes.count()) > 0) await expect(notes).not.toHaveAttribute('open');
-    for (const section of await page.locator('details[data-tool-content-section]').all()) {
-      await expect(section).not.toHaveAttribute('open');
+    for (const item of await page.locator('details[data-tool-content-section]').all())
+      await expect(item).not.toHaveAttribute('open');
+    await expect(
+      page.getByText('Important Notes / Warnings', { exact: true }).locator('..'),
+    ).not.toHaveAttribute('open');
+    await expect(
+      page.getByText('Illustrative dimensions — not a loading plan.', { exact: true }),
+    ).toBeVisible();
+  });
+
+  test('adds mixed packages, duplicates independently, deletes and clears', async ({ page }) => {
+    await ready(page);
+    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await expect(rows(page)).toHaveCount(2);
+    await field(page, 1, 'unit').selectOption('m');
+    for (const key of ['length', 'width', 'height']) await field(page, 1, key).fill('1');
+    await expect(total(page)).toHaveText('7.000 m³');
+    await expect(summary(page)).toContainText('101');
+    await page.getByRole('button', { name: 'Duplicate Package 2', exact: true }).click();
+    await expect(total(page)).toHaveText('8.000 m³');
+    await field(page, 2, 'length').fill('2');
+    await expect(total(page)).toHaveText('9.000 m³');
+    await page.getByRole('button', { name: 'Delete Package 3', exact: true }).click();
+    await expect(total(page)).toHaveText('7.000 m³');
+    await page.getByRole('button', { name: 'Clear All', exact: true }).click();
+    await expect(rows(page)).toHaveCount(1);
+    await expect(field(page, 0, 'length')).toHaveValue('');
+    await expect(total(page)).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Copy Summary', exact: true })).toBeDisabled();
+  });
+
+  test('supports mm/cm/m/in/ft without changing physical volume', async ({ page }) => {
+    await ready(page);
+    for (const unit of ['mm', 'cm', 'm', 'in', 'ft']) {
+      await field(page, 0, 'unit').selectOption(unit);
+      await expect(total(page)).toHaveText('6.000 m³');
     }
-
-    const bounds = await page.evaluate(() => ({
-      viewport: window.innerHeight,
-      input:
-        document.querySelector('[data-input-panel]')?.getBoundingClientRect().bottom ?? Infinity,
-      result:
-        document.querySelector('[data-result-panel]')?.getBoundingClientRect().bottom ?? Infinity,
-      secondary: Math.max(
-        ...Array.from(
-          document.querySelectorAll(
-            'details[data-disclaimer] > summary, details[data-tool-content-section] > summary',
-          ),
-          (element) => element.getBoundingClientRect().bottom,
-        ),
-      ),
-    }));
-    expect(Math.max(bounds.input, bounds.result, bounds.secondary)).toBeLessThanOrEqual(
-      bounds.viewport,
-    );
   });
 
-  test('uses paired fields without mobile horizontal overflow', async ({ page }) => {
-    await page.setViewportSize({ width: 360, height: 800 });
-    await openTool(page, tool);
-    await populateSample(page);
-
-    const id = (field: string) => `#tool-${tool}-${field}`;
-    await expectSameMobileRow(page, `${id('unit')}-cm`, `${id('decimalPlaces')}-3`);
-    await expectSameMobileRow(page, id('length'), id('width'));
-    await expectSameMobileRow(page, id('height'), id('quantity'));
-
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    );
-    expect(overflow).toBeLessThanOrEqual(0);
+  test('distinguishes none, partial and complete packed weight', async ({ page }) => {
+    await ready(page);
+    await expect(summary(page)).toContainText('Not provided');
+    await page.getByRole('button', { name: 'Duplicate Package 1', exact: true }).click();
+    await field(page, 0, 'weightPerItem').fill('2');
+    await expect(summary(page)).toContainText('Known packed weight (partial)');
+    await expect(summary(page)).toContainText('200.000 kg');
+    await field(page, 1, 'weightUnit').selectOption('g');
+    await field(page, 1, 'weightPerItem').fill('1000');
+    await expect(summary(page)).toContainText('300.000 kg');
+    await expect(summary(page)).not.toContainText('partial');
   });
 
-  test('converts dimensions across cm, m, mm and inches without changing physical volume', async ({
-    page,
-  }) => {
-    await openTool(page, tool);
-    await populateSample(page);
-
-    const length = page.getByLabel('Length');
-    const width = page.getByLabel('Width');
-    const height = page.getByLabel('Height');
-    await choose(page, 'unit', 'm');
-    await expect(length).toHaveValue('0.5');
-    await expect(width).toHaveValue('0.4');
-    await expect(height).toHaveValue('0.3');
-    await expect(primaryResult(page)).toHaveText('6.000');
-
-    await populateSample(page);
-    await choose(page, 'unit', 'mm');
-    await expect(length).toHaveValue('500');
-    await expect(width).toHaveValue('400');
-    await expect(height).toHaveValue('300');
-    await expect(primaryResult(page)).toHaveText('6.000');
-
-    await populateSample(page);
-    await choose(page, 'unit', 'in');
-    await expect(length).toHaveValue('19.685039370079');
-    await expect(width).toHaveValue('15.748031496063');
-    await expect(height).toHaveValue('11.811023622047');
-    await expect(primaryResult(page)).toHaveText('6.000');
+  test('prices exact CBM and rejects stale cost after shipment edits', async ({ page }) => {
+    await ready(page);
+    for (const key of ['length', 'width', 'height']) await field(page, 0, key).fill('1');
+    await field(page, 0, 'quantity').fill('1');
+    await expect(total(page)).toHaveText('0.000 m³');
+    await page.getByLabel('Enable cost estimate').check();
+    await page.getByLabel('Freight rate', { exact: true }).fill('1000000');
+    await expect(cost(page)).toContainText('INR 1.00');
+    await field(page, 0, 'length').fill('');
+    await expect(total(page)).toHaveCount(0);
+    await expect(cost(page)).not.toContainText('INR 1.00');
+    await field(page, 0, 'length').fill('2');
+    await expect(cost(page)).toContainText('INR 2.00');
+    await page.getByLabel('Enable cost estimate').uncheck();
+    await expect(cost(page)).toHaveCount(0);
   });
 
-  test('preserves quantity and cubic-feet outputs', async ({ page }) => {
-    await openTool(page, tool);
-    await populateSample(page);
-    await page.getByLabel('Cartons').fill('10');
-    await expect(primaryResult(page)).toHaveText('0.600');
-    await expect(output(page, 'cbmPerCarton')).toHaveText('0.060');
-    await expect(output(page, 'totalCft')).toHaveText('21.189');
-    await expect(output(page, 'cftPerCarton')).toHaveText('2.119');
+  test('copies current worksheet and exposes browser print', async ({ page }) => {
+    await stubClipboard(page);
+    await ready(page);
+    await field(page, 0, 'description').fill('Private SKU');
+    await expect(total(page)).toBeVisible();
+    await page.getByRole('button', { name: 'Copy Summary', exact: true }).click();
+    expect((await copiedTexts(page))[0]).toContain('Private SKU');
+    expect((await copiedTexts(page))[0]).toContain('6.000 m³');
+    await page.evaluate(() => {
+      window.print = () => document.documentElement.setAttribute('data-test-printed', 'yes');
+    });
+    await page.getByRole('button', { name: 'Print / Save PDF', exact: true }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-test-printed', 'yes');
+    await page.emulateMedia({ media: 'print' });
+    await expect(page.locator('[data-cbm-workspace] pre')).toBeVisible();
   });
 
-  test('formats decimal outputs at 2, 3 and 4 places without changing the calculation', async ({
-    page,
-  }) => {
-    await openTool(page, tool);
-    await populateSample(page);
-    await page.getByLabel('Length').fill('25');
-    await page.getByLabel('Width').fill('25');
-    await page.getByLabel('Height').fill('20');
-
-    await choose(page, 'decimalPlaces', '2');
-    await page.getByLabel('Length').fill('25.00');
-    await expect(primaryResult(page)).toHaveText('1.25');
-    await expect(output(page, 'cbmPerCarton')).toHaveText('0.01');
-    await expect(output(page, 'totalCft')).toHaveText('44.14');
-
-    await choose(page, 'decimalPlaces', '3');
-    await page.getByLabel('Length').fill('25.000');
-    await expect(primaryResult(page)).toHaveText('1.250');
-    await expect(output(page, 'cbmPerCarton')).toHaveText('0.013');
-    await expect(output(page, 'totalCft')).toHaveText('44.143');
-
-    await choose(page, 'decimalPlaces', '4');
-    await page.getByLabel('Length').fill('25.0000');
-    await expect(primaryResult(page)).toHaveText('1.2500');
-    await expect(output(page, 'cbmPerCarton')).toHaveText('0.0125');
-    await expect(output(page, 'totalCft')).toHaveText('44.1433');
-  });
+  for (const width of [1366, 360, 375, 390]) {
+    test(`active layout has no overflow at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: width === 1366 ? 768 : 800 });
+      await ready(page);
+      await noOverflow(page);
+      if (width < 700) {
+        const length = await field(page, 0, 'length').boundingBox();
+        const widthField = await field(page, 0, 'width').boundingBox();
+        expect(length).toBeTruthy();
+        expect(widthField).toBeTruthy();
+        expect(Math.abs((length?.y ?? 0) - (widthField?.y ?? 0))).toBeLessThanOrEqual(1);
+        expect((length?.x ?? 0) + (length?.width ?? 0)).toBeLessThan(widthField?.x ?? 0);
+        expect(
+          await field(page, 0, 'length').evaluate((node) => node.getBoundingClientRect().height),
+        ).toBeGreaterThanOrEqual(44);
+      }
+      await page.screenshot({
+        path: test.info().outputPath(`cbm-active-${width}.png`),
+        fullPage: true,
+      });
+      await page.getByLabel('Enable cost estimate').check();
+      await page.getByLabel('Freight rate', { exact: true }).fill('100');
+      await expect(cost(page)).toContainText('INR 600.00');
+      await noOverflow(page);
+    });
+  }
 });

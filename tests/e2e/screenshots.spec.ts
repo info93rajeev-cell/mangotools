@@ -80,7 +80,7 @@ for (const size of [
     await page.setViewportSize(size);
     await gotoReady(page, '/cbm-calculator');
     await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(primaryResult(page)).toHaveText('6.000');
+    await expect(primaryResult(page)).toHaveText('6.000 m³');
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(0, 0);
     await page.screenshot({
