@@ -1,0 +1,11 @@
+id: 001-no-file-selected
+preset: image/remove-background
+source:
+  type: synthetic
+  citation: "Mirrors image.remove-background@1 validation: a missing file must be a specific typed error through the Image Background Remover preset too"
+input:
+  tolerance: 20
+  feather: 2
+  outputFormat: png
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

@@ -7,7 +7,6 @@ import {
   track,
 } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import type { ComponentType } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import {
   CalculatorLayout,
@@ -21,10 +20,13 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
-import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
+import {
+  DynamicImageBackgroundRemoverLayout,
+  DynamicImageCompressLayout,
+  DynamicImageFormatConverterLayout,
+  DynamicImageResizeLayout,
+} from './DynamicImageToolLayouts.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
-import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
-import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
 import { shapeIncomingPackingTransfer } from './packingItems.ts';
@@ -33,51 +35,13 @@ import { configureToolActions } from './toolActions.ts';
 import styles from './toolkit.module.css';
 import { useToolStore } from './useToolStore.ts';
 
-function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
-  const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);
-
-  useEffect(() => {
-    void import('./ImageResizeLayout.tsx').then((m) => {
-      setComp(() => m.ImageResizeLayout);
-    });
-  }, []);
-
-  if (!Comp) return null;
-  return <Comp {...props} />;
-}
-
-function DynamicImageFormatConverterLayout(props: ImageFormatConverterLayoutProps) {
-  const [Comp, setComp] = useState<ComponentType<ImageFormatConverterLayoutProps> | null>(null);
-
-  useEffect(() => {
-    void import('./ImageFormatConverterLayout.tsx').then((m) => {
-      setComp(() => m.ImageFormatConverterLayout);
-    });
-  }, []);
-
-  if (!Comp) return null;
-  return <Comp {...props} />;
-}
-
-function DynamicImageCompressLayout(props: ImageCompressLayoutProps) {
-  const [Comp, setComp] = useState<ComponentType<ImageCompressLayoutProps> | null>(null);
-
-  useEffect(() => {
-    void import('./ImageCompressLayout.tsx').then((m) => {
-      setComp(() => m.ImageCompressLayout);
-    });
-  }, []);
-
-  if (!Comp) return null;
-  return <Comp {...props} />;
-}
-
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
 const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
 const IMAGE_RESIZE_PRESET_ID = 'image/resize';
 const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
+const IMAGE_REMOVE_BACKGROUND_PRESET_ID = 'image/remove-background';
 
 export interface ToolIslandProps {
   toolId: string;
@@ -234,6 +198,17 @@ function renderCustomFileLayout({ idPrefix, toolId, preset, notify, onFilePhase 
   if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
     return (
       <DynamicImageFormatConverterLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_REMOVE_BACKGROUND_PRESET_ID) {
+    return (
+      <DynamicImageBackgroundRemoverLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}

@@ -88,6 +88,7 @@ interface OffscreenCanvasRenderingContext2D {
   measureText(text: string): TextMetrics;
   fillText(text: string, x: number, y: number): void;
   getImageData(sx: number, sy: number, sw: number, sh: number): ImageData;
+  putImageData(imagedata: ImageData, dx: number, dy: number): void;
 }
 
 declare class OffscreenCanvas {
