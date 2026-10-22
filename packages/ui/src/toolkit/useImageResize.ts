@@ -1,7 +1,7 @@
 import { err, type OpError, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import {
@@ -11,12 +11,10 @@ import {
 } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
-
 export type ResizeOutputFormat = 'same' | 'jpg' | 'png' | 'webp' | 'pdf';
 export type { ResizeFile };
 
 const FORMAT_MIME_MAP: Record<string, string> = { ...MIME_MAP, pdf: 'application/pdf' };
-
 export interface ImageResizeResultData {
   fileName: string;
   bytes: Uint8Array;
@@ -31,7 +29,6 @@ export interface ImageResizeResultData {
   originalFormat: string;
   outputFormat: string;
 }
-
 interface ResizeRunConfig {
   preset: ResolvedPreset;
   file: ResizeFile;
@@ -42,18 +39,15 @@ interface ResizeRunConfig {
   quality: number;
   customFileName: string;
 }
-
 async function convertResizedToPdf(
   cfg: ResizeRunConfig,
   resized: ImageResizeResultData,
 ): Promise<Result<ImageResizeResultData>> {
   const wrapped = await wrapImageBytesInPdf(resized.bytes, 'IMAGE_RESIZE_FAILED');
   if (!wrapped.ok) return wrapped;
-
   const rawBase = cfg.customFileName.trim() || cfg.file.name.replace(/\.[^.]+$/, '');
   const cleanBase = rawBase.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'image';
   const fileName = `${cleanBase.replace(/-resized$/, '')}-resized.pdf`;
-
   return ok({
     fileName,
     bytes: wrapped.value.pdfBytes,
@@ -71,7 +65,6 @@ async function convertResizedToPdf(
     outputFormat: 'pdf',
   });
 }
-
 async function executeResizeWorker(cfg: ResizeRunConfig): Promise<Result<ImageResizeResultData>> {
   if (cfg.outputFormat === 'pdf') {
     const pngConfig: ResizeRunConfig = { ...cfg, outputFormat: 'png' };
@@ -79,7 +72,6 @@ async function executeResizeWorker(cfg: ResizeRunConfig): Promise<Result<ImageRe
     if (!outcome.ok) return outcome;
     return convertResizedToPdf(cfg, outcome.value);
   }
-
   const input = {
     file: { name: cfg.file.name, bytes: cfg.file.bytes },
     targetWidth: Math.round(cfg.targetWidth),
@@ -107,7 +99,6 @@ async function executeResizeWorker(cfg: ResizeRunConfig): Promise<Result<ImageRe
     outputFormat: String(val.outputFormat),
   });
 }
-
 function useResizeState() {
   const [file, setFile] = useState<ResizeFile | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -154,9 +145,7 @@ function useResizeState() {
     setError,
   };
 }
-
 type ResizeState = ReturnType<typeof useResizeState>;
-
 function applyLoadedImage(
   s: ResizeState,
   res: { file: ResizeFile; blobUrl: string; dims: { width: number; height: number } },
@@ -177,7 +166,9 @@ async function handleLoad(
   s: ResizeState,
   invalidate: () => void,
   notify: (msg: string) => void,
+  userInteractedRef: { current: boolean },
 ) {
+  userInteractedRef.current = true;
   invalidate();
   try {
     const res = await inspectAndDecodeImage(rawFile);
@@ -193,14 +184,24 @@ async function handleLoad(
   }
 }
 
-async function handleSample(s: ResizeState, invalidate: () => void) {
-  invalidate();
+async function handleSample(
+  s: ResizeState,
+  invalidate: () => void,
+  userInteractedRef?: { current: boolean },
+) {
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) return;
   const sample = await createPalaceSample();
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) return;
   const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
     type: 'image/jpeg',
   });
   const res = await inspectAndDecodeImage(fileObj);
   if (!res.ok) return;
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) {
+    URL.revokeObjectURL(res.value.blobUrl);
+    return;
+  }
+  invalidate();
   applyLoadedImage(s, res.value, 0.5);
 }
 
@@ -282,6 +283,7 @@ function useResizeActions(
   toolId: string,
   onPhase: (phase: FilePhase) => void,
   notify: (msg: string) => void,
+  userInteractedRef: { current: boolean },
 ) {
   const withInvalidate =
     <T>(setter: (v: T) => void) =>
@@ -319,7 +321,7 @@ function useResizeActions(
     setOutputFormat: withInvalidate(s.setOutputFormat),
     setQuality: withInvalidate(s.setQuality),
     setCustomFileName: withInvalidate(s.setCustomFileName),
-    loadFile: (f: File) => handleLoad(f, s, invalidate, notify),
+    loadFile: (f: File) => handleLoad(f, s, invalidate, notify, userInteractedRef),
     loadSample: () => handleSample(s, invalidate),
     executeResize: () => handleRun(s, preset, toolId, onPhase, notify),
     executeResizeAndDownload: () => handleRunAndDownload(s, preset, toolId, onPhase, notify),
@@ -351,7 +353,7 @@ export function useImageResize(
   onPhase: (phase: FilePhase) => void,
 ) {
   const s = useResizeState();
-
+  const userInteractedRef = useRef(false);
   const invalidate = () => {
     if (s.result || s.phase !== 'idle') {
       s.setResult(null);
@@ -371,15 +373,20 @@ export function useImageResize(
       if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
     };
   }, []);
-
   useEffect(() => {
     if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate);
+      void handleSample(s, invalidate, userInteractedRef);
     }
   }, []);
-
-  const actions = useResizeActions(s, invalidate, preset, toolId, onPhase, notify);
-
+  const actions = useResizeActions(
+    s,
+    invalidate,
+    preset,
+    toolId,
+    onPhase,
+    notify,
+    userInteractedRef,
+  );
   return {
     ...s,
     ...actions,

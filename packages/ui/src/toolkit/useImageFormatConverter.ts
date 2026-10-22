@@ -1,7 +1,7 @@
 import { err, type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import {
@@ -163,7 +163,9 @@ async function handleLoad(
   s: ConvertState,
   invalidate: () => void,
   notify: (msg: string) => void,
+  userInteractedRef: { current: boolean },
 ) {
+  userInteractedRef.current = true;
   invalidate();
   try {
     const res = await inspectAndDecodeImage(rawFile);
@@ -185,14 +187,24 @@ async function handleLoad(
   }
 }
 
-async function handleSample(s: ConvertState, invalidate: () => void) {
-  invalidate();
+async function handleSample(
+  s: ConvertState,
+  invalidate: () => void,
+  userInteractedRef?: { current: boolean },
+) {
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) return;
   const sample = await createPalaceSample();
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) return;
   const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
     type: 'image/jpeg',
   });
   const res = await inspectAndDecodeImage(fileObj);
   if (!res.ok) return;
+  if (userInteractedRef?.current || (userInteractedRef && s.file)) {
+    URL.revokeObjectURL(res.value.blobUrl);
+    return;
+  }
+  invalidate();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   s.setFile(res.value.file);
   s.setImageSrc(res.value.blobUrl);
@@ -275,6 +287,7 @@ function useConvertActions(
   toolId: string,
   onPhase: (phase: FilePhase) => void,
   notify: (msg: string) => void,
+  userInteractedRef: { current: boolean },
 ) {
   return {
     setTargetFormat: (fmt: TargetImageFormat) => {
@@ -289,7 +302,7 @@ function useConvertActions(
       invalidate();
       s.setCustomFileName(name);
     },
-    loadFile: (f: File) => handleLoad(f, s, invalidate, notify),
+    loadFile: (f: File) => handleLoad(f, s, invalidate, notify, userInteractedRef),
     loadSample: () => handleSample(s, invalidate),
     executeConvert: () => handleRun(s, preset, toolId, onPhase, notify),
     executeConvertAndDownload: () => handleRunAndDownload(s, preset, toolId, onPhase, notify),
@@ -318,6 +331,7 @@ export function useImageFormatConverter(
   onPhase: (phase: FilePhase) => void,
 ) {
   const s = useConvertState();
+  const userInteractedRef = useRef(false);
 
   const invalidate = () => {
     if (s.result || s.phase !== 'idle') {
@@ -341,11 +355,19 @@ export function useImageFormatConverter(
 
   useEffect(() => {
     if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate);
+      void handleSample(s, invalidate, userInteractedRef);
     }
   }, []);
 
-  const actions = useConvertActions(s, invalidate, preset, toolId, onPhase, notify);
+  const actions = useConvertActions(
+    s,
+    invalidate,
+    preset,
+    toolId,
+    onPhase,
+    notify,
+    userInteractedRef,
+  );
 
   return {
     file: s.file,

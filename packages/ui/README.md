@@ -167,3 +167,5 @@ only after both workstreams are combined.
 `CbmOutputActions.tsx` is B-owned, including `CbmPrintReport` presentation. Print functionality and
 copy content remain frozen unless #219 explicitly requires presentation-only changes. The shell's
 screen hide rule stays A-owned; preserve the report's placement outside that hidden workspace.
+
+PR #225 sample-load fix: Resize and Format Converter reuse Crop’s user-interaction ref guard so delayed automatic Jaipur samples cannot replace uploads. Manual Try Sample and untouched initial demo loading remain available; browser regressions cover both studios.
