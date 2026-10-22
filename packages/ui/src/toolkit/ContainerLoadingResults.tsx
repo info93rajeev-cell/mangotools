@@ -1,3 +1,4 @@
+import { Icon } from '../primitives/Icon.tsx';
 import { containerAllocation } from './containerAllocation.ts';
 import { packageColors } from './containerPlacementGeometry.ts';
 import s from './containerResults.module.css';
@@ -42,6 +43,7 @@ export function ContainerLoadingResults({
       <div class={s.kpis}>
         {kpis.map(([label, value], i) => (
           <div key={label} class={s.kpi} style={{ '--tone': packageColors[i] }}>
+            <Icon name={['container', 'container', 'rotate-ccw', 'briefcase'][i] ?? 'container'} />
             <span>{label}</span>
             <strong data-load-kpi={i}>{value}</strong>
           </div>

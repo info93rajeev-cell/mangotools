@@ -50,7 +50,7 @@ export async function startContainerPreview(port = 4350) {
             if (req.url !== '/') return next();
             res.setHeader('Content-Type', 'text/html');
             res.end(
-              '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Container Loading workspace preview</title></head><body><div id="workspace-preview"></div><script type="module" src="/tests/support/container-workspace-harness.tsx"></script></body></html>',
+              '<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Container Loading workspace preview</title></head><body><div id="workspace-preview"></div><script type="module" src="/tests/support/container-workspace-harness.tsx"></script></body></html>',
             );
           });
         },

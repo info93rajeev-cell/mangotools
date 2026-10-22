@@ -246,3 +246,5 @@ Local UI review (not a published tool route): import `startContainerPreview` fro
 `tests/support/container-workspace-preview.ts` with tsx and call it (default port 4350).
 `tests/e2e/container-workspace.spec.ts` starts its own isolated real-worker preview per test worker.
 Phase-1 private-package change record: dedicated Container Loading UI implementation, #226.
+
+#226 presentation follow-up: the dedicated Container Loading workspace now uses the founder's light logistics palette independent of OS theme, a larger blue container cutaway over the engine placements, icon KPI cards and yellow/outlined output actions. Browser checks cover dark OS preference while retaining the light workspace. Tool activation remains a separate tools-lane change.

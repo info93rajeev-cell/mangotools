@@ -1,5 +1,6 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useState } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
 import { copyText } from './actions.ts';
 import {
   ContainerConstraints,
@@ -9,6 +10,7 @@ import {
 import { ContainerFreightResult, ContainerLoadingResults } from './ContainerLoadingResults.tsx';
 import { ContainerPackageWorksheet } from './ContainerPackageWorksheet.tsx';
 import { ContainerPlacementView } from './ContainerPlacementView.tsx';
+import output from './containerOutput.module.css';
 import s from './containerWorkspace.module.css';
 import { loadSummary } from './containerWorkspacePresentation.ts';
 import { loadWarningText, containerText as t } from './containerWorkspaceStrings.ts';
@@ -43,21 +45,21 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
           <ContainerPlacementView state={state} selected={selected} onSelect={setSelection} />
           <ContainerLoadingResults state={state} selected={selected} />
           <ContainerFreightResult state={state} />
-          <div class={s.actions}>
+          <div class={`${s.actions} ${output.actions}`}>
             <button
               type="button"
               class={s.print}
               disabled={!state.result}
               onClick={() => window.print()}
             >
-              {t.print}
+              <Icon name="file-text" /> {t.print}
             </button>
             <button
               type="button"
               disabled={!state.result}
               onClick={async () => setFeedback((await copyText(summary)) ? t.copied : t.copyFailed)}
             >
-              {t.copy}
+              <Icon name="copy" /> {t.copy}
             </button>
           </div>
           <p class={s.feedback} role="status">

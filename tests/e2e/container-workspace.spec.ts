@@ -113,7 +113,9 @@ test.describe('Container workspace #226', () => {
         )
           external.push(r.url());
       });
+      await page.emulateMedia({ colorScheme: 'dark' });
       await ready(page);
+      await expect(page.locator('[data-container-workspace]')).toHaveCSS('color-scheme', 'light');
       await priced(page);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
       expect(external).toEqual([]);

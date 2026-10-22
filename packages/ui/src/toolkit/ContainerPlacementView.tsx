@@ -1,13 +1,8 @@
 import { useState } from 'preact/hooks';
-import {
-  boxFaces,
-  containerLines,
-  type LoadView,
-  packageColors,
-  projector,
-  visiblePieces,
-} from './containerPlacementGeometry.ts';
+import { ContainerFrame, ContainerShell } from './ContainerShell.tsx';
+import { boxFaces, type LoadView, projector, visiblePieces } from './containerPlacementGeometry.ts';
 import s from './containerResults.module.css';
+import scene from './containerScene.module.css';
 import type { LoadSnapshot } from './containerWorkspaceModel.ts';
 import { containerChoices, containerText as t } from './containerWorkspaceStrings.ts';
 export function ContainerPlacementView({
@@ -24,10 +19,14 @@ export function ContainerPlacementView({
   const blocks = (result?.blocks ?? []).filter((b) => b.container === selected);
   const project = result ? projector(result, view) : null;
   return (
-    <details open class={`${s.card} ${s.visual}`} data-selected-container={selected}>
+    <details
+      open
+      class={`${s.card} ${s.visual} ${scene.visual}`}
+      data-selected-container={selected}
+    >
       <summary>{t.visual}</summary>
-      <div class={s.visualHead}>
-        <div class={s.views}>
+      <div class={`${s.visualHead} ${scene.visualHead}`}>
+        <div class={scene.views}>
           {(['iso', 'top', 'front', 'side'] as const).map((v) => (
             <button type="button" key={v} aria-pressed={view === v} onClick={() => setView(v)}>
               {t[v]}
@@ -36,16 +35,8 @@ export function ContainerPlacementView({
         </div>
       </div>
       {result && project ? (
-        <svg viewBox="0 0 800 300" role="img" aria-label={t.actual} data-placement-view={view}>
-          <polygon
-            points={[
-              project([0, 0, 0]),
-              project([Number(result.containerLength), 0, 0]),
-              project([Number(result.containerLength), Number(result.containerWidth), 0]),
-              project([0, Number(result.containerWidth), 0]),
-            ].join(' ')}
-            fill="#dce8f4"
-          />
+        <svg viewBox="0 20 800 250" role="img" aria-label={t.actual} data-placement-view={view}>
+          <ContainerShell result={result} project={project} />
           {visiblePieces(blocks)
             .sort((a, b) => Number(b.y) - Number(a.y) || Number(a.z) - Number(b.z))
             .map((b, index) => (
@@ -54,22 +45,20 @@ export function ContainerPlacementView({
                   <polygon
                     key={i}
                     points={face}
-                    fill={packageColors[b.package % packageColors.length]}
+                    fill={['#c99a5f', '#dfb37e', '#b88143', '#d4c9ac'][b.package % 4]}
                     opacity={[0.85, 0.65, 1][i]}
-                    stroke="#31445a"
+                    stroke="#78542f"
                     stroke-width="0.7"
                   />
                 ))}
               </g>
             ))}
-          {containerLines(result, project).map((line, index) => (
-            <polyline key={index} points={line} fill="none" stroke="#174b81" stroke-width="2" />
-          ))}
+          <ContainerFrame result={result} project={project} />
         </svg>
       ) : (
         <p>{state.pending ? t.pending : t.noData}</p>
       )}
-      <div class={s.visualCaption}>
+      <div class={`${s.visualCaption} ${scene.visualCaption}`}>
         {result && result.containers.length > 1 ? (
           <label>
             {t.container}
