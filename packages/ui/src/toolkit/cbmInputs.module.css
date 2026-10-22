@@ -1,20 +1,20 @@
 .panel {
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 12px;
+  border-radius: 9px;
+  padding: 10px;
   background: var(--color-bg);
   min-width: 0;
 }
 .panel h2 {
   margin: 0 0 8px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.4;
-  font-weight: 600;
+  font-weight: 700;
 }
 .panel p {
   margin: 6px 0 0;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 11px;
 }
 .panel input:not([type="checkbox"]),
 .panel select {
@@ -40,7 +40,7 @@
 .options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
 }
 .options label {
@@ -53,7 +53,7 @@
 }
 .costFields {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 65px 1fr repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-top: 8px;
 }
@@ -95,5 +95,118 @@
   }
   .options label {
     justify-content: space-between;
+  }
+}
+
+.costPanel {
+  background: color-mix(in srgb, #1762ef 8%, var(--color-bg));
+  border-color: color-mix(in srgb, #1762ef 25%, var(--color-border));
+}
+.costHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.costHeading h2 {
+  margin: 0;
+}
+.costFields {
+  font-size: 11px;
+  align-items: start;
+}
+.costFields p {
+  margin: 18px 0 0;
+  font-weight: 600;
+}
+.costFields input,
+.costFields select {
+  font-size: 12px;
+}
+.options {
+  font-size: 12px;
+}
+.options label {
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+}
+.options select {
+  width: 110px;
+}
+.toggle {
+  cursor: pointer;
+  padding: 4px;
+}
+.toggle input {
+  appearance: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 20px;
+  background: var(--color-text-muted);
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+}
+.toggle input::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  left: 3px;
+  top: 3px;
+}
+.toggle input:checked {
+  background: #1762ef;
+}
+.toggle input:checked::after {
+  left: 19px;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.notes summary {
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 2px;
+}
+.notes a {
+  display: inline-block;
+  margin-top: 8px;
+}
+@media (max-width: 700px) {
+  .costFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    font-size: 12px;
+  }
+  .costFields input,
+  .costFields select {
+    font-size: 16px;
+  }
+  .options {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .options label {
+    flex: 1;
+    min-width: 0;
+  }
+  .options select {
+    width: 100%;
+  }
+  .notes summary,
+  .toggle {
+    min-height: 44px;
+    align-content: center;
+  }
+  .panel p {
+    font-size: 12px;
   }
 }

@@ -4,6 +4,7 @@ import type { CbmController } from './cbmShipmentController.ts';
 import type { CbmPackage, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
 import s from './cbmWorksheet.module.css';
+import { cbmWorksheetText as w } from './cbmWorksheetStrings.ts';
 import { messageFor } from './presentation.ts';
 
 const dimensions = ['mm', 'cm', 'm', 'in', 'ft'];
@@ -96,6 +97,9 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
       <legend>
         {t.package} {index + 1}
       </legend>
+      <span class={s.rowNumber} aria-hidden="true">
+        {index + 1}
+      </span>
       <RowFields {...props} />
       <output class={s.rowVolume} aria-label={`${t.package} ${index + 1} ${t.rowCbm}`}>
         <span class={s.fieldLabel}>{t.rowCbm}</span>
@@ -108,14 +112,14 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
           aria-label={`${t.duplicate} ${t.package} ${index + 1}`}
           onClick={() => controller.duplicate(row.id)}
         >
-          {t.duplicate}
+          <span aria-hidden="true">⧉</span>
         </Button>
         <Button
           size="sm"
           aria-label={`${t.remove} ${t.package} ${index + 1}`}
           onClick={() => controller.remove(row.id)}
         >
-          {t.remove}
+          <span aria-hidden="true">×</span>
         </Button>
       </div>
     </fieldset>
@@ -136,12 +140,22 @@ export function CbmPackageWorksheet(props: Props) {
   return (
     <section class={`${s.panel} ${className}`} aria-labelledby="cbm-packages-title">
       <div class={s.heading}>
-        <h2 id="cbm-packages-title">{t.packages}</h2>
+        <h2 id="cbm-packages-title">
+          {t.packages} <small>({state.packages.length})</small>
+        </h2>
         <Button size="sm" onClick={() => controller.sample()}>
           {t.sample}
         </Button>
       </div>
       <div class={s.rows}>
+        <div class={s.tableHeader} data-cbm-worksheet-header="" aria-hidden="true">
+          <span>#</span>
+          {columns.map((field) => (
+            <span key={field}>{field in w ? w[field as keyof typeof w] : t[field]}</span>
+          ))}
+          <span>{t.rowCbm}</span>
+          <span />
+        </div>
         {state.packages.map((row, index) => (
           <PackageRow key={row.id} {...props} row={row} index={index} />
         ))}
