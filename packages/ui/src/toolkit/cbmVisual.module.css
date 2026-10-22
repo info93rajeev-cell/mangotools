@@ -1,105 +1,246 @@
+/* Workstream B (#219): shipment visualization. Placement and order belong to cbmWorkspace (A). */
 .panel {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 12px;
-  background: var(--color-bg);
+  --carton-top: #ecc38b;
+  --carton-left: #d9a466;
+  --carton-right: #c48a4b;
+  --carton-face: #e2b274;
+  --carton-edge: #6f4519;
+  --carton-tape: #f6e3c3;
+  --pallet-top: #cf9d62;
+  --pallet-side: #a4703a;
+  --pallet-gap: #4a2f13;
+  --stage-top: #f5f8fd;
+  --stage-bottom: #e9eff8;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg);
+  box-shadow: 0 1px 2px rgb(28 25 23 / 0.06);
 }
-.panel h2 {
-  margin: 0 0 8px;
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .panel {
+    --carton-edge: #2b1a08;
+    --carton-tape: #f1d7ad;
+    --stage-top: #1c1917;
+    --stage-bottom: #141210;
+  }
+}
+:global(:root[data-theme="dark"]) .panel {
+  --carton-edge: #2b1a08;
+  --carton-tape: #f1d7ad;
+  --stage-top: #1c1917;
+  --stage-bottom: #141210;
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.title {
+  margin: 0;
   font-size: 16px;
-  line-height: 1.4;
-  font-weight: 600;
+  line-height: 1.35;
+  font-weight: 650;
 }
-.panel p {
-  margin: 6px 0 0;
+.qualifier {
   color: var(--color-text-muted);
   font-size: 13px;
+  font-weight: 500;
 }
-.heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.heading h2 {
+.views {
+  min-inline-size: 0;
   margin: 0;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
 }
-.visualSlot input:not([type="checkbox"]),
-.visualSlot select {
-  width: 100%;
-  min-width: 0;
-  height: 34px;
-  padding: 5px;
-  color: var(--color-text);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-input);
+.viewButton {
+  min-height: 32px;
+  min-width: 44px;
+  padding: 0 10px;
+  border: 0;
   border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
   font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
 }
-.visualSlot input:focus-visible,
-.visualSlot select:focus-visible,
-.visualSlot button:focus-visible {
+.viewButton:hover {
+  background: var(--color-bg);
+}
+.viewButton[aria-pressed="true"] {
+  background: var(--color-info);
+  color: var(--color-bg);
+  font-weight: 600;
+}
+.viewButton:focus-visible,
+.picker select:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
-.visualSlot input[aria-invalid="true"] {
-  border-color: var(--color-danger);
-}
-.visualSlot {
-  position: relative;
-}
-.packageSelector {
+.picker {
   display: flex;
-  justify-content: end;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  padding: 0 0 5px;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 13px;
 }
-.packageSelector select {
-  width: 145px;
-}
-.visual svg {
-  display: block;
-  width: 100%;
-  height: 110px;
-  margin-top: 6px;
-  color: var(--color-text);
-}
-.visual svg text {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  fill: currentColor;
-}
-.visual .heading {
-  flex-wrap: wrap;
-}
-.visual fieldset {
-  border: 0;
-  padding: 0;
-  margin: 0;
-}
-.visual button {
+.picker select {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 200px;
+  height: 34px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-md);
   background: var(--color-bg);
   color: var(--color-text);
-  border: 1px solid var(--color-border-input);
-  border-radius: 4px;
-  padding: 3px 7px;
-  min-height: 30px;
+  font: inherit;
 }
-.visual button[aria-pressed="true"] {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+.stage {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--stage-top), var(--stage-bottom));
+  overflow: hidden;
+}
+.drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  overflow: visible;
+  color: var(--color-text);
+}
+.top,
+.left,
+.right,
+.face,
+.palletTop,
+.palletSide,
+.palletGap {
+  stroke: var(--carton-edge);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.top {
+  fill: var(--carton-top);
+}
+.left {
+  fill: var(--carton-left);
+}
+.right {
+  fill: var(--carton-right);
+}
+.face {
+  fill: var(--carton-face);
+}
+.palletTop {
+  fill: var(--pallet-top);
+}
+.palletSide {
+  fill: var(--pallet-side);
+}
+.palletGap {
+  fill: var(--pallet-gap);
+}
+.tape {
+  fill: none;
+  stroke: var(--carton-tape);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.dimension line {
+  stroke: currentColor;
+  stroke-width: 1.25;
+}
+.arrowHead {
+  fill: var(--color-text);
+}
+.dimension text {
+  fill: currentColor;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  dominant-baseline: middle;
+  paint-order: stroke;
+  stroke: var(--stage-top);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.placeholder {
+  margin: 0;
+  max-width: 28ch;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.caption,
+.subject {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.caption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
 }
 @media (max-width: 700px) {
-  .visualSlot input:not([type="checkbox"]),
-  .visualSlot select {
+  .panel {
+    padding: 12px;
+  }
+  .views {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+  .viewButton {
+    min-height: 44px;
+    min-width: 0;
+    padding: 0 4px;
+  }
+  .viewSuffix {
+    display: none;
+  }
+  .picker {
+    width: 100%;
+  }
+  .picker select {
     height: 44px;
+    max-width: none;
     font-size: 16px;
   }
-  .visual button {
-    min-height: 44px;
+  .stage {
+    min-height: 0;
+    padding: 4px;
+  }
+  .drawing {
+    max-height: 210px;
   }
 }
