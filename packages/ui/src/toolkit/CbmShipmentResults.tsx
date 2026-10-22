@@ -1,4 +1,5 @@
 import type { ComponentChildren } from 'preact';
+import { GLYPHS, type GlyphName } from './cbmGlyphs.ts';
 import {
   averagePerPiece,
   type CompositionItem,
@@ -10,7 +11,6 @@ import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import s from './cbmResults.module.css';
 import type { CbmResult, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
-import { GLYPHS, type GlyphName } from './cbmVisualGeometry.ts';
 
 const PALETTE_SIZE = 8;
 const swatch = (number: number) => s[`c${(number - 1) % PALETTE_SIZE}`] ?? '';
@@ -35,7 +35,7 @@ function Kpi({ glyph, label, tone, children }: KpiProps) {
     <div class={`${s.kpi} ${tone ?? ''}`} data-kpi={glyph}>
       <dt>
         <Glyph name={glyph} />
-        <span>{label}</span>
+        {label}
       </dt>
       {children}
     </div>
@@ -93,29 +93,24 @@ function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
 function Composition({ items }: { items: CompositionItem[] }) {
   return (
     <section class={s.composition} aria-labelledby="cbm-composition-title">
-      <div class={s.compositionHead}>
-        <h3 class={s.subTitle}>
-          <span id="cbm-composition-title">{t.composition}</span>{' '}
-          <span class={s.subUnit}>{r.compositionUnit}</span>
-        </h3>
-        <p class={s.note}>{r.sharesRounded}</p>
-      </div>
+      <h3 class={s.subTitle}>
+        <span id="cbm-composition-title">{t.composition}</span> {r.compositionUnit}
+      </h3>
       <div class={s.bar} aria-hidden="true">
         {items.map((item) => (
           <span
             key={item.key}
             class={`${s.segment} ${swatch(item.number)}`}
             style={{ flexGrow: Number(item.share) }}
-          >
-            {Number(item.share) >= 9 ? item.number : ''}
-          </span>
+            title={item.name}
+          />
         ))}
       </div>
       <ol class={s.legend}>
         {items.map((item) => (
           <li key={item.key}>
             <span class={`${s.swatch} ${swatch(item.number)}`} aria-hidden="true" />
-            <span class={s.legendName}>{`${item.number}. ${item.name}`}</span>
+            <span class={s.legendName}>{item.name}</span>
             <span class={s.legendValue}>
               {fillText(r.compositionShare, { cbm: item.cbm, share: item.share })}
             </span>

@@ -1,10 +1,10 @@
 /**
- * Geometry for the CBM shipment illustration (#219, Workstream B). Pure functions only.
+ * Geometry for the CBM shipment illustration (#219). Pure functions only.
  *
- * The drawing is a FIXED decorative group of 2 × 2 × 2 identical cartons on a pallet, shaped by one
- * package's length : width : height. The arrangement never depends on quantity, never checks fit or
- * stacking, and never represents a container: it is illustrative only. Floating point is used for
- * drawing coordinates only; no calculated figure comes from here.
+ * The drawing is a FIXED decorative stack of 3 × 3 × 2 identical cartons on a pallet, shaped by one
+ * package's length : width : height, and its arrows measure ONE carton. The arrangement never
+ * depends on quantity, never checks fit or stacking, and never represents a container: it is
+ * illustrative only. Floating point is used for drawing coordinates only.
  */
 export const VIEWS = ['iso', 'top', 'front', 'side'] as const;
 export type ViewKind = (typeof VIEWS)[number];
@@ -45,10 +45,11 @@ export interface Scene {
   arrows: Arrow[];
 }
 
-export const VIEW_BOX = { width: 400, height: 210 } as const;
-const GRID = 2;
-const MARGIN_X = 56;
-const MARGIN_Y = 26;
+export const VIEW_BOX = { width: 440, height: 280 } as const;
+/** Cartons across the width (x), along the length (y) and high (z). */
+const GRID = { x: 3, y: 3, z: 2 } as const;
+const MARGIN_X = 62;
+const MARGIN_Y = 24;
 const MIN_RATIO = 0.18;
 const C = Math.cos(Math.PI / 6);
 const S = 0.5;
@@ -71,99 +72,93 @@ interface RawShape {
   arrows: { axis: Axis; from: P2; to: P2; normal: P2 }[];
 }
 
+const quad = (...points: P3[]) => points;
 function box(origin: P3, size: P3) {
   const [x0, y0, z0] = origin;
   const [x1, y1, z1] = [x0 + size[0], y0 + size[1], z0 + size[2]];
   return {
-    top: [
-      [x0, y0, z1],
-      [x1, y0, z1],
-      [x1, y1, z1],
-      [x0, y1, z1],
-    ] as P3[],
-    right: [
-      [x1, y0, z0],
-      [x1, y1, z0],
-      [x1, y1, z1],
-      [x1, y0, z1],
-    ] as P3[],
-    left: [
-      [x0, y1, z0],
-      [x1, y1, z0],
-      [x1, y1, z1],
-      [x0, y1, z1],
-    ] as P3[],
+    top: quad([x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]),
+    right: quad([x1, y0, z0], [x1, y1, z0], [x1, y1, z1], [x1, y0, z1]),
+    left: quad([x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]),
   };
 }
 
 function cartonsIso({ l, w, h }: Proportions): RawShape {
   const cells: P3[] = [];
-  for (let i = 0; i < GRID; i++)
-    for (let j = 0; j < GRID; j++) for (let k = 0; k < GRID; k++) cells.push([i, j, k]);
+  for (let i = 0; i < GRID.x; i++)
+    for (let j = 0; j < GRID.y; j++) for (let k = 0; k < GRID.z; k++) cells.push([i, j, k]);
   cells.sort((a, b) => a[0] + a[1] + a[2] - (b[0] + b[1] + b[2]) || a[2] - b[2]);
   const shape: RawShape = { polygons: [], arrows: [] };
   for (const [i, j, k] of cells) {
-    const faces = box([i * l, j * w, k * h], [l, w, h]);
+    const faces = box([i * w, j * l, k * h], [w, l, h]);
     for (const tone of ['top', 'right', 'left'] as const)
       shape.polygons.push({ points: faces[tone].map(iso), tone });
-    const ym = (j + 0.5) * w;
+    const ym = (j + 0.5) * l;
     const zTop = (k + 1) * h;
     const tape: P3[] = [
-      [i * l, ym, zTop],
-      [(i + 1) * l, ym, zTop],
-      [(i + 1) * l, ym, zTop - 0.3 * h],
+      [i * w, ym, zTop],
+      [(i + 1) * w, ym, zTop],
+      [(i + 1) * w, ym, zTop - 0.3 * h],
     ];
     shape.polygons.push({ points: tape.map(iso), tone: 'tape' });
   }
   return shape;
 }
 
-function palletIso({ l, w, h }: Proportions): RawShape {
-  const pad = 0.05 * (l + w);
-  const deck = 0.11 * (l + w);
-  const slab = box([-pad, -pad, -deck], [GRID * l + 2 * pad, GRID * w + 2 * pad, deck]);
-  const polygons: RawShape['polygons'] = [
-    { points: slab.top.map(iso), tone: 'palletTop' },
-    { points: slab.right.map(iso), tone: 'palletSide' },
-    { points: slab.left.map(iso), tone: 'palletSide' },
-  ];
-  const xEnd = GRID * l + pad;
-  const yEnd = GRID * w + pad;
+function palletGaps(spanX: number, spanY: number, pad: number, deck: number) {
+  const polygons: RawShape['polygons'] = [];
+  const [xEnd, yEnd] = [spanX - pad, spanY - pad];
   for (const [a, b] of [
-    [0.2, 0.42],
-    [0.58, 0.8],
+    [0.12, 0.3],
+    [0.41, 0.59],
+    [0.7, 0.88],
   ] as const) {
-    const spanY = GRID * w + 2 * pad;
-    const spanX = GRID * l + 2 * pad;
-    const zLow = -deck;
-    const zHigh = -deck * 0.45;
-    const gapRight: P3[] = [
+    const [zLow, zHigh] = [-deck, -deck * 0.45];
+    const right: P3[] = [
       [xEnd, -pad + a * spanY, zLow],
       [xEnd, -pad + b * spanY, zLow],
       [xEnd, -pad + b * spanY, zHigh],
       [xEnd, -pad + a * spanY, zHigh],
     ];
-    const gapLeft: P3[] = [
+    const left: P3[] = [
       [-pad + a * spanX, yEnd, zLow],
       [-pad + b * spanX, yEnd, zLow],
       [-pad + b * spanX, yEnd, zHigh],
       [-pad + a * spanX, yEnd, zHigh],
     ];
-    polygons.push({ points: gapRight.map(iso), tone: 'palletGap' });
-    polygons.push({ points: gapLeft.map(iso), tone: 'palletGap' });
+    polygons.push({ points: right.map(iso), tone: 'palletGap' });
+    polygons.push({ points: left.map(iso), tone: 'palletGap' });
   }
-  const below = -deck;
+  return polygons;
+}
+
+function palletIso({ l, w, h }: Proportions): RawShape {
+  const pad = 0.05 * (l + w);
+  const deck = 0.11 * (l + w);
+  const [spanX, spanY] = [GRID.x * w + 2 * pad, GRID.y * l + 2 * pad];
+  const slab = box([-pad, -pad, -deck], [spanX, spanY, deck]);
+  const [xEnd, yEnd] = [GRID.x * w, GRID.y * l];
   return {
-    polygons,
+    polygons: [
+      { points: slab.top.map(iso), tone: 'palletTop' },
+      { points: slab.right.map(iso), tone: 'palletSide' },
+      { points: slab.left.map(iso), tone: 'palletSide' },
+      ...palletGaps(spanX, spanY, pad, deck),
+    ],
     arrows: [
       {
-        axis: 'length',
-        from: iso([l, yEnd, below]),
-        to: iso([2 * l, yEnd, below]),
+        axis: 'width',
+        from: iso([xEnd - w, yEnd + pad, -deck]),
+        to: iso([xEnd, yEnd + pad, -deck]),
         normal: [-S, C],
       },
-      { axis: 'width', from: iso([xEnd, w, below]), to: iso([xEnd, 2 * w, below]), normal: [S, C] },
-      { axis: 'height', from: iso([2 * l, 0, 0]), to: iso([2 * l, 0, h]), normal: [1, 0] },
+      {
+        axis: 'length',
+        from: iso([xEnd + pad, yEnd - l, -deck]),
+        to: iso([xEnd + pad, yEnd, -deck]),
+        normal: [S, C],
+      },
+      { axis: 'height', from: iso([0, yEnd, 0]), to: iso([0, yEnd, h]), normal: [-1, 0] },
     ],
   };
 }
@@ -177,24 +172,29 @@ function rect(x: number, y: number, width: number, height: number): P2[] {
   ];
 }
 
-/** Orthographic view: `across` is the horizontal size and `up` the vertical size of one carton. */
-function flat(across: number, up: number, axes: [Axis, Axis], fromAbove: boolean): RawShape {
+interface FlatSpec {
+  across: number;
+  up: number;
+  columns: number;
+  rows: number;
+  axes: [Axis, Axis];
+  fromAbove: boolean;
+}
+
+/** Orthographic view of the stack; arrows measure the last carton in the bottom row. */
+function flat({ across, up, columns, rows, axes, fromAbove }: FlatSpec): RawShape {
   const shape: RawShape = { polygons: [], arrows: [] };
   const deck = fromAbove ? 0 : 0.11 * (across + up);
   const pad = 0.05 * (across + up);
-  if (fromAbove) {
-    shape.polygons.push({
-      points: rect(-pad, -pad, GRID * across + 2 * pad, GRID * up + 2 * pad),
-      tone: 'palletTop',
-    });
-  } else {
-    shape.polygons.push({
-      points: rect(-pad, GRID * up, GRID * across + 2 * pad, deck),
-      tone: 'palletSide',
-    });
-  }
-  for (let i = 0; i < GRID; i++)
-    for (let j = 0; j < GRID; j++) {
+  const [width, height] = [columns * across, rows * up];
+  shape.polygons.push({
+    points: fromAbove
+      ? rect(-pad, -pad, width + 2 * pad, height + 2 * pad)
+      : rect(-pad, height, width + 2 * pad, deck),
+    tone: fromAbove ? 'palletTop' : 'palletSide',
+  });
+  for (let i = 0; i < columns; i++)
+    for (let j = 0; j < rows; j++) {
       shape.polygons.push({ points: rect(i * across, j * up, across, up), tone: 'face' });
       const mid = (i + 0.5) * across;
       const tape: P2[] = fromAbove
@@ -208,26 +208,42 @@ function flat(across: number, up: number, axes: [Axis, Axis], fromAbove: boolean
           ];
       shape.polygons.push({ points: tape, tone: 'tape' });
     }
-  const bottom = GRID * up + deck;
-  shape.arrows.push({
-    axis: axes[0],
-    from: [across, bottom],
-    to: [GRID * across, bottom],
-    normal: [0, 1],
-  });
-  shape.arrows.push({
-    axis: axes[1],
-    from: [GRID * across + pad, fromAbove ? up : GRID * up],
-    to: [GRID * across + pad, fromAbove ? 0 : up],
-    normal: [1, 0],
-  });
+  const bottom = height + deck;
+  shape.arrows.push(
+    { axis: axes[0], from: [width - across, bottom], to: [width, bottom], normal: [0, 1] },
+    { axis: axes[1], from: [width + pad, height], to: [width + pad, height - up], normal: [1, 0] },
+  );
   return shape;
 }
 
 function raw(view: ViewKind, p: Proportions): RawShape {
-  if (view === 'top') return flat(p.l, p.w, ['length', 'width'], true);
-  if (view === 'front') return flat(p.l, p.h, ['length', 'height'], false);
-  if (view === 'side') return flat(p.w, p.h, ['width', 'height'], false);
+  if (view === 'top')
+    return flat({
+      across: p.l,
+      up: p.w,
+      columns: GRID.y,
+      rows: GRID.x,
+      axes: ['length', 'width'],
+      fromAbove: true,
+    });
+  if (view === 'front')
+    return flat({
+      across: p.l,
+      up: p.h,
+      columns: GRID.y,
+      rows: GRID.z,
+      axes: ['length', 'height'],
+      fromAbove: false,
+    });
+  if (view === 'side')
+    return flat({
+      across: p.w,
+      up: p.h,
+      columns: GRID.x,
+      rows: GRID.z,
+      axes: ['width', 'height'],
+      fromAbove: false,
+    });
   const pallet = palletIso(p);
   const cartons = cartonsIso(p);
   return {
@@ -279,13 +295,3 @@ export function scene(view: ViewKind, p: Proportions): Scene {
 
 const round = (value: number) => Math.round(value * 10) / 10;
 const segment = ([x1, y1]: P2, [x2, y2]: P2): Segment => ({ x1, y1, x2, y2 });
-
-/** 24 × 24 outline glyphs for the result cards, drawn in the same carton language. */
-export const GLYPHS = {
-  pieces:
-    'M4 9.5 9 7l5 2.5L9 12Z M4 9.5V15l5 2.5V12 M14 9.5V15l-5 2.5 M10 14.5l5-2.5 5 2.5-5 2.5Z M10 14.5V19l5 2.5V17 M20 14.5V19l-5 2.5',
-  volume: 'M12 3 20 7.5 12 12 4 7.5Z M4 7.5v9L12 21v-9 M20 7.5v9L12 21',
-  weight: 'M9.5 8a2.5 2.5 0 1 1 5 0 M7 8h10l2.5 12h-15Z',
-  average: 'M12 5 18 8.5 12 12 6 8.5Z M6 8.5v6.5l6 3.5v-6.5 M18 8.5V15l-6 3.5 M3 21h18',
-} as const;
-export type GlyphName = keyof typeof GLYPHS;

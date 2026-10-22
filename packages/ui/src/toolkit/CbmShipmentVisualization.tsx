@@ -13,6 +13,7 @@ import {
   VIEWS,
   type ViewKind,
 } from './cbmVisualGeometry.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 
 const TONE: Record<Tone, string | undefined> = {
   top: s.top,
@@ -31,9 +32,9 @@ const packageName = (row: CbmPackage, index: number) =>
 const viewName = (view: ViewKind) => fillText(r.viewName, { view: t[view] });
 
 function anchor(view: ViewKind, arrow: Arrow): 'start' | 'middle' | 'end' {
-  if (Math.abs(arrow.x2 - arrow.x1) < 1) return 'start';
+  if (Math.abs(arrow.x2 - arrow.x1) < 1) return arrow.labelX < arrow.x1 ? 'end' : 'start';
   if (view !== 'iso') return 'middle';
-  return arrow.axis === 'length' ? 'end' : 'start';
+  return arrow.axis === 'width' ? 'end' : 'start';
 }
 
 function Dimension({ arrow, view, row }: { arrow: Arrow; view: ViewKind; row: CbmPackage }) {
@@ -104,65 +105,50 @@ function Illustration({ row, name, view }: { row: CbmPackage; name: string; view
 
 function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind) => void }) {
   return (
-    <fieldset class={s.views} aria-label={t.view}>
+    <fieldset class={s.views} aria-label={t.view} data-cbm-views="">
       {VIEWS.map((value) => (
         <button
           key={value}
           type="button"
           class={s.viewButton}
           aria-pressed={view === value}
-          aria-label={viewName(value)}
           onClick={() => onView(value)}
         >
-          {t[value]}
+          {fillText(w.viewSuffix, { view: t[value] })}
         </button>
       ))}
     </fieldset>
   );
 }
 
-/** Shipment visualization: one package type's proportions in a fixed, illustrative carton group. */
+/** Shipment visualization: the active package's proportions in a fixed, illustrative stack. */
 export function CbmVisualizationPanel({
-  packages,
+  row,
+  index,
   className = '',
 }: {
-  packages: CbmPackage[];
+  row: CbmPackage;
+  index: number;
   className?: string;
 }) {
-  const [selected, select] = useState(0);
   const [view, setView] = useState<ViewKind>('iso');
-  const index = Math.min(selected, Math.max(0, packages.length - 1));
-  const row = packages[index];
-  const name = row ? packageName(row, index) : '';
+  const name = packageName(row, index);
   return (
     <section class={`${s.panel} ${className}`} aria-labelledby="cbm-visual-title">
       <div class={s.head}>
         <h2 id="cbm-visual-title" class={s.title}>
-          {t.visualization}
+          {t.visualization} <span class={s.qualifier}>{w.stackedView}</span>
         </h2>
         <ViewButtons view={view} onView={setView} />
       </div>
-      <div class={s.stage}>{row ? <Illustration row={row} name={name} view={view} /> : null}</div>
-      <div class={s.footer}>
-        <p class={s.caption}>
-          <Icon name="info" />
-          {t.illustrative}
-        </p>
-        {packages.length > 1 ? (
-          <label class={s.picker}>
-            <span class={s.pickerLabel}>{r.packageToShow}</span>
-            <select value={index} onChange={(e) => select(Number(e.currentTarget.value))}>
-              {packages.map((item, position) => (
-                <option key={item.id} value={position}>
-                  {packageName(item, position)}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : row ? (
-          <p class={s.subject}>{fillText(r.dimensionsOf, { name })}</p>
-        ) : null}
+      <div class={s.stage}>
+        <Illustration row={row} name={name} view={view} />
       </div>
+      <p class={s.caption}>
+        <Icon name="info" />
+        <span>{t.illustrative}</span>
+        <span class={s.subject}>{fillText(r.dimensionsOf, { name })}</span>
+      </p>
     </section>
   );
 }

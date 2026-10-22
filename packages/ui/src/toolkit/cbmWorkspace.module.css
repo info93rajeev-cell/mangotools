@@ -1,10 +1,13 @@
+/* Founder-approved CBM workbench composition (#219): worksheet column left, results column right. */
 .workspace {
+  --cbm-blue: #1762ef;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 430px;
-  gap: 12px;
-  padding: 10px;
-  border-radius: 12px;
-  background: color-mix(in srgb, #1762ef 4%, var(--color-bg));
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 14px;
+  margin: 0 -12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--cbm-blue) 3%, var(--color-bg));
   font-size: 14px;
   line-height: 1.4;
 }
@@ -12,8 +15,14 @@
 .right {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   min-width: 0;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
 }
 .error {
   color: var(--color-danger);
@@ -29,11 +38,18 @@
   .workspace {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    background: none;
   }
   .left,
   .right {
     display: contents;
+  }
+  .cards {
+    order: 50;
+    grid-template-columns: minmax(0, 1fr);
   }
   .error {
     order: 50;
@@ -43,6 +59,9 @@
   }
   .optionsSlot {
     order: 11;
+  }
+  .visualizationSlot {
+    order: 15;
   }
   .resultsSlot {
     order: 20;
@@ -58,12 +77,6 @@
   }
   .outputFeedbackSlot {
     order: 36;
-  }
-  .visualizationSlot {
-    order: 15;
-  }
-  .notesSlot {
-    order: 50;
   }
 }
 @media print {

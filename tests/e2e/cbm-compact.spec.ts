@@ -7,6 +7,9 @@ const field = (page: Page, index: number, key: string) =>
   rows(page).nth(index).locator(`[id$="-${key}"]`);
 const summary = (page: Page) => page.getByRole('region', { name: 'Results Summary' });
 const cost = (page: Page) => page.getByRole('region', { name: 'Estimated freight cost' });
+const actions = (page: Page) => page.locator('[data-cbm-actions]');
+const select = (page: Page, index: number) =>
+  page.getByRole('button', { name: `Select Package ${index + 1}`, exact: true });
 
 async function ready(page: Page) {
   await openTool(page, 'cbm-calculator');
@@ -22,8 +25,10 @@ async function checkShell(page: Page, width: number) {
   const visualization = page.getByRole('region', { name: 'Shipment Visualization' });
   if (width === 1366) {
     const right = await visualization.boundingBox();
-    expect(right?.width).toBeGreaterThanOrEqual(420);
-    expect(right?.width).toBeLessThanOrEqual(440);
+    const left = await page.getByRole('region', { name: /^Shipment Packages/ }).boundingBox();
+    const share = (right?.width ?? 0) / ((right?.width ?? 0) + (left?.width ?? 0));
+    expect(share).toBeGreaterThan(0.42);
+    expect(share).toBeLessThan(0.46);
     await expect(page.locator('[data-cbm-worksheet-header]')).toBeVisible();
     return;
   }
@@ -83,12 +88,15 @@ test.describe('Active CBM shipment workspace', () => {
   test('cost basis and currency rate adornments are real labelled controls', async ({ page }) => {
     await ready(page);
     await page.getByLabel('Enable cost estimate').check();
-    await expect(page.getByLabel('Rate basis', { exact: true })).toHaveValue('Per CBM (m³)');
-    await expect(page.getByLabel('Rate basis', { exact: true })).toHaveAttribute('readonly');
-    await expect(page.locator('[data-cbm-rate-prefix]')).toHaveText('₹');
+    const basis = page.getByLabel('Rate basis', { exact: true });
+    await expect(basis.locator('option')).toHaveText(['Per CBM (m³)']);
+    const currency = page.getByLabel('Currency', { exact: true });
+    await expect(currency).toHaveValue('INR');
+    await expect(currency.locator('option:checked')).toHaveText('₹');
     await expect(page.locator('[data-cbm-rate-suffix]')).toHaveText('/ m³');
-    await page.getByLabel('Currency', { exact: true }).selectOption('USD');
-    await expect(page.locator('[data-cbm-rate-prefix]')).toHaveText('USD');
+    await currency.selectOption('USD');
+    await expect(currency.locator('option:checked')).toHaveText('USD');
+    await expect(page.getByLabel('Minimum charge', { exact: true })).toBeVisible();
   });
 
   test('activates shipment results and keeps support sections collapsed', async ({ page }) => {
@@ -115,13 +123,13 @@ test.describe('Active CBM shipment workspace', () => {
     await ready(page);
     await page.getByRole('button', { name: 'Add Package', exact: true }).click();
     await expect(rows(page)).toHaveCount(2);
-    await field(page, 1, 'unit').selectOption('m');
-    for (const key of ['length', 'width', 'height']) await field(page, 1, key).fill('1');
+    for (const key of ['length', 'width', 'height']) await field(page, 1, key).fill('100');
     await expect(total(page)).toHaveText('7.000 m³');
     await expect(summary(page)).toContainText('101');
-    await page.getByRole('button', { name: 'Duplicate Package 2', exact: true }).click();
+    await select(page, 1).click();
+    await page.getByRole('button', { name: 'Duplicate selected', exact: true }).click();
     await expect(total(page)).toHaveText('8.000 m³');
-    await field(page, 2, 'length').fill('2');
+    await field(page, 2, 'length').fill('200');
     await expect(total(page)).toHaveText('9.000 m³');
     await page.getByRole('button', { name: 'Delete Package 3', exact: true }).click();
     await expect(total(page)).toHaveText('7.000 m³');
@@ -135,7 +143,8 @@ test.describe('Active CBM shipment workspace', () => {
   test('supports mm/cm/m/in/ft without changing physical volume', async ({ page }) => {
     await ready(page);
     for (const unit of ['mm', 'cm', 'm', 'in', 'ft']) {
-      await field(page, 0, 'unit').selectOption(unit);
+      await page.getByLabel('Dimension unit').selectOption(unit);
+      await expect(page.locator('[data-cbm-worksheet-header]')).toContainText(`(${unit})`);
       await expect(total(page)).toHaveText('6.000 m³');
     }
   });
@@ -143,7 +152,8 @@ test.describe('Active CBM shipment workspace', () => {
   test('distinguishes none, partial and complete packed weight', async ({ page }) => {
     await ready(page);
     await expect(summary(page)).toContainText('Not provided');
-    await page.getByRole('button', { name: 'Duplicate Package 1', exact: true }).click();
+    await select(page, 0).click();
+    await page.getByRole('button', { name: 'Duplicate selected', exact: true }).click();
     await field(page, 0, 'weightPerItem').fill('2');
     await expect(summary(page)).toContainText('Known packed weight (partial)');
     await expect(summary(page)).toContainText('200.000 kg');
@@ -181,7 +191,7 @@ test.describe('Active CBM shipment workspace', () => {
     await page.evaluate(() => {
       window.print = () => document.documentElement.setAttribute('data-test-printed', 'yes');
     });
-    await page.getByRole('button', { name: 'Print / Save PDF', exact: true }).click();
+    await actions(page).getByRole('button', { name: 'Print / Save PDF', exact: true }).click();
     await expect(page.locator('html')).toHaveAttribute('data-test-printed', 'yes');
     await page.emulateMedia({ media: 'print' });
     await expect(page.locator('[data-cbm-workspace] pre')).toBeVisible();

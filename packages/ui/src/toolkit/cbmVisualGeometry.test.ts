@@ -25,20 +25,20 @@ describe('CBM illustration scene', () => {
   const p = proportions('50', '40', '30');
   if (!p) throw new Error('expected drawable proportions');
 
-  it('draws a fixed 2 × 2 × 2 carton group on a pallet, whatever the quantity', () => {
+  it('draws a fixed 3 × 3 × 2 carton stack on a pallet, whatever the quantity', () => {
     const drawn = scene('iso', p);
     const cartons = drawn.polygons.filter((polygon) =>
       ['top', 'left', 'right'].includes(polygon.tone),
     );
-    expect(cartons).toHaveLength(8 * 3);
-    expect(drawn.polygons.filter((polygon) => polygon.tone === 'tape')).toHaveLength(8);
+    expect(cartons).toHaveLength(18 * 3);
+    expect(drawn.polygons.filter((polygon) => polygon.tone === 'tape')).toHaveLength(18);
     expect(drawn.polygons.some((polygon) => polygon.tone === 'palletTop')).toBe(true);
   });
 
   it('labels the three dimensions of one package in the 3D view and two in flat views', () => {
     expect(scene('iso', p).arrows.map((arrow) => arrow.axis)).toEqual([
-      'length',
       'width',
+      'length',
       'height',
     ]);
     expect(scene('top', p).arrows.map((arrow) => arrow.axis)).toEqual(['length', 'width']);
@@ -56,6 +56,15 @@ describe('CBM illustration scene', () => {
         expect(y).toBeLessThanOrEqual(VIEW_BOX.height);
       }
     }
+  });
+
+  it('measures one carton, not the stack: each arrow spans a single carton side', () => {
+    const drawn = scene('front', p);
+    const faces = drawn.polygons.filter((polygon) => polygon.tone === 'face');
+    const xs = coordinates(faces[0]?.points ?? '').map(([x]) => x);
+    const carton = Math.max(...xs) - Math.min(...xs);
+    const [lengthArrow] = drawn.arrows;
+    expect(Math.abs((lengthArrow?.x2 ?? 0) - (lengthArrow?.x1 ?? 0))).toBeCloseTo(carton, 0);
   });
 
   it('shows proportions: a taller package gives a taller front view', () => {

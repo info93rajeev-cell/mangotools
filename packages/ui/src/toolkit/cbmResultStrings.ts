@@ -11,6 +11,7 @@ export const cbmResultText = {
   illustrationLabel:
     '{name}: {length} × {width} × {height} {unit}, {view} view. Fixed illustrative arrangement; not a loading plan.',
   avgPerPiece: 'Avg. CBM / piece',
+  breakdown: 'Show cost breakdown',
   cbmUnit: 'm³',
   cftUnit: 'ft³',
   kgUnit: 'kg',
@@ -21,8 +22,7 @@ export const cbmResultText = {
     '{label}: {weighted} of {total} pieces weighed. Pieces without a weight are not counted.',
   announce: 'Results updated: {cbm} m³ total, {pieces} pieces.',
   compositionShare: '{cbm} ({share}%)',
-  compositionUnit: '(m³)',
-  sharesRounded: 'Shares rounded separately.',
+  compositionUnit: '(CBM)',
   calculated: 'Estimate calculated',
   freightBasis: 'Freight ({quantity} m³ × {rate})',
   freightMinimum: 'Freight (minimum charge applied)',

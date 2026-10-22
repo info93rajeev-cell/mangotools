@@ -92,6 +92,32 @@ revisions reject late responses, including after disabling cost or disposing the
 No import, placement, persistence or new dependency. Support content remains in the page's existing
 full-width collapsed area.
 
+## CBM founder reference composition (#219)
+
+The approved founder image is the visual contract for the active CBM workbench. Import Excel / CSV
+and Download Template are deliberately not implemented. The frozen controller and model are not
+edited: worksheet-wide operations in `cbmWorksheetActions.ts` (one dimension or weight unit for all
+packages, duplicate selected, reorder, spreadsheet paste) use only its public, stale-safe methods.
+
+- `CbmQuickActions.tsx`: 3D visualization, Unit conversion and Print / Save PDF beside the page
+  title on desktop (rendered into the shared title row), an icon row on phones.
+- `CbmPackageWorksheet.tsx` / `CbmPackageRow.tsx`: dense table (handle and row number, Description /
+  SKU, L / W / H in the worksheet unit, Qty, weight and weight unit, Total CBM, delete) and phone
+  summary cards. The handle selects a row (`Select Package N`, `aria-pressed`) and reorders it by
+  drag or Alt + arrow keys. Pasting a tab-separated block (`cbmPaste.ts`) fills rows from the
+  focused cell; nothing is uploaded and descriptions never reach the engine.
+- `CbmOptionsPanel.tsx`: collapsible Units & Display Options (dimension unit, weight unit, decimal
+  places, Show total row, Show 3D visualization). `useCbmWorkbench.ts` keeps this presentation
+  state, the selected rows and the package the illustration shows.
+- `CbmNotesPanel.tsx`: Important Notes / Warnings and Next Steps in Logistics cards.
+- `CbmVisualizationPanel` now accepts the shown package (`row`, `index`) instead of `packages`; the
+  illustration is a fixed 3 × 3 × 2 stack whose arrows measure one carton.
+- Stable test hooks added: `data-cbm-actions` (output actions), `data-cbm-views`,
+  `data-cbm-total-row`, `data-cost-total`.
+
+FAQ and Related tools stay in the page's shared supporting section below the workspace; moving them
+into the CBM columns needs a platform page-layout change.
+
 ## CBM section ownership preparation (#220)
 
 The #220 refactor and ownership-hardening amendment change boundaries only. Existing rendering,

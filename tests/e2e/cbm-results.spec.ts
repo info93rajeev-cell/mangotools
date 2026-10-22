@@ -17,7 +17,8 @@ const composition = (page: Page) =>
   page.getByRole('region', { name: 'Load Composition by Package' });
 const cost = (page: Page) => page.getByRole('region', { name: 'Estimated freight cost' });
 const kpi = (page: Page, name: string) => summary(page).locator(`[data-kpi="${name}"]`);
-const print = (page: Page) => page.getByRole('button', { name: 'Print / Save PDF', exact: true });
+const print = (page: Page) =>
+  page.locator('[data-cbm-actions]').getByRole('button', { name: 'Print / Save PDF', exact: true });
 const copy = (page: Page) => page.getByRole('button', { name: 'Copy Summary', exact: true });
 
 const FOUNDER_ROWS = [
@@ -113,13 +114,13 @@ test.describe('CBM results presentation (#219 B)', () => {
     await fillShipment(page);
     const legend = composition(page).locator('ol li');
     await expect(legend).toHaveText([
-      '1. Carton A9.600 (20.5%)',
-      '2. Carton B3.600 (7.7%)',
-      '3. Wooden Crate21.600 (46.2%)',
-      '4. Pallet (Boxed)12.000 (25.6%)',
+      'Carton A9.600 (20.5%)',
+      'Carton B3.600 (7.7%)',
+      'Wooden Crate21.600 (46.2%)',
+      'Pallet (Boxed)12.000 (25.6%)',
     ]);
     await expect(composition(page).getByRole('heading')).toHaveText(
-      'Load Composition by Package (m³)',
+      'Load Composition by Package (CBM)',
     );
     const widths = await composition(page)
       .locator('[aria-hidden="true"] > span')
@@ -127,34 +128,34 @@ test.describe('CBM results presentation (#219 B)', () => {
     const bar = widths.reduce((sum, width) => sum + width, 0);
     expect(widths[2] / bar).toBeGreaterThan(0.44);
     expect(widths[2] / bar).toBeLessThan(0.48);
-    await expect(composition(page).locator('div[aria-hidden="true"]')).toContainText('3');
+    await expect(composition(page).locator('div[aria-hidden="true"] > span')).toHaveCount(4);
 
     await field(page, 1, 'length').fill('');
     await expect(composition(page)).toHaveCount(0);
   });
 
-  test('visualization is compact, illustrative and independent of quantity', async ({ page }) => {
+  test('visualization is prominent, illustrative and independent of quantity', async ({ page }) => {
     await ready(page);
     await expect(
       visual(page).getByText('Illustrative dimensions — not a loading plan.', { exact: true }),
     ).toBeVisible();
     const drawing = visual(page).getByRole('img');
     const drawn = (await drawing.boundingBox())?.height ?? 0;
-    expect(drawn).toBeGreaterThanOrEqual(160);
-    expect(drawn).toBeLessThanOrEqual(200);
+    expect(drawn).toBeGreaterThanOrEqual(240);
+    expect(drawn).toBeLessThanOrEqual(300);
     await expect(drawing).toHaveAttribute('aria-label', /not a loading plan/);
     const shapes = () => drawing.locator('polygon').count();
     const before = await shapes();
     await field(page, 0, 'quantity').fill('1000');
     await expect(total(page)).toHaveText('60.000 m³');
     expect(await shapes()).toBe(before);
-    await expect(drawing.locator('text')).toHaveText(['L 50 cm', 'W 40 cm', 'H 30 cm']);
+    await expect(drawing.locator('text')).toHaveText(['W 40 cm', 'L 50 cm', 'H 30 cm']);
 
     for (const [name, view, labels] of [
-      ['Top view', 'top', ['L 50 cm', 'W 40 cm']],
-      ['Front view', 'front', ['L 50 cm', 'H 30 cm']],
-      ['Side view', 'side', ['W 40 cm', 'H 30 cm']],
-      ['3D view', 'iso', ['L 50 cm', 'W 40 cm', 'H 30 cm']],
+      ['Top View', 'top', ['L 50 cm', 'W 40 cm']],
+      ['Front View', 'front', ['L 50 cm', 'H 30 cm']],
+      ['Side View', 'side', ['W 40 cm', 'H 30 cm']],
+      ['3D View', 'iso', ['W 40 cm', 'L 50 cm', 'H 30 cm']],
     ] as const) {
       const button = visual(page).getByRole('button', { name, exact: true });
       await button.click();
@@ -166,17 +167,18 @@ test.describe('CBM results presentation (#219 B)', () => {
     );
   });
 
-  test('a second package can be chosen for the illustration', async ({ page }) => {
+  test('the illustration follows the package being edited or selected', async ({ page }) => {
     await ready(page);
-    await expect(visual(page).getByLabel('Dimensions shown for')).toHaveCount(0);
     await fillShipment(page);
-    const picker = visual(page).getByLabel('Dimensions shown for');
-    await picker.selectOption({ label: 'Wooden Crate' });
+    await field(page, 2, 'description').focus();
+    await expect(visual(page)).toContainText('Dimensions of one Wooden Crate');
     await expect(visual(page).getByRole('img').locator('text')).toHaveText([
-      'L 120 cm',
       'W 100 cm',
+      'L 120 cm',
       'H 180 cm',
     ]);
+    await page.getByRole('button', { name: 'Select Package 1', exact: true }).click();
+    await expect(visual(page)).toContainText('Dimensions of one Carton A');
   });
 
   test('cost result is highlighted, exact and never stale', async ({ page }) => {
@@ -268,8 +270,8 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
       const targets = [
         print(page),
         copy(page),
-        visual(page).getByLabel('Dimensions shown for'),
         ...(await visual(page).getByRole('button').all()),
+        ...(await rows(page).first().getByRole('button').all()),
       ];
       for (const target of targets)
         expect((await target.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
@@ -278,15 +280,6 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
         .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
       expect(new Set(tops).size).toBe(2);
       await expectValuesOnOneLine(page);
-      const select = visual(page).getByLabel('Dimensions shown for');
-      const label = visual(page).getByText('Dimensions shown for', { exact: true });
-      const [labelBox, selectBox, panel] = [
-        await label.boundingBox(),
-        await select.boundingBox(),
-        await visual(page).boundingBox(),
-      ];
-      expect((labelBox?.y ?? 0) + (labelBox?.height ?? 0)).toBeLessThanOrEqual(selectBox?.y ?? 0);
-      expect(selectBox?.width ?? 0).toBeGreaterThan((panel?.width ?? 0) - 40);
       await page.screenshot({
         path: test.info().outputPath(`cbm-results-${width}.png`),
         fullPage: true,
@@ -349,12 +342,12 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
 
   test('keyboard operates the views and actions with a visible focus ring', async ({ page }) => {
     await ready(page);
-    const top = visual(page).getByRole('button', { name: 'Top view', exact: true });
+    const top = visual(page).getByRole('button', { name: 'Top View', exact: true });
     await top.focus();
     await page.keyboard.press('Enter');
     await expect(top).toHaveAttribute('aria-pressed', 'true');
     await page.keyboard.press('Tab');
-    const front = visual(page).getByRole('button', { name: 'Front view', exact: true });
+    const front = visual(page).getByRole('button', { name: 'Front View', exact: true });
     await expect(front).toBeFocused();
     await page.keyboard.press('Space');
     await expect(front).toHaveAttribute('aria-pressed', 'true');
@@ -366,7 +359,7 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
     expect(await ring(front)).toBe('solid 2px');
     await page.keyboard.press('Tab');
     await expect(
-      visual(page).getByRole('button', { name: 'Side view', exact: true }),
+      visual(page).getByRole('button', { name: 'Side View', exact: true }),
     ).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(print(page)).toBeFocused();

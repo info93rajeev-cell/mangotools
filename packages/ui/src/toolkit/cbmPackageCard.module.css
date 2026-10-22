@@ -1,0 +1,58 @@
+/* Phone summary card for one package (the desktop table row hides it). */
+.summary,
+.duplicate {
+  display: none;
+}
+@media (max-width: 700px) {
+  .summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .number {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    font-weight: 600;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .text strong {
+    color: var(--color-text);
+    font-size: 14px;
+  }
+  .text b {
+    color: var(--color-text);
+  }
+  .duplicate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+    color: var(--color-info);
+    font: inherit;
+  }
+}

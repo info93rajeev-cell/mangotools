@@ -1,0 +1,79 @@
+/* CBM quick actions: beside the page title on desktop, an icon row on phones. */
+.titleSlot {
+  margin-left: auto;
+}
+.quickActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.quickActions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.05);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.quickActions button :global(.icon) {
+  color: var(--color-info);
+}
+.quickActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.quickActions button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.quickActions[data-placement="inline"] {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.quickActions[data-placement="phone"] {
+  display: none;
+}
+@media (max-width: 700px) {
+  .titleSlot,
+  .quickActions[data-placement="title"] {
+    display: none;
+  }
+  .quickActions[data-placement="phone"],
+  .quickActions[data-placement="inline"] {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+  }
+  .quickActions[data-placement] button {
+    justify-content: center;
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+  .quickActions[data-placement] .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@media print {
+  .titleSlot,
+  .quickActions {
+    display: none;
+  }
+}
