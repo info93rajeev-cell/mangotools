@@ -13,8 +13,19 @@ interface Props {
   currency?: Currency | undefined;
 }
 const { content, related, currency } = Astro.props;
-const beforeReferences = content.sections.filter((s) => s.id !== 'references');
-const references = content.sections.find((s) => s.id === 'references');
+
+/**
+ * The approved common strip shows five shortcuts: Disclaimer (rendered by the page), How to use,
+ * Method, FAQ and Related tools. Worked example and References stay on the page as parts of the
+ * Method section (their ids are kept), so tiers that require them still publish them in full.
+ * A tool without a Method section keeps them as their own disclosures.
+ */
+const IN_METHOD = new Set(['worked-example', 'references']);
+const hasMethod = content.sections.some((s) => s.id === 'method');
+const inMethod = hasMethod ? content.sections.filter((s) => IN_METHOD.has(s.id)) : [];
+const shortcuts = content.sections.filter((s) => !(hasMethod && IN_METHOD.has(s.id)));
+const beforeReferences = shortcuts.filter((s) => s.id !== 'references');
+const references = shortcuts.find((s) => s.id === 'references');
 
 const SECTION_ICONS: Record<string, string> = {
   'how-to-use': '📖',
@@ -48,6 +59,25 @@ const SECTION_ICONS: Record<string, string> = {
           {section.id === 'worked-example' && content.example ? (
             <WorkedExample example={content.example} currency={currency} />
           ) : null}
+          {section.id === 'method'
+            ? inMethod.map((part) => (
+                <section
+                  id={part.id}
+                  class="content-part"
+                  aria-labelledby={`${part.id}-title`}
+                  data-tool-content-part=""
+                >
+                  <h3 id={`${part.id}-title`}>{part.title}</h3>
+                  <div
+                    class:list={['prose', { references: part.id === 'references' }]}
+                    set:html={part.html}
+                  />
+                  {part.id === 'worked-example' && content.example ? (
+                    <WorkedExample example={content.example} currency={currency} />
+                  ) : null}
+                </section>
+              ))
+            : null}
         </div>
       </details>
     ))
@@ -189,6 +219,19 @@ const SECTION_ICONS: Record<string, string> = {
     background: var(--color-surface-subtle);
     border: 1px solid var(--color-border);
     font-size: 0.875em;
+  }
+  .content-part {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    scroll-margin-top: 80px;
+  }
+  .content-part h3 {
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+    font-weight: var(--weight-semibold);
   }
   .references {
     color: var(--color-text-muted);

@@ -196,15 +196,17 @@ test.describe('CBM workbench (#219 founder reference)', () => {
             .filter((item) => item.parentElement?.closest('details') === null)
             .map((item) => item.id || (item.hasAttribute('data-disclaimer') ? 'disclaimer' : '')),
         );
-      expect(sections).toEqual([
-        'disclaimer',
-        'how-to-use',
-        'method',
-        'worked-example',
-        'faq',
-        'related-tools',
-        'references',
-      ]);
+      // The approved common strip: exactly five shortcuts.
+      expect(sections).toEqual(['disclaimer', 'how-to-use', 'method', 'faq', 'related-tools']);
+      const labels = await strip
+        .locator(':scope > details > summary, :scope > .tool-content > details > summary')
+        .evaluateAll((items) =>
+          items.map((item) => item.textContent?.replace(/[^A-Za-z ]/g, '').trim()),
+        );
+      expect(labels).toEqual(['Disclaimer', 'How to use', 'Method', 'FAQ', 'Related tools']);
+      // Worked example and References stay on the page, inside Method.
+      for (const part of ['worked-example', 'references'])
+        await expect(strip.locator(`details#method section#${part}`)).toHaveCount(1);
       const bottom = async (selector: string) => {
         const box = await page.locator(selector).boundingBox();
         return [box?.y ?? 0, (box?.y ?? 0) + (box?.height ?? 0)] as const;

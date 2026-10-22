@@ -105,9 +105,12 @@ reorder, spreadsheet paste) use only its public, stale-safe methods.
   `body:has([data-cbm-workspace])` so no other page changes: the reference palette (`--cbm-*`), a
   1320 px workspace, title scale and the "Runs on your device" badge moved into the site header
   (restored when the workspace unmounts).
-- Below the workspace the page keeps the shared tool-page strip (`ToolContent.astro`: Disclaimer,
-  How to use, Method, Worked example, FAQ, Related tools, References, with the Image Studio section
-  icons) and the global `SiteFooter`, exactly as every tool page renders them.
+- Below the workspace the page keeps the shared tool-page strip and the global `SiteFooter`,
+  exactly as every tool page renders them. The approved common strip (`ToolContent.astro`, with the
+  Image Studio section icons) shows five shortcuts on every tool page: Disclaimer, How to use,
+  Method, FAQ and Related tools. Worked example and References, required for T1/T2 tools, are
+  rendered in full inside Method (`section#worked-example`, `section#references`); a tool without a
+  Method section keeps them as their own disclosures.
   `CbmSectionLinks.tsx` draws the workspace's FAQ and Related tools cards as links that open and
   scroll to those shared sections, so their content exists once.
 - `CbmQuickActions.tsx`: 3D visualization, Unit conversion and Print / Save PDF beside the page
