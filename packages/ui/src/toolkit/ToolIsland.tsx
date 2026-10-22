@@ -27,6 +27,8 @@ import {
   DynamicImageFormatConverterLayout,
   DynamicImageResizeLayout,
 } from './DynamicImageToolLayouts.tsx';
+
+import { DynamicContainerLoadingLayout } from './DynamicContainerLoadingLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -360,6 +362,7 @@ function StandardToolIsland({
 }
 
 export function ToolIsland(props: ToolIslandProps) {
+  if (props.preset.id === 'logistics/container-load') return <DynamicContainerLoadingLayout />;
   if (props.preset.id === CBM_SHIPMENT_PRESET_ID)
     return <DynamicCbmShipmentLayout preset={props.preset} />;
   return <StandardToolIsland {...props} />;

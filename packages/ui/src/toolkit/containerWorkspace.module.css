@@ -1,0 +1,385 @@
+/* #226 dedicated logistics workspace. */
+.root {
+  --load-blue: #1661ef;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  background: color-mix(in srgb, #1661ef 3%, var(--color-bg));
+  padding: 8px;
+  border-radius: 10px;
+}
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--color-bg);
+  min-width: 0;
+}
+.card h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+.card h3 {
+  font-size: 12px;
+  margin: 6px 0;
+}
+.card p {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 5px 0 0;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.heading h2 {
+  margin: 0;
+}
+.heading small {
+  font-size: 12px;
+  font-weight: 400;
+}
+.root button,
+.root input,
+.root select {
+  font: inherit;
+  min-width: 0;
+  color: var(--color-text);
+  border: 1px solid var(--color-border-input);
+  border-radius: 4px;
+  background: var(--color-bg);
+}
+.root button {
+  cursor: pointer;
+  min-height: 28px;
+  padding: 3px 7px;
+}
+.root button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.root :is(button, input, select, summary):focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.root input:not([type="checkbox"]):not([type="radio"]),
+.root select {
+  width: 100%;
+  height: 29px;
+  padding: 3px 4px;
+}
+.root input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.containerChoices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+.containerChoices button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 5px 3px;
+}
+.containerChoices small {
+  font-size: 10px;
+}
+.containerChoices button[aria-pressed="true"] {
+  background: var(--load-blue);
+  color: white;
+  border-color: var(--load-blue);
+}
+.reference {
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, #1661ef 5%, var(--color-bg));
+  padding: 4px;
+  margin-top: 5px;
+  font-size: 11px;
+}
+.reference summary {
+  cursor: pointer;
+}
+.mobileContainer {
+  display: none;
+}
+.constraintFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(100px, 0.7fr);
+  gap: 8px;
+}
+.constraintFields label,
+.costFields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.switch input {
+  appearance: none;
+  width: 34px;
+  height: 20px;
+  border-radius: 20px;
+  background: var(--color-text-muted);
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+}
+.switch input::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+}
+.switch input:checked {
+  background: var(--load-blue);
+}
+.switch input:checked::after {
+  left: 16px;
+}
+.costInputs {
+  background: color-mix(in srgb, #1661ef 7%, var(--color-bg));
+}
+.costFields {
+  display: grid;
+  grid-template-columns: 65px 94px repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+.notes,
+.faq {
+  font-size: 12px;
+}
+.notes summary,
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.actions button {
+  min-height: 36px;
+  font-weight: 700;
+  color: #1458c9;
+  border-color: #a8c6ff;
+}
+.actions .print {
+  color: #191400;
+  background: #ffca28;
+  border-color: #ffca28;
+}
+.feedback {
+  font-size: 12px;
+  margin: 0;
+  min-height: 0;
+}
+.error {
+  color: var(--color-danger);
+  margin: 0;
+  grid-column: 1 / -1;
+}
+.printReport {
+  display: none;
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 8px;
+  }
+  .left,
+  .right {
+    display: contents;
+  }
+  .card {
+    padding: 9px;
+    width: 100%;
+  }
+  .worksheet {
+    order: 10;
+  }
+  .workspace > .left > .card:nth-child(2) {
+    order: 20;
+  }
+  .workspace > .left > .card:nth-child(3) {
+    order: 50;
+  }
+  .costInputs {
+    order: 60;
+  }
+  .notes {
+    order: 90;
+  }
+  .faq {
+    order: 91;
+  }
+  .right > details {
+    order: 30;
+    width: 100%;
+  }
+  .right > section {
+    order: 40;
+    width: 100%;
+  }
+  .right > section[aria-labelledby="load-freight-title"] {
+    order: 70;
+  }
+  .actions {
+    order: 80;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .feedback {
+    order: 81;
+  }
+  .error {
+    order: 11;
+  }
+  .root button {
+    min-height: 44px;
+  }
+  .root input:not([type="checkbox"]):not([type="radio"]),
+  .root select {
+    height: 44px;
+    font-size: 16px;
+  }
+  .containerChoices {
+    display: none;
+  }
+  .mobileContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .constraintFields,
+  .costFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .notes summary,
+  .faq summary,
+  .reference summary {
+    min-height: 44px;
+    align-content: center;
+  }
+  .actions button {
+    min-height: 44px;
+  }
+}
+@media print {
+  .workspace {
+    display: none;
+  }
+  .printReport {
+    display: block;
+  }
+  .printReport pre {
+    white-space: pre-wrap;
+    font: 11pt / 1.4 sans-serif;
+  }
+}
+
+@media (max-width: 700px) {
+  .switch {
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+  }
+  .visual select {
+    min-height: 44px;
+  }
+}
+
+@media (min-width: 1101px) {
+  .root input:not([type="checkbox"]):not([type="radio"]),
+  .root select {
+    height: 26px;
+  }
+  .root button {
+    min-height: 26px;
+  }
+  .card {
+    padding: 6px;
+  }
+  .heading {
+    margin-bottom: 4px;
+  }
+  .costFields {
+    margin-top: 4px;
+  }
+  .costInputs p {
+    margin-top: 2px;
+  }
+}
+
+@media (min-width: 1101px) {
+  .left,
+  .right {
+    gap: 5px;
+  }
+}
+
+.amountInput {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  min-width: 0;
+}
+.amountInput:has(span) {
+  padding: 0 3px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 4px;
+  background: var(--color-bg);
+}
+.root .amountInput:has(span) input {
+  border: 0;
+  flex: 1;
+  min-width: 0;
+  padding-inline: 0;
+}
+.amountInput span {
+  flex: none;
+  font-size: 10px;
+}
+
+.referenceWarning {
+  display: block;
+  font-weight: 500;
+}

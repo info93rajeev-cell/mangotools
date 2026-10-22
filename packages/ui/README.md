@@ -220,3 +220,29 @@ The same CI follow-up refreshes the legacy Crop test flow (Crop Image, then down
 
 The scrollable Load Composition legend retains its list semantics and is labelled by its heading.
 Keyboard users can tab to it, scroll with arrow keys, and see the shared focus ring.
+
+
+## Container Loading workspace (#226)
+
+The lazy `logistics/container-load` renderer provides the locked founder workspace: ordered package
+rows, supported container/rotation/stack/payload controls, actual placement blocks, selected-container
+allocation, shipment-wide loading details and current-only copy/print. The separate cost operation
+uses only a complete placement’s actual container count. Revisions and abort signals reject late
+placement/cost responses. Descriptions stay in browser memory and are omitted from engine requests.
+
+The active `logistics/container` preset/legacy fit renderer, tool manifest, content and privacy
+classification remain unchanged. Activation requires a separate tools-lane preset/manifest/privacy
+inventory review. No import/template controls, palletization, dependency, live rates or FX are added.
+Named nominal capacities are references only; geometry/utilization use the unchanged engine defaults
+or user-specified custom dimensions. Partial weight does not establish full payload compliance.
+
+The 3D/top/front/side viewer projects actual rectangular blocks, not a photographic loading scene.
+It expands block grids into actual package positions and caps drawing at 250 packages per selected
+container with a visible notice; reported totals include every package. Exact selected-container volumes/shares derive from the engine block coordinates and
+sizes. The planner’s optimization, securing, door-access and weight-distribution limitations remain
+visible in Notes. Units/values in the mockup never override engine results.
+
+Local UI review (not a published tool route): import `startContainerPreview` from
+`tests/support/container-workspace-preview.ts` with tsx and call it (default port 4350).
+`tests/e2e/container-workspace.spec.ts` starts its own isolated real-worker preview per test worker.
+Phase-1 private-package change record: dedicated Container Loading UI implementation, #226.

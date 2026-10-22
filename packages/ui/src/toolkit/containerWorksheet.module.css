@@ -1,0 +1,210 @@
+.worksheet .danger {
+  color: var(--color-danger);
+}
+.packageRows {
+  max-height: 225px;
+  overflow: auto;
+}
+.packageRow,
+.tableHeader {
+  display: grid;
+  grid-template-columns: 24px minmax(92px, 1.5fr) repeat(3, minmax(34px, 0.55fr)) 36px minmax(
+      45px,
+      0.7fr
+    ) 45px 43px 28px;
+  gap: 4px;
+  align-items: center;
+}
+.tableHeader {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 3px 0;
+}
+.packageRow {
+  padding: 3px 0;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.rowEditor,
+.editor {
+  display: contents;
+}
+.editor label {
+  min-width: 0;
+}
+.sr,
+.fieldLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.selectRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+}
+.selectRow input {
+  margin: 0;
+  width: 12px;
+  height: 12px;
+}
+.rowButtons {
+  display: flex;
+  gap: 4px;
+}
+.rowButtons button {
+  padding: 0;
+  width: 26px;
+  height: 28px;
+  font-size: 18px;
+}
+.rowButtons .edit,
+.packageSummary {
+  display: none;
+}
+.toolbar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 6px;
+}
+.toolbar button {
+  color: #1458c9;
+}
+.toolbar span {
+  margin-left: auto;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 700px) {
+  .tableHeader {
+    display: none;
+  }
+  .packageRows {
+    max-height: none;
+    overflow: visible;
+  }
+  .packageRow {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 5px;
+    padding: 7px;
+    margin: 6px 0;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+  .packageSummary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .selectRow {
+    align-self: start;
+    min-width: 44px;
+    flex-direction: column;
+    min-height: 44px;
+  }
+  .selectRow input {
+    width: 20px;
+    height: 20px;
+  }
+  .rowEditor {
+    display: none;
+    grid-column: 1 / -1;
+  }
+  .rowEditor[data-open="true"] {
+    display: block;
+  }
+  .editor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .editor label:first-child {
+    grid-column: 1 / -1;
+  }
+  .fieldLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+  .rowButtons {
+    grid-column: 1 / -1;
+    justify-content: end;
+  }
+  .rowButtons .edit {
+    display: inline-block;
+    width: auto;
+    margin-right: auto;
+    font-size: 13px;
+    padding: 0 10px;
+  }
+  .rowButtons button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (min-width: 1101px) {
+  .packageRow {
+    padding: 2px 0;
+  }
+  .tableHeader {
+    line-height: 1.15;
+  }
+  .toolbar {
+    padding-top: 4px;
+  }
+}
+
+@media (max-width: 700px) {
+  .packageRow {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+  }
+  .selectRow {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .packageRow .packageSummary {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    min-height: 44px;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    white-space: normal;
+  }
+  .packageSummary small {
+    color: #1458c9;
+    font-weight: 600;
+  }
+  .rowButtons {
+    display: contents;
+  }
+  .rowButtons button {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+  }
+  .rowEditor {
+    grid-row: 2;
+  }
+}

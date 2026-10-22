@@ -1,0 +1,55 @@
+/* Preview framing only; not shipped in the product. */
+main {
+  max-width: 1366px;
+  margin: 0 auto;
+  padding: 0 22px;
+  width: 100%;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  height: 48px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 12px;
+}
+header strong {
+  font-size: 16px;
+}
+header b {
+  background: #ffca28;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+.preview-local {
+  margin-left: auto;
+  color: var(--color-success);
+}
+.preview-heading p {
+  font-size: 12px;
+  margin: 5px 0;
+  color: var(--color-text-muted);
+}
+.preview-heading h1 {
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 6px 0;
+}
+@media (max-width: 700px) {
+  main {
+    padding: 0 8px;
+  }
+  header {
+    gap: 8px;
+  }
+  header > span:not(.preview-local) {
+    display: none;
+  }
+  .preview-local {
+    font-size: 10px;
+  }
+  .preview-heading h1 {
+    font-size: 24px;
+  }
+}
