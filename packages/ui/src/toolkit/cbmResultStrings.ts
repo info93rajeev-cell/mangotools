@@ -5,12 +5,9 @@
  */
 export const cbmResultText = {
   viewName: '{view} view',
-  packageToShow: 'Dimensions shown for',
-  dimensionsOf: 'Dimensions of one {name}',
   noDimensions: 'Enter length, width and height to see the package drawn.',
   illustrationLabel:
     '{name}: {length} × {width} × {height} {unit}, {view} view. Fixed illustrative arrangement; not a loading plan.',
-  avgPerPiece: 'Avg. CBM / piece',
   breakdown: 'Show cost breakdown',
   cbmUnit: 'm³',
   cftUnit: 'ft³',

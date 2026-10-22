@@ -1,6 +1,7 @@
-/* CBM quick actions: beside the page title on desktop, an icon row on phones. */
+/* CBM quick actions (#219 reference): beside the page title on desktop, an icon row on phones. */
 .titleSlot {
   margin-left: auto;
+  padding-bottom: 4px;
 }
 .quickActions {
   display: flex;
@@ -11,24 +12,25 @@
   padding: 0;
   border: 0;
 }
-.quickActions button {
+.quickActions button,
+.more > button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  box-shadow: 0 1px 2px rgb(16 24 40 / 0.05);
-  color: var(--color-text);
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 6px;
+  background: var(--cbm-surface);
+  box-shadow: var(--cbm-shadow);
+  color: var(--cbm-ink);
   font: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
   cursor: pointer;
 }
-.quickActions button :global(.icon) {
-  color: var(--color-info);
+.quickActions :global(.icon),
+.menu :global(.icon) {
+  color: var(--cbm-blue);
 }
 .quickActions button:disabled {
   cursor: not-allowed;
@@ -40,10 +42,30 @@
 }
 .quickActions[data-placement="inline"] {
   justify-content: flex-end;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.quickActions[data-placement="phone"] {
+.quickActions[data-placement="phone"],
+.more {
   display: none;
+}
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 8px;
+  background: var(--cbm-surface);
+  box-shadow: 0 8px 24px rgb(15 28 63 / 0.14);
+}
+.menu button {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: 44px;
+  border: 0;
+  box-shadow: none;
 }
 @media (max-width: 700px) {
   .titleSlot,
@@ -52,15 +74,26 @@
   }
   .quickActions[data-placement="phone"],
   .quickActions[data-placement="inline"] {
-    display: flex;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
     margin-bottom: 12px;
   }
-  .quickActions[data-placement] button {
+  .more {
+    position: relative;
+    display: block;
+  }
+  .quickActions > button,
+  .more > button {
     justify-content: center;
-    width: 44px;
+    width: 100%;
     min-height: 44px;
     padding: 0;
+  }
+  .quickActions > button :global(.icon) svg,
+  .more > button :global(.icon) svg {
+    width: 22px;
+    height: 22px;
   }
   .quickActions[data-placement] .label {
     position: absolute;

@@ -5,6 +5,7 @@ import { formatAmount, freightView } from './cbmResultFormat.ts';
 import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import type { CbmSnapshot, CbmCostResult as CostResult } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 
 /** Always-present slot for the cost estimate result; empty while the optional estimate is off. */
 export function CbmCostResult({
@@ -26,8 +27,8 @@ function waitingText(state: CbmSnapshot): string {
   return state.shipment ? r.costPending : r.costWaiting;
 }
 
-function CostFigures({ cost }: { cost: CostResult }) {
-  const freight = freightView(cost);
+function CostFigures({ cost, shownCbm }: { cost: CostResult; shownCbm: string | undefined }) {
+  const freight = freightView(cost, shownCbm);
   return (
     <dl class={s.figures}>
       <div class={s.item}>
@@ -61,7 +62,7 @@ function CostResultContent({ state }: { state: CbmSnapshot }) {
     >
       <div class={s.head}>
         <h2 id="cbm-cost-result-title" class={s.title}>
-          {t.costTitle}
+          {w.costResultTitle}
         </h2>
         {cost ? (
           <span class={s.badge}>
@@ -81,13 +82,17 @@ function CostResultContent({ state }: { state: CbmSnapshot }) {
           </button>
         ) : null}
       </div>
-      {cost ? <CostFigures cost={cost} /> : <p class={s.empty}>{waitingText(state)}</p>}
+      {cost ? (
+        <CostFigures cost={cost} shownCbm={state.shipment?.totalCbm} />
+      ) : (
+        <p class={s.empty}>{waitingText(state)}</p>
+      )}
       <p class="visually-hidden" role="status">
         {cost
           ? fillText(r.costAnnounce, { total: formatAmount(cost.estimatedTotal, cost.currency) })
           : ''}
       </p>
-      <p class={s.disclaimer}>{t.costDisclaimer}</p>
+      <p class={s.disclaimer}>{w.costDisclaimer}</p>
     </section>
   );
 }

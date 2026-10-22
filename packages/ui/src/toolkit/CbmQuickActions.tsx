@@ -1,22 +1,57 @@
 import { createPortal } from 'preact/compat';
 import { useLayoutEffect, useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
+import { copyText } from './actions.ts';
 import s from './cbmCards.module.css';
 import { cbmText as t } from './cbmStrings.ts';
 import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 
 interface Props {
   printable: boolean;
+  summary: string;
   onVisualization: () => void;
   onUnits: () => void;
 }
 
-function Toolbar({
-  printable,
-  onVisualization,
-  onUnits,
-  placement,
-}: Props & { placement: string }) {
+/** Phone-only overflow menu from the reference ("…"): Copy Summary. */
+function MoreMenu({ printable, summary }: Props) {
+  const [open, setOpen] = useState(false);
+  const [message, notify] = useState('');
+  return (
+    <div class={s.more}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="cbm-more-menu"
+        onClick={() => setOpen(!open)}
+      >
+        <Icon name="ellipsis" />
+        <span class={s.label}>{w.more}</span>
+      </button>
+      {open ? (
+        <div id="cbm-more-menu" class={s.menu}>
+          <button
+            type="button"
+            disabled={!printable}
+            onClick={async () => {
+              notify((await copyText(summary)) ? t.copied : t.copyFailed);
+              setOpen(false);
+            }}
+          >
+            <Icon name="copy" />
+            {t.copy}
+          </button>
+        </div>
+      ) : null}
+      <span class="visually-hidden" role="status">
+        {message}
+      </span>
+    </div>
+  );
+}
+
+function Toolbar(props: Props & { placement: string }) {
+  const { printable, onVisualization, onUnits, placement } = props;
   return (
     <fieldset class={s.quickActions} data-placement={placement} aria-label={w.toolbar}>
       <button type="button" onClick={onVisualization}>
@@ -28,9 +63,10 @@ function Toolbar({
         <span class={s.label}>{w.toolbarUnits}</span>
       </button>
       <button type="button" disabled={!printable} onClick={() => window.print()}>
-        <Icon name="file-output" />
+        <Icon name={placement === 'title' ? 'file-output' : 'printer'} />
         <span class={s.label}>{t.print}</span>
       </button>
+      {placement === 'title' ? null : <MoreMenu {...props} />}
     </fieldset>
   );
 }
@@ -43,7 +79,7 @@ function useTitleRowSlot(): HTMLElement | null {
     if (!row) return;
     const element = document.createElement('div');
     element.className = s.titleSlot ?? '';
-    row.insertBefore(element, row.querySelector('.privacy'));
+    row.append(element);
     setSlot(element);
     return () => element.remove();
   }, []);

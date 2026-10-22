@@ -94,29 +94,38 @@ full-width collapsed area.
 
 ## CBM founder reference composition (#219)
 
-The approved founder image is the visual contract for the active CBM workbench. Import Excel / CSV
-and Download Template are deliberately not implemented. The frozen controller and model are not
-edited: worksheet-wide operations in `cbmWorksheetActions.ts` (one dimension or weight unit for all
-packages, duplicate selected, reorder, spreadsheet paste) use only its public, stale-safe methods.
+The approved founder image is the visual contract for the active CBM workbench, and the approved
+Container Loading screenshot is its sibling-family reference. Import Excel / CSV, Download Template
+and "Try sample" are not in the approved design and are not rendered; the worksheet opens with the
+preset sample already filled in. The frozen controller and model are not edited: worksheet-wide
+operations in `cbmWorksheetActions.ts` (one dimension or weight unit for all cartons, duplicate,
+reorder, spreadsheet paste) use only its public, stale-safe methods.
 
+- `cbmPage.module.css` + `useCbmPageChrome.ts`: CBM-only page presentation, scoped with
+  `body:has([data-cbm-workspace])` so no other page changes: the reference palette (`--cbm-*`), a
+  1320 px workspace, title scale, the "Runs on your device" badge moved into the site header, and the
+  page's FAQ and Related tools sections shown as cards beside Important Notes / Next Steps. Every
+  move is undone when the workspace unmounts.
 - `CbmQuickActions.tsx`: 3D visualization, Unit conversion and Print / Save PDF beside the page
-  title on desktop (rendered into the shared title row), an icon row on phones.
-- `CbmPackageWorksheet.tsx` / `CbmPackageRow.tsx`: dense table (handle and row number, Description /
-  SKU, L / W / H in the worksheet unit, Qty, weight and weight unit, Total CBM, delete) and phone
-  summary cards. The handle selects a row (`Select Package N`, `aria-pressed`) and reorders it by
-  drag or Alt + arrow keys. Pasting a tab-separated block (`cbmPaste.ts`) fills rows from the
-  focused cell; nothing is uploaded and descriptions never reach the engine.
-- `CbmOptionsPanel.tsx`: collapsible Units & Display Options (dimension unit, weight unit, decimal
-  places, Show total row, Show 3D visualization). `useCbmWorkbench.ts` keeps this presentation
-  state, the selected rows and the package the illustration shows.
-- `CbmNotesPanel.tsx`: Important Notes / Warnings and Next Steps in Logistics cards.
-- `CbmVisualizationPanel` now accepts the shown package (`row`, `index`) instead of `packages`; the
-  illustration is a fixed 3 × 3 × 2 stack whose arrows measure one carton.
-- Stable test hooks added: `data-cbm-actions` (output actions), `data-cbm-views`,
-  `data-cbm-total-row`, `data-cost-total`.
-
-FAQ and Related tools stay in the page's shared supporting section below the workspace; moving them
-into the CBM columns needs a platform page-layout change.
+  title on desktop (rendered into the shared title row); an icon row with a More menu (Copy
+  Summary) on phones.
+- `CbmPackageWorksheet.tsx` / `CbmPackageRow.tsx`: "Shipment Cartons" table (handle and row
+  number, Description / SKU, L / W / H in the worksheet unit, Qty, weight and unit, Total CBM,
+  delete) and phone summary cards. The handle selects a row (`Select Carton N`, `aria-pressed`) and
+  reorders it by drag or Alt + arrow keys; Duplicate selected copies the selection, else the active
+  row. Pasting a tab-separated block (`cbmPaste.ts`) fills rows from the focused cell; nothing is
+  uploaded and descriptions never reach the engine.
+- `CbmOptionsPanel.tsx`: collapsible Units & Display Options. `CbmCostPanel.tsx`: the blue cost
+  panel; amounts show grouped while not being edited, the controller keeps the raw text.
+- `CbmShipmentVisualization.tsx` / `cbmVisualGeometry.ts` / `cbmVisualShapes.ts`: the active
+  carton drawn as a fixed, decorative 2 × 2 × 2 stack on a pallet from the reference viewpoint; the
+  stack's outer size follows that carton's L : W : H and the arrows carry its own dimensions. It
+  never depends on quantity and never represents a container or a loading plan.
+- Results: KPI row, load composition (hidden on phones, as in the reference), the yellow cost result
+  with Estimated Total strongest, and Print / Save PDF beside Copy Summary. Money shows whole
+  amounts without paise (`₹ 2,12,600`) and packed weight without trailing zeros (`8,340 kg`).
+- Stable test hooks: `data-cbm-actions`, `data-cbm-views`, `data-cbm-total-row`, `data-cost-total`,
+  `data-cbm-cards`, `data-cbm-moved`.
 
 ## CBM section ownership preparation (#220)
 

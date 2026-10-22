@@ -20,7 +20,8 @@ test.describe('privacy badge', () => {
   for (const tool of listed) {
     test(`${tool.id}: badge matches processing "${tool.processing}"`, async ({ page }) => {
       await page.goto(tool.url);
-      const badge = page.locator('.tool-header .privacy');
+      // CBM shows the same badge in the site header, as in its approved design (#219).
+      const badge = page.locator('.tool-header .privacy, .site-header .privacy[data-cbm-header]');
       if (tool.processing === 'device') {
         await expect(badge).toHaveText(/Runs on your device/);
         await expect(badge).toHaveAttribute('data-processing', 'device');

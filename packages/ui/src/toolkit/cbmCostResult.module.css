@@ -1,37 +1,44 @@
-/* Cost Estimate Result: the yellow card, with the Estimated Total as the strongest figure. */
+/* Cost Estimate Result (#219 reference): the yellow card with Estimated Total as the strongest figure. */
 .card {
   container: cbm-cost / inline-size;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-width: 0;
-  padding: 14px;
-  border: 1px solid color-mix(in srgb, #f2b705 55%, var(--color-border));
-  border-radius: 12px;
-  background: color-mix(in srgb, #fbc531 13%, var(--color-bg));
+  padding: 12px 12px 10px;
+  border: 1px solid var(--cbm-yellow-line);
+  border-radius: 10px;
+  background: var(--cbm-yellow-soft);
+  color: var(--cbm-text);
 }
 .head {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 0 4px;
 }
 .title {
   margin: 0 auto 0 0;
-  font-size: 17px;
+  color: var(--cbm-ink);
+  font-size: 18px;
   line-height: 1.3;
   font-weight: 700;
 }
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  color: var(--color-success);
-  background: var(--color-bg);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-success) 40%, transparent);
-  font-size: 12px;
-  font-weight: 600;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--cbm-green) 30%, transparent);
+  border-radius: 6px;
+  background: var(--cbm-green-soft);
+  color: var(--cbm-green);
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge :global(.icon) {
+  color: var(--cbm-green);
 }
 .toggle {
   display: none;
@@ -39,69 +46,67 @@
 .figures {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0;
   margin: 0;
-  padding: 6px;
-  border: 1px solid color-mix(in srgb, #f2b705 30%, var(--color-border));
-  border-radius: 10px;
-  background: var(--color-bg);
+  border: 1px solid var(--cbm-yellow-line);
+  border-radius: 8px;
+  background: var(--cbm-surface);
+  overflow: hidden;
 }
 .item,
 .total {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
-  padding: 8px 10px;
+  padding: 10px 12px;
 }
 .figures dt {
-  color: var(--color-text-muted);
+  color: var(--cbm-text);
   font-size: 12.5px;
   line-height: 1.3;
 }
 .figures dd {
   margin: 0;
   min-width: 0;
+  color: var(--cbm-ink);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .value {
-  font-size: 18px;
-  line-height: 1.25;
+  font-size: 21px;
+  line-height: 1.2;
   font-weight: 700;
 }
 .note {
-  color: var(--color-text-muted);
+  color: var(--cbm-muted);
   font-size: 12px;
 }
 .total {
   order: -1;
-  border-radius: 8px;
-  background: color-mix(in srgb, #fbc531 30%, var(--color-bg));
-}
-.total dt {
-  color: var(--color-text);
-  font-weight: 600;
+  align-items: center;
+  background: var(--cbm-yellow-total);
+  text-align: center;
 }
 .total dd {
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1.2;
-  font-weight: 800;
+  font-weight: 700;
 }
 .empty,
 .disclaimer {
   margin: 0;
-  color: var(--color-text-muted);
-  font-size: 12px;
+  padding: 0 4px;
+  color: var(--cbm-muted);
+  font-size: 10.5px;
   line-height: 1.4;
 }
 @container cbm-cost (min-width: 440px) {
   .figures {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.9fr) minmax(0, 1.15fr);
   }
   .item + .item {
-    border-left: 1px solid var(--color-border);
+    border-left: 1px solid var(--cbm-line);
   }
   .total {
     order: 0;
@@ -110,6 +115,7 @@
 @media (max-width: 700px) {
   .card {
     position: relative;
+    gap: 8px;
   }
   .title {
     position: absolute;
@@ -133,27 +139,35 @@
   }
   .toggle {
     position: absolute;
-    top: 14px;
-    right: 8px;
+    top: 50%;
+    right: 6px;
     display: grid;
     place-items: center;
     width: 44px;
     height: 44px;
     border: 0;
     background: none;
-    color: var(--color-text);
+    color: var(--cbm-ink);
+    transform: translateY(-50%);
     cursor: pointer;
   }
-  .card:not([data-open="true"]) .total {
-    padding-right: 44px;
+  .card[data-open="true"] .toggle {
+    top: 8px;
+    transform: none;
   }
   .card:not([data-open="true"]) :is(.item, .disclaimer) {
     display: none;
   }
   .card:not([data-open="true"]) .figures {
-    padding: 0;
     border: 0;
     background: none;
+  }
+  .card:not([data-open="true"]) .total {
+    padding: 4px 44px;
+    background: none;
+  }
+  .total dd {
+    font-size: 24px;
   }
 }
 @media print {

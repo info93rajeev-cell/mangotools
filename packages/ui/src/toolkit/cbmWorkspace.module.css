@@ -1,13 +1,9 @@
-/* Founder-approved CBM workbench composition (#219): worksheet column left, results column right. */
+/* CBM workbench composition (#219 founder reference): worksheet column left, results column right. */
 .workspace {
-  --cbm-blue: #1762ef;
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  gap: 14px;
-  margin: 0 -12px;
-  padding: 12px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--cbm-blue) 3%, var(--color-bg));
+  grid-template-columns: minmax(0, 1.235fr) minmax(0, 1fr);
+  gap: 16px;
+  color: var(--cbm-text);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -15,19 +11,38 @@
 .right {
   display: flex;
   flex-direction: column;
-  gap: 14px;
   min-width: 0;
+}
+.left {
+  gap: 10px;
+}
+.right {
+  gap: 10px;
+}
+.leftCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 16px 13px 14px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 10px;
+  background: var(--cbm-surface);
+  box-shadow: var(--cbm-shadow);
 }
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px 12px;
   align-items: start;
 }
+.moved {
+  display: contents;
+}
 .error {
+  margin: 3px 0;
   color: var(--color-danger);
   font-size: 12px;
-  margin: 3px 0;
 }
 @media (max-width: 1050px) and (min-width: 701px) {
   .workspace {
@@ -39,12 +54,10 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin: 0;
-    padding: 0;
-    background: none;
   }
   .left,
-  .right {
+  .right,
+  .leftCard {
     display: contents;
   }
   .cards {

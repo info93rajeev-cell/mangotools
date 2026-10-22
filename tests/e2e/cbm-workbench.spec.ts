@@ -11,7 +11,7 @@ const field = (page: Page, index: number, key: string) =>
   rows(page).nth(index).locator(`[id$="-${key}"]`);
 const total = (page: Page) => page.locator('[data-cbm-total]');
 const handle = (page: Page, index: number) =>
-  page.getByRole('button', { name: `Select Package ${index + 1}`, exact: true });
+  page.getByRole('button', { name: `Select Carton ${index + 1}`, exact: true });
 const toolbar = (page: Page) =>
   page.locator('fieldset[data-placement="title"], fieldset[data-placement="inline"]');
 const visual = (page: Page) => page.getByRole('region', { name: /^Shipment Visualization/ });
@@ -77,7 +77,7 @@ test.describe('CBM workbench (#219 founder reference)', () => {
   }) => {
     await ready(page);
     await field(page, 0, 'weightPerItem').fill('2');
-    await expect(page.getByRole('region', { name: 'Results Summary' })).toContainText('200.000 kg');
+    await expect(page.getByRole('region', { name: 'Results Summary' })).toContainText('200 kg');
     await page.getByLabel('Dimension unit').selectOption('m');
     await expect(field(page, 0, 'length')).toHaveValue('0.5');
     await expect(page.locator('[data-cbm-worksheet-header]')).toContainText('Length(m)');
@@ -85,8 +85,8 @@ test.describe('CBM workbench (#219 founder reference)', () => {
     await page.locator('#cbm-weight-unit').selectOption('g');
     await expect(field(page, 0, 'weightPerItem')).toHaveValue('2000');
     await expect(field(page, 0, 'weightUnit')).toHaveValue('g');
-    await expect(page.getByRole('region', { name: 'Results Summary' })).toContainText('200.000 kg');
-    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await expect(page.getByRole('region', { name: 'Results Summary' })).toContainText('200 kg');
+    await page.getByRole('button', { name: 'Add carton', exact: true }).click();
     await expect(field(page, 1, 'weightUnit')).toHaveValue('g');
   });
 
@@ -95,12 +95,13 @@ test.describe('CBM workbench (#219 founder reference)', () => {
   }) => {
     await ready(page);
     await field(page, 0, 'description').fill('Alpha');
-    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await page.getByRole('button', { name: 'Add carton', exact: true }).click();
     await field(page, 1, 'description').fill('Beta');
     for (const key of ['length', 'width', 'height']) await field(page, 1, key).fill('100');
     await expect(total(page)).toHaveText('7.000 m³');
     const duplicate = page.getByRole('button', { name: 'Duplicate selected', exact: true });
-    await expect(duplicate).toBeDisabled();
+    // Always available, as in the reference: it copies the selection, else the active row.
+    await expect(duplicate).toBeEnabled();
     await handle(page, 1).click();
     await expect(handle(page, 1)).toHaveAttribute('aria-pressed', 'true');
     await expect(rows(page).nth(1)).toHaveAttribute('data-selected', 'true');
@@ -170,13 +171,13 @@ test.describe('CBM workbench (#219 founder reference)', () => {
     await ready(page);
     await page.getByLabel('Enable cost estimate').check();
     await page.getByLabel('Freight rate', { exact: true }).fill('100');
-    const result = page.getByRole('region', { name: 'Estimated freight cost' });
-    await expect(result.locator('[data-cost-total]')).toHaveText('Estimated Total₹600.00');
+    const result = page.getByRole('region', { name: 'Cost Estimate Result' });
+    await expect(result.locator('[data-cost-total]')).toHaveText('Estimated Total₹ 600');
     await expect(result.getByText('Other charges')).toBeHidden();
     await result.getByRole('button', { name: 'Show cost breakdown' }).click();
     await expect(result.getByText('Other charges')).toBeVisible();
     const icons = page.locator('fieldset[data-placement="phone"] button');
-    await expect(icons).toHaveCount(3);
+    await expect(icons).toHaveCount(4);
     for (const icon of await icons.all())
       expect((await icon.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   });

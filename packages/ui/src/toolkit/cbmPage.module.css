@@ -1,0 +1,178 @@
+/*
+ * CBM page presentation (#219 founder reference). Loaded only with the CBM workspace and scoped to
+ * pages that contain it, so no other page changes. Values follow the approved Logistics screenshots.
+ */
+.root {
+  display: block;
+  margin-top: 16px;
+}
+:global(body:has([data-cbm-workspace])) {
+  --width-tool: 1320px;
+  --cbm-ink: #0f1c3f;
+  --cbm-text: #1e293b;
+  --cbm-muted: #64748b;
+  --cbm-line: #e3e8ef;
+  --cbm-field: #d5dce6;
+  --cbm-surface: #fff;
+  --cbm-page: #f5f9fe;
+  --cbm-head: #f7f9fc;
+  --cbm-blue: #1a66e8;
+  --cbm-blue-text: #1a5fd6;
+  --cbm-blue-soft: #eef4fd;
+  --cbm-blue-line: #c9dbf7;
+  --cbm-yellow: #f9bd2c;
+  --cbm-yellow-soft: #fffaeb;
+  --cbm-yellow-line: #f5df9d;
+  --cbm-yellow-total: #fdf0c7;
+  --cbm-red: #dc2626;
+  --cbm-red-line: #f5b5b5;
+  --cbm-green: #15803d;
+  --cbm-green-soft: #e9f7ef;
+  --cbm-shadow: 0 1px 2px rgb(15 28 63 / 0.05), 0 2px 10px rgb(15 28 63 / 0.04);
+  background: var(--cbm-page);
+}
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"]) body:has([data-cbm-workspace])) {
+    --cbm-ink: var(--color-text);
+    --cbm-text: var(--color-text);
+    --cbm-muted: var(--color-text-muted);
+    --cbm-line: var(--color-border);
+    --cbm-field: var(--color-border-input);
+    --cbm-surface: var(--color-bg);
+    --cbm-page: var(--color-bg);
+    --cbm-head: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
+    --cbm-blue-text: var(--color-info);
+    --cbm-blue-soft: color-mix(in srgb, #1a66e8 14%, var(--color-bg));
+    --cbm-blue-line: color-mix(in srgb, #1a66e8 40%, var(--color-border));
+    --cbm-yellow-soft: color-mix(in srgb, #f9bd2c 10%, var(--color-bg));
+    --cbm-yellow-line: color-mix(in srgb, #f9bd2c 40%, var(--color-border));
+    --cbm-yellow-total: color-mix(in srgb, #f9bd2c 24%, var(--color-bg));
+    --cbm-red: var(--color-danger);
+    --cbm-red-line: color-mix(in srgb, var(--color-danger) 50%, var(--color-border));
+    --cbm-green: var(--color-success);
+    --cbm-green-soft: color-mix(in srgb, var(--color-success) 14%, var(--color-bg));
+    --cbm-shadow: none;
+  }
+}
+:global(:root[data-theme="dark"] body:has([data-cbm-workspace])) {
+  --cbm-ink: var(--color-text);
+  --cbm-text: var(--color-text);
+  --cbm-muted: var(--color-text-muted);
+  --cbm-line: var(--color-border);
+  --cbm-field: var(--color-border-input);
+  --cbm-surface: var(--color-bg);
+  --cbm-page: var(--color-bg);
+  --cbm-head: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
+  --cbm-blue-text: var(--color-info);
+  --cbm-blue-soft: color-mix(in srgb, #1a66e8 14%, var(--color-bg));
+  --cbm-blue-line: color-mix(in srgb, #1a66e8 40%, var(--color-border));
+  --cbm-yellow-soft: color-mix(in srgb, #f9bd2c 10%, var(--color-bg));
+  --cbm-yellow-line: color-mix(in srgb, #f9bd2c 40%, var(--color-border));
+  --cbm-yellow-total: color-mix(in srgb, #f9bd2c 24%, var(--color-bg));
+  --cbm-red: var(--color-danger);
+  --cbm-red-line: color-mix(in srgb, var(--color-danger) 50%, var(--color-border));
+  --cbm-green: var(--color-success);
+  --cbm-green-soft: color-mix(in srgb, var(--color-success) 14%, var(--color-bg));
+  --cbm-shadow: none;
+}
+:global(body:has([data-cbm-workspace]) .tool-header h1) {
+  color: var(--cbm-ink);
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+:global(body:has([data-cbm-workspace]) .tool-header .summary) {
+  max-width: none;
+  color: var(--cbm-muted);
+  font-size: 16px;
+}
+:global(body:has([data-cbm-workspace]) .tool-header .title-row) {
+  align-items: flex-end;
+  margin-top: 6px;
+}
+:global(body:has([data-cbm-workspace]) .site-header) {
+  background: color-mix(in srgb, var(--cbm-page) 92%, transparent);
+}
+@media (min-width: 1100px) {
+  :global(body:has([data-cbm-workspace]) .site-header .search) {
+    width: 447px;
+    margin-right: 8px;
+  }
+}
+:global(body:has([data-cbm-workspace]) .site-header .privacy[data-cbm-header]) {
+  min-height: 34px;
+  padding: 0 14px 0 10px;
+  border-color: color-mix(in srgb, var(--cbm-green) 28%, var(--cbm-surface));
+  border-radius: 6px;
+  background: var(--cbm-green-soft);
+  color: var(--cbm-green);
+  font-size: 13px;
+  font-weight: 600;
+}
+@media (max-width: 900px) {
+  :global(body:has([data-cbm-workspace]) .site-header .privacy[data-cbm-header]) {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  :global(body:has([data-cbm-workspace]) .tool-header h1) {
+    font-size: 30px;
+  }
+  :global(body:has([data-cbm-workspace]) .tool-header .summary) {
+    font-size: 14px;
+  }
+}
+/*
+ * The page's FAQ and Related tools sections, shown as cards in the worksheet column. Prefixed with
+ * the page scope so they outrank the shared disclosure styles they replace on this page only.
+ */
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved]),
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved][open]) {
+  display: block;
+  flex: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--cbm-line);
+  border-radius: 8px;
+  background: var(--cbm-surface);
+  box-shadow: var(--cbm-shadow);
+}
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > summary),
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved][open] > summary) {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+}
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > summary::after),
+:global(
+  body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved][open] > summary::after
+) {
+  display: none;
+  content: none;
+}
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > summary h2) {
+  margin: 0;
+  color: var(--cbm-ink);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > summary b) {
+  font-size: 19px;
+  line-height: 1;
+}
+:global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > .content-body) {
+  padding: 0 14px 14px;
+}
+@media (max-width: 700px) {
+  :global(body:has([data-cbm-workspace]) [data-cbm-cards] details[data-cbm-moved] > summary) {
+    min-height: 56px;
+  }
+}

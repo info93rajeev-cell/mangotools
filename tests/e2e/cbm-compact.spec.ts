@@ -6,10 +6,10 @@ const rows = (page: Page) => page.locator('[data-package-row]');
 const field = (page: Page, index: number, key: string) =>
   rows(page).nth(index).locator(`[id$="-${key}"]`);
 const summary = (page: Page) => page.getByRole('region', { name: 'Results Summary' });
-const cost = (page: Page) => page.getByRole('region', { name: 'Estimated freight cost' });
+const cost = (page: Page) => page.getByRole('region', { name: 'Cost Estimate Result' });
 const actions = (page: Page) => page.locator('[data-cbm-actions]');
 const select = (page: Page, index: number) =>
-  page.getByRole('button', { name: `Select Package ${index + 1}`, exact: true });
+  page.getByRole('button', { name: `Select Carton ${index + 1}`, exact: true });
 
 async function ready(page: Page) {
   await openTool(page, 'cbm-calculator');
@@ -25,14 +25,14 @@ async function checkShell(page: Page, width: number) {
   const visualization = page.getByRole('region', { name: 'Shipment Visualization' });
   if (width === 1366) {
     const right = await visualization.boundingBox();
-    const left = await page.getByRole('region', { name: /^Shipment Packages/ }).boundingBox();
+    const left = await page.getByRole('region', { name: /^Shipment Cartons/ }).boundingBox();
     const share = (right?.width ?? 0) / ((right?.width ?? 0) + (left?.width ?? 0));
     expect(share).toBeGreaterThan(0.42);
     expect(share).toBeLessThan(0.46);
     await expect(page.locator('[data-cbm-worksheet-header]')).toBeVisible();
     return;
   }
-  const options = page.getByRole('region', { name: 'Units & Display Options' });
+  const options = page.getByRole('region', { name: /^Units & (Display )?Options$/ });
   expect((await options.boundingBox())?.y).toBeLessThan(
     (await visualization.boundingBox())?.y ?? 0,
   );
@@ -58,7 +58,7 @@ test.describe('Active CBM shipment workspace', () => {
     expect(await row.evaluate((n) => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(0);
     const bounds = await row.boundingBox();
     const remove = await page
-      .getByRole('button', { name: 'Delete Package 1', exact: true })
+      .getByRole('button', { name: 'Delete Carton 1', exact: true })
       .boundingBox();
     expect((remove?.x ?? 0) + (remove?.width ?? 0)).toBeLessThanOrEqual(
       (bounds?.x ?? 0) + (bounds?.width ?? 0),
@@ -72,11 +72,11 @@ test.describe('Active CBM shipment workspace', () => {
     await ready(page);
     await expect(field(page, 0, 'length')).toBeHidden();
     await expect(rows(page).first()).toContainText('50 × 40 × 30 cm');
-    await page.getByRole('button', { name: 'Edit Package 1', exact: true }).click();
+    await page.getByRole('button', { name: 'Edit Carton 1', exact: true }).click();
     await expect(field(page, 0, 'length')).toBeVisible();
     await field(page, 0, 'length').fill('');
     await expect(field(page, 0, 'length')).toBeVisible();
-    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await page.getByRole('button', { name: 'Add carton', exact: true }).click();
     await expect(field(page, 1, 'description')).toBeVisible();
     for (const button of await rows(page).first().getByRole('button').all()) {
       const box = await button.boundingBox();
@@ -106,7 +106,7 @@ test.describe('Active CBM shipment workspace', () => {
     await expect(summary(page)).toContainText('211.888 ft³');
     await expect(summary(page)).toContainText('100');
     await expect(summary(page)).toContainText('Not provided');
-    await expect(page.getByRole('region', { name: 'Load Composition by Package' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Load Composition by Carton' })).toContainText(
       '100.0%',
     );
     for (const item of await page.locator('details[data-tool-content-section]').all())
@@ -121,7 +121,7 @@ test.describe('Active CBM shipment workspace', () => {
 
   test('adds mixed packages, duplicates independently, deletes and clears', async ({ page }) => {
     await ready(page);
-    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await page.getByRole('button', { name: 'Add carton', exact: true }).click();
     await expect(rows(page)).toHaveCount(2);
     for (const key of ['length', 'width', 'height']) await field(page, 1, key).fill('100');
     await expect(total(page)).toHaveText('7.000 m³');
@@ -131,7 +131,7 @@ test.describe('Active CBM shipment workspace', () => {
     await expect(total(page)).toHaveText('8.000 m³');
     await field(page, 2, 'length').fill('200');
     await expect(total(page)).toHaveText('9.000 m³');
-    await page.getByRole('button', { name: 'Delete Package 3', exact: true }).click();
+    await page.getByRole('button', { name: 'Delete Carton 3', exact: true }).click();
     await expect(total(page)).toHaveText('7.000 m³');
     await page.getByRole('button', { name: 'Clear All', exact: true }).click();
     await expect(rows(page)).toHaveCount(1);
@@ -156,10 +156,10 @@ test.describe('Active CBM shipment workspace', () => {
     await page.getByRole('button', { name: 'Duplicate selected', exact: true }).click();
     await field(page, 0, 'weightPerItem').fill('2');
     await expect(summary(page)).toContainText('Known packed weight (partial)');
-    await expect(summary(page)).toContainText('200.000 kg');
+    await expect(summary(page)).toContainText('200 kg');
     await field(page, 1, 'weightUnit').selectOption('g');
     await field(page, 1, 'weightPerItem').fill('1000');
-    await expect(summary(page)).toContainText('300.000 kg');
+    await expect(summary(page)).toContainText('300 kg');
     await expect(summary(page)).not.toContainText('partial');
   });
 
@@ -170,12 +170,14 @@ test.describe('Active CBM shipment workspace', () => {
     await expect(total(page)).toHaveText('0.000 m³');
     await page.getByLabel('Enable cost estimate').check();
     await page.getByLabel('Freight rate', { exact: true }).fill('1000000');
-    await expect(cost(page)).toContainText('₹1.00');
+    // Whole amounts are shown without paise, as in the approved reference ("₹ 2,12,600").
+    const shown = cost(page).locator('[data-cost-total]');
+    await expect(shown).toHaveText('Estimated Total₹ 1');
     await field(page, 0, 'length').fill('');
     await expect(total(page)).toHaveCount(0);
-    await expect(cost(page)).not.toContainText('₹1.00');
+    await expect(shown).toHaveCount(0);
     await field(page, 0, 'length').fill('2');
-    await expect(cost(page)).toContainText('₹2.00');
+    await expect(shown).toHaveText('Estimated Total₹ 2');
     await page.getByLabel('Enable cost estimate').uncheck();
     await expect(cost(page)).toHaveCount(0);
   });
@@ -204,7 +206,7 @@ test.describe('Active CBM shipment workspace', () => {
       await noOverflow(page);
       await checkShell(page, width);
       if (width < 700) {
-        await page.getByRole('button', { name: 'Edit Package 1', exact: true }).click();
+        await page.getByRole('button', { name: 'Edit Carton 1', exact: true }).click();
         const length = await field(page, 0, 'length').boundingBox();
         const widthField = await field(page, 0, 'width').boundingBox();
         expect(length).toBeTruthy();
@@ -221,7 +223,7 @@ test.describe('Active CBM shipment workspace', () => {
       });
       await page.getByLabel('Enable cost estimate').check();
       await page.getByLabel('Freight rate', { exact: true }).fill('100');
-      await expect(cost(page)).toContainText('₹600.00');
+      await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated Total₹ 600');
       await noOverflow(page);
     });
   }

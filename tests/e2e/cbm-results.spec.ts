@@ -14,8 +14,8 @@ const total = (page: Page) => page.locator('[data-cbm-total]');
 const visual = (page: Page) => page.getByRole('region', { name: /^Shipment Visualization/ });
 const summary = (page: Page) => page.getByRole('region', { name: 'Results Summary' });
 const composition = (page: Page) =>
-  page.getByRole('region', { name: 'Load Composition by Package' });
-const cost = (page: Page) => page.getByRole('region', { name: 'Estimated freight cost' });
+  page.getByRole('region', { name: 'Load Composition by Carton' });
+const cost = (page: Page) => page.getByRole('region', { name: 'Cost Estimate Result' });
 const kpi = (page: Page, name: string) => summary(page).locator(`[data-kpi="${name}"]`);
 const print = (page: Page) =>
   page.locator('[data-cbm-actions]').getByRole('button', { name: 'Print / Save PDF', exact: true });
@@ -35,11 +35,11 @@ async function ready(page: Page) {
 
 async function fillShipment(page: Page, data: readonly (readonly string[])[] = FOUNDER_ROWS) {
   for (const [index, [description, length, width, height, quantity, weight]] of data.entries()) {
-    if (index > 0) await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    if (index > 0) await page.getByRole('button', { name: 'Add carton', exact: true }).click();
     if (!(await field(page, index, 'description').isVisible()))
       await rows(page)
         .nth(index)
-        .getByRole('button', { name: /^Edit Package/ })
+        .getByRole('button', { name: /^Edit / })
         .click();
     await field(page, index, 'description').fill(description ?? '');
     await field(page, index, 'length').fill(length ?? '');
@@ -87,16 +87,17 @@ test.describe('CBM results presentation (#219 B)', () => {
   }) => {
     await ready(page);
     await fillShipment(page);
-    await expect(kpi(page, 'pieces')).toContainText('Total Pieces200');
+    await expect(kpi(page, 'pieces')).toContainText('Total Cartons');
+    await expect(kpi(page, 'pieces')).toContainText('200');
     await expect(kpi(page, 'volume')).toContainText('1,652.726 ft³');
     await expect(kpi(page, 'weight')).toContainText('Total Weight');
-    await expect(kpi(page, 'weight')).toContainText('8,340.000 kg');
+    await expect(kpi(page, 'weight')).toContainText('8,340 kg');
     await expect(kpi(page, 'average')).toContainText('0.234 m³');
     await expect(summary(page)).not.toContainText(/partial/i);
 
     await field(page, 3, 'weightPerItem').fill('');
     await expect(kpi(page, 'weight')).toContainText('Known Weight');
-    await expect(kpi(page, 'weight')).toContainText('4,340.000 kg');
+    await expect(kpi(page, 'weight')).toContainText('4,340 kg');
     await expect(kpi(page, 'weight')).toContainText('Partial');
     await expect(summary(page)).toContainText(
       'Known packed weight (partial): 190 of 200 pieces weighed.',
@@ -120,7 +121,7 @@ test.describe('CBM results presentation (#219 B)', () => {
       'Pallet (Boxed)12.000 (25.6%)',
     ]);
     await expect(composition(page).getByRole('heading')).toHaveText(
-      'Load Composition by Package (CBM)',
+      'Load Composition by Carton (CBM)',
     );
     const widths = await composition(page)
       .locator('[aria-hidden="true"] > span')
@@ -171,14 +172,14 @@ test.describe('CBM results presentation (#219 B)', () => {
     await ready(page);
     await fillShipment(page);
     await field(page, 2, 'description').focus();
-    await expect(visual(page)).toContainText('Dimensions of one Wooden Crate');
+    await expect(visual(page).getByRole('img')).toHaveAttribute('aria-label', /^Wooden Crate: /);
     await expect(visual(page).getByRole('img').locator('text')).toHaveText([
       'W 100 cm',
       'L 120 cm',
       'H 180 cm',
     ]);
-    await page.getByRole('button', { name: 'Select Package 1', exact: true }).click();
-    await expect(visual(page)).toContainText('Dimensions of one Carton A');
+    await page.getByRole('button', { name: 'Select Carton 1', exact: true }).click();
+    await expect(visual(page).getByRole('img')).toHaveAttribute('aria-label', /^Carton A: /);
   });
 
   test('cost result is highlighted, exact and never stale', async ({ page }) => {
@@ -187,9 +188,9 @@ test.describe('CBM results presentation (#219 B)', () => {
     await fillShipment(page);
     await enableCost(page, '4500', { other: '2000' });
     const totalTile = cost(page).locator('[data-cost-total]');
-    await expect(totalTile).toHaveText('Estimated Total₹2,12,600.00');
-    await expect(cost(page)).toContainText('Freight (46.8 m³ × ₹4,500.00)₹2,10,600.00');
-    await expect(cost(page)).toContainText('Other charges₹2,000.00');
+    await expect(totalTile).toHaveText('Estimated Total₹ 2,12,600');
+    await expect(cost(page)).toContainText('Freight (46.800 m³ × ₹ 4,500)₹ 2,10,600');
+    await expect(cost(page)).toContainText('Other charges₹ 2,000');
     await expect(cost(page)).toContainText('Estimate calculated');
 
     await page.evaluate(() => {
@@ -203,26 +204,24 @@ test.describe('CBM results presentation (#219 B)', () => {
     });
     await field(page, 0, 'quantity').fill('50');
     await expect(total(page)).toHaveText('42.000 m³');
-    await expect(totalTile).toHaveText('Estimated Total₹1,91,000.00');
+    await expect(totalTile).toHaveText('Estimated Total₹ 1,91,000');
     const seen = await page.evaluate(
       () => (window as unknown as { __costSeen: string[] }).__costSeen,
     );
-    expect(
-      seen.some((entry) => entry.endsWith('₹2,12,600.00') && !entry.startsWith('46.800')),
-    ).toBe(false);
+    expect(seen.some((entry) => entry.endsWith('2,12,600') && !entry.startsWith('46.800'))).toBe(
+      false,
+    );
 
     await page.getByLabel('Currency').selectOption('USD');
-    await expect(totalTile).toHaveText('Estimated TotalUSD 191,000.00');
+    await expect(totalTile).toHaveText('Estimated TotalUSD 191,000');
   });
 
   test('minimum charge keeps the engine semantics', async ({ page }) => {
     await ready(page);
     await enableCost(page, '100', { minimum: '1000' });
-    await expect(cost(page)).toContainText('Freight (minimum charge applied)₹1,000.00');
-    await expect(cost(page)).toContainText(
-      'Rate × CBM = ₹600.00, below your minimum of ₹1,000.00.',
-    );
-    await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated Total₹1,000.00');
+    await expect(cost(page)).toContainText('Freight (minimum charge applied)₹ 1,000');
+    await expect(cost(page)).toContainText('Rate × CBM = ₹ 600, below your minimum of ₹ 1,000.');
+    await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated Total₹ 1,000');
   });
 
   test('Print / Save PDF is primary and Copy Summary secondary, both for current results only', async ({

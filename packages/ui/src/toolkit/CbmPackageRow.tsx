@@ -29,7 +29,7 @@ export interface PackageRowProps {
   onActivate: (id: number) => void;
 }
 
-const nameOf = (index: number) => `${t.package} ${index + 1}`;
+const nameOf = (index: number) => `${w.carton} ${index + 1}`;
 const describedName = (row: CbmPackage, index: number) => row.description.trim() || nameOf(index);
 
 function FieldCell({

@@ -25,13 +25,13 @@ describe('CBM illustration scene', () => {
   const p = proportions('50', '40', '30');
   if (!p) throw new Error('expected drawable proportions');
 
-  it('draws a fixed 3 × 3 × 2 carton stack on a pallet, whatever the quantity', () => {
+  it('draws a fixed 2 × 2 × 2 carton stack on a pallet, whatever the quantity', () => {
     const drawn = scene('iso', p);
     const cartons = drawn.polygons.filter((polygon) =>
       ['top', 'left', 'right'].includes(polygon.tone),
     );
-    expect(cartons).toHaveLength(18 * 3);
-    expect(drawn.polygons.filter((polygon) => polygon.tone === 'tape')).toHaveLength(18);
+    expect(cartons).toHaveLength(8 * 3);
+    expect(drawn.polygons.filter((polygon) => polygon.tone === 'tape')).toHaveLength(8);
     expect(drawn.polygons.some((polygon) => polygon.tone === 'palletTop')).toBe(true);
   });
 
@@ -58,13 +58,34 @@ describe('CBM illustration scene', () => {
     }
   });
 
-  it('measures one carton, not the stack: each arrow spans a single carton side', () => {
+  it('measures the whole stack, whose outer size is the package size', () => {
     const drawn = scene('front', p);
-    const faces = drawn.polygons.filter((polygon) => polygon.tone === 'face');
-    const xs = coordinates(faces[0]?.points ?? '').map(([x]) => x);
-    const carton = Math.max(...xs) - Math.min(...xs);
+    const xs = drawn.polygons
+      .filter((polygon) => polygon.tone === 'face')
+      .flatMap((polygon) => coordinates(polygon.points).map(([x]) => x));
     const [lengthArrow] = drawn.arrows;
-    expect(Math.abs((lengthArrow?.x2 ?? 0) - (lengthArrow?.x1 ?? 0))).toBeCloseTo(carton, 0);
+    expect(Math.abs((lengthArrow?.x2 ?? 0) - (lengthArrow?.x1 ?? 0))).toBeCloseTo(
+      Math.max(...xs) - Math.min(...xs),
+      0,
+    );
+  });
+
+  it('draws the reference viewpoint: the width edge longer and flatter than the length edge', () => {
+    const square = proportions('100', '100', '120');
+    if (!square) throw new Error('expected drawable proportions');
+    const [width, length] = scene('iso', square).arrows;
+    const run = (a?: { x1: number; x2: number }) => Math.abs((a?.x2 ?? 0) - (a?.x1 ?? 0));
+    const rise = (a?: { y1: number; y2: number }) => Math.abs((a?.y2 ?? 0) - (a?.y1 ?? 0));
+    expect(run(width)).toBeGreaterThan(run(length));
+    expect(rise(width) / run(width)).toBeLessThan(rise(length) / run(length));
+  });
+
+  it('moves larger phone labels further from their arrows', () => {
+    const gap = (labelScale: number) => {
+      const arrow = scene('iso', p, labelScale).arrows.find((a) => a.axis === 'height');
+      return Math.abs((arrow?.x1 ?? 0) - (arrow?.labelX ?? 0));
+    };
+    expect(gap(1.45)).toBeGreaterThan(gap(1));
   });
 
   it('shows proportions: a taller package gives a taller front view', () => {

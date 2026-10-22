@@ -23,7 +23,7 @@ export function CbmOutputActions({
         <Button
           variant="primary"
           size="lg"
-          icon="printer"
+          icon="file-text"
           class={s.print}
           disabled={!enabled}
           onClick={() => window.print()}

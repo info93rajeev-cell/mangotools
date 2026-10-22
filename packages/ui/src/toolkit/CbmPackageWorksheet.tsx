@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
 import { Button } from '../primitives/Button.tsx';
+import { Icon } from '../primitives/Icon.tsx';
 import { CbmPackageRow } from './CbmPackageRow.tsx';
 import { isBlock, PASTE_COLUMNS, type PasteField, parseGrid, withoutHeader } from './cbmPaste.ts';
 import { groupFigure } from './cbmResultFormat.ts';
@@ -21,6 +22,7 @@ export interface WorksheetProps {
   preset: ResolvedPreset;
   weightUnit: string;
   selected: ReadonlySet<number>;
+  activeId: number | undefined;
   showTotalRow: boolean;
   onToggle: (id: number) => void;
   onMove: (from: number, to: number) => void;
@@ -46,7 +48,7 @@ function TableHeader({ unit }: { unit: string }) {
       {sized(t.height)}
       <span>{ws.quantity}</span>
       <span class={s.weightHead}>
-        {w.weightPerPackage}
+        {w.weightPerCarton}
         <small>{w.optional}</small>
       </span>
       <span>{t.rowCbm}</span>
@@ -84,6 +86,7 @@ export function CbmPackageWorksheet(props: WorksheetProps) {
     () => state.packages.find((row) => !row.length || !row.width || !row.height)?.id ?? null,
   );
   const [status, announce] = useState('');
+  const [listOpen, setListOpen] = useState(true);
   const { drag, handlers } = useRowDrag(list, state.packages.length, props.onMove, (index) => {
     const row = state.packages[index];
     if (row) props.onToggle(row.id);
@@ -101,20 +104,35 @@ export function CbmPackageWorksheet(props: WorksheetProps) {
     setOpenId(id ?? null);
     queueMicrotask(() => document.getElementById(`cbm-package-${id}-description`)?.focus());
   };
+  const count = state.packages.length;
   return (
-    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-packages-title">
+    <section
+      class={`${s.panel} ${className}`}
+      aria-labelledby="cbm-packages-title"
+      data-collapsed={!listOpen}
+    >
       <div class={s.heading}>
         <h2 id="cbm-packages-title">
-          {t.packages} <small>{fillText(w.items, { count: state.packages.length })}</small>
+          <span class={s.long}>{w.cartonsTitle}</span>
+          <span class={s.short}>{w.cartonsShort}</span>{' '}
+          <small class={s.long}>{fillText(w.items, { count })}</small>
+          <small class={s.short}>({count})</small>
         </h2>
-        <Button size="sm" variant="ghost" class={s.sample} onClick={() => controller.sample()}>
-          {t.sample}
-        </Button>
         <Button size="sm" class={s.clear} onClick={() => controller.clear()}>
           {t.clear}
         </Button>
+        <button
+          type="button"
+          class={s.collapse}
+          aria-expanded={listOpen}
+          aria-controls="cbm-carton-list"
+          aria-label={fillText(w.toggleSection, { section: w.cartonsShort })}
+          onClick={() => setListOpen(!listOpen)}
+        >
+          <Icon name={listOpen ? 'chevron-up' : 'chevron-down'} />
+        </button>
       </div>
-      <div class={s.table} ref={list} onPaste={onPaste}>
+      <div id="cbm-carton-list" class={s.table} ref={list} onPaste={onPaste}>
         <TableHeader unit={state.unit} />
         {state.packages.map((row, index) => (
           <CbmPackageRow
@@ -133,25 +151,34 @@ export function CbmPackageWorksheet(props: WorksheetProps) {
         {props.showTotalRow ? <TotalRow state={state} /> : null}
       </div>
       <div class={s.toolbar}>
-        <Button size="sm" icon="plus" disabled={state.packages.length >= 50} onClick={add}>
-          {t.add}
+        <Button size="sm" icon="plus" class={s.add} disabled={count >= 50} onClick={add}>
+          {w.addCarton}
         </Button>
         <Button
           size="sm"
           icon="copy"
           class={s.duplicate}
-          disabled={!selected.size || state.packages.length >= 50}
-          onClick={() => duplicatePackages(controller, selected)}
+          disabled={count >= 50}
+          onClick={() =>
+            duplicatePackages(
+              controller,
+              selected.size
+                ? selected
+                : new Set(props.activeId === undefined ? [] : [props.activeId]),
+            )
+          }
         >
           {w.duplicateSelected}
         </Button>
         <Button size="sm" class={s.footerClear} onClick={() => controller.clear()}>
           {t.clear}
         </Button>
-        <span class={s.count}>{fillText(w.rows, { count: state.packages.length })}</span>
-        <span class={s.tip}>{w.pasteTip}</span>
+        <span class={s.count}>{fillText(w.rows, { count })}</span>
+        <span class={s.tip}>
+          <b>{w.tipLabel}</b> {w.tipText}
+        </span>
       </div>
-      {state.packages.length >= 50 ? <p class={s.limit}>{t.limit}</p> : null}
+      {count >= 50 ? <p class={s.limit}>{t.limit}</p> : null}
       <p id="cbm-move-hint" class="visually-hidden">
         {w.moveHint}
       </p>

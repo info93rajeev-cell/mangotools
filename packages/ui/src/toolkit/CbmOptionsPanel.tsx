@@ -77,7 +77,8 @@ export function CbmOptionsPanel({
           onClick={() => onOpen(!open)}
         >
           <Icon name="settings" />
-          <span>{t.options}</span>
+          <span class={s.long}>{t.options}</span>
+          <span class={s.short}>{w.optionsShort}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} class={s.chevron} />
         </button>
       </h2>
