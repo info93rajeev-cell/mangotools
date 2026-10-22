@@ -150,7 +150,7 @@ function FormatSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Format</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent)', fontWeight: 'bold' }}>
+        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
           {converter.targetFormat.toUpperCase()}
         </span>
       </div>

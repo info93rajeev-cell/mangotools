@@ -104,7 +104,7 @@
 .uploadMainBtn:hover {
   background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .compactDropZone {
@@ -275,7 +275,7 @@
 .scalePresetBtn[data-active="true"] {
   background: color-mix(in srgb, var(--color-accent) 15%, var(--color-bg));
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-weight: var(--weight-bold);
 }
 
@@ -597,7 +597,7 @@
   font-weight: var(--weight-bold);
   border-radius: var(--radius-md);
   border: none;
-  background: #10b981;
+  background: #15803d;
   color: #ffffff;
   cursor: pointer;
   display: flex;
@@ -608,7 +608,7 @@
 }
 
 .downloadCtaBtn:hover {
-  background: #059669;
+  background: #166534;
 }
 
 .trustBadge {

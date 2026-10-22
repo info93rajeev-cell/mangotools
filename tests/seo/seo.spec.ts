@@ -129,13 +129,15 @@ for (const tool of listed) {
   });
 }
 
-test('Round 1 contract: 7 visible categories, 35 listed tools, 44 sitemap URLs', async ({
+test('Round 1 contract: 7 visible categories, 36 listed tools, 45 sitemap URLs', async ({
   request,
 }) => {
   expect(categories).toHaveLength(7);
-  expect(listed).toHaveLength(35);
+  // Background Remover is a listed beta tool in this PR's generated registry.
+  expect(listed).toHaveLength(36);
+  expect(listed.some((tool) => tool.id === 'image-background-remover')).toBe(true);
   const pages = await (await request.get('/sitemap-pages.xml')).text();
-  expect([...pages.matchAll(/<loc>/g)]).toHaveLength(1 + 1 + 7 + 35);
+  expect([...pages.matchAll(/<loc>/g)]).toHaveLength(2 + categories.length + listed.length);
 });
 
 test('one canonical per page, absolute on the production host, no trailing slash', async ({

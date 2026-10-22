@@ -81,12 +81,12 @@
 .activeFormatHint {
   font-size: 10px;
   font-weight: var(--weight-bold);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .samplePillBtn {
   background: var(--color-accent-soft, rgba(245, 158, 11, 0.1));
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   padding: 2px 8px;
@@ -148,7 +148,7 @@
 
 .compactDropZone:hover .uploadMainBtn {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .activeFileWrapper {
@@ -177,7 +177,7 @@
 .uploadNewBtn:hover {
   border-color: var(--color-accent);
   background: var(--color-surface-subtle);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .dropIcon {
@@ -299,7 +299,7 @@
   align-items: center;
   gap: 4px;
   font-size: var(--text-caption);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   cursor: pointer;
 }
 

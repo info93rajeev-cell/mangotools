@@ -104,7 +104,7 @@ function DimensionsSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Dimensions</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent)', fontWeight: 'bold' }}>
+        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
           {resize.scalePercent}%
         </span>
       </div>
@@ -187,7 +187,7 @@ function FormatSection({ idPrefix, resize }: { idPrefix: string; resize: UseImag
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>3. Output Format</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent)', fontWeight: 'bold' }}>
+        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
           {resize.outputFormat.toUpperCase()}
         </span>
       </div>
