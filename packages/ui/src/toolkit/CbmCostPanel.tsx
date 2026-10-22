@@ -13,16 +13,18 @@ interface Props {
 }
 export function CbmCostPanel({ state, controller, preset, className = '' }: Props) {
   return (
-    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-cost-title">
-      <h2 id="cbm-cost-title">{t.cost}</h2>
-      <label class={s.toggle}>
-        <input
-          type="checkbox"
-          checked={state.costInput.enabled}
-          onChange={(e) => controller.setCost({ enabled: e.currentTarget.checked })}
-        />
-        {t.enable}
-      </label>
+    <section class={`${s.panel} ${s.costPanel} ${className}`} aria-labelledby="cbm-cost-title">
+      <div class={s.costHeading}>
+        <h2 id="cbm-cost-title">{t.cost}</h2>
+        <label class={s.toggle}>
+          <input
+            type="checkbox"
+            checked={state.costInput.enabled}
+            onChange={(e) => controller.setCost({ enabled: e.currentTarget.checked })}
+          />
+          <span class={s.srOnly}>{t.enable}</span>
+        </label>
+      </div>
       {state.costInput.enabled ? (
         <>
           <p>{t.costHelp}</p>

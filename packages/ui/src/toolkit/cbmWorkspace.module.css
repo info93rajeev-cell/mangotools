@@ -1,7 +1,10 @@
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(300px, 1fr);
+  grid-template-columns: minmax(0, 1fr) 430px;
   gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #1762ef 4%, var(--color-bg));
   font-size: 14px;
   line-height: 1.4;
 }
@@ -57,7 +60,7 @@
     order: 36;
   }
   .visualizationSlot {
-    order: 40;
+    order: 15;
   }
   .notesSlot {
     order: 50;

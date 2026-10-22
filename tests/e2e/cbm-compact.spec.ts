@@ -18,6 +18,24 @@ async function noOverflow(page: Page) {
   );
 }
 
+async function checkShell(page: Page, width: number) {
+  const visualization = page.getByRole('region', { name: 'Shipment Visualization' });
+  if (width === 1366) {
+    const right = await visualization.boundingBox();
+    expect(right?.width).toBeGreaterThanOrEqual(420);
+    expect(right?.width).toBeLessThanOrEqual(440);
+    await expect(page.locator('[data-cbm-worksheet-header]')).toBeVisible();
+    return;
+  }
+  const options = page.getByRole('region', { name: 'Units & Display Options' });
+  expect((await options.boundingBox())?.y).toBeLessThan(
+    (await visualization.boundingBox())?.y ?? 0,
+  );
+  expect((await visualization.boundingBox())?.y).toBeLessThan(
+    (await summary(page).boundingBox())?.y ?? 0,
+  );
+}
+
 test.describe('Active CBM shipment workspace', () => {
   test('activates shipment results and keeps support sections collapsed', async ({ page }) => {
     await ready(page);
@@ -120,6 +138,7 @@ test.describe('Active CBM shipment workspace', () => {
       await page.setViewportSize({ width, height: width === 1366 ? 768 : 800 });
       await ready(page);
       await noOverflow(page);
+      await checkShell(page, width);
       if (width < 700) {
         const length = await field(page, 0, 'length').boundingBox();
         const widthField = await field(page, 0, 'width').boundingBox();
