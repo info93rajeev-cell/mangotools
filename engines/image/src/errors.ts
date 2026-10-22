@@ -56,4 +56,6 @@ export const messages: Readonly<Record<string, string>> = {
   IMAGE_ANIMATED_UNSUPPORTED:
     '"{name}" is an animated image. Animated images are not supported for this operation.',
   IMAGE_WEBP_UNSUPPORTED: 'WebP export is not supported in this browser.',
+  IMAGE_BACKGROUND_REMOVAL_FAILED:
+    'The background could not be removed. Please try again with a different image.',
 };

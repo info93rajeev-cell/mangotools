@@ -54,6 +54,7 @@ describe('registry pipeline — valid repository', () => {
       'export-packing-list-generator',
       'favicon-generator',
       'gst-calculator',
+      'image-background-remover',
       'image-compress',
       'image-crop',
       'image-format-converter',
@@ -464,7 +465,8 @@ describe('category visibility threshold', () => {
     expect(visibleAt(8)).toEqual(['media']);
     expect(visibleAt(9)).toEqual(['media']);
     expect(visibleAt(10)).toEqual(['media']);
-    expect(visibleAt(11)).toEqual([]);
+    expect(visibleAt(11)).toEqual(['media']);
+    expect(visibleAt(12)).toEqual([]);
   });
 });
 

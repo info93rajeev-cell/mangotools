@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/remove-background
+version: 0.1.0
+operation: image.remove-background@1
+params: {}
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  tolerance:
+    labelKey: field.tolerance
+    kind: number
+    order: 1
+    unit: "%"
+    placeholderKey: field.tolerance.placeholder
+    default: 20
+  feather:
+    labelKey: field.feather
+    kind: number
+    order: 2
+    unit: "px"
+    placeholderKey: field.feather.placeholder
+    default: 2
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 3
+    options:
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+    default: png
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 4
+    unit: "%"
+    placeholderKey: field.quality.placeholder
+    default: 90
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  fileName: { labelKey: output.fileName, format: text, order: 1, primary: true }
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 2 }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 3 }
+  tolerance: { labelKey: output.tolerance, format: percent, order: 4 }
+  feather: { labelKey: output.feather, format: number, order: 5 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 6 }
+  originalFormat: { labelKey: output.originalFormat, format: text, order: 7 }
+  outputFileSize: { labelKey: output.outputFileSize, format: bytes, order: 8 }
+  originalFileSize: { labelKey: output.originalFileSize, format: bytes, order: 9 }
+  sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: bytes, order: 10 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-no-bg.png"
+    fileTool.downloadCta: "Download transparent image"
+    fileTool.noFilesYet: "Add an image above to get started."
+    field.tolerance: "Color tolerance"
+    field.tolerance.placeholder: "20"
+    field.feather: "Edge smoothing"
+    field.feather.placeholder: "2"
+    field.outputFormat: "Output format"
+    field.outputFormat.png: "PNG (Transparent)"
+    field.outputFormat.webp: "WebP (Transparent)"
+    field.outputFormat.jpg: "JPG"
+    field.quality: "Quality"
+    field.quality.placeholder: "90"
+    output.fileName: "Output file"
+    output.outputWidth: "Width"
+    output.outputHeight: "Height"
+    output.tolerance: "Tolerance"
+    output.feather: "Feather"
+    output.outputFormat: "Format"
+    output.originalFormat: "Original format"
+    output.outputFileSize: "File size"
+    output.originalFileSize: "Original size"
+    output.sizeDifferenceBytes: "Size change"
