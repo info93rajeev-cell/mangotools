@@ -223,7 +223,7 @@ function HiddenMetricsDl({ compress }: { compress: UseImageCompressReturn }) {
   return (
     <>
       <div data-primary-result="" class="visually-hidden">
-        <output>{res ? res.sizeChangePercent : ''}</output>
+        <output>{res ? `${res.sizeChangePercent}%` : ''}</output>
       </div>
 
       <dl class="visually-hidden">
