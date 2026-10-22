@@ -15,6 +15,25 @@ lastReviewed: 2026-09-30
 
 **Processed locally in your browser.** No file upload is required for this tool — the image you select is read and re-encoded on your own device, and the result downloads without ever leaving it.
 
+### Compression Pipeline Comparison
+
+| Format | Encoding Type | Primary Mechanism | Best Use Case | Quality Control |
+| :--- | :--- | :--- | :--- | :--- |
+| **JPG** | Lossy (DCT) | Discards high-frequency color variations imperceptible to human eyes | Photographs, rich textures | 50%–100% slider |
+| **PNG** | Lossless (Deflate) | Finds repeating byte patterns (LZ77 + Huffman) without altering pixels | Screenshots, line art, transparency | Fixed lossless |
+| **WebP** | Lossy / Lossless | Predictive intra-frame block coding + entropy compression | Modern web images, maximum byte reduction | 50%–100% slider |
+
+### Target Size Guide for Common Portals
+
+| Target Size | Typical Requirement | Recommended Output Format | Best Practice |
+| :--- | :--- | :--- | :--- |
+| **Under 20 KB** | Digital signatures, exam stamp uploads, SMS/MMS | JPG or WebP | Start from cropped signature, avoid unnecessary margins |
+| **Under 50 KB** | Passport photos, national IDs, govt exam applications (UPSC, SSC) | JPG | Use clean 35×45mm framing before compressing |
+| **Under 100 KB** | Resume attachments, visa forms, college admission portals | JPG or WebP | Standard web limit balancing clarity and small file footprint |
+| **Under 200 KB** | KYC documents, customer onboarding, high-res web photos | JPG or WebP | Preserves high crispness while passing document upload checks |
+
+**Target file size search.** When you select a specific target file size (such as 20 KB, 50 KB, or 100 KB), the tool performs a bounded binary search across encoding qualities. It tests candidate encodings to discover the highest visual quality that stays strictly below your target ceiling. If an image is already smaller than the target or cannot reach the target without downscaling, it reports its findings honestly.
+
 **Why compression results vary.** An image that is already tightly compressed, or one saved in a format with no quality knob, may not get smaller no matter what settings you choose — sometimes re-encoding even makes a file larger. Always compare the original and output size shown, and use a lower quality setting or a different format if the result isn't smaller.
 
 **JPG vs PNG vs WebP.** JPG and WebP support an adjustable quality setting and are usually the better choice for photographs, where some quality loss is visually hard to notice. PNG is lossless and has no quality knob, so it does not reduce file size for photo-like images — it works best for graphics, screenshots, and images with flat color or transparency. JPG has no transparency channel; converting a transparent image to JPG fills the transparent areas with white and shows a warning.
@@ -42,6 +61,14 @@ No. Compression results depend on the source image, its format, and the settings
 ### Does Image Compress resize my image?
 
 No. It keeps the original width and height by default. Use Image Resize if you also want to change the dimensions.
+
+### How do I compress an image to under 20KB, 50KB, or 100KB?
+
+Select your image, then click the desired target pill (`20 KB`, `50 KB`, or `100 KB`) in Stage 2. The browser engine tests quality steps down to 50% to find the highest-fidelity version that meets your size ceiling.
+
+### What is the difference between reducing file size (KB) and resizing dimensions (Pixels)?
+
+Reducing file size (KB) optimizes how pixel data is mathematically encoded and compressed without altering the picture's physical dimensions (width × height). Resizing dimensions changes the actual pixel count. If an image is extremely large (e.g. 4000×3000 px), reducing dimensions first with Image Resize will produce much smaller file sizes.
 
 ### What happens to transparent areas if I convert to JPG?
 
