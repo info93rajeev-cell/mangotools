@@ -53,7 +53,7 @@
 }
 .costFields {
   display: grid;
-  grid-template-columns: 65px 1fr repeat(3, minmax(0, 1fr));
+  grid-template-columns: 65px 100px minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 8px;
 }
@@ -209,4 +209,29 @@
   .panel p {
     font-size: 12px;
   }
+}
+
+.amountField {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 4px;
+}
+.amountField input {
+  flex: 1;
+  min-width: 0;
+}
+.amountField:has([data-cbm-rate-prefix]) {
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  padding: 0 5px;
+}
+.amountField:has([data-cbm-rate-prefix]) input {
+  border: 0;
+  padding-inline: 0;
+}
+.amountField span {
+  flex: none;
+  font-size: 11px;
 }
