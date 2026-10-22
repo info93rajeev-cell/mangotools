@@ -94,9 +94,6 @@
   color: var(--color-on-accent);
 }
 @media (max-width: 700px) {
-  .visualSlot {
-    order: 40;
-  }
   .visualSlot input:not([type="checkbox"]),
   .visualSlot select {
     height: 44px;

@@ -6,13 +6,14 @@ import { cbmText as t } from './cbmStrings.ts';
 import { messageFor } from './presentation.ts';
 
 interface Props {
+  className?: string;
   state: CbmSnapshot;
   controller: CbmController;
   preset: ResolvedPreset;
 }
-export function CbmCostPanel({ state, controller, preset }: Props) {
+export function CbmCostPanel({ state, controller, preset, className = '' }: Props) {
   return (
-    <section class={`${s.panel} ${s.costPanel}`} aria-labelledby="cbm-cost-title">
+    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-cost-title">
       <h2 id="cbm-cost-title">{t.cost}</h2>
       <label class={s.toggle}>
         <input

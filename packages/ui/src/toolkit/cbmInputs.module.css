@@ -84,15 +84,6 @@
   margin: 3px 0;
 }
 @media (max-width: 700px) {
-  .optionsPanel {
-    order: 11;
-  }
-  .costPanel {
-    order: 30;
-  }
-  .notes {
-    order: 50;
-  }
   .panel input:not([type="checkbox"]),
   .panel select {
     height: 44px;

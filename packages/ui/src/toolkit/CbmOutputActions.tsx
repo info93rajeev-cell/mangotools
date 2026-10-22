@@ -4,11 +4,21 @@ import { copyText } from './actions.ts';
 import s from './cbmResults.module.css';
 import { cbmText as t } from './cbmStrings.ts';
 
-export function CbmOutputActions({ summary, enabled }: { summary: string; enabled: boolean }) {
+export function CbmOutputActions({
+  summary,
+  enabled,
+  className = '',
+  feedbackClassName = '',
+}: {
+  summary: string;
+  enabled: boolean;
+  className?: string;
+  feedbackClassName?: string;
+}) {
   const [message, notify] = useState('');
   return (
     <>
-      <div class={s.actions}>
+      <div class={`${s.actions} ${className}`}>
         <Button size="sm" disabled={!enabled} onClick={() => window.print()}>
           {t.print}
         </Button>
@@ -20,7 +30,7 @@ export function CbmOutputActions({ summary, enabled }: { summary: string; enable
           {t.copy}
         </Button>
       </div>
-      <p class={s.feedback} role="status">
+      <p class={feedbackClassName} role="status">
         {message}
       </p>
     </>

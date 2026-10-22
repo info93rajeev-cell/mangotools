@@ -35,6 +35,33 @@
   .error {
     order: 50;
   }
+  .worksheetSlot {
+    order: 10;
+  }
+  .optionsSlot {
+    order: 11;
+  }
+  .resultsSlot {
+    order: 20;
+  }
+  .costInputsSlot {
+    order: 30;
+  }
+  .costResultSlot {
+    order: 31;
+  }
+  .outputActionsSlot {
+    order: 35;
+  }
+  .outputFeedbackSlot {
+    order: 36;
+  }
+  .visualizationSlot {
+    order: 40;
+  }
+  .notesSlot {
+    order: 50;
+  }
 }
 @media print {
   .workspace {

@@ -6,12 +6,14 @@ import { cbmText as t } from './cbmStrings.ts';
 export function CbmOptionsPanel({
   state,
   controller,
+  className = '',
 }: {
+  className?: string;
   state: CbmSnapshot;
   controller: CbmController;
 }) {
   return (
-    <section class={`${s.panel} ${s.optionsPanel}`} aria-labelledby="cbm-options-title">
+    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-options-title">
       <h2 id="cbm-options-title">{t.options}</h2>
       <div class={s.options}>
         <label>

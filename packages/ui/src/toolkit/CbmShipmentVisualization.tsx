@@ -77,10 +77,16 @@ export function CbmShipmentVisualization({ row }: { row: CbmPackage | undefined 
   );
 }
 
-export function CbmVisualizationPanel({ packages }: { packages: CbmPackage[] }) {
+export function CbmVisualizationPanel({
+  packages,
+  className = '',
+}: {
+  packages: CbmPackage[];
+  className?: string;
+}) {
   const [selected, select] = useState(0);
   return (
-    <div class={s.visualSlot}>
+    <div class={`${s.visualSlot} ${className}`}>
       <label class={s.packageSelector}>
         {t.package}
         <select

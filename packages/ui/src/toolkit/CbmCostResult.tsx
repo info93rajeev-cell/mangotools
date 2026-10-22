@@ -2,9 +2,15 @@ import s from './cbmResults.module.css';
 import type { CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
 
-export function CbmCostResult({ state }: { state: CbmSnapshot }) {
+export function CbmCostResult({
+  state,
+  className = '',
+}: {
+  state: CbmSnapshot;
+  className?: string;
+}) {
   return (
-    <div class={s.costResult}>
+    <div class={className}>
       <CostResultContent state={state} />
     </div>
   );

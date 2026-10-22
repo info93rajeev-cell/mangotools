@@ -73,18 +73,6 @@
   display: none;
 }
 @media (max-width: 700px) {
-  .panel {
-    order: 20;
-  }
-  .costResult {
-    order: 31;
-  }
-  .actions {
-    order: 35;
-  }
-  .feedback {
-    order: 36;
-  }
   .actions button {
     min-height: 44px;
   }

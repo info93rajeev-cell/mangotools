@@ -7,12 +7,14 @@ import { messageFor } from './presentation.ts';
 export function CbmNotesPanel({
   warnings,
   preset,
+  className = '',
 }: {
+  className?: string;
   warnings: CbmSnapshot['warnings'];
   preset: ResolvedPreset;
 }) {
   return (
-    <details class={`${s.panel} ${s.notes}`}>
+    <details class={`${s.panel} ${s.notes} ${className}`}>
       <summary>{t.notes}</summary>
       <p>{t.formula}</p>
       <p>{t.measurement}</p>

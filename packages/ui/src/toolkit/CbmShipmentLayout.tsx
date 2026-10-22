@@ -19,10 +19,20 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
     <div data-cbm-workspace="">
       <div class={s.workspace}>
         <div class={s.left}>
-          <CbmPackageWorksheet state={state} controller={controller} preset={preset} />
-          <CbmOptionsPanel state={state} controller={controller} />
-          <CbmCostPanel state={state} controller={controller} preset={preset} />
-          <CbmNotesPanel warnings={state.warnings} preset={preset} />
+          <CbmPackageWorksheet
+            className={s.worksheetSlot}
+            state={state}
+            controller={controller}
+            preset={preset}
+          />
+          <CbmOptionsPanel className={s.optionsSlot} state={state} controller={controller} />
+          <CbmCostPanel
+            className={s.costInputsSlot}
+            state={state}
+            controller={controller}
+            preset={preset}
+          />
+          <CbmNotesPanel className={s.notesSlot} warnings={state.warnings} preset={preset} />
           {state.error ? (
             <p class={s.error} role="alert">
               {messageFor(preset, state.error)}
@@ -30,10 +40,15 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
           ) : null}
         </div>
         <div class={s.right}>
-          <CbmVisualizationPanel packages={state.packages} />
-          <CbmShipmentResults state={state} />
-          <CbmCostResult state={state} />
-          <CbmOutputActions summary={text} enabled={!!state.shipment} />
+          <CbmVisualizationPanel className={s.visualizationSlot} packages={state.packages} />
+          <CbmShipmentResults className={s.resultsSlot} state={state} />
+          <CbmCostResult className={s.costResultSlot} state={state} />
+          <CbmOutputActions
+            className={s.outputActionsSlot}
+            feedbackClassName={s.outputFeedbackSlot}
+            summary={text}
+            enabled={!!state.shipment}
+          />
         </div>
       </div>
       <CbmPrintReport summary={text} />

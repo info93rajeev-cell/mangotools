@@ -2,12 +2,18 @@ import { volumeShare } from './cbmComposition.ts';
 import s from './cbmResults.module.css';
 import type { CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
-export function CbmShipmentResults({ state }: { state: CbmSnapshot }) {
+export function CbmShipmentResults({
+  state,
+  className = '',
+}: {
+  state: CbmSnapshot;
+  className?: string;
+}) {
   const result = state.shipment;
   return (
     <>
       <section
-        class={s.panel}
+        class={`${s.panel} ${className}`}
         aria-labelledby="cbm-summary-title"
         aria-live="polite"
         aria-busy={state.pending}
@@ -42,7 +48,7 @@ export function CbmShipmentResults({ state }: { state: CbmSnapshot }) {
           <p>{state.pending ? t.pending : t.empty}</p>
         )}
       </section>
-      <section class={s.panel} aria-labelledby="cbm-composition-title">
+      <section class={`${s.panel} ${className}`} aria-labelledby="cbm-composition-title">
         <h2 id="cbm-composition-title">{t.composition}</h2>
         {result ? (
           <ul class={s.composition}>
