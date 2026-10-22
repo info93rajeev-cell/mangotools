@@ -12,7 +12,9 @@ test.describe('navigation', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('GST Calculator');
   });
 
-  test('home shows only hero, search, category cards and the trust line', async ({ page }) => {
+  test('home displays hero, search, popular tools, categories, and all tools catalog', async ({
+    page,
+  }) => {
     await gotoReady(page, '/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Professional tools for work that should not depend on AI.',
@@ -22,27 +24,89 @@ test.describe('navigation', () => {
       'placeholder',
       'Search tools — try GST, JSON, CBM, Base64',
     );
+    // Categories section
     const categories = page.getByRole('region', { name: 'Browse by category' });
     await expect(categories.getByRole('link', { name: 'Developer & Data' })).toBeVisible();
     await expect(categories.getByRole('link', { name: 'Business & Finance' })).toBeVisible();
     await expect(categories.getByRole('link', { name: 'Logistics' })).toBeVisible();
-    await expect(page.locator('main [data-tool-card]')).toHaveCount(0);
-    await expect(page.getByRole('navigation', { name: 'Popular tools' })).toHaveCount(0);
+    await expect(categories.getByRole('link', { name: 'Image & Media' })).toBeVisible();
+    await expect(categories.getByRole('link', { name: 'Civil & Construction' })).toBeVisible();
+
+    // Popular tools section
+    const popularSection = page.locator('[data-popular-tools]');
+    await expect(popularSection).toBeVisible();
+    await expect(popularSection.locator('[data-tool-card]')).toHaveCount(6);
+
+    // All Tools section has exactly 36 unique tool cards
+    const allToolsSection = page.locator('#all-tools');
+    await expect(allToolsSection).toBeVisible();
+    const allCards = allToolsSection.locator('[data-tool-card]');
+    await expect(allCards).toHaveCount(36);
+
     await expect(page.locator('[data-trust-line]')).toHaveText(
       'No ads · No unnecessary uploads · Deterministic results · Built for professional workflows',
     );
   });
 
-  test('home fits the standard desktop viewport without document scrolling', async ({ page }) => {
-    await page.setViewportSize({ width: 1366, height: 768 });
+  test('home has zero horizontal overflow on desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { width: 1366, height: 900 },
+      { width: 768, height: 1024 },
+      { width: 390, height: 844 },
+      { width: 320, height: 568 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await gotoReady(page, '/');
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `Overflow at ${viewport.width}x${viewport.height}`).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test('home search filters both old and new tools in catalog and popover', async ({ page }) => {
+    await gotoReady(page, '/');
+    const search = page.getByRole('combobox', { name: 'Search tools' });
+
+    // Search for a new image studio: "crop"
+    await search.fill('crop');
+    await expect(page.getByRole('option', { name: /Image Crop/ })).toBeVisible();
+    await expect(page.locator('#all-tools [data-tool-card="image-crop"]')).toBeVisible();
+    await expect(page.locator('#all-tools [data-tool-card="gst-calculator"]')).toBeHidden();
+
+    // Clear and search for an older tool: "gst"
+    await search.fill('gst');
+    await expect(page.getByRole('option', { name: /GST Calculator/ })).toBeVisible();
+    await expect(page.locator('#all-tools [data-tool-card="gst-calculator"]')).toBeVisible();
+    await expect(page.locator('#all-tools [data-tool-card="image-crop"]')).toBeHidden();
+
+    // Clear search restores all cards
+    await search.fill('');
+    await expect(page.locator('#all-tools [data-tool-card]')).toHaveCount(36);
+  });
+
+  test('clicking upgraded tools opens modern studio layout', async ({ page }) => {
     await gotoReady(page, '/');
 
-    const dimensions = await page.evaluate(() => ({
-      clientHeight: document.documentElement.clientHeight,
-      scrollHeight: document.documentElement.scrollHeight,
-    }));
+    // Click Image Crop card
+    const cropCard = page.locator('#all-tools [data-tool-card="image-crop"] a').first();
+    await cropCard.click();
+    await expect(page).toHaveURL(/\/image-crop$/);
+    await expect(page.locator('[data-image-crop-layout]')).toBeVisible();
 
-    expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
+    // Return home and click Background Remover
+    await gotoReady(page, '/');
+    const bgCard = page.locator('#all-tools [data-tool-card="image-background-remover"] a').first();
+    await bgCard.click();
+    await expect(page).toHaveURL(/\/image-background-remover$/);
+    await expect(page.locator('[data-image-bg-remover-layout]')).toBeVisible();
+
+    // Return home and click Image Resize
+    await gotoReady(page, '/');
+    const resizeCard = page.locator('#all-tools [data-tool-card="image-resize"] a').first();
+    await resizeCard.click();
+    await expect(page).toHaveURL(/\/image-resize$/);
+    await expect(page.locator('[data-image-resize-layout]')).toBeVisible();
   });
 
   test('construction category fits its cards, closed support and footer at 1366x768', async ({
