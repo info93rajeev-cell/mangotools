@@ -4,6 +4,7 @@ import { copyText } from './actions.ts';
 import s from './cbmResults.module.css';
 import { cbmText as t } from './cbmStrings.ts';
 
+/** Output actions: Print / Save PDF is primary, Copy Summary secondary. Behaviour is unchanged. */
 export function CbmOutputActions({
   summary,
   enabled,
@@ -19,18 +20,28 @@ export function CbmOutputActions({
   return (
     <>
       <div class={`${s.actions} ${className}`}>
-        <Button size="sm" disabled={!enabled} onClick={() => window.print()}>
+        <Button
+          variant="primary"
+          size="lg"
+          icon="printer"
+          class={s.print}
+          disabled={!enabled}
+          onClick={() => window.print()}
+        >
           {t.print}
         </Button>
         <Button
-          size="sm"
+          variant="secondary"
+          size="lg"
+          icon="copy"
+          class={s.copy}
           disabled={!enabled}
           onClick={async () => notify((await copyText(summary)) ? t.copied : t.copyFailed)}
         >
           {t.copy}
         </Button>
       </div>
-      <p class={feedbackClassName} role="status">
+      <p class={`${s.feedback} ${feedbackClassName}`} role="status">
         {message}
       </p>
     </>

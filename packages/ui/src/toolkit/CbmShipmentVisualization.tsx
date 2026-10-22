@@ -1,82 +1,130 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
+import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import type { CbmPackage } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
 import s from './cbmVisual.module.css';
+import {
+  type Arrow,
+  proportions,
+  scene,
+  type Tone,
+  VIEW_BOX,
+  VIEWS,
+  type ViewKind,
+} from './cbmVisualGeometry.ts';
 
-function drawing(row: CbmPackage | undefined) {
-  const values = [row?.length, row?.width, row?.height].map((value) => Number(value));
-  const maximum = Math.max(...values.filter(Number.isFinite), 1);
-  const [l, w, h] = values.map((value) =>
-    Number.isFinite(value) && value > 0 ? Math.max(12, (value / maximum) * 70) : 35,
-  );
-  return {
-    top: `M180 15 ${180 + l} ${15 + l / 3} ${180 + l - w} ${15 + (l + w) / 3} ${180 - w} ${15 + w / 3}Z`,
-    left: `M${180 - w} ${15 + w / 3} ${180 + l - w} ${15 + (l + w) / 3} ${180 + l - w} ${15 + (l + w) / 3 + h} ${180 - w} ${15 + w / 3 + h}Z`,
-    right: `M${180 + l - w} ${15 + (l + w) / 3} ${180 + l} ${15 + l / 3} ${180 + l} ${15 + l / 3 + h} ${180 + l - w} ${15 + (l + w) / 3 + h}Z`,
-    l,
-    w,
-    h,
-  };
+const TONE: Record<Tone, string | undefined> = {
+  top: s.top,
+  right: s.right,
+  left: s.left,
+  face: s.face,
+  palletTop: s.palletTop,
+  palletSide: s.palletSide,
+  palletGap: s.palletGap,
+  tape: s.tape,
+};
+const LETTER = { length: 'L', width: 'W', height: 'H' } as const;
+
+const packageName = (row: CbmPackage, index: number) =>
+  row.description.replace(/\s+/g, ' ').trim() || `${t.package} ${index + 1}`;
+const viewName = (view: ViewKind) => fillText(r.viewName, { view: t[view] });
+
+function anchor(view: ViewKind, arrow: Arrow): 'start' | 'middle' | 'end' {
+  if (Math.abs(arrow.x2 - arrow.x1) < 1) return 'start';
+  if (view !== 'iso') return 'middle';
+  return arrow.axis === 'length' ? 'end' : 'start';
 }
-const views = ['iso', 'top', 'front', 'side'] as const;
-export function CbmShipmentVisualization({ row }: { row: CbmPackage | undefined }) {
-  const [view, setView] = useState<(typeof views)[number]>('iso');
-  const shape = drawing(row);
+
+function Dimension({ arrow, view, row }: { arrow: Arrow; view: ViewKind; row: CbmPackage }) {
+  const value = row[arrow.axis].trim();
   return (
-    <section class={`${s.panel} ${s.visual}`} aria-labelledby="cbm-visual-title">
-      <div class={s.heading}>
-        <h2 id="cbm-visual-title">{t.visualization}</h2>
-        <fieldset aria-label={t.view}>
-          {views.map((value) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={view === value}
-              onClick={() => setView(value)}
-            >
-              {t[value]}
-            </button>
-          ))}
-        </fieldset>
-      </div>
-      <svg
-        viewBox="0 0 360 130"
-        role="img"
-        aria-label={`${t.measurement}: ${row?.length ?? '—'} × ${row?.width ?? '—'} × ${row?.height ?? '—'} ${row?.unit ?? ''}`}
-      >
-        <title>{t.measurement}</title>
-        {view === 'iso' ? (
-          <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
-            <path d={shape.top} fill="var(--color-accent)" />
-            <path d={shape.left} fill="var(--color-surface-subtle)" />
-            <path d={shape.right} fill="var(--color-border)" />
-          </g>
-        ) : (
-          <rect
-            x="110"
-            y="25"
-            width={(view === 'side' ? shape.w : shape.l) * 1.5}
-            height={view === 'top' ? shape.w : shape.h}
-            rx="3"
-            fill="var(--color-accent)"
-            stroke="currentColor"
-          />
-        )}
-        <text x="275" y="60">
-          H {row?.height ?? '—'}
-        </text>
-        <text x="175" y="128">
-          L {row?.length ?? '—'}
-        </text>
-        <text x="35" y="95">
-          W {row?.width ?? '—'}
-        </text>
-      </svg>
-      <p>{t.illustrative}</p>
-    </section>
+    <g class={s.dimension} data-axis={arrow.axis}>
+      <line
+        x1={arrow.x1}
+        y1={arrow.y1}
+        x2={arrow.x2}
+        y2={arrow.y2}
+        marker-start="url(#cbm-dimension-end)"
+        marker-end="url(#cbm-dimension-end)"
+      />
+      <text x={arrow.labelX} y={arrow.labelY} text-anchor={anchor(view, arrow)}>
+        {`${LETTER[arrow.axis]} ${value} ${row.unit}`}
+      </text>
+    </g>
   );
 }
 
+function Illustration({ row, name, view }: { row: CbmPackage; name: string; view: ViewKind }) {
+  const shape = proportions(row.length, row.width, row.height);
+  if (!shape) return <p class={s.placeholder}>{r.noDimensions}</p>;
+  const drawn = scene(view, shape);
+  const label = fillText(r.illustrationLabel, {
+    name,
+    length: row.length.trim(),
+    width: row.width.trim(),
+    height: row.height.trim(),
+    unit: row.unit,
+    view: viewName(view),
+  });
+  return (
+    <svg
+      class={s.drawing}
+      viewBox={`0 0 ${VIEW_BOX.width} ${VIEW_BOX.height}`}
+      role="img"
+      aria-label={label}
+      data-view={view}
+    >
+      <defs>
+        <marker
+          id="cbm-dimension-end"
+          viewBox="0 0 10 10"
+          refX="5"
+          refY="5"
+          markerWidth="6"
+          markerHeight="6"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 10 5 0 10Z" class={s.arrowHead} />
+        </marker>
+      </defs>
+      {drawn.polygons.map((polygon, index) =>
+        polygon.tone === 'tape' ? (
+          <polyline key={`t${index}`} class={s.tape} points={polygon.points} />
+        ) : (
+          <polygon key={`p${index}`} class={TONE[polygon.tone]} points={polygon.points} />
+        ),
+      )}
+      {drawn.arrows.map((arrow) => (
+        <Dimension key={arrow.axis} arrow={arrow} view={view} row={row} />
+      ))}
+    </svg>
+  );
+}
+
+function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind) => void }) {
+  return (
+    <fieldset class={s.views} aria-label={t.view}>
+      {VIEWS.map((value) => (
+        <button
+          key={value}
+          type="button"
+          class={s.viewButton}
+          aria-pressed={view === value}
+          aria-label={viewName(value)}
+          onClick={() => onView(value)}
+        >
+          {t[value]}
+          <span class={s.viewSuffix} aria-hidden="true">
+            {r.viewSuffix}
+          </span>
+        </button>
+      ))}
+    </fieldset>
+  );
+}
+
+/** Shipment visualization: one package type's proportions in a fixed, illustrative carton group. */
 export function CbmVisualizationPanel({
   packages,
   className = '',
@@ -85,22 +133,39 @@ export function CbmVisualizationPanel({
   className?: string;
 }) {
   const [selected, select] = useState(0);
+  const [view, setView] = useState<ViewKind>('iso');
+  const index = Math.min(selected, Math.max(0, packages.length - 1));
+  const row = packages[index];
+  const name = row ? packageName(row, index) : '';
   return (
-    <div class={`${s.visualSlot} ${className}`}>
-      <label class={s.packageSelector}>
-        {t.package}
-        <select
-          value={Math.min(selected, Math.max(0, packages.length - 1))}
-          onChange={(e) => select(Number(e.currentTarget.value))}
-        >
-          {packages.map((row, index) => (
-            <option key={row.id} value={index}>
-              {row.description || `${t.package} ${index + 1}`}
-            </option>
-          ))}
-        </select>
-      </label>
-      <CbmShipmentVisualization row={packages[selected] ?? packages[0]} />
-    </div>
+    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-visual-title">
+      <div class={s.head}>
+        <h2 id="cbm-visual-title" class={s.title}>
+          {t.visualization} <span class={s.qualifier}>{r.visualizationQualifier}</span>
+        </h2>
+        <ViewButtons view={view} onView={setView} />
+      </div>
+      <div class={s.stage}>{row ? <Illustration row={row} name={name} view={view} /> : null}</div>
+      <div class={s.footer}>
+        <p class={s.caption}>
+          <Icon name="info" />
+          {t.illustrative}
+        </p>
+        {packages.length > 1 ? (
+          <label class={s.picker}>
+            <span>{r.packageToShow}</span>
+            <select value={index} onChange={(e) => select(Number(e.currentTarget.value))}>
+              {packages.map((item, position) => (
+                <option key={item.id} value={position}>
+                  {packageName(item, position)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : row ? (
+          <p class={s.subject}>{fillText(r.dimensionsOf, { name })}</p>
+        ) : null}
+      </div>
+    </section>
   );
 }

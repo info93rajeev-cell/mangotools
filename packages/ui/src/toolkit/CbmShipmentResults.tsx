@@ -1,7 +1,129 @@
-import { volumeShare } from './cbmComposition.ts';
+import type { ComponentChildren } from 'preact';
+import {
+  averagePerPiece,
+  type CompositionItem,
+  compositionItems,
+  groupFigure,
+  weightView,
+} from './cbmResultFormat.ts';
+import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import s from './cbmResults.module.css';
-import type { CbmSnapshot } from './cbmShipmentModel.ts';
+import type { CbmResult, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import { GLYPHS, type GlyphName } from './cbmVisualGeometry.ts';
+
+const PALETTE_SIZE = 8;
+const swatch = (number: number) => s[`c${(number - 1) % PALETTE_SIZE}`] ?? '';
+
+function Glyph({ name }: { name: GlyphName }) {
+  return (
+    <svg class={s.glyph} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d={GLYPHS[name]} />
+    </svg>
+  );
+}
+
+interface KpiProps {
+  glyph: GlyphName;
+  label: string;
+  tone: string | undefined;
+  children: ComponentChildren;
+}
+
+function Kpi({ glyph, label, tone, children }: KpiProps) {
+  return (
+    <div class={`${s.kpi} ${tone ?? ''}`} data-kpi={glyph}>
+      <dt>
+        <Glyph name={glyph} />
+        <span>{label}</span>
+      </dt>
+      {children}
+    </div>
+  );
+}
+
+function Value({ value, unit }: { value: string; unit?: string }) {
+  return (
+    <>
+      <span class={s.number}>{value}</span>
+      {unit ? ` ${unit}` : null}
+    </>
+  );
+}
+
+function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
+  const weight = weightView(result);
+  const average = averagePerPiece(result.totalCbmExact, result.totalPieces, Number(precision));
+  return (
+    <>
+      <dl class={s.kpis}>
+        <Kpi glyph="pieces" label={t.pieces} tone={s.toneGreen}>
+          <dd class={s.value}>
+            <Value value={groupFigure(result.totalPieces)} />
+          </dd>
+        </Kpi>
+        <Kpi glyph="volume" label={t.volume} tone={s.toneBlue}>
+          <dd class={s.value} data-cbm-total="">
+            <Value value={groupFigure(result.totalCbm)} unit={r.cbmUnit} />
+          </dd>
+          <dd class={s.secondary}>{`${groupFigure(result.totalCft)} ${r.cftUnit}`}</dd>
+        </Kpi>
+        <Kpi glyph="weight" label={weight.label} tone={s.toneAmber}>
+          <dd
+            class={weight.value === null ? s.missing : s.value}
+            data-weight={result.weightCoverage}
+          >
+            {weight.value === null ? t.unknown : <Value value={weight.value} unit={r.kgUnit} />}
+          </dd>
+          {weight.note ? <dd class={s.badge}>{r.partialBadge}</dd> : null}
+        </Kpi>
+        {average === null ? null : (
+          <Kpi glyph="average" label={r.avgPerPiece} tone={s.toneRed}>
+            <dd class={s.value}>
+              <Value value={groupFigure(average)} unit={r.cbmUnit} />
+            </dd>
+          </Kpi>
+        )}
+      </dl>
+      {weight.note ? <p class={s.coverageNote}>{weight.note}</p> : null}
+    </>
+  );
+}
+
+function Composition({ items }: { items: CompositionItem[] }) {
+  return (
+    <section class={s.composition} aria-labelledby="cbm-composition-title">
+      <h3 id="cbm-composition-title" class={s.subTitle}>
+        {t.composition}
+      </h3>
+      <div class={s.bar} aria-hidden="true">
+        {items.map((item) => (
+          <span
+            key={item.key}
+            class={`${s.segment} ${swatch(item.number)}`}
+            style={{ flexGrow: Number(item.share) }}
+          >
+            {Number(item.share) >= 9 ? item.number : ''}
+          </span>
+        ))}
+      </div>
+      <ol class={s.legend}>
+        {items.map((item) => (
+          <li key={item.key}>
+            <span class={`${s.swatch} ${swatch(item.number)}`} aria-hidden="true" />
+            <span class={s.legendName}>{`${item.number}. ${item.name}`}</span>
+            <span class={s.legendValue}>
+              {fillText(r.compositionShare, { cbm: item.cbm, share: item.share })}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class={s.note}>{t.rounding}</p>
+    </section>
+  );
+}
+
+/** Results summary: KPI cards and load composition, shown only for the current validated result. */
 export function CbmShipmentResults({
   state,
   className = '',
@@ -10,61 +132,27 @@ export function CbmShipmentResults({
   className?: string;
 }) {
   const result = state.shipment;
+  const announcement = result
+    ? fillText(r.announce, { cbm: groupFigure(result.totalCbm), pieces: result.totalPieces })
+    : '';
   return (
-    <>
-      <section
-        class={`${s.panel} ${className}`}
-        aria-labelledby="cbm-summary-title"
-        aria-live="polite"
-        aria-busy={state.pending}
-      >
-        <h2 id="cbm-summary-title">{t.summary}</h2>
-        {result ? (
-          <dl class={s.metrics}>
-            <div class={s.primary}>
-              <dt>{t.volume}</dt>
-              <dd data-cbm-total="">
-                {result.totalCbm} <small>m³</small>
-              </dd>
-            </div>
-            <div>
-              <dt>{t.cft}</dt>
-              <dd>{result.totalCft} ft³</dd>
-            </div>
-            <div>
-              <dt>{t.pieces}</dt>
-              <dd>{result.totalPieces}</dd>
-            </div>
-            <div>
-              <dt>{result.weightCoverage === 'partial' ? t.partialWeight : t.packedWeight}</dt>
-              <dd>
-                {result.knownPackedWeightKg === null
-                  ? t.unknown
-                  : `${result.knownPackedWeightKg} kg`}
-              </dd>
-            </div>
-          </dl>
-        ) : (
-          <p>{state.pending ? t.pending : t.empty}</p>
-        )}
-      </section>
-      <section class={`${s.panel} ${className}`} aria-labelledby="cbm-composition-title">
-        <h2 id="cbm-composition-title">{t.composition}</h2>
-        {result ? (
-          <ul class={s.composition}>
-            {result.rows.map((row, index) => (
-              <li key={state.packages[index]?.id}>
-                <span>{state.packages[index]?.description || `${t.package} ${index + 1}`}</span>
-                <strong>{row.totalCbm} m³</strong>
-                <span>{volumeShare(row.totalCbmExact, result.totalCbmExact)}%</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>{t.empty}</p>
-        )}
-        <small>{t.rounding}</small>
-      </section>
-    </>
+    <section
+      class={`${s.card} ${s.summary} ${className}`}
+      aria-labelledby="cbm-summary-title"
+      aria-busy={state.pending}
+    >
+      <h2 id="cbm-summary-title" class={s.title}>
+        {t.summary}
+      </h2>
+      {result ? (
+        <Kpis result={result} precision={state.precision} />
+      ) : (
+        <p class={s.empty}>{state.pending ? t.pending : t.empty}</p>
+      )}
+      {result ? <Composition items={compositionItems(state)} /> : null}
+      <p class="visually-hidden" role="status">
+        {announcement}
+      </p>
+    </section>
   );
 }
