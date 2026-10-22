@@ -1,4 +1,5 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { Button } from '../primitives/Button.tsx';
 import type { CbmController } from './cbmShipmentController.ts';
 import type { CbmPackage, CbmSnapshot } from './cbmShipmentModel.ts';
@@ -24,6 +25,7 @@ interface Props {
   state: CbmSnapshot;
   controller: CbmController;
   preset: ResolvedPreset;
+  newRow?: boolean;
 }
 function fieldChoices(field: string) {
   if (field === 'unit') return dimensions;
@@ -90,17 +92,44 @@ function RowFields({
     </>
   );
 }
+function MobileSummary({ row, index, state }: Props & { row: CbmPackage; index: number }) {
+  return (
+    <div class={s.mobileSummary}>
+      <strong>
+        {index + 1} · {row.description.trim() || `${t.package} ${index + 1}`}
+      </strong>
+      <span>
+        {row.length || '—'} × {row.width || '—'} × {row.height || '—'} {row.unit} · {w.quantity}{' '}
+        {row.quantity}
+      </span>
+      <span>
+        {row.weightPerItem ? `${row.weightPerItem} ${row.weightUnit} · ` : ''}
+        {w.cbm} {state.shipment?.rows[index]?.totalCbm ?? '—'}
+      </span>
+    </div>
+  );
+}
 function PackageRow(props: Props & { row: CbmPackage; index: number }) {
   const { row, index, state, controller } = props;
+  const [editing, setEditing] = useState(
+    !!props.newRow || !row.length || !row.width || !row.height,
+  );
+  const invalid = !!state.error?.path?.startsWith(`packages.${index}.`);
+  useEffect(() => {
+    if (invalid) setEditing(true);
+  }, [invalid]);
   return (
     <fieldset class={s.row} data-package-row={row.id}>
       <legend>
         {t.package} {index + 1}
       </legend>
+      <MobileSummary {...props} />
       <span class={s.rowNumber} aria-hidden="true">
         {index + 1}
       </span>
-      <RowFields {...props} />
+      <div id={`cbm-edit-${row.id}`} class={s.editor} data-open={editing || invalid}>
+        <RowFields {...props} />
+      </div>
       <output class={s.rowVolume} aria-label={`${t.package} ${index + 1} ${t.rowCbm}`}>
         <span class={s.fieldLabel}>{t.rowCbm}</span>
         {state.shipment?.rows[index]?.totalCbm ?? '—'} <small>m³</small>
@@ -108,8 +137,19 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
       <div class={s.rowActions}>
         <Button
           size="sm"
+          class={s.editButton}
+          aria-label={`${w.edit} ${t.package} ${index + 1}`}
+          aria-expanded={editing || invalid}
+          aria-controls={`cbm-edit-${row.id}`}
+          onClick={() => setEditing(!editing)}
+        >
+          {w.edit}
+        </Button>
+        <Button
+          size="sm"
           disabled={state.packages.length >= 50}
           aria-label={`${t.duplicate} ${t.package} ${index + 1}`}
+          title={t.duplicate}
           onClick={() => controller.duplicate(row.id)}
         >
           <span aria-hidden="true">⧉</span>
@@ -117,6 +157,7 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
         <Button
           size="sm"
           aria-label={`${t.remove} ${t.package} ${index + 1}`}
+          title={t.remove}
           onClick={() => controller.remove(row.id)}
         >
           <span aria-hidden="true">×</span>
@@ -127,6 +168,7 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
 }
 export function CbmPackageWorksheet(props: Props) {
   const { state, controller, className = '' } = props;
+  const initialRows = useRef(new Set(state.packages.map((row) => row.id)));
   const focusAdded = () => {
     controller.add();
     queueMicrotask(() =>
@@ -157,7 +199,13 @@ export function CbmPackageWorksheet(props: Props) {
           <span />
         </div>
         {state.packages.map((row, index) => (
-          <PackageRow key={row.id} {...props} row={row} index={index} />
+          <PackageRow
+            key={row.id}
+            {...props}
+            row={row}
+            index={index}
+            newRow={!initialRows.current.has(row.id)}
+          />
         ))}
       </div>
       <div class={s.toolbar}>

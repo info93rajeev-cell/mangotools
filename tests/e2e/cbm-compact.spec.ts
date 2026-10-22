@@ -37,6 +37,60 @@ async function checkShell(page: Page, width: number) {
 }
 
 test.describe('Active CBM shipment workspace', () => {
+  test('desktop worksheet text and actions fit within the row', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await ready(page);
+    const header = page.locator('[data-cbm-worksheet-header]');
+    expect(
+      await header.evaluate((n) => Number.parseFloat(getComputedStyle(n).fontSize)),
+    ).toBeGreaterThanOrEqual(12);
+    expect(
+      await field(page, 0, 'length').evaluate((n) =>
+        Number.parseFloat(getComputedStyle(n).fontSize),
+      ),
+    ).toBeGreaterThanOrEqual(12);
+    const row = rows(page).first();
+    expect(await row.evaluate((n) => n.scrollWidth - n.clientWidth)).toBeLessThanOrEqual(0);
+    const bounds = await row.boundingBox();
+    const remove = await page
+      .getByRole('button', { name: 'Delete Package 1', exact: true })
+      .boundingBox();
+    expect((remove?.x ?? 0) + (remove?.width ?? 0)).toBeLessThanOrEqual(
+      (bounds?.x ?? 0) + (bounds?.width ?? 0),
+    );
+  });
+
+  test('mobile summaries collapse editors and new or invalid rows open automatically', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await ready(page);
+    await expect(field(page, 0, 'length')).toBeHidden();
+    await expect(rows(page).first()).toContainText('50 × 40 × 30 cm');
+    await page.getByRole('button', { name: 'Edit Package 1', exact: true }).click();
+    await expect(field(page, 0, 'length')).toBeVisible();
+    await field(page, 0, 'length').fill('');
+    await expect(field(page, 0, 'length')).toBeVisible();
+    await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    await expect(field(page, 1, 'description')).toBeVisible();
+    for (const button of await rows(page).first().getByRole('button').all()) {
+      const box = await button.boundingBox();
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test('cost basis and currency rate adornments are real labelled controls', async ({ page }) => {
+    await ready(page);
+    await page.getByLabel('Enable cost estimate').check();
+    await expect(page.getByLabel('Rate basis', { exact: true })).toHaveValue('Per CBM (m³)');
+    await expect(page.getByLabel('Rate basis', { exact: true })).toHaveAttribute('readonly');
+    await expect(page.locator('[data-cbm-rate-prefix]')).toHaveText('₹');
+    await expect(page.locator('[data-cbm-rate-suffix]')).toHaveText('/ m³');
+    await page.getByLabel('Currency', { exact: true }).selectOption('USD');
+    await expect(page.locator('[data-cbm-rate-prefix]')).toHaveText('USD');
+  });
+
   test('activates shipment results and keeps support sections collapsed', async ({ page }) => {
     await ready(page);
     await expect(page.locator('[data-cbm-workspace]')).toBeVisible();
@@ -140,6 +194,7 @@ test.describe('Active CBM shipment workspace', () => {
       await noOverflow(page);
       await checkShell(page, width);
       if (width < 700) {
+        await page.getByRole('button', { name: 'Edit Package 1', exact: true }).click();
         const length = await field(page, 0, 'length').boundingBox();
         const widthField = await field(page, 0, 'width').boundingBox();
         expect(length).toBeTruthy();

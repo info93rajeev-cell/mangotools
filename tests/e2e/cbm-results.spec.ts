@@ -35,6 +35,11 @@ async function ready(page: Page) {
 async function fillShipment(page: Page, data: readonly (readonly string[])[] = FOUNDER_ROWS) {
   for (const [index, [description, length, width, height, quantity, weight]] of data.entries()) {
     if (index > 0) await page.getByRole('button', { name: 'Add Package', exact: true }).click();
+    if (!(await field(page, index, 'description').isVisible()))
+      await rows(page)
+        .nth(index)
+        .getByRole('button', { name: /^Edit Package/ })
+        .click();
     await field(page, index, 'description').fill(description ?? '');
     await field(page, index, 'length').fill(length ?? '');
     await field(page, index, 'width').fill(width ?? '');
