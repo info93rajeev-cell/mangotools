@@ -21,6 +21,12 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicCbmShipmentLayout } from './DynamicCbmShipmentLayout.tsx';
+import {
+  DynamicImageBackgroundRemoverLayout,
+  DynamicImageCompressLayout,
+  DynamicImageFormatConverterLayout,
+  DynamicImageResizeLayout,
+} from './DynamicImageToolLayouts.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -34,6 +40,10 @@ const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 const CBM_SHIPMENT_PRESET_ID = 'logistics/cbm-shipment';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
+const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
+const IMAGE_RESIZE_PRESET_ID = 'image/resize';
+const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
+const IMAGE_REMOVE_BACKGROUND_PRESET_ID = 'image/remove-background';
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -150,19 +160,89 @@ function ToolIslandView(props: ToolIslandViewProps) {
   );
 }
 
-/** The one layout matching this tool's archetype. */
-function ArchetypeLayout({
-  archetype,
+function renderImageStudioLayout({
   idPrefix,
   toolId,
   preset,
-  snapshot,
-  store,
   notify,
   onFilePhase,
-  calculatorActions,
-  enableUserPresets,
 }: ArchetypeProps) {
+  if (preset.id === IMAGE_CROP_PRESET_ID) {
+    return (
+      <ImageCropLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_COMPRESS_PRESET_ID) {
+    return (
+      <DynamicImageCompressLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_RESIZE_PRESET_ID) {
+    return (
+      <DynamicImageResizeLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
+    return (
+      <DynamicImageFormatConverterLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === IMAGE_REMOVE_BACKGROUND_PRESET_ID) {
+    return (
+      <DynamicImageBackgroundRemoverLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  return null;
+}
+
+/** The one layout matching this tool's archetype. */
+function ArchetypeLayout(props: ArchetypeProps) {
+  const {
+    archetype,
+    idPrefix,
+    toolId,
+    preset,
+    snapshot,
+    store,
+    notify,
+    onFilePhase,
+    calculatorActions,
+    enableUserPresets,
+  } = props;
+
+  const studio = renderImageStudioLayout(props);
+  if (studio) return studio;
+
   if (archetype === 'A') {
     return (
       <TransformLayout
@@ -172,17 +252,6 @@ function ArchetypeLayout({
         snapshot={snapshot}
         store={store}
         notify={notify}
-      />
-    );
-  }
-  if (preset.id === IMAGE_CROP_PRESET_ID) {
-    return (
-      <ImageCropLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
       />
     );
   }
