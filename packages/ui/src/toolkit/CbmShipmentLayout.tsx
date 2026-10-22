@@ -62,7 +62,7 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
               <summary>{t.references}</summary>
               <p>{t.capacities}</p>
               <p>
-                <a href={t.sourceUrl}>{t.source}</a> · {t.sourceDate}
+                {t.source} · {t.sourceDate}
               </p>
               <p>{t.fitDisclaimer}</p>
               <p>{t.variation}</p>
