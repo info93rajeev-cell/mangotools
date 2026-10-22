@@ -1,5 +1,5 @@
 import { volumeShare } from './cbmComposition.ts';
-import s from './cbmShipment.module.css';
+import s from './cbmResults.module.css';
 import type { CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
 export function CbmShipmentResults({ state }: { state: CbmSnapshot }) {

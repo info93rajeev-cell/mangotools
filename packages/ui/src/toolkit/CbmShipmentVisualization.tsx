@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
-import s from './cbmShipment.module.css';
 import type { CbmPackage } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import s from './cbmVisual.module.css';
 
 function drawing(row: CbmPackage | undefined) {
   const values = [row?.length, row?.width, row?.height].map((value) => Number(value));
@@ -74,5 +74,27 @@ export function CbmShipmentVisualization({ row }: { row: CbmPackage | undefined 
       </svg>
       <p>{t.illustrative}</p>
     </section>
+  );
+}
+
+export function CbmVisualizationPanel({ packages }: { packages: CbmPackage[] }) {
+  const [selected, select] = useState(0);
+  return (
+    <div class={s.visualSlot}>
+      <label class={s.packageSelector}>
+        {t.package}
+        <select
+          value={Math.min(selected, Math.max(0, packages.length - 1))}
+          onChange={(e) => select(Number(e.currentTarget.value))}
+        >
+          {packages.map((row, index) => (
+            <option key={row.id} value={index}>
+              {row.description || `${t.package} ${index + 1}`}
+            </option>
+          ))}
+        </select>
+      </label>
+      <CbmShipmentVisualization row={packages[selected] ?? packages[0]} />
+    </div>
   );
 }

@@ -1,9 +1,9 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
-import s from './cbmShipment.module.css';
 import type { CbmController } from './cbmShipmentController.ts';
 import type { CbmPackage, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import s from './cbmWorksheet.module.css';
 import { messageFor } from './presentation.ts';
 
 const dimensions = ['mm', 'cm', 'm', 'in', 'ft'];

@@ -91,3 +91,31 @@ Descriptions stay in browser memory and are stripped from numeric worker payload
 revisions reject late responses, including after disabling cost or disposing the controller.
 No import, placement, persistence or new dependency. Support content remains in the page's existing
 full-width collapsed area.
+
+## CBM section ownership preparation (#220)
+
+The #220 refactor changes section boundaries only; existing rendering, state, text, calculations,
+copy and print behavior are preserved. It does not implement the #219 founder visual correction.
+
+| Workstream | Components | Styles (desktop and mobile) |
+| --- | --- | --- |
+| A: shell | `CbmShipmentLayout.tsx` | `cbmWorkspace.module.css` |
+| A: worksheet | `CbmPackageWorksheet.tsx` | `cbmWorksheet.module.css` |
+| A: options, inputs, notes | `CbmOptionsPanel.tsx`, `CbmCostPanel.tsx`, `CbmNotesPanel.tsx` | `cbmInputs.module.css` |
+| B: visualization and package selection | `CbmShipmentVisualization.tsx` | `cbmVisual.module.css` |
+| B: summary, composition, cost result, copy/print | `CbmShipmentResults.tsx`, `CbmCostResult.tsx`, `CbmOutputActions.tsx` | `cbmResults.module.css` |
+
+Stable shell integration: `CbmVisualizationPanel` accepts `packages`; results and cost result accept
+`state`; output actions accept `summary` and `enabled`; `CbmPrintReport` accepts `summary` and remains
+outside the screen workspace so the existing print visibility rules continue to work. Cost result
+owns its always-present slot; output actions own copy feedback; visualization owns package/view selection.
+These section roots preserve their prior DOM placement, mobile order and accessible names.
+
+Keep `data-cbm-workspace`, `data-cbm-total`, `data-package-row`, labels, region names and control IDs
+stable. Each section's module owns its responsive rules; do not style another section through its
+module classes. The shell owns column structure and the screen-workspace print hide rule.
+
+Both workstreams treat the controller, model, hook, composition/copy calculations, shared
+`cbmStrings.ts`, lazy wrapper and ToolIsland routing as frozen. New section-specific strings should
+live in separately owned string files; coordinate any necessary shared-contract change before editing.
+The UI README ownership contract also remains fixed during parallel visual work.
