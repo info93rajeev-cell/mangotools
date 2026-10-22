@@ -248,3 +248,5 @@ Local UI review (not a published tool route): import `startContainerPreview` fro
 Phase-1 private-package change record: dedicated Container Loading UI implementation, #226.
 
 #226 presentation follow-up: the dedicated Container Loading workspace now uses the founder's light logistics palette independent of OS theme, a larger blue container cutaway over the engine placements, icon KPI cards and yellow/outlined output actions. Browser checks cover dark OS preference while retaining the light workspace. Tool activation remains a separate tools-lane change.
+
+#226 reference reconstruction: measured desktop column proportions and responsive card hierarchy; frontal container skin with open doors, corrugated steel, carton tape and crate wood rendered around the actual placement coordinates. Mobile uses compact numbered package cards and collapsed allocation/details/constraint disclosures. Existing site search and theme controls frame the local test preview. No engine, activation, privacy or import changes.

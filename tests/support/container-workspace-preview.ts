@@ -27,6 +27,7 @@ export async function startContainerPreview(port = 4350) {
     configFile: false,
     oxc: { jsx: { runtime: 'automatic', importSource: 'preact' } },
     root: ROOT,
+    publicDir: join(ROOT, 'generated'),
     logLevel: 'error',
     server: { host: '127.0.0.1', port, strictPort: true },
     plugins: [

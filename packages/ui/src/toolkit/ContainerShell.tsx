@@ -79,7 +79,15 @@ export function ContainerShell({ result, project }: { result: LoadResult; projec
     </g>
   );
 }
-export function ContainerFrame({ result, project }: { result: LoadResult; project: Project }) {
+export function ContainerFrame({
+  result,
+  project,
+  doors,
+}: {
+  result: LoadResult;
+  project: Project;
+  doors: boolean;
+}) {
   const l = Number(result.containerLength),
     h = Number(result.containerHeight);
   const a = project([0, 0, 0]),
@@ -88,9 +96,42 @@ export function ContainerFrame({ result, project }: { result: LoadResult; projec
     d = project([0, 0, h]);
   return (
     <g fill="none" stroke="#1463a5" stroke-width="9" stroke-linejoin="round">
+      {doors ? <ContainerDoors left={a} right={b} height={235} /> : null}
       <polyline points={`${d} ${a} ${b} ${c}`} />
       <polyline points={`${d} ${c}`} stroke-width="7" />
       <polyline points={`${a} ${b}`} stroke="#073b72" stroke-width="13" />
+    </g>
+  );
+}
+
+function ContainerDoors({ left, right, height }: { left: string; right: string; height: number }) {
+  return (
+    <g stroke="#486479" stroke-width="2">
+      {[left, right].map((point, i) => {
+        const [x = 0, y = 0] = point.split(',').map(Number),
+          edge = x + (i === 0 ? -70 : 70);
+        return (
+          <g key={i}>
+            <polygon
+              points={`${x},${y - height} ${edge},${y - height - 8} ${edge},${y - 5} ${x},${y}`}
+              fill="url(#container-steel)"
+            />
+            {[0.08, 0.32, 0.58, 0.85].map((k) => (
+              <polyline
+                key={k}
+                points={`${x},${y - height * k} ${edge},${y - height * k - 6}`}
+                stroke="#678499"
+                stroke-width="5"
+              />
+            ))}
+            <polyline
+              points={`${(x + edge) / 2},${y - height + 9} ${(x + edge) / 2},${y - 15}`}
+              stroke="#d5e0e9"
+              stroke-width="4"
+            />
+          </g>
+        );
+      })}
     </g>
   );
 }

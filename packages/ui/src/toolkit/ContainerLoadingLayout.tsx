@@ -10,6 +10,8 @@ import {
 import { ContainerFreightResult, ContainerLoadingResults } from './ContainerLoadingResults.tsx';
 import { ContainerPackageWorksheet } from './ContainerPackageWorksheet.tsx';
 import { ContainerPlacementView } from './ContainerPlacementView.tsx';
+import controls from './containerControls.module.css';
+import stack from './containerCostStack.module.css';
 import output from './containerOutput.module.css';
 import s from './containerWorkspace.module.css';
 import { loadSummary } from './containerWorkspacePresentation.ts';
@@ -22,8 +24,8 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
   const selected = state.result?.containers.some((c) => c.index === selection) ? selection : 0;
   const summary = loadSummary(state);
   return (
-    <div class={s.root} data-container-workspace="">
-      <div class={s.workspace}>
+    <div class={`${s.root} ${controls.controls}`} data-container-workspace="">
+      <div class={`${s.workspace} ${stack.stack}`}>
         <div class={s.left}>
           <ContainerPackageWorksheet state={state} controller={controller} />
           <ContainerSelection state={state} controller={controller} />
@@ -62,9 +64,7 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
               <Icon name="copy" /> {t.copy}
             </button>
           </div>
-          <p class={s.feedback} role="status">
-            {feedback}
-          </p>
+          {feedback ? <p role="status">{feedback}</p> : null}
         </div>
         {state.error ? (
           <p class={s.error} role="alert">
@@ -73,7 +73,7 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
           </p>
         ) : null}
       </div>
-      <div class={s.printReport}>
+      <div class={output.printReport}>
         <h1>{t.title}</h1>
         <pre>{summary}</pre>
       </div>

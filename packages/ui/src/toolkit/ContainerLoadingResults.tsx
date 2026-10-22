@@ -32,8 +32,8 @@ export function ContainerLoadingResults({
     <section class={s.card} aria-labelledby="load-results-title">
       <div class={s.heading}>
         <h2 id="load-results-title">{t.results}</h2>
-        <span class={s.loadCount}>
-          {t.loaded}: {r.loadedPieces} · {t.unloaded}: {r.unloadedPieces} · {t.overall}
+        <span class={s.loadCount} title={t.overall}>
+          {t.loaded}: {r.loadedPieces} · {t.unloaded}: {r.unloadedPieces}
           {r.weightStatus === 'partial' ? ` · ${t.known}` : ''}
         </span>
         <span class={s.status} data-status={r.status}>
@@ -61,8 +61,11 @@ function Allocation({ state, selected }: { state: LoadSnapshot; selected: number
   if (!r) return null;
   const values = containerAllocation(r, selected);
   return (
-    <section class={s.allocation} aria-label={t.allocation}>
-      <h3>{t.allocation}</h3>
+    <details
+      class={`${s.allocation} ${s.secondary}`}
+      open={typeof window === 'undefined' || window.innerWidth > 700}
+    >
+      <summary>{t.allocation}</summary>
       <div class={s.bar} aria-hidden="true">
         {r.packages.map((p) => (
           <span
@@ -88,26 +91,29 @@ function Allocation({ state, selected }: { state: LoadSnapshot; selected: number
           </div>
         ))}
       </div>
-    </section>
+    </details>
   );
 }
 function LoadingDetails({ state }: { state: LoadSnapshot }) {
   return (
-    <div class={s.details}>
-      <h3>
+    <details
+      class={`${s.details} ${s.secondary}`}
+      open={typeof window === 'undefined' || window.innerWidth > 700}
+    >
+      <summary>
         {t.details} <small>· {t.shipmentTotals}</small>
-      </h3>
+      </summary>
       <ScrollableItemTable caption={t.details}>
         <thead>
           <tr>
             {[
-              t.description,
+              t.package,
               t.packageDimensions,
               t.quantity,
               t.loaded,
               t.unloaded,
               t.volumeColumn,
-              t.weightColumn,
+              state.result?.weightStatus === 'complete' ? t.totalWeightColumn : t.weightColumn,
             ].map((label) => (
               <th key={label} scope="col">
                 {label}
@@ -137,18 +143,22 @@ function LoadingDetails({ state }: { state: LoadSnapshot }) {
           ))}
         </tbody>
       </ScrollableItemTable>
-    </div>
+    </details>
   );
 }
 export function ContainerFreightResult({ state }: { state: LoadSnapshot }) {
   if (!state.costInput.enabled) return null;
   const cost = state.cost;
   return (
-    <section class={`${s.card} ${s.costResult}`} aria-labelledby="load-freight-title">
+    <section
+      class={`${s.card} ${s.costResult}`}
+      aria-labelledby="load-freight-title"
+      data-cost-result=""
+    >
       <h2 id="load-freight-title">{t.freight}</h2>
       {cost ? (
         <>
-          <div class={s.freightMeta}>
+          <div class={s.freightMeta} data-freight-meta="">
             <span>{t.perContainer}</span>
             <span>
               {t.rate}: {loadMoney(cost.rate, cost.currency)}
@@ -157,7 +167,7 @@ export function ContainerFreightResult({ state }: { state: LoadSnapshot }) {
               {t.containers}: {cost.quantity}
             </span>
           </div>
-          <div class={s.freightFigures}>
+          <div class={s.freightFigures} data-freight-figures="">
             {[
               [t.freightCharge, cost.freightCharge],
               [t.otherCharges, cost.otherCharges],

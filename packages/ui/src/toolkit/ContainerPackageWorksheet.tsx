@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
 import s from './containerWorksheet.module.css';
 import c from './containerWorkspace.module.css';
 import type { LoadControllerHandle } from './containerWorkspaceController.ts';
@@ -99,7 +100,7 @@ function PackageRow({
           {row.weight ? `${row.weight} ${row.weightUnit}` : '—'} · {t.cbm}{' '}
           {state.result?.packages[index]?.requestedVolume ?? '—'}
         </span>
-        <small>{t.edit}</small>
+        <small class={s.editHint}>{t.edit}</small>
       </button>
       <div id={`load-editor-${row.id}`} class={s.rowEditor} data-open={editing || invalid}>
         <PackageFields row={row} index={index} state={state} controller={controller} />
@@ -110,7 +111,7 @@ function PackageRow({
           aria-label={`${t.remove} ${index + 1}`}
           onClick={() => controller.remove(row.id)}
         >
-          ×
+          <Icon name="trash-2" />
         </button>
       </div>
     </fieldset>

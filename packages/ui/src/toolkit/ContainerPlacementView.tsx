@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
+import { ContainerCargo, ContainerMaterials } from './ContainerCargo.tsx';
 import { ContainerFrame, ContainerShell } from './ContainerShell.tsx';
-import { boxFaces, type LoadView, projector, visiblePieces } from './containerPlacementGeometry.ts';
+import { type LoadView, projector, visiblePieces } from './containerPlacementGeometry.ts';
 import s from './containerResults.module.css';
 import scene from './containerScene.module.css';
 import type { LoadSnapshot } from './containerWorkspaceModel.ts';
@@ -35,25 +36,15 @@ export function ContainerPlacementView({
         </div>
       </div>
       {result && project ? (
-        <svg viewBox="0 20 800 250" role="img" aria-label={t.actual} data-placement-view={view}>
+        <svg viewBox="0 0 800 300" role="img" aria-label={t.actual} data-placement-view={view}>
+          <ContainerMaterials />
           <ContainerShell result={result} project={project} />
           {visiblePieces(blocks)
             .sort((a, b) => Number(b.y) - Number(a.y) || Number(a.z) - Number(b.z))
             .map((b, index) => (
-              <g key={index} data-placement-block={b.package}>
-                {boxFaces(b, project).map((face, i) => (
-                  <polygon
-                    key={i}
-                    points={face}
-                    fill={['#c99a5f', '#dfb37e', '#b88143', '#d4c9ac'][b.package % 4]}
-                    opacity={[0.85, 0.65, 1][i]}
-                    stroke="#78542f"
-                    stroke-width="0.7"
-                  />
-                ))}
-              </g>
+              <ContainerCargo key={index} block={b} project={project} />
             ))}
-          <ContainerFrame result={result} project={project} />
+          <ContainerFrame result={result} project={project} doors={view === 'iso'} />
         </svg>
       ) : (
         <p>{state.pending ? t.pending : t.noData}</p>

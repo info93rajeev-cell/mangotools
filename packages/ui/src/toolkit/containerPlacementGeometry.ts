@@ -13,7 +13,7 @@ export function projector(result: LoadResult, view: LoadView) {
     if (view === 'top') return `${60 + a * 650},${45 + b * 210}`;
     if (view === 'front') return `${230 + b * 340},${255 - c * 210}`;
     if (view === 'side') return `${60 + a * 650},${255 - c * 210}`;
-    return `${45 + a * 610 + b * 90},${260 - b * 65 - c * 165}`;
+    return `${90 + a * 600 + b * 20},${270 - b * 20 - c * 235}`;
   };
 }
 export function boxFaces(block: PlacementBlock, project: (p: Point) => string) {

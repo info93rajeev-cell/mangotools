@@ -79,6 +79,7 @@ export const containerText = {
   details: 'Container Loading Details',
   volumeColumn: 'Volume (m³)',
   weightColumn: 'Known weight (kg)',
+  totalWeightColumn: 'Weight (kg)',
   freight: 'Estimated Freight Cost',
   freightCharge: 'Freight charge',
   total: 'Estimated total',

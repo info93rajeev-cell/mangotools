@@ -1,3 +1,4 @@
+import { Icon } from '../primitives/Icon.tsx';
 import s from './containerWorkspace.module.css';
 import type { LoadControllerHandle } from './containerWorkspaceController.ts';
 import type { LoadSnapshot } from './containerWorkspaceModel.ts';
@@ -9,7 +10,9 @@ export interface LoadInputProps {
 export function ContainerSelection({ state, controller }: LoadInputProps) {
   return (
     <section class={s.card} aria-labelledby="load-selection-title">
-      <h2 id="load-selection-title">⚙ {t.selection}</h2>
+      <h2 id="load-selection-title">
+        <Icon name="wrench" /> {t.selection}
+      </h2>
       <div class={s.containerChoices}>
         {containerChoices.map((c) => (
           <button
@@ -67,8 +70,13 @@ export function ContainerSelection({ state, controller }: LoadInputProps) {
 }
 export function ContainerConstraints({ state, controller }: LoadInputProps) {
   return (
-    <section class={s.card} aria-labelledby="load-constraints-title">
-      <h2 id="load-constraints-title">⚙ {t.constraints}</h2>
+    <details
+      class={`${s.card} ${s.constraints}`}
+      open={typeof window === 'undefined' || window.innerWidth > 700}
+    >
+      <summary id="load-constraints-title">
+        <Icon name="wrench" /> {t.constraints}
+      </summary>
       <div class={s.constraintFields}>
         <label>
           {t.payload} (kg)
@@ -97,14 +105,20 @@ export function ContainerConstraints({ state, controller }: LoadInputProps) {
           />
         </label>
       </div>
-    </section>
+    </details>
   );
 }
 export function ContainerCostInputs({ state, controller }: LoadInputProps) {
   return (
-    <section class={`${s.card} ${s.costInputs}`} aria-labelledby="load-cost-title">
+    <section
+      class={`${s.card} ${s.costInputs}`}
+      aria-labelledby="load-cost-title"
+      data-cost-input=""
+    >
       <div class={s.heading}>
-        <h2 id="load-cost-title">♧ {t.cost}</h2>
+        <h2 id="load-cost-title">
+          <Icon name="briefcase" /> {t.cost}
+        </h2>
         <label class={s.switch}>
           <span class={s.sr}>{t.enabled}</span>
           <input
@@ -138,7 +152,7 @@ export function ContainerCostInputs({ state, controller }: LoadInputProps) {
                 {t[key]}
                 <span class={s.amountInput}>
                   {key === 'rate' ? (
-                    <span aria-hidden="true">
+                    <span aria-hidden="true" data-currency-prefix="">
                       {state.costInput.currency === 'INR' ? '₹' : state.costInput.currency}
                     </span>
                   ) : null}
@@ -150,7 +164,11 @@ export function ContainerCostInputs({ state, controller }: LoadInputProps) {
                     aria-invalid={state.costError?.path === key}
                     onInput={(e) => controller.cost({ [key]: e.currentTarget.value })}
                   />
-                  {key === 'rate' ? <span aria-hidden="true">{t.rateSuffix}</span> : null}
+                  {key === 'rate' ? (
+                    <span aria-hidden="true" data-rate-suffix="">
+                      {t.rateSuffix}
+                    </span>
+                  ) : null}
                 </span>
               </label>
             ))}
