@@ -1,9 +1,9 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
-import s from './cbmShipment.module.css';
 import type { CbmController } from './cbmShipmentController.ts';
 import type { CbmPackage, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import s from './cbmWorksheet.module.css';
 import { messageFor } from './presentation.ts';
 
 const dimensions = ['mm', 'cm', 'm', 'in', 'ft'];
@@ -19,6 +19,7 @@ const columns = [
   'weightUnit',
 ] as const;
 interface Props {
+  className?: string;
   state: CbmSnapshot;
   controller: CbmController;
   preset: ResolvedPreset;
@@ -121,7 +122,7 @@ function PackageRow(props: Props & { row: CbmPackage; index: number }) {
   );
 }
 export function CbmPackageWorksheet(props: Props) {
-  const { state, controller } = props;
+  const { state, controller, className = '' } = props;
   const focusAdded = () => {
     controller.add();
     queueMicrotask(() =>
@@ -133,7 +134,7 @@ export function CbmPackageWorksheet(props: Props) {
     );
   };
   return (
-    <section class={s.panel} aria-labelledby="cbm-packages-title">
+    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-packages-title">
       <div class={s.heading}>
         <h2 id="cbm-packages-title">{t.packages}</h2>
         <Button size="sm" onClick={() => controller.sample()}>

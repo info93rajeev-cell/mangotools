@@ -91,3 +91,79 @@ Descriptions stay in browser memory and are stripped from numeric worker payload
 revisions reject late responses, including after disabling cost or disposing the controller.
 No import, placement, persistence or new dependency. Support content remains in the page's existing
 full-width collapsed area.
+
+## CBM section ownership preparation (#220)
+
+The #220 refactor and ownership-hardening amendment change boundaries only. Existing rendering,
+state, wording, calculations, copy and print remain unchanged. #219 visual work is not included.
+
+| Owner | Components | Section-internal styles (desktop and mobile) |
+| --- | --- | --- |
+| A: shell | `CbmShipmentLayout.tsx` | `cbmWorkspace.module.css` |
+| A: worksheet | `CbmPackageWorksheet.tsx` | `cbmWorksheet.module.css` |
+| A: inputs/notes | `CbmOptionsPanel.tsx`, `CbmCostPanel.tsx`, `CbmNotesPanel.tsx` | `cbmInputs.module.css` |
+| B: visualization | `CbmShipmentVisualization.tsx` / `CbmVisualizationPanel` | `cbmVisual.module.css` |
+| B: outputs | `CbmShipmentResults.tsx`, `CbmCostResult.tsx`, `CbmOutputActions.tsx` / `CbmPrintReport` | `cbmResults.module.css` |
+
+### Placement and width — Workstream A
+
+`CbmShipmentLayout` passes shell-owned `className` placement classes to existing section roots.
+`cbmWorkspace.module.css` alone owns cross-section order: `worksheetSlot`, `optionsSlot`,
+`costInputsSlot`, `notesSlot`, `visualizationSlot`, `resultsSlot`, `costResultSlot`,
+`outputActionsSlot` and `outputFeedbackSlot`. Results forwards its class to both existing summary
+and composition roots; actions forwards `feedbackClassName` to the existing status paragraph.
+No extra wrappers are needed. Keep forwarding these placement props without redefining their order
+inside section CSS. Sections own internal layouts, responsive presentation and touch styling only.
+Current order is preserved; founder mobile ordering belongs to #219, not #220.
+
+A owns column structure, cross-section placement and the screen-workspace print hide rule.
+`cbmWorkspace.module.css` is A-owned: B must not edit it. The future #219 right-column target is
+approximately 420–440 px at a 1366 px viewport where compatible with the full page. #220 does not
+change current widths; B requests width/placement adjustments from A.
+
+### Stable integration and frozen/shared files
+
+`CbmVisualizationPanel` accepts `packages`; summary and cost result accept `state`; output actions
+accept `summary` and `enabled`. Each section also accepts the shell placement class. Cost result owns
+its always-present slot; visualization owns package/view selection; output actions own copy feedback.
+`CbmPrintReport` accepts `summary` and stays outside the screen workspace.
+
+Preserve `data-cbm-workspace`, `data-cbm-total`, `data-package-row`, labels, region names and control
+IDs. Both workstreams freeze `cbmShipmentController.ts`, `cbmShipmentModel.ts`, `useCbmShipment.ts`,
+`cbmComposition.ts`, `cbmShipmentCopy.ts`, `DynamicCbmShipmentLayout.tsx` and `ToolIsland.tsx`.
+Existing functional/activation/privacy tests and engine/preset/manifest/privacy contracts stay frozen.
+Coordinate shared-contract changes before editing; the ownership rules in this README remain fixed.
+
+### Strings
+
+`cbmStrings.ts` is frozen/shared legacy wording. No wording changes in #220.
+A may create `cbmWorksheetStrings.ts`; B may create `cbmResultStrings.ts` for later section-owned copy.
+Neither future string file is created by this preparation.
+
+### Tests
+
+A owns existing `tests/e2e/cbm-compact.spec.ts`.
+B owns new `tests/e2e/cbm-results.spec.ts` and new Workstream-B-specific unit tests.
+B must not modify `cbm-compact.spec.ts`: report any B presentation change that invalidates an
+assertion there, and A makes that adjustment on its own branch. Do not move or rewrite existing
+tests in #220. Any later test-path edits must remain within their explicitly approved issue scope.
+
+### Icons
+
+`packages/ui/src/icons/icons.ts` is reserved for A if later CBM icons are needed.
+B uses existing icons or requests an icon from A; B must not edit the registry concurrently.
+No icons are added in #220.
+
+### Screenshot artifacts
+
+Parallel A/B PRs must not both regenerate committed CBM baseline screenshots. Both may capture
+untracked/review screenshots for the founder. If standard tests regenerate tracked artifacts,
+restore those generated changes before committing a parallel PR. The SECOND integration/
+reconciliation PR regenerates canonical `tests/artifacts/screenshots/cbm-calculator-*.png` artifacts
+only after both workstreams are combined.
+
+### Print and copy — Workstream B
+
+`CbmOutputActions.tsx` is B-owned, including `CbmPrintReport` presentation. Print functionality and
+copy content remain frozen unless #219 explicitly requires presentation-only changes. The shell's
+screen hide rule stays A-owned; preserve the report's placement outside that hidden workspace.
