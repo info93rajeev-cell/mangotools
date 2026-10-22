@@ -4,6 +4,7 @@ import type { ImageBackgroundRemoverLayoutProps } from './ImageBackgroundRemover
 import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
+import type { ImageWatermarkLayoutProps } from './ImageWatermarkLayout.tsx';
 
 export function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
   const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);
@@ -50,6 +51,19 @@ export function DynamicImageBackgroundRemoverLayout(props: ImageBackgroundRemove
   useEffect(() => {
     void import('./ImageBackgroundRemoverLayout.tsx').then((m) => {
       setComp(() => m.ImageBackgroundRemoverLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicImageWatermarkLayout(props: ImageWatermarkLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageWatermarkLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageWatermarkLayout.tsx').then((m) => {
+      setComp(() => m.ImageWatermarkLayout);
     });
   }, []);
 

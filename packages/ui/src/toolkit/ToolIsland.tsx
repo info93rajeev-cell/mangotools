@@ -26,6 +26,7 @@ import {
   DynamicImageCompressLayout,
   DynamicImageFormatConverterLayout,
   DynamicImageResizeLayout,
+  DynamicImageWatermarkLayout,
 } from './DynamicImageToolLayouts.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
@@ -44,6 +45,7 @@ const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
 const IMAGE_RESIZE_PRESET_ID = 'image/resize';
 const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
 const IMAGE_REMOVE_BACKGROUND_PRESET_ID = 'image/remove-background';
+const IMAGE_WATERMARK_PRESET_ID = 'image/watermark';
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -160,69 +162,30 @@ function ToolIslandView(props: ToolIslandViewProps) {
   );
 }
 
-function renderImageStudioLayout({
-  idPrefix,
-  toolId,
-  preset,
-  notify,
-  onFilePhase,
-}: ArchetypeProps) {
-  if (preset.id === IMAGE_CROP_PRESET_ID) {
-    return (
-      <ImageCropLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
-      />
-    );
+function renderImageStudioLayout(props: ArchetypeProps) {
+  const p = {
+    idPrefix: props.idPrefix,
+    toolId: props.toolId,
+    preset: props.preset,
+    notify: props.notify,
+    onPhase: props.onFilePhase,
+  };
+  switch (props.preset.id) {
+    case IMAGE_CROP_PRESET_ID:
+      return <ImageCropLayout {...p} />;
+    case IMAGE_COMPRESS_PRESET_ID:
+      return <DynamicImageCompressLayout {...p} />;
+    case IMAGE_RESIZE_PRESET_ID:
+      return <DynamicImageResizeLayout {...p} />;
+    case IMAGE_FORMAT_CONVERTER_PRESET_ID:
+      return <DynamicImageFormatConverterLayout {...p} />;
+    case IMAGE_REMOVE_BACKGROUND_PRESET_ID:
+      return <DynamicImageBackgroundRemoverLayout {...p} />;
+    case IMAGE_WATERMARK_PRESET_ID:
+      return <DynamicImageWatermarkLayout {...p} />;
+    default:
+      return null;
   }
-  if (preset.id === IMAGE_COMPRESS_PRESET_ID) {
-    return (
-      <DynamicImageCompressLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
-      />
-    );
-  }
-  if (preset.id === IMAGE_RESIZE_PRESET_ID) {
-    return (
-      <DynamicImageResizeLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
-      />
-    );
-  }
-  if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
-    return (
-      <DynamicImageFormatConverterLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
-      />
-    );
-  }
-  if (preset.id === IMAGE_REMOVE_BACKGROUND_PRESET_ID) {
-    return (
-      <DynamicImageBackgroundRemoverLayout
-        idPrefix={idPrefix}
-        toolId={toolId}
-        preset={preset}
-        notify={notify}
-        onPhase={onFilePhase}
-      />
-    );
-  }
-  return null;
 }
 
 /** The one layout matching this tool's archetype. */
