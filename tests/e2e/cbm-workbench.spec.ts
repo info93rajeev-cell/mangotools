@@ -32,6 +32,39 @@ async function paste(target: Locator, text: string) {
   }, text);
 }
 
+/** Approved common layout: one even row on desktop; 2 + 2 + full-width Related tools on phones. */
+async function expectStripLayout(strip: Locator, width: number) {
+  const pills = await strip
+    .locator(':scope > details > summary, :scope > .tool-content > details > summary')
+    .evaluateAll((items) =>
+      items.map((item) => {
+        const box = item.getBoundingClientRect();
+        return { top: Math.round(box.top), width: box.width, height: box.height };
+      }),
+    );
+  const desktop = width >= 768;
+  for (const pill of pills) expect(pill.height).toBeGreaterThanOrEqual(desktop ? 40 : 44);
+  const rows = [...new Set(pills.map((pill) => pill.top))];
+  if (desktop) {
+    expect(rows).toHaveLength(1);
+    return;
+  }
+  expect(pills.map((pill) => rows.indexOf(pill.top))).toEqual([0, 0, 1, 1, 2]);
+  expect(pills[4]?.width ?? 0).toBeGreaterThan((pills[0]?.width ?? 0) * 1.9);
+}
+
+/** Footer site pages share one row; categories wrap in a few compact rows, not one per line. */
+async function expectFooterLayout(footer: Locator, width: number) {
+  const rows = (selector: string) =>
+    footer
+      .locator(selector)
+      .evaluateAll(
+        (links) => new Set(links.map((link) => Math.round(link.getBoundingClientRect().top))).size,
+      );
+  expect(await rows('nav.info a')).toBe(1);
+  expect(await rows('nav.categories a')).toBeLessThanOrEqual(width >= 768 ? 2 : 4);
+}
+
 test.describe('CBM workbench (#219 founder reference)', () => {
   test('quick actions sit beside the page title and reach units, visualization and print', async ({
     page,
@@ -218,9 +251,11 @@ test.describe('CBM workbench (#219 founder reference)', () => {
       expect(stripTop - workspaceEnd).toBeLessThan(40);
       expect(footerTop).toBeGreaterThanOrEqual(stripEnd);
       expect(footerTop - stripEnd).toBeLessThan(64);
+      await expectStripLayout(strip, width);
       const footer = page.locator('footer.site-footer');
       for (const name of ['All tools', 'Logistics', 'Image & Media', 'About', 'Privacy'])
         await expect(footer.getByRole('link', { name, exact: true })).toBeVisible();
+      await expectFooterLayout(footer, width);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
         await page.evaluate(() => innerWidth),
       );
