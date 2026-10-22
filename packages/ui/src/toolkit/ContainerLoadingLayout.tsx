@@ -10,12 +10,15 @@ import {
 import { ContainerFreightResult, ContainerLoadingResults } from './ContainerLoadingResults.tsx';
 import { ContainerPackageWorksheet } from './ContainerPackageWorksheet.tsx';
 import { ContainerPlacementView } from './ContainerPlacementView.tsx';
+import { ContainerSupportingPanels } from './ContainerSupportingPanels.tsx';
+import { ContainerToolBottom } from './ContainerToolBottom.tsx';
 import controls from './containerControls.module.css';
 import stack from './containerCostStack.module.css';
 import output from './containerOutput.module.css';
+import reference from './containerReferenceLayout.module.css';
 import s from './containerWorkspace.module.css';
 import { loadSummary } from './containerWorkspacePresentation.ts';
-import { loadWarningText, containerText as t } from './containerWorkspaceStrings.ts';
+import { containerText as t } from './containerWorkspaceStrings.ts';
 import { useContainerWorkspace } from './useContainerWorkspace.ts';
 export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
   const [state, controller] = useContainerWorkspace(run);
@@ -24,24 +27,27 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
   const selected = state.result?.containers.some((c) => c.index === selection) ? selection : 0;
   const summary = loadSummary(state);
   return (
-    <div class={`${s.root} ${controls.controls}`} data-container-workspace="">
+    <div class={`${s.root} ${controls.controls} ${reference.layout}`} data-container-workspace="">
+      <nav class={reference.utilities} aria-label={t.utilities}>
+        <a href="#container-load-visual">
+          <Icon name="container" />
+          {t.utility3d}
+        </a>
+        <a href="#load-selection-title">
+          <Icon name="rotate-ccw" />
+          {t.utilityContainers}
+        </a>
+        <button type="button" aria-label={t.utilityPrint} onClick={() => window.print()}>
+          <Icon name="file-text" />
+          {t.print}
+        </button>
+      </nav>
       <div class={`${s.workspace} ${stack.stack}`}>
         <div class={s.left}>
           <ContainerPackageWorksheet state={state} controller={controller} />
           <ContainerSelection state={state} controller={controller} />
           <ContainerConstraints state={state} controller={controller} />
           <ContainerCostInputs state={state} controller={controller} />
-          <details class={`${s.card} ${s.notes}`}>
-            <summary>⚠ {t.notes}</summary>
-            {state.warnings.map((code, index) => (
-              <p key={`${code}-${index}`}>{loadWarningText[code] ?? t.caveat}</p>
-            ))}
-          </details>
-          <details class={`${s.card} ${s.faq}`}>
-            <summary>？ {t.faq}</summary>
-            <h3>{t.faqQuestion}</h3>
-            <p>{t.caveat}</p>
-          </details>
         </div>
         <div class={s.right}>
           <ContainerPlacementView state={state} selected={selected} onSelect={setSelection} />
@@ -73,6 +79,8 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
           </p>
         ) : null}
       </div>
+      <ContainerSupportingPanels state={state} />
+      <ContainerToolBottom state={state} />
       <div class={output.printReport}>
         <h1>{t.title}</h1>
         <pre>{summary}</pre>

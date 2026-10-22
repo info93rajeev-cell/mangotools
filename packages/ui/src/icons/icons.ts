@@ -5,6 +5,7 @@
 import {
   ArrowLeftRight,
   ArrowRight,
+  BookOpen,
   Box,
   Braces,
   Briefcase,
@@ -14,6 +15,7 @@ import {
   ChevronUp,
   CircleAlert,
   CircleCheck,
+  CircleHelp,
   ClipboardPaste,
   Coins,
   Container,
@@ -28,6 +30,7 @@ import {
   Image,
   Info,
   LayoutGrid,
+  Link,
   Lock,
   Monitor,
   Moon,
@@ -44,11 +47,16 @@ import {
   Sun,
   Trash2,
   TriangleAlert,
+  Weight,
   Wrench,
   X,
 } from 'lucide-static';
 
 const RAW = {
+  'book-open': BookOpen,
+  'circle-help': CircleHelp,
+  link: Link,
+  weight: Weight,
   'arrow-left-right': ArrowLeftRight,
   'arrow-right': ArrowRight,
   box: Box,

@@ -1,5 +1,23 @@
 export const containerText = {
   title: 'Container Loading Calculator',
+  referenceArtAlt:
+    'Approved sample container illustration with cartons, a central wooden crate and wrapped cargo.',
+  referenceArtNote: 'Sample illustration — not the calculated loading plan.',
+  calculatedArt: 'View calculated placement',
+  sampleArt: 'View sample illustration',
+  utilities: 'Workspace actions',
+  utilityPrint: 'Print current shipment',
+  nextSteps: 'Next Steps in Logistics',
+  relatedTools: 'Related tools',
+  relatedCbm: 'CBM Calculator',
+  relatedWeight: 'Volumetric Weight Calculator',
+  relatedPallet: 'Pallet Loading Calculator',
+  utility3d: '3D visualization',
+  utilityContainers: 'Try different containers',
+  howTo:
+    'Add package dimensions and quantities, select the container and constraints, then inspect the calculated placement and unloaded quantities. Enter your own rate for an optional cost estimate.',
+  method:
+    'The rectangular placement engine determines containers, loaded pieces and utilization. The cost engine uses the actual container count and your entered rate.',
   subtitle:
     'Plan rectangular packages using actual placement and estimate freight using your own rate.',
   packages: 'Shipment Packages',

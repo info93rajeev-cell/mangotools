@@ -11,7 +11,7 @@ export function ContainerSelection({ state, controller }: LoadInputProps) {
   return (
     <section class={s.card} aria-labelledby="load-selection-title">
       <h2 id="load-selection-title">
-        <Icon name="wrench" /> {t.selection}
+        <Icon name="settings" /> {t.selection}
       </h2>
       <div class={s.containerChoices}>
         {containerChoices.map((c) => (
@@ -75,7 +75,7 @@ export function ContainerConstraints({ state, controller }: LoadInputProps) {
       open={typeof window === 'undefined' || window.innerWidth > 700}
     >
       <summary id="load-constraints-title">
-        <Icon name="wrench" /> {t.constraints}
+        <Icon name="settings" /> {t.constraints}
       </summary>
       <div class={s.constraintFields}>
         <label>
@@ -117,7 +117,7 @@ export function ContainerCostInputs({ state, controller }: LoadInputProps) {
     >
       <div class={s.heading}>
         <h2 id="load-cost-title">
-          <Icon name="briefcase" /> {t.cost}
+          <Icon name="coins" /> {t.cost}
         </h2>
         <label class={s.switch}>
           <span class={s.sr}>{t.enabled}</span>

@@ -42,8 +42,12 @@ export function ContainerLoadingResults({
       </div>
       <div class={s.kpis}>
         {kpis.map(([label, value], i) => (
-          <div key={label} class={s.kpi} style={{ '--tone': packageColors[i] }}>
-            <Icon name={['container', 'container', 'rotate-ccw', 'briefcase'][i] ?? 'container'} />
+          <div
+            key={label}
+            class={s.kpi}
+            style={{ '--tone': ['#0eb779', '#0065ff', '#11ad77', '#df9c00'][i] }}
+          >
+            <Icon name={['box', 'box', 'rotate-ccw', 'weight'][i] ?? 'container'} />
             <span>{label}</span>
             <strong data-load-kpi={i}>{value}</strong>
           </div>

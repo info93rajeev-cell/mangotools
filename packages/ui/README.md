@@ -221,7 +221,6 @@ The same CI follow-up refreshes the legacy Crop test flow (Crop Image, then down
 The scrollable Load Composition legend retains its list semantics and is labelled by its heading.
 Keyboard users can tab to it, scroll with arrow keys, and see the shared focus ring.
 
-
 ## Container Loading workspace (#226)
 
 The lazy `logistics/container-load` renderer provides the locked founder workspace: ordered package
@@ -250,3 +249,7 @@ Phase-1 private-package change record: dedicated Container Loading UI implementa
 #226 presentation follow-up: the dedicated Container Loading workspace now uses the founder's light logistics palette independent of OS theme, a larger blue container cutaway over the engine placements, icon KPI cards and yellow/outlined output actions. Browser checks cover dark OS preference while retaining the light workspace. Tool activation remains a separate tools-lane change.
 
 #226 reference reconstruction: measured desktop column proportions and responsive card hierarchy; frontal container skin with open doors, corrugated steel, carton tape and crate wood rendered around the actual placement coordinates. Mobile uses compact numbered package cards and collapsed allocation/details/constraint disclosures. Existing site search and theme controls frame the local test preview. No engine, activation, privacy or import changes.
+
+#226 locked-reference correction: `container-reference-sample.png` is a direct crop (726,236)–(1244,443) of the founder-supplied “BeyondTheAI Container Loading Calculator UI 21-10-26.jpeg”. No replacement illustration was generated. Only the untouched numeric sample uses it; a visible sample label separates it from calculated results, and edits or the calculated-placement control show the real placement renderer. The model, controller and engine arithmetic are unchanged.
+
+`SharedToolBottom` owns the reusable five-pill Logistics disclosure strip. `SiteFooterContent` serves only the local workspace preview. The production `SiteFooter.astro` and the common tool-page shortcut system remain exactly as merged in #229; this change does not alter CBM activation or add a second production footer. Desktop controls retain reference scale and the page scrolls naturally at a 768px viewport; no shrink-to-fit or blank-height reservation remains. The footer follows the completed supporting panels and disclosure strip.

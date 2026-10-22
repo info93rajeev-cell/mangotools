@@ -7,9 +7,25 @@ import {
   projector,
   visiblePieces,
 } from '../../packages/ui/src/toolkit/containerPlacementGeometry.ts';
-import type { LoadResult } from '../../packages/ui/src/toolkit/containerWorkspaceModel.ts';
+import { matchesContainerReference } from '../../packages/ui/src/toolkit/containerReferenceSample.ts';
+import {
+  initialLoadState,
+  type LoadResult,
+} from '../../packages/ui/src/toolkit/containerWorkspaceModel.ts';
 
 describe('Actual geometry integration', () => {
+  it('limits reference artwork to the original numeric sample, independently of descriptions and rates', () => {
+    const state = initialLoadState();
+    expect(matchesContainerReference(state)).toBe(true);
+    state.costInput.rate = '145000';
+    if (state.packages[0]) state.packages[0].description = 'Browser-local SKU';
+    expect(matchesContainerReference(state)).toBe(true);
+    if (state.packages[0]) state.packages[0].length = '61';
+    expect(matchesContainerReference(state)).toBe(false);
+    state.packages = initialLoadState().packages;
+    state.settings.allowRotation = false;
+    expect(matchesContainerReference(state)).toBe(false);
+  });
   it('uses two real containers even when total CBM is below one container volume', async () => {
     const result = await executeOperation(
       containerLoad,

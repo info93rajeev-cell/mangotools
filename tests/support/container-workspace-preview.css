@@ -120,27 +120,6 @@ main {
   letter-spacing: -1.2px;
   margin: 0 0 4px;
 }
-@media (min-width: 1101px) and (max-height: 820px) {
-  .preview-site-header {
-    height: 44px;
-    gap: 18px;
-  }
-  .preview-brand {
-    font-size: 18px;
-  }
-  .preview-heading {
-    padding: 8px 0;
-  }
-  .preview-heading p {
-    font-size: 12px;
-  }
-  .preview-heading p:first-child {
-    margin-bottom: 5px;
-  }
-  .preview-heading h1 {
-    font-size: 32px;
-  }
-}
 @media (max-width: 1100px) {
   .preview-search {
     display: none;

@@ -281,3 +281,7 @@
     background: transparent;
   }
 }
+
+.worksheet .editor select {
+  padding-inline: 2px;
+}
