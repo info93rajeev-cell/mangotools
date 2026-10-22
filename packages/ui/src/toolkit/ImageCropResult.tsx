@@ -1,9 +1,9 @@
 import type { OpWarning } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { formatFileSize } from '../archetypes/FileQueue.tsx';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageCrop.module.css';
 import { label, messageFor } from './presentation.ts';
-
 export interface ImageCropResultData {
   fileName: string;
   bytes: Uint8Array;
@@ -26,12 +26,6 @@ export interface ImageCropResultProps {
   result: ImageCropResultData;
   resultUrl: string;
   onDownload: () => void;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export function ImageCropResult({ preset, result, resultUrl, onDownload }: ImageCropResultProps) {
@@ -79,7 +73,7 @@ export function ImageCropResult({ preset, result, resultUrl, onDownload }: Image
         </div>
         <div class={styles.resultRow} data-result-row="output-size">
           <dt>Output file size</dt>
-          <dd>{formatBytes(result.outputFileSize)}</dd>
+          <dd>{formatFileSize(result.outputFileSize)}</dd>
         </div>
         <div class="sr-only" data-output="outputWidth">
           <dd>{result.outputWidth}</dd>

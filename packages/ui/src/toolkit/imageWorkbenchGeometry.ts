@@ -60,10 +60,10 @@ export function clampRectToBounds(
   bounds: ImageDimensions,
   minSize = 10,
 ): PixelRect {
-  const maxW = Math.max(1, bounds.width);
-  const maxH = Math.max(1, bounds.height);
-  const minW = Math.min(minSize, maxW);
-  const minH = Math.min(minSize, maxH);
+  const maxW = Math.max(1, Math.round(bounds.width));
+  const maxH = Math.max(1, Math.round(bounds.height));
+  const minW = Math.min(Math.round(minSize), maxW);
+  const minH = Math.min(Math.round(minSize), maxH);
 
   const width = Math.min(maxW, Math.max(minW, Math.round(rect.width)));
   const height = Math.min(maxH, Math.max(minH, Math.round(rect.height)));
@@ -176,22 +176,22 @@ function resizeRectFree(
   const bottom = y + height;
 
   if (handle === 'e' || handle === 'ne' || handle === 'se') {
-    width = Math.max(minSize, Math.min(bounds.width - x, width + dx));
+    width = Math.max(minSize, Math.min(bounds.width - x, Math.round(current.width + dx)));
   } else if (handle === 'w' || handle === 'nw' || handle === 'sw') {
-    const newX = Math.max(0, Math.min(right - minSize, x + dx));
+    const newX = Math.max(0, Math.min(right - minSize, Math.round(current.x + dx)));
     width = right - newX;
     x = newX;
   }
 
   if (handle === 's' || handle === 'se' || handle === 'sw') {
-    height = Math.max(minSize, Math.min(bounds.height - y, height + dy));
+    height = Math.max(minSize, Math.min(bounds.height - y, Math.round(current.height + dy)));
   } else if (handle === 'n' || handle === 'nw' || handle === 'ne') {
-    const newY = Math.max(0, Math.min(bottom - minSize, y + dy));
+    const newY = Math.max(0, Math.min(bottom - minSize, Math.round(current.y + dy)));
     height = bottom - newY;
     y = newY;
   }
 
-  return { x, y, width, height };
+  return clampRectToBounds({ x, y, width, height }, bounds, minSize);
 }
 
 function resizeLockedCorner(
@@ -205,31 +205,40 @@ function resizeLockedCorner(
 ): PixelRect {
   const right = current.x + current.width;
   const bottom = current.y + current.height;
-  const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy * ratio;
 
   if (handle === 'se') {
+    const delta = Math.round(Math.abs(dx) > Math.abs(dy) ? dx : dy * ratio);
     const maxW = Math.min(
       bounds.width - current.x,
-      Math.round((bounds.height - current.y) * ratio),
+      Math.floor((bounds.height - current.y) * ratio),
     );
     const width = Math.max(minSize, Math.min(maxW, current.width + delta));
-    return { x: current.x, y: current.y, width, height: Math.round(width / ratio) };
+    const height = Math.min(bounds.height - current.y, Math.round(width / ratio));
+    return clampRectToBounds({ x: current.x, y: current.y, width, height }, bounds, minSize);
   }
   if (handle === 'nw') {
-    const maxW = Math.min(right, Math.round(bottom * ratio));
+    const delta = Math.round(Math.abs(dx) > Math.abs(dy) ? dx : dy * ratio);
+    const maxW = Math.min(right, Math.floor(bottom * ratio));
     const width = Math.max(minSize, Math.min(maxW, current.width - delta));
-    const height = Math.round(width / ratio);
-    return { x: right - width, y: bottom - height, width, height };
+    const height = Math.min(bottom, Math.round(width / ratio));
+    return clampRectToBounds(
+      { x: right - width, y: bottom - height, width, height },
+      bounds,
+      minSize,
+    );
   }
   if (handle === 'ne') {
-    const maxW = Math.min(bounds.width - current.x, Math.round(bottom * ratio));
+    const delta = Math.round(Math.abs(dx) > Math.abs(dy) ? dx : -dy * ratio);
+    const maxW = Math.min(bounds.width - current.x, Math.floor(bottom * ratio));
     const width = Math.max(minSize, Math.min(maxW, current.width + delta));
-    const height = Math.round(width / ratio);
-    return { x: current.x, y: bottom - height, width, height };
+    const height = Math.min(bottom, Math.round(width / ratio));
+    return clampRectToBounds({ x: current.x, y: bottom - height, width, height }, bounds, minSize);
   }
-  const maxW = Math.min(right, Math.round((bounds.height - current.y) * ratio));
-  const width = Math.max(minSize, Math.min(maxW, current.width - delta));
-  return { x: right - width, y: current.y, width, height: Math.round(width / ratio) };
+  const delta = Math.round(Math.abs(dx) > Math.abs(dy) ? -dx : dy * ratio);
+  const maxW = Math.min(right, Math.floor((bounds.height - current.y) * ratio));
+  const width = Math.max(minSize, Math.min(maxW, current.width + delta));
+  const height = Math.min(bounds.height - current.y, Math.round(width / ratio));
+  return clampRectToBounds({ x: right - width, y: current.y, width, height }, bounds, minSize);
 }
 
 function resizeLockedSide(
@@ -242,19 +251,19 @@ function resizeLockedSide(
   minSize: number,
 ): PixelRect {
   if (handle === 'e' || handle === 'w') {
-    const change = handle === 'e' ? dx : -dx;
-    const width = Math.max(minSize, Math.min(bounds.width, current.width + change));
-    const height = Math.round(width / ratio);
-    if (height > bounds.height) return current;
+    const change = Math.round(handle === 'e' ? dx : -dx);
+    const maxW = Math.min(bounds.width, Math.floor(bounds.height * ratio));
+    const width = Math.max(minSize, Math.min(maxW, current.width + change));
+    const height = Math.max(minSize, Math.min(bounds.height, Math.round(width / ratio)));
     const cy = current.y + current.height / 2;
     const y = Math.max(0, Math.min(bounds.height - height, Math.round(cy - height / 2)));
     const x = handle === 'e' ? current.x : current.x + current.width - width;
     return clampRectToBounds({ x, y, width, height }, bounds, minSize);
   }
-  const change = handle === 's' ? dy : -dy;
-  const height = Math.max(minSize, Math.min(bounds.height, current.height + change));
-  const width = Math.round(height * ratio);
-  if (width > bounds.width) return current;
+  const change = Math.round(handle === 's' ? dy : -dy);
+  const maxH = Math.min(bounds.height, Math.floor(bounds.width / ratio));
+  const height = Math.max(minSize, Math.min(maxH, current.height + change));
+  const width = Math.max(minSize, Math.min(bounds.width, Math.round(height * ratio)));
   const cx = current.x + current.width / 2;
   const x = Math.max(0, Math.min(bounds.width - width, Math.round(cx - width / 2)));
   const y = handle === 's' ? current.y : current.y + current.height - height;
