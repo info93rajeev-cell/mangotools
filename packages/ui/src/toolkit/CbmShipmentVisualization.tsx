@@ -115,9 +115,6 @@ function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind
           onClick={() => onView(value)}
         >
           {t[value]}
-          <span class={s.viewSuffix} aria-hidden="true">
-            {r.viewSuffix}
-          </span>
         </button>
       ))}
     </fieldset>
@@ -141,7 +138,7 @@ export function CbmVisualizationPanel({
     <section class={`${s.panel} ${className}`} aria-labelledby="cbm-visual-title">
       <div class={s.head}>
         <h2 id="cbm-visual-title" class={s.title}>
-          {t.visualization} <span class={s.qualifier}>{r.visualizationQualifier}</span>
+          {t.visualization}
         </h2>
         <ViewButtons view={view} onView={setView} />
       </div>
@@ -153,7 +150,7 @@ export function CbmVisualizationPanel({
         </p>
         {packages.length > 1 ? (
           <label class={s.picker}>
-            <span>{r.packageToShow}</span>
+            <span class={s.pickerLabel}>{r.packageToShow}</span>
             <select value={index} onChange={(e) => select(Number(e.currentTarget.value))}>
               {packages.map((item, position) => (
                 <option key={item.id} value={position}>

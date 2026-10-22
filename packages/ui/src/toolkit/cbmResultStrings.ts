@@ -4,8 +4,6 @@
  * names depend on are reused from there rather than redefined here.
  */
 export const cbmResultText = {
-  visualizationQualifier: '(Illustrative)',
-  viewSuffix: ' View',
   viewName: '{view} view',
   packageToShow: 'Dimensions shown for',
   dimensionsOf: 'Dimensions of one {name}',
@@ -22,7 +20,9 @@ export const cbmResultText = {
   coverageNote:
     '{label}: {weighted} of {total} pieces weighed. Pieces without a weight are not counted.',
   announce: 'Results updated: {cbm} m³ total, {pieces} pieces.',
-  compositionShare: '{cbm} m³ ({share}%)',
+  compositionShare: '{cbm} ({share}%)',
+  compositionUnit: '(m³)',
+  sharesRounded: 'Shares rounded separately.',
   calculated: 'Estimate calculated',
   freightBasis: 'Freight ({quantity} m³ × {rate})',
   freightMinimum: 'Freight (minimum charge applied)',

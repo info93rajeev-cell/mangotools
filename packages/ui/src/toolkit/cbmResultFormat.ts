@@ -13,9 +13,13 @@ import { cbmText as t } from './cbmStrings.ts';
 /** Groups an engine figure for display (1234.5 → 1,234.5); decimals are kept as given. */
 export const groupFigure = (value: string) => formatDecimal(value, 'international');
 
-/** An amount in the selected currency: ISO code, then Indian grouping for INR, two decimals. */
+/**
+ * An amount in the selected currency with two decimals: ₹ and Indian grouping for INR
+ * (₹2,12,600.00); the ISO code and international grouping otherwise (USD 191,000.00).
+ */
 export function formatAmount(value: string, currency: string): string {
-  return `${currency} ${formatDecimal(value, currency === 'INR' ? 'indian' : 'international', 2)}`;
+  if (currency === 'INR') return `₹${formatDecimal(value, 'indian', 2)}`;
+  return `${currency} ${formatDecimal(value, 'international', 2)}`;
 }
 
 const DECIMAL = /^(\d+)(?:\.(\d+))?$/;
