@@ -103,9 +103,13 @@ reorder, spreadsheet paste) use only its public, stale-safe methods.
 
 - `cbmPage.module.css` + `useCbmPageChrome.ts`: CBM-only page presentation, scoped with
   `body:has([data-cbm-workspace])` so no other page changes: the reference palette (`--cbm-*`), a
-  1320 px workspace, title scale, the "Runs on your device" badge moved into the site header, and the
-  page's FAQ and Related tools sections shown as cards beside Important Notes / Next Steps. Every
-  move is undone when the workspace unmounts.
+  1320 px workspace, title scale and the "Runs on your device" badge moved into the site header
+  (restored when the workspace unmounts).
+- Below the workspace the page keeps the shared tool-page strip (`ToolContent.astro`: Disclaimer,
+  How to use, Method, Worked example, FAQ, Related tools, References, with the Image Studio section
+  icons) and the global `SiteFooter`, exactly as every tool page renders them.
+  `CbmSectionLinks.tsx` draws the workspace's FAQ and Related tools cards as links that open and
+  scroll to those shared sections, so their content exists once.
 - `CbmQuickActions.tsx`: 3D visualization, Unit conversion and Print / Save PDF beside the page
   title on desktop (rendered into the shared title row); an icon row with a More menu (Copy
   Summary) on phones.
@@ -125,7 +129,7 @@ reorder, spreadsheet paste) use only its public, stale-safe methods.
   with Estimated Total strongest, and Print / Save PDF beside Copy Summary. Money shows whole
   amounts without paise (`₹ 2,12,600`) and packed weight without trailing zeros (`8,340 kg`).
 - Stable test hooks: `data-cbm-actions`, `data-cbm-views`, `data-cbm-total-row`, `data-cost-total`,
-  `data-cbm-cards`, `data-cbm-moved`.
+  `data-cbm-cards`, `data-cbm-section-link`.
 
 ## CBM section ownership preparation (#220)
 

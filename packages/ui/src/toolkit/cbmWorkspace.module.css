@@ -36,9 +36,6 @@
   gap: 10px 12px;
   align-items: start;
 }
-.moved {
-  display: contents;
-}
 .error {
   margin: 3px 0;
   color: var(--color-danger);

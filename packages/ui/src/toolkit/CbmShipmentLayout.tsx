@@ -1,5 +1,4 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useRef } from 'preact/hooks';
 import { CbmCostPanel } from './CbmCostPanel.tsx';
 import { CbmCostResult } from './CbmCostResult.tsx';
 import { CbmNextSteps, CbmNotesPanel } from './CbmNotesPanel.tsx';
@@ -7,6 +6,7 @@ import { CbmOptionsPanel } from './CbmOptionsPanel.tsx';
 import { CbmOutputActions, CbmPrintReport } from './CbmOutputActions.tsx';
 import { CbmPackageWorksheet } from './CbmPackageWorksheet.tsx';
 import { CbmQuickActions } from './CbmQuickActions.tsx';
+import { CbmSectionLinks } from './CbmSectionLinks.tsx';
 import { CbmShipmentResults } from './CbmShipmentResults.tsx';
 import { CbmVisualizationPanel } from './CbmShipmentVisualization.tsx';
 import page from './cbmPage.module.css';
@@ -22,8 +22,7 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
   const bench = useCbmWorkbench(state, controller);
   const text = shipmentSummary(state);
   const active = state.packages[bench.activeIndex];
-  const moved = useRef<HTMLDivElement>(null);
-  useCbmPageChrome(moved);
+  useCbmPageChrome();
   return (
     <div data-cbm-workspace="" class={page.root}>
       <CbmQuickActions
@@ -67,7 +66,7 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
           <div class={s.cards} data-cbm-cards="">
             <CbmNotesPanel className={s.notesSlot} warnings={state.warnings} preset={preset} />
             <CbmNextSteps className={s.stepsSlot} />
-            <div ref={moved} class={s.moved} />
+            <CbmSectionLinks />
           </div>
           {state.error ? (
             <p class={s.error} role="alert">

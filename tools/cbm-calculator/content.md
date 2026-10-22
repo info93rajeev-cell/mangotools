@@ -1,27 +1,27 @@
 ---
-lastReviewed: 2026-10-21
+lastReviewed: 2026-10-22
 example: 006-shipment-sample
 ---
 
 ## How to use
 
-1. Enter one or multiple package types in Shipment Packages. Description / SKU is optional and stays in browser memory.
-2. Use OUTER packed length, width and height, including packaging and protrusions. Choose mm, cm, m, in or ft per row.
-3. Enter a whole-number quantity. Optionally enter weight per item in kg, g or lb.
-4. Add, duplicate or delete package rows; Clear All starts a blank worksheet. Up to 50 package types are supported as a technical limit.
-5. Read shipment CBM, cubic feet, total pieces, known packed weight and volume composition. Display precision changes do not change the exact totals used for pricing.
-6. Optionally enable Cost Estimate and enter your own per-CBM freight rate, currency, minimum charge and other charges.
-7. Copy the current validated summary or use Print / Save PDF. Calculations run locally in your browser; there is no upload.
+1. In Shipment Cartons, enter one row per carton or package type: Description / SKU (optional; it stays in browser memory), OUTER packed length, width and height including packaging and protrusions, quantity and, optionally, weight per carton. You can paste rows copied from a spreadsheet.
+2. In Units & Display Options, choose one dimension unit (mm, cm, m, in or ft) and one weight unit (kg, g or lb) for every carton, and the decimal places shown. Changing a unit converts the entered values; the shipment totals do not change.
+3. Use Add carton, Duplicate selected, delete or drag to reorder rows; Clear All starts a blank worksheet. Up to 50 rows are supported as a technical limit.
+4. Shipment Visualization draws the carton you are editing or have selected in 3D, top, front and side views. It is illustrative only, never a loading plan or a fit check.
+5. Read total cartons, total CBM, known packed weight, average CBM per carton and the load composition; cubic feet show when you point at total CBM and are included in the copied summary. Display precision never changes the exact totals used for pricing.
+6. Optionally turn on Cost Estimate and enter your own per-CBM freight rate, currency, minimum charge and other charges.
+7. Use Print / Save PDF or Copy Summary for the current result. Calculations run locally in your browser; there is no upload.
 
 ## Method
 
-Each package volume uses outer packed dimensions converted to metres, multiplied by quantity. Package types aggregate in worksheet order. The engine uses exact decimal arithmetic first and rounds only for display; pricing uses the exact current shipment CBM, never rounded displayed CBM. A changed input clears previous results until the current calculation succeeds.
+CBM: each carton's outer packed dimensions are converted to metres and multiplied together, then by its quantity. Rows aggregate in worksheet order. The engine uses exact decimal arithmetic first and rounds only for display; pricing uses the exact current shipment CBM, never rounded displayed CBM. A changed input clears previous results until the current calculation succeeds.
 
 Length factors are exact: 1 mm = 0.001 m, 1 cm = 0.01 m, 1 in = 0.0254 m and 1 ft = 0.3048 m. Cubic feet use the approved factor 35.3146667 per m³. Weight factors are 1 g = 0.001 kg and 1 lb = 0.45359237 kg.
 
-Without weights, packed weight is not provided. With weights for some rows, only their known packed weight is shown and labelled partial; missing weights are never treated as a complete zero-weight shipment. Complete coverage includes every package row.
+Weight: each row's weight per carton is converted to kg and multiplied by its quantity. Without weights, packed weight is not provided. With weights for some rows, only their known packed weight is shown and labelled partial; missing weights are never treated as a complete zero-weight shipment. Complete coverage includes every package row.
 
-Optional freight cost uses your entered rate multiplied by exact CBM, applies your minimum when higher, then adds other charges. There are no live freight rates and no FX conversion; changing currency relabels amounts. Actual freight charges may differ due to carrier terms, route, taxes, surcharges and minimums. CBM is volume, not chargeable weight.
+Cost: the optional freight cost uses your entered rate multiplied by exact CBM, applies your minimum when higher, then adds other charges. There are no live freight rates and no FX conversion; changing currency relabels amounts. Actual freight charges may differ due to carrier terms, route, taxes, surcharges and minimums. CBM is volume, not chargeable weight.
 
 The dimensional visualization is illustrative, not a loading plan. Volume comparison only — not a guarantee of physical fit. Nominal dry-container reference volumes are Maersk 20 ft standard 33.2 m³, 40 ft standard 67.7 m³ and 40 ft High Cube 76.4 m³. Capacities vary by carrier, manufacturer and container series; confirm actual equipment specifications with your carrier.
 

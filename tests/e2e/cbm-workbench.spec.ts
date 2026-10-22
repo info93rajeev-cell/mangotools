@@ -182,6 +182,65 @@ test.describe('CBM workbench (#219 founder reference)', () => {
       expect((await icon.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   });
 
+  for (const width of [1366, 390, 375, 360]) {
+    test(`shared supporting strip and global footer follow the workspace at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: width === 1366 ? 768 : 800 });
+      await ready(page);
+      const strip = page.locator('[data-secondary-information]');
+      const sections = await strip
+        .locator('details')
+        .evaluateAll((items) =>
+          items
+            .filter((item) => item.parentElement?.closest('details') === null)
+            .map((item) => item.id || (item.hasAttribute('data-disclaimer') ? 'disclaimer' : '')),
+        );
+      expect(sections).toEqual([
+        'disclaimer',
+        'how-to-use',
+        'method',
+        'worked-example',
+        'faq',
+        'related-tools',
+        'references',
+      ]);
+      const bottom = async (selector: string) => {
+        const box = await page.locator(selector).boundingBox();
+        return [box?.y ?? 0, (box?.y ?? 0) + (box?.height ?? 0)] as const;
+      };
+      const [, workspaceEnd] = await bottom('[data-cbm-workspace]');
+      const [stripTop, stripEnd] = await bottom('[data-secondary-information]');
+      const [footerTop] = await bottom('footer.site-footer');
+      expect(stripTop).toBeGreaterThanOrEqual(workspaceEnd);
+      expect(stripTop - workspaceEnd).toBeLessThan(40);
+      expect(footerTop).toBeGreaterThanOrEqual(stripEnd);
+      expect(footerTop - stripEnd).toBeLessThan(64);
+      const footer = page.locator('footer.site-footer');
+      for (const name of ['All tools', 'Logistics', 'Image & Media', 'About', 'Privacy'])
+        await expect(footer.getByRole('link', { name, exact: true })).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+        await page.evaluate(() => innerWidth),
+      );
+    });
+  }
+
+  test('the workspace FAQ and Related tools cards open the shared sections', async ({ page }) => {
+    await ready(page);
+    const faq = page.locator('a[data-cbm-section-link="faq"]');
+    const related = page.locator('a[data-cbm-section-link="related-tools"]');
+    await expect(faq).toHaveText(/^\?FAQ\s*\(7\)\s*$/);
+    await expect(related).toHaveText(/^\s*Related tools\s*\(4\)\s*$/);
+    await faq.click();
+    await expect(page.locator('[data-secondary-information] details#faq')).toHaveAttribute('open');
+    await expect(page.locator('details#faq > summary')).toBeFocused();
+    await related.click();
+    const tools = page.locator('[data-secondary-information] details#related-tools');
+    await expect(tools).toHaveAttribute('open');
+    await expect(tools.getByRole('link', { name: 'Container Loading Calculator' })).toBeVisible();
+    await expect(page.locator('[data-cbm-workspace] details#faq')).toHaveCount(0);
+  });
+
   for (const scheme of ['light', 'dark'] as const) {
     test(`axe finds no violations in the worksheet column (${scheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
