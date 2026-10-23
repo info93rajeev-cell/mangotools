@@ -200,4 +200,123 @@ describe('imageWorkbenchGeometry', () => {
       expect(back).toEqual(source);
     });
   });
+
+  describe('fractional pointer deltas and non-integer display scales (Gate 1)', () => {
+    const highResBounds = { width: 4032, height: 3024 };
+    const container = { width: 541, height: 406 };
+    const fitted = calculateFittedDisplay(
+      highResBounds.width,
+      highResBounds.height,
+      container.width,
+      container.height,
+    );
+    const scale = fitted.scale; // e.g. 541 / 4032 = 0.134176587...
+
+    const handles: ('nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w')[] = [
+      'nw',
+      'n',
+      'ne',
+      'e',
+      'se',
+      's',
+      'sw',
+      'w',
+    ];
+
+    it('emits integer coordinates for all 8 handles with fractional deltas in free mode', () => {
+      const start = { x: 500, y: 500, width: 2000, height: 1500 };
+      // Fractional pointer deltas converted through non-integer scale
+      const fractionalDeltas = [
+        { dx: 12.491 / scale, dy: -8.733 / scale },
+        { dx: -15.829 / scale, dy: 23.415 / scale },
+        { dx: 3.751 / scale, dy: 7.821 / scale },
+      ];
+
+      for (const handle of handles) {
+        for (const { dx, dy } of fractionalDeltas) {
+          const result = resizeRect(start, handle, dx, dy, highResBounds, 'free');
+          expect(Number.isInteger(result.x)).toBe(true);
+          expect(Number.isInteger(result.y)).toBe(true);
+          expect(Number.isInteger(result.width)).toBe(true);
+          expect(Number.isInteger(result.height)).toBe(true);
+          expect(result.x).toBeGreaterThanOrEqual(0);
+          expect(result.y).toBeGreaterThanOrEqual(0);
+          expect(result.x + result.width).toBeLessThanOrEqual(highResBounds.width);
+          expect(result.y + result.height).toBeLessThanOrEqual(highResBounds.height);
+        }
+      }
+    });
+
+    it('emits integer coordinates for all handles across locked aspect ratios', () => {
+      const start = { x: 500, y: 500, width: 1000, height: 1000 };
+      const ratios: ('1:1' | '4:3' | '16:9' | '35:45')[] = ['1:1', '4:3', '16:9', '35:45'];
+
+      for (const ratio of ratios) {
+        const adjustedStart = applyAspectRatio(start, ratio, highResBounds);
+        expect(Number.isInteger(adjustedStart.x)).toBe(true);
+        expect(Number.isInteger(adjustedStart.y)).toBe(true);
+        expect(Number.isInteger(adjustedStart.width)).toBe(true);
+        expect(Number.isInteger(adjustedStart.height)).toBe(true);
+
+        for (const handle of handles) {
+          const result = resizeRect(
+            adjustedStart,
+            handle,
+            17.653 / scale,
+            -11.239 / scale,
+            highResBounds,
+            ratio,
+          );
+          expect(Number.isInteger(result.x)).toBe(true);
+          expect(Number.isInteger(result.y)).toBe(true);
+          expect(Number.isInteger(result.width)).toBe(true);
+          expect(Number.isInteger(result.height)).toBe(true);
+          expect(result.x).toBeGreaterThanOrEqual(0);
+          expect(result.y).toBeGreaterThanOrEqual(0);
+          expect(result.x + result.width).toBeLessThanOrEqual(highResBounds.width);
+          expect(result.y + result.height).toBeLessThanOrEqual(highResBounds.height);
+        }
+      }
+    });
+
+    it('guarantees zero fractional drift across repeated resize cycles', () => {
+      let rect = { x: 1000, y: 1000, width: 1500, height: 1000 };
+      const original = { ...rect };
+      const displayDelta = 25; // integer display pixel jump
+      const forwardDelta = displayDelta / scale;
+      const backwardDelta = -displayDelta / scale;
+
+      // Repeat 30 resize cycles
+      for (let i = 0; i < 30; i++) {
+        // Forward
+        rect = resizeRect(rect, 'se', forwardDelta, forwardDelta, highResBounds, 'free');
+        expect(Number.isInteger(rect.width)).toBe(true);
+        expect(Number.isInteger(rect.height)).toBe(true);
+        // Backward
+        rect = resizeRect(rect, 'se', backwardDelta, backwardDelta, highResBounds, 'free');
+        expect(Number.isInteger(rect.width)).toBe(true);
+        expect(Number.isInteger(rect.height)).toBe(true);
+      }
+
+      expect(rect).toEqual(original);
+    });
+
+    it('guarantees zero drift across repeated move cycles', () => {
+      let rect = { x: 500, y: 500, width: 800, height: 600 };
+      const original = { ...rect };
+      const forwardDx = 15 / scale;
+      const backwardDx = -15 / scale;
+
+      for (let i = 0; i < 25; i++) {
+        rect = moveRect(rect, forwardDx, forwardDx, highResBounds);
+        expect(Number.isInteger(rect.x)).toBe(true);
+        expect(Number.isInteger(rect.y)).toBe(true);
+        rect = moveRect(rect, backwardDx, backwardDx, highResBounds);
+        expect(Number.isInteger(rect.x)).toBe(true);
+        expect(Number.isInteger(rect.y)).toBe(true);
+      }
+
+      expect(rect).toEqual(original);
+    });
+  });
 });

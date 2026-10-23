@@ -75,6 +75,12 @@ export const FILE_TOOLS = {
     // The primary output is the output file name, derived from the original name plus the page range.
     result: 'five-page-pages-1-1.pdf',
   },
+  'image-background-remover': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg')],
+    downloadCta: 'Download transparent image',
+    result: 'sample-no-bg.png',
+  },
   'image-resize': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
@@ -194,7 +200,9 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
  * specific.
  */
 async function waitForPreviewDecode(page: Page, id: string): Promise<void> {
-  const preview = island(page, id).locator('img');
+  const preview = island(page, id).locator(
+    id === 'image-crop' ? 'section[aria-label="Visual Crop Canvas"] img' : 'img',
+  );
   if ((await preview.count()) === 0) return;
   await preview.evaluate(
     (img: HTMLImageElement) =>
@@ -220,6 +228,8 @@ export async function produceResult(page: Page, id: string): Promise<void> {
         await page.getByLabel(label).fill(value);
       }
     }
+    // Crop has a separate processing action before its result download is available.
+    if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
     await page.getByRole('button', { name: tool.downloadCta }).click();
   } else {
     await page.getByRole('button', { name: 'Try sample' }).click();

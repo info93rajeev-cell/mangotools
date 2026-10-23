@@ -19,14 +19,14 @@ preset: image/compress
 taxonomy:
   category: media
   tags: [images, compress]
-  synonyms: [compress image, image compressor, reduce image size, compress jpg, compress png, compress webp, reduce photo file size, browser image compressor, no upload image compressor]
+  synonyms: [compress image, image compressor, reduce image size, reduce image size in kb, photo compressor, photo size reducer, compress jpeg, compress jpg, compress png, compress webp, compress image to 20kb, compress image to 50kb, compress image to 100kb, no upload image compressor, reduce photo file size]
 privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
-  title: "Image Compress – Reduce File Size Free"
-  description: "Free browser-based Image Compress tool for JPG, PNG and WebP. Adjust quality and format to reduce file size where possible — nothing is uploaded."
+  title: "Image Compress – Reduce Image Size in KB (20KB-200KB)"
+  description: "Compress JPG, PNG, and WebP images to 20KB, 50KB, 100KB, or 200KB in your browser. 100% private, zero uploads, no quality loss or watermark."
   primaryKeyword: image compress
-  secondaryKeywords: [compress image, reduce image size, compress jpg, compress png, compress webp]
+  secondaryKeywords: [compress image, reduce image size, reduce image size in kb, photo compressor, photo size reducer, compress jpeg, compress image to 20kb, compress image to 50kb]
 graph:
   related: [image-resize, image-format-converter]
 quality:

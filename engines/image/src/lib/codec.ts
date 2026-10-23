@@ -12,8 +12,13 @@ const FORMAT_FOR_MIME: Record<string, ResolvedImageFormat> = {
 };
 
 /** Decodes raw bytes into a bitmap. Rejects (caller maps to `IMAGE_UNREADABLE`) for anything invalid. */
-export function decodeImage(bytes: Uint8Array, mimeType: string): Promise<ImageBitmap> {
-  return createImageBitmap(new Blob([bytes as BlobPart], { type: mimeType }));
+export async function decodeImage(bytes: Uint8Array, mimeType: string): Promise<ImageBitmap> {
+  const blob = new Blob([bytes as BlobPart], { type: mimeType });
+  try {
+    return await createImageBitmap(blob, { imageOrientation: 'from-image' });
+  } catch {
+    return await createImageBitmap(blob);
+  }
 }
 
 export interface EncodeResult {

@@ -38,6 +38,7 @@ describe('privacy.dataClass classification', () => {
       'export-commercial-invoice-generator',
       'export-packing-list-generator',
       'favicon-generator',
+      'image-background-remover',
       'image-compress',
       'image-crop',
       'image-format-converter',

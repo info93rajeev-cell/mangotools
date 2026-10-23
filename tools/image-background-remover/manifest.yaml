@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-background-remover
+slug: image-background-remover
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-21, type: added, summary: "First beta: remove image backgrounds to transparent PNG, WebP, or clean PDF, entirely in the browser." }
+name: Background Remover
+shortName: Remove BG
+summary: Remove image backgrounds in your browser. Download transparent PNG, WebP, or clean PDF. 100% private, zero uploads.
+archetype: D
+preset: image/remove-background
+taxonomy:
+  category: media
+  tags: [images]
+  synonyms: [remove background, background remover, remove bg, transparent background maker, remove white background, cutout image, transparent png maker, background eraser, free background remover, no upload background remover]
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: "Background Remover – Remove Image Background Free"
+  description: "Remove background from JPG, PNG, and WebP images instantly in your browser. Download transparent PNG, WebP, or clean PDF. 100% private with zero uploads."
+  primaryKeyword: background remover
+  secondaryKeywords: [remove background, remove bg, transparent background maker, cutout image, remove background from image]
+graph:
+  related: [image-compress, image-resize, image-format-converter, image-crop]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/image image.remove-background@1 fixtures 001-002", locator: "tools/image-background-remover/fixtures" }
+  lastVerified: 2026-10-21

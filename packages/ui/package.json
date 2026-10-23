@@ -19,6 +19,7 @@
     "@mangotools/runtime": "workspace:*",
     "@mangotools/schemas": "workspace:*",
     "lucide-static": "^1.48.0",
+    "pdf-lib": "^1.17.1",
     "preact": "^10.29.8"
   }
 }

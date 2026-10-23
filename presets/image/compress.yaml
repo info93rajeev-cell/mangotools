@@ -32,6 +32,13 @@ fields:
     placeholderKey: field.quality.placeholder
     default: 80
     visibleWhen: { outputFormat: [same, jpg, webp] }
+  maxFileSizeKB:
+    labelKey: field.maxFileSizeKB
+    kind: number
+    order: 3
+    unit: "KB"
+    placeholderKey: field.maxFileSizeKB.placeholder
+    visibleWhen: { outputFormat: [same, jpg, webp] }
 outputs:
   sizeChangePercent: { labelKey: output.sizeChangePercent, format: percent, order: 1, primary: true }
   status: { labelKey: output.status, format: text, order: 2 }
@@ -56,6 +63,8 @@ strings:
     field.outputFormat.webp: "WebP"
     field.quality: "Quality"
     field.quality.placeholder: "80"
+    field.maxFileSizeKB: "Target file size limit"
+    field.maxFileSizeKB.placeholder: "e.g. 50"
     output.sizeChangePercent: "Size reduction"
     output.status: "Status"
     output.sizeDifferenceBytes: "Amount saved"

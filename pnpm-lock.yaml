@@ -243,6 +243,9 @@ importers:
       lucide-static:
         specifier: ^1.48.0
         version: 1.48.0
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
       preact:
         specifier: ^10.29.8
         version: 10.29.8(preact-render-to-string@6.7.0)

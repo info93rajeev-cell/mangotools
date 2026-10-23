@@ -31,7 +31,19 @@ declare class ImageBitmap {
   close(): void;
 }
 
-declare function createImageBitmap(source: Blob): Promise<ImageBitmap>;
+declare interface ImageBitmapOptions {
+  imageOrientation?: 'from-image' | 'flipY' | 'none';
+  premultiplyAlpha?: 'none' | 'premultiply' | 'default';
+  colorSpaceConversion?: 'none' | 'default';
+  resizeWidth?: number;
+  resizeHeight?: number;
+  resizeQuality?: 'pixelated' | 'low' | 'medium' | 'high';
+}
+
+declare function createImageBitmap(
+  source: Blob,
+  options?: ImageBitmapOptions,
+): Promise<ImageBitmap>;
 
 type ImageEncodeMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 
@@ -76,6 +88,7 @@ interface OffscreenCanvasRenderingContext2D {
   measureText(text: string): TextMetrics;
   fillText(text: string, x: number, y: number): void;
   getImageData(sx: number, sy: number, sw: number, sh: number): ImageData;
+  putImageData(imagedata: ImageData, dx: number, dy: number): void;
 }
 
 declare class OffscreenCanvas {

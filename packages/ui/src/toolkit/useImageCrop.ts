@@ -1,7 +1,7 @@
 import { err, type OpError, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import type { ImageCropResultData } from './ImageCropResult.tsx';
@@ -13,6 +13,7 @@ import {
 } from './imageFileInspection.ts';
 import type { AspectRatioPreset, PixelRect } from './imageWorkbenchGeometry.ts';
 import { applyAspectRatio, defaultSelectionRect } from './imageWorkbenchGeometry.ts';
+import { createPalaceSample } from './samplePalaceImage.ts';
 
 export type CropOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
 export type { CropFile };
@@ -142,7 +143,9 @@ async function handleLoadFile(
   s: CropState,
   clearOutcome: () => void,
   setPhase: (p: FilePhase) => void,
+  userInteractedRef?: { current: boolean },
 ) {
+  if (userInteractedRef) userInteractedRef.current = true;
   clearOutcome();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   const res = await inspectAndDecodeImage(selected);
@@ -160,6 +163,41 @@ async function handleLoadFile(
   setPhase('idle');
 }
 
+async function handleLoadPalaceSample(
+  s: CropState,
+  clearOutcome: () => void,
+  setPhase: (p: FilePhase) => void,
+  userInteractedRef?: { current: boolean },
+) {
+  if (userInteractedRef?.current || s.file) return;
+  const sample = await createPalaceSample();
+  if (userInteractedRef?.current || s.file) return;
+  clearOutcome();
+  if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+  const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
+    type: 'image/jpeg',
+  });
+  const res = await inspectAndDecodeImage(fileObj);
+  if (!res.ok) {
+    s.setError(res.error);
+    setPhase('error');
+    return;
+  }
+  if (userInteractedRef?.current || s.file) return;
+  const dims = res.value.dims;
+  s.setSourceDims(dims);
+  s.setFile(res.value.file);
+  s.setSourceFormat('jpg');
+  s.setImageSrc(res.value.blobUrl);
+  const cropW = Math.min(dims.width, dims.height);
+  const cropH = cropW;
+  const cropX = Math.round((dims.width - cropW) / 2);
+  const cropY = Math.round((dims.height - cropH) / 2);
+  s.setCropRectState({ x: cropX, y: cropY, width: cropW, height: cropH });
+  s.setRatioState('1:1');
+  setPhase('idle');
+}
+
 async function handleRunCrop(
   s: CropState,
   cfg: {
@@ -168,6 +206,7 @@ async function handleRunCrop(
     resolvedFormat: 'jpg' | 'png' | 'webp';
     setPhase: (p: FilePhase) => void;
     notify: (msg: string) => void;
+    isCurrent: () => boolean;
   },
 ) {
   if (!s.file || s.sourceDims.width <= 0) return;
@@ -182,6 +221,7 @@ async function handleRunCrop(
     quality: s.quality,
     customFileName: s.customFileName,
   });
+  if (!cfg.isCurrent()) return;
   if (out.ok) {
     const mime = MIME_MAP[out.value.outputFormat] ?? 'image/jpeg';
     s.setResultUrl(bytesToBlobUrl(out.value.bytes, mime));
@@ -197,41 +237,18 @@ async function handleRunCrop(
   }
 }
 
-export function useImageCrop(
+function createCropActions(
+  s: CropState,
   preset: ResolvedPreset,
   toolId: string,
+  resolvedFormat: 'jpg' | 'png' | 'webp',
+  runTokenRef: { current: number },
+  clearOutcome: () => void,
+  setPhase: (p: FilePhase) => void,
   notify: (msg: string) => void,
-  onPhase: (phase: FilePhase) => void,
+  userInteractedRef: { current: boolean },
 ) {
-  const s = useCropState();
-  const setPhase = (p: FilePhase) => {
-    s.setPhaseState(p);
-    onPhase(p);
-  };
-  const clearOutcome = () => {
-    s.setResult(null);
-    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
-    s.setResultUrl(null);
-    s.setError(null);
-    setPhase('idle');
-  };
-  const resolvedFormat: 'jpg' | 'png' | 'webp' =
-    s.outputFormat === 'same' ? (s.sourceFormat ?? 'jpg') : s.outputFormat;
-  const suggestedFileName = s.file
-    ? `${stripExt(s.customFileName.trim() || s.file.name)}-cropped.${resolvedFormat}`
-    : `cropped-image.${resolvedFormat}`;
-
-  useEffect(() => {
-    return () => {
-      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
-      if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
-    };
-  }, [s.imageSrc, s.resultUrl]);
-
   return {
-    ...s,
-    resolvedFormat,
-    suggestedFileName,
     clearAll: () => {
       if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
       s.setImageSrc(null);
@@ -240,7 +257,8 @@ export function useImageCrop(
       s.setCustomFileName('');
       clearOutcome();
     },
-    loadFile: (f: File) => handleLoadFile(f, s, clearOutcome, setPhase),
+    loadPalaceSample: () => handleLoadPalaceSample(s, clearOutcome, setPhase, userInteractedRef),
+    loadFile: (f: File) => handleLoadFile(f, s, clearOutcome, setPhase, userInteractedRef),
     setCropRect: (next: PixelRect) => {
       s.setCropRectState(next);
       clearOutcome();
@@ -262,7 +280,77 @@ export function useImageCrop(
     },
     updateNumeric: (k: 'x' | 'y' | 'width' | 'height', v: number) =>
       updateCropNumeric(k, v, s, clearOutcome),
-    runCrop: () => handleRunCrop(s, { preset, toolId, resolvedFormat, setPhase, notify }),
+    runCrop: () => {
+      const runToken = ++runTokenRef.current;
+      void handleRunCrop(s, {
+        preset,
+        toolId,
+        resolvedFormat,
+        setPhase,
+        notify,
+        isCurrent: () => runTokenRef.current === runToken,
+      });
+    },
     downloadCurrentResult: () => s.result && downloadCropResult(s.result, toolId, notify),
+  };
+}
+
+export function useImageCrop(
+  preset: ResolvedPreset,
+  toolId: string,
+  notify: (msg: string) => void,
+  onPhase: (phase: FilePhase) => void,
+) {
+  const s = useCropState();
+  const runTokenRef = useRef(0);
+  const userInteractedRef = useRef(false);
+  const setPhase = (p: FilePhase) => {
+    s.setPhaseState(p);
+    onPhase(p);
+  };
+  const clearOutcome = () => {
+    runTokenRef.current++;
+    s.setResult(null);
+    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+    s.setResultUrl(null);
+    s.setError(null);
+    setPhase('idle');
+  };
+  const resolvedFormat: 'jpg' | 'png' | 'webp' =
+    s.outputFormat === 'same' ? (s.sourceFormat ?? 'jpg') : s.outputFormat;
+  const suggestedFileName = s.file
+    ? `${stripExt(s.customFileName.trim() || s.file.name)}-cropped.${resolvedFormat}`
+    : `cropped-image.${resolvedFormat}`;
+
+  useEffect(() => {
+    return () => {
+      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+      if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+    };
+  }, [s.imageSrc, s.resultUrl]);
+
+  useEffect(() => {
+    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
+      void handleLoadPalaceSample(s, clearOutcome, setPhase, userInteractedRef);
+    }
+  }, []);
+
+  const actions = createCropActions(
+    s,
+    preset,
+    toolId,
+    resolvedFormat,
+    runTokenRef,
+    clearOutcome,
+    setPhase,
+    notify,
+    userInteractedRef,
+  );
+
+  return {
+    ...s,
+    resolvedFormat,
+    suggestedFileName,
+    ...actions,
   };
 }

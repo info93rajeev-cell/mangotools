@@ -53,6 +53,17 @@ test.describe('Image Resize', () => {
     expect(download.suggestedFilename()).toBe('My Photo.jpg');
   });
 
+  test('resizes the image to PDF and downloads .pdf', async ({ page }) => {
+    await openTool(page, 'image-resize');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output format').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download resized image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-resized.pdf');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('pdf');
+  });
+
   test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
     await openTool(page, 'image-resize');
     const notAnImage = join(process.cwd(), 'tools/image-resize/manifest.yaml');
@@ -114,6 +125,17 @@ test.describe('Image Compress', () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('compressible-compressed.png');
     await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('compresses the image to PDF and downloads .pdf', async ({ page }) => {
+    await openTool(page, 'image-compress');
+    await fileInput(page).setInputFiles([photo]);
+    await page.getByLabel('Output format').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download compressed image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('photo-compressed.pdf');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('pdf');
   });
 
   test('reports honest failure when converting a JPEG photo to PNG cannot achieve a smaller file', async ({
@@ -202,6 +224,32 @@ test.describe('Image Compress', () => {
     await page.getByRole('button', { name: 'Download compressed image' }).click();
     await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
   });
+
+  test('fits strictly within 900px desktop viewport without page scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openTool(page, 'image-compress');
+    await page.waitForTimeout(500);
+    const scrollH = await page.evaluate(() => document.documentElement.scrollHeight);
+    const innerH = await page.evaluate(() => window.innerHeight);
+    const info = await page.evaluate(() => {
+      return {
+        bodyScroll: document.body.scrollHeight,
+        docScroll: document.documentElement.scrollHeight,
+        header: document.querySelector('header')?.getBoundingClientRect().height,
+        main: document.querySelector('main')?.getBoundingClientRect().height,
+        footer: document.querySelector('footer')?.getBoundingClientRect().height,
+        controls: document.querySelector('[class*="controlsPanel"]')?.getBoundingClientRect()
+          .height,
+        canvas: document.querySelector('[class*="canvasPanel"]')?.getBoundingClientRect().height,
+        result: document.querySelector('[class*="resultPanel"]')?.getBoundingClientRect().height,
+      };
+    });
+    console.log('LAYOUT INFO:', JSON.stringify(info));
+    expect(scrollH).toBeLessThanOrEqual(innerH);
+    await page.screenshot({
+      path: 'C:/Users/user/.gemini/antigravity/brain/69dd2223-e082-499a-9544-d181fd76ffa1/compress_desktop_900.png',
+    });
+  });
 });
 
 test.describe('Image Format Converter', () => {
@@ -225,7 +273,7 @@ test.describe('Image Format Converter', () => {
     await openTool(page, 'image-format-converter');
     await fileInput(page).setInputFiles([sample]);
     const options = await page.getByLabel('Convert to').locator('option').allTextContents();
-    expect(options).toEqual(['JPG', 'PNG', 'WebP']);
+    expect(options).toEqual(['JPG', 'PNG', 'WebP', 'PDF']);
   });
 
   test('converts to PNG (the default) and downloads it with the default name', async ({ page }) => {
@@ -278,11 +326,106 @@ test.describe('Image Format Converter', () => {
     expect(download.suggestedFilename()).toBe('My Photo.png');
   });
 
+  test('converts to PDF and downloads it with .pdf extension', async ({ page }) => {
+    await openTool(page, 'image-format-converter');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Convert to').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download converted image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-converted.pdf');
+    await expect(primaryResult(page)).toHaveText('pdf');
+  });
+
   test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
     await openTool(page, 'image-format-converter');
     const notAnImage = join(process.cwd(), 'tools/image-format-converter/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
     await page.getByRole('button', { name: 'Download converted image' }).click();
     await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+});
+
+test.describe('Background Remover', () => {
+  const fileInput = (page: Page) =>
+    island(page, 'image-background-remover').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg');
+  const preview = (page: Page) => island(page, 'image-background-remover').locator('img');
+
+  test('selecting an image previews it and exposes tolerance and feather controls', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-background-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await expect(preview(page).first()).toBeVisible();
+    await expect(page.getByLabel('Color tolerance')).toBeVisible();
+    await expect(page.getByLabel('Edge smoothing')).toBeVisible();
+  });
+
+  test('removes background to transparent PNG and downloads it with default name', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-background-remover');
+    await fileInput(page).setInputFiles([sample]);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download transparent image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-no-bg.png');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('removes background and exports to PDF and downloads .pdf', async ({ page }) => {
+    await openTool(page, 'image-background-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output format').selectOption('pdf');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download transparent image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('sample-no-bg.pdf');
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('pdf');
+  });
+
+  test('normalizes a custom output file name on download', async ({ page }) => {
+    await openTool(page, 'image-background-remover');
+    await fileInput(page).setInputFiles([sample]);
+    await page.getByLabel('Output file name').fill('  My Cutout<>.PNG  ');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download transparent image' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('My Cutout.png');
+  });
+
+  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
+    await openTool(page, 'image-background-remover');
+    const notAnImage = join(process.cwd(), 'tools/image-background-remover/manifest.yaml');
+    await fileInput(page).setInputFiles([notAnImage]);
+    await page.getByRole('button', { name: 'Download transparent image' }).click();
+    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  });
+
+  test('fits strictly within 900px desktop viewport without page scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openTool(page, 'image-background-remover');
+    await page.waitForTimeout(500);
+    const scrollH = await page.evaluate(() => document.documentElement.scrollHeight);
+    const innerH = await page.evaluate(() => window.innerHeight);
+    const info = await page.evaluate(() => {
+      return {
+        bodyScroll: document.body.scrollHeight,
+        docScroll: document.documentElement.scrollHeight,
+        header: document.querySelector('header')?.getBoundingClientRect().height,
+        main: document.querySelector('main')?.getBoundingClientRect().height,
+        footer: document.querySelector('footer')?.getBoundingClientRect().height,
+        controls: document.querySelector('[class*="controlsPanel"]')?.getBoundingClientRect()
+          ?.height,
+        canvas: document.querySelector('[class*="canvasPanel"]')?.getBoundingClientRect()?.height,
+        result: document.querySelector('[class*="resultPanel"]')?.getBoundingClientRect()?.height,
+      };
+    });
+    console.log('BG REMOVER LAYOUT INFO:', JSON.stringify(info));
+    expect(scrollH).toBeLessThanOrEqual(innerH);
+    await page.screenshot({
+      path: 'C:/Users/user/.gemini/antigravity/brain/69dd2223-e082-499a-9544-d181fd76ffa1/bg_remover_desktop_900.png',
+    });
   });
 });

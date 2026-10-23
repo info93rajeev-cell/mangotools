@@ -159,7 +159,8 @@ test.describe('Image Watermark', () => {
 test.describe('Image Crop', () => {
   const fileInput = (page: Page) => island(page, 'image-crop').locator('input[type="file"]');
   const sample = join(process.cwd(), 'tools/image-crop/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-crop').locator('img');
+  const preview = (page: Page) =>
+    island(page, 'image-crop').locator('section[aria-label="Visual Crop Canvas"] img');
 
   test('selecting an image previews it and shows the default crop rectangle', async ({ page }) => {
     await openTool(page, 'image-crop');
@@ -179,6 +180,7 @@ test.describe('Image Crop', () => {
     await page.getByLabel('Crop width').fill('4');
     await page.getByLabel('Crop height').fill('4');
     const downloadPromise = page.waitForEvent('download');
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await page.getByRole('button', { name: 'Download cropped image' }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('sample-cropped.jpg');
@@ -197,6 +199,7 @@ test.describe('Image Crop', () => {
     await page.getByLabel('Crop width').fill('4');
     await page.getByLabel('Crop height').fill('4');
     const downloadPromise = page.waitForEvent('download');
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await page.getByRole('button', { name: 'Download cropped image' }).click();
     await downloadPromise;
     await expect(page.locator('[data-output="cropX"] dd')).toHaveText('2');
@@ -212,6 +215,7 @@ test.describe('Image Crop', () => {
     await page.getByLabel('Crop height').fill('4');
     await page.getByLabel('Output format').selectOption('png');
     const downloadPromise = page.waitForEvent('download');
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await page.getByRole('button', { name: 'Download cropped image' }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('sample-cropped.png');
@@ -225,7 +229,7 @@ test.describe('Image Crop', () => {
     await fileInput(page).setInputFiles([sample]);
     await page.getByLabel('Crop width').fill('100');
     await page.getByLabel('Crop height').fill('100');
-    await page.getByRole('button', { name: 'Download cropped image' }).click();
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await expect(
       page.getByText('The crop rectangle extends outside the image, which is 8×8 pixels.'),
     ).toBeVisible();
@@ -235,7 +239,7 @@ test.describe('Image Crop', () => {
     await openTool(page, 'image-crop');
     await fileInput(page).setInputFiles([sample]);
     await page.getByLabel('Crop width').fill('0');
-    await page.getByRole('button', { name: 'Download cropped image' }).click();
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await expect(page.getByText('Enter a crop width and height greater than 0.')).toBeVisible();
   });
 
@@ -246,6 +250,7 @@ test.describe('Image Crop', () => {
     await page.getByLabel('Crop height').fill('4');
     await page.getByLabel('Output file name').fill('  My Photo<>.JPG  ');
     const downloadPromise = page.waitForEvent('download');
+    await island(page, 'image-crop').locator('[data-crop-button]').click();
     await page.getByRole('button', { name: 'Download cropped image' }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe('My Photo.jpg');
@@ -339,7 +344,9 @@ test.describe('Favicon Generator', () => {
 });
 
 test.describe('Image & Media category', () => {
-  test('shows exactly ten tools and no future image tools', async ({ page }) => {
+  test('shows the eleven registered Image & Media tools including Background Remover', async ({
+    page,
+  }) => {
     await gotoReady(page, '/media');
     await expect(page.getByRole('heading', { name: 'Image & Media', exact: true })).toBeVisible();
     const allTools = page.getByRole('region', { name: 'All Image & Media tools' });
@@ -353,9 +360,9 @@ test.describe('Image & Media category', () => {
     await expect(allTools.getByRole('link', { name: 'Passport Photo Resizer' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Signature Resizer' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Photo Size Reducer' })).toBeVisible();
-    await expect(allTools.getByRole('link')).toHaveCount(10);
-    for (const future of ['Background Remover']) {
-      await expect(page.getByText(future, { exact: true })).toHaveCount(0);
-    }
+    await expect(allTools.getByRole('link')).toHaveCount(11);
+    await expect(
+      allTools.getByRole('link', { name: 'Background Remover', exact: true }),
+    ).toBeVisible();
   });
 });

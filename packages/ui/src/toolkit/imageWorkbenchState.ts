@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { AspectRatioPreset, ImageDimensions, PixelRect } from './imageWorkbenchGeometry.ts';
 import {
   applyAspectRatio,
+  clampRectToBounds,
   defaultSelectionRect,
   sourceToDisplay,
 } from './imageWorkbenchGeometry.ts';
@@ -57,21 +58,26 @@ export function useWorkbenchState({
   const activeRatio = aspectRatio ?? internalRatio;
 
   const [internalRect, setInternalRect] = useState<PixelRect>(() =>
-    defaultSelectionRect(bounds, activeRatio),
+    clampRectToBounds(value ?? defaultSelectionRect(bounds, activeRatio), bounds, minSelectionSize),
   );
-  const currentRect = value ?? internalRect;
+  const currentRect = value ? clampRectToBounds(value, bounds, minSelectionSize) : internalRect;
 
   useEffect(() => {
     if (!value) {
-      const initial = defaultSelectionRect(bounds, activeRatio);
+      const initial = clampRectToBounds(
+        defaultSelectionRect(bounds, activeRatio),
+        bounds,
+        minSelectionSize,
+      );
       setInternalRect(initial);
       onChange?.(initial);
     }
   }, [imageSrc, sourceWidth, sourceHeight]);
 
   const updateRect = (next: PixelRect) => {
-    if (!value) setInternalRect(next);
-    onChange?.(next);
+    const clamped = clampRectToBounds(next, bounds, minSelectionSize);
+    if (!value) setInternalRect(clamped);
+    onChange?.(clamped);
   };
 
   const { imgRef, displaySize, updateDisplaySize } = useImageDisplaySize(imageSrc);

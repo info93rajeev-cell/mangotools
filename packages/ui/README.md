@@ -167,3 +167,9 @@ only after both workstreams are combined.
 `CbmOutputActions.tsx` is B-owned, including `CbmPrintReport` presentation. Print functionality and
 copy content remain frozen unless #219 explicitly requires presentation-only changes. The shell's
 screen hide rule stays A-owned; preserve the report's placement outside that hidden workspace.
+
+PR #225 sample-load fix: Resize and Format Converter reuse Crop’s user-interaction ref guard so delayed automatic Jaipur samples cannot replace uploads. Manual Try Sample and untouched initial demo loading remain available; browser regressions cover both studios.
+
+PR #225 CI follow-up: Image Studio hints use the accessible accent-text token; green download actions retain white text on a contrast-safe green in both themes. Shared Crop decode tests target the source canvas image, retaining the live thumbnail. The generated catalog includes Background Remover (36 listed tools, 45 indexable sitemap pages). Axe rules remain unchanged.
+
+The same CI follow-up refreshes the legacy Crop test flow (Crop Image, then download) without changing fixture values, includes Background Remover in Media/network coverage, and retains the percent unit on Compress’s accessible primary result.
