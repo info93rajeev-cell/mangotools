@@ -361,6 +361,8 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
       visual(page).getByRole('button', { name: 'Side View', exact: true }),
     ).toBeFocused();
     await page.keyboard.press('Tab');
+    await expect(composition(page).getByRole('list')).toBeFocused();
+    await page.keyboard.press('Tab');
     await expect(print(page)).toBeFocused();
     expect(await ring(print(page))).toBe('solid 2px');
     await page.keyboard.press('Tab');
@@ -376,6 +378,13 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
       await field(page, 3, 'weightPerItem').fill('');
       await enableCost(page, '100', { minimum: '1000000' });
       await expect(cost(page).locator('[data-cost-total]')).toBeVisible();
+      const legend = composition(page).getByRole('list');
+      await expect(legend).toHaveAccessibleName('Load Composition by Carton');
+      await expect(legend).toHaveAttribute('tabindex', '0');
+      await legend.focus();
+      await expect(legend).toBeFocused();
+      await page.keyboard.press('ArrowRight');
+      await expect.poll(() => legend.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
       const results = await new AxeBuilder({ page })
         .include('[data-cbm-workspace] section[aria-labelledby="cbm-visual-title"]')
         .include('[data-cbm-workspace] section[aria-labelledby="cbm-summary-title"]')

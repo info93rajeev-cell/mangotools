@@ -122,7 +122,8 @@ function Composition({ items }: { items: CompositionItem[] }) {
           />
         ))}
       </div>
-      <ol class={s.legend}>
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: Scrollable content must be keyboard-focusable (WCAG 2.1.1). */}
+      <ol class={s.legend} tabIndex={0} aria-labelledby="cbm-composition-title">
         {items.map((item) => (
           <li key={item.key}>
             <span class={`${s.swatch} ${swatch(item.number)}`} aria-hidden="true" />

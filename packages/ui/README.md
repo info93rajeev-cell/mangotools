@@ -215,3 +215,8 @@ PR #225 sample-load fix: Resize and Format Converter reuse Crop’s user-interac
 PR #225 CI follow-up: Image Studio hints use the accessible accent-text token; green download actions retain white text on a contrast-safe green in both themes. Shared Crop decode tests target the source canvas image, retaining the live thumbnail. The generated catalog includes Background Remover (36 listed tools, 45 indexable sitemap pages). Axe rules remain unchanged.
 
 The same CI follow-up refreshes the legacy Crop test flow (Crop Image, then download) without changing fixture values, includes Background Remover in Media/network coverage, and retains the percent unit on Compress’s accessible primary result.
+
+### CBM composition keyboard access — PR #229
+
+The scrollable Load Composition legend retains its list semantics and is labelled by its heading.
+Keyboard users can tab to it, scroll with arrow keys, and see the shared focus ring.
