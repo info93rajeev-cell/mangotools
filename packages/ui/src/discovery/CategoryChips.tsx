@@ -8,21 +8,59 @@ export interface CategoryChipsProps {
   target?: string;
 }
 
+function filterCards(container: ParentNode, query: string): number {
+  const cards = container.querySelectorAll<HTMLElement>('[data-tool-card]');
+  let visible = 0;
+  for (const card of cards) {
+    const text = `${card.dataset.toolCard ?? ''} ${card.textContent ?? ''}`.toLowerCase();
+    const match = !query || text.includes(query);
+    card.hidden = !match;
+    if (match) visible++;
+  }
+  return visible;
+}
+
 /**
- * Filters the tool groups already in the page. Without JavaScript every group stays visible,
- * so the full list is always in the HTML.
+ * Filters the tool groups and cards in the page by selected category and live search query.
+ * Without JavaScript every group and card stays visible.
  */
 export function CategoryChips({
   categories,
   target = '[data-category-group]',
 }: CategoryChipsProps) {
   const [selected, setSelected] = useState('all');
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const handleInput = (e: Event) => {
+      const el = e.target as HTMLInputElement | null;
+      if (el && el.type === 'search') {
+        setQuery(el.value.trim().toLowerCase());
+      }
+    };
+    document.addEventListener('input', handleInput);
+    document.addEventListener('change', handleInput);
+    return () => {
+      document.removeEventListener('input', handleInput);
+      document.removeEventListener('change', handleInput);
+    };
+  }, []);
 
   useEffect(() => {
     for (const group of document.querySelectorAll<HTMLElement>(target)) {
-      group.hidden = selected !== 'all' && group.dataset.category !== selected;
+      const match = selected === 'all' || group.dataset.category === selected;
+      if (!match) {
+        group.hidden = true;
+        continue;
+      }
+      group.hidden = filterCards(group, query) === 0;
     }
-  }, [selected, target]);
+
+    const popular = document.querySelector<HTMLElement>('[data-popular-tools]');
+    if (popular) {
+      popular.hidden = filterCards(popular, query) === 0;
+    }
+  }, [selected, query, target]);
 
   const chips = [{ id: 'all', name: t('chips.all') }, ...categories];
   return (

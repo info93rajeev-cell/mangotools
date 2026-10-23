@@ -1,14 +1,26 @@
 ---
-import { CardGrid, CategoryCard } from '@mangotools/ui/discovery/cards.tsx';
+import { CategoryChips } from '@mangotools/ui/discovery/CategoryChips.tsx';
+import { CardGrid, CategoryCard, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
 import { SearchBox } from '@mangotools/ui/discovery/SearchBox.tsx';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import logoUrl from '../../../../assets/brand/logo.svg?url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { organization, webSite } from '../lib/structured-data.ts';
 import { COPY } from '../lib/copy.ts';
-import { HOME, visibleCategories } from '../lib/site.ts';
+import { HOME, listedTools, toolLinks, visibleCategories } from '../lib/site.ts';
 
 const copy = COPY.home;
+
+const popularIds = [
+  'image-crop',
+  'image-background-remover',
+  'concrete-quantity-calculator',
+  'brickwork-calculator',
+  'cbm-calculator',
+  'image-compress',
+];
+const popularTools = toolLinks(popularIds);
+const groups = visibleCategories.map((c) => ({ category: c, tools: toolLinks(c.toolIds) }));
 ---
 
 <BaseLayout
@@ -29,8 +41,26 @@ const copy = COPY.home;
         </div>
       </section>
 
+      <section class="block" aria-labelledby="popular-tools-title" data-popular-tools="">
+        <div class="block-head">
+          <h2 id="popular-tools-title">Popular Tools</h2>
+          <span class="trust-badge">🔒 100% Client-Side · Zero Uploads</span>
+        </div>
+        <CardGrid>
+          {
+            popularTools.map((tool) => (
+              <li>
+                <ToolCard tool={tool} showThumbnail showTags />
+              </li>
+            ))
+          }
+        </CardGrid>
+      </section>
+
       <section class="block" aria-labelledby="categories-title">
-        <h2 id="categories-title">{copy.categories}</h2>
+        <div class="block-head">
+          <h2 id="categories-title">{copy.categories}</h2>
+        </div>
         <CardGrid>
           {
             visibleCategories.map((c) => (
@@ -49,6 +79,33 @@ const copy = COPY.home;
         </CardGrid>
       </section>
 
+      <section class="block" aria-labelledby="all-tools-title" id="all-tools">
+        <div class="block-head">
+          <h2 id="all-tools-title">All Tools</h2>
+          <span class="tool-count-badge">{listedTools.length} Tools Available</span>
+        </div>
+        <CategoryChips client:idle categories={visibleCategories.map((c) => ({ id: c.id, name: c.name }))} />
+        {
+          groups.map(({ category, tools }) => (
+            <div class="tool-group" data-category-group data-category={category.id} aria-labelledby={`group-${category.id}`}>
+              <div class="group-header">
+                <h3 id={`group-${category.id}`}>
+                  <a href={category.url}>{category.name}</a>
+                </h3>
+                <span class="group-count">{tools.length}</span>
+              </div>
+              <CardGrid>
+                {tools.map((tool) => (
+                  <li>
+                    <ToolCard tool={tool} showTags />
+                  </li>
+                ))}
+              </CardGrid>
+            </div>
+          ))
+        }
+      </section>
+
       <p class="trust" data-trust-line>{copy.trust}</p>
     </div>
   </PageContainer>
@@ -57,8 +114,8 @@ const copy = COPY.home;
 <style>
   .sections {
     display: grid;
-    gap: var(--space-4);
-    padding-bottom: var(--space-2);
+    gap: var(--space-8);
+    padding-bottom: var(--space-6);
   }
   .hero {
     display: grid;
@@ -84,7 +141,56 @@ const copy = COPY.home;
   }
   .block {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
+  }
+  .block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .trust-badge {
+    font-size: var(--text-caption);
+    font-weight: var(--weight-semibold);
+    color: var(--color-success, #059669);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+  }
+  .tool-count-badge {
+    font-size: var(--text-caption);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-muted);
+    background: var(--color-surface, rgba(0, 0, 0, 0.04));
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+  }
+  .tool-group {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+  }
+  .group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+  .group-header h3 a {
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--text-h3);
+  }
+  .group-header h3 a:hover {
+    text-decoration: underline;
+  }
+  .group-count {
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
   }
   .trust {
     color: var(--color-text-muted);
@@ -94,14 +200,14 @@ const copy = COPY.home;
   }
   @media (max-width: 640px) {
     .sections {
-      gap: var(--space-8);
+      gap: var(--space-6);
       padding-bottom: var(--space-6);
     }
     .hero {
-      padding-block: var(--space-8) var(--space-2);
+      padding-block: var(--space-4) var(--space-2);
     }
     .block {
-      gap: var(--space-5);
+      gap: var(--space-4);
     }
   }
 </style>
