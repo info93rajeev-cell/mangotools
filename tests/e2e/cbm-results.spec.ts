@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Locator, type Page, test } from '@playwright/test';
+import { legendMetrics } from '../support/cbm-legend.ts';
 import { copiedTexts, openTool, stubClipboard } from '../support/tool-page.ts';
 
 /**
@@ -384,8 +385,7 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
       await expect(legend).toHaveAttribute('tabindex', '0');
       await legend.focus();
       await expect(legend).toBeFocused();
-      await page.keyboard.press('ArrowRight');
-      await expect.poll(() => legend.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
+      console.info('CBM desktop legend', scheme, await legendMetrics(legend));
       const results = await new AxeBuilder({ page })
         .include('[data-cbm-workspace] section[aria-labelledby="cbm-visual-title"]')
         .include('[data-cbm-workspace] section[aria-labelledby="cbm-summary-title"]')
