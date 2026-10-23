@@ -13,8 +13,28 @@ interface Props {
   currency?: Currency | undefined;
 }
 const { content, related, currency } = Astro.props;
-const beforeReferences = content.sections.filter((s) => s.id !== 'references');
-const references = content.sections.find((s) => s.id === 'references');
+
+/**
+ * The approved common strip shows five shortcuts: Disclaimer (rendered by the page), How to use,
+ * Method, FAQ and Related tools. Worked example and References stay on the page as parts of the
+ * Method section (their ids are kept), so tiers that require them still publish them in full.
+ * A tool without a Method section keeps them as their own disclosures.
+ */
+const IN_METHOD = new Set(['worked-example', 'references']);
+const hasMethod = content.sections.some((s) => s.id === 'method');
+const inMethod = hasMethod ? content.sections.filter((s) => IN_METHOD.has(s.id)) : [];
+const shortcuts = content.sections.filter((s) => !(hasMethod && IN_METHOD.has(s.id)));
+const beforeReferences = shortcuts.filter((s) => s.id !== 'references');
+const references = shortcuts.find((s) => s.id === 'references');
+
+const SECTION_ICONS: Record<string, string> = {
+  'how-to-use': '📖',
+  'method': '⚙️',
+  'worked-example': '🧮',
+  'faq': '❓',
+  'references': '📚',
+  'related-tools': '🔗',
+};
 ---
 
 <div class="tool-content">
@@ -27,6 +47,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">{SECTION_ICONS[section.id] ?? '📄'}</span>
           <h2 id={`${section.id}-title`}>{section.title}</h2>
         </summary>
         <div class="content-body">
@@ -38,6 +59,25 @@ const references = content.sections.find((s) => s.id === 'references');
           {section.id === 'worked-example' && content.example ? (
             <WorkedExample example={content.example} currency={currency} />
           ) : null}
+          {section.id === 'method'
+            ? inMethod.map((part) => (
+                <section
+                  id={part.id}
+                  class="content-part"
+                  aria-labelledby={`${part.id}-title`}
+                  data-tool-content-part=""
+                >
+                  <h3 id={`${part.id}-title`}>{part.title}</h3>
+                  <div
+                    class:list={['prose', { references: part.id === 'references' }]}
+                    set:html={part.html}
+                  />
+                  {part.id === 'worked-example' && content.example ? (
+                    <WorkedExample example={content.example} currency={currency} />
+                  ) : null}
+                </section>
+              ))
+            : null}
         </div>
       </details>
     ))
@@ -51,6 +91,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">🔗</span>
           <h2 id="related-tools-title">{t('related.title')}</h2>
         </summary>
         <div class="content-body">
@@ -74,6 +115,7 @@ const references = content.sections.find((s) => s.id === 'references');
         data-tool-content-section=""
       >
         <summary>
+          <span aria-hidden="true" class="summary-icon">📚</span>
           <h2 id={`${references.id}-title`}>{references.title}</h2>
         </summary>
         <div class="content-body">
@@ -88,18 +130,19 @@ const references = content.sections.find((s) => s.id === 'references');
   .tool-content {
     display: contents;
   }
+  /* The approved common shortcut: an even-width pill with its icon left and "+" right. */
   .content-disclosure {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     min-width: 0;
     scroll-margin-top: 80px;
     border: 0;
   }
   .content-disclosure summary {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-3);
+    gap: 10px;
+    min-height: var(--control-height);
+    padding: 0 var(--space-4) 0 14px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
     background: var(--color-bg);
@@ -112,9 +155,19 @@ const references = content.sections.find((s) => s.id === 'references');
   .content-disclosure summary::after {
     content: '+';
     flex: none;
-    color: var(--color-text-subtle);
-    font-size: var(--text-body);
+    margin-left: auto;
+    padding-left: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    font-weight: 400;
     line-height: 1;
+  }
+  .summary-icon {
+    flex: none;
+    width: 22px;
+    font-size: 1.125rem;
+    line-height: 1;
+    text-align: center;
   }
   .content-disclosure[open] summary::after {
     content: '−';
@@ -133,9 +186,35 @@ const references = content.sections.find((s) => s.id === 'references');
     border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
   }
   .content-disclosure h2 {
-    font-size: var(--text-ui);
+    min-width: 0;
+    font-size: 0.9375rem;
     line-height: var(--leading-ui);
     font-weight: var(--weight-semibold);
+  }
+  /* A closed shortcut left alone on a row (next to an opened section) keeps its pill width. */
+  @media (min-width: 768px) {
+    .content-disclosure:not([open]) {
+      max-width: 320px;
+    }
+  }
+  @media (max-width: 767px) {
+    .content-disclosure summary {
+      min-height: var(--control-height-lg);
+      gap: 6px;
+      padding: 0 10px 0 var(--space-2);
+    }
+    .content-disclosure summary::after {
+      padding-left: 0;
+    }
+    .content-disclosure h2 {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .summary-icon {
+      width: 22px;
+      font-size: 1.25rem;
+    }
   }
   .content-body {
     display: grid;
@@ -177,6 +256,19 @@ const references = content.sections.find((s) => s.id === 'references');
     background: var(--color-surface-subtle);
     border: 1px solid var(--color-border);
     font-size: 0.875em;
+  }
+  .content-part {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    scroll-margin-top: 80px;
+  }
+  .content-part h3 {
+    font-size: var(--text-ui);
+    line-height: var(--leading-ui);
+    font-weight: var(--weight-semibold);
   }
   .references {
     color: var(--color-text-muted);

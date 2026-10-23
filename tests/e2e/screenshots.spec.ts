@@ -79,7 +79,6 @@ for (const size of [
   test(`CBM populated evidence @ ${size.width}×${size.height}`, async ({ page }) => {
     await page.setViewportSize(size);
     await gotoReady(page, '/cbm-calculator');
-    await page.getByRole('button', { name: 'Try sample' }).click();
     await expect(primaryResult(page)).toHaveText('6.000 m³');
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(0, 0);

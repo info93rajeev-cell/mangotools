@@ -4,15 +4,17 @@ id: cbm-calculator
 slug: cbm-calculator
 status: beta
 tier: T2
-version: 0.2.0
+version: 0.2.2
 changelog:
+  - { version: 0.2.2, date: 2026-10-22, type: changed, summary: "Shared supporting strip and footer below the workspace; How to use and Method describe the current workbench." }
+  - { version: 0.2.1, date: 2026-10-22, type: changed, summary: "Founder-approved CBM workbench layout; summary reworded to match it." }
   - { version: 0.2.0, date: 2026-10-21, type: changed, summary: "Activate multi-package shipment totals, optional packed weight and user-entered cost estimate; classify free-text worksheets as personal." }
   - { version: 0.1.2, date: 2026-10-06, type: changed, summary: "Compact workspace, converting dimension units, selectable 2/3/4-place precision, and collapsed supporting sections." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Link the Export Packing List Generator; clarify that air freight is priced by volumetric weight." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with CBM per carton, total CBM and cubic feet in cm, m, mm or inches." }
 name: CBM Calculator
 shortName: CBM
-summary: Shipment CBM, cubic feet and pieces for one or multiple package types, with optional packed weight and freight cost.
+summary: Calculate CBM (cubic meter) for single or multiple cartons. Visualize your shipment and get an estimated freight cost.
 archetype: B
 preset: logistics/cbm-shipment
 sample: carton-50-40-30-x100

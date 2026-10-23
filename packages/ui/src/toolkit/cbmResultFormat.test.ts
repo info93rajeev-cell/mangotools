@@ -5,6 +5,7 @@ import {
   formatAmount,
   freightView,
   groupFigure,
+  trimZeros,
   weightView,
 } from './cbmResultFormat.ts';
 import {
@@ -47,13 +48,21 @@ describe('CBM result figures', () => {
   });
 
   it('formats INR with the rupee sign and Indian grouping, other currencies with their code', () => {
-    expect(formatAmount('212600', 'INR')).toBe('₹2,12,600.00');
-    expect(formatAmount('600.00', 'INR')).toBe('₹600.00');
-    expect(formatAmount('0.5', 'INR')).toBe('₹0.50');
-    expect(formatAmount('12345678.9', 'INR')).toBe('₹1,23,45,678.90');
-    expect(formatAmount('1234567.5', 'USD')).toBe('USD 1,234,567.50');
+    // The approved reference prints whole amounts without paise: "₹ 2,12,600".
+    expect(formatAmount('212600', 'INR')).toBe('₹\u00a02,12,600');
+    expect(formatAmount('600.00', 'INR')).toBe('₹\u00a0600');
+    expect(formatAmount('0.5', 'INR')).toBe('₹\u00a00.50');
+    expect(formatAmount('12345678.9', 'INR')).toBe('₹\u00a01,23,45,678.90');
+    expect(formatAmount('1234567.5', 'USD')).toBe('USD\u00a01,234,567.50');
     for (const currency of ['EUR', 'GBP', 'AED'])
-      expect(formatAmount('2000.00', currency)).toBe(`${currency} 2,000.00`);
+      expect(formatAmount('2000.00', currency)).toBe(`${currency}\u00a02,000`);
+  });
+
+  it('drops only zeros that carry no value from a weight figure', () => {
+    expect(trimZeros('8,340.000')).toBe('8,340');
+    expect(trimZeros('4.50')).toBe('4.5');
+    expect(trimZeros('1200')).toBe('1200');
+    expect(trimZeros('0.125')).toBe('0.125');
   });
 
   it('derives the average CBM per piece exactly, rounding half-up at the selected places', () => {
@@ -89,7 +98,7 @@ describe('CBM packed weight coverage', () => {
       }),
     );
     expect(view.label).toBe('Known Weight');
-    expect(view.value).toBe('4,340.000');
+    expect(view.value).toBe('4,340');
     expect(view.note).toBe(
       'Known packed weight (partial): 190 of 200 pieces weighed. Pieces without a weight are not counted.',
     );
@@ -97,7 +106,7 @@ describe('CBM packed weight coverage', () => {
 
   it('shows the full packed weight only when every piece is weighed', () => {
     const view = weightView(result({ weightCoverage: 'complete', knownPackedWeightKg: '300.000' }));
-    expect(view).toEqual({ label: 'Total Weight', value: '300.000', note: null });
+    expect(view).toEqual({ label: 'Total Weight', value: '300', note: null });
   });
 });
 
@@ -128,8 +137,8 @@ describe('CBM load composition', () => {
     });
     expect(compositionItems(state(packages, shipment))).toEqual([
       { key: 7, number: 1, name: 'Carton A', cbm: '0.001', share: '88.9' },
-      { key: 8, number: 2, name: 'Package 2', cbm: '0.000', share: '8.9' },
-      { key: 9, number: 3, name: 'Package 3', cbm: '0.000', share: '2.2' },
+      { key: 8, number: 2, name: 'Carton 2', cbm: '0.000', share: '8.9' },
+      { key: 9, number: 3, name: 'Carton 3', cbm: '0.000', share: '2.2' },
     ]);
   });
 
@@ -141,10 +150,14 @@ describe('CBM load composition', () => {
 describe('CBM freight line', () => {
   it('shows the rate basis when the minimum does not apply', () => {
     expect(freightView(cost())).toEqual({
-      label: 'Freight (46.8 m³ × ₹4,500.00)',
-      value: '₹2,10,600.00',
+      label: 'Freight (46.8 m³ × ₹\u00a04,500)',
+      value: '₹\u00a02,10,600',
       note: null,
     });
+  });
+
+  it('shows the total CBM as the results summary shows it', () => {
+    expect(freightView(cost(), '46.800').label).toBe('Freight (46.800 m³ × ₹\u00a04,500)');
   });
 
   it('keeps the engine minimum-charge semantics when the minimum applies', () => {
@@ -160,8 +173,8 @@ describe('CBM freight line', () => {
     );
     expect(view).toEqual({
       label: 'Freight (minimum charge applied)',
-      value: '₹10,000.00',
-      note: 'Rate × CBM = ₹8,750.00, below your minimum of ₹10,000.00.',
+      value: '₹\u00a010,000',
+      note: 'Rate × CBM = ₹\u00a08,750, below your minimum of ₹\u00a010,000.',
     });
   });
 });

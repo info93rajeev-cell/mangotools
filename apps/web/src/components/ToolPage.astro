@@ -68,12 +68,52 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
     display: grid;
     gap: var(--space-1);
   }
+  /*
+   * The approved common shared-bottom strip: one card holding the five shortcuts (Disclaimer, How
+   * to use, Method, FAQ, Related tools) in one even row on wide screens and a two-column grid on
+   * phones, where an odd last shortcut and any opened section take the full width.
+   */
   .supporting {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: var(--space-2);
+    gap: 10px;
     min-width: 0;
-    padding-bottom: var(--space-4);
+    margin-block: var(--space-1);
+    padding: 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-bg);
+  }
+  @media (max-width: 767px) {
+    .supporting {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin-block: var(--space-2) var(--space-4);
+      padding: var(--space-2);
+    }
+    .supporting > :global(details[open]),
+    .supporting > :global(.tool-content > details[open]) {
+      grid-column: 1 / -1;
+    }
+    :global(
+        [data-secondary-information]:has(> details[data-disclaimer])
+          > .tool-content
+          > details:last-child:nth-child(even)
+      ),
+    :global(
+        [data-secondary-information]:not(:has(> details[data-disclaimer]))
+          > .tool-content
+          > details:last-child:nth-child(odd)
+      ) {
+      grid-column: 1 / -1;
+    }
+  }
+  /* Below 340 px (narrow phones, 200% zoom) each shortcut gets its own full-width row. */
+  @media (max-width: 339px) {
+    .supporting {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

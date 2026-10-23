@@ -13,6 +13,8 @@ import {
   VIEWS,
   type ViewKind,
 } from './cbmVisualGeometry.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
+import { usePhone } from './usePhone.ts';
 
 const TONE: Record<Tone, string | undefined> = {
   top: s.top,
@@ -23,20 +25,17 @@ const TONE: Record<Tone, string | undefined> = {
   palletSide: s.palletSide,
   palletGap: s.palletGap,
   tape: s.tape,
+  label: s.label,
+  mark: s.mark,
 };
 const LETTER = { length: 'L', width: 'W', height: 'H' } as const;
 
 const packageName = (row: CbmPackage, index: number) =>
-  row.description.replace(/\s+/g, ' ').trim() || `${t.package} ${index + 1}`;
+  row.description.replace(/\s+/g, ' ').trim() || `${w.carton} ${index + 1}`;
 const viewName = (view: ViewKind) => fillText(r.viewName, { view: t[view] });
 
-function anchor(view: ViewKind, arrow: Arrow): 'start' | 'middle' | 'end' {
-  if (Math.abs(arrow.x2 - arrow.x1) < 1) return 'start';
-  if (view !== 'iso') return 'middle';
-  return arrow.axis === 'length' ? 'end' : 'start';
-}
-
-function Dimension({ arrow, view, row }: { arrow: Arrow; view: ViewKind; row: CbmPackage }) {
+/** A two-line dimension label ("H" over "120 cm"), centred beside or below its arrow. */
+function Dimension({ arrow, row }: { arrow: Arrow; row: CbmPackage }) {
   const value = row[arrow.axis].trim();
   return (
     <g class={s.dimension} data-axis={arrow.axis}>
@@ -48,17 +47,58 @@ function Dimension({ arrow, view, row }: { arrow: Arrow; view: ViewKind; row: Cb
         marker-start="url(#cbm-dimension-end)"
         marker-end="url(#cbm-dimension-end)"
       />
-      <text x={arrow.labelX} y={arrow.labelY} text-anchor={anchor(view, arrow)}>
-        {`${LETTER[arrow.axis]} ${value} ${row.unit}`}
+      <text x={arrow.labelX} y={arrow.labelY} text-anchor="middle">
+        <tspan dy="-0.25em">{LETTER[arrow.axis]}</tspan>
+        <tspan x={arrow.labelX} dy="1.2em">{` ${value} ${row.unit}`}</tspan>
       </text>
     </g>
   );
 }
 
-function Illustration({ row, name, view }: { row: CbmPackage; name: string; view: ViewKind }) {
+function Defs() {
+  return (
+    <defs>
+      <marker
+        id="cbm-dimension-end"
+        viewBox="0 0 10 10"
+        refX="5"
+        refY="5"
+        markerWidth="6"
+        markerHeight="6"
+        orient="auto-start-reverse"
+      >
+        <path d="M0 0 10 5 0 10Z" class={s.arrowHead} />
+      </marker>
+      {(
+        [
+          ['cbm-top', '#efcd98', '#e2b679'],
+          ['cbm-left', '#ddb07a', '#c9935a'],
+          ['cbm-right', '#c99558', '#b07a41'],
+        ] as const
+      ).map(([id, from, to]) => (
+        <linearGradient key={id} id={id} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color={from} />
+          <stop offset="1" stop-color={to} />
+        </linearGradient>
+      ))}
+    </defs>
+  );
+}
+
+/** Phone labels are drawn this much larger than desktop ones (see `.dimension text`). */
+const PHONE_LABELS = 1.45;
+
+interface IllustrationProps {
+  row: CbmPackage;
+  name: string;
+  view: ViewKind;
+  phone: boolean;
+}
+
+function Illustration({ row, name, view, phone }: IllustrationProps) {
   const shape = proportions(row.length, row.width, row.height);
   if (!shape) return <p class={s.placeholder}>{r.noDimensions}</p>;
-  const drawn = scene(view, shape);
+  const drawn = scene(view, shape, phone ? PHONE_LABELS : 1);
   const label = fillText(r.illustrationLabel, {
     name,
     length: row.length.trim(),
@@ -75,19 +115,7 @@ function Illustration({ row, name, view }: { row: CbmPackage; name: string; view
       aria-label={label}
       data-view={view}
     >
-      <defs>
-        <marker
-          id="cbm-dimension-end"
-          viewBox="0 0 10 10"
-          refX="5"
-          refY="5"
-          markerWidth="6"
-          markerHeight="6"
-          orient="auto-start-reverse"
-        >
-          <path d="M0 0 10 5 0 10Z" class={s.arrowHead} />
-        </marker>
-      </defs>
+      <Defs />
       {drawn.polygons.map((polygon, index) =>
         polygon.tone === 'tape' ? (
           <polyline key={`t${index}`} class={s.tape} points={polygon.points} />
@@ -96,7 +124,7 @@ function Illustration({ row, name, view }: { row: CbmPackage; name: string; view
         ),
       )}
       {drawn.arrows.map((arrow) => (
-        <Dimension key={arrow.axis} arrow={arrow} view={view} row={row} />
+        <Dimension key={arrow.axis} arrow={arrow} row={row} />
       ))}
     </svg>
   );
@@ -104,65 +132,68 @@ function Illustration({ row, name, view }: { row: CbmPackage; name: string; view
 
 function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind) => void }) {
   return (
-    <fieldset class={s.views} aria-label={t.view}>
+    <fieldset class={s.views} aria-label={t.view} data-cbm-views="">
       {VIEWS.map((value) => (
         <button
           key={value}
           type="button"
           class={s.viewButton}
           aria-pressed={view === value}
-          aria-label={viewName(value)}
           onClick={() => onView(value)}
         >
-          {t[value]}
+          <span class={s.long}>{fillText(w.viewSuffix, { view: t[value] })}</span>
+          <span class={s.short}>{t[value]}</span>
         </button>
       ))}
     </fieldset>
   );
 }
 
-/** Shipment visualization: one package type's proportions in a fixed, illustrative carton group. */
+/** Shipment visualization: the active package drawn as an illustrative stack, never a loading plan. */
 export function CbmVisualizationPanel({
-  packages,
+  row,
+  index,
   className = '',
 }: {
-  packages: CbmPackage[];
+  row: CbmPackage;
+  index: number;
   className?: string;
 }) {
-  const [selected, select] = useState(0);
   const [view, setView] = useState<ViewKind>('iso');
-  const index = Math.min(selected, Math.max(0, packages.length - 1));
-  const row = packages[index];
-  const name = row ? packageName(row, index) : '';
+  const [open, setOpen] = useState(true);
+  const phone = usePhone();
+  const shown = !phone || open;
   return (
     <section class={`${s.panel} ${className}`} aria-labelledby="cbm-visual-title">
       <div class={s.head}>
         <h2 id="cbm-visual-title" class={s.title}>
-          {t.visualization}
+          {t.visualization} <span class={s.qualifier}>{w.stackedView}</span>
         </h2>
-        <ViewButtons view={view} onView={setView} />
-      </div>
-      <div class={s.stage}>{row ? <Illustration row={row} name={name} view={view} /> : null}</div>
-      <div class={s.footer}>
-        <p class={s.caption}>
-          <Icon name="info" />
-          {t.illustrative}
-        </p>
-        {packages.length > 1 ? (
-          <label class={s.picker}>
-            <span class={s.pickerLabel}>{r.packageToShow}</span>
-            <select value={index} onChange={(e) => select(Number(e.currentTarget.value))}>
-              {packages.map((item, position) => (
-                <option key={item.id} value={position}>
-                  {packageName(item, position)}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : row ? (
-          <p class={s.subject}>{fillText(r.dimensionsOf, { name })}</p>
+        {phone ? (
+          <button
+            type="button"
+            class={s.collapse}
+            aria-expanded={open}
+            aria-controls="cbm-visual-body"
+            aria-label={fillText(w.toggleSection, { section: t.visualization })}
+            onClick={() => setOpen(!open)}
+          >
+            <Icon name={open ? 'chevron-up' : 'chevron-down'} />
+          </button>
         ) : null}
+        {shown ? <ViewButtons view={view} onView={setView} /> : null}
       </div>
+      {shown ? (
+        <div id="cbm-visual-body" class={s.body}>
+          <div class={s.stage}>
+            <Illustration row={row} name={packageName(row, index)} view={view} phone={phone} />
+          </div>
+          <p class={s.caption}>
+            <Icon name="info" />
+            <span>{t.illustrative}</span>
+          </p>
+        </div>
+      ) : null}
     </section>
   );
 }

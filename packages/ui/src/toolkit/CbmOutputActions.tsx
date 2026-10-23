@@ -19,11 +19,11 @@ export function CbmOutputActions({
   const [message, notify] = useState('');
   return (
     <>
-      <div class={`${s.actions} ${className}`}>
+      <div class={`${s.actions} ${className}`} data-cbm-actions="">
         <Button
           variant="primary"
           size="lg"
-          icon="printer"
+          icon="file-text"
           class={s.print}
           disabled={!enabled}
           onClick={() => window.print()}

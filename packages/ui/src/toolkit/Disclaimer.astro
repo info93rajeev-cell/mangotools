@@ -24,21 +24,24 @@ const text = kind === 'professional' ? t('disclaimer.professional') : null;
 
 <style>
   .disclaimer {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
     color: var(--color-text-muted);
     font-size: var(--text-ui);
     line-height: var(--leading-ui);
   }
+  /* Same pill as the shared content shortcuts (ToolContent.astro). */
   .disclaimer summary {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
-    min-height: var(--control-height-sm);
-    padding: 0 var(--space-3);
+    gap: 10px;
+    min-height: var(--control-height);
+    padding: 0 var(--space-4) 0 14px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
     background: var(--color-bg);
     color: var(--color-text);
+    font-size: 0.9375rem;
     font-weight: var(--weight-semibold);
     cursor: pointer;
     list-style: none;
@@ -48,9 +51,45 @@ const text = kind === 'professional' ? t('disclaimer.professional') : null;
   }
   .disclaimer summary::after {
     content: '+';
-    color: var(--color-text-subtle);
-    font-size: var(--text-body);
+    flex: none;
+    margin-left: auto;
+    padding-left: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    font-weight: 400;
     line-height: 1;
+  }
+  .disclaimer summary :global(.icon) {
+    flex: none;
+    width: 22px;
+  }
+  .disclaimer summary :global(.icon svg) {
+    width: 20px;
+    height: 20px;
+  }
+  @media (min-width: 768px) {
+    .disclaimer:not([open]) {
+      max-width: 320px;
+    }
+  }
+  @media (max-width: 767px) {
+    .disclaimer summary {
+      min-height: var(--control-height-lg);
+      gap: 6px;
+      padding: 0 10px 0 var(--space-2);
+    }
+    .disclaimer summary::after {
+      padding-left: 0;
+    }
+    .disclaimer summary :global(.icon) {
+      width: 22px;
+    }
+    .disclaimer summary > span {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
   .disclaimer[open] {
     display: grid;

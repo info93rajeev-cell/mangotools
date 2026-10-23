@@ -1,7 +1,9 @@
+/* CBM workbench composition (#219 founder reference): worksheet column left, results column right. */
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(300px, 1fr);
-  gap: 12px;
+  grid-template-columns: minmax(0, 1.235fr) minmax(0, 1fr);
+  gap: 16px;
+  color: var(--cbm-text);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -9,13 +11,35 @@
 .right {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   min-width: 0;
 }
+.left {
+  gap: 10px;
+}
+.right {
+  gap: 10px;
+}
+.leftCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 16px 13px 14px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 10px;
+  background: var(--cbm-surface);
+  box-shadow: var(--cbm-shadow);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  align-items: start;
+}
 .error {
+  margin: 3px 0;
   color: var(--color-danger);
   font-size: 12px;
-  margin: 3px 0;
 }
 @media (max-width: 1050px) and (min-width: 701px) {
   .workspace {
@@ -26,11 +50,16 @@
   .workspace {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
   .left,
-  .right {
+  .right,
+  .leftCard {
     display: contents;
+  }
+  .cards {
+    order: 50;
+    grid-template-columns: minmax(0, 1fr);
   }
   .error {
     order: 50;
@@ -40,6 +69,9 @@
   }
   .optionsSlot {
     order: 11;
+  }
+  .visualizationSlot {
+    order: 15;
   }
   .resultsSlot {
     order: 20;
@@ -55,12 +87,6 @@
   }
   .outputFeedbackSlot {
     order: 36;
-  }
-  .visualizationSlot {
-    order: 40;
-  }
-  .notesSlot {
-    order: 50;
   }
 }
 @media print {

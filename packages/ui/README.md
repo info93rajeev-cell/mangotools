@@ -92,6 +92,48 @@ revisions reject late responses, including after disabling cost or disposing the
 No import, placement, persistence or new dependency. Support content remains in the page's existing
 full-width collapsed area.
 
+## CBM founder reference composition (#219)
+
+The approved founder image is the visual contract for the active CBM workbench, and the approved
+Container Loading screenshot is its sibling-family reference. Import Excel / CSV, Download Template
+and "Try sample" are not in the approved design and are not rendered; the worksheet opens with the
+preset sample already filled in. The frozen controller and model are not edited: worksheet-wide
+operations in `cbmWorksheetActions.ts` (one dimension or weight unit for all cartons, duplicate,
+reorder, spreadsheet paste) use only its public, stale-safe methods.
+
+- `cbmPage.module.css` + `useCbmPageChrome.ts`: CBM-only page presentation, scoped with
+  `body:has([data-cbm-workspace])` so no other page changes: the reference palette (`--cbm-*`), a
+  1320 px workspace, title scale and the "Runs on your device" badge moved into the site header
+  (restored when the workspace unmounts).
+- Below the workspace the page keeps the shared tool-page strip and the global `SiteFooter`,
+  exactly as every tool page renders them. The approved common strip (`ToolContent.astro`, with the
+  Image Studio section icons) shows five shortcuts on every tool page: Disclaimer, How to use,
+  Method, FAQ and Related tools. Worked example and References, required for T1/T2 tools, are
+  rendered in full inside Method (`section#worked-example`, `section#references`); a tool without a
+  Method section keeps them as their own disclosures.
+  `CbmSectionLinks.tsx` draws the workspace's FAQ and Related tools cards as links that open and
+  scroll to those shared sections, so their content exists once.
+- `CbmQuickActions.tsx`: 3D visualization, Unit conversion and Print / Save PDF beside the page
+  title on desktop (rendered into the shared title row); an icon row with a More menu (Copy
+  Summary) on phones.
+- `CbmPackageWorksheet.tsx` / `CbmPackageRow.tsx`: "Shipment Cartons" table (handle and row
+  number, Description / SKU, L / W / H in the worksheet unit, Qty, weight and unit, Total CBM,
+  delete) and phone summary cards. The handle selects a row (`Select Carton N`, `aria-pressed`) and
+  reorders it by drag or Alt + arrow keys; Duplicate selected copies the selection, else the active
+  row. Pasting a tab-separated block (`cbmPaste.ts`) fills rows from the focused cell; nothing is
+  uploaded and descriptions never reach the engine.
+- `CbmOptionsPanel.tsx`: collapsible Units & Display Options. `CbmCostPanel.tsx`: the blue cost
+  panel; amounts show grouped while not being edited, the controller keeps the raw text.
+- `CbmShipmentVisualization.tsx` / `cbmVisualGeometry.ts` / `cbmVisualShapes.ts`: the active
+  carton drawn as a fixed, decorative 2 × 2 × 2 stack on a pallet from the reference viewpoint; the
+  stack's outer size follows that carton's L : W : H and the arrows carry its own dimensions. It
+  never depends on quantity and never represents a container or a loading plan.
+- Results: KPI row, load composition (hidden on phones, as in the reference), the yellow cost result
+  with Estimated Total strongest, and Print / Save PDF beside Copy Summary. Money shows whole
+  amounts without paise (`₹ 2,12,600`) and packed weight without trailing zeros (`8,340 kg`).
+- Stable test hooks: `data-cbm-actions`, `data-cbm-views`, `data-cbm-total-row`, `data-cost-total`,
+  `data-cbm-cards`, `data-cbm-section-link`.
+
 ## CBM section ownership preparation (#220)
 
 The #220 refactor and ownership-hardening amendment change boundaries only. Existing rendering,
@@ -173,3 +215,8 @@ PR #225 sample-load fix: Resize and Format Converter reuse Crop’s user-interac
 PR #225 CI follow-up: Image Studio hints use the accessible accent-text token; green download actions retain white text on a contrast-safe green in both themes. Shared Crop decode tests target the source canvas image, retaining the live thumbnail. The generated catalog includes Background Remover (36 listed tools, 45 indexable sitemap pages). Axe rules remain unchanged.
 
 The same CI follow-up refreshes the legacy Crop test flow (Crop Image, then download) without changing fixture values, includes Background Remover in Media/network coverage, and retains the percent unit on Compress’s accessible primary result.
+
+### CBM composition keyboard access — PR #229
+
+The scrollable Load Composition legend retains its list semantics and is labelled by its heading.
+Keyboard users can tab to it, scroll with arrow keys, and see the shared focus ring.

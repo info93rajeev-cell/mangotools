@@ -1,0 +1,177 @@
+/* Cost Estimate Result (#219 reference): the yellow card with Estimated Total as the strongest figure. */
+.card {
+  container: cbm-cost / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 12px 10px;
+  border: 1px solid var(--cbm-yellow-line);
+  border-radius: 10px;
+  background: var(--cbm-yellow-soft);
+  color: var(--cbm-text);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+.title {
+  margin: 0 auto 0 0;
+  color: var(--cbm-ink);
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--cbm-green) 30%, transparent);
+  border-radius: 6px;
+  background: var(--cbm-green-soft);
+  color: var(--cbm-green);
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge :global(.icon) {
+  color: var(--cbm-green);
+}
+.toggle {
+  display: none;
+}
+.figures {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  border: 1px solid var(--cbm-yellow-line);
+  border-radius: 8px;
+  background: var(--cbm-surface);
+  overflow: hidden;
+}
+.item,
+.total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px;
+}
+.figures dt {
+  color: var(--cbm-text);
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+.figures dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--cbm-ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.value {
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+.note {
+  color: var(--cbm-muted);
+  font-size: 12px;
+}
+.total {
+  order: -1;
+  align-items: center;
+  background: var(--cbm-yellow-total);
+  text-align: center;
+}
+.total dd {
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+.empty,
+.disclaimer {
+  margin: 0;
+  padding: 0 4px;
+  color: var(--cbm-muted);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+@container cbm-cost (min-width: 440px) {
+  .figures {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.9fr) minmax(0, 1.15fr);
+  }
+  .item + .item {
+    border-left: 1px solid var(--cbm-line);
+  }
+  .total {
+    order: 0;
+  }
+}
+@media (max-width: 700px) {
+  .card {
+    position: relative;
+    gap: 8px;
+  }
+  .title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .badge {
+    display: none;
+  }
+  .card[data-open="true"] .title {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+  .card[data-open="true"] .badge {
+    display: inline-flex;
+  }
+  .toggle {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: none;
+    color: var(--cbm-ink);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  .card[data-open="true"] .toggle {
+    top: 8px;
+    transform: none;
+  }
+  .card:not([data-open="true"]) :is(.item, .disclaimer) {
+    display: none;
+  }
+  .card:not([data-open="true"]) .figures {
+    border: 0;
+    background: none;
+  }
+  .card:not([data-open="true"]) .total {
+    padding: 4px 44px;
+    background: none;
+  }
+  .total dd {
+    font-size: 24px;
+  }
+}
+@media print {
+  .toggle {
+    display: none;
+  }
+}

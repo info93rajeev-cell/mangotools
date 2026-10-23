@@ -231,7 +231,9 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     // Crop has a separate processing action before its result download is available.
     if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
     await page.getByRole('button', { name: tool.downloadCta }).click();
-  } else {
+  } else if (id !== 'cbm-calculator') {
+    // The CBM worksheet opens already filled with its preset sample (the approved CBM design has
+    // no "Try sample" control), so its result is waited for, not produced.
     await page.getByRole('button', { name: 'Try sample' }).click();
   }
   await waitForResult(page, id);

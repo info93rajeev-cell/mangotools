@@ -1,134 +1,95 @@
-/* Workstream B (#219): shipment visualization. Placement and order belong to cbmWorkspace (A). */
+/* Shipment Visualization (#219 reference): a prominent illustrative carton stack on a pallet. */
 .panel {
-  --carton-top: #ecc38b;
-  --carton-left: #d9a466;
-  --carton-right: #c48a4b;
-  --carton-face: #e2b274;
-  --carton-edge: #6f4519;
-  --carton-tape: #f6e3c3;
-  --pallet-top: #cf9d62;
-  --pallet-side: #a4703a;
-  --pallet-gap: #4a2f13;
-  --stage-top: #f5f8fd;
-  --stage-bottom: #e9eff8;
+  --carton-edge: #8a5a2b;
+  --carton-tape: #f3dcb4;
+  --carton-face: #deb077;
+  --pallet-top: #e6bd88;
+  --pallet-side: #cf9a5d;
+  --pallet-gap: #6e4522;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--color-bg);
-  box-shadow: 0 1px 2px rgb(28 25 23 / 0.06);
-}
-@media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme="light"])) .panel {
-    --carton-edge: #2b1a08;
-    --carton-tape: #f1d7ad;
-    --stage-top: #1c1917;
-    --stage-bottom: #141210;
-  }
-}
-:global(:root[data-theme="dark"]) .panel {
-  --carton-edge: #2b1a08;
-  --carton-tape: #f1d7ad;
-  --stage-top: #1c1917;
-  --stage-bottom: #141210;
+  padding: 9px 10px 6px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 10px;
+  background: var(--cbm-surface);
+  box-shadow: var(--cbm-shadow);
 }
 .head {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 6px 10px;
+  gap: 8px;
+  padding: 0 0 0 2px;
 }
 .title {
+  min-width: 0;
   margin: 0;
+  color: var(--cbm-ink);
   font-size: 15px;
   line-height: 1.3;
-  font-weight: 650;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.qualifier {
+  font-size: 15px;
+  font-weight: 400;
 }
 .views {
+  display: flex;
+  flex: none;
+  gap: 2px;
   min-inline-size: 0;
   margin: 0;
-  display: inline-flex;
-  flex-wrap: nowrap;
-  gap: 2px;
-  padding: 2px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-subtle);
+  padding: 0;
+  border: 0;
 }
 .viewButton {
-  min-height: 26px;
+  min-height: 32px;
   min-width: 44px;
-  padding: 0 8px;
-  border: 0;
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-text);
+  padding: 0 5px;
+  border: 1px solid var(--cbm-line);
+  border-radius: 6px;
+  background: var(--cbm-surface);
+  color: var(--cbm-ink);
   font: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: 12px;
   white-space: nowrap;
   cursor: pointer;
 }
-.viewButton:hover {
-  background: var(--color-bg);
-}
 .viewButton[aria-pressed="true"] {
-  background: var(--color-info);
-  color: var(--color-bg);
-  font-weight: 600;
+  border-color: var(--cbm-blue);
+  background: var(--cbm-blue);
+  color: #fff;
+  font-weight: 500;
 }
 .viewButton:focus-visible,
-.picker select:focus-visible {
+.collapse:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
-.picker {
+.short,
+.collapse {
+  display: none;
+}
+.body {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-text-muted);
-  font-size: 12px;
-}
-.pickerLabel {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.picker select {
-  flex: 1 1 auto;
-  min-width: 0;
-  max-width: 132px;
-  height: 26px;
-  padding: 2px 6px;
-  border: 1px solid var(--color-border-input);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  color: var(--color-text);
-  font: inherit;
+  flex-direction: column;
+  gap: 2px;
 }
 .stage {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 172px;
-  padding: 0;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--stage-top), var(--stage-bottom));
-  overflow: hidden;
+  height: 300px;
 }
 .drawing {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
-  color: var(--color-text);
+  color: var(--cbm-ink);
 }
 .top,
 .left,
@@ -138,17 +99,17 @@
 .palletSide,
 .palletGap {
   stroke: var(--carton-edge);
-  stroke-width: 1;
+  stroke-width: 0.7;
   stroke-linejoin: round;
 }
 .top {
-  fill: var(--carton-top);
+  fill: url(#cbm-top);
 }
 .left {
-  fill: var(--carton-left);
+  fill: url(#cbm-left);
 }
 .right {
-  fill: var(--carton-right);
+  fill: url(#cbm-right);
 }
 .face {
   fill: var(--carton-face);
@@ -165,90 +126,112 @@
 .tape {
   fill: none;
   stroke: var(--carton-tape);
-  stroke-width: 3;
-  stroke-linecap: round;
-  opacity: 0.85;
+  stroke-width: 5;
+  stroke-linecap: butt;
+  opacity: 0.8;
+}
+.label {
+  fill: #f6f1e8;
+  stroke: #b49a7a;
+  stroke-width: 0.5;
+}
+.mark {
+  fill: #4b3a2a;
+  opacity: 0.45;
 }
 .dimension line {
   stroke: currentColor;
-  stroke-width: 1.25;
+  stroke-width: 1.4;
 }
 .arrowHead {
-  fill: var(--color-text);
+  fill: var(--cbm-ink);
 }
 .dimension text {
   fill: currentColor;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  dominant-baseline: middle;
   paint-order: stroke;
-  stroke: var(--stage-top);
+  stroke: var(--cbm-surface);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
 .placeholder {
   margin: 0;
   max-width: 28ch;
-  color: var(--color-text-muted);
+  color: var(--cbm-muted);
   font-size: 13px;
   text-align: center;
 }
-.footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px 8px;
-}
-.caption,
-.subject {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 12px;
-  line-height: 1.4;
-}
 .caption {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 500;
+  margin: 0;
+  padding: 0 4px;
+  color: var(--cbm-muted);
+  font-size: 11.5px;
+  line-height: 1.3;
 }
 @media (max-width: 700px) {
-  .views {
+  .panel {
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .title {
+    font-size: 16px;
+  }
+  .qualifier,
+  .long {
+    display: none;
+  }
+  .short {
+    display: inline;
+  }
+  .collapse {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: -8px -8px -8px 0;
+    border: 0;
+    background: none;
+    color: var(--cbm-ink);
+  }
+  .head {
+    flex-wrap: wrap;
+  }
+  .views {
+    justify-content: flex-end;
     width: 100%;
   }
-  .viewButton {
+  /* A 44 px touch target drawn as the reference's compact 32 px tab. */
+  .viewButton,
+  .viewButton[aria-pressed="true"] {
+    position: relative;
+    isolation: isolate;
     min-height: 44px;
-    min-width: 0;
-    padding: 0 4px;
-    font-size: 13px;
+    padding: 0 12px;
+    border: 0;
+    background: none;
   }
-  .picker {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    width: 100%;
+  .viewButton::before {
+    position: absolute;
+    inset: 6px 0;
+    z-index: -1;
+    border: 1px solid var(--cbm-line);
+    border-radius: 6px;
+    background: var(--cbm-surface);
+    content: "";
   }
-  .pickerLabel {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip-path: none;
-    white-space: normal;
+  .viewButton[aria-pressed="true"]::before {
+    border-color: var(--cbm-blue);
+    background: var(--cbm-blue);
   }
   .dimension text {
-    font-size: 16px;
-  }
-  .picker select {
-    height: 44px;
-    max-width: none;
-    font-size: 16px;
+    font-size: 20px;
   }
   .stage {
-    height: 180px;
+    height: 200px;
   }
 }

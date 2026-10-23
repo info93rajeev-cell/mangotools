@@ -1,4 +1,5 @@
 import type { ComponentChildren } from 'preact';
+import { GLYPHS, type GlyphName } from './cbmGlyphs.ts';
 import {
   averagePerPiece,
   type CompositionItem,
@@ -10,7 +11,7 @@ import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import s from './cbmResults.module.css';
 import type { CbmResult, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
-import { GLYPHS, type GlyphName } from './cbmVisualGeometry.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 
 const PALETTE_SIZE = 8;
 const swatch = (number: number) => s[`c${(number - 1) % PALETTE_SIZE}`] ?? '';
@@ -26,16 +27,25 @@ function Glyph({ name }: { name: GlyphName }) {
 interface KpiProps {
   glyph: GlyphName;
   label: string;
+  /** The reference's shorter phone label, when it has one. */
+  short?: string;
   tone: string | undefined;
   children: ComponentChildren;
 }
 
-function Kpi({ glyph, label, tone, children }: KpiProps) {
+function Kpi({ glyph, label, short, tone, children }: KpiProps) {
   return (
     <div class={`${s.kpi} ${tone ?? ''}`} data-kpi={glyph}>
       <dt>
         <Glyph name={glyph} />
-        <span>{label}</span>
+        {short ? (
+          <>
+            <span class={s.longLabel}>{label}</span>
+            <span class={s.shortLabel}>{short}</span>
+          </>
+        ) : (
+          label
+        )}
       </dt>
       {children}
     </div>
@@ -57,16 +67,22 @@ function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
   return (
     <>
       <dl class={s.kpis}>
-        <Kpi glyph="pieces" label={t.pieces} tone={s.toneGreen}>
+        <Kpi glyph="pieces" label={w.totalCartons} short={w.cartonsKpiShort} tone={s.toneGreen}>
           <dd class={s.value}>
             <Value value={groupFigure(result.totalPieces)} />
           </dd>
         </Kpi>
         <Kpi glyph="volume" label={t.volume} tone={s.toneBlue}>
-          <dd class={s.value} data-cbm-total="">
+          <dd
+            class={s.value}
+            data-cbm-total=""
+            title={`${groupFigure(result.totalCft)} ${r.cftUnit}`}
+          >
             <Value value={groupFigure(result.totalCbm)} unit={r.cbmUnit} />
           </dd>
-          <dd class={s.secondary}>{`${groupFigure(result.totalCft)} ${r.cftUnit}`}</dd>
+          <dd class="visually-hidden">
+            {fillText(w.cftNote, { cft: `${groupFigure(result.totalCft)} ${r.cftUnit}` })}
+          </dd>
         </Kpi>
         <Kpi glyph="weight" label={weight.label} tone={s.toneAmber}>
           <dd
@@ -78,7 +94,7 @@ function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
           {weight.note ? <dd class={s.badge}>{r.partialBadge}</dd> : null}
         </Kpi>
         {average === null ? null : (
-          <Kpi glyph="average" label={r.avgPerPiece} tone={s.toneRed}>
+          <Kpi glyph="average" label={w.avgPerCarton} short={w.avgKpiShort} tone={s.toneRed}>
             <dd class={s.value}>
               <Value value={groupFigure(average)} unit={r.cbmUnit} />
             </dd>
@@ -93,29 +109,25 @@ function Kpis({ result, precision }: { result: CbmResult; precision: string }) {
 function Composition({ items }: { items: CompositionItem[] }) {
   return (
     <section class={s.composition} aria-labelledby="cbm-composition-title">
-      <div class={s.compositionHead}>
-        <h3 class={s.subTitle}>
-          <span id="cbm-composition-title">{t.composition}</span>{' '}
-          <span class={s.subUnit}>{r.compositionUnit}</span>
-        </h3>
-        <p class={s.note}>{r.sharesRounded}</p>
-      </div>
+      <h3 class={s.subTitle}>
+        <span id="cbm-composition-title">{w.compositionTitle}</span> {w.compositionUnit}
+      </h3>
       <div class={s.bar} aria-hidden="true">
         {items.map((item) => (
           <span
             key={item.key}
             class={`${s.segment} ${swatch(item.number)}`}
             style={{ flexGrow: Number(item.share) }}
-          >
-            {Number(item.share) >= 9 ? item.number : ''}
-          </span>
+            title={item.name}
+          />
         ))}
       </div>
-      <ol class={s.legend}>
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: Scrollable content must be keyboard-focusable (WCAG 2.1.1). */}
+      <ol class={s.legend} tabIndex={0} aria-labelledby="cbm-composition-title">
         {items.map((item) => (
           <li key={item.key}>
             <span class={`${s.swatch} ${swatch(item.number)}`} aria-hidden="true" />
-            <span class={s.legendName}>{`${item.number}. ${item.name}`}</span>
+            <span class={s.legendName}>{item.name}</span>
             <span class={s.legendValue}>
               {fillText(r.compositionShare, { cbm: item.cbm, share: item.share })}
             </span>

@@ -3,6 +3,7 @@ import { volumeShare } from './cbmComposition.ts';
 import { fillText, cbmResultText as r } from './cbmResultStrings.ts';
 import type { CbmCostResult, CbmResult, CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 
 /**
  * Presentation helpers for the CBM results (#219, Workstream B). They group figures the engines
@@ -14,13 +15,19 @@ import { cbmText as t } from './cbmStrings.ts';
 export const groupFigure = (value: string) => formatDecimal(value, 'international');
 
 /**
- * An amount in the selected currency with two decimals: ₹ and Indian grouping for INR
- * (₹2,12,600.00); the ISO code and international grouping otherwise (USD 191,000.00).
+ * An amount in the selected currency, as in the approved reference: ₹ and Indian grouping for INR
+ * (₹ 2,12,600), the ISO code and international grouping otherwise (USD 191,000). Paise or cents
+ * show only when the exact amount has them (₹ 1,234.50); nothing is rounded.
  */
 export function formatAmount(value: string, currency: string): string {
-  if (currency === 'INR') return `₹${formatDecimal(value, 'indian', 2)}`;
-  return `${currency} ${formatDecimal(value, 'international', 2)}`;
+  const grouping = currency === 'INR' ? 'indian' : 'international';
+  const figure = formatDecimal(value, grouping, 2).replace(/\.00$/, '');
+  return `${currency === 'INR' ? '₹' : currency}\u00a0${figure}`;
 }
+
+/** Drops zeros after the decimal point that carry no value (8,340.000 → 8,340; 4.50 → 4.5). */
+export const trimZeros = (figure: string) =>
+  figure.includes('.') ? figure.replace(/\.?0+$/, '') : figure;
 
 const DECIMAL = /^(\d+)(?:\.(\d+))?$/;
 
@@ -59,7 +66,7 @@ export function weightView(result: CbmResult): WeightView {
   if (result.weightCoverage === 'none' || result.knownPackedWeightKg === null) {
     return { label: r.weightTotal, value: null, note: null };
   }
-  const value = groupFigure(result.knownPackedWeightKg);
+  const value = trimZeros(groupFigure(result.knownPackedWeightKg));
   if (result.weightCoverage === 'complete') return { label: r.weightTotal, value, note: null };
   const note = fillText(r.coverageNote, {
     label: t.partialWeight,
@@ -88,7 +95,7 @@ export function compositionItems(state: CbmSnapshot): CompositionItem[] {
     return {
       key: source?.id ?? -1 - position,
       number: index + 1,
-      name: source?.description.replace(/\s+/g, ' ').trim() || `${t.package} ${index + 1}`,
+      name: source?.description.replace(/\s+/g, ' ').trim() || `${w.carton} ${index + 1}`,
       cbm: groupFigure(row.totalCbm),
       share: volumeShare(row.totalCbmExact, result.totalCbmExact),
     };
@@ -102,7 +109,7 @@ export interface FreightView {
 }
 
 /** The freight line keeps the engine's minimum-charge semantics: freight = max(rate × CBM, minimum). */
-export function freightView(cost: CbmCostResult): FreightView {
+export function freightView(cost: CbmCostResult, shownCbm?: string): FreightView {
   const amount = (value: string) => formatAmount(value, cost.currency);
   if (cost.minimumApplied && cost.minimumCharge !== null) {
     return {
@@ -116,7 +123,7 @@ export function freightView(cost: CbmCostResult): FreightView {
   }
   return {
     label: fillText(r.freightBasis, {
-      quantity: groupFigure(cost.quantity),
+      quantity: groupFigure(shownCbm ?? cost.quantity),
       rate: amount(cost.rate),
     }),
     value: amount(cost.freightCharge),

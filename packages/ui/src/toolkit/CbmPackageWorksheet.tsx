@@ -1,166 +1,190 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useRef, useState } from 'preact/hooks';
 import { Button } from '../primitives/Button.tsx';
+import { Icon } from '../primitives/Icon.tsx';
+import { CbmPackageRow } from './CbmPackageRow.tsx';
+import { isBlock, PASTE_COLUMNS, type PasteField, parseGrid, withoutHeader } from './cbmPaste.ts';
+import { groupFigure } from './cbmResultFormat.ts';
+import { fillText } from './cbmResultStrings.ts';
 import type { CbmController } from './cbmShipmentController.ts';
-import type { CbmPackage, CbmSnapshot } from './cbmShipmentModel.ts';
+import type { CbmSnapshot } from './cbmShipmentModel.ts';
 import { cbmText as t } from './cbmStrings.ts';
+import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 import s from './cbmWorksheet.module.css';
-import { messageFor } from './presentation.ts';
+import { addPackage, duplicatePackages, pasteBlock } from './cbmWorksheetActions.ts';
+import { cbmWorksheetText as ws } from './cbmWorksheetStrings.ts';
+import { useRowDrag } from './useRowDrag.ts';
 
-const dimensions = ['mm', 'cm', 'm', 'in', 'ft'];
-const weights = ['kg', 'g', 'lb'];
-const columns = [
-  'description',
-  'length',
-  'width',
-  'height',
-  'unit',
-  'quantity',
-  'weightPerItem',
-  'weightUnit',
-] as const;
-interface Props {
+export interface WorksheetProps {
   className?: string;
   state: CbmSnapshot;
   controller: CbmController;
   preset: ResolvedPreset;
+  weightUnit: string;
+  selected: ReadonlySet<number>;
+  activeId: number | undefined;
+  showTotalRow: boolean;
+  onToggle: (id: number) => void;
+  onMove: (from: number, to: number) => void;
+  onActivate: (id: number) => void;
 }
-function fieldChoices(field: string) {
-  if (field === 'unit') return dimensions;
-  return field === 'weightUnit' ? weights : null;
-}
-function inputMode(field: string) {
-  return field === 'description' ? ('text' as const) : ('decimal' as const);
-}
-function fieldLimit(field: string) {
-  return field === 'description' ? 120 : 64;
-}
-function RowFields({
-  row,
-  index,
-  state,
-  controller,
-  preset,
-}: Props & { row: CbmPackage; index: number }) {
+
+function TableHeader({ unit }: { unit: string }) {
+  const sized = (label: string) => (
+    <span>
+      {label}
+      <small>({unit})</small>
+    </span>
+  );
   return (
-    <>
-      {columns.map((field) => {
-        const id = `cbm-package-${row.id}-${field}`;
-        const error =
-          state.error?.path === `packages.${index}.${field}`
-            ? messageFor(preset, state.error)
-            : null;
-        const choices = fieldChoices(field);
-        return (
-          <label key={field} class={s.cell} for={id}>
-            <span class={s.fieldLabel}>{t[field]}</span>
-            {choices ? (
-              <select
-                id={id}
-                value={row[field]}
-                aria-invalid={!!error}
-                aria-describedby={error ? `${id}-error` : undefined}
-                onChange={(e) => controller.edit(row.id, field, e.currentTarget.value)}
-              >
-                {choices.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id={id}
-                value={row[field]}
-                inputMode={inputMode(field)}
-                maxLength={fieldLimit(field)}
-                aria-invalid={!!error}
-                aria-describedby={error ? `${id}-error` : undefined}
-                onInput={(e) => controller.edit(row.id, field, e.currentTarget.value)}
-              />
-            )}
-            {error ? (
-              <span id={`${id}-error`} class={s.error}>
-                {error}
-              </span>
-            ) : null}
-          </label>
-        );
-      })}
-    </>
+    <div class={s.tableHeader} data-cbm-worksheet-header="" aria-hidden="true">
+      <span>#</span>
+      <span>
+        {t.description}
+        <small>{w.optional}</small>
+      </span>
+      {sized(t.length)}
+      {sized(t.width)}
+      {sized(t.height)}
+      <span>{ws.quantity}</span>
+      <span class={s.weightHead}>
+        {w.weightPerCarton}
+        <small>{w.optional}</small>
+      </span>
+      <span>{t.rowCbm}</span>
+      <span />
+    </div>
   );
 }
-function PackageRow(props: Props & { row: CbmPackage; index: number }) {
-  const { row, index, state, controller } = props;
+
+function TotalRow({ state }: { state: CbmSnapshot }) {
+  const result = state.shipment;
+  if (!result) return null;
+  const weight = result.knownPackedWeightKg;
   return (
-    <fieldset class={s.row} data-package-row={row.id}>
-      <legend>
-        {t.package} {index + 1}
-      </legend>
-      <RowFields {...props} />
-      <output class={s.rowVolume} aria-label={`${t.package} ${index + 1} ${t.rowCbm}`}>
-        <span class={s.fieldLabel}>{t.rowCbm}</span>
-        {state.shipment?.rows[index]?.totalCbm ?? '—'} <small>m³</small>
-      </output>
-      <div class={s.rowActions}>
-        <Button
-          size="sm"
-          disabled={state.packages.length >= 50}
-          aria-label={`${t.duplicate} ${t.package} ${index + 1}`}
-          onClick={() => controller.duplicate(row.id)}
-        >
-          {t.duplicate}
-        </Button>
-        <Button
-          size="sm"
-          aria-label={`${t.remove} ${t.package} ${index + 1}`}
-          onClick={() => controller.remove(row.id)}
-        >
-          {t.remove}
-        </Button>
-      </div>
-    </fieldset>
+    <div class={s.totalRow} data-cbm-total-row="">
+      <strong>{w.total}</strong>
+      <span class={s.totalPieces}>{groupFigure(result.totalPieces)}</span>
+      <span class={s.totalWeight}>{weight === null ? '—' : `${groupFigure(weight)} kg`}</span>
+      <strong class={s.totalCbm}>{`${groupFigure(result.totalCbm)} m³`}</strong>
+    </div>
   );
 }
-export function CbmPackageWorksheet(props: Props) {
-  const { state, controller, className = '' } = props;
-  const focusAdded = () => {
-    controller.add();
-    queueMicrotask(() =>
-      document
-        .querySelector<HTMLInputElement>(
-          `#cbm-package-${controller.get().packages.at(-1)?.id}-description`,
-        )
-        ?.focus(),
-    );
+
+/** Reads the cell a paste starts in: the package position and the worksheet column. */
+function pasteStart(target: EventTarget | null): { index: number; field: PasteField } | null {
+  const input = target instanceof HTMLInputElement ? target : null;
+  const field = input?.dataset.field as PasteField | undefined;
+  if (!input || !field || !PASTE_COLUMNS.includes(field)) return null;
+  return { index: Number(input.dataset.index), field };
+}
+
+export function CbmPackageWorksheet(props: WorksheetProps) {
+  const { state, controller, className = '', selected, weightUnit } = props;
+  const list = useRef<HTMLDivElement>(null);
+  const [openId, setOpenId] = useState<number | null>(
+    () => state.packages.find((row) => !row.length || !row.width || !row.height)?.id ?? null,
+  );
+  const [status, announce] = useState('');
+  const [listOpen, setListOpen] = useState(true);
+  const { drag, handlers } = useRowDrag(list, state.packages.length, props.onMove, (index) => {
+    const row = state.packages[index];
+    if (row) props.onToggle(row.id);
+  });
+  const onPaste = (event: ClipboardEvent) => {
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    const start = pasteStart(event.target);
+    if (!start || !isBlock(text)) return;
+    event.preventDefault();
+    const count = pasteBlock(controller, start, withoutHeader(parseGrid(text)), weightUnit);
+    announce(fillText(w.pasted, { count }));
   };
+  const add = () => {
+    const id = addPackage(controller, weightUnit);
+    setOpenId(id ?? null);
+    queueMicrotask(() => document.getElementById(`cbm-package-${id}-description`)?.focus());
+  };
+  const count = state.packages.length;
   return (
-    <section class={`${s.panel} ${className}`} aria-labelledby="cbm-packages-title">
+    <section
+      class={`${s.panel} ${className}`}
+      aria-labelledby="cbm-packages-title"
+      data-collapsed={!listOpen}
+    >
       <div class={s.heading}>
-        <h2 id="cbm-packages-title">{t.packages}</h2>
-        <Button size="sm" onClick={() => controller.sample()}>
-          {t.sample}
-        </Button>
-      </div>
-      <div class={s.rows}>
-        {state.packages.map((row, index) => (
-          <PackageRow key={row.id} {...props} row={row} index={index} />
-        ))}
-      </div>
-      <div class={s.toolbar}>
-        <Button
-          size="sm"
-          variant="primary"
-          disabled={state.packages.length >= 50}
-          onClick={focusAdded}
-        >
-          {t.add}
-        </Button>
-        <Button size="sm" onClick={() => controller.clear()}>
+        <h2 id="cbm-packages-title">
+          <span class={s.long}>{w.cartonsTitle}</span>
+          <span class={s.short}>{w.cartonsShort}</span>{' '}
+          <small class={s.long}>{fillText(w.items, { count })}</small>
+          <small class={s.short}>({count})</small>
+        </h2>
+        <Button size="sm" class={s.clear} onClick={() => controller.clear()}>
           {t.clear}
         </Button>
-        <span>{state.packages.length} / 50</span>
+        <button
+          type="button"
+          class={s.collapse}
+          aria-expanded={listOpen}
+          aria-controls="cbm-carton-list"
+          aria-label={fillText(w.toggleSection, { section: w.cartonsShort })}
+          onClick={() => setListOpen(!listOpen)}
+        >
+          <Icon name={listOpen ? 'chevron-up' : 'chevron-down'} />
+        </button>
       </div>
-      {state.packages.length >= 50 ? <p>{t.limit}</p> : null}
+      <div id="cbm-carton-list" class={s.table} ref={list} onPaste={onPaste}>
+        <TableHeader unit={state.unit} />
+        {state.packages.map((row, index) => (
+          <CbmPackageRow
+            key={row.id}
+            {...props}
+            row={row}
+            index={index}
+            selected={selected.has(row.id)}
+            dragging={drag?.from === index}
+            dropTarget={!!drag && drag.over === index && drag.from !== index}
+            editing={openId === row.id}
+            onEdit={setOpenId}
+            handle={handlers(index)}
+          />
+        ))}
+        {props.showTotalRow ? <TotalRow state={state} /> : null}
+      </div>
+      <div class={s.toolbar}>
+        <Button size="sm" icon="plus" class={s.add} disabled={count >= 50} onClick={add}>
+          {w.addCarton}
+        </Button>
+        <Button
+          size="sm"
+          icon="copy"
+          class={s.duplicate}
+          disabled={count >= 50}
+          onClick={() =>
+            duplicatePackages(
+              controller,
+              selected.size
+                ? selected
+                : new Set(props.activeId === undefined ? [] : [props.activeId]),
+            )
+          }
+        >
+          {w.duplicateSelected}
+        </Button>
+        <Button size="sm" class={s.footerClear} onClick={() => controller.clear()}>
+          {t.clear}
+        </Button>
+        <span class={s.count}>{fillText(w.rows, { count })}</span>
+        <span class={s.tip}>
+          <b>{w.tipLabel}</b> {w.tipText}
+        </span>
+      </div>
+      {count >= 50 ? <p class={s.limit}>{t.limit}</p> : null}
+      <p id="cbm-move-hint" class="visually-hidden">
+        {w.moveHint}
+      </p>
+      <p class="visually-hidden" role="status">
+        {status}
+      </p>
     </section>
   );
 }
