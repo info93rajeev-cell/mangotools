@@ -60,8 +60,9 @@ test.describe('Active CBM shipment workspace', () => {
     const remove = await page
       .getByRole('button', { name: 'Delete Carton 1', exact: true })
       .boundingBox();
+    // Firefox rounds grid edges in 1/60 CSS-pixel units; allow at most 1/50px.
     expect((remove?.x ?? 0) + (remove?.width ?? 0)).toBeLessThanOrEqual(
-      (bounds?.x ?? 0) + (bounds?.width ?? 0),
+      (bounds?.x ?? 0) + (bounds?.width ?? 0) + 0.02,
     );
   });
 

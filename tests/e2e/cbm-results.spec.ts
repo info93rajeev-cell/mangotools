@@ -143,7 +143,8 @@ test.describe('CBM results presentation (#219 B)', () => {
     const drawing = visual(page).getByRole('img');
     const drawn = (await drawing.boundingBox())?.height ?? 0;
     expect(drawn).toBeGreaterThanOrEqual(240);
-    expect(drawn).toBeLessThanOrEqual(300);
+    // Firefox's SVG bounds can exceed CSS height by ~0.000031px from float conversion.
+    expect(drawn).toBeLessThanOrEqual(300 + 0.0001);
     await expect(drawing).toHaveAttribute('aria-label', /not a loading plan/);
     const shapes = () => drawing.locator('polygon').count();
     const before = await shapes();

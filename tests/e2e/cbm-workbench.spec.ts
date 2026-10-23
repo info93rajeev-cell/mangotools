@@ -26,9 +26,16 @@ async function paste(target: Locator, text: string) {
   await target.evaluate((node, data) => {
     const transfer = new DataTransfer();
     transfer.setData('text/plain', data);
-    node.dispatchEvent(
-      new ClipboardEvent('paste', { clipboardData: transfer, bubbles: true, cancelable: true }),
-    );
+    const event = new ClipboardEvent('paste', {
+      clipboardData: transfer,
+      bubbles: true,
+      cancelable: true,
+    });
+    // Firefox creates its own empty clipboard store for synthetic events. Fill that store too.
+    event.clipboardData?.setData('text/plain', data);
+    if (event.clipboardData?.getData('text/plain') !== data)
+      throw new Error('Missing paste payload');
+    node.dispatchEvent(event);
   }, text);
 }
 
