@@ -1,0 +1,362 @@
+.root {
+  --load-blue: #0065ff;
+  --load-control-height: 32px;
+  --load-button-height: 32px;
+  --color-bg: #fff;
+  --color-text: #101344;
+  --color-text-muted: #4b629b;
+  --color-border: #e5edf8;
+  --color-border-input: #dfe7f3;
+  --color-success: #067548;
+  --color-danger: #bd2740;
+  --color-focus: #005bea;
+  color-scheme: light;
+  color: var(--color-text);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  min-width: 0;
+  box-shadow: 0 2px 10px #315b9e04;
+}
+.card h2,
+.constraints > summary {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.card p {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 5px 0 0;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.heading h2 {
+  margin: 0;
+}
+
+.card h2 :global(.icon),
+.constraints > summary :global(.icon) {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.card h2 :global(.icon svg),
+.constraints > summary :global(.icon svg) {
+  width: 100%;
+  height: 100%;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.containerChoices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+.containerChoices button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6px 3px;
+  min-height: 64px;
+}
+.containerChoices small {
+  font-size: 10px;
+}
+.containerChoices button[aria-pressed="true"] {
+  background: var(--load-blue);
+  color: white;
+  border-color: var(--load-blue);
+  box-shadow: 0 3px 8px #0065ff22;
+}
+.reference {
+  color: var(--color-text-muted);
+  background: #f0f6ff;
+  padding: 7px;
+  margin-top: 8px;
+  font-size: 11px;
+  border-radius: 4px;
+}
+.reference summary {
+  cursor: pointer;
+}
+.referenceWarning {
+  display: block;
+  font-weight: 400;
+}
+.mobileContainer {
+  display: none;
+}
+.constraintFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(100px, 0.7fr);
+  gap: 12px;
+}
+.constraintFields label,
+.costFields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.constraints > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.costInputs {
+  background: linear-gradient(115deg, #edf5ff, #f6faff);
+}
+.costInputs h2 :global(.icon) {
+  color: #0065ff;
+}
+.costFields {
+  display: grid;
+  grid-template-columns: 76px 100px repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+.notes,
+.faq {
+  font-size: 12px;
+}
+.notes summary,
+.faq summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.actions button {
+  min-height: 36px;
+  font-weight: 650;
+  color: #0065ff;
+  border-color: #d4e3ff;
+}
+.actions .print {
+  color: #171300;
+  background: linear-gradient(110deg, #ffcf3e, #ffc72b);
+  border-color: #ffca28;
+}
+
+.error {
+  color: var(--color-danger);
+  margin: 0;
+  grid-column: 1 / -1;
+}
+.amountInput {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+.amountInput:has(span) {
+  padding: 0 4px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 4px;
+  background: white;
+}
+.root .amountInput:has(span) input {
+  border: 0;
+  flex: 1;
+  min-width: 0;
+  padding-inline: 0;
+}
+.amountInput span {
+  flex: none;
+  font-size: 10px;
+}
+@media (min-width: 1101px) and (min-height: 821px) {
+  .workspace {
+    gap: 14px;
+  }
+  .card {
+    padding: 12px;
+  }
+  .card h2,
+  .constraints > summary {
+    font-size: 18px;
+  }
+  .left,
+  .right {
+    gap: 10px;
+  }
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .root {
+    --load-control-height: 36px;
+    --load-button-height: 44px;
+  }
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .left,
+  .right {
+    display: contents;
+  }
+  .card {
+    padding: 8px;
+    width: 100%;
+  }
+  .card h2 {
+    font-size: 14px;
+  }
+  .worksheet {
+    order: 10;
+  }
+  .workspace > .left > .card:nth-child(2) {
+    order: 20;
+    border: 0;
+    background: transparent;
+    padding: 3px 0;
+    box-shadow: none;
+  }
+  .workspace > .left > .card:nth-child(2) > h2 {
+    display: none;
+  }
+  .constraints {
+    order: 85;
+  }
+  .costInputs {
+    order: 60;
+  }
+  .notes {
+    order: 90;
+  }
+  .faq {
+    order: 91;
+  }
+  .right > details {
+    order: 30;
+    width: 100%;
+  }
+  .right > section {
+    order: 40;
+    width: 100%;
+  }
+  .right > section:nth-of-type(2) {
+    order: 70;
+  }
+  .actions {
+    order: 80;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .feedback {
+    order: 81;
+  }
+  .containerChoices {
+    display: none;
+  }
+  .mobileContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-weight: 600;
+  }
+  .reference {
+    display: none;
+  }
+  .constraintFields,
+  .costFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .root input:not([type="checkbox"]):not([type="radio"]),
+  .root select {
+    height: 36px;
+    font-size: 16px;
+  }
+  .root button {
+    min-height: 44px;
+  }
+  .root .switch input {
+    min-width: 38px;
+  }
+  .switch {
+    min-height: 44px;
+    justify-content: center;
+  }
+  .constraints > summary,
+  .notes summary,
+  .faq summary {
+    min-height: 36px;
+    align-content: center;
+    margin: 0;
+  }
+  .constraints > summary {
+    font-size: 12px;
+  }
+  .costInputs p {
+    font-size: 11px;
+  }
+  .costFields {
+    margin-top: 6px;
+  }
+  .costFields label {
+    font-size: 11px;
+  }
+  .root .costFields input,
+  .root .costFields select {
+    font-size: 13px;
+  }
+  .amountInput span {
+    font-size: 10px;
+  }
+  .costFields label:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .actions button {
+    min-height: 44px;
+  }
+}
+@media print {
+  .workspace {
+    display: none;
+  }
+}

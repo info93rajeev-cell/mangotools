@@ -21,6 +21,7 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicCbmShipmentLayout } from './DynamicCbmShipmentLayout.tsx';
+import { DynamicContainerLoadingLayout } from './DynamicContainerLoadingLayout.tsx';
 import {
   DynamicImageBackgroundRemoverLayout,
   DynamicImageCompressLayout,
@@ -360,6 +361,7 @@ function StandardToolIsland({
 }
 
 export function ToolIsland(props: ToolIslandProps) {
+  if (props.preset.id === 'logistics/container-load') return <DynamicContainerLoadingLayout />;
   if (props.preset.id === CBM_SHIPMENT_PRESET_ID)
     return <DynamicCbmShipmentLayout preset={props.preset} />;
   return <StandardToolIsland {...props} />;
