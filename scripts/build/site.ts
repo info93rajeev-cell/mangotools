@@ -9,10 +9,15 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { runPostbuild } from '../check/postbuild.ts';
 import { ROOT } from '../lib/paths.ts';
+import {
+  ensureBackgroundRemoverModels,
+  verifyDistModels,
+} from '../models/fetch-background-remover-models.ts';
 
 const WEB = join(ROOT, 'apps/web');
 
-export function buildSite(env: string, outDir: string): void {
+export async function buildSite(env: string, outDir: string): Promise<void> {
+  await ensureBackgroundRemoverModels();
   const require = createRequire(join(WEB, 'package.json'));
   const astroBin = join(require.resolve('astro/package.json'), '..', 'bin', 'astro.mjs');
   const result = spawnSync(process.execPath, [astroBin, 'build', '--silent'], {
@@ -27,6 +32,8 @@ export function buildSite(env: string, outDir: string): void {
   });
   if (result.status !== 0)
     throw new Error(`astro build failed for ${env} (exit ${result.status}).`);
+
+  await verifyDistModels(join(WEB, outDir));
 }
 
 const isMain = process.argv[1]?.replace(/\\/g, '/').endsWith('scripts/build/site.ts');
@@ -38,10 +45,10 @@ if (isMain) {
   const out = values.out ?? 'dist';
   const started = performance.now();
   try {
-    buildSite(env, `./${out}`);
+    await buildSite(env, `./${out}`);
     const result = runPostbuild(join(WEB, out), env);
     if (result.problems.length > 0) {
-      for (const p of result.problems) console.error(`✗ ${p}`);
+      for (const p of result.problems) console.error(`✖ ${p}`);
       process.exit(1);
     }
     const kb = (b: number) => `${(b / 1024).toFixed(1)} KB`;

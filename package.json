@@ -15,6 +15,8 @@
     "verify": "biome check . && pnpm gen && pnpm typecheck && tsx scripts/validate/architecture.ts && vitest run",
     "build": "pnpm gen && tsx scripts/build/site.ts",
     "build:deploy": "pnpm gen && tsx scripts/build/deploy.ts",
+    "models:fetch": "tsx scripts/models/fetch-background-remover-models.ts",
+    "models:check": "tsx scripts/models/fetch-background-remover-models.ts --check",
     "preview": "tsx tests/support/serve.ts apps/web/dist 4321",
     "test:e2e": "pnpm gen && tsx scripts/test/e2e.ts",
     "smoke": "pnpm gen && tsx scripts/check/smoke.ts",

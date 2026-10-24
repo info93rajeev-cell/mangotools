@@ -188,6 +188,9 @@ export async function executeUniversalCutout(
     env.allowLocalModels = true;
     env.allowRemoteModels = false;
     env.localModelPath = '/models/';
+    if (env.backends?.onnx?.wasm) {
+      env.backends.onnx.wasm.wasmPaths = '/wasm/';
+    }
 
     try {
       const ort = await import('onnxruntime-web');

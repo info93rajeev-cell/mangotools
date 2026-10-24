@@ -30,7 +30,7 @@ const registry = JSON.parse(readFileSync(join(ROOT, 'generated/registry.json'), 
 const siteUrl = (registry.site.environments[env]?.url ?? '').replace(/\/$/, '');
 
 try {
-  buildSite(env, './dist');
+  await buildSite(env, './dist');
   const result = runPostbuild(dist, env);
   const reader = {
     files: walkFiles(dist, '').map((f) => relative(dist, f).split('\\').join('/')),

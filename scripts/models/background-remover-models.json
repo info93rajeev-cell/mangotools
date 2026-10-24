@@ -1,0 +1,45 @@
+{
+  "name": "birefnet-lite-512",
+  "repository": "studioludens/birefnet-lite-512",
+  "revision": "4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7",
+  "license": "MIT",
+  "baseUrl": "https://huggingface.co/studioludens/birefnet-lite-512/resolve/4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7",
+  "models": [
+    {
+      "logicalName": "BiRefNet-lite FP16 (WebGPU)",
+      "usage": "webgpu",
+      "sourcePath": "onnx/model_fp16.onnx",
+      "destinationPath": "models/studioludens/birefnet-lite-512/onnx/model_fp16.onnx",
+      "sha256": "eff9216bb2f9d3f023d9c2b7196845a7485739ab1f231593633e4d2344ffc516",
+      "byteSize": 98484532,
+      "license": "MIT"
+    },
+    {
+      "logicalName": "BiRefNet-lite FP32 (WASM SIMD Fallback)",
+      "usage": "wasm",
+      "sourcePath": "onnx/model.onnx",
+      "destinationPath": "models/studioludens/birefnet-lite-512/onnx/model.onnx",
+      "sha256": "1cb0fb360dadd15af77c639085d77a9df67db0c64315560c3de005f676345ac2",
+      "byteSize": 191877254,
+      "license": "MIT"
+    },
+    {
+      "logicalName": "BiRefNet-lite Model Configuration",
+      "usage": "config",
+      "sourcePath": "config.json",
+      "destinationPath": "models/studioludens/birefnet-lite-512/config.json",
+      "sha256": "561965f7aa366c48b95ab1c24220d59a718df4025c2ecb359dd5736ceb49e912",
+      "byteSize": 81,
+      "license": "MIT"
+    },
+    {
+      "logicalName": "BiRefNet-lite Preprocessor Configuration",
+      "usage": "config",
+      "sourcePath": "preprocessor_config.json",
+      "destinationPath": "models/studioludens/birefnet-lite-512/preprocessor_config.json",
+      "sha256": "a79663b311d8404dfb329f7b45bc9f970a0c155aeedae8ac15b6b77d76789613",
+      "byteSize": 389,
+      "license": "MIT"
+    }
+  ]
+}

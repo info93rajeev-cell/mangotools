@@ -15,7 +15,7 @@ const variants = [
 ] as const;
 
 for (const { env, out } of variants) {
-  buildSite(env, `./${out}`);
+  await buildSite(env, `./${out}`);
   const result = runPostbuild(join(ROOT, 'apps/web', out), env);
   if (result.problems.length > 0) {
     for (const p of result.problems) console.error(`✗ ${p}`);

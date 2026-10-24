@@ -21,7 +21,8 @@
       "!playwright-report",
       "!apps/web/public/wasm",
       "!apps/web/public/models",
-      "!scratch"
+      "!scratch",
+      "!.codex*"
     ]
   },
   "formatter": {
