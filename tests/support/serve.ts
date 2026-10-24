@@ -18,6 +18,8 @@ const TYPES: Record<string, string> = {
   '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
+  '.wasm': 'application/wasm',
+  '.onnx': 'application/octet-stream',
 };
 
 interface HeaderRule {
@@ -70,6 +72,8 @@ export function startServer(dir: string, port: number): Promise<Server> {
     const found = path.endsWith('/_headers') ? null : resolveFile(root, path);
     const file = found ?? join(root, '404.html');
     for (const [name, value] of headersFor(rules, url.pathname)) res.setHeader(name, value);
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
     res.statusCode = found ? 200 : 404;
     res.setHeader('Content-Type', TYPES[extname(file)] ?? 'application/octet-stream');
     res.end(req.method === 'HEAD' ? undefined : readFileSync(file));

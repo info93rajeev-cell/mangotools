@@ -100,7 +100,7 @@ describe('post-build page checks', () => {
       scriptHashes: ["'sha256-b'", "'sha256-a'", "'sha256-a'"],
       indexable: false,
     });
-    expect(text).toContain("script-src 'self' 'sha256-a' 'sha256-b';");
+    expect(text).toContain("script-src 'self' 'wasm-unsafe-eval' 'sha256-a' 'sha256-b';");
     expect(text).toContain("frame-ancestors 'none'");
     expect(text).toContain('X-Robots-Tag: noindex');
     const production = headersFile({ scriptHashes: [], indexable: true });

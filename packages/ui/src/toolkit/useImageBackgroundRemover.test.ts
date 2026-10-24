@@ -88,6 +88,7 @@ describe('useImageBackgroundRemover Hook', () => {
 
   it('initializes with default settings', () => {
     const hook = renderHook();
+    expect(hook.removalMode).toBe('universal');
     expect(hook.outputFormat).toBe('png');
     expect(hook.tolerance).toBe(20);
     expect(hook.feather).toBe(2);
@@ -95,12 +96,14 @@ describe('useImageBackgroundRemover Hook', () => {
     expect(hook.replacementBackground).toBe('transparent');
   });
 
-  it('updates tolerance, feather and replacement background', () => {
+  it('updates removal mode, tolerance, feather and replacement background', () => {
     let hook = renderHook();
+    hook.setRemovalMode('solid');
     hook.setTolerance(35);
     hook.setFeather(5);
     hook.setReplacementBackground('#ffffff');
     hook = renderHook();
+    expect(hook.removalMode).toBe('solid');
     expect(hook.tolerance).toBe(35);
     expect(hook.feather).toBe(5);
     expect(hook.replacementBackground).toBe('#ffffff');

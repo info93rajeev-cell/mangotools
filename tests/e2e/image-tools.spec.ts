@@ -428,4 +428,46 @@ test.describe('Background Remover', () => {
       path: 'C:/Users/user/.gemini/antigravity/brain/69dd2223-e082-499a-9544-d181fd76ffa1/bg_remover_desktop_900.png',
     });
   });
+
+  test('segments portrait photograph locally with zero remote network egress', async ({ page }) => {
+    const remoteRequests: string[] = [];
+    page.on('request', (req) => {
+      const url = req.url();
+      if (
+        !url.startsWith('http://localhost') &&
+        !url.startsWith('http://127.0.0.1') &&
+        !url.startsWith('data:') &&
+        !url.startsWith('blob:')
+      ) {
+        remoteRequests.push(url);
+      }
+    });
+
+    const portrait = join(
+      process.cwd(),
+      'tools/image-background-remover/fixtures/files/portrait.jpg',
+    );
+    await openTool(page, 'image-background-remover');
+    await fileInput(page).setInputFiles([portrait]);
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download transparent image' }).click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe('portrait-no-bg.png');
+    expect(remoteRequests).toHaveLength(0);
+    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
+  });
+
+  test('renders cleanly on mobile viewports without horizontal overflow', async ({ page }) => {
+    for (const width of [390, 375, 360]) {
+      await page.setViewportSize({ width, height: 800 });
+      await openTool(page, 'image-background-remover');
+      await fileInput(page).setInputFiles([sample]);
+
+      const scrollW = await page.evaluate(() => document.documentElement.scrollWidth);
+      const innerW = await page.evaluate(() => window.innerWidth);
+      expect(scrollW).toBeLessThanOrEqual(innerW);
+    }
+  });
 });

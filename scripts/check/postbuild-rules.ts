@@ -185,7 +185,7 @@ export interface HeadersOptions {
 export function headersFile({ scriptHashes, indexable }: HeadersOptions): string {
   const csp = [
     "default-src 'self'",
-    `script-src 'self' ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
+    `script-src 'self' 'wasm-unsafe-eval' ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",

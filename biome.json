@@ -18,7 +18,10 @@
       "!**/*.md",
       "!pnpm-lock.yaml",
       "!test-results",
-      "!playwright-report"
+      "!playwright-report",
+      "!apps/web/public/wasm",
+      "!apps/web/public/models",
+      "!scratch"
     ]
   },
   "formatter": {

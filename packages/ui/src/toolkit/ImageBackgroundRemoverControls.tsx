@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
+import { PrecisionSection } from './ImageBackgroundRemoverPrecision.tsx';
 import styles from './imageBackgroundRemover.module.css';
 import type {
   BgOutputFormat,
@@ -97,111 +98,6 @@ function UploadSection({
   );
 }
 
-function PrecisionSection({
-  idPrefix,
-  bgRemover,
-}: {
-  idPrefix: string;
-  bgRemover: UseImageBackgroundRemoverReturn;
-}) {
-  const hasFile = !!bgRemover.file;
-  const isExecuting = bgRemover.phase === 'running';
-
-  return (
-    <section class={styles.controlSection}>
-      <div class={styles.sectionHeader}>
-        <span class={styles.sectionTitle}>2. Removal Precision</span>
-        <span class={styles.badgeHint}>{bgRemover.tolerance}% Tol</span>
-      </div>
-
-      {/* TOLERANCE SLIDER */}
-      <div class={styles.sliderGroup}>
-        <div class={styles.sliderHeader}>
-          <label for={`${idPrefix}-tolerance`} class={styles.dimLabel}>
-            Color Tolerance:
-          </label>
-          <span class={styles.sliderValText}>{bgRemover.tolerance}%</span>
-        </div>
-        <input
-          id={`${idPrefix}-tolerance`}
-          aria-label="Color tolerance"
-          type="range"
-          min="1"
-          max="100"
-          step="1"
-          value={bgRemover.tolerance}
-          onInput={(e) => {
-            bgRemover.setTolerance(Number((e.currentTarget as HTMLInputElement).value));
-          }}
-          class={styles.rangeSlider}
-          disabled={!hasFile || isExecuting}
-        />
-      </div>
-
-      {/* FEATHER SLIDER */}
-      <div class={styles.sliderGroup}>
-        <div class={styles.sliderHeader}>
-          <label for={`${idPrefix}-feather`} class={styles.dimLabel}>
-            Edge Smoothing:
-          </label>
-          <span class={styles.sliderValText}>{bgRemover.feather} px</span>
-        </div>
-        <input
-          id={`${idPrefix}-feather`}
-          aria-label="Edge smoothing"
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          value={bgRemover.feather}
-          onInput={(e) => {
-            bgRemover.setFeather(Number((e.currentTarget as HTMLInputElement).value));
-          }}
-          class={styles.rangeSlider}
-          disabled={!hasFile || isExecuting}
-        />
-      </div>
-
-      {/* REPLACEMENT BACKGROUND */}
-      <div class={styles.sliderGroup}>
-        <span class={styles.dimLabel}>Background Fill:</span>
-        <div class={styles.bgOptionsRow}>
-          <button
-            type="button"
-            class={styles.bgOptBtn}
-            data-active={String(bgRemover.replacementBackground === 'transparent')}
-            onClick={() => bgRemover.setReplacementBackground('transparent')}
-            disabled={!hasFile || isExecuting}
-          >
-            <span class={styles.colorSwatch} style={{ background: '#e2e8f0' }} />
-            <span>Clear</span>
-          </button>
-          <button
-            type="button"
-            class={styles.bgOptBtn}
-            data-active={String(bgRemover.replacementBackground === '#ffffff')}
-            onClick={() => bgRemover.setReplacementBackground('#ffffff')}
-            disabled={!hasFile || isExecuting}
-          >
-            <span class={styles.colorSwatch} style={{ background: '#ffffff' }} />
-            <span>White</span>
-          </button>
-          <button
-            type="button"
-            class={styles.bgOptBtn}
-            data-active={String(bgRemover.replacementBackground === '#000000')}
-            onClick={() => bgRemover.setReplacementBackground('#000000')}
-            disabled={!hasFile || isExecuting}
-          >
-            <span class={styles.colorSwatch} style={{ background: '#000000' }} />
-            <span>Black</span>
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function FormatSection({
   idPrefix,
   bgRemover,
@@ -287,6 +183,43 @@ function ActionSection({
         disabled={!hasFile || isExecuting}
       />
 
+      {isExecuting && bgRemover.progressInfo ? (
+        <div
+          role="progressbar"
+          aria-valuenow={Math.round(bgRemover.progressInfo.progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          style={{
+            margin: '6px 0',
+            fontSize: '0.8rem',
+            color: 'var(--color-text-secondary, #64748b)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+            <span>{bgRemover.progressInfo.message}</span>
+            <span>{Math.round(bgRemover.progressInfo.progress * 100)}%</span>
+          </div>
+          <div
+            style={{
+              width: '100%',
+              height: '4px',
+              background: 'rgba(0,0,0,0.1)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: `${Math.round(bgRemover.progressInfo.progress * 100)}%`,
+                height: '100%',
+                background: 'var(--color-primary, #f97316)',
+                transition: 'width 0.2s ease',
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
+
       <button
         type="button"
         class={styles.executeBtn}
@@ -294,7 +227,11 @@ function ActionSection({
         onClick={() => void bgRemover.executeRemoveBackground()}
         disabled={!hasFile || isExecuting}
       >
-        <span>{isExecuting ? '⏳ Removing...' : '✨ Remove Background'}</span>
+        <span>
+          {isExecuting
+            ? (bgRemover.progressInfo?.message ?? '⏳ Removing...')
+            : '✨ Remove Background'}
+        </span>
       </button>
 
       <button

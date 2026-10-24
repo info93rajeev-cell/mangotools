@@ -36,7 +36,7 @@ export default defineConfig({
         "base-uri 'self'",
         "form-action 'self'",
       ],
-      scriptDirective: { resources: ["'self'"] },
+      scriptDirective: { resources: ["'self'", "'wasm-unsafe-eval'"] },
       styleDirective: { resources: ["'self'", "'unsafe-inline'"] },
     },
   },

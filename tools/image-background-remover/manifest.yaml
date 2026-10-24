@@ -4,28 +4,30 @@ id: image-background-remover
 slug: image-background-remover
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.3.0
 changelog:
+  - { version: 0.3.0, date: 2026-10-24, type: fixed, summary: "Universal background remover for objects, products, pets, cars, and portraits via browser-local WebGPU and neural matting." }
+  - { version: 0.2.0, date: 2026-10-24, type: fixed, summary: "Add in-browser AI neural segmentation for portraits and passport photos. Preserves face, hair, and clothing." }
   - { version: 0.1.0, date: 2026-10-21, type: added, summary: "First beta: remove image backgrounds to transparent PNG, WebP, or clean PDF, entirely in the browser." }
 name: Background Remover
 shortName: Remove BG
-summary: Remove image backgrounds in your browser. Download transparent PNG, WebP, or clean PDF. 100% private, zero uploads.
+summary: Remove background from products, people, pets, and objects in your browser. Download transparent PNG, WebP, or PDF. 100% private.
 archetype: D
 preset: image/remove-background
 taxonomy:
   category: media
   tags: [images]
-  synonyms: [remove background, background remover, remove bg, transparent background maker, remove white background, cutout image, transparent png maker, background eraser, free background remover, no upload background remover]
+  synonyms: [remove background, universal background remover, background remover, remove bg, product background remover, portrait background remover, transparent background maker, cutout image, transparent png maker, background eraser, free background remover, no upload background remover]
 privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
-  title: "Background Remover – Remove Image Background Free"
-  description: "Remove background from JPG, PNG, and WebP images instantly in your browser. Download transparent PNG, WebP, or clean PDF. 100% private with zero uploads."
+  title: "Background Remover – Remove Photo Background Free Online"
+  description: "Remove background from products, people, pets, vehicles, and objects in your browser. Download transparent PNG, WebP, or PDF. 100% private, zero uploads."
   primaryKeyword: background remover
-  secondaryKeywords: [remove background, remove bg, transparent background maker, cutout image, remove background from image]
+  secondaryKeywords: [remove background, remove bg, universal background remover, product background remover, transparent background maker, cutout image]
 graph:
   related: [image-compress, image-resize, image-format-converter, image-crop]
 quality:
   verifiedAgainst:
     - { citation: "engines/image image.remove-background@1 fixtures 001-002", locator: "tools/image-background-remover/fixtures" }
-  lastVerified: 2026-10-21
+  lastVerified: 2026-10-24

@@ -1,14 +1,17 @@
-import { err, type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
-import { getWorkerHost, track } from '@mangotools/runtime';
+import type { OpError, OpWarning, Result } from '@mangotools/core';
+import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { type BgRunConfig, executeBgWorker } from './backgroundRemoverWorker.ts';
 import { type CropFile as BgFile, inspectAndDecodeImage, MIME_MAP } from './imageFileInspection.ts';
-import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import { executePersonCutout } from './personSegmentation.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
+import { executeUniversalCutout } from './universalSegmentation.ts';
 
 export type BgOutputFormat = 'png' | 'webp' | 'jpg' | 'pdf';
+export type RemovalMode = 'universal' | 'portrait' | 'solid';
 export type { BgFile };
 
 const FORMAT_MIME_MAP: Record<string, string> = {
@@ -32,103 +35,14 @@ export interface ImageBackgroundRemoverResultData {
   originalFormat: string;
   outputFormat: string;
   warnings: OpWarning[];
-}
-
-interface BgRunConfig {
-  preset: ResolvedPreset;
-  file: BgFile;
-  outputFormat: BgOutputFormat;
-  quality: number;
-  tolerance: number;
-  feather: number;
-  targetColor: string;
-  replacementBackground: string;
-  customFileName: string;
-}
-
-async function convertCutoutToPdf(
-  cfg: BgRunConfig,
-  result: ImageBackgroundRemoverResultData,
-): Promise<Result<ImageBackgroundRemoverResultData>> {
-  const wrapped = await wrapImageBytesInPdf(result.bytes, 'IMAGE_BACKGROUND_REMOVAL_FAILED');
-  if (!wrapped.ok) return wrapped;
-
-  const rawBase = cfg.customFileName.trim() || cfg.file.name.replace(/\.[^.]+$/, '');
-  const cleanBase = rawBase.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'cutout';
-  const fileName = `${cleanBase.replace(/-no-bg$/, '')}-no-bg.pdf`;
-
-  return ok({
-    fileName,
-    bytes: wrapped.value.pdfBytes,
-    originalWidth: result.originalWidth,
-    originalHeight: result.originalHeight,
-    outputWidth: result.outputWidth,
-    outputHeight: result.outputHeight,
-    tolerance: result.tolerance,
-    feather: result.feather,
-    originalFileSize: cfg.file.size,
-    outputFileSize: wrapped.value.pdfBytes.byteLength,
-    sizeDifferenceBytes: cfg.file.size - wrapped.value.pdfBytes.byteLength,
-    sizeChangePercent: Math.round(
-      ((cfg.file.size - wrapped.value.pdfBytes.byteLength) / cfg.file.size) * 100,
-    ),
-    originalFormat: result.originalFormat,
-    outputFormat: 'pdf',
-    warnings: result.warnings,
-  });
-}
-
-async function executeBgWorker(
-  cfg: BgRunConfig,
-): Promise<Result<ImageBackgroundRemoverResultData>> {
-  const isPdf = cfg.outputFormat === 'pdf';
-  const workerFormat = isPdf ? 'png' : cfg.outputFormat;
-
-  const input = {
-    file: { name: cfg.file.name, bytes: cfg.file.bytes },
-    outputFormat: workerFormat,
-    quality: cfg.quality,
-    tolerance: cfg.tolerance,
-    feather: cfg.feather,
-    targetColor: cfg.targetColor === 'auto' ? undefined : cfg.targetColor,
-    replacementBackground: cfg.replacementBackground,
-    outputFileName: cfg.customFileName.trim() || undefined,
-  };
-
-  const outcome = await getWorkerHost().run(cfg.preset.operation, input, cfg.preset.params);
-  if (!outcome.ok) return err(outcome.error.code, outcome.error);
-  const val = outcome.value as Record<string, unknown>;
-  const warnings = outcome.warnings ?? [];
-
-  const rawResult: ImageBackgroundRemoverResultData = {
-    fileName: String(val.fileName),
-    bytes: val.bytes as Uint8Array,
-    originalWidth: Number(val.originalWidth),
-    originalHeight: Number(val.originalHeight),
-    outputWidth: Number(val.outputWidth),
-    outputHeight: Number(val.outputHeight),
-    tolerance: Number(val.tolerance ?? cfg.tolerance),
-    feather: Number(val.feather ?? cfg.feather),
-    originalFileSize: Number(val.originalFileSize),
-    outputFileSize: Number(val.outputFileSize),
-    sizeDifferenceBytes: Number(val.sizeDifferenceBytes),
-    sizeChangePercent: Number(val.sizeChangePercent),
-    originalFormat: String(val.originalFormat),
-    outputFormat: String(val.outputFormat),
-    warnings,
-  };
-
-  if (isPdf) {
-    return convertCutoutToPdf(cfg, rawResult);
-  }
-
-  return ok(rawResult, warnings);
+  mode?: RemovalMode;
 }
 
 function useBgState() {
   const [file, setFile] = useState<BgFile | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
+  const [removalMode, setRemovalMode] = useState<RemovalMode>('universal');
   const [outputFormat, setOutputFormat] = useState<BgOutputFormat>('png');
   const [quality, setQuality] = useState<number>(90);
   const [tolerance, setTolerance] = useState<number>(20);
@@ -140,6 +54,11 @@ function useBgState() {
   const [result, setResult] = useState<ImageBackgroundRemoverResultData | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [error, setError] = useState<OpError | null>(null);
+  const [progressInfo, setProgressInfo] = useState<{
+    stage: string;
+    progress: number;
+    message: string;
+  } | null>(null);
 
   return {
     file,
@@ -148,6 +67,8 @@ function useBgState() {
     setImageSrc,
     sourceDims,
     setSourceDims,
+    removalMode,
+    setRemovalMode,
     outputFormat,
     setOutputFormat,
     quality,
@@ -170,6 +91,8 @@ function useBgState() {
     setResultUrl,
     error,
     setError,
+    progressInfo,
+    setProgressInfo,
   };
 }
 
@@ -228,6 +151,35 @@ async function handleSample(
   s.setCustomFileName('');
 }
 
+async function dispatchRemoval(
+  s: BgState,
+  cfg: BgRunConfig,
+  isNode: boolean,
+): Promise<Result<ImageBackgroundRemoverResultData>> {
+  if (s.removalMode === 'universal' && !isNode && s.file) {
+    return executeUniversalCutout({
+      file: s.file,
+      imageSrc: s.imageSrc,
+      outputFormat: s.outputFormat,
+      quality: s.quality,
+      replacementBackground: s.replacementBackground,
+      customFileName: s.customFileName,
+      onProgress: s.setProgressInfo,
+    });
+  }
+  if (s.removalMode === 'portrait' && !isNode && s.file) {
+    return executePersonCutout({
+      file: s.file,
+      imageSrc: s.imageSrc,
+      outputFormat: s.outputFormat,
+      quality: s.quality,
+      replacementBackground: s.replacementBackground,
+      customFileName: s.customFileName,
+    });
+  }
+  return executeBgWorker(cfg);
+}
+
 async function handleRun(
   s: BgState,
   preset: ResolvedPreset,
@@ -244,9 +196,10 @@ async function handleRun(
   onPhase('running');
   s.setError(null);
 
-  const outcome = await executeBgWorker({
+  const cfg: BgRunConfig = {
     preset,
     file: s.file,
+    removalMode: s.removalMode,
     outputFormat: s.outputFormat,
     quality: s.quality,
     tolerance: s.tolerance,
@@ -254,7 +207,11 @@ async function handleRun(
     targetColor: s.targetColor,
     replacementBackground: s.replacementBackground,
     customFileName: s.customFileName,
-  });
+  };
+
+  const isNode = typeof window === 'undefined' || typeof Image === 'undefined';
+  const outcome = await dispatchRemoval(s, cfg, isNode);
+  s.setProgressInfo(null);
 
   if (!outcome.ok) {
     s.setError(outcome.error);
@@ -274,7 +231,11 @@ async function handleRun(
   s.setResult(outcome.value);
   s.setPhase('result');
   onPhase('result');
-  notify('Background removed successfully');
+  if (outcome.value.warnings?.some((w) => w.code === 'NO_CLEAR_FOREGROUND')) {
+    notify('No distinct foreground subject detected.');
+  } else {
+    notify('Background removed successfully');
+  }
   return outcome.value;
 }
 
@@ -318,6 +279,7 @@ function useBgActions(
     };
 
   return {
+    setRemovalMode: setWithInvalidate(s.setRemovalMode),
     setOutputFormat: setWithInvalidate(s.setOutputFormat),
     setQuality: setWithInvalidate(s.setQuality),
     setTolerance: setWithInvalidate(s.setTolerance),
@@ -341,6 +303,7 @@ function useBgActions(
     },
     reset: () => {
       invalidate();
+      s.setRemovalMode('universal');
       s.setOutputFormat('png');
       s.setTolerance(20);
       s.setFeather(2);
@@ -364,6 +327,7 @@ export function useImageBackgroundRemover(
     if (s.result || s.phase !== 'idle') {
       s.setResult(null);
       s.setError(null);
+      s.setProgressInfo(null);
       s.setPhase('idle');
       onPhase('idle');
       if (s.resultUrl) {
