@@ -185,17 +185,32 @@ export async function executeUniversalCutout(
 
   try {
     const { env } = await import('@huggingface/transformers');
-    env.allowLocalModels = true;
-    env.allowRemoteModels = false;
-    env.localModelPath = '/models/';
+    const customHost =
+      typeof window !== 'undefined'
+        ? (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string }).__MANGOTOOLS_MODELS_HOST__
+        : undefined;
+
+    env.allowLocalModels = false;
+    env.allowRemoteModels = true;
+    env.remoteHost = customHost || 'https://models.beyandtheai.com/';
+    env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
+
+    const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
+
     if (env.backends?.onnx?.wasm) {
       env.backends.onnx.wasm.wasmPaths = '/wasm/';
+      if (!isIsolated) {
+        env.backends.onnx.wasm.numThreads = 1;
+      }
     }
 
     try {
       const ort = await import('onnxruntime-web');
       if (ort?.env?.wasm) {
         ort.env.wasm.wasmPaths = '/wasm/';
+        if (!isIsolated) {
+          ort.env.wasm.numThreads = 1;
+        }
       }
     } catch {
       // ignore

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { type DistReader, deployEnvironment, deployProblems } from './deploy-rules.ts';
 
-const SITE = 'https://beyondtheai.com';
+const SITE = 'https://beyandtheai.com';
 
 function dist(files: Record<string, string>): DistReader {
   return { files: Object.keys(files), read: (f) => files[f] ?? null };

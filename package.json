@@ -17,6 +17,7 @@
     "build:deploy": "pnpm gen && tsx scripts/build/deploy.ts",
     "models:fetch": "tsx scripts/models/fetch-background-remover-models.ts",
     "models:check": "tsx scripts/models/fetch-background-remover-models.ts --check",
+    "models:r2:sync": "tsx scripts/models/sync-r2-models.ts",
     "preview": "tsx tests/support/serve.ts apps/web/dist 4321",
     "test:e2e": "pnpm gen && tsx scripts/test/e2e.ts",
     "smoke": "pnpm gen && tsx scripts/check/smoke.ts",

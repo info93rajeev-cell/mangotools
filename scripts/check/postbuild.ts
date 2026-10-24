@@ -3,7 +3,7 @@
  * sitemaps, and measures the JavaScript each page loads up front. Exits non-zero on any problem.
  * Usage: tsx scripts/check/postbuild.ts [distDir]   (environment from MANGOTOOLS_ENV)
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix, relative, resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import type { MarketplaceFeeIndex, Registry } from '@mangotools/schemas';
@@ -131,6 +131,28 @@ function checkReferenceData(dist: string): string[] {
   );
 }
 
+const MAX_PAGES_ASSET_BYTES = 25 * 1024 * 1024; // 25 MiB Cloudflare Pages limit
+
+function checkPagesFileSizes(dist: string): string[] {
+  const problems: string[] = [];
+  const allFiles = walkFiles(dist, '');
+  for (const file of allFiles) {
+    const rel = relative(dist, file).split('\\').join('/');
+    const stat = statSync(file);
+    if (file.endsWith('.onnx')) {
+      problems.push(
+        `${rel}: ONNX model binary must not be in Cloudflare Pages static artifact (host on Cloudflare R2)`,
+      );
+    }
+    if (stat.size > MAX_PAGES_ASSET_BYTES) {
+      problems.push(
+        `${rel}: file size ${(stat.size / (1024 * 1024)).toFixed(1)} MiB exceeds Cloudflare Pages 25 MiB limit`,
+      );
+    }
+  }
+  return problems;
+}
+
 export function runPostbuild(distDir: string, env: string): PostbuildResult {
   const dist = resolve(distDir);
   const registry = loadRegistry();
@@ -155,6 +177,7 @@ export function runPostbuild(distDir: string, env: string): PostbuildResult {
   }
   problems.push(...duplicateProblems(seoFacts));
   problems.push(...budgetProblems(dist, bundles));
+  problems.push(...checkPagesFileSizes(dist));
   problems.push(...checkRobotsAndSitemap(dist, registry, siteUrl, environment.indexable));
   problems.push(...checkReferenceData(dist));
   const headers = headersFile({ scriptHashes: hashes, indexable: environment.indexable });

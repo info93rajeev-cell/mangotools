@@ -90,7 +90,7 @@ export const sha256 = (text: string) =>
   `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
 
 const SEO_TEMPLATES = new Set(['home', 'tools', 'category', 'tool', 'page']);
-const ALLOWED_HOSTS = ['schema.org', 'www.w3.org'];
+const ALLOWED_HOSTS = ['schema.org', 'www.w3.org', 'models.beyandtheai.com'];
 
 function checkHead(page: PageFacts, siteUrl: string): string[] {
   const problems: string[] = [];
@@ -189,7 +189,7 @@ export function headersFile({ scriptHashes, indexable }: HeadersOptions): string
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' https://models.beyandtheai.com blob:",
     "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",

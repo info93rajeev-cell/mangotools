@@ -23,10 +23,10 @@ test('home: title, canonical, Organization and WebSite', async ({ page }) => {
   expect(await ldTypes(page)).toEqual(['Organization', 'WebSite']);
 });
 
-test('public identity: BeyondTheAI on https://beyondtheai.com with no parent organisation', async ({
+test('public identity: BeyondTheAI on https://beyandtheai.com with no parent organisation', async ({
   page,
 }) => {
-  expect(SITE).toBe('https://beyondtheai.com');
+  expect(SITE).toBe('https://beyandtheai.com');
   await page.goto('/');
   const blocks = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
     (b) => JSON.parse(b) as Record<string, unknown>,

@@ -4,12 +4,13 @@ import {
   createWriteStream,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   renameSync,
   statSync,
   unlinkSync,
 } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { ROOT } from '../lib/paths.ts';
@@ -18,10 +19,20 @@ export interface ModelAsset {
   logicalName: string;
   usage: 'webgpu' | 'wasm' | 'config';
   sourcePath: string;
-  destinationPath: string;
+  destinationPath?: string;
+  r2Key?: string;
+  contentType?: string;
   sha256: string;
   byteSize: number;
   license: string;
+}
+
+export interface R2Config {
+  bucket: string;
+  customDomain: string;
+  basePath: string;
+  cacheControl: string;
+  corsAllowedOrigin: string;
 }
 
 export interface BackgroundRemoverManifest {
@@ -29,7 +40,9 @@ export interface BackgroundRemoverManifest {
   repository: string;
   revision: string;
   license: string;
-  baseUrl: string;
+  upstreamBaseUrl?: string;
+  baseUrl?: string;
+  r2?: R2Config;
   models: ModelAsset[];
 }
 
@@ -42,10 +55,12 @@ export interface DownloadResult {
 
 export interface EnsureOptions {
   manifestPath?: string;
-  rootDir?: string;
-  copyToDistDir?: string;
+  cacheDir?: string;
   force?: boolean;
 }
+
+const DEFAULT_CACHE_DIR = join(ROOT, 'scripts', 'models', '.cache');
+export const CLOUDFLARE_PAGES_MAX_ASSET_BYTES = 25 * 1024 * 1024; // 25 MiB
 
 export function loadManifest(manifestPath?: string): BackgroundRemoverManifest {
   const p = manifestPath ?? join(ROOT, 'scripts', 'models', 'background-remover-models.json');
@@ -180,75 +195,56 @@ export async function downloadModelAsset(
   }
 }
 
-async function syncAssetToDist(
-  destPath: string,
-  distDir: string,
-  asset: ModelAsset,
-): Promise<void> {
-  const distPath = join(distDir, asset.destinationPath);
-  mkdirSync(dirname(distPath), { recursive: true });
-  const isDistValid = await verifyFileChecksum(distPath, asset.sha256, asset.byteSize);
-  if (isDistValid) return;
-
-  if (existsSync(distPath)) {
-    unlinkSync(distPath);
-  }
-  const statPublic = statSync(destPath);
-  const data = readFileSync(destPath);
-  const hash = createHash('sha256').update(data).digest('hex');
-  if (hash.toLowerCase() === asset.sha256.toLowerCase() && statPublic.size === asset.byteSize) {
-    const writeStream = createWriteStream(distPath);
-    writeStream.write(data);
-    await new Promise<void>((res) => writeStream.end(() => res()));
-  }
-}
-
 export async function ensureBackgroundRemoverModels(
   options: EnsureOptions = {},
 ): Promise<DownloadResult[]> {
   const manifest = loadManifest(options.manifestPath);
-  const rootDir = options.rootDir ?? ROOT;
-  const publicDir = join(rootDir, 'apps', 'web', 'public');
+  const cacheDir = options.cacheDir ?? DEFAULT_CACHE_DIR;
+  const baseUrl = manifest.upstreamBaseUrl ?? manifest.baseUrl;
+  if (!baseUrl) {
+    throw new Error('Manifest missing upstreamBaseUrl/baseUrl');
+  }
+
   const results: DownloadResult[] = [];
 
   for (const asset of manifest.models) {
-    const destPath = join(publicDir, asset.destinationPath);
-    const result = await downloadModelAsset(
-      asset,
-      destPath,
-      manifest.baseUrl,
-      options.force ?? false,
-    );
+    const destPath = join(cacheDir, asset.sourcePath);
+    const result = await downloadModelAsset(asset, destPath, baseUrl, options.force ?? false);
     results.push(result);
-
-    if (options.copyToDistDir && existsSync(options.copyToDistDir)) {
-      await syncAssetToDist(destPath, options.copyToDistDir, asset);
-    }
   }
 
   return results;
 }
 
-export async function verifyDistModels(
-  distDir: string,
-  manifest?: BackgroundRemoverManifest,
-): Promise<void> {
-  const m = manifest ?? loadManifest();
-  for (const asset of m.models) {
-    const targetFile = join(distDir, asset.destinationPath);
-    if (!existsSync(targetFile)) {
-      throw new Error(`Production artifact missing model asset: ${asset.destinationPath}`);
+function walkAllFiles(dir: string): string[] {
+  if (!existsSync(dir)) return [];
+  const entries = readdirSync(dir, { withFileTypes: true });
+  const files: string[] = [];
+  for (const e of entries) {
+    const full = join(dir, e.name);
+    if (e.isDirectory()) {
+      files.push(...walkAllFiles(full));
+    } else {
+      files.push(full);
     }
-    const stat = statSync(targetFile);
-    if (stat.size !== asset.byteSize) {
+  }
+  return files;
+}
+
+export async function verifyPagesDistHasNoOversizedModels(distDir: string): Promise<void> {
+  if (!existsSync(distDir)) return;
+  const files = walkAllFiles(distDir);
+  for (const f of files) {
+    const rel = relative(distDir, f).split('\\').join('/');
+    const stat = statSync(f);
+    if (f.endsWith('.onnx')) {
       throw new Error(
-        `Production artifact size mismatch for ${asset.destinationPath}: expected ${asset.byteSize}, got ${stat.size}`,
+        `Cloudflare Pages static artifact contains forbidden ONNX model: ${rel} (${stat.size} bytes). Models must be hosted on Cloudflare R2.`,
       );
     }
-    const { sha256 } = await computeFileChecksum(targetFile);
-    if (sha256.toLowerCase() !== asset.sha256.toLowerCase()) {
+    if (stat.size > CLOUDFLARE_PAGES_MAX_ASSET_BYTES) {
       throw new Error(
-        `Production artifact SHA-256 mismatch for ${asset.destinationPath}: expected ${asset.sha256}, got ${sha256}`,
+        `Cloudflare Pages static artifact exceeds 25 MiB single-file limit: ${rel} is ${stat.size} bytes`,
       );
     }
   }
@@ -266,9 +262,9 @@ if (isMain) {
     const manifest = loadManifest();
     let hasFailures = false;
     for (const asset of manifest.models) {
-      const publicPath = join(ROOT, 'apps', 'web', 'public', asset.destinationPath);
-      const valid = await verifyFileChecksum(publicPath, asset.sha256, asset.byteSize);
-      console.log(`[${valid ? 'PASS' : 'FAIL'}] ${asset.logicalName}: ${asset.destinationPath}`);
+      const cachePath = join(DEFAULT_CACHE_DIR, asset.sourcePath);
+      const valid = await verifyFileChecksum(cachePath, asset.sha256, asset.byteSize);
+      console.log(`[${valid ? 'PASS' : 'FAIL'}] ${asset.logicalName}: ${asset.sourcePath}`);
       if (!valid) hasFailures = true;
     }
     process.exit(hasFailures ? 1 : 0);

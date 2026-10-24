@@ -5,14 +5,14 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { walkFiles } from '../lib/files.ts';
 import { ROOT } from '../lib/paths.ts';
 import {
-  type BackgroundRemoverManifest,
   computeFileChecksum,
   downloadModelAsset,
   loadManifest,
   type ModelAsset,
-  verifyDistModels,
   verifyFileChecksum,
+  verifyPagesDistHasNoOversizedModels,
 } from './fetch-background-remover-models.ts';
+import { generateR2UploadCommands } from './sync-r2-models.ts';
 
 const TEST_TMP_DIR = join(ROOT, 'tests', 'artifacts', 'test-model-fetch');
 
@@ -44,12 +44,11 @@ describe('Universal Background Remover Model Delivery', () => {
     expect(manifest.name).toBe('birefnet-lite-512');
     expect(manifest.repository).toBe('studioludens/birefnet-lite-512');
     expect(manifest.revision).toBe('4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7');
-    expect(manifest.baseUrl).toBe(
-      'https://huggingface.co/studioludens/birefnet-lite-512/resolve/4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7',
-    );
+    expect(manifest.r2?.bucket).toBe('beyandtheai-models');
+    expect(manifest.r2?.customDomain).toBe('https://models.beyandtheai.com');
   });
 
-  it('2. SHA manifest validity', () => {
+  it('2. SHA manifest validity and R2 configuration', () => {
     const manifest = loadManifest();
     expect(manifest.models.length).toBeGreaterThanOrEqual(4);
 
@@ -57,7 +56,7 @@ describe('Universal Background Remover Model Delivery', () => {
       expect(asset.logicalName.length).toBeGreaterThan(0);
       expect(['webgpu', 'wasm', 'config']).toContain(asset.usage);
       expect(asset.sourcePath.length).toBeGreaterThan(0);
-      expect(asset.destinationPath.length).toBeGreaterThan(0);
+      expect(asset.r2Key?.length).toBeGreaterThan(0);
       expect(asset.sha256).toMatch(/^[a-f0-9]{64}$/);
       expect(asset.byteSize).toBeGreaterThan(0);
       expect(asset.license).toBe('MIT');
@@ -65,15 +64,17 @@ describe('Universal Background Remover Model Delivery', () => {
 
     const fp16 = manifest.models.find((m) => m.usage === 'webgpu');
     expect(fp16).toBeDefined();
-    expect(fp16?.destinationPath).toBe(
-      'models/studioludens/birefnet-lite-512/onnx/model_fp16.onnx',
+    expect(fp16?.r2Key).toBe(
+      'birefnet-lite-512/4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7/onnx/model_fp16.onnx',
     );
     expect(fp16?.byteSize).toBe(98484532);
     expect(fp16?.sha256).toBe('eff9216bb2f9d3f023d9c2b7196845a7485739ab1f231593633e4d2344ffc516');
 
     const fp32 = manifest.models.find((m) => m.usage === 'wasm');
     expect(fp32).toBeDefined();
-    expect(fp32?.destinationPath).toBe('models/studioludens/birefnet-lite-512/onnx/model.onnx');
+    expect(fp32?.r2Key).toBe(
+      'birefnet-lite-512/4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7/onnx/model.onnx',
+    );
     expect(fp32?.byteSize).toBe(191877254);
     expect(fp32?.sha256).toBe('1cb0fb360dadd15af77c639085d77a9df67db0c64315560c3de005f676345ac2');
   });
@@ -120,7 +121,7 @@ describe('Universal Background Remover Model Delivery', () => {
       license: 'MIT',
     };
 
-    const destPath = join(TEST_TMP_DIR, configAsset.destinationPath);
+    const destPath = join(TEST_TMP_DIR, configAsset.destinationPath ?? '');
     expect(existsSync(destPath)).toBe(false);
 
     const res = await downloadModelAsset(
@@ -147,7 +148,7 @@ describe('Universal Background Remover Model Delivery', () => {
       license: 'MIT',
     };
 
-    const destPath = join(TEST_TMP_DIR, configAsset.destinationPath);
+    const destPath = join(TEST_TMP_DIR, configAsset.destinationPath ?? '');
     mkdirSync(join(TEST_TMP_DIR, 'models/test'), { recursive: true });
     writeFileSync(
       destPath,
@@ -169,45 +170,43 @@ describe('Universal Background Remover Model Delivery', () => {
     expect(res.status).toBe('cached');
   });
 
-  it('6. final production artifact contains required model files', async () => {
+  it('6. Cloudflare Pages dist is verified to have 0 ONNX files and 0 files exceeding 25 MiB', async () => {
     const mockDist = join(TEST_TMP_DIR, 'mock-dist');
-    const mockManifest: BackgroundRemoverManifest = {
-      name: 'test',
-      repository: 'test/repo',
-      revision: 'abc',
-      license: 'MIT',
-      baseUrl: 'http://test',
-      models: [
-        {
-          logicalName: 'Test M1',
-          usage: 'config',
-          sourcePath: 'm1.json',
-          destinationPath: 'models/m1.json',
-          sha256: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
-          byteSize: 3,
-          license: 'MIT',
-        },
-      ],
-    };
+    mkdirSync(join(mockDist, 'wasm'), { recursive: true });
+    writeFileSync(join(mockDist, 'wasm', 'test.wasm'), 'wasm binary');
 
-    const targetFile = join(mockDist, 'models', 'm1.json');
-    mkdirSync(join(mockDist, 'models'), { recursive: true });
-    writeFileSync(targetFile, 'abc');
+    // Compliant dist passes
+    await expect(verifyPagesDistHasNoOversizedModels(mockDist)).resolves.not.toThrow();
 
-    await expect(verifyDistModels(mockDist, mockManifest)).resolves.not.toThrow();
+    // Rejects forbidden ONNX model binaries (must be on R2)
+    const onnxFile = join(mockDist, 'model.onnx');
+    writeFileSync(onnxFile, 'fake onnx model');
+    await expect(verifyPagesDistHasNoOversizedModels(mockDist)).rejects.toThrow(
+      /Cloudflare Pages static artifact contains forbidden ONNX model/,
+    );
+    rmSync(onnxFile);
 
-    writeFileSync(targetFile, 'xyz');
-    await expect(verifyDistModels(mockDist, mockManifest)).rejects.toThrow(/SHA-256 mismatch/);
+    // Rejects any single file exceeding 25 MiB Cloudflare Pages limit
+    const bigFile = join(mockDist, 'oversized.bin');
+    writeFileSync(bigFile, '');
+    // Using sparse-like truncate or stat check mock
+    const fs = await import('node:fs');
+    fs.truncateSync(bigFile, 26 * 1024 * 1024); // 26 MiB
+    await expect(verifyPagesDistHasNoOversizedModels(mockDist)).rejects.toThrow(
+      /Cloudflare Pages static artifact exceeds 25 MiB single-file limit/,
+    );
+    rmSync(bigFile);
   });
 
-  it('7. Universal mode configures WebGPU fp16 and does not fetch FP32 when WebGPU succeeds', () => {
+  it('7. Universal mode configures Cloudflare R2 custom domain and remote model loading', () => {
     const src = readFileSync(
       join(ROOT, 'packages/ui/src/toolkit/universalSegmentation.ts'),
       'utf8',
     );
-    expect(src).toContain("env.localModelPath = '/models/'");
-    expect(src).toContain('env.allowLocalModels = true');
-    expect(src).toContain('env.allowRemoteModels = false');
+    expect(src).toContain('env.allowLocalModels = false');
+    expect(src).toContain('env.allowRemoteModels = true');
+    expect(src).toContain("env.remoteHost = customHost || 'https://models.beyandtheai.com/'");
+    expect(src).toContain("env.remotePathTemplate = 'birefnet-lite-512/{revision}/'");
 
     const bg0Src = readFileSync(
       join(ROOT, 'packages/ui/node_modules/@bg0/browser/dist/index.js'),
@@ -255,5 +254,18 @@ describe('Universal Background Remover Model Delivery', () => {
 
     const violations = files.flatMap(checkFileForForbiddenUrls);
     expect(violations).toEqual([]);
+  });
+
+  it('11. R2 upload commands and sync manifest are deterministic', () => {
+    const commands = generateR2UploadCommands();
+    expect(commands.length).toBe(4);
+
+    for (const cmd of commands) {
+      expect(cmd.wranglerCommand).toContain('wrangler r2 object put beyandtheai-models/');
+      expect(cmd.cacheControl).toBe('public, max-age=31536000, immutable');
+      expect(cmd.byteSize).toBeGreaterThan(0);
+      expect(cmd.sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(cmd.key).toMatch(/^birefnet-lite-512\/4a3c40c36c94093cc1e724d9ea428b8fa4b57dc7\//);
+    }
   });
 });

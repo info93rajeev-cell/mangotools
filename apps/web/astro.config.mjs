@@ -30,7 +30,7 @@ export default defineConfig({
         "default-src 'self'",
         "img-src 'self' data: blob:",
         "font-src 'self'",
-        "connect-src 'self'",
+        "connect-src 'self' https://models.beyandtheai.com blob:",
         "worker-src 'self' blob:",
         "object-src 'none'",
         "base-uri 'self'",

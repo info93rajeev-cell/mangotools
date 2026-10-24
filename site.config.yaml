@@ -4,7 +4,7 @@ brand:
   tagline: Professional tools for work that should not depend on AI.
 environments:
   development: { url: "http://localhost:4321", indexable: false }
-  production: { url: "https://beyondtheai.com", indexable: true }
+  production: { url: "https://beyandtheai.com", indexable: true }
 navigation:
   # Round 1 launch: every category with at least one listed tool is visible (7 categories).
   # Export & Import has two tools, so a higher threshold would hide it.

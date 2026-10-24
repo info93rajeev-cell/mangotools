@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { checkHeaders, checkHome, checkRedirect, checkRobots, locs } from './smoke-rules.ts';
 
-const SITE = 'https://beyondtheai.com';
+const SITE = 'https://beyandtheai.com';
 const html = (robots: string) =>
   `<title>BeyondTheAI — Tools</title><link rel="canonical" href="${SITE}"><meta name="robots" content="${robots}">`;
 const headers = {

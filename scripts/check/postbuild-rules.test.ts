@@ -12,7 +12,7 @@ import {
   staticImports,
 } from './postbuild-rules.ts';
 
-const SITE = 'https://beyondtheai.com';
+const SITE = 'https://beyandtheai.com';
 
 function html(parts: { head?: string; body?: string; template?: string }) {
   const description = 'x'.repeat(130);
@@ -146,6 +146,11 @@ describe('post-build page checks', () => {
     expect(headersLimitProblems(many)).toEqual([
       '_headers has 101 rules (Cloudflare Pages allows 100)',
     ]);
+  });
+
+  it('configures CSP connect-src to permit models from R2 custom domain', () => {
+    const text = headersFile({ scriptHashes: [], indexable: true });
+    expect(text).toContain("connect-src 'self' https://models.beyandtheai.com blob:");
   });
 
   it('finds entry modules and static imports but not dynamic imports', () => {

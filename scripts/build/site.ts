@@ -9,18 +9,14 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { runPostbuild } from '../check/postbuild.ts';
 import { ROOT } from '../lib/paths.ts';
-import {
-  ensureBackgroundRemoverModels,
-  verifyDistModels,
-} from '../models/fetch-background-remover-models.ts';
+import { verifyPagesDistHasNoOversizedModels } from '../models/fetch-background-remover-models.ts';
 
 const WEB = join(ROOT, 'apps/web');
 
 export async function buildSite(env: string, outDir: string): Promise<void> {
-  await ensureBackgroundRemoverModels();
   const require = createRequire(join(WEB, 'package.json'));
   const astroBin = join(require.resolve('astro/package.json'), '..', 'bin', 'astro.mjs');
-  const result = spawnSync(process.execPath, [astroBin, 'build', '--silent'], {
+  const result = spawnSync(process.execPath, [astroBin, 'build'], {
     cwd: WEB,
     stdio: 'inherit',
     env: {
@@ -33,7 +29,7 @@ export async function buildSite(env: string, outDir: string): Promise<void> {
   if (result.status !== 0)
     throw new Error(`astro build failed for ${env} (exit ${result.status}).`);
 
-  await verifyDistModels(join(WEB, outDir));
+  await verifyPagesDistHasNoOversizedModels(join(WEB, outDir));
 }
 
 const isMain = process.argv[1]?.replace(/\\/g, '/').endsWith('scripts/build/site.ts');

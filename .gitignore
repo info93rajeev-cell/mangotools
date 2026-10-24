@@ -12,3 +12,5 @@ coverage/
 .env.*
 dist-*/
 *.onnx
+.cache/
+scripts/models/.cache/
