@@ -230,6 +230,39 @@ async function assembleCutoutResult(
   return ok(resultData, warnings);
 }
 
+async function configureTransformersEnv(customHost?: string): Promise<void> {
+  const { env } = await import('@huggingface/transformers');
+  env.allowLocalModels = false;
+  env.allowRemoteModels = true;
+  if (customHost) {
+    env.remoteHost = customHost;
+    env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
+  } else {
+    env.remoteHost = 'https://huggingface.co/';
+    env.remotePathTemplate = '{model}/resolve/{revision}/';
+  }
+
+  const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
+  if (env.backends?.onnx?.wasm) {
+    env.backends.onnx.wasm.wasmPaths = '/wasm/';
+    if (!isIsolated) {
+      env.backends.onnx.wasm.numThreads = 1;
+    }
+  }
+
+  try {
+    const ort = await import('onnxruntime-web');
+    if (ort?.env?.wasm) {
+      ort.env.wasm.wasmPaths = '/wasm/';
+      if (!isIsolated) {
+        ort.env.wasm.numThreads = 1;
+      }
+    }
+  } catch {
+    // ignore
+  }
+}
+
 export async function executeUniversalCutout(
   input: UniversalCutoutInput,
 ): Promise<Result<ImageBackgroundRemoverResultData>> {
@@ -245,37 +278,12 @@ export async function executeUniversalCutout(
   const inputBlob = new Blob([safeBuffer], { type: mime });
 
   try {
-    const { env } = await import('@huggingface/transformers');
     const customHost =
       typeof window !== 'undefined'
         ? (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string }).__MANGOTOOLS_MODELS_HOST__
         : undefined;
 
-    env.allowLocalModels = false;
-    env.allowRemoteModels = true;
-    env.remoteHost = customHost || 'https://models.beyandtheai.com/';
-    env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
-
-    const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
-
-    if (env.backends?.onnx?.wasm) {
-      env.backends.onnx.wasm.wasmPaths = '/wasm/';
-      if (!isIsolated) {
-        env.backends.onnx.wasm.numThreads = 1;
-      }
-    }
-
-    try {
-      const ort = await import('onnxruntime-web');
-      if (ort?.env?.wasm) {
-        ort.env.wasm.wasmPaths = '/wasm/';
-        if (!isIsolated) {
-          ort.env.wasm.numThreads = 1;
-        }
-      }
-    } catch {
-      // ignore
-    }
+    await configureTransformersEnv(customHost);
 
     const { removeBackground } = await import('@bg0/browser');
     const outcome = await removeBackground(inputBlob, {
@@ -291,6 +299,8 @@ export async function executeUniversalCutout(
     return await assembleCutoutResult(input, outcome.blob);
   } catch (e) {
     console.error('Universal cutout execution error:', e);
-    return err('IMAGE_BACKGROUND_REMOVAL_FAILED');
+    return err('IMAGE_BACKGROUND_REMOVAL_FAILED', {
+      details: { message: e instanceof Error ? e.message : String(e) },
+    });
   }
 }

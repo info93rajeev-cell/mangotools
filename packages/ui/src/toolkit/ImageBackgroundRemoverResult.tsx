@@ -191,12 +191,31 @@ function ErrorCallout({
 }) {
   if (!bgRemover.error) return null;
   const msg = messageFor(preset, bgRemover.error);
+  const detailMsg =
+    typeof bgRemover.error.details?.message === 'string'
+      ? (bgRemover.error.details.message as string)
+      : null;
 
   return (
     <div class={styles.errorContainer} data-bg-error="">
       <InlineAlert tone="danger" role="alert">
         {msg}
       </InlineAlert>
+      <p
+        style={{
+          fontSize: '11px',
+          color: 'var(--color-text-muted)',
+          margin: '4px 0 6px 0',
+          lineHeight: '1.4',
+        }}
+      >
+        {detailMsg &&
+        (detailMsg.includes('model') ||
+          detailMsg.includes('fetch') ||
+          detailMsg.includes('network'))
+          ? 'First-time AI model download could not complete. Check your connection and try again.'
+          : 'Tip: Universal AI cutout works best with a clear subject (person, product, pet, or object). Check connection for first-time model load.'}
+      </p>
       <button
         type="button"
         class={styles.downloadCtaBtn}
