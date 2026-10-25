@@ -119,6 +119,15 @@ async function createRefinedCanvas(
   const w = cutoutBitmap.width;
   const h = cutoutBitmap.height;
 
+  // Ultra-high resolution guard (>16 MP): prevent browser tab OOM crashes
+  if (w * h > 16_000_000) {
+    const fallbackCanvas = document.createElement('canvas');
+    fallbackCanvas.width = w;
+    fallbackCanvas.height = h;
+    fallbackCanvas.getContext('2d')?.drawImage(cutoutBitmap, 0, 0);
+    return { canvas: fallbackCanvas, origCanvas: null };
+  }
+
   try {
     const origBuffer = input.file.bytes.buffer.slice(
       input.file.bytes.byteOffset,
@@ -274,7 +283,12 @@ export async function executeUniversalCutout(
       onProgress: input.onProgress,
       signal: input.signal,
     });
-    return assembleCutoutResult(input, outcome.blob);
+    input.onProgress?.({
+      stage: 'finishing',
+      progress: 0.96,
+      message: 'Compositing shadow & canvas…',
+    });
+    return await assembleCutoutResult(input, outcome.blob);
   } catch (e) {
     console.error('Universal cutout execution error:', e);
     return err('IMAGE_BACKGROUND_REMOVAL_FAILED');

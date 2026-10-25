@@ -36,10 +36,11 @@ function findForegroundBounds(
 ): BoundingBox | null {
   const data = ctx.getImageData(0, 0, w, h).data;
   const acc: BoundsAcc = { minX: w, maxX: 0, minY: h, maxY: 0, found: false };
+  const step = Math.max(2, Math.floor(Math.max(w, h) / 1000));
 
-  for (let y = 0; y < h; y += 2) {
+  for (let y = 0; y < h; y += step) {
     const rowOffset = y * w;
-    for (let x = 0; x < w; x += 2) {
+    for (let x = 0; x < w; x += step) {
       if (data[(rowOffset + x) * 4 + 3] > 40) {
         updateBounds(acc, x, y);
       }
@@ -99,8 +100,8 @@ function renderDropShadow(
   opacity: number,
 ): void {
   ctx.save();
-  const blur = Math.max(12, Math.round(w * 0.022));
-  const offsetY = Math.max(8, Math.round(h * 0.018));
+  const blur = Math.max(8, Math.min(28, Math.round(w * 0.015)));
+  const offsetY = Math.max(4, Math.min(22, Math.round(h * 0.012)));
   ctx.shadowColor = `rgba(0, 0, 0, ${Math.min(0.75, opacity * 0.65)})`;
   ctx.shadowBlur = blur;
   ctx.shadowOffsetX = 0;

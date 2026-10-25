@@ -142,29 +142,20 @@ function smoothPixelAlpha(
   blendWeight: number,
 ): number {
   const a = alpha[idx];
-  if (a <= 0.02 || a >= 0.98) return a;
+  if (a <= 0.03 || a >= 0.97) return a;
 
-  let sum = a * blendWeight;
-  let weight = blendWeight;
+  const a1 = alpha[idx - 1];
+  const a2 = alpha[idx + 1];
+  const a3 = alpha[idx - w];
+  const a4 = alpha[idx + w];
 
-  const neighbors = [
-    idx - 1,
-    idx + 1,
-    idx - w,
-    idx + w,
-    idx - w - 1,
-    idx - w + 1,
-    idx + w - 1,
-    idx + w + 1,
-  ];
+  const w1 = Math.exp(-Math.abs(a1 - a) * 3);
+  const w2 = Math.exp(-Math.abs(a2 - a) * 3);
+  const w3 = Math.exp(-Math.abs(a3 - a) * 3);
+  const w4 = Math.exp(-Math.abs(a4 - a) * 3);
 
-  for (const n of neighbors) {
-    const na = alpha[n];
-    const diff = Math.abs(na - a);
-    const wf = Math.exp(-diff * 3);
-    sum += na * wf;
-    weight += wf;
-  }
+  const sum = a * blendWeight + a1 * w1 + a2 * w2 + a3 * w3 + a4 * w4;
+  const weight = blendWeight + w1 + w2 + w3 + w4;
 
   return sum / weight;
 }
@@ -175,12 +166,15 @@ export function applySubpixelSmoothing(
   h: number,
   feather: number,
 ): Float32Array {
+  if (feather <= 0) return alpha;
   const smoothed = new Float32Array(alpha);
-  const blendWeight = Math.max(1.0, Math.min(4.0, feather > 0 ? feather : 2.0));
+  const blendWeight = Math.max(1.0, Math.min(4.0, feather));
 
   for (let y = 1; y < h - 1; y++) {
+    const rowOffset = y * w;
     for (let x = 1; x < w - 1; x++) {
-      const idx = y * w + x;
+      const idx = rowOffset + x;
+      if (alpha[idx] <= 0.03 || alpha[idx] >= 0.97) continue;
       smoothed[idx] = smoothPixelAlpha(alpha, idx, w, blendWeight);
     }
   }
