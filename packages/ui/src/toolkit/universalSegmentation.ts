@@ -1,6 +1,7 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
 import { refineMatte, type TransparencyMode } from './edgeMatteRefinement.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
+import { applyProductShadowAndBackground, type ShadowMode } from './productShadowEngine.ts';
 import type {
   BgFile,
   BgOutputFormat,
@@ -15,6 +16,8 @@ export interface UniversalCutoutInput {
   tolerance?: number;
   feather?: number;
   transparencyMode?: TransparencyMode;
+  shadowMode?: ShadowMode;
+  shadowOpacity?: number;
   replacementBackground: string;
   customFileName: string;
   onProgress?: (info: { stage: string; progress: number; message: string }) => void;
@@ -41,22 +44,6 @@ function evaluateAlphaCoverage(
   const ratio = opaqueCount / total;
   const hasSubject = ratio >= 0.015 && ratio <= 0.985;
   return { foregroundRatio: ratio, hasSubject };
-}
-
-function applyBackgroundFill(
-  sourceCanvas: HTMLCanvasElement,
-  replacementBackground: string,
-): HTMLCanvasElement {
-  if (replacementBackground === 'transparent') return sourceCanvas;
-  const outCanvas = document.createElement('canvas');
-  outCanvas.width = sourceCanvas.width;
-  outCanvas.height = sourceCanvas.height;
-  const ctx = outCanvas.getContext('2d');
-  if (!ctx) return sourceCanvas;
-  ctx.fillStyle = replacementBackground;
-  ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
-  ctx.drawImage(sourceCanvas, 0, 0);
-  return outCanvas;
 }
 
 function encodeCanvasBlob(
@@ -120,10 +107,15 @@ function buildResultData(
   };
 }
 
+interface RefinedCanvasBundle {
+  canvas: HTMLCanvasElement;
+  origCanvas: HTMLCanvasElement | null;
+}
+
 async function createRefinedCanvas(
   input: UniversalCutoutInput,
   cutoutBitmap: ImageBitmap,
-): Promise<HTMLCanvasElement> {
+): Promise<RefinedCanvasBundle> {
   const w = cutoutBitmap.width;
   const h = cutoutBitmap.height;
 
@@ -162,7 +154,7 @@ async function createRefinedCanvas(
       const ctxFinal = canvas.getContext('2d');
       if (ctxFinal) {
         ctxFinal.putImageData(refinedData, 0, 0);
-        return canvas;
+        return { canvas, origCanvas: cOrig };
       }
     }
   } catch {
@@ -173,7 +165,7 @@ async function createRefinedCanvas(
   fallbackCanvas.width = w;
   fallbackCanvas.height = h;
   fallbackCanvas.getContext('2d')?.drawImage(cutoutBitmap, 0, 0);
-  return fallbackCanvas;
+  return { canvas: fallbackCanvas, origCanvas: null };
 }
 
 async function assembleCutoutResult(
@@ -181,7 +173,7 @@ async function assembleCutoutResult(
   blob: Blob,
 ): Promise<Result<ImageBackgroundRemoverResultData>> {
   const bitmap = await createImageBitmap(blob);
-  const canvas = await createRefinedCanvas(input, bitmap);
+  const { canvas, origCanvas } = await createRefinedCanvas(input, bitmap);
   const ctx = canvas.getContext('2d');
   if (!ctx) return err('IMAGE_BACKGROUND_REMOVAL_FAILED');
   const coverage = evaluateAlphaCoverage(ctx, canvas.width, canvas.height);
@@ -200,7 +192,11 @@ async function assembleCutoutResult(
     input.outputFormat === 'jpg' && input.replacementBackground === 'transparent'
       ? '#ffffff'
       : input.replacementBackground;
-  const finalCanvas = applyBackgroundFill(canvas, targetBg);
+  const finalCanvas = applyProductShadowAndBackground(canvas, origCanvas, {
+    mode: input.shadowMode ?? 'none',
+    opacity: (input.shadowOpacity ?? 40) / 100,
+    replacementBackground: targetBg,
+  });
 
   const isPdf = input.outputFormat === 'pdf';
   const exportFormat = isPdf ? 'png' : input.outputFormat;

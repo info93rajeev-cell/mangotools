@@ -9,12 +9,13 @@ import { type BgRunConfig, executeBgWorker } from './backgroundRemoverWorker.ts'
 import type { TransparencyMode } from './edgeMatteRefinement.ts';
 import { type CropFile as BgFile, inspectAndDecodeImage } from './imageFileInspection.ts';
 import { executePersonCutout } from './personSegmentation.ts';
+import type { ShadowMode } from './productShadowEngine.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 import { executeUniversalCutout } from './universalSegmentation.ts';
 
 export type BgOutputFormat = 'png' | 'webp' | 'jpg' | 'pdf';
 export type RemovalMode = 'universal' | 'portrait' | 'solid';
-export type { BgFile, TransparencyMode };
+export type { BgFile, ShadowMode, TransparencyMode };
 
 export interface ImageBackgroundRemoverResultData {
   fileName: string;
@@ -35,36 +36,19 @@ export interface ImageBackgroundRemoverResultData {
   mode?: RemovalMode;
 }
 
-function useBgState() {
-  const [file, setFile] = useState<BgFile | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
+function useBgConfigState() {
   const [removalMode, setRemovalMode] = useState<RemovalMode>('universal');
   const [outputFormat, setOutputFormat] = useState<BgOutputFormat>('png');
   const [quality, setQuality] = useState<number>(90);
   const [tolerance, setTolerance] = useState<number>(20);
   const [feather, setFeather] = useState<number>(2);
   const [transparencyMode, setTransparencyMode] = useState<TransparencyMode>('auto');
+  const [shadowMode, setShadowMode] = useState<ShadowMode>('none');
+  const [shadowOpacity, setShadowOpacity] = useState<number>(40);
   const [targetColor, setTargetColor] = useState<string>('auto');
   const [replacementBackground, setReplacementBackground] = useState<string>('transparent');
-  const [customFileName, setCustomFileName] = useState<string>('');
-  const [phase, setPhase] = useState<FilePhase>('idle');
-  const [result, setResult] = useState<ImageBackgroundRemoverResultData | null>(null);
-  const [resultUrl, setResultUrl] = useState<string | null>(null);
-  const [error, setError] = useState<OpError | null>(null);
-  const [progressInfo, setProgressInfo] = useState<{
-    stage: string;
-    progress: number;
-    message: string;
-  } | null>(null);
 
   return {
-    file,
-    setFile,
-    imageSrc,
-    setImageSrc,
-    sourceDims,
-    setSourceDims,
     removalMode,
     setRemovalMode,
     outputFormat,
@@ -77,10 +61,41 @@ function useBgState() {
     setFeather,
     transparencyMode,
     setTransparencyMode,
+    shadowMode,
+    setShadowMode,
+    shadowOpacity,
+    setShadowOpacity,
     targetColor,
     setTargetColor,
     replacementBackground,
     setReplacementBackground,
+  };
+}
+
+function useBgState() {
+  const config = useBgConfigState();
+  const [file, setFile] = useState<BgFile | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
+  const [customFileName, setCustomFileName] = useState<string>('');
+  const [phase, setPhase] = useState<FilePhase>('idle');
+  const [result, setResult] = useState<ImageBackgroundRemoverResultData | null>(null);
+  const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [error, setError] = useState<OpError | null>(null);
+  const [progressInfo, setProgressInfo] = useState<{
+    stage: string;
+    progress: number;
+    message: string;
+  } | null>(null);
+
+  return {
+    ...config,
+    file,
+    setFile,
+    imageSrc,
+    setImageSrc,
+    sourceDims,
+    setSourceDims,
     customFileName,
     setCustomFileName,
     phase,
@@ -165,6 +180,8 @@ async function dispatchRemoval(
       tolerance: s.tolerance,
       feather: s.feather,
       transparencyMode: s.transparencyMode,
+      shadowMode: s.shadowMode,
+      shadowOpacity: s.shadowOpacity,
       replacementBackground: s.replacementBackground,
       customFileName: s.customFileName,
       onProgress: s.setProgressInfo,
@@ -288,6 +305,8 @@ function useBgActions(
     setTolerance: setWithInvalidate(s.setTolerance),
     setFeather: setWithInvalidate(s.setFeather),
     setTransparencyMode: setWithInvalidate(s.setTransparencyMode),
+    setShadowMode: setWithInvalidate(s.setShadowMode),
+    setShadowOpacity: setWithInvalidate(s.setShadowOpacity),
     setTargetColor: setWithInvalidate(s.setTargetColor),
     setReplacementBackground: setWithInvalidate(s.setReplacementBackground),
     setCustomFileName: setWithInvalidate(s.setCustomFileName),
@@ -308,6 +327,8 @@ function useBgActions(
       s.setTolerance(20);
       s.setFeather(2);
       s.setTransparencyMode('auto');
+      s.setShadowMode('none');
+      s.setShadowOpacity(40);
       s.setTargetColor('auto');
       s.setReplacementBackground('transparent');
       s.setCustomFileName('');

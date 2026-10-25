@@ -93,22 +93,28 @@ describe('useImageBackgroundRemover Hook', () => {
     expect(hook.tolerance).toBe(20);
     expect(hook.feather).toBe(2);
     expect(hook.transparencyMode).toBe('auto');
+    expect(hook.shadowMode).toBe('none');
+    expect(hook.shadowOpacity).toBe(40);
     expect(hook.targetColor).toBe('auto');
     expect(hook.replacementBackground).toBe('transparent');
   });
 
-  it('updates removal mode, tolerance, feather, transparency and replacement background', () => {
+  it('updates removal mode, tolerance, feather, transparency, shadow and replacement background', () => {
     let hook = renderHook();
     hook.setRemovalMode('solid');
     hook.setTolerance(35);
     hook.setFeather(5);
     hook.setTransparencyMode('glass');
+    hook.setShadowMode('contact');
+    hook.setShadowOpacity(60);
     hook.setReplacementBackground('#ffffff');
     hook = renderHook();
     expect(hook.removalMode).toBe('solid');
     expect(hook.tolerance).toBe(35);
     expect(hook.feather).toBe(5);
     expect(hook.transparencyMode).toBe('glass');
+    expect(hook.shadowMode).toBe('contact');
+    expect(hook.shadowOpacity).toBe(60);
     expect(hook.replacementBackground).toBe('#ffffff');
   });
 

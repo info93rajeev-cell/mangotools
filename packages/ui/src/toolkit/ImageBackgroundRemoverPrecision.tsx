@@ -97,6 +97,91 @@ export function TransparencyRow({
   );
 }
 
+export function ProductShadowRow({
+  idPrefix,
+  bgRemover,
+  hasFile,
+  isExecuting,
+}: {
+  idPrefix: string;
+  bgRemover: UseImageBackgroundRemoverReturn;
+  hasFile: boolean;
+  isExecuting: boolean;
+}) {
+  return (
+    <div class={styles.sliderGroup}>
+      <span class={styles.dimLabel}>Product Shadow:</span>
+      <div class={styles.bgOptionsRow}>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.shadowMode === 'none')}
+          onClick={() => bgRemover.setShadowMode('none')}
+          disabled={!hasFile || isExecuting}
+          title="Crisp product cutout without shadow"
+        >
+          <span>🚫 None</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.shadowMode === 'contact')}
+          onClick={() => bgRemover.setShadowMode('contact')}
+          disabled={!hasFile || isExecuting}
+          title="Floor contact shadow for shoes, bottles, electronics"
+        >
+          <span>🛋️ Floor</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.shadowMode === 'drop')}
+          onClick={() => bgRemover.setShadowMode('drop')}
+          disabled={!hasFile || isExecuting}
+          title="Floating 3D studio drop shadow"
+        >
+          <span>🫧 Drop</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.shadowMode === 'original')}
+          onClick={() => bgRemover.setShadowMode('original')}
+          disabled={!hasFile || isExecuting}
+          title="Extract natural shadow from original photo"
+        >
+          <span>📸 Cast</span>
+        </button>
+      </div>
+
+      {bgRemover.shadowMode !== 'none' && (
+        <div style={{ marginTop: '3px' }}>
+          <div class={styles.sliderHeader}>
+            <label for={`${idPrefix}-shadow-opacity`} class={styles.dimLabel}>
+              Shadow Darkness:
+            </label>
+            <span class={styles.sliderValText}>{bgRemover.shadowOpacity}%</span>
+          </div>
+          <input
+            id={`${idPrefix}-shadow-opacity`}
+            aria-label="Shadow darkness"
+            type="range"
+            min="10"
+            max="100"
+            step="5"
+            value={bgRemover.shadowOpacity}
+            onInput={(e) => {
+              bgRemover.setShadowOpacity(Number((e.currentTarget as HTMLInputElement).value));
+            }}
+            class={styles.rangeSlider}
+            disabled={!hasFile || isExecuting}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function BackgroundFillRow({
   bgRemover,
   hasFile,
@@ -116,6 +201,7 @@ export function BackgroundFillRow({
           data-active={String(bgRemover.replacementBackground === 'transparent')}
           onClick={() => bgRemover.setReplacementBackground('transparent')}
           disabled={!hasFile || isExecuting}
+          title="Transparent background (PNG/WebP)"
         >
           <span class={styles.colorSwatch} style={{ background: '#e2e8f0' }} />
           <span>Clear</span>
@@ -126,9 +212,13 @@ export function BackgroundFillRow({
           data-active={String(bgRemover.replacementBackground === '#ffffff')}
           onClick={() => bgRemover.setReplacementBackground('#ffffff')}
           disabled={!hasFile || isExecuting}
+          title="Amazon & Marketplace compliant Pure White (RGB 255, 255, 255)"
         >
-          <span class={styles.colorSwatch} style={{ background: '#ffffff' }} />
-          <span>White</span>
+          <span
+            class={styles.colorSwatch}
+            style={{ background: '#ffffff', border: '1px solid #cbd5e1' }}
+          />
+          <span>Pure White</span>
         </button>
         <button
           type="button"
@@ -136,6 +226,7 @@ export function BackgroundFillRow({
           data-active={String(bgRemover.replacementBackground === '#000000')}
           onClick={() => bgRemover.setReplacementBackground('#000000')}
           disabled={!hasFile || isExecuting}
+          title="Pure Black studio background"
         >
           <span class={styles.colorSwatch} style={{ background: '#000000' }} />
           <span>Black</span>
@@ -216,8 +307,14 @@ export function PrecisionSection({
         />
       </div>
 
-      <BackgroundFillRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
       <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
+      <ProductShadowRow
+        idPrefix={idPrefix}
+        bgRemover={bgRemover}
+        hasFile={hasFile}
+        isExecuting={isExecuting}
+      />
+      <BackgroundFillRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
     </section>
   );
 }
