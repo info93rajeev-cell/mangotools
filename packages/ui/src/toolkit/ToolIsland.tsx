@@ -25,6 +25,7 @@ import { DynamicContainerLoadingLayout } from './DynamicContainerLoadingLayout.t
 import {
   DynamicImageBackgroundRemoverLayout,
   DynamicImageCompressLayout,
+  DynamicImageEnlargerLayout,
   DynamicImageFormatConverterLayout,
   DynamicImageResizeLayout,
 } from './DynamicImageToolLayouts.tsx';
@@ -43,6 +44,7 @@ const CBM_SHIPMENT_PRESET_ID = 'logistics/cbm-shipment';
 const IMAGE_CROP_PRESET_ID = 'image/crop';
 const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
 const IMAGE_RESIZE_PRESET_ID = 'image/resize';
+const IMAGE_ENLARGER_PRESET_ID = 'image/enlarge';
 const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
 const IMAGE_REMOVE_BACKGROUND_PRESET_ID = 'image/remove-background';
 export interface ToolIslandProps {
@@ -161,13 +163,7 @@ function ToolIslandView(props: ToolIslandViewProps) {
   );
 }
 
-function renderImageStudioLayout({
-  idPrefix,
-  toolId,
-  preset,
-  notify,
-  onFilePhase,
-}: ArchetypeProps) {
+function renderBasicImageStudio({ idPrefix, toolId, preset, notify, onFilePhase }: ArchetypeProps) {
   if (preset.id === IMAGE_CROP_PRESET_ID) {
     return (
       <ImageCropLayout
@@ -201,6 +197,16 @@ function renderImageStudioLayout({
       />
     );
   }
+  return null;
+}
+
+function renderAdvancedImageStudio({
+  idPrefix,
+  toolId,
+  preset,
+  notify,
+  onFilePhase,
+}: ArchetypeProps) {
   if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
     return (
       <DynamicImageFormatConverterLayout
@@ -223,7 +229,22 @@ function renderImageStudioLayout({
       />
     );
   }
+  if (preset.id === IMAGE_ENLARGER_PRESET_ID) {
+    return (
+      <DynamicImageEnlargerLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
   return null;
+}
+
+function renderImageStudioLayout(props: ArchetypeProps) {
+  return renderBasicImageStudio(props) ?? renderAdvancedImageStudio(props);
 }
 
 /** The one layout matching this tool's archetype. */

@@ -1,0 +1,12 @@
+id: 001-no-file-selected
+preset: image/enlarge
+source:
+  type: synthetic
+  citation: "Mirrors engines/image image.resize@1 fixture 001-no-file-selected: a missing file must be a specific, typed error through the tool preset too"
+input:
+  targetWidth: 1600
+  targetHeight: 1200
+  keepAspectRatio: true
+  outputFormat: same
+expectedError:
+  code: IMAGE_NO_FILE_SELECTED

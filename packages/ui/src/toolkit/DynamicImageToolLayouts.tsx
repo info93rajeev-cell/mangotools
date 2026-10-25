@@ -2,6 +2,7 @@ import type { ComponentType } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import type { ImageBackgroundRemoverLayoutProps } from './ImageBackgroundRemoverLayout.tsx';
 import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
+import type { ImageEnlargerLayoutProps } from './ImageEnlargerLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
 
@@ -50,6 +51,19 @@ export function DynamicImageBackgroundRemoverLayout(props: ImageBackgroundRemove
   useEffect(() => {
     void import('./ImageBackgroundRemoverLayout.tsx').then((m) => {
       setComp(() => m.ImageBackgroundRemoverLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicImageEnlargerLayout(props: ImageEnlargerLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageEnlargerLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageEnlargerLayout.tsx').then((m) => {
+      setComp(() => m.ImageEnlargerLayout);
     });
   }, []);
 

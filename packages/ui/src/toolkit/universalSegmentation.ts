@@ -234,13 +234,8 @@ async function configureTransformersEnv(customHost?: string): Promise<void> {
   const { env } = await import('@huggingface/transformers');
   env.allowLocalModels = false;
   env.allowRemoteModels = true;
-  if (customHost) {
-    env.remoteHost = customHost;
-    env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
-  } else {
-    env.remoteHost = 'https://huggingface.co/';
-    env.remotePathTemplate = '{model}/resolve/{revision}/';
-  }
+  env.remoteHost = customHost || 'https://models.beyandtheai.com/';
+  env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
 
   const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
   if (env.backends?.onnx?.wasm) {

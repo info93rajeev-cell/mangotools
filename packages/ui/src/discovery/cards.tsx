@@ -154,9 +154,9 @@ const TOOL_META: Record<string, { icon: string; tags: string[]; image?: string }
     icon: '🏷️',
     tags: ['Text & Image Overlay', 'Visual Placement'],
   },
-  'favicon-generator': {
-    icon: '🌐',
-    tags: ['ICO & PNG Sizes', 'Multi-Resolution'],
+  'image-enlarger': {
+    icon: '🔍',
+    tags: ['2× & 4× Upscale', 'Pro Camera Raw Enhance'],
   },
   'image-metadata-remover': {
     icon: '🛡️',

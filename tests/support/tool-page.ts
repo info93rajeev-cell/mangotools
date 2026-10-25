@@ -142,15 +142,11 @@ export const FILE_TOOLS = {
     // this sample.jpg fixture), so the derived name keeps the .jpg extension.
     result: 'sample-cropped.jpg',
   },
-  'favicon-generator': {
+  'image-enlarger': {
     archetype: 'D',
-    files: [join(process.cwd(), 'tools/favicon-generator/fixtures/files/sample.jpg')],
-    downloadCta: 'Download favicon',
-    // Unlike Image Crop, a favicon is always generated regardless of the source's own size (it is
-    // center-cropped and scaled, never rejected for being too small), so the tiny 8x8 sample.jpg needs
-    // no field override here. The primary output is the output file name; output is always PNG, and the
-    // preset's own default size is 32, so this is the same for every run of this shared harness.
-    result: 'sample-favicon-32.png',
+    files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
+    downloadCta: 'Download enlarged image',
+    result: '1600',
   },
 } as const;
 

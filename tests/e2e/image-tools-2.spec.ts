@@ -264,82 +264,33 @@ test.describe('Image Crop', () => {
   });
 });
 
-test.describe('Favicon Generator', () => {
-  const fileInput = (page: Page) => island(page, 'favicon-generator').locator('input[type="file"]');
-  const sample = join(process.cwd(), 'tools/favicon-generator/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'favicon-generator').locator('img');
+test.describe('Image Enlarger & Enhancer', () => {
+  const fileInput = (page: Page) => island(page, 'image-enlarger').locator('input[type="file"]');
+  const sample = join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg');
 
-  test('selecting an image previews it and shows the default favicon size', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
+  test('selecting an image previews it and shows 2x default scale', async ({ page }) => {
+    await openTool(page, 'image-enlarger');
     await fileInput(page).setInputFiles([sample]);
-    await expect(preview(page)).toBeVisible();
-    await expect(page.getByLabel('Favicon size')).toHaveValue('32');
+    await expect(page.getByText('sample.jpg')).toBeVisible();
+    await expect(page.getByText('2× (200%)')).toBeVisible();
   });
 
-  test('generates a 32x32 favicon and downloads it with the default name', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
+  test('enlarges image and downloads it', async ({ page }) => {
+    await openTool(page, 'image-enlarger');
     await fileInput(page).setInputFiles([sample]);
     const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Download favicon' }).click();
+    await page.getByRole('button', { name: 'Download enlarged image' }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('sample-favicon-32.png');
-    await expect(primaryResult(page)).toHaveText('sample-favicon-32.png');
-    await expect(page.locator('[data-output="outputSize"] dd')).toHaveText('32');
-    await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
-    await expect(page.locator('[data-output="originalWidth"] dd')).toHaveText('8');
-    await expect(page.locator('[data-output="originalHeight"] dd')).toHaveText('8');
+    expect(download.suggestedFilename()).toBe('sample-enlarged.png');
+    await expect(primaryResult(page)).toHaveText('16');
   });
 
-  test('generates a 16x16 favicon when selected', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
+  test('allows toggling auto enhance and adjusting sharpness', async ({ page }) => {
+    await openTool(page, 'image-enlarger');
     await fileInput(page).setInputFiles([sample]);
-    await page.getByLabel('Favicon size').selectOption('16');
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Download favicon' }).click();
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('sample-favicon-16.png');
-    await expect(page.locator('[data-output="outputSize"] dd')).toHaveText('16');
-  });
-
-  test('generates a 180x180 favicon when selected', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
-    await fileInput(page).setInputFiles([sample]);
-    await page.getByLabel('Favicon size').selectOption('180');
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Download favicon' }).click();
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('sample-favicon-180.png');
-    await expect(page.locator('[data-output="outputSize"] dd')).toHaveText('180');
-  });
-
-  test('warns that a very small source image will look blurry when enlarged', async ({ page }) => {
-    // sample.jpg is 8x8; every favicon size (16 and up) upscales it.
-    await openTool(page, 'favicon-generator');
-    await fileInput(page).setInputFiles([sample]);
-    await page.getByRole('button', { name: 'Download favicon' }).click();
-    await expect(
-      page.getByText(
-        'This image is smaller than the selected favicon size, so it may look blurry.',
-      ),
-    ).toBeVisible();
-  });
-
-  test('normalizes a custom output file name on download', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
-    await fileInput(page).setInputFiles([sample]);
-    await page.getByLabel('Output file name').fill('  My Icon<>.PNG  ');
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Download favicon' }).click();
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('My Icon.png');
-  });
-
-  test('shows a specific error for a file that is not a JPG, PNG or WebP', async ({ page }) => {
-    await openTool(page, 'favicon-generator');
-    const notAnImage = join(process.cwd(), 'tools/favicon-generator/manifest.yaml');
-    await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download favicon' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    const autoBtn = page.getByRole('button', { name: /1-Click Auto Enhance|Auto Enhance Active/ });
+    await autoBtn.click();
+    await expect(page.getByRole('button', { name: 'Auto Enhance Active' })).toBeVisible();
   });
 });
 

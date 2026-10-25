@@ -194,39 +194,71 @@ function ErrorCallout({
   const detailMsg =
     typeof bgRemover.error.details?.message === 'string'
       ? (bgRemover.error.details.message as string)
-      : null;
+      : '';
+
+  const isModelOrNetwork =
+    detailMsg.includes('model') ||
+    detailMsg.includes('fetch') ||
+    detailMsg.includes('network') ||
+    detailMsg.includes('Failed to fetch');
 
   return (
     <div class={styles.errorContainer} data-bg-error="">
       <InlineAlert tone="danger" role="alert">
         {msg}
       </InlineAlert>
-      <p
+      <div
         style={{
           fontSize: '11px',
           color: 'var(--color-text-muted)',
-          margin: '4px 0 6px 0',
+          margin: '6px 0 8px 0',
           lineHeight: '1.4',
         }}
       >
-        {detailMsg &&
-        (detailMsg.includes('model') ||
-          detailMsg.includes('fetch') ||
-          detailMsg.includes('network'))
-          ? 'First-time AI model download could not complete. Check your connection and try again.'
-          : 'Tip: Universal AI cutout works best with a clear subject (person, product, pet, or object). Check connection for first-time model load.'}
-      </p>
-      <button
-        type="button"
-        class={styles.downloadCtaBtn}
-        data-action="download-result"
-        name="Download transparent image"
-        onClick={() => void bgRemover.executeRemoveBackgroundAndDownload()}
-        disabled={bgRemover.phase === 'running'}
-      >
-        <span>⬇️</span>
-        <span>Download transparent image</span>
-      </button>
+        {isModelOrNetwork ? (
+          <div>
+            <strong>Why this happened:</strong> The AI model could not be loaded from the network.
+            <div style={{ marginTop: '2px' }}>
+              Check your internet connection, or switch to <strong>Portrait Mode</strong> below for
+              instant 100% offline processing.
+            </div>
+          </div>
+        ) : (
+          <div>
+            <strong>Suggestion:</strong> Universal AI cutout works best with a clear subject
+            (person, product, pet, or object). If image is ultra-high resolution (&gt;16MP), reduce
+            dimensions and retry.
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {bgRemover.removalMode === 'universal' && (
+          <button
+            type="button"
+            class={styles.downloadCtaBtn}
+            style={{ flex: 1, minWidth: '150px', background: 'var(--color-bg-secondary, #334155)' }}
+            onClick={() => {
+              bgRemover.setRemovalMode('portrait');
+              void bgRemover.executeRemoveBackground();
+            }}
+          >
+            <span>👤</span>
+            <span>Use Portrait Mode</span>
+          </button>
+        )}
+        <button
+          type="button"
+          class={styles.downloadCtaBtn}
+          style={{ flex: 1, minWidth: '130px' }}
+          data-action="download-result"
+          name="Retry background removal"
+          onClick={() => void bgRemover.executeRemoveBackground()}
+          disabled={bgRemover.phase === 'running'}
+        >
+          <span>🔄</span>
+          <span>Retry</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: image/enlarge
+version: 0.1.0
+operation: image.resize@1
+ui:
+  archetypes: [D]
+  fileAccept: "image/jpeg,image/png,image/webp"
+  maxFiles: 1
+fields:
+  targetWidth: { labelKey: field.targetWidth, kind: number, order: 1, required: true, unit: px, default: 1600 }
+  targetHeight: { labelKey: field.targetHeight, kind: number, order: 2, required: true, unit: px, default: 1200 }
+  keepAspectRatio: { labelKey: field.keepAspectRatio, kind: boolean, order: 3, default: "true" }
+  outputFormat:
+    labelKey: field.outputFormat
+    kind: enum
+    control: select
+    order: 4
+    options:
+      - { value: same, labelKey: field.outputFormat.same }
+      - { value: jpg, labelKey: field.outputFormat.jpg }
+      - { value: png, labelKey: field.outputFormat.png }
+      - { value: webp, labelKey: field.outputFormat.webp }
+    default: same
+  quality:
+    labelKey: field.quality
+    kind: number
+    order: 5
+    unit: "%"
+    visibleWhen: { outputFormat: [jpg, webp] }
+outputs:
+  outputWidth: { labelKey: output.outputWidth, format: number, order: 1, primary: true }
+  outputHeight: { labelKey: output.outputHeight, format: number, order: 2 }
+  originalWidth: { labelKey: output.originalWidth, format: number, order: 3 }
+  originalHeight: { labelKey: output.originalHeight, format: number, order: 4 }
+  outputFormat: { labelKey: output.outputFormat, format: text, order: 5 }
+  outputFileSize: { labelKey: output.outputFileSize, format: number, order: 6 }
+  originalFileSize: { labelKey: output.originalFileSize, format: number, order: 7 }
+  fileName: { labelKey: output.fileName, format: text, order: 8 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP photo to enlarge and enhance."
+    fileTool.queueLabel: "Selected image"
+    fileTool.outputNamePlaceholder: "image-enlarged.png"
+    fileTool.downloadCta: "Download enlarged image"
+    fileTool.noFilesYet: "Choose an image to enlarge and enhance."
+    field.targetWidth: "Width"
+    field.targetHeight: "Height"
+    field.keepAspectRatio: "Keep aspect ratio"
+    field.outputFormat: "Output format"
+    field.outputFormat.same: "Same as input"
+    field.outputFormat.jpg: "JPG"
+    field.outputFormat.png: "PNG"
+    field.outputFormat.webp: "WebP"
+    field.quality: "Quality"
+    output.outputWidth: "New width (px)"
+    output.outputHeight: "New height (px)"
+    output.originalWidth: "Original width (px)"
+    output.originalHeight: "Original height (px)"
+    output.outputFormat: "Output format"
+    output.outputFileSize: "Output file size (bytes)"
+    output.originalFileSize: "Original file size (bytes)"
+    output.fileName: "Output file"

@@ -28,7 +28,7 @@ seo:
   primaryKeyword: image crop
   secondaryKeywords: [crop image online, image cropper, crop jpg, crop png]
 graph:
-  related: [image-resize, image-compress, image-format-converter, image-metadata-remover, image-watermark, favicon-generator]
+  related: [image-resize, image-compress, image-format-converter, image-metadata-remover, image-watermark, image-enlarger]
 quality:
   verifiedAgainst:
     - { citation: "engines/image image.crop@1 fixtures 001-004", locator: "engines/image/src/operations/crop/fixtures" }

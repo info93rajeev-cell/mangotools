@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: image-enlarger
+slug: image-enlarger
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-26, type: added, summary: "Enlarge photo resolution 2x and 4x with Photoshop-grade sharpness, contrast, exposure and 1-click auto enhancement." }
+name: Image Enlarger & Enhancer
+shortName: Enlarger
+summary: "Enlarge photo resolution 2x, 4x or custom dimensions with Photoshop-grade sharpness, contrast and 1-click auto enhancement in your browser."
+archetype: D
+preset: image/enlarge
+taxonomy:
+  category: media
+  tags: [images, resize]
+  synonyms: [image enlarger, enlarge image, image enhancer, photo enhancer, enhance image quality, increase image size, image upscaler, photo enlarger, upscale image, sharpen image, increase photo resolution, enlarge photo without losing quality]
+privacy: { dataClass: personal, network: none }
+disclaimer: none
+seo:
+  title: "Image Enlarger & Enhancer – Upscale and Enhance Quality Free"
+  description: "Free online Image Enlarger & Enhancer. Enlarge photos 2x or 4x with pro sharpness, contrast, exposure, and 1-click auto enhance. 100% private in-browser."
+  primaryKeyword: image enlarger
+  secondaryKeywords: [enlarge image, image enhancer, photo enhancer, increase image size, upscale image]
+graph:
+  related: [image-resize, image-crop, image-compress, image-format-converter, image-background-remover]
