@@ -593,6 +593,13 @@
   padding: 2px;
 }
 
+.downloadButtonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
 .downloadCtaBtn {
   display: flex;
   align-items: center;
@@ -616,6 +623,35 @@
 }
 
 .downloadCtaBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.downloadFastBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.downloadFastBtn:hover:not(:disabled) {
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.05));
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.downloadFastBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

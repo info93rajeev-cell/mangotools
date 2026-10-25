@@ -92,20 +92,23 @@ describe('useImageBackgroundRemover Hook', () => {
     expect(hook.outputFormat).toBe('png');
     expect(hook.tolerance).toBe(20);
     expect(hook.feather).toBe(2);
+    expect(hook.transparencyMode).toBe('auto');
     expect(hook.targetColor).toBe('auto');
     expect(hook.replacementBackground).toBe('transparent');
   });
 
-  it('updates removal mode, tolerance, feather and replacement background', () => {
+  it('updates removal mode, tolerance, feather, transparency and replacement background', () => {
     let hook = renderHook();
     hook.setRemovalMode('solid');
     hook.setTolerance(35);
     hook.setFeather(5);
+    hook.setTransparencyMode('glass');
     hook.setReplacementBackground('#ffffff');
     hook = renderHook();
     expect(hook.removalMode).toBe('solid');
     expect(hook.tolerance).toBe(35);
     expect(hook.feather).toBe(5);
+    expect(hook.transparencyMode).toBe('glass');
     expect(hook.replacementBackground).toBe('#ffffff');
   });
 
@@ -195,5 +198,33 @@ describe('useImageBackgroundRemover Hook', () => {
     expect(downloadArgs[1]).toBe('subject-no-bg.pdf');
     expect(downloadArgs[2]).toBe('application/pdf');
     expect(downloadArgs[0].byteLength).toBeGreaterThan(0);
+  });
+
+  it('downloads full original or fast web version based on parameter', () => {
+    let hook = renderHook();
+    hook.setResult({
+      fileName: 'bottle-cutout.png',
+      bytes: sampleBytes,
+      originalWidth: 1200,
+      originalHeight: 800,
+      outputWidth: 1200,
+      outputHeight: 800,
+      tolerance: 20,
+      feather: 2,
+      originalFileSize: 5000,
+      outputFileSize: 4000,
+      sizeDifferenceBytes: 1000,
+      sizeChangePercent: 20,
+      originalFormat: 'png',
+      outputFormat: 'png',
+      warnings: [],
+    });
+    hook = renderHook();
+
+    hook.downloadResult('original');
+    expect(mockDownloadBytes).toHaveBeenCalledWith(sampleBytes, 'bottle-cutout.png', 'image/png');
+
+    hook.downloadResult('fast');
+    expect(mockDownloadBytes).toHaveBeenCalled();
   });
 });

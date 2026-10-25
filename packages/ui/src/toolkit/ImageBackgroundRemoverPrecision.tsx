@@ -49,6 +49,54 @@ export function ModeSelectorRow({
   );
 }
 
+export function TransparencyRow({
+  bgRemover,
+  hasFile,
+  isExecuting,
+}: {
+  bgRemover: UseImageBackgroundRemoverReturn;
+  hasFile: boolean;
+  isExecuting: boolean;
+}) {
+  return (
+    <div class={styles.sliderGroup}>
+      <span class={styles.dimLabel}>Matte Mode:</span>
+      <div class={styles.bgOptionsRow}>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.transparencyMode === 'auto')}
+          onClick={() => bgRemover.setTransparencyMode('auto')}
+          disabled={!hasFile || isExecuting}
+          title="Automatic edge refinement & subtle translucency"
+        >
+          <span>✨ Auto</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.transparencyMode === 'glass')}
+          onClick={() => bgRemover.setTransparencyMode('glass')}
+          disabled={!hasFile || isExecuting}
+          title="Enhanced glass, transparent bottles, veils & reflections"
+        >
+          <span>💎 Glass</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.transparencyMode === 'solid')}
+          onClick={() => bgRemover.setTransparencyMode('solid')}
+          disabled={!hasFile || isExecuting}
+          title="Solid cutout for opaque objects"
+        >
+          <span>🛡️ Solid</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function BackgroundFillRow({
   bgRemover,
   hasFile,
@@ -169,6 +217,7 @@ export function PrecisionSection({
       </div>
 
       <BackgroundFillRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
+      <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
     </section>
   );
 }

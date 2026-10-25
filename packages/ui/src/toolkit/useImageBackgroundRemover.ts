@@ -4,20 +4,17 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { downloadCutout, FORMAT_MIME_MAP } from './backgroundRemoverDownload.ts';
 import { type BgRunConfig, executeBgWorker } from './backgroundRemoverWorker.ts';
-import { type CropFile as BgFile, inspectAndDecodeImage, MIME_MAP } from './imageFileInspection.ts';
+import type { TransparencyMode } from './edgeMatteRefinement.ts';
+import { type CropFile as BgFile, inspectAndDecodeImage } from './imageFileInspection.ts';
 import { executePersonCutout } from './personSegmentation.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 import { executeUniversalCutout } from './universalSegmentation.ts';
 
 export type BgOutputFormat = 'png' | 'webp' | 'jpg' | 'pdf';
 export type RemovalMode = 'universal' | 'portrait' | 'solid';
-export type { BgFile };
-
-const FORMAT_MIME_MAP: Record<string, string> = {
-  ...MIME_MAP,
-  pdf: 'application/pdf',
-};
+export type { BgFile, TransparencyMode };
 
 export interface ImageBackgroundRemoverResultData {
   fileName: string;
@@ -47,6 +44,7 @@ function useBgState() {
   const [quality, setQuality] = useState<number>(90);
   const [tolerance, setTolerance] = useState<number>(20);
   const [feather, setFeather] = useState<number>(2);
+  const [transparencyMode, setTransparencyMode] = useState<TransparencyMode>('auto');
   const [targetColor, setTargetColor] = useState<string>('auto');
   const [replacementBackground, setReplacementBackground] = useState<string>('transparent');
   const [customFileName, setCustomFileName] = useState<string>('');
@@ -77,6 +75,8 @@ function useBgState() {
     setTolerance,
     feather,
     setFeather,
+    transparencyMode,
+    setTransparencyMode,
     targetColor,
     setTargetColor,
     replacementBackground,
@@ -162,6 +162,9 @@ async function dispatchRemoval(
       imageSrc: s.imageSrc,
       outputFormat: s.outputFormat,
       quality: s.quality,
+      tolerance: s.tolerance,
+      feather: s.feather,
+      transparencyMode: s.transparencyMode,
       replacementBackground: s.replacementBackground,
       customFileName: s.customFileName,
       onProgress: s.setProgressInfo,
@@ -284,6 +287,7 @@ function useBgActions(
     setQuality: setWithInvalidate(s.setQuality),
     setTolerance: setWithInvalidate(s.setTolerance),
     setFeather: setWithInvalidate(s.setFeather),
+    setTransparencyMode: setWithInvalidate(s.setTransparencyMode),
     setTargetColor: setWithInvalidate(s.setTargetColor),
     setReplacementBackground: setWithInvalidate(s.setReplacementBackground),
     setCustomFileName: setWithInvalidate(s.setCustomFileName),
@@ -292,13 +296,9 @@ function useBgActions(
     executeRemoveBackground: () => handleRun(s, preset, toolId, onPhase, notify),
     executeRemoveBackgroundAndDownload: () =>
       handleRunAndDownload(s, preset, toolId, onPhase, notify),
-    downloadResult: () => {
+    downloadResult: (size: 'original' | 'fast' = 'original') => {
       if (!s.result) return;
-      downloadBytes(
-        s.result.bytes,
-        s.result.fileName,
-        FORMAT_MIME_MAP[s.result.outputFormat] ?? 'image/png',
-      );
+      void downloadCutout(s.result, s.resultUrl, size);
       track('tool_complete', { toolId, method: 'download' });
     },
     reset: () => {
@@ -307,6 +307,7 @@ function useBgActions(
       s.setOutputFormat('png');
       s.setTolerance(20);
       s.setFeather(2);
+      s.setTransparencyMode('auto');
       s.setTargetColor('auto');
       s.setReplacementBackground('transparent');
       s.setCustomFileName('');

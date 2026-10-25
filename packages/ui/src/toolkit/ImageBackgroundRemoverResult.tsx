@@ -68,17 +68,32 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
         </tbody>
       </table>
 
-      <button
-        type="button"
-        class={styles.downloadCtaBtn}
-        data-action="download-result"
-        name="Download transparent image"
-        onClick={bgRemover.downloadResult}
-        disabled={bgRemover.phase === 'running'}
-      >
-        <span>⬇️</span>
-        <span>Download transparent image</span>
-      </button>
+      <div class={styles.downloadButtonGroup}>
+        <button
+          type="button"
+          class={styles.downloadCtaBtn}
+          data-action="download-result"
+          name="Download Full HD (Original)"
+          onClick={() => void bgRemover.downloadResult('original')}
+          disabled={bgRemover.phase === 'running'}
+        >
+          <span>🌟</span>
+          <span>
+            Download Full HD ({res.outputWidth} × {res.outputHeight})
+          </span>
+        </button>
+        <button
+          type="button"
+          class={styles.downloadFastBtn}
+          data-action="download-fast"
+          name="Download Web Fast (500px)"
+          onClick={() => void bgRemover.downloadResult('fast')}
+          disabled={bgRemover.phase === 'running'}
+        >
+          <span>⚡</span>
+          <span>Download Web Fast (500px, ~360 KB)</span>
+        </button>
+      </div>
     </div>
   );
 }

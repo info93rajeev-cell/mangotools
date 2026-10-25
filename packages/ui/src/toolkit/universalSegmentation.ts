@@ -1,4 +1,5 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
+import { refineMatte, type TransparencyMode } from './edgeMatteRefinement.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
 import type {
   BgFile,
@@ -11,6 +12,9 @@ export interface UniversalCutoutInput {
   imageSrc: string | null;
   outputFormat: BgOutputFormat;
   quality: number;
+  tolerance?: number;
+  feather?: number;
+  transparencyMode?: TransparencyMode;
   replacementBackground: string;
   customFileName: string;
   onProgress?: (info: { stage: string; progress: number; message: string }) => void;
@@ -103,8 +107,8 @@ function buildResultData(
     originalHeight: h,
     outputWidth: w,
     outputHeight: h,
-    tolerance: 0,
-    feather: 0,
+    tolerance: input.tolerance ?? 0,
+    feather: input.feather ?? 2,
     originalFileSize: input.file.size,
     outputFileSize: bytes.byteLength,
     sizeDifferenceBytes: diff,
@@ -116,18 +120,70 @@ function buildResultData(
   };
 }
 
+async function createRefinedCanvas(
+  input: UniversalCutoutInput,
+  cutoutBitmap: ImageBitmap,
+): Promise<HTMLCanvasElement> {
+  const w = cutoutBitmap.width;
+  const h = cutoutBitmap.height;
+
+  try {
+    const origBuffer = input.file.bytes.buffer.slice(
+      input.file.bytes.byteOffset,
+      input.file.bytes.byteOffset + input.file.bytes.byteLength,
+    ) as ArrayBuffer;
+    const origBlob = new Blob([origBuffer], { type: resolveMime(input.file.name) });
+    const origBitmap = await createImageBitmap(origBlob);
+
+    const cOrig = document.createElement('canvas');
+    cOrig.width = w;
+    cOrig.height = h;
+    const ctxOrig = cOrig.getContext('2d', { willReadFrequently: true });
+
+    const cCut = document.createElement('canvas');
+    cCut.width = w;
+    cCut.height = h;
+    const ctxCut = cCut.getContext('2d', { willReadFrequently: true });
+
+    if (ctxOrig && ctxCut) {
+      ctxOrig.drawImage(origBitmap, 0, 0, w, h);
+      ctxCut.drawImage(cutoutBitmap, 0, 0, w, h);
+      const refinedData = refineMatte(
+        ctxOrig,
+        ctxCut,
+        w,
+        h,
+        input.feather ?? 2,
+        input.transparencyMode ?? 'auto',
+      );
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctxFinal = canvas.getContext('2d');
+      if (ctxFinal) {
+        ctxFinal.putImageData(refinedData, 0, 0);
+        return canvas;
+      }
+    }
+  } catch {
+    // fallback to original cutout canvas if refined bitmap creation fails
+  }
+
+  const fallbackCanvas = document.createElement('canvas');
+  fallbackCanvas.width = w;
+  fallbackCanvas.height = h;
+  fallbackCanvas.getContext('2d')?.drawImage(cutoutBitmap, 0, 0);
+  return fallbackCanvas;
+}
+
 async function assembleCutoutResult(
   input: UniversalCutoutInput,
   blob: Blob,
 ): Promise<Result<ImageBackgroundRemoverResultData>> {
   const bitmap = await createImageBitmap(blob);
-  const canvas = document.createElement('canvas');
-  canvas.width = bitmap.width;
-  canvas.height = bitmap.height;
+  const canvas = await createRefinedCanvas(input, bitmap);
   const ctx = canvas.getContext('2d');
   if (!ctx) return err('IMAGE_BACKGROUND_REMOVAL_FAILED');
-
-  ctx.drawImage(bitmap, 0, 0);
   const coverage = evaluateAlphaCoverage(ctx, canvas.width, canvas.height);
   const warnings: OpWarning[] = [];
   if (!coverage.hasSubject) {

@@ -3,8 +3,8 @@
  * clean URLs map to .html files, 404.html is served for unknown paths, and headers from
  * dist/_headers are applied. Usage: tsx tests/support/serve.ts <dir> <port>
  */
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { createServer, type Server } from 'node:http';
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
 
 const TYPES: Record<string, string> = {
@@ -62,22 +62,101 @@ function headersFor(rules: HeaderRule[], pathname: string): [string, string][] {
   return rules.filter((rule) => rule.pattern.test(pathname)).flatMap((rule) => rule.headers);
 }
 
+function handleModelRoute(
+  req: IncomingMessage,
+  res: ServerResponse,
+  path: string,
+  cacheDir: string,
+): boolean {
+  if (path === '/models-init.js') {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+    res.statusCode = 200;
+    res.end('window.__MANGOTOOLS_MODELS_HOST__ = "/";\n');
+    return true;
+  }
+
+  const modelMatch = path.match(/^\/birefnet-lite-512\/[^/]+\/(.+)$/);
+  if (!modelMatch) return false;
+
+  const modelFile = join(cacheDir, modelMatch[1]);
+  if (!existsSync(modelFile) || !statSync(modelFile).isFile()) return false;
+
+  const stat = statSync(modelFile);
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Accept-Ranges', 'bytes');
+  res.setHeader('Content-Type', TYPES[extname(modelFile)] ?? 'application/octet-stream');
+
+  const rangeHeader = req.headers.range;
+  if (rangeHeader?.startsWith('bytes=')) {
+    const parts = rangeHeader.replace(/bytes=/, '').split('-');
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : stat.size - 1;
+    const chunksize = end - start + 1;
+    res.statusCode = 206;
+    res.setHeader('Content-Range', `bytes ${start}-${end}/${stat.size}`);
+    res.setHeader('Content-Length', chunksize);
+    createReadStream(modelFile, { start, end }).pipe(res);
+    return true;
+  }
+
+  res.setHeader('Content-Length', stat.size);
+  res.statusCode = 200;
+  if (req.method === 'HEAD') {
+    res.end();
+    return true;
+  }
+  createReadStream(modelFile).pipe(res);
+  return true;
+}
+
+function handleStaticFile(
+  req: IncomingMessage,
+  res: ServerResponse,
+  root: string,
+  path: string,
+  rules: HeaderRule[],
+): void {
+  const found = path.endsWith('/_headers') ? null : resolveFile(root, path);
+  const file = found ?? join(root, '404.html');
+  for (const [name, value] of headersFor(rules, path)) res.setHeader(name, value);
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.statusCode = found ? 200 : 404;
+
+  if (extname(file) === '.html') {
+    let html = readFileSync(file, 'utf8');
+    if (!html.includes('/models-init.js')) {
+      html = html.replace('<head>', '<head><script src="/models-init.js"></script>');
+    }
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.end(req.method === 'HEAD' ? undefined : html);
+    return;
+  }
+
+  res.setHeader('Content-Type', TYPES[extname(file)] ?? 'application/octet-stream');
+  res.end(req.method === 'HEAD' ? undefined : readFileSync(file));
+}
+
 export function startServer(dir: string, port: number): Promise<Server> {
   const root = resolve(dir);
+  const repoRoot = resolve(process.cwd());
+  const cacheDir = join(repoRoot, 'scripts', 'models', '.cache');
   const headersFile = join(root, '_headers');
   const rules = existsSync(headersFile) ? parseHeaders(readFileSync(headersFile, 'utf8')) : [];
+
   const server = createServer((req, res) => {
     const url = new URL(req.url ?? '/', 'http://localhost');
     const path = url.pathname === '/' ? '/index.html' : url.pathname;
-    const found = path.endsWith('/_headers') ? null : resolveFile(root, path);
-    const file = found ?? join(root, '404.html');
-    for (const [name, value] of headersFor(rules, url.pathname)) res.setHeader(name, value);
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.statusCode = found ? 200 : 404;
-    res.setHeader('Content-Type', TYPES[extname(file)] ?? 'application/octet-stream');
-    res.end(req.method === 'HEAD' ? undefined : readFileSync(file));
+
+    if (handleModelRoute(req, res, path, cacheDir)) return;
+
+    handleStaticFile(req, res, root, path, rules);
   });
+
   return new Promise((ok) => server.listen(port, '127.0.0.1', () => ok(server)));
 }
 
