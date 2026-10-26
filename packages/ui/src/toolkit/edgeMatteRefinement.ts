@@ -250,6 +250,10 @@ function computeActiveDistance(
   };
 }
 
+function shouldRemoveFloorTable(bg: DetectedBg, y: number): boolean {
+  return Boolean(bg.hasTableFloor && bg.contactBaseY !== undefined && y > bg.contactBaseY + 2);
+}
+
 function refineBoundaryAlpha(
   a: number,
   r: number,
@@ -261,9 +265,7 @@ function refineBoundaryAlpha(
   h = 1,
 ): number {
   if (a <= 0.005) return 0.0;
-  if (bg.hasTableFloor && bg.contactBaseY !== undefined && y > bg.contactBaseY + 2) {
-    return 0.0;
-  }
+  if (shouldRemoveFloorTable(bg, y)) return 0.0;
 
   const yNorm = h > 0 ? y / h : 0.5;
   if (bg.wall && yNorm < 0.4) {
@@ -430,7 +432,10 @@ export function refineMatte(
     rawAlpha[i] = cutData.data[i * 4 + 3] / 255;
   }
 
-  const structuredAlpha = recoverFineStructures(rawAlpha, origData.data, w, h, bg);
+  const structuredAlpha =
+    transparencyMode === 'glass'
+      ? rawAlpha
+      : recoverFineStructures(rawAlpha, origData.data, w, h, bg);
   const refined = refineAlphaMask(structuredAlpha, origData.data, w, h, bg, transparencyMode);
   const smoothed = applySubpixelSmoothing(refined, w, h, feather);
   return buildDefringedImageData(cutCtx, origData.data, smoothed, w, h, bg);

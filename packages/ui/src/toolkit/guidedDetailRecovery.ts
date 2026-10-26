@@ -163,7 +163,12 @@ function evaluatePixelCandidate(
   const laplacian = computeLaplacian(ref, nidx, w, nr, ng, nb);
 
   const bgTol = Math.max(16, bg.tolerance);
-  const isStructure = distBg > bgTol && (grad > 8 || distBg > bgTol * 1.25);
+  // High-frequency structural feature requirement:
+  // Fine structures (dried twigs, hair strands, floral stems, whiskers) have high local
+  // curvature (Laplacian >= 7) or a sharp edge (grad >= 14 with Laplacian >= 4).
+  // Flat walls, vignettes, and smooth studio backdrops have Laplacian < 3 and are never structures.
+  const hasStructuralEdge = laplacian >= 7 || (grad >= 14 && laplacian >= 4);
+  const isStructure = distBg > bgTol && distLocal > bgTol * 0.7 && hasStructuralEdge;
   const metric = Math.max(distBg / 42.0, laplacian / 22.0);
   const strength = Math.min(1.0, Math.max(0.65, metric));
 
