@@ -23,7 +23,7 @@ const FORMAT_OPTIONS: { id: ResizeOutputFormat; name: string; desc: string }[] =
 
 function UploadSection({
   idPrefix,
-  preset,
+  preset: _preset,
   resize,
   onSelectFile,
   onTrySample,

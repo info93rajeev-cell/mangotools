@@ -23,7 +23,7 @@ const FORMAT_OPTIONS: { id: TargetImageFormat; name: string; desc: string }[] = 
 
 function UploadSection({
   idPrefix,
-  preset,
+  preset: _preset,
   converter,
   onSelectFile,
   onTrySample,
