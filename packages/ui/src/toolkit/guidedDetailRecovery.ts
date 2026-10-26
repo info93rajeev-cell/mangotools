@@ -3,6 +3,10 @@ export interface BackgroundColorRef {
   g: number;
   b: number;
   tolerance: number;
+  wall?: { r: number; g: number; b: number; tolerance: number };
+  floor?: { r: number; g: number; b: number; tolerance: number };
+  hasTableFloor?: boolean;
+  contactBaseY?: number;
 }
 
 interface BoundarySeeds {
@@ -150,7 +154,10 @@ function evaluatePixelCandidate(
 
   const distLocal = Math.hypot(nr - localBg.r, ng - localBg.g, nb - localBg.b);
   const distGlobal = Math.hypot(nr - bg.r, ng - bg.g, nb - bg.b);
-  const distBg = Math.min(distLocal, distGlobal);
+  const distWall = bg.wall
+    ? Math.hypot(nr - bg.wall.r, ng - bg.wall.g, nb - bg.wall.b)
+    : distGlobal;
+  const distBg = Math.min(distLocal, distGlobal, distWall);
 
   const grad = computeColorGradient(ref, nidx, w);
   const laplacian = computeLaplacian(ref, nidx, w, nr, ng, nb);
@@ -201,6 +208,18 @@ function tryBridgeGap(
   queue: QueueState,
 ): void {
   const { ref, w, h, bg, localBg, maxDistance } = ctx;
+
+  // Detail recovery (twigs, floral stems, whiskers, fine hair) only propagates upward or
+  // laterally into the background. When a table/floor is present, never propagate downward
+  // into table reflections.
+  if (
+    bg.hasTableFloor &&
+    dy > 0 &&
+    (cy > h * 0.45 || (bg.contactBaseY !== undefined && cy >= bg.contactBaseY - 5))
+  ) {
+    return;
+  }
+
   if (cdist + 2 >= maxDistance) return;
 
   const gny = cy + dy * 2;
@@ -235,6 +254,18 @@ function processDirection(
   queue: QueueState,
 ): void {
   const { ref, w, h, bg, localBg, maxDistance } = ctx;
+
+  // Detail recovery (twigs, floral stems, whiskers, fine hair) only propagates upward or
+  // laterally into the background. When a table/floor is present, never propagate downward
+  // into table reflections.
+  if (
+    bg.hasTableFloor &&
+    dy > 0 &&
+    (cy > h * 0.45 || (bg.contactBaseY !== undefined && cy >= bg.contactBaseY - 5))
+  ) {
+    return;
+  }
+
   const ny = cy + dy;
   const nx = cx + dx;
   if (ny <= 0 || ny >= h - 1 || nx <= 0 || nx >= w - 1) return;

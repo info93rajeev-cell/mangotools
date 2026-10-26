@@ -106,4 +106,108 @@ describe('edgeMatteRefinement', () => {
     expect(smoothed[2 * w + 2]).toBeGreaterThan(0);
     expect(smoothed[2 * w + 2]).toBeLessThan(1);
   });
+
+  it('detectBackgroundFromPerimeter detects dual-surface scene (wall and table floor)', () => {
+    const w = 40;
+    const h = 40;
+    const ref = new Uint8ClampedArray(w * h * 4);
+
+    // Fill top 45% with wall (R=240, G=240, B=240)
+    for (let y = 0; y < 18; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = (y * w + x) * 4;
+        ref[idx] = 240;
+        ref[idx + 1] = 240;
+        ref[idx + 2] = 240;
+        ref[idx + 3] = 255;
+      }
+    }
+
+    // Fill bottom 45% with table floor (R=180, G=175, B=190)
+    for (let y = 22; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = (y * w + x) * 4;
+        ref[idx] = 180;
+        ref[idx + 1] = 175;
+        ref[idx + 2] = 190;
+        ref[idx + 3] = 255;
+      }
+    }
+
+    // Foreground object in middle (y=18..21)
+    for (let y = 18; y < 22; y++) {
+      for (let x = 10; x < 30; x++) {
+        const idx = (y * w + x) * 4;
+        ref[idx] = 20;
+        ref[idx + 1] = 40;
+        ref[idx + 2] = 80;
+        ref[idx + 3] = 255;
+      }
+    }
+
+    const bg = detectBackgroundFromPerimeter(ref, w, h);
+    expect(bg.hasTableFloor).toBe(true);
+    expect(bg.wall).toBeDefined();
+    expect(bg.floor).toBeDefined();
+    expect(bg.wall?.r).toBeGreaterThan(230);
+    expect(bg.floor?.r).toBeLessThan(190);
+  });
+
+  it('refineAlphaMask cleanly zeros out table reflections below contact baseline', () => {
+    const w = 10;
+    const h = 20;
+    const total = w * h;
+    const rawAlpha = new Float32Array(total).fill(0.85); // BiRefNet noisy output
+    const ref = new Uint8ClampedArray(total * 4);
+
+    // Set pixel colors
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = (y * w + x) * 4;
+        if (y < 8) {
+          // Wall pixel
+          ref[idx] = 240;
+          ref[idx + 1] = 240;
+          ref[idx + 2] = 240;
+        } else if (y >= 8 && y < 14) {
+          // Object pixel
+          ref[idx] = 30;
+          ref[idx + 1] = 50;
+          ref[idx + 2] = 120;
+        } else {
+          // Table reflection pixel
+          ref[idx] = 185;
+          ref[idx + 1] = 175;
+          ref[idx + 2] = 190;
+        }
+        ref[idx + 3] = 255;
+      }
+    }
+
+    const bg = {
+      r: 210,
+      g: 205,
+      b: 215,
+      isUniform: true,
+      tolerance: 20,
+      hasTableFloor: true,
+      contactBaseY: 13,
+      wall: { r: 240, g: 240, b: 240, tolerance: 18 },
+      floor: { r: 185, g: 175, b: 190, tolerance: 20 },
+    };
+
+    const refined = refineAlphaMask(rawAlpha, ref, w, h, bg, 'auto');
+
+    // Below contactBaseY (y >= 16): 100% clean transparent (no table, no holes)
+    const tablePixelIdx = 16 * w + 5;
+    expect(refined[tablePixelIdx]).toBe(0.0);
+
+    // Object area (y = 10): 100% solid
+    const objectPixelIdx = 10 * w + 5;
+    expect(refined[objectPixelIdx]).toBe(1.0);
+
+    // Wall area (y = 2): 100% clean transparent
+    const wallPixelIdx = 2 * w + 5;
+    expect(refined[wallPixelIdx]).toBe(0.0);
+  });
 });
