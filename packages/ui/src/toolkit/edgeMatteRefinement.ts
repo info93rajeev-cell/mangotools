@@ -1,126 +1,19 @@
 import { recoverFineStructures } from './guidedDetailRecovery.ts';
 
-export interface SurfaceBg {
-  r: number;
-  g: number;
-  b: number;
-  tolerance: number;
-}
-
 export interface DetectedBg {
   r: number;
   g: number;
   b: number;
   isUniform: boolean;
   tolerance: number;
-  wall?: SurfaceBg;
-  floor?: SurfaceBg;
-  hasTableFloor?: boolean;
-  contactBaseY?: number;
 }
 
 export type TransparencyMode = 'auto' | 'glass' | 'solid';
-
-function sampleSurface(
-  ref: Uint8ClampedArray,
-  w: number,
-  yStart: number,
-  yEnd: number,
-  xStep: number,
-): SurfaceBg | undefined {
-  let sumR = 0;
-  let sumG = 0;
-  let sumB = 0;
-  let count = 0;
-
-  for (let x = 10; x < w - 10; x += xStep) {
-    for (let y = yStart; y < yEnd; y += 2) {
-      const off = (y * w + x) * 4;
-      sumR += ref[off];
-      sumG += ref[off + 1];
-      sumB += ref[off + 2];
-      count++;
-    }
-  }
-
-  if (count === 0) return undefined;
-  const avgR = sumR / count;
-  const avgG = sumG / count;
-  const avgB = sumB / count;
-
-  const devs: number[] = [];
-  for (let x = 10; x < w - 10; x += xStep) {
-    for (let y = yStart; y < yEnd; y += 2) {
-      const off = (y * w + x) * 4;
-      devs.push(Math.hypot(ref[off] - avgR, ref[off + 1] - avgG, ref[off + 2] - avgB));
-    }
-  }
-  devs.sort((a, b) => a - b);
-  const medDev = devs[Math.floor(devs.length * 0.5)] || 0;
-
-  return {
-    r: avgR,
-    g: avgG,
-    b: avgB,
-    tolerance: Math.max(16, Math.min(32, medDev * 1.6)),
-  };
-}
-
-function isSubjectGrounded(rawAlpha: Float32Array, w: number, h: number): boolean {
-  const btmRow = (h - 3) * w;
-  let btmFg = 0;
-  for (let x = 0; x < w; x++) {
-    if (rawAlpha[btmRow + x] > 0.4) btmFg++;
-  }
-  return btmFg > w * 0.05;
-}
-
-function detectContactBaseline(
-  ref: Uint8ClampedArray,
-  w: number,
-  h: number,
-  rawAlpha?: Float32Array,
-): number | undefined {
-  if (rawAlpha && isSubjectGrounded(rawAlpha, w, h)) {
-    return undefined;
-  }
-
-  let maxGrad = 0;
-  let bestY = Math.round(h * 0.46);
-  const yScanStart = Math.round(h * 0.35);
-  const yScanEnd = Math.round(h * 0.54);
-  const xStart = Math.round(w * 0.15);
-  const xEnd = Math.round(w * 0.85);
-  const xScanStep = Math.max(2, Math.floor(w / 100));
-
-  for (let y = yScanStart; y <= yScanEnd; y += 2) {
-    let gradSum = 0;
-    let count = 0;
-    for (let x = xStart; x < xEnd; x += xScanStep) {
-      const up = ((y - 2) * w + x) * 4;
-      const down = ((y + 2) * w + x) * 4;
-      gradSum += Math.hypot(
-        ref[down] - ref[up],
-        ref[down + 1] - ref[up + 1],
-        ref[down + 2] - ref[up + 2],
-      );
-      count++;
-    }
-    const avg = count > 0 ? gradSum / count : 0;
-    if (avg > maxGrad) {
-      maxGrad = avg;
-      bestY = y;
-    }
-  }
-
-  return maxGrad >= 32 ? bestY : undefined;
-}
 
 export function detectBackgroundFromPerimeter(
   ref: Uint8ClampedArray,
   w: number,
   h: number,
-  rawAlpha?: Float32Array,
 ): DetectedBg {
   const points: number[] = [];
   const steps = 8;
@@ -164,27 +57,12 @@ export function detectBackgroundFromPerimeter(
     if (item.d > maxDev) maxDev = item.d;
   }
 
-  const xStep = Math.max(1, Math.floor(w / 40));
-  const yTopLimit = Math.min(15, Math.max(2, Math.floor(h * 0.05)));
-  const yBtmStart = Math.max(0, h - yTopLimit);
-
-  const wall = sampleSurface(ref, w, 1, yTopLimit, xStep);
-  const floor = sampleSurface(ref, w, yBtmStart, h - 1, xStep);
-  const surfaceDist =
-    wall && floor ? Math.hypot(wall.r - floor.r, wall.g - floor.g, wall.b - floor.b) : 0;
-  const hasTableFloor = surfaceDist > 30;
-  const contactBaseY = hasTableFloor ? detectContactBaseline(ref, w, h, rawAlpha) : undefined;
-
   return {
     r: sumR / cleanCount,
     g: sumG / cleanCount,
     b: sumB / cleanCount,
-    isUniform: maxDev <= 40 || hasTableFloor,
+    isUniform: maxDev <= 40,
     tolerance: Math.max(14, Math.min(32, maxDev * 2.0)),
-    wall,
-    floor,
-    hasTableFloor,
-    contactBaseY,
   };
 }
 
@@ -216,9 +94,8 @@ export function resolveGlassAlpha(
     return Math.max(0.18, Math.min(0.45, a * 0.4 + 0.1));
   }
 
-  // 4. Opaque solid bodies (ceramic vase, plastic birds, hats, boots)
-  // Low luminance or high distance from background means it is a solid object, not transparent glass!
-  if (a >= 0.85 && (lum < 110 || dist > 60)) {
+  // 4. Opaque solid bodies stay 100% solid
+  if (a >= 0.85) {
     return 1.0;
   }
 
@@ -241,38 +118,6 @@ function resolveSolidAlpha(a: number, dist: number, tolerance: number): number {
   return Math.max(0, Math.min(1.0, a * factor));
 }
 
-function computeActiveDistance(
-  r: number,
-  g: number,
-  b: number,
-  bg: DetectedBg,
-  yNorm: number,
-): { dist: number; tol: number } {
-  if (bg.hasTableFloor && bg.wall && bg.floor) {
-    if (yNorm < 0.45) {
-      return {
-        dist: Math.hypot(r - bg.wall.r, g - bg.wall.g, b - bg.wall.b),
-        tol: bg.wall.tolerance,
-      };
-    }
-    const dWall = Math.hypot(r - bg.wall.r, g - bg.wall.g, b - bg.wall.b);
-    const dFloor = Math.hypot(r - bg.floor.r, g - bg.floor.g, b - bg.floor.b);
-    return {
-      dist: Math.min(dWall, dFloor),
-      tol: Math.min(bg.wall.tolerance, bg.floor.tolerance),
-    };
-  }
-
-  return {
-    dist: Math.hypot(r - bg.r, g - bg.g, b - bg.b),
-    tol: bg.tolerance,
-  };
-}
-
-function shouldRemoveFloorTable(bg: DetectedBg, y: number): boolean {
-  return Boolean(bg.hasTableFloor && bg.contactBaseY !== undefined && y > bg.contactBaseY + 2);
-}
-
 function refineBoundaryAlpha(
   a: number,
   r: number,
@@ -280,24 +125,17 @@ function refineBoundaryAlpha(
   b: number,
   bg: DetectedBg,
   mode: TransparencyMode = 'auto',
-  y = 0,
-  h = 1,
 ): number {
   if (a <= 0.005) return 0.0;
-  if (shouldRemoveFloorTable(bg, y)) return 0.0;
+  if (a >= 0.85) return 1.0;
 
-  const yNorm = h > 0 ? y / h : 0.5;
-  if (bg.wall && yNorm < 0.4) {
-    const dWall = Math.hypot(r - bg.wall.r, g - bg.wall.g, b - bg.wall.b);
-    if (dWall <= bg.wall.tolerance) return 0.0;
-  }
+  const dist = Math.hypot(r - bg.r, g - bg.g, b - bg.b);
+  const tol = bg.tolerance;
 
-  const { dist, tol } = computeActiveDistance(r, g, b, bg, yNorm);
   if (mode === 'glass') return resolveGlassAlpha(a, r, g, b, dist, tol);
   if (dist <= tol) return 0.0;
   if (mode === 'solid') return resolveSolidAlpha(a, dist, tol);
-  if (a >= 0.85) return 1.0;
-  if (!bg.isUniform && !bg.hasTableFloor) return a;
+  if (!bg.isUniform) return a;
   return resolveSolidAlpha(a, dist, tol);
 }
 
@@ -315,16 +153,7 @@ export function refineAlphaMask(
     for (let x = 0; x < w; x++) {
       const i = rowOffset + x;
       const off = i * 4;
-      refined[i] = refineBoundaryAlpha(
-        rawAlpha[i],
-        ref[off],
-        ref[off + 1],
-        ref[off + 2],
-        bg,
-        mode,
-        y,
-        h,
-      );
+      refined[i] = refineBoundaryAlpha(rawAlpha[i], ref[off], ref[off + 1], ref[off + 2], bg, mode);
     }
   }
   return refined;
@@ -416,11 +245,9 @@ export function buildDefringedImageData(
       out.data[off + 2] = b;
       out.data[off + 3] = Math.round(a * 255);
     } else {
-      const y = Math.floor(i / w);
-      const activeBg = bg.hasTableFloor && bg.wall && y / h < 0.45 ? bg.wall : bg;
-      out.data[off] = cleanChannelRgb(r, a, activeBg.r);
-      out.data[off + 1] = cleanChannelRgb(g, a, activeBg.g);
-      out.data[off + 2] = cleanChannelRgb(b, a, activeBg.b);
+      out.data[off] = cleanChannelRgb(r, a, bg.r);
+      out.data[off + 1] = cleanChannelRgb(g, a, bg.g);
+      out.data[off + 2] = cleanChannelRgb(b, a, bg.b);
       out.data[off + 3] = Math.max(0, Math.min(255, Math.round(a * 255)));
     }
   }
@@ -446,7 +273,7 @@ export function refineMatte(
     rawAlpha[i] = cutData.data[i * 4 + 3] / 255;
   }
 
-  const bg = detectBackgroundFromPerimeter(origData.data, w, h, rawAlpha);
+  const bg = detectBackgroundFromPerimeter(origData.data, w, h);
   if (customTolerance !== undefined && customTolerance > 0) {
     bg.tolerance = Math.max(10, customTolerance);
   }
