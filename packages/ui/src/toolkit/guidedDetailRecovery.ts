@@ -321,7 +321,7 @@ export function recoverFineStructures(
     visited[seeds.y[i] * w + seeds.x[i]] = 1;
   }
 
-  const limit = maxDistance ?? Math.max(500, Math.round(Math.max(w, h) * 0.75));
+  const limit = maxDistance ?? Math.min(48, Math.max(16, Math.round(Math.max(w, h) * 0.05)));
   const localBg = { r: seeds.localBgR, g: seeds.localBgG, b: seeds.localBgB };
   const pCtx: PropagationContext = { ref, w, h, bg, localBg, maxDistance: limit };
   let head = 0;

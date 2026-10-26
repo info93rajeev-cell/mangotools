@@ -66,11 +66,29 @@ function sampleSurface(
   };
 }
 
-function detectContactBaseline(ref: Uint8ClampedArray, w: number, h: number): number | undefined {
+function isSubjectGrounded(rawAlpha: Float32Array, w: number, h: number): boolean {
+  const btmRow = (h - 3) * w;
+  let btmFg = 0;
+  for (let x = 0; x < w; x++) {
+    if (rawAlpha[btmRow + x] > 0.4) btmFg++;
+  }
+  return btmFg > w * 0.05;
+}
+
+function detectContactBaseline(
+  ref: Uint8ClampedArray,
+  w: number,
+  h: number,
+  rawAlpha?: Float32Array,
+): number | undefined {
+  if (rawAlpha && isSubjectGrounded(rawAlpha, w, h)) {
+    return undefined;
+  }
+
   let maxGrad = 0;
   let bestY = Math.round(h * 0.46);
-  const yScanStart = Math.round(h * 0.38);
-  const yScanEnd = Math.round(h * 0.58);
+  const yScanStart = Math.round(h * 0.35);
+  const yScanEnd = Math.round(h * 0.54);
   const xStart = Math.round(w * 0.15);
   const xEnd = Math.round(w * 0.85);
   const xScanStep = Math.max(2, Math.floor(w / 100));
@@ -102,6 +120,7 @@ export function detectBackgroundFromPerimeter(
   ref: Uint8ClampedArray,
   w: number,
   h: number,
+  rawAlpha?: Float32Array,
 ): DetectedBg {
   const points: number[] = [];
   const steps = 8;
@@ -154,7 +173,7 @@ export function detectBackgroundFromPerimeter(
   const surfaceDist =
     wall && floor ? Math.hypot(wall.r - floor.r, wall.g - floor.g, wall.b - floor.b) : 0;
   const hasTableFloor = surfaceDist > 30;
-  const contactBaseY = hasTableFloor ? detectContactBaseline(ref, w, h) : undefined;
+  const contactBaseY = hasTableFloor ? detectContactBaseline(ref, w, h, rawAlpha) : undefined;
 
   return {
     r: sumR / cleanCount,
@@ -421,15 +440,15 @@ export function refineMatte(
   const origData = origCtx.getImageData(0, 0, w, h);
   const cutData = cutCtx.getImageData(0, 0, w, h);
 
-  const bg = detectBackgroundFromPerimeter(origData.data, w, h);
-  if (customTolerance !== undefined && customTolerance > 0) {
-    bg.tolerance = Math.max(10, customTolerance);
-  }
-
   const total = w * h;
   const rawAlpha = new Float32Array(total);
   for (let i = 0; i < total; i++) {
     rawAlpha[i] = cutData.data[i * 4 + 3] / 255;
+  }
+
+  const bg = detectBackgroundFromPerimeter(origData.data, w, h, rawAlpha);
+  if (customTolerance !== undefined && customTolerance > 0) {
+    bg.tolerance = Math.max(10, customTolerance);
   }
 
   const structuredAlpha =
