@@ -56,7 +56,7 @@ function UploadSection({
       <input
         id={fileInputId}
         type="file"
-        accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
+        accept={preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp'}
         style={{ display: 'none' }}
         onChange={(e) => {
           const f = (e.target as HTMLInputElement).files?.[0];

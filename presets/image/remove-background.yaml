@@ -6,7 +6,7 @@ operation: image.remove-background@1
 params: {}
 ui:
   archetypes: [D]
-  fileAccept: "image/jpeg,image/png,image/webp"
+  fileAccept: "image/*,image/jpeg,image/png,image/webp"
   maxFiles: 1
 fields:
   tolerance:
