@@ -1,3 +1,5 @@
+import { recoverFineStructures } from './guidedDetailRecovery.ts';
+
 export interface DetectedBg {
   r: number;
   g: number;
@@ -13,71 +15,85 @@ export function detectBackgroundFromPerimeter(
   w: number,
   h: number,
 ): DetectedBg {
-  const points: number[] = [
-    0,
-    4,
-    8,
-    12,
-    16,
-    20,
-    24,
-    28,
-    (w - 8) * 4,
-    (w - 7) * 4,
-    (w - 6) * 4,
-    (w - 5) * 4,
-    (w - 4) * 4,
-    (w - 3) * 4,
-    (w - 2) * 4,
-    (w - 1) * 4,
-    (h - 1) * w * 4,
-    ((h - 1) * w + 1) * 4,
-    ((h - 1) * w + 2) * 4,
-    ((h - 1) * w + w - 3) * 4,
-    ((h - 1) * w + w - 2) * 4,
-    ((h - 1) * w + w - 1) * 4,
-    Math.floor(h / 2) * w * 4,
-    (Math.floor(h / 2) * w + w - 1) * 4,
-  ];
+  const points: number[] = [];
+  const steps = 8;
+  for (let i = 0; i < steps; i++) {
+    const x = Math.floor(w * ((i + 0.5) / steps));
+    points.push(x * 4);
+    points.push(((h - 1) * w + x) * 4);
+  }
+  for (let i = 0; i < steps; i++) {
+    const y = Math.floor(h * ((i + 0.5) / steps));
+    points.push(y * w * 4);
+    points.push((y * w + w - 1) * 4);
+  }
+
+  // Calculate median color to withstand corner/side occluders
+  const rVals = points.map((p) => ref[p]).sort((a, b) => a - b);
+  const gVals = points.map((p) => ref[p + 1]).sort((a, b) => a - b);
+  const bVals = points.map((p) => ref[p + 2]).sort((a, b) => a - b);
+  const mid = Math.floor(points.length / 2);
+  const medR = rVals[mid];
+  const medG = gVals[mid];
+  const medB = bVals[mid];
+
+  // Discard furthest 25% outlier points
+  const withDist = points.map((p) => {
+    const d = Math.hypot(ref[p] - medR, ref[p + 1] - medG, ref[p + 2] - medB);
+    return { p, d };
+  });
+  withDist.sort((a, b) => a.d - b.d);
+  const cleanCount = Math.max(8, Math.floor(points.length * 0.75));
+  const clean = withDist.slice(0, cleanCount);
 
   let sumR = 0;
   let sumG = 0;
   let sumB = 0;
-  for (const p of points) {
-    sumR += ref[p];
-    sumG += ref[p + 1];
-    sumB += ref[p + 2];
-  }
-  const r = sumR / points.length;
-  const g = sumG / points.length;
-  const b = sumB / points.length;
-
   let maxDev = 0;
-  for (const p of points) {
-    const dr = ref[p] - r;
-    const dg = ref[p + 1] - g;
-    const db = ref[p + 2] - b;
-    const dev = Math.hypot(dr, dg, db);
-    if (dev > maxDev) maxDev = dev;
+  for (const item of clean) {
+    sumR += ref[item.p];
+    sumG += ref[item.p + 1];
+    sumB += ref[item.p + 2];
+    if (item.d > maxDev) maxDev = item.d;
   }
+
+  const r = sumR / cleanCount;
+  const g = sumG / cleanCount;
+  const b = sumB / cleanCount;
 
   return {
     r,
     g,
     b,
-    isUniform: maxDev <= 35,
-    tolerance: Math.max(12, Math.min(28, maxDev * 2.2)),
+    isUniform: maxDev <= 40,
+    tolerance: Math.max(14, Math.min(32, maxDev * 2.0)),
   };
 }
 
-function resolveGlassAlpha(a: number, dist: number, tolerance: number): number {
-  // If model detected strong foreground highlight (specular reflection)
-  if (a > 0.85) return Math.min(1.0, a);
-  // In translucent glass body: preserve soft transmission alpha so new background shines through
-  if (dist <= tolerance) {
-    return Math.max(0.18, Math.min(0.42, a * 0.5 + 0.15));
+function resolveGlassAlpha(
+  a: number,
+  r: number,
+  g: number,
+  b: number,
+  dist: number,
+  tolerance: number,
+): number {
+  // Strong specular highlights stay crisp and solid
+  if (r > 235 && g > 235 && b > 235) {
+    return Math.min(1.0, a);
   }
-  if (dist > 40) return Math.min(1.0, a * 1.25 + 0.1);
+
+  // Colored glass (e.g. red cup, purple liquid, green glass)
+  const saturation = Math.max(r, g, b) - Math.min(r, g, b);
+  if (saturation > 25 && a > 0.2) {
+    return Math.max(0.35, Math.min(0.68, a * 0.5 + 0.15));
+  }
+
+  // Clear / neutral glass
+  if (dist <= tolerance) {
+    return Math.max(0.18, Math.min(0.45, a * 0.45 + 0.12));
+  }
+  if (dist > 40) return Math.min(1.0, a * 1.15 + 0.1);
   const factor = (dist - tolerance) / (40 - tolerance);
   return Math.max(0.18, Math.min(1.0, a * factor + 0.12));
 }
@@ -99,13 +115,15 @@ function refineBoundaryAlpha(
   mode: TransparencyMode = 'auto',
 ): number {
   if (a <= 0.005) return 0.0;
-  if (!bg.isUniform) return a;
 
   const dist = Math.hypot(r - bg.r, g - bg.g, b - bg.b);
 
   if (mode === 'glass') {
-    return resolveGlassAlpha(a, dist, bg.tolerance);
+    return resolveGlassAlpha(a, r, g, b, dist, bg.tolerance);
   }
+
+  if (!bg.isUniform) return a;
+
   if (mode === 'solid') {
     return resolveSolidAlpha(a, dist, bg.tolerance);
   }
@@ -249,7 +267,8 @@ export function refineMatte(
     rawAlpha[i] = cutData.data[i * 4 + 3] / 255;
   }
 
-  const refined = refineAlphaMask(rawAlpha, origData.data, w, h, bg, transparencyMode);
+  const structuredAlpha = recoverFineStructures(rawAlpha, origData.data, w, h, bg);
+  const refined = refineAlphaMask(structuredAlpha, origData.data, w, h, bg, transparencyMode);
   const smoothed = applySubpixelSmoothing(refined, w, h, feather);
   return buildDefringedImageData(cutCtx, origData.data, smoothed, w, h, bg);
 }
