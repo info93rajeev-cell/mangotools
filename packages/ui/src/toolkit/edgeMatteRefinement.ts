@@ -74,40 +74,51 @@ export function resolveGlassAlpha(
   dist: number,
   tolerance: number,
 ): number {
+  if (a <= 0.005) return 0.0;
+  if (dist <= tolerance * 0.75) return 0.0;
+
   const maxC = Math.max(r, g, b);
   const minC = Math.min(r, g, b);
   const saturation = maxC - minC;
   const lum = 0.299 * r + 0.587 * g + 0.114 * b;
 
   // 1. Specular glints (direct reflection of light source) stay solid
-  if (minC >= 240 && saturation <= 15) {
+  if (minC >= 235 && saturation <= 15) {
     return 1.0;
   }
 
-  // 2. Background pixels are 100% transparent (never turned into glass)
-  if (dist <= tolerance) {
-    return 0.0;
-  }
-
-  // 3. Clear transparent glass body (color close to background)
-  if (dist <= tolerance * 1.25 && a > 0.05) {
-    return Math.max(0.18, Math.min(0.45, a * 0.4 + 0.1));
-  }
-
-  // 4. Opaque solid bodies stay 100% solid
-  if (a >= 0.85) {
+  // 2. Opaque solid bodies inside/with glass (fruit, lime, strawberry, metal straw, hand, cloud)
+  if (a >= 0.85 && (saturation > 35 || lum < 80 || (dist > 100 && saturation > 20))) {
     return 1.0;
   }
 
-  // 5. Tinted luminous glass (e.g. red cocktail cup, amber bottle, stained glass)
-  if (saturation > 25 && lum >= 110 && a > 0.2) {
-    return Math.max(0.38, Math.min(0.65, a * 0.45 + 0.2));
+  // 3. Continuous optical glass formula:
+  // Base optical density of clear glass transmission
+  let target = 0.2;
+
+  // Specular reflections and light highlights (continuous quadratic curve)
+  if (lum > 200) {
+    const norm = (lum - 200) / 55;
+    target += Math.min(0.75, norm * norm * 0.75);
   }
 
-  if (a >= 0.85) return 1.0;
-  if (dist > 40) return Math.min(1.0, a * 1.25 + 0.1);
-  const factor = (dist - tolerance) / (40 - tolerance);
-  return Math.max(0, Math.min(1.0, a * factor));
+  // Tinted absorption (colored crystal glass, amber, blue wings, etc.)
+  if (saturation > 12) {
+    target += Math.min(0.6, (saturation - 12) / 35);
+  }
+
+  // Contrast / internal refractions
+  if (lum < 150) {
+    target += Math.min(0.55, (150 - lum) / 80);
+  }
+
+  // Deviation from background
+  if (dist > tolerance) {
+    const dev = (dist - tolerance) / 50;
+    target += Math.min(0.4, dev * 0.4);
+  }
+
+  return Math.max(0.15, Math.min(1.0, target));
 }
 
 function resolveSolidAlpha(a: number, dist: number, tolerance: number): number {
@@ -127,13 +138,13 @@ function refineBoundaryAlpha(
   mode: TransparencyMode = 'auto',
 ): number {
   if (a <= 0.005) return 0.0;
-  if (a >= 0.85) return 1.0;
 
   const dist = Math.hypot(r - bg.r, g - bg.g, b - bg.b);
   const tol = bg.tolerance;
 
   if (mode === 'glass') return resolveGlassAlpha(a, r, g, b, dist, tol);
   if (dist <= tol) return 0.0;
+  if (a >= 0.85) return 1.0;
   if (mode === 'solid') return resolveSolidAlpha(a, dist, tol);
   if (!bg.isUniform) return a;
   return resolveSolidAlpha(a, dist, tol);
@@ -159,6 +170,18 @@ export function refineAlphaMask(
   return refined;
 }
 
+function shouldSmooth(alpha: Float32Array, idx: number, w: number, a: number): boolean {
+  if (a > 0.03 && a < 0.97) return true;
+  const a1 = alpha[idx - 1];
+  const a2 = alpha[idx + 1];
+  const a3 = alpha[idx - w];
+  const a4 = alpha[idx + w];
+  if (a >= 0.97) {
+    return a1 < 0.25 || a2 < 0.25 || a3 < 0.25 || a4 < 0.25;
+  }
+  return a1 > 0.75 || a2 > 0.75 || a3 > 0.75 || a4 > 0.75;
+}
+
 function smoothPixelAlpha(
   alpha: Float32Array,
   idx: number,
@@ -166,22 +189,19 @@ function smoothPixelAlpha(
   blendWeight: number,
 ): number {
   const a = alpha[idx];
-  if (a <= 0.03 || a >= 0.97) return a;
-
   const a1 = alpha[idx - 1];
   const a2 = alpha[idx + 1];
   const a3 = alpha[idx - w];
   const a4 = alpha[idx + w];
+  const a5 = alpha[idx - w - 1];
+  const a6 = alpha[idx - w + 1];
+  const a7 = alpha[idx + w - 1];
+  const a8 = alpha[idx + w + 1];
 
-  const w1 = Math.exp(-Math.abs(a1 - a) * 3);
-  const w2 = Math.exp(-Math.abs(a2 - a) * 3);
-  const w3 = Math.exp(-Math.abs(a3 - a) * 3);
-  const w4 = Math.exp(-Math.abs(a4 - a) * 3);
-
-  const sum = a * blendWeight + a1 * w1 + a2 * w2 + a3 * w3 + a4 * w4;
-  const weight = blendWeight + w1 + w2 + w3 + w4;
-
-  return sum / weight;
+  const diag = Math.SQRT1_2;
+  const sum = a * blendWeight + (a1 + a2 + a3 + a4) + (a5 + a6 + a7 + a8) * diag;
+  const total = blendWeight + 4 + 4 * diag;
+  return sum / total;
 }
 
 export function applySubpixelSmoothing(
@@ -192,14 +212,15 @@ export function applySubpixelSmoothing(
 ): Float32Array {
   if (feather <= 0) return alpha;
   const smoothed = new Float32Array(alpha);
-  const blendWeight = Math.max(1.0, Math.min(4.0, feather));
+  const blendWeight = Math.max(1.0, Math.min(4.0, 5.0 - feather));
 
   for (let y = 1; y < h - 1; y++) {
     const rowOffset = y * w;
     for (let x = 1; x < w - 1; x++) {
       const idx = rowOffset + x;
-      if (alpha[idx] <= 0.03 || alpha[idx] >= 0.97) continue;
-      smoothed[idx] = smoothPixelAlpha(alpha, idx, w, blendWeight);
+      if (shouldSmooth(alpha, idx, w, alpha[idx])) {
+        smoothed[idx] = smoothPixelAlpha(alpha, idx, w, blendWeight);
+      }
     }
   }
 
@@ -239,7 +260,7 @@ export function buildDefringedImageData(
     const g = ref[off + 1];
     const b = ref[off + 2];
 
-    if (a >= 0.95) {
+    if (a >= 0.98) {
       out.data[off] = r;
       out.data[off + 1] = g;
       out.data[off + 2] = b;
