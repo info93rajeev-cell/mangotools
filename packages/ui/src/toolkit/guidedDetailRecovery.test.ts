@@ -60,4 +60,55 @@ describe('recoverFineStructures', () => {
     expect(recovered[5 * w + 2]).toBe(0);
     expect(recovered[5 * w + 18]).toBe(0);
   });
+
+  it('recovers diagonal branches and bridges 1-pixel gap in twigs', () => {
+    const w = 25;
+    const h = 25;
+    const rawAlpha = new Float32Array(w * h);
+    const ref = new Uint8ClampedArray(w * h * 4);
+
+    // Wall background: [245, 245, 245]
+    for (let i = 0; i < w * h; i++) {
+      ref[i * 4] = 245;
+      ref[i * 4 + 1] = 245;
+      ref[i * 4 + 2] = 245;
+      ref[i * 4 + 3] = 255;
+    }
+
+    // Vase base at y: 20..24, x: 10..14
+    for (let y = 20; y < 25; y++) {
+      for (let x = 10; x < 15; x++) {
+        const idx = y * w + x;
+        rawAlpha[idx] = 1.0;
+        ref[idx * 4] = 40;
+        ref[idx * 4 + 1] = 40;
+        ref[idx * 4 + 2] = 40;
+      }
+    }
+
+    // Diagonal branch from (y=19, x=12) up-right to (y=12, x=19)
+    // with a 1-pixel gap at y=16, x=15 (gap left as wall color)
+    for (let step = 1; step <= 7; step++) {
+      const y = 20 - step;
+      const x = 12 + step;
+      if (y === 16 && x === 16) {
+        // Gap in stem - left as wall color [245, 245, 245]
+        continue;
+      }
+      const idx = y * w + x;
+      ref[idx * 4] = 55;
+      ref[idx * 4 + 1] = 55;
+      ref[idx * 4 + 2] = 55;
+    }
+
+    const bg = { r: 245, g: 245, b: 245, tolerance: 20 };
+    const recovered = recoverFineStructures(rawAlpha, ref, w, h, bg, 20);
+
+    // Verify diagonal stem past the gap at (y=13, x=19) was successfully reached and recovered!
+    const tipIdx = 13 * w + 19;
+    expect(recovered[tipIdx]).toBeGreaterThan(0.4);
+
+    // Verify background remains 0
+    expect(recovered[13 * w + 2]).toBe(0);
+  });
 });

@@ -156,6 +156,7 @@ async function createRefinedCanvas(
         h,
         input.feather ?? 2,
         input.transparencyMode ?? 'auto',
+        input.tolerance,
       );
       const canvas = document.createElement('canvas');
       canvas.width = w;

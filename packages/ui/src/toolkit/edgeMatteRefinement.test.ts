@@ -66,6 +66,36 @@ describe('edgeMatteRefinement', () => {
     expect(refined[1]).toBeCloseTo(0.9, 2);
   });
 
+  it('refineAlphaMask in auto mode automatically detects colored glass transmission', () => {
+    const w = 2;
+    const h = 2;
+    const total = w * h;
+    const rawAlpha = new Float32Array(total).fill(0.95);
+    const ref = new Uint8ClampedArray(total * 4);
+
+    // Saturated red glass cup pixel
+    ref[0] = 210;
+    ref[1] = 25;
+    ref[2] = 25;
+    ref[3] = 255;
+
+    // Specular highlight glint
+    ref[4] = 248;
+    ref[5] = 248;
+    ref[6] = 248;
+    ref[7] = 255;
+
+    const bg = { r: 245, g: 245, b: 245, isUniform: true, tolerance: 20 };
+    const refined = refineAlphaMask(rawAlpha, ref, w, h, bg, 'auto');
+
+    // Auto mode should give colored glass soft physical transmission alpha
+    expect(refined[0]).toBeGreaterThanOrEqual(0.35);
+    expect(refined[0]).toBeLessThanOrEqual(0.68);
+
+    // Specular glint stays crisp and solid (>= 0.95)
+    expect(refined[1]).toBeGreaterThanOrEqual(0.95);
+  });
+
   it('applySubpixelSmoothing smooths fractional boundary alpha', () => {
     const w = 5;
     const h = 5;

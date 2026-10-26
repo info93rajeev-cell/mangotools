@@ -8,30 +8,132 @@ export interface BackgroundColorRef {
 interface BoundarySeeds {
   y: number[];
   x: number[];
+  localBgR: number;
+  localBgG: number;
+  localBgB: number;
 }
 
-function collectBoundarySeeds(rawAlpha: Float32Array, w: number, h: number): BoundarySeeds {
+function sampleAdjacentBg(
+  ref: Uint8ClampedArray,
+  rawAlpha: Float32Array,
+  w: number,
+  h: number,
+  y: number,
+  x: number,
+  defaultBg: BackgroundColorRef,
+): [number, number, number] | null {
+  const neighbors: readonly [number, number][] = [
+    [y - 1, x],
+    [y + 1, x],
+    [y, x - 1],
+    [y, x + 1],
+  ];
+  const maxBgDev = Math.max(30, defaultBg.tolerance * 1.5);
+  for (const [ny, nx] of neighbors) {
+    if (ny >= 0 && ny < h && nx >= 0 && nx < w) {
+      const nidx = ny * w + nx;
+      if (rawAlpha[nidx] < 0.1) {
+        const off = nidx * 4;
+        const dist = Math.hypot(
+          ref[off] - defaultBg.r,
+          ref[off + 1] - defaultBg.g,
+          ref[off + 2] - defaultBg.b,
+        );
+        if (dist <= maxBgDev) {
+          return [ref[off], ref[off + 1], ref[off + 2]];
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function isPixelBoundary(rawAlpha: Float32Array, idx: number, w: number): boolean {
+  if (rawAlpha[idx] < 0.5) return false;
+  return (
+    rawAlpha[idx - 1] < 0.2 ||
+    rawAlpha[idx + 1] < 0.2 ||
+    rawAlpha[idx - w] < 0.2 ||
+    rawAlpha[idx + w] < 0.2
+  );
+}
+
+function collectBoundarySeeds(
+  rawAlpha: Float32Array,
+  ref: Uint8ClampedArray,
+  w: number,
+  h: number,
+  defaultBg: BackgroundColorRef,
+): BoundarySeeds {
   const seedsY: number[] = [];
   const seedsX: number[] = [];
+  let sumBgR = 0;
+  let sumBgG = 0;
+  let sumBgB = 0;
+  let bgSamples = 0;
 
   for (let y = 1; y < h - 1; y++) {
     const row = y * w;
     for (let x = 1; x < w - 1; x++) {
       const idx = row + x;
-      if (rawAlpha[idx] < 0.5) continue;
-      const isBoundary =
-        rawAlpha[idx - 1] < 0.2 ||
-        rawAlpha[idx + 1] < 0.2 ||
-        rawAlpha[idx - w] < 0.2 ||
-        rawAlpha[idx + w] < 0.2;
-      if (isBoundary) {
-        seedsY.push(y);
-        seedsX.push(x);
+      if (!isPixelBoundary(rawAlpha, idx, w)) continue;
+      seedsY.push(y);
+      seedsX.push(x);
+      const bgSample = sampleAdjacentBg(ref, rawAlpha, w, h, y, x, defaultBg);
+      if (bgSample) {
+        sumBgR += bgSample[0];
+        sumBgG += bgSample[1];
+        sumBgB += bgSample[2];
+        bgSamples++;
       }
     }
   }
 
-  return { y: seedsY, x: seedsX };
+  return {
+    y: seedsY,
+    x: seedsX,
+    localBgR: bgSamples > 0 ? sumBgR / bgSamples : defaultBg.r,
+    localBgG: bgSamples > 0 ? sumBgG / bgSamples : defaultBg.g,
+    localBgB: bgSamples > 0 ? sumBgB / bgSamples : defaultBg.b,
+  };
+}
+
+function computeColorGradient(ref: Uint8ClampedArray, nidx: number, w: number): number {
+  const left = (nidx - 1) * 4;
+  const right = (nidx + 1) * 4;
+  const up = (nidx - w) * 4;
+  const down = (nidx + w) * 4;
+
+  const dxR = ref[right] - ref[left];
+  const dxG = ref[right + 1] - ref[left + 1];
+  const dxB = ref[right + 2] - ref[left + 2];
+  const dyR = ref[down] - ref[up];
+  const dyG = ref[down + 1] - ref[up + 1];
+  const dyB = ref[down + 2] - ref[up + 2];
+
+  const dx = Math.hypot(dxR, dxG, dxB);
+  const dy = Math.hypot(dyR, dyG, dyB);
+  return Math.hypot(dx, dy);
+}
+
+function computeLaplacian(
+  ref: Uint8ClampedArray,
+  nidx: number,
+  w: number,
+  nr: number,
+  ng: number,
+  nb: number,
+): number {
+  const left = (nidx - 1) * 4;
+  const right = (nidx + 1) * 4;
+  const up = (nidx - w) * 4;
+  const down = (nidx + w) * 4;
+
+  const avgR = (ref[left] + ref[right] + ref[up] + ref[down]) * 0.25;
+  const avgG = (ref[left + 1] + ref[right + 1] + ref[up + 1] + ref[down + 1]) * 0.25;
+  const avgB = (ref[left + 2] + ref[right + 2] + ref[up + 2] + ref[down + 2]) * 0.25;
+
+  return Math.hypot(nr - avgR, ng - avgG, nb - avgB);
 }
 
 function evaluatePixelCandidate(
@@ -39,25 +141,24 @@ function evaluatePixelCandidate(
   nidx: number,
   w: number,
   bg: BackgroundColorRef,
+  localBg: { r: number; g: number; b: number },
 ): { isStructure: boolean; strength: number } {
-  const noff = nidx * 4;
-  const nr = ref[noff];
-  const ng = ref[noff + 1];
-  const nb = ref[noff + 2];
+  const off = nidx * 4;
+  const nr = ref[off];
+  const ng = ref[off + 1];
+  const nb = ref[off + 2];
 
-  const distBg = Math.hypot(nr - bg.r, ng - bg.g, nb - bg.b);
-  const leftOff = (nidx - 1) * 4;
-  const rightOff = (nidx + 1) * 4;
-  const upOff = (nidx - w) * 4;
-  const downOff = (nidx + w) * 4;
+  const distLocal = Math.hypot(nr - localBg.r, ng - localBg.g, nb - localBg.b);
+  const distGlobal = Math.hypot(nr - bg.r, ng - bg.g, nb - bg.b);
+  const distBg = Math.max(distLocal, distGlobal);
 
-  const dx = Math.abs(ref[rightOff] - ref[leftOff]);
-  const dy = Math.abs(ref[downOff] - ref[upOff]);
-  const grad = Math.hypot(dx, dy);
+  const grad = computeColorGradient(ref, nidx, w);
+  const laplacian = computeLaplacian(ref, nidx, w, nr, ng, nb);
 
-  const bgTol = Math.max(22, bg.tolerance);
-  const isStructure = grad > 18 || distBg > bgTol;
-  const strength = Math.min(1.0, Math.max(0.4, distBg / 48.0));
+  const bgTol = Math.max(16, bg.tolerance);
+  const isStructure = grad > 15 || laplacian > 10 || distBg > bgTol;
+  const metric = Math.max(distBg / 42.0, laplacian / 22.0);
+  const strength = Math.min(1.0, Math.max(0.45, metric));
 
   return { isStructure, strength };
 }
@@ -67,35 +168,91 @@ interface PropagationContext {
   w: number;
   h: number;
   bg: BackgroundColorRef;
+  localBg: { r: number; g: number; b: number };
   maxDistance: number;
 }
 
-function processNeighbor(
-  ny: number,
-  nx: number,
+interface QueueState {
+  y: number[];
+  x: number[];
+  dist: number[];
+}
+
+const DIRS: readonly [number, number][] = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
+  [-1, -1],
+  [-1, 1],
+  [1, -1],
+  [1, 1],
+];
+
+function tryBridgeGap(
+  ctx: PropagationContext,
+  cy: number,
+  cx: number,
+  dy: number,
+  dx: number,
+  cdist: number,
+  visited: Uint8Array,
+  outAlpha: Float32Array,
+  queue: QueueState,
+): void {
+  const { ref, w, h, bg, localBg, maxDistance } = ctx;
+  if (cdist + 2 >= maxDistance) return;
+
+  const gny = cy + dy * 2;
+  const gnx = cx + dx * 2;
+  if (gny <= 0 || gny >= h - 1 || gnx <= 0 || gnx >= w - 1) return;
+
+  const gnidx = gny * w + gnx;
+  if (visited[gnidx]) return;
+
+  const candidate = evaluatePixelCandidate(ref, gnidx, w, bg, localBg);
+  if (candidate.isStructure) {
+    const gapIdx = (cy + dy) * w + (cx + dx);
+    visited[gapIdx] = 1;
+    visited[gnidx] = 1;
+    outAlpha[gapIdx] = Math.max(outAlpha[gapIdx], candidate.strength * 0.75);
+    outAlpha[gnidx] = Math.max(outAlpha[gnidx], candidate.strength);
+    queue.y.push(gny);
+    queue.x.push(gnx);
+    queue.dist.push(cdist + 2);
+  }
+}
+
+function processDirection(
+  cy: number,
+  cx: number,
+  dy: number,
+  dx: number,
   cdist: number,
   ctx: PropagationContext,
   visited: Uint8Array,
   outAlpha: Float32Array,
-  queue: { y: number[]; x: number[]; dist: number[] },
+  queue: QueueState,
 ): void {
-  const { ref, w, h, bg, maxDistance } = ctx;
+  const { ref, w, h, bg, localBg, maxDistance } = ctx;
+  const ny = cy + dy;
+  const nx = cx + dx;
   if (ny <= 0 || ny >= h - 1 || nx <= 0 || nx >= w - 1) return;
 
   const nidx = ny * w + nx;
   if (visited[nidx]) return;
-  visited[nidx] = 1;
 
-  const { isStructure, strength } = evaluatePixelCandidate(ref, nidx, w, bg);
-  if (!isStructure) return;
-
-  if (strength > outAlpha[nidx]) {
-    outAlpha[nidx] = strength;
-  }
-  if (cdist + 1 < maxDistance) {
-    queue.y.push(ny);
-    queue.x.push(nx);
-    queue.dist.push(cdist + 1);
+  const candidate = evaluatePixelCandidate(ref, nidx, w, bg, localBg);
+  if (candidate.isStructure) {
+    visited[nidx] = 1;
+    outAlpha[nidx] = Math.max(outAlpha[nidx], candidate.strength);
+    if (cdist + 1 < maxDistance) {
+      queue.y.push(ny);
+      queue.x.push(nx);
+      queue.dist.push(cdist + 1);
+    }
+  } else {
+    tryBridgeGap(ctx, cy, cx, dy, dx, cdist, visited, outAlpha, queue);
   }
 }
 
@@ -110,15 +267,15 @@ export function recoverFineStructures(
   w: number,
   h: number,
   bg: BackgroundColorRef,
-  maxDistance = 260,
+  maxDistance?: number,
 ): Float32Array {
-  const seeds = collectBoundarySeeds(rawAlpha, w, h);
+  const seeds = collectBoundarySeeds(rawAlpha, ref, w, h, bg);
   if (seeds.y.length === 0) return rawAlpha;
 
   const total = w * h;
   const outAlpha = new Float32Array(rawAlpha);
   const visited = new Uint8Array(total);
-  const queue = {
+  const queue: QueueState = {
     y: [...seeds.y],
     x: [...seeds.x],
     dist: new Array(seeds.y.length).fill(0),
@@ -128,7 +285,9 @@ export function recoverFineStructures(
     visited[seeds.y[i] * w + seeds.x[i]] = 1;
   }
 
-  const pCtx: PropagationContext = { ref, w, h, bg, maxDistance };
+  const limit = maxDistance ?? Math.max(350, Math.round(Math.max(w, h) * 0.45));
+  const localBg = { r: seeds.localBgR, g: seeds.localBgG, b: seeds.localBgB };
+  const pCtx: PropagationContext = { ref, w, h, bg, localBg, maxDistance: limit };
   let head = 0;
 
   while (head < queue.y.length) {
@@ -137,10 +296,9 @@ export function recoverFineStructures(
     const cdist = queue.dist[head];
     head++;
 
-    processNeighbor(cy - 1, cx, cdist, pCtx, visited, outAlpha, queue);
-    processNeighbor(cy + 1, cx, cdist, pCtx, visited, outAlpha, queue);
-    processNeighbor(cy, cx - 1, cdist, pCtx, visited, outAlpha, queue);
-    processNeighbor(cy, cx + 1, cdist, pCtx, visited, outAlpha, queue);
+    for (let i = 0; i < DIRS.length; i++) {
+      processDirection(cy, cx, DIRS[i][0], DIRS[i][1], cdist, pCtx, visited, outAlpha, queue);
+    }
   }
 
   return outAlpha;

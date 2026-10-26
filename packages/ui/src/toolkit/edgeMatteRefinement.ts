@@ -70,7 +70,7 @@ export function detectBackgroundFromPerimeter(
   };
 }
 
-function resolveGlassAlpha(
+export function resolveGlassAlpha(
   a: number,
   r: number,
   g: number,
@@ -78,24 +78,33 @@ function resolveGlassAlpha(
   dist: number,
   tolerance: number,
 ): number {
-  // Strong specular highlights stay crisp and solid
-  if (r > 235 && g > 235 && b > 235) {
+  const maxC = Math.max(r, g, b);
+  const minC = Math.min(r, g, b);
+  const saturation = maxC - minC;
+
+  // 1. Specular highlights (pure white glare/glint from light sources) stay crisp & solid
+  if (minC > 228 && saturation < 25) {
     return Math.min(1.0, a);
   }
 
-  // Colored glass (e.g. red cup, purple liquid, green glass)
-  const saturation = Math.max(r, g, b) - Math.min(r, g, b);
-  if (saturation > 25 && a > 0.2) {
-    return Math.max(0.35, Math.min(0.68, a * 0.5 + 0.15));
+  // 2. Colored tinted glass (e.g. red cup, amber bottle, stained glass, colored liquid)
+  // Optical transmission lets background shine through while preserving the colored tint
+  if (saturation > 18 && a > 0.15) {
+    return Math.max(0.35, Math.min(0.65, a * 0.45 + 0.2));
   }
 
-  // Clear / neutral glass
-  if (dist <= tolerance) {
-    return Math.max(0.18, Math.min(0.45, a * 0.45 + 0.12));
+  // 3. Clear / transparent glass (low saturation, close to background)
+  if (dist <= tolerance * 1.25) {
+    return Math.max(0.18, Math.min(0.42, a * 0.35 + 0.12));
   }
-  if (dist > 40) return Math.min(1.0, a * 1.15 + 0.1);
-  const factor = (dist - tolerance) / (40 - tolerance);
-  return Math.max(0.18, Math.min(1.0, a * factor + 0.12));
+
+  // 4. Thick refraction edges / glass rims / bases
+  if (dist > 45) {
+    return Math.min(1.0, a * 1.15 + 0.1);
+  }
+
+  const factor = (dist - tolerance) / (45 - tolerance);
+  return Math.max(0.2, Math.min(1.0, a * factor + 0.15));
 }
 
 function resolveSolidAlpha(a: number, dist: number, tolerance: number): number {
@@ -122,18 +131,28 @@ function refineBoundaryAlpha(
     return resolveGlassAlpha(a, r, g, b, dist, bg.tolerance);
   }
 
-  if (!bg.isUniform) return a;
-
   if (mode === 'solid') {
     return resolveSolidAlpha(a, dist, bg.tolerance);
   }
 
-  // Auto mode: check if region has subtle translucent gradient
-  if (a >= 0.88) return 1.0;
-  if (a > 0.25 && dist <= bg.tolerance) {
-    // Preserve soft translucency for transparent wings, veils, glass
-    return Math.max(0.15, Math.min(0.4, a * 0.4 + 0.12));
+  // Auto mode: check if subject pixel exhibits glass transmission characteristics
+  const maxC = Math.max(r, g, b);
+  const minC = Math.min(r, g, b);
+  const saturation = maxC - minC;
+  const isGlint = minC > 228 && saturation < 25;
+
+  if (a > 0.15 && !isGlint) {
+    // Colored translucent object (tinted glass, veil, transparent wing)
+    if (saturation > 22 && dist > 14) {
+      return Math.max(0.38, Math.min(0.68, a * 0.48 + 0.18));
+    }
+    // Clear translucent object close to background
+    if (dist <= bg.tolerance * 1.2) {
+      return Math.max(0.18, Math.min(0.42, a * 0.35 + 0.12));
+    }
   }
+
+  if (!bg.isUniform) return a;
   return resolveSolidAlpha(a, dist, bg.tolerance);
 }
 
@@ -201,7 +220,8 @@ export function applySubpixelSmoothing(
 }
 
 function cleanChannelRgb(val: number, a: number, bgVal: number): number {
-  const clean = (val - (1 - a) * bgVal) / a;
+  const safeA = Math.max(0.12, a);
+  const clean = (val - (1 - a) * bgVal) / safeA;
   return Math.max(0, Math.min(255, Math.round(clean)));
 }
 
@@ -232,7 +252,7 @@ export function buildDefringedImageData(
     const g = ref[off + 1];
     const b = ref[off + 2];
 
-    if (a >= 0.95 || !bg.isUniform) {
+    if (a >= 0.95) {
       out.data[off] = r;
       out.data[off + 1] = g;
       out.data[off + 2] = b;
@@ -255,11 +275,15 @@ export function refineMatte(
   h: number,
   feather = 2,
   transparencyMode: TransparencyMode = 'auto',
+  customTolerance?: number,
 ): ImageData {
   const origData = origCtx.getImageData(0, 0, w, h);
   const cutData = cutCtx.getImageData(0, 0, w, h);
 
   const bg = detectBackgroundFromPerimeter(origData.data, w, h);
+  if (customTolerance !== undefined && customTolerance > 0) {
+    bg.tolerance = Math.max(10, customTolerance);
+  }
 
   const total = w * h;
   const rawAlpha = new Float32Array(total);
