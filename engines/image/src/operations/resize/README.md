@@ -44,14 +44,14 @@ TASK-005C):
 1. **File presence.** No file is `IMAGE_NO_FILE_SELECTED`.
 2. **Declared type, by signature** (not extension or claimed MIME type): no JPG/PNG/WebP signature is
    `IMAGE_INVALID_FILE_TYPE`.
-3. **File size** over 25 MB is `IMAGE_FILE_TOO_LARGE`.
+3. **File size** over 100 MB is `IMAGE_FILE_TOO_LARGE`.
 4. **Requested target dimensions**: not a positive integer, or over the single-axis sanity cap
    (`limits.ts`), is `IMAGE_DIMENSIONS_INVALID`. Checked before decoding, since it needs no decode.
 5. **Decode.** A file that looks like an image by signature but fails to decode is `IMAGE_UNREADABLE`.
-6. **Decoded (source) pixel count** over 40 megapixels is `IMAGE_SOURCE_PIXELS_TOO_LARGE` — checked because
+6. **Decoded (source) pixel count** over 120 megapixels is `IMAGE_SOURCE_PIXELS_TOO_LARGE` — checked because
    a small, highly-compressed file can still decode to a very large bitmap; file size alone (step 3) is not
    a sufficient proxy for memory risk.
-7. **Computed output pixel count** (after aspect-ratio fitting) over 40 megapixels is
+7. **Computed output pixel count** (after aspect-ratio fitting) over 120 megapixels is
    `IMAGE_OUTPUT_DIMENSIONS_TOO_LARGE` — the same risk from the other direction.
 8. **Canvas render / encode** falls back to `IMAGE_RESIZE_FAILED` for any unexpected failure once the
    source has already decoded successfully (except the disclosed WebP fallback, which is not a failure —
@@ -137,9 +137,9 @@ does. This is stated in the standing warnings (`IMAGE_METADATA_NOT_PRESERVED`) r
 
 | Limit | Value |
 |---|---|
-| Maximum input file size | 25 MB |
-| Maximum decoded (source) pixels | 40 megapixels |
-| Maximum output pixels | 40 megapixels |
+| Maximum input file size | 100 MB |
+| Maximum decoded (source) pixels | 120 megapixels |
+| Maximum output pixels | 80 megapixels |
 | Maximum single-axis pixels (either input target) | 20,000 |
 
 ## Fixtures and what they can and cannot cover

@@ -47,7 +47,7 @@ it happens.
 you chose, and the quality setting, not on the conversion itself. Both the original and converted file
 sizes, and the difference, are shown so you can check.
 
-**File size and browser limits.** An image can be up to 25 MB, and up to 40 megapixels once decoded. Very
+**File size and browser limits.** An image can be up to 100 MB, and up to 120 megapixels once decoded. Very
 large images, or images with very large pixel dimensions, may fail because of browser memory limits; this
 is a stated limit for a tool that runs entirely on your device, not a server. Output can also differ
 slightly between browsers, because browser image encoders vary — verify the result in the browser your

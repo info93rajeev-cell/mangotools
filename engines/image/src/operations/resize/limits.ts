@@ -1,7 +1,7 @@
 /** Resize-specific limits (founder-approved). `MAX_FILE_*`/`MAX_SOURCE_*` are shared engine-wide — see
  * `../../lib/limits.ts`. Only the *requested output* cap and the single-axis sanity cap are specific to
  * Resize's own target-dimension inputs, which no other operation in this engine has. */
-export const MAX_OUTPUT_MEGAPIXELS = 40;
+export const MAX_OUTPUT_MEGAPIXELS = 80;
 export const MAX_OUTPUT_PIXELS = MAX_OUTPUT_MEGAPIXELS * 1_000_000;
 
 /**

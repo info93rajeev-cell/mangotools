@@ -81,10 +81,19 @@ async function executeConvertWorker(
   if (cfg.targetFormat === 'pdf') {
     return convertImageToPdf(cfg);
   }
+  const maxPixels = 80_000_000;
+  let targetWidth = cfg.sourceDims.width;
+  let targetHeight = cfg.sourceDims.height;
+  const currentPixels = targetWidth * targetHeight;
+  if (currentPixels > maxPixels && currentPixels > 0) {
+    const scale = Math.sqrt(maxPixels / currentPixels);
+    targetWidth = Math.max(1, Math.floor(targetWidth * scale));
+    targetHeight = Math.max(1, Math.floor(targetHeight * scale));
+  }
   const input = {
     file: { name: cfg.file.name, bytes: cfg.file.bytes },
-    targetWidth: cfg.sourceDims.width,
-    targetHeight: cfg.sourceDims.height,
+    targetWidth,
+    targetHeight,
     keepAspectRatio: true,
     outputFormat: cfg.targetFormat,
     quality: cfg.targetFormat === 'jpg' || cfg.targetFormat === 'webp' ? cfg.quality : undefined,

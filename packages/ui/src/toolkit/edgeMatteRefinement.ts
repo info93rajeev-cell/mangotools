@@ -75,7 +75,6 @@ export function resolveGlassAlpha(
   tolerance: number,
 ): number {
   if (a <= 0.005) return 0.0;
-  if (dist <= tolerance * 0.75) return 0.0;
 
   const maxC = Math.max(r, g, b);
   const minC = Math.min(r, g, b);
@@ -87,12 +86,19 @@ export function resolveGlassAlpha(
     return 1.0;
   }
 
+  if (dist <= tolerance * 0.75) return 0.0;
+
   // 2. Opaque solid bodies inside/with glass (fruit, lime, strawberry, metal straw, hand, cloud)
-  if (a >= 0.85 && (saturation > 35 || lum < 80 || (dist > 100 && saturation > 20))) {
+  if (a >= 0.85 && (lum < 80 || (dist > 100 && saturation > 35 && lum < 120))) {
     return 1.0;
   }
 
-  // 3. Continuous optical glass formula:
+  // 3. Tinted luminous glass (e.g. blue wings, amber bottle, red cocktail coupe)
+  if (saturation > 20 && lum >= 100) {
+    return Math.max(0.35, Math.min(0.65, a * 0.45 + 0.2));
+  }
+
+  // 4. Continuous clear optical glass formula:
   // Base optical density of clear glass transmission
   let target = 0.2;
 
@@ -102,20 +108,15 @@ export function resolveGlassAlpha(
     target += Math.min(0.75, norm * norm * 0.75);
   }
 
-  // Tinted absorption (colored crystal glass, amber, blue wings, etc.)
-  if (saturation > 12) {
-    target += Math.min(0.6, (saturation - 12) / 35);
-  }
-
   // Contrast / internal refractions
   if (lum < 150) {
-    target += Math.min(0.55, (150 - lum) / 80);
+    target += Math.min(0.25, (150 - lum) / 100);
   }
 
   // Deviation from background
   if (dist > tolerance) {
     const dev = (dist - tolerance) / 50;
-    target += Math.min(0.4, dev * 0.4);
+    target += Math.min(0.2, dev * 0.2);
   }
 
   return Math.max(0.15, Math.min(1.0, target));
