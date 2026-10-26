@@ -72,13 +72,25 @@ async function executeResizeWorker(cfg: ResizeRunConfig): Promise<Result<ImageRe
     if (!outcome.ok) return outcome;
     return convertResizedToPdf(cfg, outcome.value);
   }
+  const maxPixels = 80_000_000;
+  let targetWidth = Math.round(cfg.targetWidth);
+  let targetHeight = Math.round(cfg.targetHeight);
+  const currentPixels = targetWidth * targetHeight;
+  if (currentPixels > maxPixels && currentPixels > 0) {
+    const scale = Math.sqrt(maxPixels / currentPixels);
+    targetWidth = Math.max(1, Math.floor(targetWidth * scale));
+    targetHeight = Math.max(1, Math.floor(targetHeight * scale));
+  }
   const input = {
     file: { name: cfg.file.name, bytes: cfg.file.bytes },
-    targetWidth: Math.round(cfg.targetWidth),
-    targetHeight: Math.round(cfg.targetHeight),
+    targetWidth,
+    targetHeight,
     keepAspectRatio: cfg.keepAspectRatio,
     outputFormat: cfg.outputFormat,
-    quality: cfg.outputFormat === 'jpg' || cfg.outputFormat === 'webp' ? cfg.quality : undefined,
+    quality:
+      cfg.outputFormat === 'jpg' || cfg.outputFormat === 'webp' || cfg.outputFormat === 'same'
+        ? cfg.quality
+        : undefined,
     outputFileName: cfg.customFileName.trim() || undefined,
   };
   const outcome = await getWorkerHost().run(cfg.preset.operation, input, cfg.preset.params);
@@ -155,9 +167,16 @@ function applyLoadedImage(
   s.setFile(res.file);
   s.setImageSrc(res.blobUrl);
   s.setSourceDims(res.dims);
-  s.setTargetWidth(Math.round(res.dims.width * scale));
-  s.setTargetHeight(Math.round(res.dims.height * scale));
-  s.setScalePercent(Math.round(scale * 100));
+  const maxOutputPixels = 80_000_000;
+  const currentPixels = res.dims.width * res.dims.height;
+  let effectiveScale = scale;
+  if (currentPixels > maxOutputPixels && currentPixels > 0) {
+    const autoScale = Math.sqrt(maxOutputPixels / currentPixels);
+    effectiveScale = Math.min(scale, autoScale);
+  }
+  s.setTargetWidth(Math.round(res.dims.width * effectiveScale));
+  s.setTargetHeight(Math.round(res.dims.height * effectiveScale));
+  s.setScalePercent(Math.round(effectiveScale * 100));
   s.setCustomFileName('');
 }
 

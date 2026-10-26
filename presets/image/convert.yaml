@@ -8,7 +8,7 @@ params:
   outputFileNameFallback: "converted-image"
 ui:
   archetypes: [D]
-  fileAccept: "image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+  fileAccept: "image/jpeg,image/png,image/webp"
   maxFiles: 1
 fields:
   # Hidden: Image Format Converter keeps the source's own dimensions. The preview's onLoad prefills these

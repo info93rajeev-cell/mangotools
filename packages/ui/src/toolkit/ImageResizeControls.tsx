@@ -49,7 +49,7 @@ function UploadSection({
       <input
         id={fileInputId}
         type="file"
-        accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
+        accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
         style={{ display: 'none' }}
         onChange={(e) => {
           const f = (e.target as HTMLInputElement).files?.[0];
@@ -179,6 +179,58 @@ function DimensionsSection({
   );
 }
 
+function QualitySection({
+  idPrefix,
+  resize,
+  disabled,
+}: {
+  idPrefix: string;
+  resize: UseImageResizeReturn;
+  disabled: boolean;
+}) {
+  const isLossy =
+    resize.outputFormat === 'jpg' ||
+    resize.outputFormat === 'webp' ||
+    (resize.outputFormat === 'same' &&
+      (resize.file?.name?.toLowerCase().endsWith('.jpg') ||
+        resize.file?.name?.toLowerCase().endsWith('.jpeg') ||
+        resize.file?.name?.toLowerCase().endsWith('.webp')));
+  if (!isLossy) return null;
+
+  return (
+    <div class={styles.qualityRow}>
+      <label class={styles.qualityLabel} for={`${idPrefix}-quality`}>
+        <span>Quality</span>
+        <span class={styles.qualityValue}>{resize.quality}%</span>
+      </label>
+      <div class={styles.qualityInputRow}>
+        <input
+          id={`${idPrefix}-quality-slider`}
+          aria-label="Quality slider"
+          type="range"
+          min={1}
+          max={100}
+          value={resize.quality}
+          disabled={disabled}
+          onInput={(e) => resize.setQuality(Number((e.target as HTMLInputElement).value))}
+          class={styles.qualitySlider}
+        />
+        <input
+          id={`${idPrefix}-quality`}
+          aria-label="Quality"
+          type="number"
+          min={1}
+          max={100}
+          value={resize.quality}
+          disabled={disabled}
+          onInput={(e) => resize.setQuality(Number((e.target as HTMLInputElement).value))}
+          class={styles.qualityNumber}
+        />
+      </div>
+    </div>
+  );
+}
+
 function FormatSection({ idPrefix, resize }: { idPrefix: string; resize: UseImageResizeReturn }) {
   const isExecuting = resize.phase === 'running';
   const hasFile = !!resize.file;
@@ -227,6 +279,8 @@ function FormatSection({ idPrefix, resize }: { idPrefix: string; resize: UseImag
           </button>
         ))}
       </fieldset>
+
+      <QualitySection idPrefix={idPrefix} resize={resize} disabled={!hasFile || isExecuting} />
 
       <label class={styles.filenameLabel} for={`${idPrefix}-output-filename`}>
         <span>Output file name</span>
