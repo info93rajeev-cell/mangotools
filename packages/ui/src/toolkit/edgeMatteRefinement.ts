@@ -81,34 +81,38 @@ export function resolveGlassAlpha(
   const maxC = Math.max(r, g, b);
   const minC = Math.min(r, g, b);
   const saturation = maxC - minC;
+  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
 
-  // 1. Specular highlights (pure white glare/glint from light sources) stay crisp & solid
-  if (minC > 228 && saturation < 25) {
-    return Math.min(1.0, a);
+  // 1. Specular glints (direct reflection of light source) stay solid
+  if (minC >= 240 && saturation <= 15) {
+    return 1.0;
   }
 
-  // 2. Colored tinted glass (e.g. red cup, amber bottle, stained glass, colored liquid)
-  // Optical transmission lets background shine through while preserving the colored tint
-  if (saturation > 18 && a > 0.15) {
-    return Math.max(0.35, Math.min(0.65, a * 0.45 + 0.2));
+  // 2. Clear transparent glass body (color close to background)
+  if (dist <= tolerance * 1.25 && a > 0.05) {
+    return Math.max(0.18, Math.min(0.45, a * 0.4 + 0.1));
   }
 
-  // 3. Clear / transparent glass (low saturation, close to background)
-  if (dist <= tolerance * 1.25) {
-    return Math.max(0.18, Math.min(0.42, a * 0.35 + 0.12));
+  // 3. Opaque solid bodies (ceramic vase, plastic birds, hats, boots)
+  // Low luminance or high distance from background means it is a solid object, not transparent glass!
+  if (a >= 0.85 && (lum < 110 || dist > 60)) {
+    return 1.0;
   }
 
-  // 4. Thick refraction edges / glass rims / bases
-  if (dist > 45) {
-    return Math.min(1.0, a * 1.15 + 0.1);
+  // 4. Tinted luminous glass (e.g. red cocktail cup, amber bottle, stained glass)
+  if (saturation > 25 && lum >= 110 && a > 0.2) {
+    return Math.max(0.38, Math.min(0.65, a * 0.45 + 0.2));
   }
 
-  const factor = (dist - tolerance) / (45 - tolerance);
-  return Math.max(0.2, Math.min(1.0, a * factor + 0.15));
+  if (a >= 0.85) return 1.0;
+  if (dist <= tolerance) return 0;
+  if (dist > 40) return Math.min(1.0, a * 1.25 + 0.1);
+  const factor = (dist - tolerance) / (40 - tolerance);
+  return Math.max(0, Math.min(1.0, a * factor));
 }
 
 function resolveSolidAlpha(a: number, dist: number, tolerance: number): number {
-  if (a >= 0.88) return 1.0;
+  if (a >= 0.85) return 1.0;
   if (dist <= tolerance) return 0;
   if (dist > 40) return Math.min(1.0, a * 1.35 + 0.15);
   const factor = (dist - tolerance) / (40 - tolerance);
@@ -135,23 +139,11 @@ function refineBoundaryAlpha(
     return resolveSolidAlpha(a, dist, bg.tolerance);
   }
 
-  // Auto mode: check if subject pixel exhibits glass transmission characteristics
-  const maxC = Math.max(r, g, b);
-  const minC = Math.min(r, g, b);
-  const saturation = maxC - minC;
-  const isGlint = minC > 228 && saturation < 25;
+  // Auto mode:
+  // Solid foreground objects (a >= 0.85) MUST remain 100% solid (1.0) so colors never fade!
+  if (a >= 0.85) return 1.0;
 
-  if (a > 0.15 && !isGlint) {
-    // Colored translucent object (tinted glass, veil, transparent wing)
-    if (saturation > 22 && dist > 14) {
-      return Math.max(0.38, Math.min(0.68, a * 0.48 + 0.18));
-    }
-    // Clear translucent object close to background
-    if (dist <= bg.tolerance * 1.2) {
-      return Math.max(0.18, Math.min(0.42, a * 0.35 + 0.12));
-    }
-  }
-
+  // Boundary transition zone: refine edges
   if (!bg.isUniform) return a;
   return resolveSolidAlpha(a, dist, bg.tolerance);
 }

@@ -40,60 +40,57 @@ describe('edgeMatteRefinement', () => {
     const w = 4;
     const h = 4;
     const total = w * h;
-    const rawAlpha = new Float32Array(total).fill(0.9);
+    const rawAlpha = new Float32Array(total).fill(0.8);
     const ref = new Uint8ClampedArray(total * 4);
 
-    // Pixel 0: Saturated red glass (R=200, G=30, B=30)
-    ref[0] = 200;
-    ref[1] = 30;
-    ref[2] = 30;
+    // Pixel 0: Luminous red tinted glass (R=230, G=110, B=110, Lum=146)
+    ref[0] = 230;
+    ref[1] = 110;
+    ref[2] = 110;
     ref[3] = 255;
 
-    // Pixel 1: Specular highlight (R=245, G=245, B=245)
-    ref[4] = 245;
-    ref[5] = 245;
-    ref[6] = 245;
+    // Pixel 1: Specular highlight (R=248, G=248, B=248)
+    ref[4] = 248;
+    ref[5] = 248;
+    ref[6] = 248;
     ref[7] = 255;
 
     const bg = { r: 240, g: 240, b: 240, isUniform: false, tolerance: 20 };
     const refined = refineAlphaMask(rawAlpha, ref, w, h, bg, 'glass');
 
-    // Red glass pixel should have soft transmission alpha
+    // Luminous tinted glass pixel should have soft transmission alpha
     expect(refined[0]).toBeGreaterThanOrEqual(0.35);
     expect(refined[0]).toBeLessThanOrEqual(0.68);
 
     // Specular highlight stays solid
-    expect(refined[1]).toBeCloseTo(0.9, 2);
+    expect(refined[1]).toBe(1.0);
   });
 
-  it('refineAlphaMask in auto mode automatically detects colored glass transmission', () => {
+  it('refineAlphaMask in auto mode preserves solid foreground objects without fading', () => {
     const w = 2;
     const h = 2;
     const total = w * h;
     const rawAlpha = new Float32Array(total).fill(0.95);
     const ref = new Uint8ClampedArray(total * 4);
 
-    // Saturated red glass cup pixel
-    ref[0] = 210;
-    ref[1] = 25;
-    ref[2] = 25;
+    // Deep red solid plastic / ceramic subject pixel
+    ref[0] = 108;
+    ref[1] = 0;
+    ref[2] = 0;
     ref[3] = 255;
 
-    // Specular highlight glint
-    ref[4] = 248;
-    ref[5] = 248;
-    ref[6] = 248;
+    // Deep blue solid object pixel
+    ref[4] = 2;
+    ref[5] = 16;
+    ref[6] = 79;
     ref[7] = 255;
 
     const bg = { r: 245, g: 245, b: 245, isUniform: true, tolerance: 20 };
     const refined = refineAlphaMask(rawAlpha, ref, w, h, bg, 'auto');
 
-    // Auto mode should give colored glass soft physical transmission alpha
-    expect(refined[0]).toBeGreaterThanOrEqual(0.35);
-    expect(refined[0]).toBeLessThanOrEqual(0.68);
-
-    // Specular glint stays crisp and solid (>= 0.95)
-    expect(refined[1]).toBeGreaterThanOrEqual(0.95);
+    // Solid objects in Auto mode MUST remain 1.0 (never faded to 0.65!)
+    expect(refined[0]).toBe(1.0);
+    expect(refined[1]).toBe(1.0);
   });
 
   it('applySubpixelSmoothing smooths fractional boundary alpha', () => {

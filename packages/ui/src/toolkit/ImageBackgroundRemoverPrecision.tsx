@@ -232,6 +232,19 @@ export function BackgroundFillRow({
           <span>Black</span>
         </button>
       </div>
+      {bgRemover.replacementBackground === '#ffffff' && (
+        <span
+          style={{
+            display: 'block',
+            fontSize: '9px',
+            color: '#b45309',
+            marginTop: '2px',
+            lineHeight: '1.2',
+          }}
+        >
+          Opaque white background baked in. Select Clear for transparent cutout.
+        </span>
+      )}
     </div>
   );
 }
