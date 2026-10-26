@@ -125,6 +125,7 @@ function handleStaticFile(
   for (const [name, value] of headersFor(rules, path)) res.setHeader(name, value);
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.statusCode = found ? 200 : 404;
 
   if (extname(file) === '.html') {
