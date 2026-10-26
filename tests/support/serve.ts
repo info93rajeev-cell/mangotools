@@ -73,7 +73,7 @@ function handleModelRoute(
     res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
     res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
     res.statusCode = 200;
-    res.end('window.__MANGOTOOLS_MODELS_HOST__ = "/";\n');
+    res.end('window.__MANGOTOOLS_MODELS_HOST__ = window.location.origin + "/";\n');
     return true;
   }
 

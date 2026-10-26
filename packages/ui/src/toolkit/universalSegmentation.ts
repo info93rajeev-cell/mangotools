@@ -273,10 +273,19 @@ export async function executeUniversalCutout(
   const inputBlob = new Blob([safeBuffer], { type: mime });
 
   try {
-    const customHost =
+    const rawHost =
       typeof window !== 'undefined'
         ? (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string }).__MANGOTOOLS_MODELS_HOST__
         : undefined;
+
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    const customHost =
+      rawHost === '/' && typeof window !== 'undefined'
+        ? `${window.location.origin}/`
+        : rawHost || (isLocalhost ? `${window.location.origin}/` : undefined);
 
     await configureTransformersEnv(customHost);
 
