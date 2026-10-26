@@ -49,12 +49,12 @@ function sampleAdjacentBg(
 }
 
 function isPixelBoundary(rawAlpha: Float32Array, idx: number, w: number): boolean {
-  if (rawAlpha[idx] < 0.5) return false;
+  if (rawAlpha[idx] < 0.35) return false;
   return (
-    rawAlpha[idx - 1] < 0.2 ||
-    rawAlpha[idx + 1] < 0.2 ||
-    rawAlpha[idx - w] < 0.2 ||
-    rawAlpha[idx + w] < 0.2
+    rawAlpha[idx - 1] < 0.25 ||
+    rawAlpha[idx + 1] < 0.25 ||
+    rawAlpha[idx - w] < 0.25 ||
+    rawAlpha[idx + w] < 0.25
   );
 }
 
@@ -150,15 +150,15 @@ function evaluatePixelCandidate(
 
   const distLocal = Math.hypot(nr - localBg.r, ng - localBg.g, nb - localBg.b);
   const distGlobal = Math.hypot(nr - bg.r, ng - bg.g, nb - bg.b);
-  const distBg = Math.max(distLocal, distGlobal);
+  const distBg = Math.min(distLocal, distGlobal);
 
   const grad = computeColorGradient(ref, nidx, w);
   const laplacian = computeLaplacian(ref, nidx, w, nr, ng, nb);
 
   const bgTol = Math.max(16, bg.tolerance);
-  const isStructure = grad > 15 || laplacian > 10 || distBg > bgTol;
+  const isStructure = distBg > bgTol && (grad > 8 || distBg > bgTol * 1.25);
   const metric = Math.max(distBg / 42.0, laplacian / 22.0);
-  const strength = Math.min(1.0, Math.max(0.45, metric));
+  const strength = Math.min(1.0, Math.max(0.65, metric));
 
   return { isStructure, strength };
 }
@@ -285,7 +285,7 @@ export function recoverFineStructures(
     visited[seeds.y[i] * w + seeds.x[i]] = 1;
   }
 
-  const limit = maxDistance ?? Math.max(350, Math.round(Math.max(w, h) * 0.45));
+  const limit = maxDistance ?? Math.max(500, Math.round(Math.max(w, h) * 0.75));
   const localBg = { r: seeds.localBgR, g: seeds.localBgG, b: seeds.localBgB };
   const pCtx: PropagationContext = { ref, w, h, bg, localBg, maxDistance: limit };
   let head = 0;

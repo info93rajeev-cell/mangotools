@@ -167,7 +167,8 @@ async function createRefinedCanvas(
         return { canvas, origCanvas: cOrig };
       }
     }
-  } catch {
+  } catch (err) {
+    console.error('createRefinedCanvas failed:', err);
     // fallback to original cutout canvas if refined bitmap creation fails
   }
 
