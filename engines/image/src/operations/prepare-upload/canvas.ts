@@ -1,3 +1,4 @@
+import { enhancePhotoSharpness, enhanceSignatureClarity } from '../../lib/clarity.ts';
 import { encodeCanvas } from '../../lib/codec.ts';
 import type { Dimensions } from '../resize/dimensions.ts';
 import { type BoundingBox, calculatePaddedFittedBounds } from './ink.ts';
@@ -28,6 +29,9 @@ export async function encodePrepared(
     context.fillRect(0, 0, width, height);
   }
 
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
+
   if (input.padToTarget) {
     const box = inkBounds ?? { x: 0, y: 0, width: bitmap.width, height: bitmap.height };
     const padded = calculatePaddedFittedBounds(box, { width, height });
@@ -42,6 +46,8 @@ export async function encodePrepared(
       padded.destWidth,
       padded.destHeight,
     );
+    const isUpscaled = padded.destWidth > box.width || padded.destHeight > box.height;
+    enhanceSignatureClarity(context, width, height, input.outputFormat === 'jpg', isUpscaled);
   } else {
     const content = fittedDimensions(bitmap, { width, height });
     context.drawImage(
@@ -51,6 +57,8 @@ export async function encodePrepared(
       content.width,
       content.height,
     );
+    const isDownscaled = content.width < bitmap.width || content.height < bitmap.height;
+    enhancePhotoSharpness(context, width, height, isDownscaled, quality);
   }
 
   const encoded = await encodeCanvas(canvas, input.outputFormat, quality / 100);

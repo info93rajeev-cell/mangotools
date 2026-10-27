@@ -1,3 +1,4 @@
+import { enhancePhotoSharpness } from '../../lib/clarity.ts';
 import { encodeCanvas } from '../../lib/codec.ts';
 import type { ResolvedImageFormat } from '../../lib/formats.ts';
 
@@ -24,7 +25,13 @@ export async function renderAndEncodeCompress(
     ctx.fillRect(0, 0, width, height);
   }
 
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(bitmap, 0, 0, width, height);
+
+  if (quality < 90 || width < bitmap.width || height < bitmap.height) {
+    enhancePhotoSharpness(ctx, width, height, width < bitmap.width, quality);
+  }
 
   const encoded = await encodeCanvas(canvas, format, quality / 100);
   const bytes = new Uint8Array(await encoded.blob.arrayBuffer());

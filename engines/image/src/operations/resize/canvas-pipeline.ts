@@ -1,3 +1,4 @@
+import { enhancePhotoSharpness } from '../../lib/clarity.ts';
 import type { Dimensions } from './dimensions.ts';
 
 /**
@@ -19,6 +20,19 @@ export function renderResized(
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, output.width, output.height);
   }
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(bitmap, 0, 0, output.width, output.height);
+
+  if (output.width !== bitmap.width || output.height !== bitmap.height) {
+    enhancePhotoSharpness(
+      ctx,
+      output.width,
+      output.height,
+      output.width < bitmap.width || output.height < bitmap.height,
+      90,
+    );
+  }
+
   return canvas;
 }
