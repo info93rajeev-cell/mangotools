@@ -21,13 +21,13 @@ const RATIO_PRESETS: { value: AspectRatioPreset; label: string; sub: string }[] 
   { value: 'free', label: 'Free', sub: 'Custom' },
   { value: '1:1', label: '1:1', sub: 'Square' },
   { value: '4:3', label: '4:3', sub: 'Standard' },
-  { value: '16:9', label: '16:9', sub: 'Wide' },
-  { value: '35:45', label: '35:45', sub: 'Portrait' },
+  { value: '16:9', label: '16:9', sub: 'Widescreen' },
+  { value: '35:45', label: '3:5', sub: 'Portrait' },
 ];
 
 const FORMAT_PRESETS: { value: CropOutputFormat; label: string; sub: string }[] = [
   { value: 'same', label: 'Same', sub: 'Auto' },
-  { value: 'jpg', label: 'JPG', sub: 'Photo' },
+  { value: 'jpg', label: 'JPG', sub: 'Photos' },
   { value: 'png', label: 'PNG', sub: 'Lossless' },
   { value: 'webp', label: 'WebP', sub: 'Small' },
 ];
