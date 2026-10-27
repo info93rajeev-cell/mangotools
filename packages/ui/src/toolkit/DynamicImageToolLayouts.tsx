@@ -5,6 +5,7 @@ import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
 import type { ImageEnlargerLayoutProps } from './ImageEnlargerLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
+import type { PhotoSizeReducerLayoutProps } from './PhotoSizeReducerLayout.tsx';
 
 export function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
   const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);
@@ -64,6 +65,19 @@ export function DynamicImageEnlargerLayout(props: ImageEnlargerLayoutProps) {
   useEffect(() => {
     void import('./ImageEnlargerLayout.tsx').then((m) => {
       setComp(() => m.ImageEnlargerLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicPhotoSizeReducerLayout(props: PhotoSizeReducerLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<PhotoSizeReducerLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./PhotoSizeReducerLayout.tsx').then((m) => {
+      setComp(() => m.PhotoSizeReducerLayout);
     });
   }, []);
 

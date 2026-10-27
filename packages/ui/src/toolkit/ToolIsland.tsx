@@ -28,6 +28,7 @@ import {
   DynamicImageEnlargerLayout,
   DynamicImageFormatConverterLayout,
   DynamicImageResizeLayout,
+  DynamicPhotoSizeReducerLayout,
 } from './DynamicImageToolLayouts.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
@@ -47,6 +48,7 @@ const IMAGE_RESIZE_PRESET_ID = 'image/resize';
 const IMAGE_ENLARGER_PRESET_ID = 'image/enlarge';
 const IMAGE_FORMAT_CONVERTER_PRESET_ID = 'image/convert';
 const IMAGE_REMOVE_BACKGROUND_PRESET_ID = 'image/remove-background';
+const PHOTO_SIZE_REDUCER_PRESET_ID = 'image/photo-size';
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -232,6 +234,17 @@ function renderAdvancedImageStudio({
   if (preset.id === IMAGE_ENLARGER_PRESET_ID) {
     return (
       <DynamicImageEnlargerLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === PHOTO_SIZE_REDUCER_PRESET_ID || toolId === 'photo-size-reducer') {
+    return (
+      <DynamicPhotoSizeReducerLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}
