@@ -84,8 +84,10 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
           }}
           disabled={!enlarger.file || enlarger.phase === 'running'}
         >
-          <span>🌟</span>
-          <span>Download enlarged image</span>
+          <span>📥</span>
+          <span>
+            {enlarger.phase === 'running' ? 'Enhancing & Enlarging...' : 'Download enlarged image'}
+          </span>
         </button>
 
         {hasResult && (

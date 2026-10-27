@@ -9,7 +9,11 @@ import {
   type CropFile as MetadataFile,
   MIME_MAP,
 } from './imageFileInspection.ts';
-import { createPalaceSample, SAMPLE_NAME } from './samplePalaceImage.ts';
+import {
+  createMountainLakeSample,
+  SAMPLE_HEIGHT,
+  SAMPLE_WIDTH,
+} from './sampleMountainLakeImage.ts';
 
 export type MetadataOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
 export type { MetadataFile };
@@ -75,8 +79,6 @@ async function executeMetadataWorker(
   if (!outcome.ok) return err(outcome.error.code, outcome.error);
   const val = outcome.value as Record<string, unknown>;
 
-  const warnings = (outcome.warnings ?? []) as OpWarning[];
-
   return ok({
     fileName: String(val.fileName),
     bytes: val.bytes as Uint8Array,
@@ -89,14 +91,11 @@ async function executeMetadataWorker(
     outputFormat: String(val.outputFormat),
     originalFormat: String(val.originalFormat ?? originalFmt),
     sizeDifferenceBytes: Number(val.sizeDifferenceBytes),
-    warnings,
+    warnings: (outcome.warnings ?? []) as OpWarning[],
   });
 }
 
-export function useImageMetadataRemover(
-  preset: ResolvedPreset,
-  onPhase?: (phase: FilePhase) => void,
-) {
+function useMetadataCoreState(onPhase?: (phase: FilePhase) => void) {
   const [file, setFile] = useState<MetadataFile | null>(null);
   const [invalidFile, setInvalidFile] = useState<{ name: string } | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -110,170 +109,20 @@ export function useImageMetadataRemover(
   const [error, setError] = useState<OpError | null>(null);
   const [warnings, setWarnings] = useState<OpWarning[]>([]);
 
-  const sampleLoadedRef = useRef(false);
-
   const setPhase = (p: FilePhase) => {
     setPhaseState(p);
     onPhase?.(p);
   };
 
-  // Auto-load Jaipur Palace sample on mount
-  useEffect(() => {
-    if (sampleLoadedRef.current || file) return;
-    sampleLoadedRef.current = true;
-    void loadSample();
-  }, []);
-
-  async function loadSample() {
-    setPhase('running');
-    setError(null);
-    setInvalidFile(null);
-    try {
-      const { file: sampleFile, blobUrl } = await createPalaceSample();
-      const dims = { width: 1600, height: 1200 };
-      if (imageSrc) URL.revokeObjectURL(imageSrc);
-      setFile(sampleFile);
-      setImageSrc(blobUrl);
-      setSourceDims(dims);
-      setResult(null);
-      if (resultUrl) URL.revokeObjectURL(resultUrl);
-      setResultUrl(null);
-      setPhase('ready');
-    } catch {
-      setPhase('idle');
-    }
-  }
-
-  async function handleFileSelected(browserFile: File) {
-    setPhase('running');
-    setError(null);
-    setInvalidFile(null);
-    setResult(null);
-    if (resultUrl) {
-      URL.revokeObjectURL(resultUrl);
-      setResultUrl(null);
-    }
-
-    const inspected = await inspectAndDecodeImage(browserFile);
-    if (!inspected.ok) {
-      setInvalidFile({ name: browserFile.name });
-      setFile(null);
-      if (imageSrc) {
-        URL.revokeObjectURL(imageSrc);
-        setImageSrc(null);
-      }
-      setSourceDims({ width: 0, height: 0 });
-      setPhase('error');
-      setError({
-        code: inspected.error.code,
-        message: inspected.error.message,
-        details: { name: browserFile.name },
-      });
-      return;
-    }
-
-    if (imageSrc) URL.revokeObjectURL(imageSrc);
-    setFile(inspected.value.file);
-    setImageSrc(inspected.value.blobUrl);
-    setSourceDims(inspected.value.dims);
-    setPhase('ready');
-  }
-
-  function clearAll() {
-    if (imageSrc) URL.revokeObjectURL(imageSrc);
-    if (resultUrl) URL.revokeObjectURL(resultUrl);
-    setFile(null);
-    setInvalidFile(null);
-    setImageSrc(null);
-    setSourceDims({ width: 0, height: 0 });
-    setOutputFormat('same');
-    setQuality(85);
-    setCustomFileName('');
-    setResult(null);
-    setResultUrl(null);
-    setError(null);
-    setWarnings([]);
-    setPhase('idle');
-  }
-
-  async function executeClean(): Promise<Result<MetadataRemoverResultData>> {
-    if (invalidFile) {
-      const errRes: OpError = {
-        code: 'IMAGE_INVALID_FILE_TYPE',
-        message: `"${invalidFile.name}" is not a JPG, PNG, or WebP image.`,
-        details: { name: invalidFile.name },
-      };
-      setError(errRes);
-      setPhase('error');
-      return err('IMAGE_INVALID_FILE_TYPE', errRes);
-    }
-
-    if (!file) {
-      const errRes: OpError = {
-        code: 'IMAGE_NO_FILE_SELECTED',
-        message: 'Select an image to resize.',
-      };
-      setError(errRes);
-      setPhase('error');
-      return err('IMAGE_NO_FILE_SELECTED', errRes);
-    }
-
-    setPhase('running');
-    setError(null);
-
-    const runRes = await executeMetadataWorker({
-      preset,
-      file,
-      sourceDims,
-      outputFormat,
-      quality,
-      customFileName,
-    });
-
-    if (!runRes.ok) {
-      setError(runRes.error);
-      setResult(null);
-      if (resultUrl) URL.revokeObjectURL(resultUrl);
-      setResultUrl(null);
-      setPhase('error');
-      return runRes;
-    }
-
-    const data = runRes.value;
-    const blob = new Blob([data.bytes], {
-      type: MIME_MAP[data.outputFormat] ?? 'image/jpeg',
-    });
-    const url = URL.createObjectURL(blob);
-
-    if (resultUrl) URL.revokeObjectURL(resultUrl);
-    setResult(data);
-    setResultUrl(url);
-    setWarnings(data.warnings);
-    setPhase('result');
-    track('tool_run', { toolId: 'image-metadata-remover' });
-
-    return runRes;
-  }
-
-  async function executeCleanAndDownload(): Promise<void> {
-    const runRes = await executeClean();
-    if (!runRes.ok) return;
-    const data = runRes.value;
-    const mime = MIME_MAP[data.outputFormat] ?? 'image/jpeg';
-    downloadBytes(data.bytes, data.fileName, mime);
-  }
-
-  function downloadResult(): void {
-    if (!result) return;
-    const mime = MIME_MAP[result.outputFormat] ?? 'image/jpeg';
-    downloadBytes(result.bytes, result.fileName, mime);
-  }
-
   return {
     file,
+    setFile,
     invalidFile,
+    setInvalidFile,
     imageSrc,
+    setImageSrc,
     sourceDims,
+    setSourceDims,
     outputFormat,
     setOutputFormat,
     quality,
@@ -281,16 +130,202 @@ export function useImageMetadataRemover(
     customFileName,
     setCustomFileName,
     phase,
+    setPhase,
     result,
+    setResult,
     resultUrl,
+    setResultUrl,
     error,
+    setError,
     warnings,
-    loadSample,
-    handleFileSelected,
-    clearAll,
-    executeClean,
-    executeCleanAndDownload,
-    downloadResult,
+    setWarnings,
+  };
+}
+
+type MetadataCoreState = ReturnType<typeof useMetadataCoreState>;
+
+async function performClean(
+  preset: ResolvedPreset,
+  s: MetadataCoreState,
+): Promise<Result<MetadataRemoverResultData>> {
+  if (s.invalidFile) {
+    const errRes: OpError = {
+      code: 'IMAGE_INVALID_FILE_TYPE',
+      message: `"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`,
+      details: { name: s.invalidFile.name },
+    };
+    s.setError(errRes);
+    s.setPhase('error');
+    return err('IMAGE_INVALID_FILE_TYPE', errRes);
+  }
+  if (!s.file) {
+    const errRes: OpError = {
+      code: 'IMAGE_NO_FILE_SELECTED',
+      message: 'Select an image to resize.',
+    };
+    s.setError(errRes);
+    s.setPhase('error');
+    return err('IMAGE_NO_FILE_SELECTED', errRes);
+  }
+  s.setPhase('running');
+  s.setError(null);
+  const runRes = await executeMetadataWorker({
+    preset,
+    file: s.file,
+    sourceDims: s.sourceDims,
+    outputFormat: s.outputFormat,
+    quality: s.quality,
+    customFileName: s.customFileName,
+  });
+  if (!runRes.ok) {
+    s.setError(runRes.error);
+    s.setResult(null);
+    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+    s.setResultUrl(null);
+    s.setPhase('error');
+    return runRes;
+  }
+  const data = runRes.value;
+  const blob = new Blob([data.bytes], { type: MIME_MAP[data.outputFormat] ?? 'image/jpeg' });
+  const url = URL.createObjectURL(blob);
+  if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+  s.setResult(data);
+  s.setResultUrl(url);
+  s.setWarnings(data.warnings);
+  s.setPhase('result');
+  track('tool_run', { toolId: 'image-metadata-remover' });
+  return runRes;
+}
+
+function resetMetadataState(s: MetadataCoreState) {
+  if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+  if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+  s.setFile(null);
+  s.setInvalidFile(null);
+  s.setImageSrc(null);
+  s.setSourceDims({ width: 0, height: 0 });
+  s.setOutputFormat('same');
+  s.setQuality(85);
+  s.setCustomFileName('');
+  s.setResult(null);
+  s.setResultUrl(null);
+  s.setError(null);
+  s.setWarnings([]);
+  s.setPhase('idle');
+}
+
+function useMetadataFileSelection(s: MetadataCoreState) {
+  const sampleLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (sampleLoadedRef.current || s.file) return;
+    sampleLoadedRef.current = true;
+    void loadSample();
+  }, []);
+
+  async function loadSample() {
+    s.setPhase('running');
+    s.setError(null);
+    s.setInvalidFile(null);
+    try {
+      const { file: sampleFile, blobUrl } = await createMountainLakeSample();
+      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+      if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
+      s.setFile(sampleFile);
+      s.setImageSrc(blobUrl);
+      s.setSourceDims({ width: SAMPLE_WIDTH, height: SAMPLE_HEIGHT });
+      s.setResult(null);
+      s.setResultUrl(null);
+      s.setPhase('ready');
+    } catch {
+      s.setPhase('idle');
+    }
+  }
+
+  async function handleFileSelected(browserFile: File) {
+    s.setPhase('running');
+    s.setError(null);
+    s.setInvalidFile(null);
+    s.setResult(null);
+    if (s.resultUrl) {
+      URL.revokeObjectURL(s.resultUrl);
+      s.setResultUrl(null);
+    }
+    const inspected = await inspectAndDecodeImage(browserFile);
+    if (!inspected.ok) {
+      s.setInvalidFile({ name: browserFile.name });
+      s.setFile(null);
+      if (s.imageSrc) {
+        URL.revokeObjectURL(s.imageSrc);
+        s.setImageSrc(null);
+      }
+      s.setSourceDims({ width: 0, height: 0 });
+      s.setPhase('error');
+      s.setError({
+        code: inspected.error.code,
+        message: inspected.error.message,
+        details: { name: browserFile.name },
+      });
+      return;
+    }
+    if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+    s.setFile(inspected.value.file);
+    s.setImageSrc(inspected.value.blobUrl);
+    s.setSourceDims(inspected.value.dims);
+    s.setPhase('ready');
+  }
+
+  return { loadSample, handleFileSelected, clearAll: () => resetMetadataState(s) };
+}
+
+function useMetadataDownloadActions(preset: ResolvedPreset, s: MetadataCoreState) {
+  const executeClean = () => performClean(preset, s);
+
+  async function executeCleanAndDownload() {
+    const runRes = await executeClean();
+    if (!runRes.ok) return;
+    const data = runRes.value;
+    downloadBytes(data.bytes, data.fileName, MIME_MAP[data.outputFormat] ?? 'image/jpeg');
+  }
+
+  function downloadResult() {
+    if (!s.result) return;
+    downloadBytes(
+      s.result.bytes,
+      s.result.fileName,
+      MIME_MAP[s.result.outputFormat] ?? 'image/jpeg',
+    );
+  }
+
+  return { executeClean, executeCleanAndDownload, downloadResult };
+}
+
+export function useImageMetadataRemover(
+  preset: ResolvedPreset,
+  onPhase?: (phase: FilePhase) => void,
+) {
+  const s = useMetadataCoreState(onPhase);
+  const fileActions = useMetadataFileSelection(s);
+  const downloadActions = useMetadataDownloadActions(preset, s);
+
+  return {
+    file: s.file,
+    invalidFile: s.invalidFile,
+    imageSrc: s.imageSrc,
+    sourceDims: s.sourceDims,
+    outputFormat: s.outputFormat,
+    setOutputFormat: s.setOutputFormat,
+    quality: s.quality,
+    setQuality: s.setQuality,
+    customFileName: s.customFileName,
+    setCustomFileName: s.setCustomFileName,
+    phase: s.phase,
+    result: s.result,
+    resultUrl: s.resultUrl,
+    error: s.error,
+    warnings: s.warnings,
+    ...fileActions,
+    ...downloadActions,
   };
 }
 

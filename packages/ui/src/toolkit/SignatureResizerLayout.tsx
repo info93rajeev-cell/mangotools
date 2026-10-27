@@ -25,7 +25,12 @@ export function SignatureResizerLayout({
 
   return (
     <div class={styles.container} data-signature-resizer-studio="">
-      <div class={styles.workbench3Panel}>
+      <div class={styles.studioTop2Col}>
+        <SignatureResizerCanvas
+          idPrefix={idPrefix}
+          signature={signature}
+          onSelectFile={signature.handleFileSelected}
+        />
         <SignatureResizerControls
           idPrefix={idPrefix}
           preset={preset}
@@ -33,9 +38,8 @@ export function SignatureResizerLayout({
           onSelectFile={signature.handleFileSelected}
           onTrySample={signature.loadSample}
         />
-        <SignatureResizerCanvas idPrefix={idPrefix} signature={signature} />
-        <SignatureResizerResult idPrefix={idPrefix} preset={preset} signature={signature} />
       </div>
+      <SignatureResizerResult idPrefix={idPrefix} preset={preset} signature={signature} />
     </div>
   );
 }

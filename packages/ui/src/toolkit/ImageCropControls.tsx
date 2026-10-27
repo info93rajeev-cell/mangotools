@@ -1,10 +1,10 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { formatFileSize } from '../archetypes/FileQueue.tsx';
 import { Button } from '../primitives/Button.tsx';
 import { NumberField, TextInput } from '../primitives/inputs.tsx';
 import { t } from '../strings/en.ts';
 import styles from './imageCrop.module.css';
 import type { AspectRatioPreset } from './imageWorkbenchGeometry.ts';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { CropOutputFormat, useImageCrop } from './useImageCrop.ts';
 
 export interface ImageCropControlsProps {
@@ -22,7 +22,7 @@ const RATIO_PRESETS: { value: AspectRatioPreset; label: string; sub: string }[] 
   { value: '1:1', label: '1:1', sub: 'Square' },
   { value: '4:3', label: '4:3', sub: 'Standard' },
   { value: '16:9', label: '16:9', sub: 'Widescreen' },
-  { value: '35:45', label: '3:5', sub: 'Portrait' },
+  { value: '35:45', label: '35:45', sub: 'Portrait' },
 ];
 
 const FORMAT_PRESETS: { value: CropOutputFormat; label: string; sub: string }[] = [
@@ -59,49 +59,16 @@ function UploadSection({
         </button>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
-        class={styles.hiddenFileInput}
+      <UniversalUploadDropzone
+        idPrefix={fileInputId}
         accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
-        onChange={(e) => {
-          const file = (e.currentTarget as HTMLInputElement).files?.[0];
-          if (file) onSelectFile(file);
-        }}
+        file={crop.file}
+        thumbnailUrl={crop.imageSrc}
+        dimensions={crop.sourceDims.width ? crop.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={crop.clearAll}
+        browseText="Upload Image"
       />
-
-      {crop.file ? (
-        <div class={styles.activeFileWrapper}>
-          <div class={styles.activeFileBadge} data-file-row="">
-            <div class={styles.activeFileInfo}>
-              <div class={styles.activeFileName} title={crop.file.name}>
-                {crop.file.name}
-              </div>
-              <div class={styles.activeFileMeta}>
-                {crop.sourceFormat?.toUpperCase() ?? 'JPG'} • {crop.sourceDims.width} ×{' '}
-                {crop.sourceDims.height} px • {formatFileSize(crop.file.size)}
-              </div>
-            </div>
-            <button
-              type="button"
-              class={styles.removeFileBtn}
-              onClick={crop.clearAll}
-              aria-label="Remove image"
-              title="Remove image"
-            >
-              ✕
-            </button>
-          </div>
-          <label for={fileInputId} class={styles.uploadNewBtn}>
-            📁 Upload Another Image
-          </label>
-        </div>
-      ) : (
-        <label class={styles.compactDropZone} for={fileInputId} data-compact-dropzone="">
-          <span class={styles.uploadMainBtn}>📁 Upload Image</span>
-          <span class={styles.dropSub}>or drag & drop here (JPG, PNG, WebP up to 25 MB)</span>
-        </label>
-      )}
     </div>
   );
 }

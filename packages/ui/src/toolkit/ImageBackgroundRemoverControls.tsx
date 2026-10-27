@@ -2,6 +2,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import { PrecisionSection } from './ImageBackgroundRemoverPrecision.tsx';
 import styles from './imageBackgroundRemover.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type {
   BgOutputFormat,
   UseImageBackgroundRemoverReturn,
@@ -22,7 +23,7 @@ const FORMAT_OPTIONS: { id: BgOutputFormat; name: string; desc: string }[] = [
   { id: 'pdf', name: 'PDF', desc: 'Document' },
 ];
 
-function formatBytes(bytes: number): string {
+function _formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
@@ -41,7 +42,6 @@ function UploadSection({
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
 }) {
-  const fileInputId = `${idPrefix}-file-input`;
   const isExecuting = bgRemover.phase === 'running';
 
   return (
@@ -53,47 +53,17 @@ function UploadSection({
         </Button>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
         accept={preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp'}
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.target as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+        file={bgRemover.file}
+        thumbnailUrl={bgRemover.imageSrc}
+        dimensions={bgRemover.sourceDims.width ? bgRemover.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={bgRemover.reset}
+        disabled={isExecuting}
+        browseText="Upload Image"
       />
-
-      <div class={styles.uploadRow}>
-        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
-          📁 Upload Image
-        </label>
-      </div>
-
-      {bgRemover.file ? (
-        <div class={styles.activeFileBadge}>
-          <span class={styles.activeFileName} title={bgRemover.file?.name}>
-            {bgRemover.file?.name}
-          </span>
-          <span class={styles.activeFileMeta}>
-            {bgRemover.sourceDims.width} × {bgRemover.sourceDims.height} px •{' '}
-            {formatBytes(bgRemover.file.size)}
-          </span>
-        </div>
-      ) : (
-        <label
-          for={fileInputId}
-          class={styles.compactDropZone}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const f = e.dataTransfer?.files?.[0];
-            if (f) onSelectFile(f);
-          }}
-        >
-          <span class={styles.dropZoneHint}>Drop JPG, PNG, or WebP here</span>
-        </label>
-      )}
     </section>
   );
 }

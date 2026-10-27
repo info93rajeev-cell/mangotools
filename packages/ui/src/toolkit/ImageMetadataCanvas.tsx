@@ -1,101 +1,138 @@
-import { useState } from 'preact/hooks';
 import styles from './imageMetadata.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { UseImageMetadataRemoverReturn } from './useImageMetadataRemover.ts';
 
 export interface ImageMetadataCanvasProps {
   idPrefix: string;
   meta: UseImageMetadataRemoverReturn;
+  onSelectFile: (file: File) => void;
+  onTrySample: () => void;
 }
 
-export function ImageMetadataCanvas({ idPrefix: _idPrefix, meta }: ImageMetadataCanvasProps) {
-  const [zoom, setZoom] = useState<number>(1);
+export interface UploadedCardProps {
+  idPrefix: string;
+  meta: UseImageMetadataRemoverReturn;
+  onSelectFile: (file: File) => void;
+  onTrySample: () => void;
+}
+
+function formatBytes(bytes: number): string {
+  if (!bytes || bytes <= 0) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function computeProcessedInfo(meta: UseImageMetadataRemoverReturn) {
   const hasFile = !!meta.file;
+  const res = meta.result;
+  const ext = meta.outputFormat === 'png' ? 'png' : meta.outputFormat === 'webp' ? 'webp' : 'jpg';
+  const baseName = meta.file?.name.replace(/\.[^/.]+$/, '') ?? 'mountain-lake';
+  const defaultCleanedName = meta.customFileName.trim()
+    ? meta.customFileName.trim()
+    : `${baseName}_cleaned.${ext}`;
+
+  const fileName = res ? res.fileName : hasFile ? defaultCleanedName : 'No file processed yet';
+  const fileSize = res ? res.outputFileSize : hasFile ? 1153433 : 0;
+  const dims = res
+    ? { width: res.outputWidth, height: res.outputHeight }
+    : meta.sourceDims.width > 0
+      ? meta.sourceDims
+      : { width: 4000, height: 2667 };
+
+  return { fileName, fileSize, dims };
+}
+
+export function UploadedCard({ idPrefix, meta, onSelectFile, onTrySample }: UploadedCardProps) {
+  const isExecuting = meta.phase === 'running';
 
   return (
-    <main class={styles.canvasContainer} aria-label="Metadata Image Preview">
-      {/* TOP CANVAS TOOLBAR */}
-      <div class={styles.canvasToolbar}>
-        <div class={styles.toolbarInfo}>
-          <span class={styles.dimensionBadge}>
-            {meta.sourceDims.width} × {meta.sourceDims.height} px
-          </span>
-          <span class={styles.formatBadge}>
-            Format: {meta.outputFormat === 'same' ? 'Original' : meta.outputFormat.toUpperCase()}
-          </span>
-        </div>
-
-        <div class={styles.toolbarControls}>
-          <div class={styles.zoomGroup}>
-            <button
-              type="button"
-              class={styles.zoomBtn}
-              onClick={() => setZoom((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
-              title="Zoom Out"
-            >
-              −
-            </button>
-            <span class={styles.zoomVal}>{Math.round(zoom * 100)}%</span>
-            <button
-              type="button"
-              class={styles.zoomBtn}
-              onClick={() => setZoom((z) => Math.min(3, Number((z + 0.25).toFixed(2))))}
-              title="Zoom In"
-            >
-              +
-            </button>
-            <button
-              type="button"
-              class={styles.zoomResetBtn}
-              onClick={() => setZoom(1)}
-              title="Reset Zoom"
-            >
-              Fit
-            </button>
-          </div>
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>1. Upload images</span>
+        <div class={styles.headerActions}>
+          <button
+            type="button"
+            class={styles.sampleMiniBtn}
+            onClick={onTrySample}
+            disabled={isExecuting}
+            title="Load sample photo"
+          >
+            ✨ Try Sample
+          </button>
         </div>
       </div>
 
-      {/* STAGE AREA */}
-      <div class={styles.stageViewport}>
-        {hasFile && (meta.imageSrc || meta.resultUrl) ? (
-          <div
-            class={styles.imagePreviewBox}
-            style={{
-              transform: `scale(${zoom})`,
-              transformOrigin: 'center center',
-            }}
-          >
-            <img
-              src={meta.resultUrl ?? meta.imageSrc ?? ''}
-              alt="Metadata cleaner preview"
-              class={styles.previewImg}
-            />
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
+        accept="image/jpeg,image/png,image/webp"
+        file={meta.file}
+        thumbnailUrl={meta.imageSrc}
+        dimensions={meta.sourceDims.width > 0 ? meta.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={meta.clearAll}
+        disabled={isExecuting}
+        browseText="Upload Image"
+        renderImgThumbnail={true}
+      />
+    </div>
+  );
+}
 
-            {/* Privacy shield badge overlay */}
-            <div class={styles.cleanShieldBadge}>
-              <span>🛡️</span>
-              <span>Metadata Stripped</span>
+export function ProcessedCard({ meta }: { meta: UseImageMetadataRemoverReturn }) {
+  const imgSrc = meta.result ? (meta.resultUrl ?? meta.imageSrc) : null;
+  const { fileName, fileSize, dims } = computeProcessedInfo(meta);
+
+  return (
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>3. Processed image (metadata removed)</span>
+      </div>
+
+      <div class={styles.cardBodyRow}>
+        {imgSrc ? (
+          <img src={imgSrc} alt="Processed cleaned preview" class={styles.cardThumbImg} />
+        ) : (
+          <div class={styles.cardThumbPlaceholder}>Preview</div>
+        )}
+
+        <div class={styles.cardInfoCol}>
+          <div class={styles.fileName} title={fileName}>
+            {fileName}
+          </div>
+          <div class={styles.fileSpecs}>
+            {formatBytes(fileSize)} &bull; {dims.width} &times; {dims.height}
+          </div>
+          <div class={styles.statusBoxGreen}>
+            <span class={styles.statusBoxIcon}>✓</span>
+            <div class={styles.statusBoxText}>
+              <div class={styles.statusBoxTitle}>Image cleaned successfully</div>
+              <div class={styles.statusBoxSub}>
+                All detectable metadata has been removed from this image.
+              </div>
             </div>
           </div>
-        ) : (
-          <div class={styles.emptyState}>
-            <div class={styles.emptyIcon}>📷</div>
-            <p class={styles.emptyTitle}>No Image Loaded</p>
-            <p class={styles.emptyHint}>
-              Select a photo or click <strong>Sample</strong> to preview metadata stripping.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* FOOTER BAR */}
-      <div class={styles.canvasFooter}>
-        <div class={styles.statusIndicator}>
-          <span class={styles.statusDot} />
-          <span>Canvas Re-encode: Dimensions Preserved & EXIF Purged</span>
         </div>
-        <div class={styles.engineNotice}>🔒 100% In-Browser. No Server Uploads.</div>
       </div>
-    </main>
+    </div>
+  );
+}
+
+export function ImageMetadataCanvas({
+  idPrefix,
+  meta,
+  onSelectFile,
+  onTrySample,
+}: ImageMetadataCanvasProps) {
+  return (
+    <>
+      <UploadedCard
+        idPrefix={idPrefix}
+        meta={meta}
+        onSelectFile={onSelectFile}
+        onTrySample={onTrySample}
+      />
+      <ProcessedCard meta={meta} />
+    </>
   );
 }

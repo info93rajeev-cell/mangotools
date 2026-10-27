@@ -65,7 +65,7 @@ export function PassportPhotoResult({ idPrefix: _idPrefix, passport }: PassportP
               <div key={w.code} class={styles.warningItem}>
                 <span class={styles.warningIcon}>⚠️</span>
                 <span>
-                  {w.message ||
+                  {(w as { message?: string }).message ||
                     (w.code === 'IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'
                       ? 'Transparent areas will be flattened onto a white background when exporting as JPG.'
                       : w.code)}
@@ -84,7 +84,7 @@ export function PassportPhotoResult({ idPrefix: _idPrefix, passport }: PassportP
             onClick={() => void passport.executeResizeAndDownload()}
             disabled={isExecuting}
           >
-            <span>⬇️</span>
+            <span>📥</span>
             <span>Download passport photo</span>
           </button>
         </div>

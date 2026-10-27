@@ -25,17 +25,17 @@ export function ImageWatermarkLayout({
 
   return (
     <div class={styles.container} data-image-watermark-studio="">
-      <div class={styles.workbench3Panel}>
-        <ImageWatermarkControls
+      <div class={styles.studioTop2Col}>
+        <ImageWatermarkCanvas
           idPrefix={idPrefix}
-          preset={preset}
           watermark={watermark}
           onSelectFile={watermark.handleFileSelected}
           onTrySample={watermark.loadSample}
         />
-        <ImageWatermarkCanvas idPrefix={idPrefix} watermark={watermark} />
-        <ImageWatermarkResult idPrefix={idPrefix} preset={preset} watermark={watermark} />
+        <ImageWatermarkControls idPrefix={idPrefix} preset={preset} watermark={watermark} />
       </div>
+
+      <ImageWatermarkResult idPrefix={idPrefix} preset={preset} watermark={watermark} />
     </div>
   );
 }

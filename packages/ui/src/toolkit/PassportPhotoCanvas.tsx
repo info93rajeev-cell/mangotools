@@ -7,6 +7,80 @@ export interface PassportPhotoCanvasProps {
   passport: UsePassportPhotoReturn;
 }
 
+function BiometricGuideSvg() {
+  return (
+    <div class={styles.biometricGuideOverlay} aria-hidden="true">
+      <svg class={styles.guideSvg} viewBox="0 0 100 100" preserveAspectRatio="none">
+        <title>Biometric guidelines</title>
+        {/* Crown (Top of Head) */}
+        <line
+          x1="20"
+          y1="12"
+          x2="80"
+          y2="12"
+          stroke="rgba(245, 158, 11, 0.85)"
+          strokeWidth="0.8"
+          strokeDasharray="2,2"
+        />
+        <text x="50" y="10" fill="rgba(245, 158, 11, 0.9)" fontSize="3.5" textAnchor="middle">
+          Crown (Top of Head)
+        </text>
+
+        {/* Eye Line (40-50%) */}
+        <line
+          x1="15"
+          y1="45"
+          x2="85"
+          y2="45"
+          stroke="rgba(59, 130, 246, 0.75)"
+          strokeWidth="0.6"
+          strokeDasharray="1.5,1.5"
+        />
+        <text x="50" y="43" fill="rgba(59, 130, 246, 0.85)" fontSize="3" textAnchor="middle">
+          Eye Line (40-50%)
+        </text>
+
+        {/* Chin Line (Bottom) */}
+        <line
+          x1="25"
+          y1="80"
+          x2="75"
+          y2="80"
+          stroke="rgba(245, 158, 11, 0.85)"
+          strokeWidth="0.8"
+          strokeDasharray="2,2"
+        />
+        <text x="50" y="85" fill="rgba(245, 158, 11, 0.9)" fontSize="3.5" textAnchor="middle">
+          Chin Line (Bottom)
+        </text>
+
+        {/* Center vertical centerline */}
+        <line
+          x1="50"
+          y1="5"
+          x2="50"
+          y2="95"
+          stroke="rgba(255, 255, 255, 0.4)"
+          strokeWidth="0.5"
+          strokeDasharray="1,2"
+        />
+
+        {/* ICAO Face Oval standard */}
+        <ellipse
+          cx="50"
+          cy="46"
+          rx="24"
+          ry="34"
+          fill="none"
+          stroke="rgba(16, 185, 129, 0.85)"
+          strokeWidth="1"
+          strokeDasharray="3,2"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export function PassportPhotoCanvas({ idPrefix: _idPrefix, passport }: PassportPhotoCanvasProps) {
   const [zoom, setZoom] = useState(1);
   const hasFile = !!passport.file;
@@ -69,96 +143,12 @@ export function PassportPhotoCanvas({ idPrefix: _idPrefix, passport }: PassportP
             class={styles.canvasStageWrapper}
             style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
           >
-            <img src={passport.imageSrc} alt="Passport photo stage" class={styles.passportImg} />
-
-            {passport.showGuides && (
-              <div class={styles.biometricGuideOverlay} aria-hidden="true">
-                <svg class={styles.guideSvg} viewBox="0 0 100 100" preserveAspectRatio="none">
-                  {/* Outer head height boundary */}
-                  <line
-                    x1="20"
-                    y1="12"
-                    x2="80"
-                    y2="12"
-                    stroke="rgba(245, 158, 11, 0.85)"
-                    strokeWidth="0.8"
-                    strokeDasharray="2,2"
-                  />
-                  <text
-                    x="50"
-                    y="10"
-                    fill="rgba(245, 158, 11, 0.9)"
-                    fontSize="3.5"
-                    textAnchor="middle"
-                  >
-                    Crown (Top of Head)
-                  </text>
-
-                  {/* Eye level guideline */}
-                  <line
-                    x1="15"
-                    y1="45"
-                    x2="85"
-                    y2="45"
-                    stroke="rgba(59, 130, 246, 0.75)"
-                    strokeWidth="0.6"
-                    strokeDasharray="1.5,1.5"
-                  />
-                  <text
-                    x="50"
-                    y="43"
-                    fill="rgba(59, 130, 246, 0.85)"
-                    fontSize="3"
-                    textAnchor="middle"
-                  >
-                    Eye Line (40-50%)
-                  </text>
-
-                  {/* Chin boundary */}
-                  <line
-                    x1="25"
-                    y1="80"
-                    x2="75"
-                    y2="80"
-                    stroke="rgba(245, 158, 11, 0.85)"
-                    strokeWidth="0.8"
-                    strokeDasharray="2,2"
-                  />
-                  <text
-                    x="50"
-                    y="85"
-                    fill="rgba(245, 158, 11, 0.9)"
-                    fontSize="3.5"
-                    textAnchor="middle"
-                  >
-                    Chin Line (Bottom)
-                  </text>
-
-                  {/* Center vertical line */}
-                  <line
-                    x1="50"
-                    y1="5"
-                    x2="50"
-                    y2="95"
-                    stroke="rgba(255, 255, 255, 0.4)"
-                    strokeWidth="0.5"
-                    strokeDasharray="1,2"
-                  />
-
-                  {/* ICAO Face Oval standard */}
-                  <ellipse
-                    cx="50"
-                    cy="46"
-                    rx="24"
-                    ry="34"
-                    fill="none"
-                    stroke="rgba(16, 185, 129, 0.85)"
-                    strokeWidth="1"
-                    strokeDasharray="3,2"
-                  />
-                </svg>
-              </div>
-            )}
+            <img
+              src={passport.imageSrc}
+              alt="Passport portrait preview"
+              class={styles.passportImg}
+            />
+            {passport.showGuides && <BiometricGuideSvg />}
           </div>
         ) : (
           <div class={styles.emptyStagePlaceholder}>
@@ -167,6 +157,15 @@ export function PassportPhotoCanvas({ idPrefix: _idPrefix, passport }: PassportP
           </div>
         )}
       </div>
+
+      <div class={styles.alignmentCallout}>
+        <span>✓</span>
+        <span>Face centered & upright within oval guide</span>
+      </div>
+
+      <a href="/signature-resizer" class={styles.relatedActionLink}>
+        Need a matching signature? Go to Signature Resizer →
+      </a>
     </section>
   );
 }

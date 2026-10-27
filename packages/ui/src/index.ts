@@ -28,5 +28,6 @@ export * from './toolkit/ToolIsland.tsx';
 export * from './toolkit/ToolPresetManager.tsx';
 export * from './toolkit/textStats.ts';
 export * from './toolkit/toolPresets.ts';
+export * from './toolkit/UniversalUploadDropzone.tsx';
 export * from './toolkit/WorkbenchStage.tsx';
 export * from './toolkit/WorkingSteps.tsx';

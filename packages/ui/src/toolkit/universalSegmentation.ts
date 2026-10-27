@@ -80,8 +80,15 @@ function buildResultData(
   outExt: string,
   warnings: OpWarning[],
 ): ImageBackgroundRemoverResultData {
-  const rawBase = input.customFileName.trim() || input.file.name.replace(/\.[^.]+$/, '');
-  const outName = `${rawBase}-no-bg.${outExt}`;
+  const rawBase = input.customFileName.trim()
+    ? input.customFileName
+        .trim()
+        .replace(/[<>:"/\\|?*]/g, '')
+        .replace(/\.[^.]+$/, '')
+    : input.file.name.replace(/\.[^.]+$/, '');
+  const outName = input.customFileName.trim()
+    ? `${rawBase}.${outExt}`
+    : `${rawBase}-no-bg.${outExt}`;
   const origFormat = input.file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
   const outFormat = outExt.toLowerCase();
   const diff = bytes.byteLength - input.file.size;
@@ -215,7 +222,12 @@ async function assembleCutoutResult(
   const arrayBuf = await outBlob.arrayBuffer();
   const bytes = new Uint8Array(arrayBuf);
 
-  const rawBase = input.customFileName.trim() || input.file.name.replace(/\.[^.]+$/, '');
+  const rawBase = input.customFileName.trim()
+    ? input.customFileName
+        .trim()
+        .replace(/[<>:"/\\|?*]/g, '')
+        .replace(/\.[^.]+$/, '')
+    : input.file.name.replace(/\.[^.]+$/, '');
   const resultData = buildResultData(
     input,
     bytes,

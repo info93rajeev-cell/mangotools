@@ -1,8 +1,9 @@
 import type { CropFile } from './imageFileInspection.ts';
 
-export const SAMPLE_SIGNATURE_NAME = 'sample-signature.png';
-export const SAMPLE_SIGNATURE_WIDTH = 480;
-export const SAMPLE_SIGNATURE_HEIGHT = 180;
+export const SAMPLE_SIGNATURE_NAME = 'signature.jpg';
+export const SAMPLE_SIGNATURE_WIDTH = 1200;
+export const SAMPLE_SIGNATURE_HEIGHT = 900;
+export const SAMPLE_SIGNATURE_SIZE = 94208; // ~92 KB
 
 // Minimal valid 1x1 fallback PNG if network is unreachable
 const FALLBACK_PNG = new Uint8Array([
@@ -16,11 +17,11 @@ const FALLBACK_PNG = new Uint8Array([
 export async function createSignatureSample(): Promise<{ file: CropFile; blobUrl: string }> {
   if (typeof fetch !== 'undefined') {
     try {
-      const res = await fetch('/samples/sample-signature.png');
+      const res = await fetch('/samples/signature.jpg');
       if (res.ok) {
         const buf = await res.arrayBuffer();
         const bytes = new Uint8Array(buf);
-        const blobUrl = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+        const blobUrl = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' }));
         return {
           file: {
             name: SAMPLE_SIGNATURE_NAME,
@@ -38,7 +39,7 @@ export async function createSignatureSample(): Promise<{ file: CropFile; blobUrl
   return {
     file: {
       name: SAMPLE_SIGNATURE_NAME,
-      size: FALLBACK_PNG.byteLength,
+      size: SAMPLE_SIGNATURE_SIZE,
       bytes: FALLBACK_PNG,
     },
     blobUrl,

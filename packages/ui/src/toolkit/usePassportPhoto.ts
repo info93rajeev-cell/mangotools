@@ -10,6 +10,7 @@ import {
   type CropFile as PassportFile,
 } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import { createPassportPortraitSample } from './samplePassportPortraitImage.ts';
 
 export type PassportOutputFormat = 'jpg' | 'png' | 'webp' | 'pdf';
 export type { PassportFile };
@@ -197,12 +198,7 @@ export interface UsePassportPhotoReturn {
   downloadResult: () => void;
 }
 
-export function usePassportPhoto(
-  preset: ResolvedPreset,
-  toolId: string,
-  notify: (msg: string) => void,
-  onPhase: (phase: FilePhase) => void,
-): UsePassportPhotoReturn {
+function usePassportPhotoState(onPhase: (phase: FilePhase) => void) {
   const [file, setFile] = useState<PassportFile | null>(null);
   const [invalidFile, setInvalidFile] = useState<File | null>(null);
   const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
@@ -229,245 +225,331 @@ export function usePassportPhoto(
     [onPhase],
   );
 
-  const clearAll = useCallback(() => {
-    setFile(null);
-    setInvalidFile(null);
-    setSourceDims({ width: 0, height: 0 });
-    setImageSrc(null);
-    setResult(null);
-    setResultUrl(null);
-    setError(null);
-    setWarnings([]);
-    setTargetWidth(8);
-    setTargetHeight(8);
-    setKeepAspectRatio(true);
-    setOutputFormat('jpg');
-    setQuality(85);
-    setActivePresetId(null);
-    updatePhase('idle');
-  }, [updatePhase]);
+  return {
+    file,
+    setFile,
+    invalidFile,
+    setInvalidFile,
+    sourceDims,
+    setSourceDims,
+    imageSrc,
+    setImageSrc,
+    phase,
+    updatePhase,
+    targetWidth,
+    setTargetWidth,
+    targetHeight,
+    setTargetHeight,
+    keepAspectRatio,
+    setKeepAspectRatio,
+    outputFormat,
+    setOutputFormat,
+    quality,
+    setQuality,
+    customFileName,
+    setCustomFileName,
+    showGuides,
+    setShowGuides,
+    activePresetId,
+    setActivePresetId,
+    result,
+    setResult,
+    resultUrl,
+    setResultUrl,
+    error,
+    setError,
+    warnings,
+    setWarnings,
+  };
+}
 
+type PassportState = ReturnType<typeof usePassportPhotoState>;
+
+async function inspectPassportFile(raw: File, s: PassportState) {
+  const ext = raw.name.toLowerCase();
+  const isKnownImage =
+    raw.type.startsWith('image/') ||
+    ext.endsWith('.jpg') ||
+    ext.endsWith('.jpeg') ||
+    ext.endsWith('.png') ||
+    ext.endsWith('.webp');
+
+  if (!isKnownImage) {
+    s.setFile(null);
+    s.setInvalidFile(raw);
+    s.setError(`"${raw.name}" is not a JPG, PNG, or WebP image.`);
+    s.updatePhase('error');
+    return;
+  }
+  s.setInvalidFile(null);
+
+  const res = await inspectAndDecodeImage(raw);
+  if (!res.ok) {
+    s.setError(res.error.message || `"${raw.name}" is not a JPG, PNG, or WebP image.`);
+    s.updatePhase('error');
+    return;
+  }
+
+  const dims = res.value.dims;
+  s.setFile(res.value.file);
+  s.setSourceDims(dims);
+  s.setImageSrc(res.value.blobUrl);
+  s.setTargetWidth(dims.width);
+  s.setTargetHeight(dims.height);
+  s.setKeepAspectRatio(true);
+  s.setOutputFormat('jpg');
+  s.setQuality(85);
+  s.setActivePresetId(null);
+
+  if (res.value.file.hasAlpha) {
+    s.setWarnings([
+      {
+        code: 'IMAGE_TRANSPARENT_FLATTENED_TO_WHITE',
+        message:
+          'Transparent areas will be flattened onto a white background when exporting as JPG.',
+      },
+    ]);
+  }
+  s.updatePhase('idle');
+}
+
+function clearPassportState(s: PassportState) {
+  s.setFile(null);
+  s.setInvalidFile(null);
+  s.setSourceDims({ width: 0, height: 0 });
+  s.setImageSrc(null);
+  s.setResult(null);
+  s.setResultUrl(null);
+  s.setError(null);
+  s.setWarnings([]);
+  s.setTargetWidth(8);
+  s.setTargetHeight(8);
+  s.setKeepAspectRatio(true);
+  s.setOutputFormat('jpg');
+  s.setQuality(85);
+  s.setActivePresetId(null);
+  s.updatePhase('idle');
+}
+
+function usePassportFileActions(s: PassportState, userInteractedRef: { current: boolean }) {
   const loadFile = useCallback(
     async (raw: File) => {
-      updatePhase('running');
-      setError(null);
-      setWarnings([]);
-      setResult(null);
-
-      // Validate image mime
-      const ext = raw.name.toLowerCase();
-      const isKnownImage =
-        raw.type.startsWith('image/') ||
-        ext.endsWith('.jpg') ||
-        ext.endsWith('.jpeg') ||
-        ext.endsWith('.png') ||
-        ext.endsWith('.webp');
-
-      if (!isKnownImage) {
-        setFile(null);
-        setInvalidFile(raw);
-        setError(`"${raw.name}" is not a JPG, PNG, or WebP image.`);
-        updatePhase('error');
-        return;
-      }
-      setInvalidFile(null);
-
-      const res = await inspectAndDecodeImage(raw);
-      if (!res.ok) {
-        setError(res.error.message || `"${raw.name}" is not a JPG, PNG, or WebP image.`);
-        updatePhase('error');
-        return;
-      }
-
-      const dims = res.value.dims;
-      setFile(res.value.file);
-      setSourceDims(dims);
-      setImageSrc(res.value.blobUrl);
-      setTargetWidth(dims.width);
-      setTargetHeight(dims.height);
-      setKeepAspectRatio(true);
-      setOutputFormat('jpg');
-      setQuality(85);
-      setActivePresetId(null);
-
-      // If PNG with transparency, warn immediately
-      if (res.value.file.hasAlpha) {
-        setWarnings([
-          {
-            code: 'IMAGE_TRANSPARENT_FLATTENED_TO_WHITE',
-            message:
-              'Transparent areas will be flattened onto a white background when exporting as JPG.',
-          },
-        ]);
-      }
-
-      updatePhase('idle');
+      userInteractedRef.current = true;
+      s.updatePhase('running');
+      s.setError(null);
+      s.setWarnings([]);
+      s.setResult(null);
+      await inspectPassportFile(raw, s);
     },
-    [updatePhase],
+    [s, userInteractedRef],
   );
 
   const loadSample = useCallback(async () => {
-    updatePhase('running');
-    setError(null);
+    userInteractedRef.current = true;
+    s.updatePhase('running');
+    s.setError(null);
     try {
-      const resp = await fetch('/samples/passport-portrait.jpg');
-      const blob = await resp.blob();
-      const sampleFile = new File([blob], 'passport-portrait.jpg', { type: 'image/jpeg' });
-      await loadFile(sampleFile);
-      // Auto-select India 35x45 mm preset
-      setTargetWidth(413);
-      setTargetHeight(531);
-      setActivePresetId('in');
+      const sample = await createPassportPortraitSample();
+      const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
+        type: 'image/jpeg',
+      });
+      const res = await inspectAndDecodeImage(fileObj);
+      if (!res.ok) return;
+      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+      s.setFile(res.value.file);
+      s.setImageSrc(res.value.blobUrl);
+      s.setSourceDims(res.value.dims);
+      s.setTargetWidth(413);
+      s.setTargetHeight(531);
+      s.setKeepAspectRatio(true);
+      s.setOutputFormat('jpg');
+      s.setQuality(85);
+      s.setActivePresetId('in');
+      s.updatePhase('idle');
     } catch {
-      updatePhase('idle');
+      s.updatePhase('idle');
     }
-  }, [loadFile, updatePhase]);
+  }, [s, userInteractedRef]);
 
-  // Auto load sample on initial mount
-  const initialMountRef = useRef(true);
-  useEffect(() => {
-    if (initialMountRef.current && !file) {
-      initialMountRef.current = false;
-      void loadSample();
-    }
-  }, [file, loadSample]);
-
-  const applyPreset = useCallback((p: PassportPresetItem) => {
-    setActivePresetId(p.id);
-    setTargetWidth(p.width);
-    setTargetHeight(p.height);
-  }, []);
-
-  const setWidth = useCallback(
-    (w: number) => {
-      setActivePresetId(null);
-      setTargetWidth(w);
-      if (keepAspectRatio && sourceDims.width > 0 && sourceDims.height > 0) {
-        setTargetHeight(Math.round((w * sourceDims.height) / sourceDims.width));
-      }
+  const applyPreset = useCallback(
+    (p: PassportPresetItem) => {
+      userInteractedRef.current = true;
+      s.setActivePresetId(p.id);
+      s.setTargetWidth(p.width);
+      s.setTargetHeight(p.height);
     },
-    [keepAspectRatio, sourceDims],
+    [s, userInteractedRef],
   );
-
-  const setHeight = useCallback(
-    (h: number) => {
-      setActivePresetId(null);
-      setTargetHeight(h);
-      if (keepAspectRatio && sourceDims.width > 0 && sourceDims.height > 0) {
-        setTargetWidth(Math.round((h * sourceDims.width) / sourceDims.height));
-      }
-    },
-    [keepAspectRatio, sourceDims],
-  );
-
-  const executeResizeAndDownload = useCallback(async () => {
-    if (invalidFile) {
-      setError(`"${invalidFile.name}" is not a JPG, PNG, or WebP image.`);
-      updatePhase('error');
-      return;
-    }
-
-    if (!file) {
-      setError('Add a photo, then enter the pixel dimensions required by your application.');
-      updatePhase('error');
-      return;
-    }
-
-    if (targetWidth <= 0 || targetHeight <= 0) {
-      setError('Enter a width and height greater than 0.');
-      updatePhase('error');
-      return;
-    }
-
-    updatePhase('running');
-    setError(null);
-
-    const cfg: PassportRunConfig = {
-      preset,
-      file,
-      targetWidth,
-      targetHeight,
-      keepAspectRatio,
-      outputFormat,
-      quality,
-      customFileName,
-    };
-
-    const outcome = await executePassportWorker(cfg);
-    if (!outcome.ok) {
-      setError(outcome.error.message || 'Passport photo resizing failed.');
-      updatePhase('error');
-      return;
-    }
-
-    const res = outcome.value;
-    setResult(res);
-    setWarnings(res.warnings ?? []);
-
-    const mime =
-      res.outputFormat === 'pdf' ? 'application/pdf' : (MIME_MAP[res.outputFormat] ?? 'image/jpeg');
-    const blobUrl = URL.createObjectURL(new Blob([res.bytes as BlobPart], { type: mime }));
-    setResultUrl(blobUrl);
-
-    downloadBytes(res.bytes, res.fileName, mime);
-    notify(`Downloaded ${res.fileName}`);
-    updatePhase('result');
-    track('tool_run', { toolId });
-    track('tool_complete', { toolId, method: 'download' });
-  }, [
-    file,
-    targetWidth,
-    targetHeight,
-    keepAspectRatio,
-    outputFormat,
-    quality,
-    customFileName,
-    preset,
-    toolId,
-    notify,
-    updatePhase,
-  ]);
-
-  const downloadResult = useCallback(() => {
-    if (!result) return;
-    const mime =
-      result.outputFormat === 'pdf'
-        ? 'application/pdf'
-        : (MIME_MAP[result.outputFormat] ?? 'image/jpeg');
-    downloadBytes(result.bytes, result.fileName, mime);
-    notify(`Downloaded ${result.fileName}`);
-    track('tool_complete', { toolId, method: 'download' });
-  }, [result, notify, toolId]);
 
   return {
-    file,
-    sourceDims,
-    imageSrc,
-    phase,
-    targetWidth,
-    targetHeight,
-    keepAspectRatio,
-    outputFormat,
-    quality,
-    customFileName,
-    showGuides,
-    activePresetId,
-    result,
-    resultUrl,
-    error,
-    warnings,
-    setWidth,
-    setHeight,
-    setKeepAspectRatio,
-    setOutputFormat,
-    setQuality,
-    setCustomFileName,
-    setShowGuides,
-    applyPreset,
     loadFile,
     loadSample,
-    clearAll,
-    executeResizeAndDownload,
-    downloadResult,
+    clearAll: () => {
+      userInteractedRef.current = true;
+      clearPassportState(s);
+    },
+    applyPreset,
+    setWidth: (w: number) => {
+      userInteractedRef.current = true;
+      s.setActivePresetId(null);
+      s.setTargetWidth(w);
+    },
+    setHeight: (h: number) => {
+      userInteractedRef.current = true;
+      s.setActivePresetId(null);
+      s.setTargetHeight(h);
+    },
+  };
+}
+
+async function performPassportExecution(
+  preset: ResolvedPreset,
+  toolId: string,
+  notify: (msg: string) => void,
+  s: PassportState,
+) {
+  if (s.invalidFile) {
+    s.setError(`"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`);
+    s.updatePhase('error');
+    return;
+  }
+  if (!s.file) {
+    s.setError('Add a photo, then enter the pixel dimensions required by your application.');
+    s.updatePhase('error');
+    return;
+  }
+  if (s.targetWidth <= 0 || s.targetHeight <= 0) {
+    s.setError('Enter a width and height greater than 0.');
+    s.updatePhase('error');
+    return;
+  }
+  s.updatePhase('running');
+  s.setError(null);
+  const cfg: PassportRunConfig = {
+    preset,
+    file: s.file,
+    targetWidth: s.targetWidth,
+    targetHeight: s.targetHeight,
+    keepAspectRatio: s.keepAspectRatio,
+    outputFormat: s.outputFormat,
+    quality: s.quality,
+    customFileName: s.customFileName,
+  };
+  const outcome = await executePassportWorker(cfg);
+  if (!outcome.ok) {
+    s.setError(outcome.error.message || 'Passport photo resizing failed.');
+    s.updatePhase('error');
+    return;
+  }
+  const res = outcome.value;
+  s.setResult(res);
+  s.setWarnings(res.warnings ?? []);
+  const mime =
+    res.outputFormat === 'pdf' ? 'application/pdf' : (MIME_MAP[res.outputFormat] ?? 'image/jpeg');
+  const blobUrl = URL.createObjectURL(new Blob([res.bytes as BlobPart], { type: mime }));
+  s.setResultUrl(blobUrl);
+  downloadBytes(res.bytes, res.fileName, mime);
+  notify(`Downloaded ${res.fileName}`);
+  s.updatePhase('result');
+  track('tool_run', { toolId });
+  track('tool_complete', { toolId, method: 'download' });
+}
+
+function usePassportExecution(
+  preset: ResolvedPreset,
+  toolId: string,
+  notify: (msg: string) => void,
+  s: PassportState,
+) {
+  const executeResizeAndDownload = useCallback(
+    () => performPassportExecution(preset, toolId, notify, s),
+    [preset, toolId, notify, s],
+  );
+
+  const downloadResult = useCallback(() => {
+    if (!s.result) return;
+    const mime =
+      s.result.outputFormat === 'pdf'
+        ? 'application/pdf'
+        : (MIME_MAP[s.result.outputFormat] ?? 'image/jpeg');
+    downloadBytes(s.result.bytes, s.result.fileName, mime);
+    notify(`Downloaded ${s.result.fileName}`);
+    track('tool_complete', { toolId, method: 'download' });
+  }, [s.result, notify, toolId]);
+
+  return { executeResizeAndDownload, downloadResult };
+}
+
+async function initMountedPassportSample(
+  s: ReturnType<typeof usePassportPhotoState>,
+  userInteractedRef: { current: boolean },
+) {
+  if (userInteractedRef.current || s.file) return;
+  try {
+    const sample = await createPassportPortraitSample();
+    if (userInteractedRef.current || s.file) return;
+    const fileObj = new File([sample.file.bytes as BlobPart], sample.file.name, {
+      type: 'image/jpeg',
+    });
+    const res = await inspectAndDecodeImage(fileObj);
+    if (!res.ok) return;
+    if (userInteractedRef.current || s.file) return;
+    if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+    s.setFile(res.value.file);
+    s.setImageSrc(res.value.blobUrl);
+    s.setSourceDims(res.value.dims);
+    s.setTargetWidth(413);
+    s.setTargetHeight(531);
+    s.setKeepAspectRatio(true);
+    s.setOutputFormat('jpg');
+    s.setQuality(85);
+    s.setActivePresetId('in');
+    s.updatePhase('idle');
+  } catch {
+    // offline fallback
+  }
+}
+
+export function usePassportPhoto(
+  preset: ResolvedPreset,
+  toolId: string,
+  notify: (msg: string) => void,
+  onPhase: (phase: FilePhase) => void,
+): UsePassportPhotoReturn {
+  const s = usePassportPhotoState(onPhase);
+  const userInteractedRef = useRef(false);
+  const fileActions = usePassportFileActions(s, userInteractedRef);
+  const exec = usePassportExecution(preset, toolId, notify, s);
+
+  useEffect(() => {
+    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
+      void initMountedPassportSample(s, userInteractedRef);
+    }
+  }, []);
+
+  return {
+    file: s.file,
+    sourceDims: s.sourceDims,
+    imageSrc: s.imageSrc,
+    phase: s.phase,
+    targetWidth: s.targetWidth,
+    targetHeight: s.targetHeight,
+    keepAspectRatio: s.keepAspectRatio,
+    outputFormat: s.outputFormat,
+    quality: s.quality,
+    customFileName: s.customFileName,
+    showGuides: s.showGuides,
+    activePresetId: s.activePresetId,
+    result: s.result,
+    resultUrl: s.resultUrl,
+    error: s.error,
+    warnings: s.warnings,
+    setKeepAspectRatio: s.setKeepAspectRatio,
+    setOutputFormat: s.setOutputFormat,
+    setQuality: s.setQuality,
+    setCustomFileName: s.setCustomFileName,
+    setShowGuides: s.setShowGuides,
+    ...fileActions,
+    ...exec,
   };
 }

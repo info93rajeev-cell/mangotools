@@ -158,7 +158,7 @@ export function startServer(dir: string, port: number): Promise<Server> {
     handleStaticFile(req, res, root, path, rules);
   });
 
-  return new Promise((ok) => server.listen(port, '127.0.0.1', () => ok(server)));
+  return new Promise((ok) => server.listen(port, '0.0.0.0', () => ok(server)));
 }
 
 const isMain =

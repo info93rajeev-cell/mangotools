@@ -73,13 +73,14 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
           type="button"
           class={styles.downloadCtaBtn}
           data-action="download-result"
-          name="Download Full HD (Original)"
+          name="Download transparent image"
+          aria-label="Download transparent image"
           onClick={() => void bgRemover.downloadResult('original')}
           disabled={bgRemover.phase === 'running'}
         >
-          <span>🌟</span>
+          <span>⬇️</span>
           <span>
-            Download Full HD ({res.outputWidth} × {res.outputHeight})
+            Download transparent image ({res.outputWidth} × {res.outputHeight})
           </span>
         </button>
         <button

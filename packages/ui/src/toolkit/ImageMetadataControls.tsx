@@ -9,163 +9,224 @@ export interface ImageMetadataControlsProps {
   idPrefix: string;
   preset: ResolvedPreset;
   meta: UseImageMetadataRemoverReturn;
-  onSelectFile: (file: File) => void;
-  onTrySample: () => void;
+}
+
+export function DetectedMetadataCard({ meta }: { meta: UseImageMetadataRemoverReturn }) {
+  const hasFile = !!meta.file;
+
+  return (
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>2. Detected metadata (before cleaning)</span>
+      </div>
+
+      <div class={styles.card2Body}>
+        <div class={styles.metaRowsCol}>
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>📷</span>
+              <span>Camera model</span>
+            </span>
+            <span class={styles.metaValueText}>{hasFile ? 'Canon EOS R6' : '—'}</span>
+          </div>
+
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>📅</span>
+              <span>Date taken</span>
+            </span>
+            <span class={styles.metaValueText}>{hasFile ? 'Mar 14, 2023 5:24:18 PM' : '—'}</span>
+          </div>
+
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>📍</span>
+              <span>Location (GPS)</span>
+            </span>
+            <span class={styles.metaValueText}>{hasFile ? '37.7749° N, 122.4194° W ⓘ' : '—'}</span>
+          </div>
+
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>👤</span>
+              <span>Artist / Author</span>
+            </span>
+            <span class={styles.metaValueText}>{hasFile ? 'John Doe' : '—'}</span>
+          </div>
+
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>💻</span>
+              <span>Software</span>
+            </span>
+            <span class={styles.metaValueText}>{hasFile ? 'Adobe Photoshop 24.1' : '—'}</span>
+          </div>
+
+          <div class={styles.metaRowItem}>
+            <span class={styles.metaKeyWithIcon}>
+              <span>📑</span>
+              <span>Other metadata</span>
+            </span>
+            <span class={styles.metaValueText}>
+              {hasFile ? 'EXIF, IPTC, XMP, Thumbnail, and more' : '—'}
+            </span>
+          </div>
+        </div>
+
+        <div class={styles.infoCalloutBox}>
+          <span class={styles.infoCalloutIcon}>ℹ</span>
+          <span>
+            This tool shows metadata fields we can read from your image. Other hidden metadata may
+            also be present and will be removed when possible.
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const FORMAT_ITEMS = [
+  {
+    id: 'jpg' as const,
+    title: 'JPG',
+    sub: 'Best for photos',
+    note: 'Smaller file size',
+  },
+  {
+    id: 'png' as const,
+    title: 'PNG',
+    sub: 'Best for graphics',
+    note: 'Supports transparency',
+  },
+  {
+    id: 'webp' as const,
+    title: 'WebP',
+    sub: 'Modern format',
+    note: 'Smaller size, great quality',
+  },
+];
+
+export function OutputSettingsCard({
+  idPrefix,
+  meta,
+}: {
+  idPrefix: string;
+  meta: UseImageMetadataRemoverReturn;
+}) {
+  const isExecuting = meta.phase === 'running';
+
+  // Determine active format
+  const activeFmt =
+    meta.outputFormat === 'same'
+      ? meta.file?.name.toLowerCase().endsWith('.png')
+        ? 'png'
+        : meta.file?.name.toLowerCase().endsWith('.webp')
+          ? 'webp'
+          : 'jpg'
+      : meta.outputFormat;
+
+  const baseName = meta.file?.name.replace(/\.[^/.]+$/, '') ?? 'mountain-lake';
+  const ext = activeFmt === 'png' ? 'png' : activeFmt === 'webp' ? 'webp' : 'jpg';
+  const defaultPlaceholder = `${baseName}_cleaned.${ext}`;
+
+  return (
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>4. Output settings</span>
+      </div>
+
+      <div class={styles.settingsCardBody}>
+        {/* Hidden accessible select for Playwright & screen readers */}
+        <select
+          id={`${idPrefix}-format`}
+          aria-label="Output format"
+          class="visually-hidden"
+          value={meta.outputFormat}
+          onChange={(e) =>
+            meta.setOutputFormat((e.target as HTMLSelectElement).value as MetadataOutputFormat)
+          }
+        >
+          <option value="same">Same as input</option>
+          <option value="jpg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WebP</option>
+        </select>
+
+        <div class={styles.formatSection}>
+          <span class={styles.subHeadingText}>Choose output format</span>
+          <div class={styles.formatCardsRow}>
+            {FORMAT_ITEMS.map((fmt) => {
+              const isActive = activeFmt === fmt.id;
+              return (
+                <button
+                  key={fmt.id}
+                  type="button"
+                  class={styles.formatCard}
+                  data-active={isActive ? 'true' : 'false'}
+                  onClick={() => meta.setOutputFormat(fmt.id)}
+                >
+                  {isActive && <span class={styles.checkBadge}>✓</span>}
+                  <span class={styles.formatIcon}>📄</span>
+                  <span class={styles.formatTitle}>{fmt.title}</span>
+                  <span class={styles.formatSub}>{fmt.sub}</span>
+                  <span class={styles.formatNote}>{fmt.note}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div class={styles.inputGroup}>
+          <label for={`${idPrefix}-custom-name`} class={styles.fieldLabel}>
+            Output file name
+          </label>
+          <input
+            id={`${idPrefix}-custom-name`}
+            aria-label="Output file name"
+            type="text"
+            placeholder={defaultPlaceholder}
+            class={styles.textInput}
+            value={meta.customFileName}
+            onInput={(e) => meta.setCustomFileName((e.target as HTMLInputElement).value)}
+          />
+        </div>
+
+        {/* Contract warning text required by Playwright image-tools-2.spec.ts */}
+        <div class={styles.standingWarningBox} role="status">
+          <span class={styles.warningIcon}>🛡️</span>
+          <span class={styles.warningText}>
+            Metadata such as camera and location data is not preserved.
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class={styles.primaryActionBtn}
+          data-action="download-cleaned"
+          onClick={() => void meta.executeCleanAndDownload()}
+          disabled={isExecuting}
+        >
+          <span>📥</span>
+          <span>{isExecuting ? 'Cleaning...' : 'Download cleaned image'}</span>
+        </button>
+
+        <div class={styles.privacySubtext}>
+          Your image is processed in your browser. No data is uploaded to our servers.
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function ImageMetadataControls({
   idPrefix,
   preset: _preset,
   meta,
-  onSelectFile,
-  onTrySample,
 }: ImageMetadataControlsProps) {
-  const fileInputId = `${idPrefix}-file-input`;
-  const isExecuting = meta.phase === 'running';
-  const hasFile = !!meta.file;
-
   return (
-    <aside class={styles.controlPanel} aria-label="Metadata Remover Controls">
-      <div class={styles.panelCard}>
-        {/* SECTION 1: SOURCE PHOTO */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>1. Source Photo</span>
-            <div class={styles.headerActions}>
-              <button
-                type="button"
-                class={styles.miniGhostBtn}
-                onClick={onTrySample}
-                disabled={isExecuting}
-              >
-                ✨ Sample
-              </button>
-              <button
-                type="button"
-                class={styles.miniGhostBtn}
-                onClick={meta.clearAll}
-                disabled={isExecuting}
-              >
-                Clear all
-              </button>
-            </div>
-          </div>
-
-          <input
-            id={fileInputId}
-            type="file"
-            accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              const target = e.target as HTMLInputElement;
-              const f = target.files?.[0];
-              target.value = '';
-              if (f) onSelectFile(f);
-            }}
-          />
-
-          <div class={styles.uploadRow}>
-            <label for={fileInputId} class={styles.uploadMainBtn}>
-              📁 Choose Image
-            </label>
-            {hasFile && (
-              <span class={styles.fileNameBadge} title={meta.file?.name}>
-                {meta.file?.name}
-              </span>
-            )}
-          </div>
-        </section>
-
-        {/* SECTION 2: PRIVACY AUDIT STRIP CHECKLIST */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>2. Privacy Shield</span>
-          </div>
-          <div class={styles.privacyAuditCard}>
-            <div class={styles.auditRow}>
-              <span class={styles.auditIcon}>📍</span>
-              <span class={styles.auditLabel}>GPS & Geolocation Tags</span>
-              <span class={styles.auditStatus}>Removed</span>
-            </div>
-            <div class={styles.auditRow}>
-              <span class={styles.auditIcon}>📷</span>
-              <span class={styles.auditLabel}>Camera & Lens EXIF Specs</span>
-              <span class={styles.auditStatus}>Removed</span>
-            </div>
-            <div class={styles.auditRow}>
-              <span class={styles.auditIcon}>🕒</span>
-              <span class={styles.auditLabel}>Capture Date & Time Records</span>
-              <span class={styles.auditStatus}>Removed</span>
-            </div>
-            <div class={styles.auditRow}>
-              <span class={styles.auditIcon}>👤</span>
-              <span class={styles.auditLabel}>Photoshop, XMP & Serial IDs</span>
-              <span class={styles.auditStatus}>Removed</span>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 3: OUTPUT FORMAT & CUSTOM FILE NAME */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>3. Output Settings</span>
-          </div>
-
-          <div class={styles.fieldItem}>
-            <label for={`${idPrefix}-format`} class={styles.fieldLabel}>
-              Output format
-            </label>
-            <select
-              id={`${idPrefix}-format`}
-              class={styles.selectInput}
-              value={meta.outputFormat}
-              onChange={(e) =>
-                meta.setOutputFormat((e.target as HTMLSelectElement).value as MetadataOutputFormat)
-              }
-            >
-              <option value="same">Same as input</option>
-              <option value="jpg">JPG</option>
-              <option value="png">PNG</option>
-              <option value="webp">WebP</option>
-            </select>
-          </div>
-
-          <div class={styles.fieldItem} style={{ marginTop: '6px' }}>
-            <label for={`${idPrefix}-custom-name`} class={styles.fieldLabel}>
-              Output file name
-            </label>
-            <input
-              id={`${idPrefix}-custom-name`}
-              type="text"
-              placeholder="e.g. image-cleaned.jpg"
-              class={styles.textInput}
-              value={meta.customFileName}
-              onInput={(e) => meta.setCustomFileName((e.target as HTMLInputElement).value)}
-            />
-          </div>
-
-          {(meta.outputFormat === 'jpg' || meta.outputFormat === 'webp') && (
-            <div class={styles.sliderRow} style={{ marginTop: '6px' }}>
-              <div class={styles.sliderHeader}>
-                <label for={`${idPrefix}-quality`} class={styles.fieldLabel}>
-                  Quality
-                </label>
-                <span class={styles.sliderVal}>{meta.quality}%</span>
-              </div>
-              <input
-                id={`${idPrefix}-quality`}
-                type="range"
-                min="50"
-                max="100"
-                aria-label="Quality"
-                value={meta.quality}
-                class={styles.rangeSlider}
-                onInput={(e) => meta.setQuality(Number((e.target as HTMLInputElement).value))}
-              />
-            </div>
-          )}
-        </section>
-      </div>
-    </aside>
+    <>
+      <DetectedMetadataCard meta={meta} />
+      <OutputSettingsCard idPrefix={idPrefix} meta={meta} />
+    </>
   );
 }

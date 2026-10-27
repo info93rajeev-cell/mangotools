@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './photoSizeReducer.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { PhotoSizeOutputFormat, UsePhotoSizeReducerReturn } from './usePhotoSizeReducer.ts';
 
 export interface PhotoSizeReducerControlsProps {
@@ -25,7 +26,7 @@ const FORMAT_OPTIONS: { id: PhotoSizeOutputFormat; name: string; desc: string }[
   { id: 'pdf', name: 'PDF', desc: 'Document' },
 ];
 
-function formatBytes(bytes: number): string {
+function _formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
@@ -44,7 +45,6 @@ function UploadSection({
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
 }) {
-  const fileInputId = `${idPrefix}-file-input`;
   const isExecuting = photoSize.phase === 'running';
 
   return (
@@ -73,47 +73,17 @@ function UploadSection({
         </div>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
-        accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.target as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
+        accept={_preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp'}
+        file={photoSize.file}
+        thumbnailUrl={photoSize.imageSrc}
+        dimensions={photoSize.sourceDims.width ? photoSize.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={photoSize.clearAll}
+        disabled={isExecuting}
+        browseText="Upload Image"
       />
-
-      <div class={styles.uploadRow}>
-        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
-          📁 Upload
-        </label>
-        {photoSize.file ? (
-          <div class={styles.activeFileBadge} style={{ flex: 1, minWidth: 0 }}>
-            <span class={styles.activeFileName} title={photoSize.file?.name}>
-              {photoSize.file?.name}
-            </span>
-            <span class={styles.activeFileMeta}>
-              {photoSize.sourceDims.width} × {photoSize.sourceDims.height} •{' '}
-              {formatBytes(photoSize.file.size)}
-            </span>
-          </div>
-        ) : (
-          <label
-            for={fileInputId}
-            class={styles.compactDropZone}
-            style={{ flex: 1, padding: '3px 6px' }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              const f = e.dataTransfer?.files?.[0];
-              if (f) onSelectFile(f);
-            }}
-          >
-            <span class={styles.dropZoneHint}>Drop JPG, PNG, or WebP</span>
-          </label>
-        )}
-      </div>
     </section>
   );
 }

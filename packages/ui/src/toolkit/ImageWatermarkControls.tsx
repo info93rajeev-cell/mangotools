@@ -10,268 +10,309 @@ export interface ImageWatermarkControlsProps {
   idPrefix: string;
   preset: ResolvedPreset;
   watermark: UseImageWatermarkReturn;
-  onSelectFile: (file: File) => void;
-  onTrySample: () => void;
 }
 
-const WATERMARK_PRESETS = ['© Copyright', 'CONFIDENTIAL', 'DRAFT', 'DO NOT COPY', 'SAMPLE'];
+const POS_GRID_ITEMS: Array<{
+  id: WatermarkPosition;
+  gridPos: [number, number];
+  name: string;
+}> = [
+  { id: 'top-left', gridPos: [0, 0], name: 'Top Left' },
+  { id: 'center', gridPos: [0, 1], name: 'Top Center' },
+  { id: 'top-right', gridPos: [0, 2], name: 'Top Right' },
+  { id: 'center', gridPos: [1, 0], name: 'Middle Left' },
+  { id: 'center', gridPos: [1, 1], name: 'Center' },
+  { id: 'center', gridPos: [1, 2], name: 'Middle Right' },
+  { id: 'bottom-left', gridPos: [2, 0], name: 'Bottom Left' },
+  { id: 'bottom-right', gridPos: [2, 1], name: 'Bottom Center' },
+  { id: 'bottom-right', gridPos: [2, 2], name: 'Bottom Right' },
+];
+
+const FORMAT_ITEMS = [
+  { id: 'jpg' as const, title: 'JPG', sub: 'Best for photos', note: 'Smaller file size' },
+  { id: 'png' as const, title: 'PNG', sub: 'Best for graphics', note: 'Supports transparency' },
+  { id: 'webp' as const, title: 'WebP', sub: 'Modern format', note: 'Smaller size, great quality' },
+];
+
+function isPosActive(item: (typeof POS_GRID_ITEMS)[number], pos: WatermarkPosition): boolean {
+  if (item.id === 'center' && item.gridPos[0] === 1 && item.gridPos[1] === 1) {
+    return pos === 'center';
+  }
+  if (item.id === 'bottom-right' && item.gridPos[0] === 2 && item.gridPos[1] === 2) {
+    return pos === 'bottom-right';
+  }
+  if (item.id === 'top-left' && item.gridPos[0] === 0 && item.gridPos[1] === 0) {
+    return pos === 'top-left';
+  }
+  if (item.id === 'top-right' && item.gridPos[0] === 0 && item.gridPos[1] === 2) {
+    return pos === 'top-right';
+  }
+  if (item.id === 'bottom-left' && item.gridPos[0] === 2 && item.gridPos[1] === 0) {
+    return pos === 'bottom-left';
+  }
+  return false;
+}
+
+interface WatermarkSettingsCardProps {
+  idPrefix: string;
+  watermark: UseImageWatermarkReturn;
+}
+
+function WatermarkTextAndPos({ idPrefix, watermark }: WatermarkSettingsCardProps) {
+  return (
+    <div class={styles.subCol}>
+      <div class={styles.inputGroup}>
+        <label for={`${idPrefix}-text`} class={styles.fieldLabel}>
+          Watermark text
+        </label>
+        <input
+          id={`${idPrefix}-text`}
+          aria-label="Watermark text"
+          type="text"
+          placeholder="BeyondTheAI"
+          class={styles.textInput}
+          value={watermark.text}
+          onInput={(e) => watermark.setText((e.target as HTMLInputElement).value)}
+        />
+      </div>
+
+      <div class={styles.inputGroup}>
+        <span class={styles.fieldLabel}>Position</span>
+        <select
+          id={`${idPrefix}-position`}
+          aria-label="Position"
+          class="visually-hidden"
+          value={watermark.position}
+          onChange={(e) =>
+            watermark.setPosition((e.target as HTMLSelectElement).value as WatermarkPosition)
+          }
+        >
+          <option value="top-left">Top left</option>
+          <option value="top-right">Top right</option>
+          <option value="center">Center</option>
+          <option value="bottom-left">Bottom left</option>
+          <option value="bottom-right">Bottom right</option>
+        </select>
+
+        <div class={styles.pos3x3Grid}>
+          {POS_GRID_ITEMS.map((item, idx) => (
+            <button
+              key={idx}
+              type="button"
+              class={styles.posSlotBtn}
+              data-active={isPosActive(item, watermark.position) ? 'true' : 'false'}
+              onClick={() => watermark.setPosition(item.id)}
+              title={item.name}
+            >
+              <span class={styles.posDot}>•</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WatermarkStyleSliders({ idPrefix, watermark }: WatermarkSettingsCardProps) {
+  return (
+    <div class={styles.subCol}>
+      <div class={styles.sliderGroup}>
+        <div class={styles.sliderHeader}>
+          <span class={styles.fieldLabel}>Font size</span>
+          <span class={styles.sliderVal}>{watermark.fontSize} px</span>
+        </div>
+        <input
+          type="range"
+          min="8"
+          max="120"
+          value={watermark.fontSize}
+          class={styles.rangeSlider}
+          aria-hidden="true"
+          tabIndex={-1}
+          onInput={(e) => watermark.setFontSize(Number((e.target as HTMLInputElement).value))}
+        />
+        <input
+          id={`${idPrefix}-font-size`}
+          aria-label="Font size"
+          type="number"
+          min="8"
+          max="200"
+          class="visually-hidden"
+          value={String(watermark.fontSize)}
+          onInput={(e) => watermark.setFontSize(Number((e.target as HTMLInputElement).value))}
+        />
+      </div>
+
+      <div class={styles.sliderGroup}>
+        <div class={styles.sliderHeader}>
+          <span class={styles.fieldLabel}>Opacity</span>
+          <span class={styles.sliderVal}>{watermark.opacity}%</span>
+        </div>
+        <input
+          type="range"
+          min="10"
+          max="100"
+          value={watermark.opacity}
+          class={styles.rangeSlider}
+          aria-hidden="true"
+          tabIndex={-1}
+          onInput={(e) => watermark.setOpacity(Number((e.target as HTMLInputElement).value))}
+        />
+        <input
+          id={`${idPrefix}-opacity`}
+          aria-label="Opacity"
+          type="number"
+          min="10"
+          max="100"
+          class="visually-hidden"
+          value={String(watermark.opacity)}
+          onInput={(e) => watermark.setOpacity(Number((e.target as HTMLInputElement).value))}
+        />
+      </div>
+
+      <div class={styles.inputGroup}>
+        <label for={`${idPrefix}-color`} class={styles.fieldLabel}>
+          Text color
+        </label>
+        <div class={styles.colorInputRow}>
+          <div class={styles.colorSwatchSquare} style={{ backgroundColor: watermark.color }} />
+          <input
+            id={`${idPrefix}-color`}
+            aria-label="Text color"
+            type="text"
+            class={styles.colorTextInput}
+            value={watermark.color}
+            onInput={(e) => watermark.setColor((e.target as HTMLInputElement).value)}
+          />
+        </div>
+      </div>
+
+      <div class={styles.inputGroup}>
+        <label for={`${idPrefix}-font-style`} class={styles.fieldLabel}>
+          Font style
+        </label>
+        <select id={`${idPrefix}-font-style`} class={styles.selectInput}>
+          <option value="Inter">Inter (Default)</option>
+          <option value="Arial">Arial</option>
+          <option value="Roboto">Roboto</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Courier New">Courier New</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
+function WatermarkSettingsCard({ idPrefix, watermark }: WatermarkSettingsCardProps) {
+  return (
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>2. Watermark settings</span>
+      </div>
+      <div class={styles.settings2ColBody}>
+        <WatermarkTextAndPos idPrefix={idPrefix} watermark={watermark} />
+        <WatermarkStyleSliders idPrefix={idPrefix} watermark={watermark} />
+      </div>
+    </div>
+  );
+}
+
+function ChooseFormatCard({ idPrefix, watermark }: WatermarkSettingsCardProps) {
+  const isExecuting = watermark.phase === 'running';
+  const activeFmt =
+    watermark.outputFormat === 'same'
+      ? watermark.file?.name.toLowerCase().endsWith('.png')
+        ? 'png'
+        : watermark.file?.name.toLowerCase().endsWith('.webp')
+          ? 'webp'
+          : 'jpg'
+      : watermark.outputFormat;
+
+  return (
+    <div class={styles.studioCard}>
+      <div class={styles.cardHeader}>
+        <span class={styles.cardTitle}>3. Choose output format</span>
+      </div>
+      <div class={styles.card3Body}>
+        <select
+          id={`${idPrefix}-format`}
+          aria-label="Output format"
+          class="visually-hidden"
+          value={watermark.outputFormat}
+          onChange={(e) =>
+            watermark.setOutputFormat(
+              (e.target as HTMLSelectElement).value as WatermarkOutputFormat,
+            )
+          }
+        >
+          <option value="same">Same as input</option>
+          <option value="jpg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WebP</option>
+        </select>
+
+        <input
+          id={`${idPrefix}-custom-name`}
+          aria-label="Output file name"
+          type="text"
+          class="visually-hidden"
+          value={watermark.customFileName}
+          onInput={(e) => watermark.setCustomFileName((e.target as HTMLInputElement).value)}
+        />
+
+        <div class={styles.formatCardsRow}>
+          {FORMAT_ITEMS.map((fmt) => {
+            const isActive = activeFmt === fmt.id;
+            return (
+              <button
+                key={fmt.id}
+                type="button"
+                class={styles.formatCard}
+                data-active={isActive ? 'true' : 'false'}
+                onClick={() => watermark.setOutputFormat(fmt.id)}
+              >
+                {isActive && <span class={styles.checkBadge}>✓</span>}
+                <span class={styles.formatIcon}>📄</span>
+                <span class={styles.formatTitle}>{fmt.title}</span>
+                <span class={styles.formatSub}>{fmt.sub}</span>
+                <span class={styles.formatNote}>{fmt.note}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          class={styles.primaryActionBtn}
+          data-action="download-watermarked"
+          onClick={() => void watermark.executeWatermarkAndDownload()}
+          disabled={isExecuting}
+        >
+          <span>📥</span>
+          <span>{isExecuting ? 'Watermarking...' : 'Download watermarked image'}</span>
+        </button>
+
+        <div class={styles.infoCalloutBox}>
+          <span class={styles.infoCalloutIcon}>ℹ</span>
+          <span>
+            This adds a visible text watermark to your image. It helps discourage unauthorized use
+            but is not copyright proof by itself.
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ImageWatermarkControls({
   idPrefix,
   preset: _preset,
   watermark,
-  onSelectFile,
-  onTrySample,
 }: ImageWatermarkControlsProps) {
-  const fileInputId = `${idPrefix}-file-input`;
-  const isExecuting = watermark.phase === 'running';
-  const hasFile = !!watermark.file;
-
   return (
-    <aside class={styles.controlPanel} aria-label="Watermark Controls">
-      <div class={styles.panelCard}>
-        {/* SECTION 1: SOURCE PHOTO */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>1. Source Photo</span>
-            <div class={styles.headerActions}>
-              <button
-                type="button"
-                class={styles.miniGhostBtn}
-                onClick={onTrySample}
-                disabled={isExecuting}
-              >
-                ✨ Sample
-              </button>
-              <button
-                type="button"
-                class={styles.miniGhostBtn}
-                onClick={watermark.clearAll}
-                disabled={isExecuting}
-              >
-                Clear all
-              </button>
-            </div>
-          </div>
-
-          <input
-            id={fileInputId}
-            type="file"
-            accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              const target = e.target as HTMLInputElement;
-              const f = target.files?.[0];
-              target.value = '';
-              if (f) onSelectFile(f);
-            }}
-          />
-
-          <div class={styles.uploadRow}>
-            <label for={fileInputId} class={styles.uploadMainBtn}>
-              📁 Choose Image
-            </label>
-            {hasFile && (
-              <span class={styles.fileNameBadge} title={watermark.file?.name}>
-                {watermark.file?.name}
-              </span>
-            )}
-          </div>
-        </section>
-
-        {/* SECTION 2: WATERMARK TEXT & PRESETS */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>2. Watermark Text</span>
-          </div>
-
-          <div class={styles.fieldItem}>
-            <label for={`${idPrefix}-text`} class={styles.fieldLabel}>
-              Watermark text
-            </label>
-            <input
-              id={`${idPrefix}-text`}
-              type="text"
-              placeholder="© Your Name"
-              class={styles.textInput}
-              value={watermark.text}
-              onInput={(e) => watermark.setText((e.target as HTMLInputElement).value)}
-            />
-          </div>
-
-          <div class={styles.presetTags}>
-            {WATERMARK_PRESETS.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                class={styles.presetTagBtn}
-                onClick={() => watermark.setText(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* SECTION 3: POSITION, OPACITY, FONT SIZE & COLOR */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>3. Styling & Position</span>
-          </div>
-
-          <div class={styles.fieldGrid}>
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-position`} class={styles.fieldLabel}>
-                Position
-              </label>
-              <select
-                id={`${idPrefix}-position`}
-                class={styles.selectInput}
-                value={watermark.position}
-                onChange={(e) =>
-                  watermark.setPosition((e.target as HTMLSelectElement).value as WatermarkPosition)
-                }
-              >
-                <option value="top-left">Top left</option>
-                <option value="top-right">Top right</option>
-                <option value="center">Center</option>
-                <option value="bottom-left">Bottom left</option>
-                <option value="bottom-right">Bottom right</option>
-              </select>
-            </div>
-
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-opacity`} class={styles.fieldLabel}>
-                Opacity
-              </label>
-              <input
-                id={`${idPrefix}-opacity`}
-                type="number"
-                min="1"
-                max="100"
-                class={styles.textInput}
-                value={String(watermark.opacity)}
-                onInput={(e) => {
-                  const val = (e.target as HTMLInputElement).value.trim();
-                  watermark.setOpacity(val ? Number(val) : 50);
-                }}
-              />
-            </div>
-          </div>
-
-          <div class={styles.fieldGrid} style={{ marginTop: '4px' }}>
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-font-size`} class={styles.fieldLabel}>
-                Font size
-              </label>
-              <input
-                id={`${idPrefix}-font-size`}
-                type="number"
-                min="8"
-                max="256"
-                class={styles.textInput}
-                value={String(watermark.fontSize)}
-                onInput={(e) => {
-                  const val = (e.target as HTMLInputElement).value.trim();
-                  watermark.setFontSize(val ? Number(val) : 32);
-                }}
-              />
-            </div>
-
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-color`} class={styles.fieldLabel}>
-                Text color
-              </label>
-              <div class={styles.colorInputRow}>
-                <input
-                  id={`${idPrefix}-color`}
-                  type="text"
-                  placeholder="#ffffff"
-                  class={styles.textInput}
-                  value={watermark.color}
-                  onInput={(e) => watermark.setColor((e.target as HTMLInputElement).value)}
-                />
-                <input
-                  type="color"
-                  aria-label="Color Picker"
-                  class={styles.colorPickerSwatch}
-                  value={
-                    watermark.color.startsWith('#') && watermark.color.length === 7
-                      ? watermark.color
-                      : '#ffffff'
-                  }
-                  onInput={(e) => watermark.setColor((e.target as HTMLInputElement).value)}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 4: OUTPUT FORMAT & CUSTOM FILE NAME */}
-        <section class={styles.controlSection}>
-          <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>4. Output Settings</span>
-          </div>
-
-          <div class={styles.fieldGrid}>
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-format`} class={styles.fieldLabel}>
-                Output format
-              </label>
-              <select
-                id={`${idPrefix}-format`}
-                class={styles.selectInput}
-                value={watermark.outputFormat}
-                onChange={(e) =>
-                  watermark.setOutputFormat(
-                    (e.target as HTMLSelectElement).value as WatermarkOutputFormat,
-                  )
-                }
-              >
-                <option value="same">Same as input</option>
-                <option value="jpg">JPG</option>
-                <option value="png">PNG</option>
-                <option value="webp">WebP</option>
-              </select>
-            </div>
-
-            <div class={styles.fieldItem}>
-              <label for={`${idPrefix}-custom-name`} class={styles.fieldLabel}>
-                Output file name
-              </label>
-              <input
-                id={`${idPrefix}-custom-name`}
-                type="text"
-                placeholder="e.g. image-watermarked.jpg"
-                class={styles.textInput}
-                value={watermark.customFileName}
-                onInput={(e) => watermark.setCustomFileName((e.target as HTMLInputElement).value)}
-              />
-            </div>
-          </div>
-
-          {(watermark.outputFormat === 'jpg' || watermark.outputFormat === 'webp') && (
-            <div class={styles.sliderRow} style={{ marginTop: '4px' }}>
-              <div class={styles.sliderHeader}>
-                <label for={`${idPrefix}-quality`} class={styles.fieldLabel}>
-                  Quality
-                </label>
-                <span class={styles.sliderVal}>{watermark.quality}%</span>
-              </div>
-              <input
-                id={`${idPrefix}-quality`}
-                type="range"
-                min="50"
-                max="100"
-                aria-label="Quality"
-                value={watermark.quality}
-                class={styles.rangeSlider}
-                onInput={(e) => watermark.setQuality(Number((e.target as HTMLInputElement).value))}
-              />
-            </div>
-          )}
-        </section>
-      </div>
-    </aside>
+    <div class={styles.controlsCol}>
+      <WatermarkSettingsCard idPrefix={idPrefix} watermark={watermark} />
+      <ChooseFormatCard idPrefix={idPrefix} watermark={watermark} />
+    </div>
   );
 }

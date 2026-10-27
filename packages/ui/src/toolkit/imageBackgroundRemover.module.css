@@ -2,7 +2,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 4px;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -11,8 +11,8 @@
 /* 3-PANEL WORKBENCH */
 .workbench3Panel {
   display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(360px, 1fr) minmax(280px, 320px);
-  gap: var(--space-2);
+  grid-template-columns: minmax(270px, 320px) minmax(360px, 1fr) minmax(260px, 300px);
+  gap: 8px;
   align-items: start;
   min-width: 0;
   max-width: 100%;
@@ -37,20 +37,20 @@
 .controlsPanel {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
   min-width: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 6px 8px;
+  padding: 3px 5px;
   box-sizing: border-box;
 }
 
 .controlSection {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding-top: 3px;
+  gap: 1px;
+  padding-top: 1px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -66,25 +66,25 @@
 }
 
 .sectionTitle {
-  font-size: var(--text-caption);
+  font-size: 10px;
   font-weight: var(--weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: var(--color-text-muted);
 }
 
 .badgeHint {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: var(--weight-bold);
   color: var(--color-accent-text);
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  padding: 1px 5px;
+  padding: 0 4px;
   border-radius: var(--radius-xs);
 }
 
 .uploadRow {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -97,8 +97,8 @@
   color: var(--color-text);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 4px 10px;
-  font-size: var(--text-caption);
+  padding: 3px 8px;
+  font-size: 10.5px;
   font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -116,7 +116,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface-subtle);
@@ -131,7 +131,7 @@
 }
 
 .dropZoneHint {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-text-muted);
 }
 
@@ -142,8 +142,8 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 3px 6px;
-  font-size: 11px;
+  padding: 2px 5px;
+  font-size: 10px;
 }
 
 .activeFileName {
@@ -157,14 +157,14 @@
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: 9.5px;
 }
 
 /* SLIDERS & PRESETS */
 .sliderGroup {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .sliderHeader {
@@ -174,13 +174,13 @@
 }
 
 .dimLabel {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: var(--weight-semibold);
   color: var(--color-text-muted);
 }
 
 .sliderValText {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-accent-text);
@@ -188,6 +188,8 @@
 
 .rangeSlider {
   width: 100%;
+  height: 10px;
+  margin: 1px 0;
   accent-color: var(--color-accent);
   cursor: pointer;
 }
@@ -196,21 +198,22 @@
 .bgOptionsRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
+  gap: 2px;
 }
 
 .bgOptBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 3px 4px;
-  font-size: 10px;
+  padding: 2px 3px;
+  font-size: 9.5px;
   font-weight: var(--weight-medium);
   color: var(--color-text);
+  height: 22px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -228,8 +231,8 @@
 }
 
 .colorSwatch {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 2px;
   border: 1px solid var(--color-border);
 }
@@ -238,7 +241,7 @@
 .formatGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
+  gap: 2px;
 }
 
 .formatCard {
@@ -246,7 +249,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3px 2px;
+  padding: 2px 2px;
+  min-height: 32px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -273,12 +277,12 @@
 }
 
 .formatName {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: var(--weight-bold);
 }
 
 .formatDesc {
-  font-size: 9px;
+  font-size: 8.5px;
   color: var(--color-text-muted);
 }
 
@@ -286,22 +290,23 @@
 .actionSection {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-top: 2px;
+  gap: 2px;
+  margin-top: 1px;
 }
 
 .executeBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
-  padding: 6px 12px;
+  padding: 4px 8px;
+  height: 30px;
   background: var(--color-accent);
   color: var(--color-on-accent);
   border: none;
   border-radius: var(--radius-sm);
-  font-size: var(--text-ui);
+  font-size: 11px;
   font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -321,9 +326,9 @@
   background: transparent;
   border: none;
   color: var(--color-text-muted);
-  font-size: 10px;
+  font-size: 9.5px;
   cursor: pointer;
-  padding: 2px;
+  padding: 1px;
   text-align: center;
 }
 
@@ -334,10 +339,11 @@
 
 .textInput {
   width: 100%;
-  padding: 4px 6px;
+  padding: 2px 5px;
+  height: 26px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: 10.5px;
   background: var(--color-bg);
   color: var(--color-text);
   box-sizing: border-box;
@@ -509,28 +515,28 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 8px 10px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   box-sizing: border-box;
 }
 
 .statusBanner {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 5px;
+  padding: 3px 6px;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--color-success, #16a34a) 12%, transparent);
   color: var(--color-text);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: var(--weight-bold);
   border: 1px solid color-mix(in srgb, var(--color-success, #16a34a) 30%, transparent);
 }
 
 .previewThumbContainer {
-  height: 90px;
+  height: 80px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -560,7 +566,7 @@
 .metricsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .metricsTable tr {
@@ -572,12 +578,12 @@
 }
 
 .metricKey {
-  padding: 4px 0;
+  padding: 2.5px 0;
   color: var(--color-text-muted);
 }
 
 .metricVal {
-  padding: 4px 0;
+  padding: 2.5px 0;
   text-align: right;
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
@@ -588,15 +594,15 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 9.5px;
   color: var(--color-text-muted);
-  padding: 2px;
+  padding: 1px;
 }
 
 .downloadButtonGroup {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   width: 100%;
 }
 
@@ -604,14 +610,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: var(--radius-sm);
-  font-size: var(--text-ui);
+  font-size: 11px;
   font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -631,14 +637,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
-  padding: 6px 10px;
+  padding: 4px 8px;
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: var(--text-caption);
+  font-size: 10px;
   font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -660,9 +666,43 @@
 .errorContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px;
+  gap: 6px;
+  padding: 8px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+}
+
+/* FINE TUNE ACCORDION */
+.fineTuneDetails {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-subtle);
+  margin-top: 1px;
+  overflow: hidden;
+}
+
+.fineTuneSummary {
+  font-size: 9.5px;
+  font-weight: var(--weight-bold);
+  color: var(--color-text-muted);
+  padding: 2px 4px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fineTuneSummary:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+.fineTuneBody {
+  padding: 3px 5px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-top: 1px solid var(--color-border);
 }

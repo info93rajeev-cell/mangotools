@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './imageEnlarger.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { EnlargeOutputFormat, UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
 export interface ImageEnlargerControlsProps {
@@ -41,7 +42,7 @@ function UploadSection({
   return (
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
-        <span class={styles.sectionTitle}>1. Source Photo</span>
+        <span class={styles.sectionTitle}>1. Upload images</span>
         <button
           type="button"
           class={styles.miniGhostBtn}
@@ -52,34 +53,21 @@ function UploadSection({
         </button>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
+      <UniversalUploadDropzone
+        idPrefix={fileInputId}
         accept={
           preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp'
         }
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.target as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+        file={enlarger.file}
+        thumbnailUrl={enlarger.imageSrc}
+        dimensions={enlarger.sourceDims.width ? enlarger.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={enlarger.reset}
+        disabled={isExecuting}
+        primaryText="Drag and drop images here"
+        browseText="click to browse files"
+        supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
       />
-
-      <div class={styles.uploadRow}>
-        <label for={fileInputId} class={styles.uploadMainBtn}>
-          📁 Upload Image
-        </label>
-        {enlarger.file && (
-          <div class={styles.activeFileBadge}>
-            <span class={styles.activeFileName} title={enlarger.file.name}>
-              {enlarger.file.name}
-            </span>
-            <span class={styles.activeFileMeta}>
-              {enlarger.sourceDims.width} × {enlarger.sourceDims.height} px
-            </span>
-          </div>
-        )}
-      </div>
     </section>
   );
 }
@@ -104,19 +92,25 @@ function ScaleSection({
       </div>
 
       <div class={styles.presetRow}>
-        {SCALE_PRESETS.map((p) => (
-          <button
-            key={p.scale}
-            type="button"
-            class={styles.presetBtn}
-            data-active={String(enlarger.settings.scale === p.scale)}
-            onClick={() => enlarger.setScale(p.scale)}
-            disabled={!hasFile || isExecuting}
-          >
-            <span>{p.label}</span>
-            <span style={{ fontSize: '9px', opacity: 0.8 }}>{p.desc}</span>
-          </button>
-        ))}
+        {SCALE_PRESETS.map((p) => {
+          const isActive = enlarger.settings.scale === p.scale;
+          return (
+            <button
+              key={p.scale}
+              type="button"
+              class={styles.presetBtn}
+              data-active={String(isActive)}
+              onClick={() => enlarger.setScale(p.scale)}
+              disabled={!hasFile || isExecuting}
+            >
+              <span>
+                {isActive ? '✓ ' : ''}
+                {p.label}
+              </span>
+              <span style={{ fontSize: '9px', opacity: isActive ? 1 : 0.8 }}>{p.desc}</span>
+            </button>
+          );
+        })}
       </div>
     </section>
   );
@@ -295,18 +289,22 @@ function OutputSection({
         <span class={styles.sectionTitle}>4. Output Format</span>
       </div>
       <div class={styles.formatRow}>
-        {FORMAT_OPTIONS.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            class={styles.formatBtn}
-            data-active={String(enlarger.outputFormat === f.id)}
-            onClick={() => enlarger.setOutputFormat(f.id)}
-            disabled={!hasFile || isExecuting}
-          >
-            {f.name}
-          </button>
-        ))}
+        {FORMAT_OPTIONS.map((f) => {
+          const isActive = enlarger.outputFormat === f.id;
+          return (
+            <button
+              key={f.id}
+              type="button"
+              class={styles.formatBtn}
+              data-active={String(isActive)}
+              onClick={() => enlarger.setOutputFormat(f.id)}
+              disabled={!hasFile || isExecuting}
+            >
+              {isActive ? '✓ ' : ''}
+              {f.name}
+            </button>
+          );
+        })}
       </div>
     </section>
   );

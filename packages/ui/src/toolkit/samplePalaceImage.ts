@@ -5,6 +5,9 @@ export const SAMPLE_WIDTH = 1600;
 export const SAMPLE_HEIGHT = 1200;
 export const SAMPLE_SIZE = 1843200;
 
+export const SAMPLE_CUTOUT_NAME = 'jaipur-palace-no-bg.png';
+export const SAMPLE_CUTOUT_SIZE = 3408649;
+
 const FALLBACK_JPEG = new Uint8Array([
   0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00, 0x48,
   0x00, 0x48, 0x00, 0x00, 0xff, 0xdb, 0x00, 0x43, 0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08,
@@ -37,4 +40,24 @@ export async function createPalaceSample(): Promise<{ file: CropFile; blobUrl: s
     file: { name: SAMPLE_NAME, size: SAMPLE_SIZE, bytes: FALLBACK_JPEG },
     blobUrl,
   };
+}
+
+export async function createPalaceCutoutSample(): Promise<{
+  file: CropFile;
+  blobUrl: string;
+} | null> {
+  if (typeof fetch !== 'undefined') {
+    try {
+      const res = await fetch('/samples/jaipur_palace_nobg.png');
+      if (res.ok) {
+        const buf = await res.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        const blobUrl = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+        return { file: { name: SAMPLE_CUTOUT_NAME, size: bytes.byteLength, bytes }, blobUrl };
+      }
+    } catch {
+      // offline fallback
+    }
+  }
+  return null;
 }

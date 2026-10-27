@@ -21,6 +21,8 @@
       "!playwright-report",
       "!apps/web/public/wasm",
       "!apps/web/public/models",
+      "!apps/web/public/extension",
+      "!apps/chrome-extension",
       "!scratch",
       "!.codex*"
     ]

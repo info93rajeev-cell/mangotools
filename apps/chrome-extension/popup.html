@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeyondTheAI - Image Format Converter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- BRAND HEADER -->
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-logo">B</div>
+        <div class="brand-text-col">
+          <span class="brand-name">BeyondTheAI</span>
+          <h1 class="tool-title">Image Format Converter</h1>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span id="licenseBadge" class="license-badge" title="Subscription Status">⚡ 30 Days Trial</span>
+      </div>
+    </header>
+
+    <!-- TAB NAVIGATION -->
+    <nav class="tab-nav">
+      <button type="button" class="tab-btn active" data-tab="converter">Converter</button>
+      <button type="button" class="tab-btn" data-tab="history">History <span id="historyCount" class="tab-pill">0</span></button>
+      <button type="button" class="tab-btn" data-tab="license">License</button>
+    </nav>
+
+    <!-- TAB 1: CONVERTER -->
+    <main id="tabConverter" class="tab-content active">
+      <!-- TRIAL EXPIRED LOCK BANNER (HIDDEN WHEN ACTIVE) -->
+      <div id="expiredBanner" class="expired-banner hidden">
+        <div class="expired-icon">⚠️</div>
+        <div class="expired-text">
+          <strong>30-Day Trial Expired</strong>
+          <span>Please renew your subscription to convert new images. Your previously saved files remain safely stored in History.</span>
+        </div>
+      </div>
+
+      <!-- CARD 1: UPLOAD DROPZONE -->
+      <section class="card upload-card" id="uploadSection">
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/svg+xml,image/bmp,image/gif" class="visually-hidden">
+        
+        <!-- EMPTY DROPZONE STATE -->
+        <label for="fileInput" id="dropzoneBox" class="dropzone-box">
+          <svg class="cloud-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="M12 12v9" />
+            <path d="m8 16 4-4 4 4" />
+          </svg>
+          <span class="dropzone-primary">Drag and drop images here</span>
+          <div class="dropzone-or-row">
+            <span class="or-text">or</span>
+            <span class="browse-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              <span>Upload Image</span>
+            </span>
+          </div>
+          <span class="support-hint">Supports JPG, PNG, WebP, SVG, BMP, GIF.</span>
+        </label>
+
+        <!-- LOADED FILE CARD (SHOWN WHEN FILE LOADED) -->
+        <div id="loadedFileCard" class="loaded-file-card hidden">
+          <div id="fileThumb" class="file-thumbnail"></div>
+          <div class="file-details">
+            <span id="fileName" class="file-name">sample.jpg</span>
+            <span id="fileMeta" class="file-meta">1600 × 1200 px • 240 KB</span>
+          </div>
+          <div class="file-actions">
+            <label for="fileInput" class="change-btn" title="Choose a different image">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                <path d="M16 21h5v-5" />
+              </svg>
+              <span>Change</span>
+            </label>
+            <button type="button" id="removeFileBtn" class="remove-btn" title="Remove image">✕</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 2: TARGET FORMAT -->
+      <section class="card format-card-section">
+        <div class="card-header">
+          <span class="card-title">Choose Target Format</span>
+        </div>
+        <div class="format-grid">
+          <button type="button" class="format-btn active" data-format="png">
+            <span class="format-name">PNG</span>
+            <span class="format-desc">Lossless & Alpha</span>
+          </button>
+          <button type="button" class="format-btn" data-format="jpg">
+            <span class="format-name">JPG</span>
+            <span class="format-desc">Photo Standard</span>
+          </button>
+          <button type="button" class="format-btn" data-format="webp">
+            <span class="format-name">WebP</span>
+            <span class="format-desc">Smallest Size</span>
+          </button>
+          <button type="button" class="format-btn" data-format="pdf">
+            <span class="format-name">PDF</span>
+            <span class="format-desc">Document Wrap</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- CARD 3: QUALITY & SETTINGS -->
+      <section class="card settings-card">
+        <div id="qualityGroup" class="input-group hidden">
+          <div class="slider-header">
+            <label for="qualitySlider" class="field-label">Image Quality</label>
+            <span id="qualityVal" class="slider-val">90%</span>
+          </div>
+          <input type="range" id="qualitySlider" min="1" max="100" value="90" class="range-slider">
+        </div>
+
+        <div class="input-group">
+          <label for="customFileName" class="field-label">Custom Output File Name (Optional)</label>
+          <input type="text" id="customFileName" class="text-input" placeholder="e.g. product-showcase">
+        </div>
+
+        <button type="button" id="convertBtn" class="primary-convert-btn" disabled>
+          <span>⚡ Convert & Download Image</span>
+        </button>
+      </section>
+
+      <!-- CARD 4: CONVERTED RESULT (SHOWN AFTER CONVERSION) -->
+      <section id="resultCard" class="card result-card hidden">
+        <div class="result-header">
+          <span class="result-title">Conversion Ready!</span>
+          <span id="sizeReductionBadge" class="reduction-badge">-42%</span>
+        </div>
+        <div class="result-metrics">
+          <div class="metric-col">
+            <span class="metric-label">Original</span>
+            <span id="originalSizeText" class="metric-val">240 KB</span>
+          </div>
+          <div class="metric-arrow">→</div>
+          <div class="metric-col">
+            <span class="metric-label">Converted</span>
+            <span id="convertedSizeText" class="metric-val">138 KB</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button type="button" id="downloadAgainBtn" class="action-btn download-btn">
+            <span>⬇ Download Converted Image</span>
+          </button>
+          <button type="button" id="copyClipboardBtn" class="action-btn copy-btn">
+            <span>📋 Copy to Clipboard</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- FOOTER NOTE -->
+      <footer class="app-footer">
+        <span>🔒 100% In-Browser. No Files Uploaded to External Servers.</span>
+      </footer>
+    </main>
+
+    <!-- TAB 2: HISTORY (SAVED LEVEL DATA) -->
+    <section id="tabHistory" class="tab-content">
+      <div class="card history-card">
+        <div class="card-header">
+          <span class="card-title">Saved Conversion History</span>
+          <button type="button" id="clearHistoryBtn" class="link-btn">Clear All</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <div class="empty-state">
+            <span>No conversions recorded yet. Converted images will appear here and can be re-downloaded at any time.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: LICENSE & SUBSCRIPTION -->
+    <section id="tabLicense" class="tab-content">
+      <div class="card license-card">
+        <div class="card-header">
+          <span class="card-title">Subscription & Timer Status</span>
+        </div>
+        
+        <div class="license-info-table">
+          <div class="license-row">
+            <span class="row-label">Current Plan:</span>
+            <span class="row-val highlight">30-Day Free Trial</span>
+          </div>
+          <div class="license-row">
+            <span class="row-label">Status:</span>
+            <span id="licenseStatusText" class="row-val status-active">Active</span>
+          </div>
+          <div class="license-row">
+            <span class="row-label">Time Remaining:</span>
+            <span id="licenseDaysText" class="row-val">30 Days</span>
+          </div>
+          <div class="license-row">
+            <span class="row-label">Expiry Date:</span>
+            <span id="licenseExpiryText" class="row-val">Nov 27, 2026</span>
+          </div>
+        </div>
+
+        <div class="subscription-rules-box">
+          <strong>Subscription Enforcement Rules:</strong>
+          <ul>
+            <li>Active period allows unlimited offline image format conversions.</li>
+            <li>When subscription/trial expires, converting new files is paused.</li>
+            <li><strong>Data Protection:</strong> Previous conversions in History remain completely safe and viewable even when expired.</li>
+          </ul>
+        </div>
+
+        <!-- DEVELOPER / TEST CONTROLS -->
+        <div class="test-controls-box">
+          <span class="test-title">🧪 Test Subscription Timer Behavior</span>
+          <div class="test-btn-row">
+            <button type="button" id="simulateExpireBtn" class="test-btn danger">Simulate 30-Day Expiry</button>
+            <button type="button" id="resetTrialBtn" class="test-btn success">Reset 30-Day Trial</button>
+          </div>
+          <span class="test-hint">Click "Simulate 30-Day Expiry" to preview how the tool safely locks new conversions while preserving all saved history.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="popup.bundle.js"></script>
+</body>
+</html>

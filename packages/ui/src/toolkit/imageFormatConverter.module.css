@@ -550,3 +550,183 @@
   flex-direction: column;
   gap: 4px;
 }
+
+/* 2-COLUMN STUDIO WORKBENCH (MATCHING REFERENCE MOCKUP) */
+.featureBadgesRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.featureBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text);
+}
+
+.featureBadgeTitle {
+  font-weight: 700;
+}
+
+.featureBadgeSub {
+  color: var(--color-text-muted);
+}
+
+.studioTop2Col {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.15fr) minmax(320px, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 860px) {
+  .studioTop2Col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+}
+
+.relatedActionCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.relatedActionCard:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary-blue, #2563eb);
+}
+
+.relatedActionIcon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.infoCalloutBlue {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 10.5px;
+  color: #1e40af;
+  line-height: 1.35;
+  margin-top: 6px;
+}
+
+.goldDownloadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: #facc15;
+  color: #0f172a;
+  border: 1px solid #eab308;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(234, 179, 8, 0.25);
+  transition: all 0.15s ease;
+  margin-top: 6px;
+}
+
+.goldDownloadBtn:hover:not(:disabled) {
+  background: #eab308;
+  box-shadow: 0 3px 6px rgba(234, 179, 8, 0.35);
+}
+
+.goldDownloadBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resultCardBottom {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+.resultBannerGreen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 8px;
+}
+
+.bottomMetricsRow4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .bottomMetricsRow4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.metricCard {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metricLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.metricValue {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sizeDiffPill {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 1px 5px;
+  border-radius: 4px;
+}

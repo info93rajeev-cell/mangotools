@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './passportPhoto.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import {
   PASSPORT_PRESETS,
   type PassportOutputFormat,
@@ -21,6 +22,7 @@ const FORMAT_OPTIONS: { id: PassportOutputFormat; name: string }[] = [
   { id: 'pdf', name: 'PDF' },
 ];
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio controls layout
 export function PassportPhotoControls({
   idPrefix,
   preset: _preset,
@@ -61,34 +63,19 @@ export function PassportPhotoControls({
             </div>
           </div>
 
-          <input
-            id={fileInputId}
-            type="file"
+          <UniversalUploadDropzone
+            idPrefix={fileInputId}
             accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              const target = e.target as HTMLInputElement;
-              const f = target.files?.[0];
-              target.value = '';
-              if (f) onSelectFile(f);
-            }}
+            file={passport.file}
+            thumbnailUrl={passport.imageSrc}
+            dimensions={passport.sourceDims.width ? passport.sourceDims : null}
+            onSelectFile={onSelectFile}
+            onClear={passport.clearAll}
+            disabled={isExecuting}
+            primaryText="Drag and drop images here"
+            browseText="click to browse files"
+            supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
           />
-
-          <div class={styles.uploadRow}>
-            <label for={fileInputId} class={styles.uploadMainBtn}>
-              📁 Upload Photo
-            </label>
-            {hasFile && (
-              <div class={styles.inlineFileBadge}>
-                <span class={styles.inlineFileName} title={passport.file?.name}>
-                  {passport.file?.name}
-                </span>
-                <span class={styles.inlineFileMeta}>
-                  {passport.sourceDims.width}×{passport.sourceDims.height}
-                </span>
-              </div>
-            )}
-          </div>
 
           {!hasFile && (
             <div class={styles.emptyStateNotice}>
@@ -116,7 +103,10 @@ export function PassportPhotoControls({
                       onClick={() => passport.applyPreset(p)}
                       disabled={isExecuting}
                     >
-                      <span class={styles.presetName}>{p.name}</span>
+                      <span class={styles.presetName}>
+                        {isActive ? '✓ ' : ''}
+                        {p.name}
+                      </span>
                       <span class={styles.presetDim}>{p.unit}</span>
                     </button>
                   );
@@ -175,6 +165,7 @@ export function PassportPhotoControls({
                     type="checkbox"
                     role="switch"
                     aria-label="Keep aspect ratio"
+                    aria-checked={passport.keepAspectRatio}
                     checked={passport.keepAspectRatio}
                     onChange={(e) =>
                       passport.setKeepAspectRatio((e.target as HTMLInputElement).checked)
@@ -232,6 +223,22 @@ export function PassportPhotoControls({
                     disabled={isExecuting || passport.outputFormat === 'png'}
                   />
                 </div>
+              </div>
+
+              <div style={{ marginTop: '4px' }}>
+                <label for={`${idPrefix}-custom-filename`} class={styles.dimLabel}>
+                  Output Filename
+                </label>
+                <input
+                  id={`${idPrefix}-custom-filename`}
+                  type="text"
+                  placeholder="passport-photo"
+                  class={styles.dimInput}
+                  style={{ width: '100%', boxSizing: 'border-box', marginTop: '2px' }}
+                  value={passport.customFileName}
+                  onInput={(e) => passport.setCustomFileName((e.target as HTMLInputElement).value)}
+                  disabled={isExecuting}
+                />
               </div>
             </section>
           </>

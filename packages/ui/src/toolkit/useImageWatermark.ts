@@ -9,7 +9,11 @@ import {
   MIME_MAP,
   type CropFile as WatermarkFile,
 } from './imageFileInspection.ts';
-import { createPalaceSample } from './samplePalaceImage.ts';
+import {
+  createMountainLakeSample,
+  SAMPLE_HEIGHT,
+  SAMPLE_WIDTH,
+} from './sampleMountainLakeImage.ts';
 
 export type WatermarkPosition =
   | 'top-left'
@@ -113,6 +117,7 @@ async function executeWatermarkWorker(
   });
 }
 
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Hook manages comprehensive state and worker execution for image watermarking
 export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: FilePhase) => void) {
   const [file, setFile] = useState<WatermarkFile | null>(null);
   const [invalidFile, setInvalidFile] = useState<{ name: string } | null>(null);
@@ -133,6 +138,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
   const [warnings, setWarnings] = useState<OpWarning[]>([]);
 
   const sampleLoadedRef = useRef(false);
+  const userInteractedRef = useRef(false);
 
   const setPhase = (p: FilePhase) => {
     setPhaseState(p);
@@ -151,8 +157,12 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     setError(null);
     setInvalidFile(null);
     try {
-      const { file: sampleFile, blobUrl } = await createPalaceSample();
-      const dims = { width: 1600, height: 1200 };
+      const { file: sampleFile, blobUrl } = await createMountainLakeSample();
+      if (userInteractedRef.current) {
+        URL.revokeObjectURL(blobUrl);
+        return;
+      }
+      const dims = { width: SAMPLE_WIDTH, height: SAMPLE_HEIGHT };
       if (imageSrc) URL.revokeObjectURL(imageSrc);
       setFile(sampleFile);
       setImageSrc(blobUrl);
@@ -167,6 +177,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
   }
 
   async function handleFileSelected(browserFile: File) {
+    userInteractedRef.current = true;
     setPhase('running');
     setError(null);
     setInvalidFile(null);

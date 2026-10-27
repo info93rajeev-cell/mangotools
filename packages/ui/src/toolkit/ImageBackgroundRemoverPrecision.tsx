@@ -273,61 +273,71 @@ export function PrecisionSection({
       </div>
 
       <ModeSelectorRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
-
-      <div class={styles.sliderGroup}>
-        <div class={styles.sliderHeader}>
-          <label for={`${idPrefix}-tolerance`} class={styles.dimLabel}>
-            Color Tolerance:
-          </label>
-          <span class={styles.sliderValText}>{bgRemover.tolerance}%</span>
-        </div>
-        <input
-          id={`${idPrefix}-tolerance`}
-          aria-label="Color tolerance"
-          type="range"
-          min="1"
-          max="100"
-          step="1"
-          value={bgRemover.tolerance}
-          onInput={(e) => {
-            bgRemover.setTolerance(Number((e.currentTarget as HTMLInputElement).value));
-          }}
-          class={styles.rangeSlider}
-          disabled={!hasFile || isExecuting}
-        />
-      </div>
-
-      <div class={styles.sliderGroup}>
-        <div class={styles.sliderHeader}>
-          <label for={`${idPrefix}-feather`} class={styles.dimLabel}>
-            Edge Smoothing:
-          </label>
-          <span class={styles.sliderValText}>{bgRemover.feather} px</span>
-        </div>
-        <input
-          id={`${idPrefix}-feather`}
-          aria-label="Edge smoothing"
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          value={bgRemover.feather}
-          onInput={(e) => {
-            bgRemover.setFeather(Number((e.currentTarget as HTMLInputElement).value));
-          }}
-          class={styles.rangeSlider}
-          disabled={!hasFile || isExecuting}
-        />
-      </div>
-
-      <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
-      <ProductShadowRow
-        idPrefix={idPrefix}
-        bgRemover={bgRemover}
-        hasFile={hasFile}
-        isExecuting={isExecuting}
-      />
       <BackgroundFillRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+        <div class={styles.sliderGroup}>
+          <div class={styles.sliderHeader}>
+            <label for={`${idPrefix}-tolerance`} class={styles.dimLabel}>
+              Tolerance:
+            </label>
+            <span class={styles.sliderValText}>{bgRemover.tolerance}%</span>
+          </div>
+          <input
+            id={`${idPrefix}-tolerance`}
+            aria-label="Color tolerance"
+            type="range"
+            min="1"
+            max="100"
+            step="1"
+            value={bgRemover.tolerance}
+            onInput={(e) => {
+              bgRemover.setTolerance(Number((e.currentTarget as HTMLInputElement).value));
+            }}
+            class={styles.rangeSlider}
+            disabled={!hasFile || isExecuting}
+          />
+        </div>
+
+        <div class={styles.sliderGroup}>
+          <div class={styles.sliderHeader}>
+            <label for={`${idPrefix}-feather`} class={styles.dimLabel}>
+              Feather:
+            </label>
+            <span class={styles.sliderValText}>{bgRemover.feather}px</span>
+          </div>
+          <input
+            id={`${idPrefix}-feather`}
+            aria-label="Edge smoothing"
+            type="range"
+            min="0"
+            max="10"
+            step="1"
+            value={bgRemover.feather}
+            onInput={(e) => {
+              bgRemover.setFeather(Number((e.currentTarget as HTMLInputElement).value));
+            }}
+            class={styles.rangeSlider}
+            disabled={!hasFile || isExecuting}
+          />
+        </div>
+      </div>
+
+      <details class={styles.fineTuneDetails}>
+        <summary class={styles.fineTuneSummary}>
+          <span>⚙️ Advanced Matte & Shadow</span>
+          <span style={{ fontSize: '10px' }}>▾</span>
+        </summary>
+        <div class={styles.fineTuneBody}>
+          <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
+          <ProductShadowRow
+            idPrefix={idPrefix}
+            bgRemover={bgRemover}
+            hasFile={hasFile}
+            isExecuting={isExecuting}
+          />
+        </div>
+      </details>
     </section>
   );
 }

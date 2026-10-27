@@ -46,18 +46,18 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 4px 8px;
+  padding: 3px 6px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   box-sizing: border-box;
 }
 
 .controlSection {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-top: 3px;
+  gap: 1.5px;
+  padding-top: 2px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -175,31 +175,26 @@
 .presetPillsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3px;
+  gap: 2px;
 }
 
 .presetPill {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 3px 5px;
+  padding: 2px 4px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
+  line-height: 1.1;
 }
 
 .presetPill:hover:not(:disabled) {
   border-color: var(--color-accent);
   background: var(--color-surface-hover, rgba(0, 0, 0, 0.02));
-}
-
-.presetPill[data-active="true"] {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
 }
 
 .presetName {
@@ -214,10 +209,28 @@
   font-variant-numeric: tabular-nums;
 }
 
+.presetPill[data-active="true"] {
+  background: #ffb000;
+  border-color: #d97706;
+  color: #0f172a;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.3);
+}
+
+.presetPill[data-active="true"] .presetName {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.presetPill[data-active="true"] .presetDim {
+  color: #334155;
+  opacity: 1;
+}
+
 /* DIMS INPUTS */
 .dimsRow {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .dimField {
@@ -228,7 +241,7 @@
 }
 
 .dimLabel {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: var(--weight-medium);
   color: var(--color-text-muted);
 }
@@ -241,13 +254,14 @@
 
 .dimInput {
   width: 100%;
-  padding: 3px 20px 3px 6px;
+  padding: 2px 18px 2px 5px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: var(--text-ui);
   font-family: var(--font-mono);
   box-sizing: border-box;
+  height: 24px;
 }
 
 .dimSuffix {
@@ -261,14 +275,14 @@
 .switchRow {
   display: flex;
   align-items: center;
-  margin-top: 1px;
+  margin-top: 0px;
 }
 
 .switchLabel {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 10.5px;
+  gap: 4px;
+  font-size: 10px;
   cursor: pointer;
   color: var(--color-text);
 }
@@ -276,7 +290,7 @@
 /* FORMAT & QUALITY */
 .formatRow {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .formatField {
@@ -288,12 +302,13 @@
 
 .formatSelect {
   width: 100%;
-  padding: 3px 6px;
+  padding: 2px 4px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: var(--text-ui);
   box-sizing: border-box;
+  height: 24px;
 }
 
 .qualityField {
@@ -305,13 +320,14 @@
 
 .qualityInput {
   width: 100%;
-  padding: 3px 6px;
+  padding: 2px 4px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: var(--text-ui);
   font-family: var(--font-mono);
   box-sizing: border-box;
+  height: 24px;
 }
 
 /* PANEL 2: CANVAS */
@@ -324,7 +340,7 @@
   padding: 6px 8px;
   box-sizing: border-box;
   min-width: 0;
-  height: 480px;
+  height: auto;
 }
 
 .canvasHeader {
@@ -428,7 +444,7 @@
 .passportImg {
   display: block;
   max-width: 100%;
-  max-height: 380px;
+  max-height: 310px;
   object-fit: contain;
   border-radius: 2px;
 }
@@ -461,7 +477,7 @@
 .readyBadge {
   font-size: 9.5px;
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: #15803d;
 }
 
 .specsTable {
@@ -523,20 +539,21 @@
   justify-content: center;
   gap: 6px;
   width: 100%;
-  padding: 7px 12px;
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
+  padding: 8px 12px;
+  background: #15803d;
+  color: #ffffff;
+  border: 1px solid #166534;
   border-radius: var(--radius-md);
-  font-size: 12px;
-  font-weight: var(--weight-bold);
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(21, 128, 61, 0.25);
   transition: all 0.15s ease;
 }
 
 .downloadCtaBtn:hover:not(:disabled) {
-  filter: brightness(1.08);
+  background: #166534;
+  box-shadow: 0 3px 6px rgba(22, 101, 52, 0.35);
 }
 
 .downloadCtaBtn:disabled {
@@ -553,4 +570,34 @@
   color: var(--color-text-muted);
   padding: 3px 0;
   border-top: 1px solid var(--color-border);
+}
+
+.alignmentCallout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  color: #065f46;
+  margin-top: 4px;
+}
+
+.relatedActionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.relatedActionLink:hover {
+  color: #1d4ed8;
 }

@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageFormatConverter.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type {
   TargetImageFormat,
   UseImageFormatConverterReturn,
@@ -23,7 +24,7 @@ const FORMAT_OPTIONS: { id: TargetImageFormat; name: string; desc: string }[] = 
 
 function UploadSection({
   idPrefix,
-  preset: _preset,
+  preset,
   converter,
   onSelectFile,
   onTrySample,
@@ -34,58 +35,30 @@ function UploadSection({
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
 }) {
-  const fileInputId = `${idPrefix}-file-input`;
   const isExecuting = converter.phase === 'running';
 
   return (
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
-        <span class={styles.sectionTitle}>1. Upload Image</span>
+        <span class={styles.sectionTitle}>1. Upload images</span>
         <Button variant="ghost" icon="sparkle" onClick={onTrySample} disabled={isExecuting}>
           Try Sample
         </Button>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
-        accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.target as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
+        accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
+        file={converter.file}
+        thumbnailUrl={converter.imageSrc}
+        dimensions={converter.sourceDims.width ? converter.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={converter.reset}
+        disabled={isExecuting}
+        primaryText="Drag and drop images here"
+        browseText="click to browse files"
+        supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
       />
-
-      <div class={styles.uploadRow}>
-        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
-          📁 Upload Image
-        </label>
-      </div>
-
-      {converter.file ? (
-        <div class={styles.activeFileBadge}>
-          <span class={styles.activeFileName} title={converter.file?.name}>
-            {converter.file?.name}
-          </span>
-          <span class={styles.activeFileMeta}>
-            {converter.sourceDims.width} × {converter.sourceDims.height} px
-          </span>
-        </div>
-      ) : (
-        <label
-          for={fileInputId}
-          class={styles.compactDropZone}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const f = e.dataTransfer?.files?.[0];
-            if (f) onSelectFile(f);
-          }}
-        >
-          <span class={styles.dropZoneHint}>Drop JPG, PNG, or WebP here</span>
-        </label>
-      )}
     </section>
   );
 }
@@ -150,7 +123,7 @@ function FormatSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Format</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
+        <span style={{ fontSize: '10px', color: 'var(--color-accent)', fontWeight: 'bold' }}>
           {converter.targetFormat.toUpperCase()}
         </span>
       </div>
