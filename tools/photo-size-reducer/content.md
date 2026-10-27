@@ -16,7 +16,7 @@ This is real maximum-byte targeting, not a quality-slider estimate. The shared u
 
 The search is bounded, not exhaustive or globally optimal. An already-small photo is re-encoded and may grow; a target may be impossible within the quality/dimension safeguards. PNG preserves alpha; JPEG flattens transparency to white. Metadata such as camera/location information is not preserved. There is no perceptual quality guarantee, minimum-byte padding, exact-byte target or automatic portal approval.
 
-One image per run, up to 25 MiB and 40 megapixels decoded/output, with a 20000-pixel axis cap. Browser memory can still limit large files. Output sizes differ between browser encoders; verify the actual downloaded result.
+One image per run, up to 100 MiB and 120 megapixels decoded/output, with a 20000-pixel axis cap. Browser memory can still limit large files. Output sizes differ between browser encoders; verify the actual downloaded result.
 
 ## FAQ
 

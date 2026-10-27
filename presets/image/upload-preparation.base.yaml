@@ -3,7 +3,7 @@ id: image/upload-preparation.base
 version: 0.1.0
 abstract: true
 operation: image.prepare-upload@1
-ui: { archetypes: [D], fileAccept: "image/jpeg,image/png,image/webp", maxFiles: 1, collapseNotices: true }
+ui: { archetypes: [D], fileAccept: "image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp", maxFiles: 1, collapseNotices: true }
 fields:
   targetWidth: { labelKey: field.width, kind: number, required: true, order: 1, unit: px, default: 800, width: half }
   targetHeight: { labelKey: field.height, kind: number, required: true, order: 2, unit: px, default: 600, width: half }
