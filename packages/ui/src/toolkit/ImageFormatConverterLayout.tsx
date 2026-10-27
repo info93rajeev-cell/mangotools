@@ -4,6 +4,7 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import { ImageFormatConverterCanvas } from './ImageFormatConverterCanvas.tsx';
 import { ImageFormatConverterControls } from './ImageFormatConverterControls.tsx';
 import { ImageFormatConverterResult } from './ImageFormatConverterResult.tsx';
+import { ImageToPdfStudio } from './ImageToPdfStudio.tsx';
 import styles from './imageFormatConverter.module.css';
 import { messageFor } from './presentation.ts';
 import { useImageFormatConverter } from './useImageFormatConverter.ts';
@@ -24,6 +25,19 @@ export function ImageFormatConverterLayout({
   onPhase,
 }: ImageFormatConverterLayoutProps) {
   const converter = useImageFormatConverter(preset, toolId, notify, onPhase);
+
+  if (converter.targetFormat === 'pdf') {
+    return (
+      <ImageToPdfStudio
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        converter={converter}
+        notify={notify}
+        onPhase={onPhase}
+      />
+    );
+  }
 
   return (
     <div class={styles.container} data-image-format-converter-layout="">

@@ -6,6 +6,7 @@ import type { ImageEnlargerLayoutProps } from './ImageEnlargerLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageMetadataLayoutProps } from './ImageMetadataLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
+import type { ImageToPdfStudioProps } from './ImageToPdfStudio.tsx';
 import type { ImageWatermarkLayoutProps } from './ImageWatermarkLayout.tsx';
 import type { PassportPhotoLayoutProps } from './PassportPhotoLayout.tsx';
 import type { PhotoSizeReducerLayoutProps } from './PhotoSizeReducerLayout.tsx';
@@ -30,6 +31,19 @@ export function DynamicImageFormatConverterLayout(props: ImageFormatConverterLay
   useEffect(() => {
     void import('./ImageFormatConverterLayout.tsx').then((m) => {
       setComp(() => m.ImageFormatConverterLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicImageToPdfLayout(props: ImageToPdfStudioProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageToPdfStudioProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageToPdfStudio.tsx').then((m) => {
+      setComp(() => m.ImageToPdfStudio);
     });
   }, []);
 

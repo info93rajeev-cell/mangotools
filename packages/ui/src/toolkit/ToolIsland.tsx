@@ -29,6 +29,7 @@ import {
   DynamicImageFormatConverterLayout,
   DynamicImageMetadataRemoverLayout,
   DynamicImageResizeLayout,
+  DynamicImageToPdfLayout,
   DynamicImageWatermarkLayout,
   DynamicPassportPhotoLayout,
   DynamicPhotoSizeReducerLayout,
@@ -57,6 +58,7 @@ const PASSPORT_PHOTO_PRESET_ID = 'image/passport-photo';
 const SIGNATURE_RESIZER_PRESET_ID = 'image/signature';
 const IMAGE_METADATA_REMOVER_PRESET_ID = 'image/metadata-remove';
 const IMAGE_WATERMARK_PRESET_ID = 'image/watermark';
+const JPG_TO_PDF_PRESET_ID = 'pdf/jpg-to-pdf';
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -210,13 +212,8 @@ function renderBasicImageStudio({ idPrefix, toolId, preset, notify, onFilePhase 
   return null;
 }
 
-function renderAdvancedImageStudio({
-  idPrefix,
-  toolId,
-  preset,
-  notify,
-  onFilePhase,
-}: ArchetypeProps) {
+function renderAdvancedImageStudio(props: ArchetypeProps) {
+  const { idPrefix, toolId, preset, notify, onFilePhase } = props;
   if (preset.id === IMAGE_FORMAT_CONVERTER_PRESET_ID) {
     return (
       <DynamicImageFormatConverterLayout
@@ -261,6 +258,11 @@ function renderAdvancedImageStudio({
       />
     );
   }
+  return renderDocumentAndWatermarkStudio(props);
+}
+
+function renderDocumentAndWatermarkStudio(props: ArchetypeProps) {
+  const { idPrefix, toolId, preset, notify, onFilePhase } = props;
   if (preset.id === PASSPORT_PHOTO_PRESET_ID || toolId === 'passport-photo-resizer') {
     return (
       <DynamicPassportPhotoLayout
@@ -297,6 +299,17 @@ function renderAdvancedImageStudio({
   if (preset.id === IMAGE_WATERMARK_PRESET_ID || toolId === 'image-watermark') {
     return (
       <DynamicImageWatermarkLayout
+        idPrefix={idPrefix}
+        toolId={toolId}
+        preset={preset}
+        notify={notify}
+        onPhase={onFilePhase}
+      />
+    );
+  }
+  if (preset.id === JPG_TO_PDF_PRESET_ID || toolId === 'jpg-to-pdf') {
+    return (
+      <DynamicImageToPdfLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}

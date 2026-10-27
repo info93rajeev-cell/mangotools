@@ -140,12 +140,12 @@ categories:
     name: Image & Media
     icon: image
     order: 80
-    summary: Resize, compress, convert, crop, watermark and clean JPG, PNG and WebP images, and make favicons, in your browser.
+    summary: Resize, compress, convert, crop, watermark and clean JPG, PNG and WebP images in your browser.
     seo:
       title: Image Tools – Resize, Compress, Convert & Crop Images
-      description: "Free image tools for JPG, PNG and WebP: resize, compress, convert, crop, watermark, remove metadata and make favicons. Nothing is uploaded."
+      description: "Free image tools for JPG, PNG and WebP: resize, compress, convert, crop, watermark and remove metadata. Nothing is uploaded."
     about:
-      - Image & Media tools work on a single JPG, PNG or WebP image at a time, entirely in your browser. Image Resize changes the width and height, Image Compress reduces file size where possible, Image Format Converter changes the file format between JPG, PNG and WebP, Image Metadata Remover creates a copy with common metadata removed, Image Watermark adds your own text watermark, Image Crop cuts out an exact pixel rectangle, and Favicon Generator creates a square PNG website icon — all with no sign-up and no watermark added to the result.
+      - Image & Media tools work on a single JPG, PNG or WebP image at a time, entirely in your browser. Image Resize changes the width and height, Image Compress reduces file size where possible, Image Format Converter changes the file format between JPG, PNG and WebP, Image Metadata Remover creates a copy with common metadata removed, Image Watermark adds your own text watermark, and Image Crop cuts out an exact pixel rectangle — all with no sign-up and no watermark added to the result.
       - These are simple, browser-first tools for everyday images, such as preparing a photo for a website, an online store, a social post, a document, or an AI-generated image that arrived in the wrong format. Very large images may fail because of browser memory limits, output can differ slightly between browsers because image encoders vary, and transparent areas are flattened onto a white background when exporting to JPG. Nothing is uploaded to a server.
     faq:
       - q: Are these image tools free?
