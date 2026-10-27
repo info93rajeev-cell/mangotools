@@ -20,8 +20,6 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
-import { DynamicCbmShipmentLayout } from './DynamicCbmShipmentLayout.tsx';
-import { DynamicContainerLoadingLayout } from './DynamicContainerLoadingLayout.tsx';
 import {
   DynamicImageBackgroundRemoverLayout,
   DynamicImageCompressLayout,
@@ -35,6 +33,7 @@ import {
   DynamicPhotoSizeReducerLayout,
   DynamicSignatureResizerLayout,
 } from './DynamicImageToolLayouts.tsx';
+import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
 import { ImageCropLayout } from './ImageCropLayout.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -460,8 +459,18 @@ function StandardToolIsland({
 }
 
 export function ToolIsland(props: ToolIslandProps) {
-  if (props.preset.id === 'logistics/container-load') return <DynamicContainerLoadingLayout />;
-  if (props.preset.id === CBM_SHIPMENT_PRESET_ID)
-    return <DynamicCbmShipmentLayout preset={props.preset} />;
+  const { id } = props.preset;
+  if (
+    id === 'logistics/container-load' ||
+    id === CBM_SHIPMENT_PRESET_ID ||
+    id === 'logistics/pallet' ||
+    id === 'logistics/volumetric' ||
+    props.toolId === 'container-loading-calculator' ||
+    props.toolId === 'cbm-calculator' ||
+    props.toolId === 'pallet-loading-calculator' ||
+    props.toolId === 'volumetric-weight-calculator'
+  ) {
+    return <DynamicLogisticsLayout {...props} />;
+  }
   return <StandardToolIsland {...props} />;
 }

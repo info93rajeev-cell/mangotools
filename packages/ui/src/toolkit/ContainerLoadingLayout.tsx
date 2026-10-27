@@ -82,7 +82,7 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
       <ContainerSupportingPanels state={state} />
       <ContainerToolBottom state={state} />
       <div class={output.printReport}>
-        <h1>{t.title}</h1>
+        <h2>{t.title}</h2>
         <pre>{summary}</pre>
       </div>
     </div>

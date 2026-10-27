@@ -9,6 +9,7 @@ import { CbmQuickActions } from './CbmQuickActions.tsx';
 import { CbmSectionLinks } from './CbmSectionLinks.tsx';
 import { CbmShipmentResults } from './CbmShipmentResults.tsx';
 import { CbmVisualizationPanel } from './CbmShipmentVisualization.tsx';
+import { CbmVisualBanner } from './CbmVisualBanner.tsx';
 import page from './cbmPage.module.css';
 import { shipmentSummary } from './cbmShipmentCopy.ts';
 import s from './cbmWorkspace.module.css';
@@ -31,6 +32,7 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
         onVisualization={bench.showVisualization}
         onUnits={bench.showUnits}
       />
+      <CbmVisualBanner />
       <div class={s.workspace}>
         <div class={s.left}>
           <div class={s.leftCard}>
