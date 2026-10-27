@@ -36,8 +36,8 @@ No. Unlike cloud-based AI upscalers that send your private photos to remote serv
 
 ### What is the difference between 2x and 4x enlarge?
 
-- **2× (200%)** doubles pixel dimensions (e.g., 1080p becomes 4K UHD), perfect for high-resolution displays, e-commerce stores, and digital banners.
-- **4× (400%)** quadruples pixel dimensions (e.g., 720p becomes 4K, or 1080p becomes 8K), ideal for high-DPI prints, posters, and framed wall art.
+- **2× Scale (200%)** doubles pixel dimensions (e.g., 1080p becomes 4K UHD), perfect for high-resolution displays, e-commerce stores, and digital banners.
+- **4× Scale (400%)** quadruples pixel dimensions (e.g., 720p becomes 4K, or 1080p becomes 8K), ideal for high-DPI prints, posters, and framed wall art.
 
 ### How does the 1-Click Auto Enhance feature work?
 

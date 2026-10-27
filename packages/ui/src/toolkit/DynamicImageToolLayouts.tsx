@@ -4,8 +4,12 @@ import type { ImageBackgroundRemoverLayoutProps } from './ImageBackgroundRemover
 import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
 import type { ImageEnlargerLayoutProps } from './ImageEnlargerLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
+import type { ImageMetadataLayoutProps } from './ImageMetadataLayout.tsx';
 import type { ImageResizeLayoutProps } from './ImageResizeLayout.tsx';
+import type { ImageWatermarkLayoutProps } from './ImageWatermarkLayout.tsx';
+import type { PassportPhotoLayoutProps } from './PassportPhotoLayout.tsx';
 import type { PhotoSizeReducerLayoutProps } from './PhotoSizeReducerLayout.tsx';
+import type { SignatureResizerLayoutProps } from './SignatureResizerLayout.tsx';
 
 export function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
   const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);
@@ -78,6 +82,58 @@ export function DynamicPhotoSizeReducerLayout(props: PhotoSizeReducerLayoutProps
   useEffect(() => {
     void import('./PhotoSizeReducerLayout.tsx').then((m) => {
       setComp(() => m.PhotoSizeReducerLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicPassportPhotoLayout(props: PassportPhotoLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<PassportPhotoLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./PassportPhotoLayout.tsx').then((m) => {
+      setComp(() => m.PassportPhotoLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicSignatureResizerLayout(props: SignatureResizerLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<SignatureResizerLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./SignatureResizerLayout.tsx').then((m) => {
+      setComp(() => m.SignatureResizerLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicImageMetadataRemoverLayout(props: ImageMetadataLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageMetadataLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageMetadataLayout.tsx').then((m) => {
+      setComp(() => m.ImageMetadataLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
+
+export function DynamicImageWatermarkLayout(props: ImageWatermarkLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageWatermarkLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageWatermarkLayout.tsx').then((m) => {
+      setComp(() => m.ImageWatermarkLayout);
     });
   }, []);
 

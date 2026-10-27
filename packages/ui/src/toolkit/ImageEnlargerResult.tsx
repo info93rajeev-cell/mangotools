@@ -46,7 +46,7 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
           <tr>
             <td class={styles.specKey}>Scale Multiplier</td>
             <td class={styles.specVal}>
-              {enlarger.settings.scale}× ({enlarger.settings.scale * 100}%)
+              {enlarger.settings.scale}× ({enlarger.settings.scale * 100}% Zoom)
             </td>
           </tr>
           <tr>
@@ -78,19 +78,14 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
           type="button"
           class={styles.downloadCtaBtn}
           name="Download enlarged image"
+          aria-label="Download enlarged image"
           onClick={() => {
-            if (hasResult) {
-              void enlarger.downloadResult('full');
-            } else {
-              void enlarger.executeEnlarge();
-            }
+            void enlarger.executeEnlarge();
           }}
           disabled={!enlarger.file || enlarger.phase === 'running'}
         >
           <span>🌟</span>
-          <span>
-            {hasResult ? `Download Enhanced (${outW} × ${outH})` : 'Download enlarged image'}
-          </span>
+          <span>Download enlarged image</span>
         </button>
 
         {hasResult && (

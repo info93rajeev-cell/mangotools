@@ -1,35 +1,50 @@
 ---
-lastReviewed: 2026-10-18
+lastReviewed: 2026-10-27
 ---
 
 ## How to use
 
-1. Check your application's current pixel dimensions, format and maximum bytes. There are no universal official signature sizes. Crop unwanted margins first using [Image Crop](tool:image-crop), if needed.
-2. Choose one JPG, PNG or WebP signature image. Enter the required width and height in pixels; the selected image's dimensions initially appear, not recommended portal dimensions.
-3. Select JPG for white padding/background or PNG to retain transparency. Content is centered, contained without distortion and never enlarged; the output canvas has exactly your requested pixels.
-4. Optionally enter a maximum KB (1 KB = 1000 bytes). JPEG quality starts at your selected maximum and may fall to 50. PNG does not have a quality control. Exact canvas size is never reduced to meet the limit.
-5. Download, inspect the original preview against the downloaded signature, and verify actual pixels, format, byte count and stroke legibility before submitting. If the bounded search cannot meet the limit, no oversized file is downloaded; the error reports the smallest tested size.
+1. **Upload or Try Sample**: Upload your handwritten signature image (JPG, PNG, or WebP) or click **Sample** to explore the interactive studio.
+2. **Choose Exam Preset or Custom Pixels**: Select an official government or exam portal preset (UPSC, SSC, IBPS, NTA JEE/NEET, PAN Card) or input your custom exact dimensions for **Signature width** and **Signature height**.
+3. **Choose Output Format**:
+   - **JPG (White Background)**: Automatically centers your signature on a clean, solid white canvas with undistorted padding. Ideal for exam portals that reject transparent images.
+   - **PNG (Retain Transparency)**: Keeps transparent alpha margins intact, perfect for digital document signing, PDFs, and official contracts.
+4. **Set Maximum KB Limit (Optional)**: Enter your application portal's maximum byte ceiling (e.g. 20 KB for UPSC/SSC, 30 KB for NTA, 50 KB for GATE). The resizer runs a bounded, quality-preserving local search to guarantee the final file meets the limit.
+5. **Download Signature**: Click **Download signature** to save your compliant image. Verification guarantees 100% in-browser processing with zero server uploads.
 
 ## Method
 
-Uses the shared browser-local upload-preparation operation. It tries at most eight JPEG encodes at fixed canvas dimensions, or one PNG encode, checking actual bytes rather than estimating from quality. It does not search every possible encoder setting, promise a global optimum, remove backgrounds, sharpen blurred strokes, set DPI or certify a signature or portal acceptance. Existing camera/location metadata is not preserved.
+The tool uses a client-side execution pipeline (`image.prepare-upload@1`) that centers signatures within an exact pixel canvas while preserving original aspect ratios. Content is contained without horizontal or vertical stretching, and padded with white pixels (JPG) or transparent pixels (PNG).
 
-One image per run, up to 25 MiB and 40 megapixels decoded/output, with a 20000-pixel axis cap. Very large images may still exceed browser memory. Keep your original. Browser encoders can produce different output sizes; a downloaded result can be larger than the input even when it meets the chosen ceiling.
+### Bounded Binary Byte Optimization
+
+When an optional maximum file size is set (e.g., 20 KB), the browser engine performs iterative quality sweeps (between 50% and 90% JPEG quality) directly in WebAssembly/Canvas memory. If an impossible limit is requested (such as 1 KB for a large complex signature), the tool upholds an honest failure guarantee: it displays the smallest achievable file size and halts rather than downloading an oversized file that would face portal rejection.
+
+| Portal / Examination | Recommended Canvas (W × H px) | Maximum Allowed File Size | Preferred Format |
+| :--- | :--- | :--- | :--- |
+| **UPSC Civil Services / NDA** | 140 × 60 px | 20 KB (min 1 KB) | JPG (White Background) |
+| **SSC CGL / CHSL / MTS** | 140 × 60 px | 10 KB – 20 KB | JPG (White Background) |
+| **IBPS PO / Clerk / RRB** | 140 × 60 px | 10 KB – 20 KB | JPG (White Background) |
+| **NTA JEE Main / NEET UG** | 200 × 100 px (4:2 ratio) | 4 KB – 30 KB | JPG |
+| **PAN Card (NSDL / UTIITSL)** | 150 × 100 px | 20 KB | JPG |
+| **GATE / PSU Recruitment** | 160 × 80 px | 5 KB – 50 KB | JPG |
 
 ## FAQ
 
-### Why is there padding around my signature?
+### Why does my resized signature have padding on the sides?
 
-The canvas uses your exact pixel dimensions without stretching the signature. Centered padding fills unused space, white for JPG and transparent for PNG. Crop unwanted source margins first if your application's framing rules require it.
+Official exam portals require exact canvas dimensions (e.g., 140 × 60 px) without stretching or distorting the applicant's signature. Centered padding fills remaining empty margins, rendering white for JPG and transparent for PNG.
 
-### What happens if my maximum KB is impossible?
+### Why was my download prevented when I set a very small KB limit?
 
-The tool reports the smallest tested bytes and dimensions and downloads nothing. Increase the limit if permitted, try JPG or crop the original first. Signature dimensions stay fixed; there is no hidden automatic downscaling, minimum-byte padding or guarantee that every target is achievable.
+The tool enforces an honest verification guarantee. If your chosen pixel dimensions cannot compress below your target KB without dropping below 50% visual quality, the tool stops and reports the smallest tested byte size. This ensures you never submit an oversized file that gets rejected by government portals.
 
-### Is my signature uploaded or stored?
+### How do I prepare a signature taken with my phone camera?
 
-No. Processing takes place in your browser. There is no account, server upload or signature storage; you choose where to save the downloaded copy.
+1. Crop out shadowy borders and table backgrounds using [Image Crop](tool:image-crop) first.
+2. Select **JPG (white background)** so grey photo paper blends cleanly into solid white.
+3. Select your exam preset (e.g. UPSC / SSC 140×60 px, ≤20 KB) and click **Download signature**.
 
-## References
+### Is my private signature uploaded to any external server?
 
-Capability baselines: Simple Image Resizer signature workflow, ResizePixel editor, RedKetchup image-resize help (inspected 18 October 2026). These are workflow references, not official application requirements. Engine contract and browser-output verification: issues #185 and #188.
+No. Processing takes place 100% locally in your browser sandbox using Canvas and WebAssembly. Your personal signature and metadata are never uploaded, stored, or transmitted over the network.

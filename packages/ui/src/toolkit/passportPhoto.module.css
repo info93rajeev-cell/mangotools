@@ -1,0 +1,556 @@
+/* ---------- Passport Photo Resizer Studio Layout Styles ---------- */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 3-PANEL WORKBENCH */
+.workbench3Panel {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(360px, 1fr) minmax(280px, 320px);
+  gap: var(--space-2);
+  align-items: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1080px) {
+  .workbench3Panel {
+    grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .workbench3Panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+}
+
+/* PANEL CARDS */
+.controlPanel,
+.resultPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.panelCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  box-sizing: border-box;
+}
+
+.controlSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 3px;
+  border-top: 1px solid var(--color-border);
+}
+
+.controlSection:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.miniGhostBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+.miniGhostBtn:hover:not(:disabled) {
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.uploadRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.uploadMainBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-size: var(--text-ui);
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+}
+
+.uploadMainBtn:hover {
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.inlineFileBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  min-width: 0;
+  overflow: hidden;
+  flex: 1;
+}
+
+.inlineFileName {
+  font-weight: var(--weight-medium);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inlineFileMeta {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 9.5px;
+  flex-shrink: 0;
+}
+
+.emptyStateNotice {
+  padding: 8px;
+  background: var(--color-surface-subtle);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* PRESETS */
+.presetPillsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+
+.presetPill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3px 5px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.presetPill:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.02));
+}
+
+.presetPill[data-active="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.presetName {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+}
+
+.presetDim {
+  font-size: 8.5px;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* DIMS INPUTS */
+.dimsRow {
+  display: flex;
+  gap: 6px;
+}
+
+.dimField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dimLabel {
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.dimInputWrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.dimInput {
+  width: 100%;
+  padding: 3px 20px 3px 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-ui);
+  font-family: var(--font-mono);
+  box-sizing: border-box;
+}
+
+.dimSuffix {
+  position: absolute;
+  right: 5px;
+  font-size: 9px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.switchLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+/* FORMAT & QUALITY */
+.formatRow {
+  display: flex;
+  gap: 6px;
+}
+
+.formatField {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.formatSelect {
+  width: 100%;
+  padding: 3px 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-ui);
+  box-sizing: border-box;
+}
+
+.qualityField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.qualityInput {
+  width: 100%;
+  padding: 3px 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-ui);
+  font-family: var(--font-mono);
+  box-sizing: border-box;
+}
+
+/* PANEL 2: CANVAS */
+.canvasPanel {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 6px 8px;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 480px;
+}
+
+.canvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.canvasTitle {
+  font-size: var(--text-ui);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.canvasDimBadge {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+}
+
+.canvasToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guideToggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.zoomButtons {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.zoomBtn {
+  background: transparent;
+  border: none;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.zoomBtn:hover {
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+}
+
+.zoomText {
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  padding: 0 4px;
+  color: var(--color-text-muted);
+}
+
+.canvasViewport {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.canvasStageWrapper {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s ease;
+}
+
+.passportImg {
+  display: block;
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.biometricGuideOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.guideSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.emptyStagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* PANEL 3: RESULT & SPECS */
+.readyBadge {
+  font-size: 9.5px;
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+}
+
+.specsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+}
+
+.specsTable tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.specsTable tr:last-child {
+  border-bottom: none;
+}
+
+.specKey {
+  padding: 3px 0;
+  color: var(--color-text-muted);
+}
+
+.specVal {
+  padding: 3px 0;
+  text-align: right;
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.warningList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  color: #92400e;
+}
+
+.warningItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1.3;
+}
+
+.warningIcon {
+  flex-shrink: 0;
+}
+
+.actionGroup {
+  margin-top: 4px;
+}
+
+.downloadCtaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 12px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+}
+
+.downloadCtaBtn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.downloadCtaBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trustPill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 9.5px;
+  color: var(--color-text-muted);
+  padding: 3px 0;
+  border-top: 1px solid var(--color-border);
+}

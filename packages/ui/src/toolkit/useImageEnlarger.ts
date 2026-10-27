@@ -1,7 +1,7 @@
 import type { OpWarning } from '@mangotools/core';
 import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useCallback, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import {
@@ -194,6 +194,7 @@ function useEnlargeExecution(
   customFileName: string,
   toolId: string,
   updatePhase: (next: FilePhase) => void,
+  notify: (msg: string) => void,
 ) {
   const [result, setResult] = useState<ImageEnlargerResultData | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -224,11 +225,16 @@ function useEnlargeExecution(
       });
       updatePhase('result');
       track('tool_run', { toolId });
+      const mime =
+        outputFormat === 'pdf' ? 'application/pdf' : (MIME_MAP[outputFormat] ?? 'image/png');
+      downloadBytes(finalBytes, finalName, mime);
+      notify(`Downloaded ${finalName}`);
+      track('tool_complete', { toolId, method: 'download' });
     } catch (e) {
       loader.setError(e instanceof Error ? e.message : 'Enhancement failed');
       updatePhase('error');
     }
-  }, [loader, sliders.settings, outputFormat, customFileName, toolId, updatePhase]);
+  }, [loader, sliders.settings, outputFormat, customFileName, toolId, updatePhase, notify]);
 
   return { result, resultUrl, executeEnlarge };
 }
@@ -254,6 +260,15 @@ export function useImageEnlarger(
 
   const loader = useEnlargeLoader(updatePhase);
   const sliders = useEnlargeSliders();
+
+  const initialMountRef = useRef(true);
+  useEffect(() => {
+    if (initialMountRef.current && !loader.file) {
+      initialMountRef.current = false;
+      void loader.loadSample();
+    }
+  }, [loader]);
+
   const exec = useEnlargeExecution(
     loader,
     sliders,
@@ -261,6 +276,7 @@ export function useImageEnlarger(
     customFileName,
     toolId,
     updatePhase,
+    notify,
   );
 
   const downloadResult = useCallback(

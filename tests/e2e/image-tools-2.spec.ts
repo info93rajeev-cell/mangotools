@@ -307,7 +307,7 @@ test.describe('Image & Media category', () => {
     await expect(allTools.getByRole('link', { name: 'Image Metadata Remover' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Watermark' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Image Crop' })).toBeVisible();
-    await expect(allTools.getByRole('link', { name: 'Favicon Generator' })).toBeVisible();
+    await expect(allTools.getByRole('link', { name: 'Image Enlarger & Enhancer' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Passport Photo Resizer' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Signature Resizer' })).toBeVisible();
     await expect(allTools.getByRole('link', { name: 'Photo Size Reducer' })).toBeVisible();

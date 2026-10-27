@@ -1,5 +1,4 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { Button } from '../primitives/Button.tsx';
 import styles from './imageEnlarger.module.css';
 import type { EnlargeOutputFormat, UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
@@ -24,12 +23,6 @@ const FORMAT_OPTIONS: { id: EnlargeOutputFormat; name: string }[] = [
   { id: 'pdf', name: 'PDF' },
 ];
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 function UploadSection({
   fileInputId,
   preset,
@@ -49,15 +42,22 @@ function UploadSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>1. Source Photo</span>
-        <Button variant="ghost" icon="sparkle" onClick={onTrySample} disabled={isExecuting}>
-          Try Sample
-        </Button>
+        <button
+          type="button"
+          class={styles.miniGhostBtn}
+          onClick={onTrySample}
+          disabled={isExecuting}
+        >
+          ✨ Try Sample
+        </button>
       </div>
 
       <input
         id={fileInputId}
         type="file"
-        accept={preset.ui.fileAccept ?? 'image/jpeg,image/png,image/webp'}
+        accept={
+          preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp'
+        }
         style={{ display: 'none' }}
         onChange={(e) => {
           const f = (e.target as HTMLInputElement).files?.[0];
@@ -69,19 +69,17 @@ function UploadSection({
         <label for={fileInputId} class={styles.uploadMainBtn}>
           📁 Upload Image
         </label>
+        {enlarger.file && (
+          <div class={styles.activeFileBadge}>
+            <span class={styles.activeFileName} title={enlarger.file.name}>
+              {enlarger.file.name}
+            </span>
+            <span class={styles.activeFileMeta}>
+              {enlarger.sourceDims.width} × {enlarger.sourceDims.height} px
+            </span>
+          </div>
+        )}
       </div>
-
-      {enlarger.file && (
-        <div class={styles.activeFileBadge}>
-          <span class={styles.activeFileName} title={enlarger.file.name}>
-            {enlarger.file.name}
-          </span>
-          <span class={styles.activeFileMeta}>
-            {enlarger.sourceDims.width} × {enlarger.sourceDims.height} px •{' '}
-            {formatBytes(enlarger.file.size)}
-          </span>
-        </div>
-      )}
     </section>
   );
 }
@@ -310,17 +308,6 @@ function OutputSection({
           </button>
         ))}
       </div>
-
-      <button
-        type="button"
-        class={styles.primaryActionBtn}
-        onClick={() => void enlarger.executeEnlarge()}
-        disabled={!hasFile || isExecuting}
-      >
-        {isExecuting
-          ? 'Enhancing & Upscaling…'
-          : `⚡ Enlarge ${enlarger.settings.scale}× & Enhance`}
-      </button>
     </section>
   );
 }
