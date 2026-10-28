@@ -1,6 +1,6 @@
 /**
  * Post-deploy smoke test for a live deployment.
- *   pnpm smoke                                  production (https://beyondtheai.com)
+ *   pnpm smoke                                  production (https://beyandtheai.com)
  *   pnpm smoke -- --preview --base <url>        a preview deployment (must be noindex)
  *   pnpm smoke -- --pages-dev <project URL>     also check that *.pages.dev is noindex
  *   pnpm smoke -- --base http://127.0.0.1:4321  a local `pnpm preview` of a production build

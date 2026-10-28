@@ -6,7 +6,7 @@ lastUpdated: 2026-10-01
 status: approved
 ---
 
-BeyondTheAI (beyondtheai.com) is operated by **TANISHKA ONLINE**, Delhi 110091, India. It
+BeyondTheAI (beyandtheai.com) is operated by **TANISHKA ONLINE**, Delhi 110091, India. It
 provides calculators, converters, document generators and file tools that help with everyday work.
 The tools are in public beta. Please read this page before you rely on any result.
 
@@ -66,4 +66,4 @@ We may update this page. The date at the top shows when it last changed.
 
 ## Contact
 
-Questions and corrections: [support@beyondtheai.com](mailto:support@beyondtheai.com).
+Questions and corrections: [support@beyandtheai.com](mailto:support@beyandtheai.com).

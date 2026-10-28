@@ -50,4 +50,4 @@ browser's time zone.
 
 ## Contact
 
-Questions, corrections and feedback: [support@beyondtheai.com](mailto:support@beyondtheai.com).
+Questions, corrections and feedback: [support@beyandtheai.com](mailto:support@beyandtheai.com).

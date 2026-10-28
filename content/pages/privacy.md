@@ -6,7 +6,7 @@ lastUpdated: 2026-10-01
 status: approved
 ---
 
-This page explains what happens to information when you use BeyondTheAI (beyondtheai.com).
+This page explains what happens to information when you use BeyondTheAI (beyandtheai.com).
 The site is operated by **TANISHKA ONLINE**, Delhi 110091, India ("we", "us"). This page describes
 how the site works today. If that changes, we will update this page first, and the date above will
 change.
@@ -103,8 +103,8 @@ Because the tools do not send us what you enter, we hold no copy of it to show, 
 You can clear the two stored preferences yourself at any time, as described above.
 
 For any privacy question, or to exercise a right you have under the data-protection law that applies
-to you, contact us at [support@beyondtheai.com](mailto:support@beyondtheai.com).
+to you, contact us at [support@beyandtheai.com](mailto:support@beyandtheai.com).
 
 ## Contact
 
-TANISHKA ONLINE, Delhi 110091, India · [support@beyondtheai.com](mailto:support@beyondtheai.com)
+TANISHKA ONLINE, Delhi 110091, India · [support@beyandtheai.com](mailto:support@beyandtheai.com)
