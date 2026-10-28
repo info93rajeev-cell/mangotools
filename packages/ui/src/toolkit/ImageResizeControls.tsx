@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageResize.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { ResizeOutputFormat, UseImageResizeReturn } from './useImageResize.ts';
 
 export interface ImageResizeControlsProps {
@@ -34,7 +35,6 @@ function UploadSection({
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
 }) {
-  const fileInputId = `${idPrefix}-file-input`;
   const isExecuting = resize.phase === 'running';
 
   return (
@@ -46,46 +46,21 @@ function UploadSection({
         </Button>
       </div>
 
-      <input
-        id={fileInputId}
-        type="file"
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
         accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.target as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+        file={resize.file}
+        thumbnailUrl={resize.imageSrc}
+        dimensions={resize.sourceDims.width > 0 ? resize.sourceDims : null}
+        onSelectFile={onSelectFile}
+        onClear={resize.reset}
+        disabled={isExecuting}
+        primaryText="Drag and drop images here"
+        browseText="click to browse files"
+        supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+        linkBrowse={true}
+        renderImgThumbnail={true}
       />
-
-      <div class={styles.uploadRow}>
-        <label for={fileInputId} class={styles.uploadMainBtn} data-upload-button="">
-          📁 Upload Image
-        </label>
-      </div>
-
-      {resize.file ? (
-        <div class={styles.activeFileBadge}>
-          <span class={styles.activeFileName} title={resize.file?.name}>
-            {resize.file?.name}
-          </span>
-          <span class={styles.activeFileMeta}>
-            {resize.sourceDims.width} × {resize.sourceDims.height} px
-          </span>
-        </div>
-      ) : (
-        <label
-          for={fileInputId}
-          class={styles.compactDropZone}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const f = e.dataTransfer?.files?.[0];
-            if (f) onSelectFile(f);
-          }}
-        >
-          <span class={styles.dropZoneHint}>Drop JPG, PNG, or WebP here</span>
-        </label>
-      )}
     </section>
   );
 }
