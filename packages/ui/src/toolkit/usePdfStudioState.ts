@@ -102,7 +102,7 @@ function usePdfImages(
           width: converter.sourceDims.width || 800,
           height: converter.sourceDims.height || 600,
           bytes: f.bytes,
-          blobUrl: URL.createObjectURL(new Blob([f.bytes])),
+          blobUrl: URL.createObjectURL(new Blob([f.bytes as BlobPart])),
         },
       ]);
     }
@@ -116,7 +116,7 @@ function usePdfImages(
     );
     if (valid.length > 0) {
       setImages((prev) => [...prev, ...valid]);
-      onPhase?.('configured');
+      onPhase?.('idle');
       notify?.(`Added ${valid.length} image${valid.length > 1 ? 's' : ''}`);
     }
   };
@@ -136,7 +136,7 @@ function usePdfImages(
           blobUrl: s.blobUrl,
         })),
       );
-      onPhase?.('configured');
+      onPhase?.('idle');
       notify?.('Loaded 5 sample images');
     } finally {
       setIsCompiling(false);
@@ -204,7 +204,7 @@ export function usePdfStudioState(
         onPhase?.('error');
         return;
       }
-      onPhase?.('done');
+      onPhase?.('result');
       notify?.('Downloaded PDF');
     } catch {
       notify?.('Error generating PDF.');

@@ -170,7 +170,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       setResult(null);
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(null);
-      setPhase('ready');
+      setPhase('idle');
     } catch {
       setPhase('idle');
     }
@@ -199,7 +199,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       setPhase('error');
       setError({
         code: inspected.error.code,
-        message: inspected.error.message,
+        messageKey: inspected.error.code,
         details: { name: browserFile.name },
       });
       return;
@@ -209,7 +209,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     setFile(inspected.value.file);
     setImageSrc(inspected.value.blobUrl);
     setSourceDims(inspected.value.dims);
-    setPhase('ready');
+    setPhase('idle');
   }
 
   function clearAll() {
@@ -238,7 +238,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     if (invalidFile) {
       const errRes: OpError = {
         code: 'IMAGE_INVALID_FILE_TYPE',
-        message: `"${invalidFile.name}" is not a JPG, PNG, or WebP image.`,
+        messageKey: 'IMAGE_INVALID_FILE_TYPE',
         details: { name: invalidFile.name },
       };
       setError(errRes);
@@ -249,7 +249,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     if (!file) {
       const errRes: OpError = {
         code: 'IMAGE_NO_FILE_SELECTED',
-        message: 'Select an image to resize.',
+        messageKey: 'IMAGE_NO_FILE_SELECTED',
       };
       setError(errRes);
       setPhase('error');
@@ -259,7 +259,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     if (!text.trim()) {
       const errRes: OpError = {
         code: 'IMAGE_WATERMARK_TEXT_REQUIRED',
-        message: 'Enter the text to use as a watermark.',
+        messageKey: 'IMAGE_WATERMARK_TEXT_REQUIRED',
       };
       setError(errRes);
       setPhase('error');
@@ -292,7 +292,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     }
 
     const data = runRes.value;
-    const blob = new Blob([data.bytes], {
+    const blob = new Blob([data.bytes as BlobPart], {
       type: MIME_MAP[data.outputFormat] ?? 'image/jpeg',
     });
     const url = URL.createObjectURL(blob);

@@ -56,6 +56,7 @@ export interface UseImageEnlargerReturn {
   setSplitPos: (pos: number) => void;
   toggleAutoEnhance: () => void;
   resetSettings: () => void;
+  reset: () => void;
   loadFile: (file: File) => Promise<void>;
   loadSample: () => Promise<void>;
   executeEnlarge: () => Promise<void>;
@@ -154,6 +155,16 @@ function useEnlargeLoader(updatePhase: (next: FilePhase) => void) {
     updatePhase('idle');
   }, [updatePhase]);
 
+  const reset = useCallback(() => {
+    decodedRef.current?.close();
+    decodedRef.current = null;
+    setFile(null);
+    setSourceDims({ width: 0, height: 0 });
+    setImageSrc(null);
+    setError(null);
+    updatePhase('idle');
+  }, [updatePhase]);
+
   return {
     file,
     sourceDims,
@@ -163,6 +174,7 @@ function useEnlargeLoader(updatePhase: (next: FilePhase) => void) {
     decodedRef,
     loadFile,
     loadSample,
+    reset,
   };
 }
 

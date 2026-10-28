@@ -151,7 +151,7 @@ async function performClean(
   if (s.invalidFile) {
     const errRes: OpError = {
       code: 'IMAGE_INVALID_FILE_TYPE',
-      message: `"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`,
+      messageKey: 'IMAGE_INVALID_FILE_TYPE',
       details: { name: s.invalidFile.name },
     };
     s.setError(errRes);
@@ -161,7 +161,7 @@ async function performClean(
   if (!s.file) {
     const errRes: OpError = {
       code: 'IMAGE_NO_FILE_SELECTED',
-      message: 'Select an image to resize.',
+      messageKey: 'IMAGE_NO_FILE_SELECTED',
     };
     s.setError(errRes);
     s.setPhase('error');
@@ -186,7 +186,9 @@ async function performClean(
     return runRes;
   }
   const data = runRes.value;
-  const blob = new Blob([data.bytes], { type: MIME_MAP[data.outputFormat] ?? 'image/jpeg' });
+  const blob = new Blob([data.bytes as BlobPart], {
+    type: MIME_MAP[data.outputFormat] ?? 'image/jpeg',
+  });
   const url = URL.createObjectURL(blob);
   if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
   s.setResult(data);
@@ -236,7 +238,7 @@ function useMetadataFileSelection(s: MetadataCoreState) {
       s.setSourceDims({ width: SAMPLE_WIDTH, height: SAMPLE_HEIGHT });
       s.setResult(null);
       s.setResultUrl(null);
-      s.setPhase('ready');
+      s.setPhase('idle');
     } catch {
       s.setPhase('idle');
     }
@@ -263,7 +265,7 @@ function useMetadataFileSelection(s: MetadataCoreState) {
       s.setPhase('error');
       s.setError({
         code: inspected.error.code,
-        message: inspected.error.message,
+        messageKey: inspected.error.code,
         details: { name: browserFile.name },
       });
       return;
@@ -272,7 +274,7 @@ function useMetadataFileSelection(s: MetadataCoreState) {
     s.setFile(inspected.value.file);
     s.setImageSrc(inspected.value.blobUrl);
     s.setSourceDims(inspected.value.dims);
-    s.setPhase('ready');
+    s.setPhase('idle');
   }
 
   return { loadSample, handleFileSelected, clearAll: () => resetMetadataState(s) };

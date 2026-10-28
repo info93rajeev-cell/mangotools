@@ -1,5 +1,5 @@
-import { err, type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
-import { getWorkerHost, track } from '@mangotools/runtime';
+import { err, type OpError, type OpWarning, type Result } from '@mangotools/core';
+import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
@@ -12,110 +12,26 @@ import {
 import {
   createSignatureSample,
   SAMPLE_SIGNATURE_HEIGHT,
-  SAMPLE_SIGNATURE_SIZE,
   SAMPLE_SIGNATURE_WIDTH,
 } from './sampleSignatureImage.ts';
+import {
+  executeSignatureWorker,
+  initMountedSignatureSample,
+  SIGNATURE_PRESETS,
+  type SignatureBackground,
+  type SignatureOutputFormat,
+  type SignaturePresetItem,
+  type SignatureResultData,
+} from './signatureWorkerService.ts';
 
-export type SignatureOutputFormat = 'jpg' | 'png' | 'webp';
-export type SignatureBackground = 'transparent' | 'white' | 'original';
-export type { SignatureFile };
-
-export interface SignaturePresetItem {
-  id: string;
-  label: string;
-  width: number;
-  height: number;
-  maxKB?: number;
-  hint: string;
-}
-
-export const SIGNATURE_PRESETS: SignaturePresetItem[] = [
-  { id: 'custom-400', label: 'Default', width: 400, height: 150, hint: '400×150 px' },
-  { id: 'upsc', label: 'UPSC / SSC', width: 140, height: 60, maxKB: 20, hint: '140×60 px, ≤20 KB' },
-  {
-    id: 'ibps',
-    label: 'IBPS / Bank',
-    width: 140,
-    height: 60,
-    maxKB: 20,
-    hint: '140×60 px, ≤20 KB',
-  },
-  { id: 'nta', label: 'NTA / JEE', width: 200, height: 100, maxKB: 30, hint: '200×100 px, ≤30 KB' },
-  { id: 'pan', label: 'PAN Card', width: 150, height: 100, maxKB: 20, hint: '150×100 px, ≤20 KB' },
-  { id: 'gate', label: 'GATE / PSU', width: 160, height: 80, maxKB: 50, hint: '160×80 px, ≤50 KB' },
-];
-
-export interface SignatureResultData {
-  fileName: string;
-  bytes: Uint8Array;
-  originalWidth: number;
-  originalHeight: number;
-  outputWidth: number;
-  outputHeight: number;
-  originalFileSize: number;
-  outputFileSize: number;
-  sizeDifferenceBytes: number;
-  sizeChangePercent: number;
-  originalFormat: string;
-  outputFormat: string;
-  targetFileSizeBytes: number | null;
-  encodeAttempts: number;
-  warnings: OpWarning[];
-}
-
-interface SignatureRunConfig {
-  preset: ResolvedPreset;
-  file: SignatureFile;
-  targetWidth: number;
-  targetHeight: number;
-  outputFormat: SignatureOutputFormat;
-  quality: number;
-  maxFileSizeKB?: number;
-  customFileName: string;
-  background: SignatureBackground;
-}
-
-async function executeSignatureWorker(
-  cfg: SignatureRunConfig,
-): Promise<Result<SignatureResultData>> {
-  const workerFormat = cfg.outputFormat === 'webp' ? 'png' : cfg.outputFormat;
-  const input = {
-    file: { name: cfg.file.name, bytes: cfg.file.bytes },
-    targetWidth: cfg.targetWidth,
-    targetHeight: cfg.targetHeight,
-    keepAspectRatio: true,
-    padToTarget: true,
-    outputFormat: workerFormat,
-    quality: cfg.quality,
-    maxFileSizeKB: cfg.maxFileSizeKB && cfg.maxFileSizeKB > 0 ? cfg.maxFileSizeKB : undefined,
-    allowDimensionReduction: false,
-    outputFileName: cfg.customFileName.trim() ? cfg.customFileName.trim() : undefined,
-  };
-
-  const outcome = await getWorkerHost().run(cfg.preset.operation, input, cfg.preset.params);
-  if (!outcome.ok) return err(outcome.error.code, outcome.error);
-  const val = outcome.value as Record<string, unknown>;
-
-  const warnings = (outcome.warnings ?? []) as OpWarning[];
-
-  return ok({
-    fileName: String(val.fileName),
-    bytes: val.bytes as Uint8Array,
-    originalWidth: Number(val.originalWidth),
-    originalHeight: Number(val.originalHeight),
-    outputWidth: Number(val.outputWidth),
-    outputHeight: Number(val.outputHeight),
-    originalFileSize: Number(val.originalFileSize),
-    outputFileSize: Number(val.outputFileSize),
-    sizeDifferenceBytes: Number(val.sizeDifferenceBytes),
-    sizeChangePercent: Number(val.sizeChangePercent),
-    originalFormat: String(val.originalFormat),
-    outputFormat: String(val.outputFormat),
-    targetFileSizeBytes: val.targetFileSizeBytes != null ? Number(val.targetFileSizeBytes) : null,
-    encodeAttempts: Number(val.encodeAttempts ?? 1),
-    warnings,
-  });
-}
+export type {
+  SignatureBackground,
+  SignatureFile,
+  SignatureOutputFormat,
+  SignaturePresetItem,
+  SignatureResultData,
+};
+export { SIGNATURE_PRESETS };
 
 function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
   const [file, setFile] = useState<SignatureFile | null>(null);
@@ -238,13 +154,13 @@ function useSignatureFileActions(s: SignatureState, userInteractedRef: { current
         warnings: [
           {
             code: 'IMAGE_VERIFY_OUTPUT',
-            message: 'Verify the resized image before using it.',
-          } as OpWarning,
+            messageKey: 'IMAGE_VERIFY_OUTPUT',
+          },
         ],
       });
       if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
       s.setResultUrl(blobUrl);
-      s.setPhase('ready');
+      s.setPhase('result');
     } catch {
       s.setPhase('idle');
     }
@@ -273,7 +189,7 @@ function useSignatureFileActions(s: SignatureState, userInteractedRef: { current
       s.setPhase('error');
       s.setError({
         code: inspected.error.code,
-        message: inspected.error.message,
+        messageKey: inspected.error.code,
         details: { name: browserFile.name },
       });
       return;
@@ -286,7 +202,7 @@ function useSignatureFileActions(s: SignatureState, userInteractedRef: { current
     s.setTargetWidth(inspected.value.dims.width);
     s.setTargetHeight(inspected.value.dims.height);
     s.setOutputFormat('jpg'); // Matches Playwright test contract
-    s.setPhase('ready');
+    s.setPhase('idle');
   }
 
   function applyPreset(p: SignaturePresetItem) {
@@ -316,7 +232,7 @@ async function performSignatureResize(
   if (s.invalidFile) {
     const errRes: OpError = {
       code: 'IMAGE_INVALID_FILE_TYPE',
-      message: `"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`,
+      messageKey: 'IMAGE_INVALID_FILE_TYPE',
       details: { name: s.invalidFile.name },
     };
     s.setError(errRes);
@@ -327,7 +243,7 @@ async function performSignatureResize(
   if (!s.file) {
     const errRes: OpError = {
       code: 'IMAGE_NO_FILE_SELECTED',
-      message: 'Select an image to resize.',
+      messageKey: 'IMAGE_NO_FILE_SELECTED',
     };
     s.setError(errRes);
     s.setPhase('error');
@@ -337,7 +253,7 @@ async function performSignatureResize(
   if (!s.targetWidth || s.targetWidth <= 0 || !s.targetHeight || s.targetHeight <= 0) {
     const errRes: OpError = {
       code: 'IMAGE_DIMENSIONS_INVALID',
-      message: 'Enter a width and height greater than 0.',
+      messageKey: 'IMAGE_DIMENSIONS_INVALID',
     };
     s.setError(errRes);
     s.setPhase('error');
@@ -370,7 +286,7 @@ async function performSignatureResize(
 
   const data = runRes.value;
   const mime = MIME_MAP[data.outputFormat] ?? 'image/jpeg';
-  const blob = new Blob([data.bytes], { type: mime });
+  const blob = new Blob([data.bytes as BlobPart], { type: mime });
   const url = URL.createObjectURL(blob);
 
   if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
@@ -403,50 +319,6 @@ function useSignatureExecution(preset: ResolvedPreset, s: SignatureState) {
   return { executeResize, executeResizeAndDownload, downloadResult };
 }
 
-async function initMountedSample(s: SignatureState, userInteractedRef: { current: boolean }) {
-  if (userInteractedRef.current || s.file) return;
-  try {
-    const sample = await createSignatureSample();
-    if (userInteractedRef.current || s.file) return;
-    if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
-    s.setFile(sample.file);
-    s.setImageSrc(sample.blobUrl);
-    s.setSourceDims({ width: SAMPLE_SIGNATURE_WIDTH, height: SAMPLE_SIGNATURE_HEIGHT });
-    s.setTargetWidth(400);
-    s.setTargetHeight(150);
-    s.setOutputFormat('png');
-    s.setBackground('transparent');
-    s.setQuality(90);
-    s.setResult({
-      fileName: 'signature.png',
-      bytes: sample.file.bytes,
-      originalWidth: SAMPLE_SIGNATURE_WIDTH,
-      originalHeight: SAMPLE_SIGNATURE_HEIGHT,
-      outputWidth: 400,
-      outputHeight: 150,
-      originalFileSize: SAMPLE_SIGNATURE_SIZE,
-      outputFileSize: 28672,
-      sizeDifferenceBytes: SAMPLE_SIGNATURE_SIZE - 28672,
-      sizeChangePercent: 64,
-      originalFormat: 'jpg',
-      outputFormat: 'png',
-      targetFileSizeBytes: null,
-      encodeAttempts: 1,
-      warnings: [
-        {
-          code: 'IMAGE_VERIFY_OUTPUT',
-          message: 'Verify the resized image before using it.',
-        } as OpWarning,
-      ],
-    });
-    if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
-    s.setResultUrl(sample.blobUrl);
-    s.setPhase('ready');
-  } catch {
-    // offline fallback
-  }
-}
-
 export function useSignatureResizer(preset: ResolvedPreset, onPhase?: (phase: FilePhase) => void) {
   const s = useSignatureCoreState(onPhase);
   const userInteractedRef = useRef(false);
@@ -456,7 +328,7 @@ export function useSignatureResizer(preset: ResolvedPreset, onPhase?: (phase: Fi
   // Auto-mount preloading matching user reference template
   useEffect(() => {
     if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void initMountedSample(s, userInteractedRef);
+      void initMountedSignatureSample(s, userInteractedRef);
     }
   }, []);
 

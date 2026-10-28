@@ -56,6 +56,22 @@ main {
   list-style: none;
   cursor: pointer;
 }
+.preview-local {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: #067548;
+  background: #edfff5;
+  border: 1px solid #c8eddc;
+  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.preview-local .icon {
+  width: 15px;
+  height: 15px;
+}
 .preview-site-header summary .icon {
   width: 12px;
   height: 12px;
@@ -78,22 +94,6 @@ main {
   flex: 1;
   max-width: 420px;
   min-width: 180px;
-}
-.preview-local {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  color: #067548;
-  background: #edfff5;
-  border: 1px solid #c8eddc;
-  border-radius: 5px;
-  padding: 6px 12px;
-  font-size: 12px;
-}
-.preview-local .icon {
-  width: 15px;
-  height: 15px;
 }
 .preview-site-header > .theme-toggle {
   border: 0;

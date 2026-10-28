@@ -59,6 +59,8 @@ interface ImageData {
 
 interface OffscreenCanvasRenderingContext2D {
   fillStyle: string;
+  imageSmoothingEnabled: boolean;
+  imageSmoothingQuality: 'low' | 'medium' | 'high';
   /** `'top'` is the only value this engine ever sets (Image Watermark), so `fillText`'s `y` can be
    * treated as the text's own top edge rather than needing per-glyph baseline metrics. */
   textBaseline: 'top';

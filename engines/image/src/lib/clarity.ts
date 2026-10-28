@@ -45,6 +45,45 @@ export function applyUnsharpMask(
   }
 }
 
+function cleanJpgPixel(
+  data: Uint8ClampedArray,
+  i: number,
+  r: number,
+  g: number,
+  b: number,
+  lum: number,
+): void {
+  if (lum > 0.92) {
+    // Pristine white paper: remove background haze, scanning grain, JPEG noise
+    data[i] = 255;
+    data[i + 1] = 255;
+    data[i + 2] = 255;
+  } else if (lum < 0.6) {
+    // Deepen dark ink strokes for clear, bold legibility on government application forms
+    const darken = 0.85;
+    data[i] = clampByte(r * darken);
+    data[i + 1] = clampByte(g * darken);
+    data[i + 2] = clampByte(b * darken);
+  }
+}
+
+function cleanPngPixel(
+  data: Uint8ClampedArray,
+  i: number,
+  r: number,
+  g: number,
+  b: number,
+  lum: number,
+): void {
+  // PNG: sharpen stroke density
+  if (lum < 0.6) {
+    const darken = 0.9;
+    data[i] = clampByte(r * darken);
+    data[i + 1] = clampByte(g * darken);
+    data[i + 2] = clampByte(b * darken);
+  }
+}
+
 /**
  * Signature-specific ink sharpness and clarity enhancement:
  * - Eliminates blurriness and pixelation when signatures are upscaled or fitted into portal dimensions.
@@ -67,38 +106,16 @@ export function enhanceSignatureClarity(
     applyUnsharpMask(data, width, height, upscaled ? 40 : 25);
 
     // 2. Ink contrast and background cleaning
+    const cleaner = isJpg ? cleanJpgPixel : cleanPngPixel;
     const len = data.length;
     for (let i = 0; i < len; i += 4) {
-      const a = data[i + 3];
-      if (a === 0) continue;
+      if (data[i + 3] === 0) continue;
 
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
       const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      if (isJpg) {
-        if (lum > 0.92) {
-          // Pristine white paper: remove background haze, scanning grain, JPEG noise
-          data[i] = 255;
-          data[i + 1] = 255;
-          data[i + 2] = 255;
-        } else if (lum < 0.60) {
-          // Deepen dark ink strokes for clear, bold legibility on government application forms
-          const darken = 0.85;
-          data[i] = clampByte(r * darken);
-          data[i + 1] = clampByte(g * darken);
-          data[i + 2] = clampByte(b * darken);
-        }
-      } else {
-        // PNG: sharpen stroke density
-        if (lum < 0.60) {
-          const darken = 0.9;
-          data[i] = clampByte(r * darken);
-          data[i + 1] = clampByte(g * darken);
-          data[i + 2] = clampByte(b * darken);
-        }
-      }
+      cleaner(data, i, r, g, b, lum);
     }
 
     context.putImageData(imgData, 0, 0);
