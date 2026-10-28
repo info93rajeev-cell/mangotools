@@ -123,227 +123,233 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
             </div>
           </div>
 
-          <div class={styles.fieldRow}>
-            <label for="palletTypeSelect" class={styles.fieldLabel}>
-              Pallet type
-            </label>
-            <select
-              id="palletTypeSelect"
-              class={styles.selectInput}
-              value={input.palletTypeId}
-              onChange={(e) => handlePalletTypeChange((e.target as HTMLSelectElement).value)}
-            >
-              {PALLET_PRESETS.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div class={styles.settingsSubColumns}>
+            {/* Sub-column 1: Pallet Specs */}
+            <div class={styles.subCol}>
+              <div class={styles.fieldRow}>
+                <label for="palletTypeSelect" class={styles.fieldLabel}>
+                  Pallet type
+                </label>
+                <select
+                  id="palletTypeSelect"
+                  class={styles.selectInput}
+                  value={input.palletTypeId}
+                  onChange={(e) => handlePalletTypeChange((e.target as HTMLSelectElement).value)}
+                >
+                  {PALLET_PRESETS.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div class={styles.multiInputRow}>
-            <div class={styles.fieldRow}>
-              <label for="palletLengthInput" class={styles.fieldLabel}>
-                Length ({input.unit})
-              </label>
-              <input
-                id="palletLengthInput"
-                type="number"
-                class={styles.textInput}
-                value={input.palletLength}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    palletLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-            <div class={styles.fieldRow}>
-              <label for="palletWidthInput" class={styles.fieldLabel}>
-                Width ({input.unit})
-              </label>
-              <input
-                id="palletWidthInput"
-                type="number"
-                class={styles.textInput}
-                value={input.palletWidth}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    palletWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-            <div class={styles.fieldRow}>
-              <label
-                for="palletHeightLimitInput"
-                class={styles.fieldLabel}
-                title={`Max Pallet Height Limit (${input.unit})`}
-              >
-                Max H ({input.unit})
-              </label>
-              <input
-                id="palletHeightLimitInput"
-                type="number"
-                class={styles.textInput}
-                value={input.palletHeightLimit}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    palletHeightLimit: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-          </div>
+              <div class={styles.fieldRow}>
+                <label for="palletLengthInput" class={styles.fieldLabel}>
+                  Pallet length ({input.unit})
+                </label>
+                <input
+                  id="palletLengthInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.palletLength}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      palletLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
 
-          <div class={styles.fieldLabel} style={{ marginTop: '4px', fontWeight: 700 }}>
-            Box / Carton size
-          </div>
-          <div class={styles.multiInputRow}>
-            <div class={styles.fieldRow}>
-              <label for="boxLengthInput" class={styles.fieldLabel}>
-                Length ({input.unit})
-              </label>
-              <input
-                id="boxLengthInput"
-                type="number"
-                class={styles.textInput}
-                value={input.boxLength}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    boxLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-            <div class={styles.fieldRow}>
-              <label for="boxWidthInput" class={styles.fieldLabel}>
-                Width ({input.unit})
-              </label>
-              <input
-                id="boxWidthInput"
-                type="number"
-                class={styles.textInput}
-                value={input.boxWidth}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    boxWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-            <div class={styles.fieldRow}>
-              <label for="boxHeightInput" class={styles.fieldLabel}>
-                Height ({input.unit})
-              </label>
-              <input
-                id="boxHeightInput"
-                type="number"
-                class={styles.textInput}
-                value={input.boxHeight}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    boxHeight: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
-            </div>
-          </div>
+              <div class={styles.fieldRow}>
+                <label for="palletWidthInput" class={styles.fieldLabel}>
+                  Pallet width ({input.unit})
+                </label>
+                <input
+                  id="palletWidthInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.palletWidth}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      palletWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
 
-          <div class={styles.fieldLabel} style={{ marginTop: '4px', fontWeight: 700 }}>
-            Quantity & Options
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-              gap: '6px',
-            }}
-          >
-            <div class={styles.fieldRow}>
-              <label for="maxStackLayersSelect" class={styles.fieldLabel}>
-                Max stack layers
-              </label>
-              <select
-                id="maxStackLayersSelect"
-                class={styles.selectInput}
-                value={String(input.maxStackLayers)}
-                onChange={(e) => {
-                  const val = (e.target as HTMLSelectElement).value;
-                  setInput((prev) => ({
-                    ...prev,
-                    maxStackLayers: val === 'auto' ? 'auto' : Number(val),
-                  }));
-                }}
-              >
-                <option value="auto">Auto</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <option key={num} value={num}>
-                    {num} layers
-                  </option>
-                ))}
-              </select>
+              <div class={styles.fieldRow}>
+                <label
+                  for="palletHeightLimitInput"
+                  class={styles.fieldLabel}
+                  title={`Pallet Height Limit (${input.unit})`}
+                >
+                  Pallet height limit ({input.unit})
+                </label>
+                <input
+                  id="palletHeightLimitInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.palletHeightLimit}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      palletHeightLimit: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
             </div>
-            <div class={styles.fieldRow}>
-              <label for="boxWeightInput" class={styles.fieldLabel}>
-                Box weight (kg)
+
+            {/* Sub-column 2: Box / Carton size */}
+            <div class={styles.subCol}>
+              <div class={styles.subColTitle}>Box / Carton size</div>
+
+              <div class={styles.fieldRow}>
+                <label for="boxLengthInput" class={styles.fieldLabel}>
+                  Length ({input.unit})
+                </label>
+                <input
+                  id="boxLengthInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.boxLength}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      boxLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
+
+              <div class={styles.fieldRow}>
+                <label for="boxWidthInput" class={styles.fieldLabel}>
+                  Width ({input.unit})
+                </label>
+                <input
+                  id="boxWidthInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.boxWidth}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      boxWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
+
+              <div class={styles.fieldRow}>
+                <label for="boxHeightInput" class={styles.fieldLabel}>
+                  Height ({input.unit})
+                </label>
+                <input
+                  id="boxHeightInput"
+                  type="number"
+                  class={styles.textInput}
+                  value={input.boxHeight}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      boxHeight: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                    }))
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Sub-column 3: Quantity & Options */}
+            <div class={styles.subCol}>
+              <div class={styles.subColTitle}>Quantity & Options</div>
+
+              <div class={styles.fieldRow}>
+                <label for="maxStackLayersSelect" class={styles.fieldLabel}>
+                  Max stack layers
+                </label>
+                <select
+                  id="maxStackLayersSelect"
+                  class={styles.selectInput}
+                  value={String(input.maxStackLayers)}
+                  onChange={(e) => {
+                    const val = (e.target as HTMLSelectElement).value;
+                    setInput((prev) => ({
+                      ...prev,
+                      maxStackLayers: val === 'auto' ? 'auto' : Number(val),
+                    }));
+                  }}
+                >
+                  <option value="auto">Auto</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                    <option key={num} value={num}>
+                      {num} layers
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div class={styles.fieldRow}>
+                <label for="boxWeightInput" class={styles.fieldLabel}>
+                  Box weight (optional, kg)
+                </label>
+                <div class={styles.inputWithSuffix}>
+                  <input
+                    id="boxWeightInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.boxWeight || ''}
+                    placeholder="12"
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        boxWeight: Math.max(0, Number((e.target as HTMLInputElement).value)),
+                      }))
+                    }
+                  />
+                  <span class={styles.inputSuffix}>kg</span>
+                </div>
+              </div>
+
+              <div class={styles.fieldRow}>
+                <label for="stackingTypeSelect" class={styles.fieldLabel}>
+                  Stacking type
+                </label>
+                <select
+                  id="stackingTypeSelect"
+                  class={styles.selectInput}
+                  value={input.stackingType}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      stackingType: (e.target as HTMLSelectElement)
+                        .value as PalletLoadingInput['stackingType'],
+                    }))
+                  }
+                >
+                  <option value="standard">Standard (no overhang)</option>
+                  <option value="interlocking">Interlocking (brick pattern)</option>
+                  <option value="column">Column stack</option>
+                </select>
+              </div>
+
+              <label class={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={input.showWeightInResults}
+                  onChange={(e) =>
+                    setInput((prev) => ({
+                      ...prev,
+                      showWeightInResults: (e.target as HTMLInputElement).checked,
+                    }))
+                  }
+                />
+                <span>Show weight in results</span>
               </label>
-              <input
-                id="boxWeightInput"
-                type="number"
-                class={styles.textInput}
-                value={input.boxWeight}
-                onChange={(e) =>
-                  setInput((prev) => ({
-                    ...prev,
-                    boxWeight: Math.max(0, Number((e.target as HTMLInputElement).value)),
-                  }))
-                }
-              />
             </div>
           </div>
-
-          <div class={styles.fieldRow}>
-            <label for="stackingTypeSelect" class={styles.fieldLabel}>
-              Stacking type
-            </label>
-            <select
-              id="stackingTypeSelect"
-              class={styles.selectInput}
-              value={input.stackingType}
-              onChange={(e) =>
-                setInput((prev) => ({
-                  ...prev,
-                  stackingType: (e.target as HTMLSelectElement)
-                    .value as PalletLoadingInput['stackingType'],
-                }))
-              }
-            >
-              <option value="standard">Standard (no overhang)</option>
-              <option value="interlocking">Interlocking (brick pattern)</option>
-              <option value="column">Column stack</option>
-            </select>
-          </div>
-
-          <label class={styles.checkboxRow}>
-            <input
-              type="checkbox"
-              checked={input.showWeightInResults}
-              onChange={(e) =>
-                setInput((prev) => ({
-                  ...prev,
-                  showWeightInResults: (e.target as HTMLInputElement).checked,
-                }))
-              }
-            />
-            <span>Show weight in results</span>
-          </label>
         </div>
 
         {/* Mobile-only Calculate button */}
@@ -370,51 +376,53 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
           </div>
 
           <div class={styles.resultsContainer}>
-            <div class={styles.kpiCard}>
-              <span class={styles.kpiIcon} aria-hidden="true">
-                📦
-              </span>
-              <div class={styles.kpiBody}>
-                <span class={styles.kpiLabel}>Boxes per layer</span>
-                <span class={styles.kpiValue}>{result.boxesPerLayer}</span>
-                <span class={styles.kpiSub}>
-                  ({result.alongLength} × {result.alongWidth})
+            <div class={styles.resultsKpiGrid}>
+              <div class={styles.kpiCard}>
+                <span class={styles.kpiIcon} aria-hidden="true">
+                  📦
                 </span>
+                <div class={styles.kpiBody}>
+                  <span class={styles.kpiLabel}>Boxes per layer</span>
+                  <span class={styles.kpiValue}>{result.boxesPerLayer}</span>
+                  <span class={styles.kpiSub}>
+                    ({result.alongLength} × {result.alongWidth})
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div class={styles.kpiCard}>
-              <span class={styles.kpiIcon} aria-hidden="true">
-                🥞
-              </span>
-              <div class={styles.kpiBody}>
-                <span class={styles.kpiLabel}>Total layers</span>
-                <span class={styles.kpiValue}>{result.totalLayers}</span>
+              <div class={styles.kpiCard}>
+                <span class={styles.kpiIcon} aria-hidden="true">
+                  🥞
+                </span>
+                <div class={styles.kpiBody}>
+                  <span class={styles.kpiLabel}>Total layers</span>
+                  <span class={styles.kpiValue}>{result.totalLayers}</span>
+                </div>
               </div>
-            </div>
 
-            <div class={styles.kpiCard}>
-              <span class={styles.kpiIcon} aria-hidden="true">
-                🧱
-              </span>
-              <div class={styles.kpiBody}>
-                <span class={styles.kpiLabel}>Total boxes</span>
-                <span class={styles.kpiValue}>{result.totalBoxes}</span>
+              <div class={styles.kpiCard}>
+                <span class={styles.kpiIcon} aria-hidden="true">
+                  🧱
+                </span>
+                <div class={styles.kpiBody}>
+                  <span class={styles.kpiLabel}>Total boxes</span>
+                  <span class={styles.kpiValue}>{result.totalBoxes}</span>
+                </div>
               </div>
-            </div>
 
-            <div class={styles.kpiCard}>
-              <span class={styles.kpiIcon} aria-hidden="true">
-                📊
-              </span>
-              <div class={styles.kpiBody}>
-                <span class={styles.kpiLabel}>Space utilization</span>
-                <span class={styles.kpiValue}>{result.spaceUtilizationPercent}%</span>
-                <div class={styles.progressBarWrap}>
-                  <div
-                    class={styles.progressBarFill}
-                    style={{ width: `${Math.min(100, result.spaceUtilizationPercent)}%` }}
-                  />
+              <div class={styles.kpiCard}>
+                <span class={styles.kpiIcon} aria-hidden="true">
+                  📊
+                </span>
+                <div class={styles.kpiBody}>
+                  <span class={styles.kpiLabel}>Space utilization</span>
+                  <span class={styles.kpiValue}>{result.spaceUtilizationPercent}%</span>
+                  <div class={styles.progressBarWrap}>
+                    <div
+                      class={styles.progressBarFill}
+                      style={{ width: `${Math.min(100, result.spaceUtilizationPercent)}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
