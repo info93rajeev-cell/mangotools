@@ -177,8 +177,12 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
               />
             </div>
             <div class={styles.fieldRow}>
-              <label for="palletHeightLimitInput" class={styles.fieldLabel}>
-                Height limit ({input.unit})
+              <label
+                for="palletHeightLimitInput"
+                class={styles.fieldLabel}
+                title={`Max Pallet Height Limit (${input.unit})`}
+              >
+                Max H ({input.unit})
               </label>
               <input
                 id="palletHeightLimitInput"
@@ -255,7 +259,13 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
           <div class={styles.fieldLabel} style={{ marginTop: '4px', fontWeight: 700 }}>
             Quantity & Options
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+              gap: '6px',
+            }}
+          >
             <div class={styles.fieldRow}>
               <label for="maxStackLayersSelect" class={styles.fieldLabel}>
                 Max stack layers
