@@ -88,16 +88,30 @@ function ResultCockpit({
         <NoteList preset={preset} notices={res.warnings} />
       )}
 
-      <button
-        type="button"
-        class={styles.downloadCtaBtn}
-        data-action="download-reduced"
-        onClick={photoSize.downloadResult}
-        disabled={photoSize.phase === 'running'}
-      >
-        <span>⬇️</span>
-        <span>Download reduced photo</span>
-      </button>
+      <div class={styles.actionButtonGroup}>
+        <button
+          type="button"
+          class={styles.applyCtaBtn}
+          data-action="apply-reduce"
+          onClick={() => void photoSize.executeReduce()}
+          disabled={photoSize.phase === 'running'}
+          title="Re-apply settings and update preview"
+        >
+          <span>{photoSize.phase === 'running' ? '⏳' : '⚡'}</span>
+          <span>{photoSize.phase === 'running' ? 'Reducing photo...' : 'Re-apply Reduction'}</span>
+        </button>
+
+        <button
+          type="button"
+          class={styles.downloadCtaBtn}
+          data-action="download-reduced"
+          onClick={photoSize.downloadResult}
+          disabled={photoSize.phase === 'running'}
+        >
+          <span>⬇️</span>
+          <span>Download reduced photo</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -174,16 +188,30 @@ function ReadyCockpit({ photoSize }: { photoSize: UsePhotoSizeReducerReturn }) {
         <span>100% In-Browser. No Files Uploaded.</span>
       </div>
 
-      <button
-        type="button"
-        class={styles.downloadCtaBtn}
-        data-action="download-reduced"
-        onClick={() => void photoSize.executeReduceAndDownload()}
-        disabled={photoSize.phase === 'running' || !hasFile}
-      >
-        <span>⬇️</span>
-        <span>Download reduced photo</span>
-      </button>
+      <div class={styles.actionButtonGroup}>
+        <button
+          type="button"
+          class={styles.applyCtaBtn}
+          data-action="apply-reduce"
+          onClick={() => void photoSize.executeReduce()}
+          disabled={photoSize.phase === 'running' || !hasFile}
+          title="Apply settings and preview reduced photo quality"
+        >
+          <span>{photoSize.phase === 'running' ? '⏳' : '⚡'}</span>
+          <span>{photoSize.phase === 'running' ? 'Reducing photo...' : 'Reduce Photo Size'}</span>
+        </button>
+
+        <button
+          type="button"
+          class={styles.downloadCtaBtn}
+          data-action="download-reduced"
+          onClick={() => void photoSize.executeReduceAndDownload()}
+          disabled={photoSize.phase === 'running' || !hasFile}
+        >
+          <span>⬇️</span>
+          <span>Download reduced photo</span>
+        </button>
+      </div>
     </div>
   );
 }

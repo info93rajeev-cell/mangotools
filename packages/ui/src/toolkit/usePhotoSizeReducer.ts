@@ -23,7 +23,7 @@ function usePhotoSizeState() {
   const [targetWidth, setTargetWidth] = useState(0);
   const [targetHeight, setTargetHeight] = useState(0);
   const [maxFileSizeKB, setMaxFileSizeKB] = useState<number | undefined>(100);
-  const [allowDimensionReduction, setAllowDimensionReduction] = useState(false);
+  const [allowDimensionReduction, setAllowDimensionReduction] = useState(true);
   const [outputFormat, setOutputFormat] = useState<PhotoSizeOutputFormat>('jpg');
   const [quality, setQuality] = useState(90);
   const [customFileName, setCustomFileName] = useState('');
@@ -106,6 +106,10 @@ async function handleSample(
   s: PhotoSizeState,
   invalidate: () => void,
   userInteractedRef?: { current: boolean },
+  preset?: ResolvedPreset,
+  toolId?: string,
+  onPhase?: (phase: FilePhase) => void,
+  notify?: (msg: string) => void,
 ) {
   if (userInteractedRef?.current || (userInteractedRef && s.file)) return;
   const sample = await createPalaceSample();
@@ -122,6 +126,10 @@ async function handleSample(
   }
   invalidate();
   applyLoadedImage(s, res.value);
+
+  if (preset && toolId && onPhase && notify) {
+    void handleRun(s, preset, toolId, onPhase, notify, fileObj, res.value.dims);
+  }
 }
 
 async function handleRun(
@@ -130,8 +138,11 @@ async function handleRun(
   _toolId: string,
   onPhase: (phase: FilePhase) => void,
   notify: (msg: string) => void,
+  explicitFile?: File,
+  explicitDims?: { width: number; height: number },
 ): Promise<PhotoSizeResultData | null> {
-  if (!s.file) {
+  const activeFile = explicitFile ?? s.file;
+  if (!activeFile) {
     s.setError({
       code: 'INVALID_INPUT',
       messageKey: 'INVALID_INPUT',
@@ -164,12 +175,13 @@ async function handleRun(
   onPhase('running');
   s.setError(null);
 
+  const srcDims = explicitDims ?? s.sourceDims;
   const outcome = await executePhotoSizeWorker({
     preset,
-    file: s.file,
+    file: activeFile,
     maxFileSizeKB: s.maxFileSizeKB,
-    targetWidth: s.targetWidth > 0 ? s.targetWidth : s.sourceDims.width,
-    targetHeight: s.targetHeight > 0 ? s.targetHeight : s.sourceDims.height,
+    targetWidth: s.targetWidth > 0 ? s.targetWidth : srcDims.width,
+    targetHeight: s.targetHeight > 0 ? s.targetHeight : srcDims.height,
     allowDimensionReduction: s.allowDimensionReduction,
     outputFormat: s.outputFormat,
     quality: s.quality,
@@ -246,7 +258,7 @@ function usePhotoSizeActions(
     setOutputFormat: withInvalidate(s.setOutputFormat),
     setCustomFileName: withInvalidate(s.setCustomFileName),
     loadFile: (f: File) => handleLoad(f, s, invalidate, notify, userInteractedRef),
-    loadSample: () => handleSample(s, invalidate),
+    loadSample: () => handleSample(s, invalidate, undefined, preset, toolId, onPhase, notify),
     executeReduce: () => handleRun(s, preset, toolId, onPhase, notify),
     executeReduceAndDownload: () => handleRunAndDownload(s, preset, toolId, onPhase, notify),
     downloadResult: () => {
@@ -325,7 +337,7 @@ export function usePhotoSizeReducer(
   // Pre-load Jaipur Palace sample image on mount so the window is NEVER blank!
   useEffect(() => {
     if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate, userInteractedRef);
+      void handleSample(s, invalidate, userInteractedRef, preset, toolId, onPhase, notify);
     }
   }, []);
 

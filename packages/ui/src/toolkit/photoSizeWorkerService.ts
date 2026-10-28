@@ -1,11 +1,11 @@
 import { err, type OpWarning, ok, type Result } from '@mangotools/core';
 import { getWorkerHost } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { MIME_MAP, type CropFile as PhotoFile } from './imageFileInspection.ts';
+import { type CropFile, MIME_MAP } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
 
 export type PhotoSizeOutputFormat = 'jpg' | 'png' | 'webp' | 'pdf';
-export type { PhotoFile };
+export type PhotoFile = CropFile | File;
 
 export const FORMAT_MIME_MAP: Record<string, string> = { ...MIME_MAP, pdf: 'application/pdf' };
 
@@ -50,6 +50,8 @@ export async function convertPhotoSizeToPdf(
   const cleanBase = rawBase.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'photo';
   const fileName = `${cleanBase.replace(/-reduced$/, '')}-reduced.pdf`;
 
+  const origSize = cfg.file.size ?? reduced.originalFileSize;
+
   return ok({
     fileName,
     bytes: wrapped.value.pdfBytes,
@@ -57,11 +59,11 @@ export async function convertPhotoSizeToPdf(
     originalHeight: reduced.originalHeight,
     outputWidth: reduced.outputWidth,
     outputHeight: reduced.outputHeight,
-    originalFileSize: cfg.file.size,
+    originalFileSize: origSize,
     outputFileSize: wrapped.value.pdfBytes.byteLength,
-    sizeDifferenceBytes: cfg.file.size - wrapped.value.pdfBytes.byteLength,
+    sizeDifferenceBytes: origSize - wrapped.value.pdfBytes.byteLength,
     sizeChangePercent: Math.round(
-      ((cfg.file.size - wrapped.value.pdfBytes.byteLength) / cfg.file.size) * 100,
+      ((origSize - wrapped.value.pdfBytes.byteLength) / origSize) * 100,
     ),
     originalFormat: reduced.originalFormat,
     outputFormat: 'pdf',
@@ -84,15 +86,26 @@ export function boundTargetDimensions(width?: number, height?: number) {
   return { targetWidth, targetHeight };
 }
 
+async function resolveFileBytes(file: PhotoFile): Promise<Uint8Array> {
+  if ('bytes' in file && file.bytes instanceof Uint8Array && file.bytes.byteLength > 0) {
+    return file.bytes;
+  }
+  if (typeof (file as Blob).arrayBuffer === 'function') {
+    return new Uint8Array(await (file as Blob).arrayBuffer());
+  }
+  return new Uint8Array(0);
+}
+
 export async function executePhotoSizeWorker(
   cfg: PhotoSizeRunConfig,
 ): Promise<Result<PhotoSizeResultData>> {
   const isPdf = cfg.outputFormat === 'pdf';
   const workerFormat = isPdf ? 'jpg' : cfg.outputFormat === 'webp' ? 'jpg' : cfg.outputFormat;
   const { targetWidth, targetHeight } = boundTargetDimensions(cfg.targetWidth, cfg.targetHeight);
+  const fileBytes = await resolveFileBytes(cfg.file);
 
   const input = {
-    file: { name: cfg.file.name, bytes: cfg.file.bytes },
+    file: { name: cfg.file.name, bytes: fileBytes },
     targetWidth,
     targetHeight,
     keepAspectRatio: true,

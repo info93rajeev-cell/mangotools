@@ -282,32 +282,27 @@ function FormatSection({
         </button>
       </div>
 
-      <div class={styles.fieldRow}>
-        <label class={styles.fieldLabel} for={`${idPrefix}-output-format`}>
-          Output format
-        </label>
-        <select
-          id={`${idPrefix}-output-format`}
-          aria-label="Output format"
-          value={photoSize.outputFormat}
-          onChange={(e) =>
-            photoSize.setOutputFormat(
-              (e.currentTarget as HTMLSelectElement).value as PhotoSizeOutputFormat,
-            )
-          }
-          class={styles.formatSelect}
-          disabled={!hasFile || isExecuting}
-        >
-          <option value="jpg">JPG (white background)</option>
-          <option value="png">PNG (retain transparency)</option>
-          <option value="webp">WebP</option>
-          <option value="pdf">PDF</option>
-        </select>
-      </div>
+      <select
+        id={`${idPrefix}-output-format`}
+        aria-label="Output format"
+        value={photoSize.outputFormat}
+        onChange={(e) =>
+          photoSize.setOutputFormat(
+            (e.currentTarget as HTMLSelectElement).value as PhotoSizeOutputFormat,
+          )
+        }
+        class="visually-hidden"
+        disabled={!hasFile || isExecuting}
+      >
+        <option value="jpg">JPG (white background)</option>
+        <option value="png">PNG (retain transparency)</option>
+        <option value="webp">WebP</option>
+        <option value="pdf">PDF</option>
+      </select>
 
       <fieldset
         class={styles.kbPresetsRow}
-        style={{ border: 'none', padding: 0, margin: '2px 0 0 0' }}
+        style={{ border: 'none', padding: 0, margin: '1px 0 0 0' }}
       >
         <legend class="visually-hidden">Quick Format Switch</legend>
         {FORMAT_OPTIONS.map((fmt) => (
