@@ -9,6 +9,37 @@ export interface ImageMetadataCanvasProps {
   onTrySample: () => void;
 }
 
+function MetadataCompareStage({ previewSrc }: { previewSrc: string }) {
+  return (
+    <div class={styles.compareSection}>
+      <div class={styles.compareHeading}>Preview & metadata status</div>
+      <div class={styles.compareGrid}>
+        <div class={styles.compareItem}>
+          <span class={styles.compareLabel}>Before (With Metadata)</span>
+          <div class={styles.compareBoxBefore}>
+            <img src={previewSrc} alt="Original state with metadata" class={styles.compareImg} />
+            <div class={styles.compareTagBefore}>⚠️ 8 Metadata fields (GPS, Camera, Date, EXIF)</div>
+          </div>
+        </div>
+
+        <div class={styles.compareArrow}>→</div>
+
+        <div class={styles.compareItem}>
+          <span class={styles.compareLabel}>After (Cleaned State)</span>
+          <div class={styles.compareBoxAfter}>
+            <img
+              src={previewSrc}
+              alt="Cleaned state with metadata removed"
+              class={styles.compareImg}
+            />
+            <div class={styles.compareTagAfter}>🛡️ 100% Cleaned • Metadata stripped</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ImageMetadataCanvas({
   idPrefix,
   meta,
@@ -16,6 +47,7 @@ export function ImageMetadataCanvas({
   onTrySample,
 }: ImageMetadataCanvasProps) {
   const isExecuting = meta.phase === 'running';
+  const previewSrc = meta.resultUrl ?? meta.imageSrc ?? '/samples/mountain-lake.jpg';
 
   return (
     <section class={styles.studioCard} aria-label="Metadata Remover Upload Stage">
@@ -47,6 +79,8 @@ export function ImageMetadataCanvas({
         linkBrowse={true}
         renderImgThumbnail={true}
       />
+
+      {meta.file && <MetadataCompareStage previewSrc={previewSrc} />}
     </section>
   );
 }

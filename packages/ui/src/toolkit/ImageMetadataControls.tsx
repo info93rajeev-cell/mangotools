@@ -12,7 +12,7 @@ export interface ImageMetadataControlsProps {
 }
 
 export function DetectedMetadataCard({ meta }: { meta: UseImageMetadataRemoverReturn }) {
-  const hasFile = !!meta.file;
+  const hasFile = Boolean(meta.file);
 
   return (
     <div class={styles.studioCard}>
@@ -106,6 +106,90 @@ const FORMAT_ITEMS = [
   },
 ];
 
+function MetadataFormatSelector({
+  activeFmt,
+  onSelect,
+}: {
+  activeFmt: string;
+  onSelect: (fmt: 'jpg' | 'png' | 'webp') => void;
+}) {
+  return (
+    <div class={styles.formatSection}>
+      <span class={styles.subHeadingText}>Choose output format</span>
+      <div class={styles.formatCardsRow}>
+        {FORMAT_ITEMS.map((fmt) => {
+          const isActive = activeFmt === fmt.id;
+          return (
+            <button
+              key={fmt.id}
+              type="button"
+              class={styles.formatCard}
+              data-active={isActive ? 'true' : 'false'}
+              onClick={() => onSelect(fmt.id)}
+            >
+              {isActive && <span class={styles.checkBadge}>✓</span>}
+              <span class={styles.formatIcon}>📄</span>
+              <span class={styles.formatTitle}>{fmt.title}</span>
+              <span class={styles.formatSub}>{fmt.sub}</span>
+              <span class={styles.formatNote}>{fmt.note}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function MetadataActionButtons({
+  meta,
+  isExecuting,
+}: {
+  meta: UseImageMetadataRemoverReturn;
+  isExecuting: boolean;
+}) {
+  const isCleaned = meta.phase === 'result' && Boolean(meta.result);
+  const hasFile = Boolean(meta.file);
+
+  return (
+    <div class={styles.actionBtnGroup}>
+      <button
+        type="button"
+        class={styles.applyActionBtn}
+        data-action="apply-clean"
+        data-applied={isCleaned ? 'true' : 'false'}
+        onClick={() => void meta.executeClean()}
+        disabled={!hasFile || isExecuting}
+        title="Clean and strip all metadata from this image"
+      >
+        <span>{isExecuting ? '⏳' : isCleaned ? '✔' : '⚡'}</span>
+        <span>
+          {isExecuting ? 'Cleaning...' : isCleaned ? 'Metadata Cleaned' : 'Clean & Remove Metadata'}
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class={styles.downloadActionBtn}
+        data-action="download-cleaned"
+        onClick={() => void meta.executeCleanAndDownload()}
+        disabled={!hasFile || isExecuting}
+        title="Download cleaned image without metadata"
+      >
+        <span>📥</span>
+        <span>{isExecuting ? 'Cleaning...' : 'Download cleaned image'}</span>
+      </button>
+    </div>
+  );
+}
+
+function getActiveFormat(outputFormat: MetadataOutputFormat, fileName?: string): string {
+  if (outputFormat !== 'same') return outputFormat;
+  const lower = fileName?.toLowerCase() ?? '';
+  if (lower.endsWith('.png')) return 'png';
+  if (lower.endsWith('.webp')) return 'webp';
+  return 'jpg';
+}
+
 export function OutputSettingsCard({
   idPrefix,
   meta,
@@ -114,20 +198,9 @@ export function OutputSettingsCard({
   meta: UseImageMetadataRemoverReturn;
 }) {
   const isExecuting = meta.phase === 'running';
-
-  // Determine active format
-  const activeFmt =
-    meta.outputFormat === 'same'
-      ? meta.file?.name.toLowerCase().endsWith('.png')
-        ? 'png'
-        : meta.file?.name.toLowerCase().endsWith('.webp')
-          ? 'webp'
-          : 'jpg'
-      : meta.outputFormat;
-
+  const activeFmt = getActiveFormat(meta.outputFormat, meta.file?.name);
   const baseName = meta.file?.name.replace(/\.[^/.]+$/, '') ?? 'mountain-lake';
-  const ext = activeFmt === 'png' ? 'png' : activeFmt === 'webp' ? 'webp' : 'jpg';
-  const defaultPlaceholder = `${baseName}_cleaned.${ext}`;
+  const defaultPlaceholder = `${baseName}_cleaned.${activeFmt}`;
 
   return (
     <div class={styles.studioCard}>
@@ -152,29 +225,10 @@ export function OutputSettingsCard({
           <option value="webp">WebP</option>
         </select>
 
-        <div class={styles.formatSection}>
-          <span class={styles.subHeadingText}>Choose output format</span>
-          <div class={styles.formatCardsRow}>
-            {FORMAT_ITEMS.map((fmt) => {
-              const isActive = activeFmt === fmt.id;
-              return (
-                <button
-                  key={fmt.id}
-                  type="button"
-                  class={styles.formatCard}
-                  data-active={isActive ? 'true' : 'false'}
-                  onClick={() => meta.setOutputFormat(fmt.id)}
-                >
-                  {isActive && <span class={styles.checkBadge}>✓</span>}
-                  <span class={styles.formatIcon}>📄</span>
-                  <span class={styles.formatTitle}>{fmt.title}</span>
-                  <span class={styles.formatSub}>{fmt.sub}</span>
-                  <span class={styles.formatNote}>{fmt.note}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <MetadataFormatSelector
+          activeFmt={activeFmt}
+          onSelect={(fmt) => meta.setOutputFormat(fmt)}
+        />
 
         <div class={styles.inputGroup}>
           <label for={`${idPrefix}-custom-name`} class={styles.fieldLabel}>
@@ -199,16 +253,7 @@ export function OutputSettingsCard({
           </span>
         </div>
 
-        <button
-          type="button"
-          class={styles.primaryActionBtn}
-          data-action="download-cleaned"
-          onClick={() => void meta.executeCleanAndDownload()}
-          disabled={isExecuting}
-        >
-          <span>📥</span>
-          <span>{isExecuting ? 'Cleaning...' : 'Download cleaned image'}</span>
-        </button>
+        <MetadataActionButtons meta={meta} isExecuting={isExecuting} />
 
         <div class={styles.privacySubtext}>
           Your image is processed in your browser. No data is uploaded to our servers.
