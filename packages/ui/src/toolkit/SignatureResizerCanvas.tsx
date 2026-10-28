@@ -1,4 +1,6 @@
+import { useState } from 'preact/hooks';
 import styles from './signatureResizer.module.css';
+import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { UseSignatureResizerReturn } from './useSignatureResizer.ts';
 
 export interface SignatureResizerCanvasProps {
@@ -20,6 +22,7 @@ export function SignatureResizerCanvas({
   signature,
   onSelectFile,
 }: SignatureResizerCanvasProps) {
+  const [isReplacing, setIsReplacing] = useState(false);
   const hasFile = !!signature.file;
   const previewSrc = signature.resultUrl ?? signature.imageSrc ?? '/samples/signature.jpg';
   const fileName = signature.file?.name ?? 'signature.jpg';
@@ -28,6 +31,8 @@ export function SignatureResizerCanvas({
     ? `${signature.sourceDims.width} × ${signature.sourceDims.height}`
     : '1200 × 900';
 
+  const showDropzone = !hasFile || isReplacing;
+
   return (
     <main class={styles.canvasContainer} aria-label="Signature Upload Stage">
       <div class={styles.panelCard}>
@@ -35,9 +40,10 @@ export function SignatureResizerCanvas({
         <div class={styles.cardHeader}>
           <span class={styles.cardTitle}>1. Upload signature image</span>
           {hasFile && (
-            <label
-              for={`${idPrefix}-signature-upload-input`}
+            <button
+              type="button"
               class={styles.replaceBtn}
+              onClick={() => setIsReplacing(!isReplacing)}
               aria-label="Replace image"
             >
               <svg
@@ -56,8 +62,8 @@ export function SignatureResizerCanvas({
                 <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
                 <path d="M16 21h5v-5" />
               </svg>
-              <span>Replace image</span>
-            </label>
+              <span>{isReplacing ? 'Cancel' : 'Replace image'}</span>
+            </button>
           )}
         </div>
 
@@ -69,12 +75,37 @@ export function SignatureResizerCanvas({
           style={{ display: 'none' }}
           onChange={(e) => {
             const f = (e.currentTarget as HTMLInputElement).files?.[0];
-            if (f) onSelectFile(f);
+            if (f) {
+              setIsReplacing(false);
+              onSelectFile(f);
+            }
           }}
         />
 
         {/* Loaded Image Stage or Dropzone */}
-        {hasFile ? (
+        {showDropzone ? (
+          <UniversalUploadDropzone
+            idPrefix={idPrefix}
+            accept="image/*,image/jpeg,image/png,image/webp"
+            file={signature.file}
+            thumbnailUrl={signature.imageSrc}
+            dimensions={signature.sourceDims.width > 0 ? signature.sourceDims : null}
+            onSelectFile={(f) => {
+              setIsReplacing(false);
+              onSelectFile(f);
+            }}
+            onClear={() => {
+              setIsReplacing(false);
+              signature.clearAll();
+            }}
+            disabled={signature.phase === 'running'}
+            primaryText="Drag and drop images here"
+            browseText="click to browse files"
+            supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+            linkBrowse={true}
+            renderImgThumbnail={true}
+          />
+        ) : (
           <div class={styles.loadedStage}>
             {/* Left large thumbnail matching reference */}
             <div class={styles.signatureThumbWrap}>
@@ -101,70 +132,6 @@ export function SignatureResizerCanvas({
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div class={styles.dropzoneWrap}>
-            <label
-              for={`${idPrefix}-signature-upload-input`}
-              class={styles.dropzoneBox}
-              data-upload-button=""
-              style={{
-                border: '1.5px dashed #cbd5e1',
-                borderRadius: '6px',
-                padding: '6px 8px',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <div class={styles.cloudIcon}>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
-                  <path d="M12 12v9" />
-                  <path d="m8 16 4-4 4 4" />
-                </svg>
-              </div>
-              <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#0f172a' }}>
-                Drag & drop signature file
-              </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '2px 0' }}>
-                <span style={{ fontSize: '9.5px', color: '#64748b' }}>or</span>
-                <span class={styles.replaceBtn}>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <span>Upload Signature</span>
-                </span>
-              </div>
-              <span style={{ fontSize: '8.5px', color: '#64748b' }}>
-                Supports JPG, PNG, WebP (Scanned doc or photo)
-              </span>
-            </label>
           </div>
         )}
 

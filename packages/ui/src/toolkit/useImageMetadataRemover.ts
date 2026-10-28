@@ -1,7 +1,7 @@
 import { err, type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
 import { getWorkerHost, track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import {
@@ -217,6 +217,10 @@ function resetMetadataState(s: MetadataCoreState) {
 }
 
 function useMetadataFileSelection(s: MetadataCoreState) {
+  useEffect(() => {
+    void loadSample();
+  }, []);
+
   async function loadSample() {
     s.setPhase('running');
     s.setError(null);
