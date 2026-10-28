@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
   max-width: 1280px;
   min-width: 0;
@@ -22,13 +22,13 @@
 .privacyBadge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   color: #166534;
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
 }
 
@@ -39,7 +39,7 @@
       210px,
       0.9fr
     );
-  gap: 12px;
+  gap: 14px;
   align-items: start;
   min-width: 0;
   max-width: 100%;
@@ -52,7 +52,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .workspaceGrid {
     display: flex;
     flex-direction: column;
@@ -69,11 +69,11 @@
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 12px;
+  padding: 14px;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -85,14 +85,14 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
   margin-bottom: 2px;
 }
 
 .cardTitle {
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #0f172a;
   letter-spacing: -0.01em;
@@ -103,7 +103,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
   color: #64748b;
 }
 
@@ -116,12 +117,12 @@
 }
 
 .unitPill {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 600;
   border: none;
   background: transparent;
   color: #64748b;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -135,16 +136,16 @@
 .fieldRow {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 .fieldLabel {
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 600;
-  color: #334155;
+  color: #1e293b;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -154,8 +155,9 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  height: 28px;
-  font-size: 10px;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 500;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 0 8px;
@@ -166,17 +168,19 @@
 
 .selectInput:focus {
   border-color: #0065ff;
+  box-shadow: 0 0 0 2px rgba(0, 101, 255, 0.15);
 }
 
 .textInput {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  height: 28px;
-  font-size: 10px;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 500;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0 6px;
+  padding: 0 8px;
   background: #ffffff;
   color: #0f172a;
   outline: none;
@@ -184,13 +188,14 @@
 
 .textInput:focus {
   border-color: #0065ff;
+  box-shadow: 0 0 0 2px rgba(0, 101, 255, 0.15);
 }
 
 /* 3 SUB-COLUMNS IN SETTINGS CARD (PALLET / BOX / OPTIONS) */
 .settingsSubColumns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
   align-items: start;
 }
 
@@ -204,15 +209,15 @@
 .subCol {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
 .subColTitle {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: #0f172a;
-  padding-bottom: 2px;
+  padding-bottom: 4px;
   border-bottom: 1px dashed #e2e8f0;
   margin-bottom: 2px;
 }
@@ -226,9 +231,9 @@
 
 .inputSuffix {
   position: absolute;
-  right: 8px;
-  font-size: 9.5px;
-  font-weight: 600;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 700;
   color: #64748b;
   pointer-events: none;
 }
@@ -245,40 +250,41 @@
 .checkboxRow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 9.5px;
-  color: #475569;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
   cursor: pointer;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 /* RESULTS SUMMARY CARDS */
 .resultsContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .resultsKpiGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 10px;
 }
 
 .kpiCard {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
   box-sizing: border-box;
 }
 
 .kpiIcon {
-  font-size: 18px;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,7 +297,7 @@
 }
 
 .kpiLabel {
-  font-size: 9px;
+  font-size: 10.5px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
@@ -299,15 +305,17 @@
 }
 
 .kpiValue {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.2;
+  line-height: 1.25;
+  margin-top: 2px;
 }
 
 .kpiSub {
-  font-size: 9px;
-  color: #64748b;
+  font-size: 11px;
+  color: #475569;
+  margin-top: 2px;
 }
 
 .progressBarWrap {
@@ -315,7 +323,7 @@
   height: 6px;
   background: #e2e8f0;
   border-radius: 999px;
-  margin-top: 4px;
+  margin-top: 6px;
   overflow: hidden;
 }
 
@@ -333,30 +341,31 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .guideStep {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  font-size: 9.5px;
-  color: #475569;
-  line-height: 1.35;
+  gap: 8px;
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
 }
 
 .stepNum {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #e0f2fe;
   color: #0284c7;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .accordionItem {
@@ -366,10 +375,10 @@
 }
 
 .accordionSummary {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: #334155;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: #f8fafc;
   cursor: pointer;
   display: flex;
@@ -378,11 +387,11 @@
 }
 
 .accordionContent {
-  font-size: 9px;
-  color: #64748b;
-  padding: 6px 8px;
+  font-size: 11.5px;
+  color: #475569;
+  padding: 8px 10px;
   background: #ffffff;
-  line-height: 1.4;
+  line-height: 1.5;
   border-top: 1px solid #f1f5f9;
 }
 
@@ -391,11 +400,23 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 6px;
   flex-wrap: wrap;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .actionBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .secondaryBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .primaryCalculateBtn {
@@ -404,12 +425,12 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  height: 40px;
+  height: 42px;
   background: #ffb000;
   color: #0f172a;
   border: none;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -426,13 +447,13 @@
 }
 
 .secondaryBtn {
-  height: 40px;
-  padding: 0 14px;
+  height: 42px;
+  padding: 0 16px;
   background: #ffffff;
   color: #334155;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -455,7 +476,7 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .mobileOnlyCta {
     display: flex;
     width: 100%;

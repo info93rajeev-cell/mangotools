@@ -167,13 +167,13 @@ export function VolumetricWeightLayout({ preset: _preset }: VolumetricWeightLayo
             <table class={styles.itemsTable}>
               <thead>
                 <tr>
-                  <th style={{ width: '22px' }}>#</th>
-                  <th>Description</th>
-                  <th style={{ width: '56px' }}>L ({unit})</th>
-                  <th style={{ width: '56px' }}>W ({unit})</th>
-                  <th style={{ width: '56px' }}>H ({unit})</th>
-                  <th style={{ width: '64px' }}>Wt (kg)</th>
-                  <th style={{ width: '46px' }}>Qty</th>
+                  <th style={{ width: '20px' }}>#</th>
+                  <th style={{ minWidth: '85px' }}>Description</th>
+                  <th style={{ width: '48px' }}>L ({unit})</th>
+                  <th style={{ width: '48px' }}>W ({unit})</th>
+                  <th style={{ width: '48px' }}>H ({unit})</th>
+                  <th style={{ width: '56px' }}>Wt (kg)</th>
+                  <th style={{ width: '42px' }}>Qty</th>
                   <th style={{ width: '28px' }} aria-label="Actions">
                     Act
                   </th>

@@ -6,8 +6,8 @@
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 12px 18px;
-  margin-bottom: 12px;
+  padding: 14px 20px;
+  margin-bottom: 14px;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
   overflow: hidden;
 }
@@ -29,7 +29,7 @@
 }
 
 .bannerFeatures {
-  flex: 0 0 280px;
+  flex: 0 0 290px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
@@ -37,7 +37,7 @@
 }
 
 .featureTitle {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 8px;
@@ -57,14 +57,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
-  font-weight: 500;
-  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
 }
 
 .checkIcon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #ffb000;
   color: #0f172a;
@@ -72,7 +72,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
 }
 
@@ -80,7 +80,7 @@
   .bannerCard {
     flex-direction: column;
     align-items: stretch;
-    padding: 10px;
+    padding: 12px;
   }
   .bannerFeatures {
     flex: 1 1 auto;
