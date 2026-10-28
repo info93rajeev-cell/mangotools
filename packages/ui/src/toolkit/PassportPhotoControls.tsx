@@ -1,4 +1,5 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { PassportSheetControls } from './PassportSheetControls.tsx';
 import styles from './passportPhoto.module.css';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import {
@@ -114,52 +115,10 @@ export function PassportPhotoControls({
               </div>
             </section>
 
-            {/* SECTION 3: TARGET PIXEL DIMENSIONS */}
+            {/* SECTION 3: TARGET PIXEL DIMENSIONS & RATIO LOCK */}
             <section class={styles.controlSection}>
               <div class={styles.sectionHeader}>
                 <span class={styles.sectionTitle}>3. Photo Dimensions</span>
-              </div>
-              <div class={styles.dimsRow}>
-                <div class={styles.dimField}>
-                  <label for={`${idPrefix}-target-width`} class={styles.dimLabel}>
-                    Photo width
-                  </label>
-                  <div class={styles.dimInputWrap}>
-                    <input
-                      id={`${idPrefix}-target-width`}
-                      type="number"
-                      class={styles.dimInput}
-                      value={passport.targetWidth}
-                      onInput={(e) =>
-                        passport.setWidth(Number((e.target as HTMLInputElement).value))
-                      }
-                      disabled={isExecuting}
-                    />
-                    <span class={styles.dimSuffix}>px</span>
-                  </div>
-                </div>
-
-                <div class={styles.dimField}>
-                  <label for={`${idPrefix}-target-height`} class={styles.dimLabel}>
-                    Photo height
-                  </label>
-                  <div class={styles.dimInputWrap}>
-                    <input
-                      id={`${idPrefix}-target-height`}
-                      type="number"
-                      class={styles.dimInput}
-                      value={passport.targetHeight}
-                      onInput={(e) =>
-                        passport.setHeight(Number((e.target as HTMLInputElement).value))
-                      }
-                      disabled={isExecuting}
-                    />
-                    <span class={styles.dimSuffix}>px</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class={styles.switchRow}>
                 <label class={styles.switchLabel}>
                   <input
                     type="checkbox"
@@ -172,21 +131,54 @@ export function PassportPhotoControls({
                     }
                     disabled={isExecuting}
                   />
-                  <span>Keep aspect ratio</span>
+                  <span>Ratio Lock</span>
                 </label>
+              </div>
+              <div class={styles.dimsRow}>
+                <div class={styles.dimField}>
+                  <div class={styles.dimInputWrap}>
+                    <input
+                      id={`${idPrefix}-target-width`}
+                      type="number"
+                      class={styles.dimInput}
+                      value={passport.targetWidth}
+                      onInput={(e) =>
+                        passport.setWidth(Number((e.target as HTMLInputElement).value))
+                      }
+                      disabled={isExecuting}
+                    />
+                    <span class={styles.dimSuffix}>W px</span>
+                  </div>
+                </div>
+
+                <div class={styles.dimField}>
+                  <div class={styles.dimInputWrap}>
+                    <input
+                      id={`${idPrefix}-target-height`}
+                      type="number"
+                      class={styles.dimInput}
+                      value={passport.targetHeight}
+                      onInput={(e) =>
+                        passport.setHeight(Number((e.target as HTMLInputElement).value))
+                      }
+                      disabled={isExecuting}
+                    />
+                    <span class={styles.dimSuffix}>H px</span>
+                  </div>
+                </div>
               </div>
             </section>
 
-            {/* SECTION 4: OUTPUT FORMAT & QUALITY */}
+            {/* SECTION 4: STUDIO PRINT SHEET SETUP */}
+            <PassportSheetControls idPrefix={idPrefix} passport={passport} disabled={isExecuting} />
+
+            {/* SECTION 5: OUTPUT FORMAT & QUALITY */}
             <section class={styles.controlSection}>
               <div class={styles.sectionHeader}>
-                <span class={styles.sectionTitle}>4. Output Format & Quality</span>
+                <span class={styles.sectionTitle}>5. Output Format & Quality</span>
               </div>
               <div class={styles.formatRow}>
-                <div class={styles.formatField}>
-                  <label for={`${idPrefix}-output-format`} class={styles.dimLabel}>
-                    Output format
-                  </label>
+                <div class={styles.formatField} style={{ flex: 1.5 }}>
                   <select
                     id={`${idPrefix}-output-format`}
                     class={styles.formatSelect}
@@ -206,15 +198,13 @@ export function PassportPhotoControls({
                   </select>
                 </div>
 
-                <div class={styles.qualityField}>
-                  <label for={`${idPrefix}-quality`} class={styles.dimLabel}>
-                    Quality
-                  </label>
+                <div class={styles.qualityField} style={{ flex: 1.2 }}>
                   <input
                     id={`${idPrefix}-quality`}
                     type="number"
                     min="1"
                     max="100"
+                    placeholder="Q"
                     class={styles.qualityInput}
                     value={passport.quality}
                     onInput={(e) =>
@@ -223,22 +213,21 @@ export function PassportPhotoControls({
                     disabled={isExecuting || passport.outputFormat === 'png'}
                   />
                 </div>
-              </div>
 
-              <div style={{ marginTop: '4px' }}>
-                <label for={`${idPrefix}-custom-filename`} class={styles.dimLabel}>
-                  Output Filename
-                </label>
-                <input
-                  id={`${idPrefix}-custom-filename`}
-                  type="text"
-                  placeholder="passport-photo"
-                  class={styles.dimInput}
-                  style={{ width: '100%', boxSizing: 'border-box', marginTop: '2px' }}
-                  value={passport.customFileName}
-                  onInput={(e) => passport.setCustomFileName((e.target as HTMLInputElement).value)}
-                  disabled={isExecuting}
-                />
+                <div style={{ flex: 2 }}>
+                  <input
+                    id={`${idPrefix}-custom-filename`}
+                    type="text"
+                    placeholder="Filename"
+                    class={styles.dimInput}
+                    style={{ width: '100%', boxSizing: 'border-box' }}
+                    value={passport.customFileName}
+                    onInput={(e) =>
+                      passport.setCustomFileName((e.target as HTMLInputElement).value)
+                    }
+                    disabled={isExecuting}
+                  />
+                </div>
               </div>
             </section>
           </>

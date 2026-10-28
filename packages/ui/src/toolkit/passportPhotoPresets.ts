@@ -3,6 +3,7 @@ import { getWorkerHost } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { inspectAndDecodeImage, type CropFile as PassportFile } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import type { PixelRect } from './imageWorkbenchGeometry.ts';
 import { createPassportPortraitSample } from './samplePassportPortraitImage.ts';
 
 export type PassportOutputFormat = 'jpg' | 'png' | 'webp' | 'pdf';
@@ -85,6 +86,7 @@ export interface PassportRunConfig {
   outputFormat: PassportOutputFormat;
   quality: number;
   customFileName: string;
+  cropRect?: PixelRect | null;
 }
 
 export async function convertPassportToPdf(
@@ -123,8 +125,29 @@ export async function executePassportWorker(
   const isPdf = cfg.outputFormat === 'pdf';
   const workerFormat = isPdf ? 'png' : cfg.outputFormat;
 
+  let activeFile = cfg.file;
+  if (cfg.cropRect && cfg.cropRect.width > 0 && cfg.cropRect.height > 0) {
+    const cropInput = {
+      file: { name: cfg.file.name, bytes: cfg.file.bytes },
+      cropX: Math.max(0, Math.round(cfg.cropRect.x)),
+      cropY: Math.max(0, Math.round(cfg.cropRect.y)),
+      cropWidth: Math.max(1, Math.round(cfg.cropRect.width)),
+      cropHeight: Math.max(1, Math.round(cfg.cropRect.height)),
+      outputFormat: 'png' as const,
+    };
+    const cropOutcome = await getWorkerHost().run('image.crop@1', cropInput, {});
+    if (cropOutcome.ok) {
+      const cropVal = cropOutcome.value as { bytes: Uint8Array; fileName: string };
+      activeFile = {
+        name: cropVal.fileName,
+        bytes: cropVal.bytes,
+        size: cropVal.bytes.byteLength,
+      };
+    }
+  }
+
   const input = {
-    file: { name: cfg.file.name, bytes: cfg.file.bytes },
+    file: { name: activeFile.name, bytes: activeFile.bytes },
     targetWidth: cfg.targetWidth,
     targetHeight: cfg.targetHeight,
     keepAspectRatio: cfg.keepAspectRatio,
