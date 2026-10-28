@@ -8,6 +8,7 @@ import { ImageCropResult } from './ImageCropResult.tsx';
 import styles from './imageCrop.module.css';
 import { defaultSelectionRect } from './imageWorkbenchGeometry.ts';
 import { messageFor } from './presentation.ts';
+import { SAMPLE_SIZE } from './samplePalaceImage.ts';
 import { useImageCrop } from './useImageCrop.ts';
 
 export interface ImageCropLayoutProps {
@@ -31,7 +32,7 @@ export function ImageCropLayout({
   const estSizeKb = Math.max(
     1,
     Math.round(
-      ((crop.file?.size ?? 1843200) * (crop.cropRect.width * crop.cropRect.height)) /
+      ((crop.file?.size ?? SAMPLE_SIZE) * (crop.cropRect.width * crop.cropRect.height)) /
         Math.max(1, crop.sourceDims.width * crop.sourceDims.height) /
         1024,
     ),

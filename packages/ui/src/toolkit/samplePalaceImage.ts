@@ -3,10 +3,10 @@ import type { CropFile } from './imageFileInspection.ts';
 export const SAMPLE_NAME = 'jaipur-palace.jpg';
 export const SAMPLE_WIDTH = 1600;
 export const SAMPLE_HEIGHT = 1200;
-export const SAMPLE_SIZE = 1843200;
+export const SAMPLE_SIZE = 519260;
 
 export const SAMPLE_CUTOUT_NAME = 'jaipur-palace-no-bg.png';
-export const SAMPLE_CUTOUT_SIZE = 3408649;
+export const SAMPLE_CUTOUT_SIZE = 3010669;
 
 const FALLBACK_JPEG = new Uint8Array([
   0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00, 0x48,
