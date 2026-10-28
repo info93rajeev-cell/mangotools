@@ -59,6 +59,9 @@ export function ImageWatermarkCanvas({
   const hasFile = !!watermark.file;
   const overlayText = watermark.text.trim() || 'BeyondTheAI';
 
+  const patternW = Math.max(160, Math.round(overlayText.length * watermark.fontSize * 0.65 + 70));
+  const patternH = Math.max(80, Math.round(watermark.fontSize * 3.2));
+
   return (
     <div class={styles.studioCard}>
       <div class={styles.cardHeader}>
@@ -92,17 +95,46 @@ export function ImageWatermarkCanvas({
         <div class={styles.canvasBody}>
           <div class={styles.imageStageBox}>
             <img src={watermark.imageSrc} alt="Uploaded display" class={styles.stageImg} />
-            <div
-              class={styles.watermarkOverlay}
-              style={getWatermarkOverlayStyle(
-                watermark.position,
-                watermark.opacity,
-                watermark.fontSize,
-                watermark.color,
-              )}
-            >
-              {overlayText}
-            </div>
+            {watermark.position === 'tiled' ? (
+              <svg class={styles.tiledSvgOverlay} aria-hidden="true">
+                <defs>
+                  <pattern
+                    id={`${idPrefix}-wm-tile`}
+                    width={patternW}
+                    height={patternH}
+                    patternUnits="userSpaceOnUse"
+                    patternTransform="rotate(-28)"
+                  >
+                    <text
+                      x={patternW / 2}
+                      y={patternH / 2}
+                      fill={watermark.color}
+                      opacity={watermark.opacity / 100}
+                      fontSize={watermark.fontSize}
+                      fontFamily="Inter, system-ui, -apple-system, sans-serif"
+                      fontWeight="700"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                    >
+                      {overlayText}
+                    </text>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill={`url(#${idPrefix}-wm-tile)`} />
+              </svg>
+            ) : (
+              <div
+                class={styles.watermarkOverlay}
+                style={getWatermarkOverlayStyle(
+                  watermark.position,
+                  watermark.opacity,
+                  watermark.fontSize,
+                  watermark.color,
+                )}
+              >
+                {overlayText}
+              </div>
+            )}
           </div>
         </div>
       )}

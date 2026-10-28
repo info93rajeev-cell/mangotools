@@ -132,7 +132,7 @@ export function OutputSettingsCard({
   return (
     <div class={styles.studioCard}>
       <div class={styles.cardHeader}>
-        <span class={styles.cardTitle}>4. Output settings</span>
+        <span class={styles.cardTitle}>3. Output settings</span>
       </div>
 
       <div class={styles.settingsCardBody}>
@@ -224,9 +224,9 @@ export function ImageMetadataControls({
   meta,
 }: ImageMetadataControlsProps) {
   return (
-    <>
+    <div class={styles.controlsCol}>
       <DetectedMetadataCard meta={meta} />
       <OutputSettingsCard idPrefix={idPrefix} meta={meta} />
-    </>
+    </div>
   );
 }

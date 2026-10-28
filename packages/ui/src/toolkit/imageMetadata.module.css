@@ -26,6 +26,222 @@
   }
 }
 
+/* STUDIO TOP 2-COLUMN LAYOUT (CANVAS ON LEFT, CONTROLS ON RIGHT) */
+.studioTop2Col {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .studioTop2Col {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.controlsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.canvasBodyCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.loadedStage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.previewThumbWrap {
+  width: 190px;
+  height: 75px;
+  background: #0f172a;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #e2e8f0);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.previewThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  display: block;
+}
+
+.signatureMetaWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.signatureFileName {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-text, #0f172a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signatureFileSub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-text-muted, #64748b);
+}
+
+.loadedSuccessBadge {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.successBadgeTitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.badgeCheckCircle {
+  color: #059669;
+  font-size: 11px;
+}
+
+.successBadgeSub {
+  font-size: 9px;
+  color: #065f46;
+  line-height: 1.15;
+}
+
+.compareSection {
+  margin-top: 2px;
+  padding-top: 5px;
+  border-top: 1px solid var(--color-border-subtle, #f1f5f9);
+}
+
+.compareHeading {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-text, #1e293b);
+  margin-bottom: 4px;
+}
+
+.compareGrid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compareItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.compareLabel {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--color-text-muted, #475569);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.compareBoxBefore {
+  height: 115px;
+  border: 1.5px dashed #f59e0b;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background: #fffdf5;
+}
+
+.compareBoxAfter {
+  height: 115px;
+  border: 1.5px dashed #10b981;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background: #f0fdf4;
+}
+
+.compareImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.compareTagBefore {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #fde68a;
+  font-size: 8.5px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 3px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compareTagAfter {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #86efac;
+  font-size: 8.5px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 3px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compareArrow {
+  font-size: 16px;
+  font-weight: 700;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
 /* BASE STUDIO CARD */
 .studioCard {
   background: var(--color-surface, #ffffff);

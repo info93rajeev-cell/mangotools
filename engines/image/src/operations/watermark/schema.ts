@@ -11,6 +11,7 @@ export const watermarkPosition = z.enum([
   'center',
   'bottom-left',
   'bottom-right',
+  'tiled',
 ]);
 export type WatermarkPosition = z.infer<typeof watermarkPosition>;
 

@@ -9,18 +9,15 @@ import {
   MIME_MAP,
   type CropFile as WatermarkFile,
 } from './imageFileInspection.ts';
-import {
-  createMountainLakeSample,
-  SAMPLE_HEIGHT,
-  SAMPLE_WIDTH,
-} from './sampleMountainLakeImage.ts';
+import { createAiPortraitSample, SAMPLE_HEIGHT, SAMPLE_WIDTH } from './sampleAiPortraitImage.ts';
 
 export type WatermarkPosition =
   | 'top-left'
   | 'top-right'
   | 'center'
   | 'bottom-left'
-  | 'bottom-right';
+  | 'bottom-right'
+  | 'tiled';
 
 export type WatermarkOutputFormat = 'same' | 'jpg' | 'png' | 'webp';
 export type { WatermarkFile };
@@ -157,7 +154,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     setError(null);
     setInvalidFile(null);
     try {
-      const { file: sampleFile, blobUrl } = await createMountainLakeSample();
+      const { file: sampleFile, blobUrl } = await createAiPortraitSample();
       if (userInteractedRef.current) {
         URL.revokeObjectURL(blobUrl);
         return;
@@ -178,6 +175,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
 
   async function handleFileSelected(browserFile: File) {
     userInteractedRef.current = true;
+    setText('');
     setPhase('running');
     setError(null);
     setInvalidFile(null);

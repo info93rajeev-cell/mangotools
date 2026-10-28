@@ -13,7 +13,7 @@ function padding(fontSizePx: number): number {
  * never start off-canvas, for a caption wider than a very small source image.
  */
 function watermarkOrigin(
-  position: WatermarkPosition,
+  position: Exclude<WatermarkPosition, 'tiled'>,
   canvasWidth: number,
   canvasHeight: number,
   textWidth: number,
@@ -26,7 +26,7 @@ function watermarkOrigin(
   const bottom = canvasHeight - pad - fontSizePx;
   const centerX = (canvasWidth - textWidth) / 2;
   const centerY = (canvasHeight - fontSizePx) / 2;
-  const byPosition: Record<WatermarkPosition, { x: number; y: number }> = {
+  const byPosition: Record<Exclude<WatermarkPosition, 'tiled'>, { x: number; y: number }> = {
     'top-left': { x: left, y: top },
     'top-right': { x: right, y: top },
     center: { x: centerX, y: centerY },
@@ -61,10 +61,43 @@ export function renderWatermarked(
   }
   ctx.drawImage(bitmap, 0, 0);
 
+  if (position === 'tiled') {
+    ctx.save();
+    ctx.globalAlpha = opacityPercent / 100;
+    ctx.fillStyle = color;
+    ctx.font = `bold ${fontSizePx}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const angle = (-28 * Math.PI) / 180;
+    const textWidth = ctx.measureText(text).width;
+    const stepX = Math.max(160, textWidth + 80);
+    const stepY = Math.max(90, fontSizePx * 3.8);
+
+    const diagonal = Math.hypot(canvas.width, canvas.height);
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(angle);
+
+    for (let y = -diagonal; y < diagonal; y += stepY) {
+      const shift = (Math.floor(Math.abs(y) / stepY) % 2) * (stepX / 2);
+      for (let x = -diagonal; x < diagonal; x += stepX) {
+        ctx.fillText(text, x + shift, y);
+      }
+    }
+    ctx.restore();
+    return canvas;
+  }
+
   ctx.font = `${fontSizePx}px sans-serif`;
   ctx.textBaseline = 'top';
   const textWidth = ctx.measureText(text).width;
-  const { x, y } = watermarkOrigin(position, canvas.width, canvas.height, textWidth, fontSizePx);
+  const { x, y } = watermarkOrigin(
+    position as Exclude<WatermarkPosition, 'tiled'>,
+    canvas.width,
+    canvas.height,
+    textWidth,
+    fontSizePx,
+  );
   ctx.globalAlpha = opacityPercent / 100;
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);

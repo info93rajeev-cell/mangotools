@@ -61,14 +61,15 @@ interface OffscreenCanvasRenderingContext2D {
   fillStyle: string;
   imageSmoothingEnabled: boolean;
   imageSmoothingQuality: 'low' | 'medium' | 'high';
-  /** `'top'` is the only value this engine ever sets (Image Watermark), so `fillText`'s `y` can be
-   * treated as the text's own top edge rather than needing per-glyph baseline metrics. */
-  textBaseline: 'top';
-  /** A CSS font shorthand, e.g. `"32px sans-serif"` (Image Watermark; no custom font loading). */
+  textBaseline: 'top' | 'middle';
+  textAlign?: string;
   font: string;
-  /** 0-1; multiplies the alpha of everything drawn after it is set (Image Watermark's opacity control). */
   globalAlpha: number;
   fillRect(x: number, y: number, w: number, h: number): void;
+  save(): void;
+  restore(): void;
+  translate(x: number, y: number): void;
+  rotate(angle: number): void;
   drawImage(image: ImageBitmap, dx: number, dy: number, dw: number, dh: number): void;
   /** Draws at the image's own natural size — used where no resize is wanted (Compress, Format Converter,
    * Metadata Remover, Watermark all draw through `image.resize@1`'s shape or their own equivalent). */

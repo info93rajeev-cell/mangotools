@@ -13,6 +13,13 @@ import { categoryById, presetFor, toolLinks, toolTitle } from '../lib/site.ts';
 import { breadcrumbList, faqPage, webApplication } from '../lib/structured-data.ts';
 import { userPresetsEnabled } from '../lib/user-presets.ts';
 
+import Brickwork from './civil/brickwork.astro';
+import Concrete from './civil/concrete.astro';
+import Excavation from './civil/excavation.astro';
+import Paint from './civil/paint.astro';
+import Plaster from './civil/plaster.astro';
+import TileFlooring from './civil/tile-flooring.astro';
+
 interface Props {
   tool: RegistryTool;
 }
@@ -28,6 +35,15 @@ const jsonLd = [webApplication(tool), breadcrumbList(crumbs), ...(tool.content.f
 if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') {
   throw new Error(`${tool.id}: archetype ${tool.archetype} is not available in Phase 1.`);
 }
+
+const isCivil = [
+  'brickwork-calculator',
+  'concrete-quantity-calculator',
+  'excavation-calculator',
+  'paint-calculator',
+  'plaster-calculator',
+  'tile-flooring-calculator',
+].includes(tool.slug);
 ---
 
 <BaseLayout title={toolTitle(tool)} description={tool.seo.description} path={tool.url} template="tool" jsonLd={jsonLd}>
@@ -37,15 +53,28 @@ if (tool.archetype !== 'A' && tool.archetype !== 'B' && tool.archetype !== 'D') 
         <Breadcrumbs items={crumbs} />
         <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
       </div>
-      <ToolIsland
-        client:load
-        toolId={tool.id}
-        archetype={tool.archetype}
-        preset={preset}
-        sampleId={tool.sample}
-        print={tool.capabilities.print === true}
-        enableUserPresets={userPresetsEnabled(preset)}
-      />
+      {isCivil ? (
+        <div class="civil-page-wrap">
+          <link rel="stylesheet" href="/civil/reference.css" />
+          <link rel="stylesheet" href="/civil/civil-reference.css" />
+          {tool.slug === 'brickwork-calculator' && <Brickwork />}
+          {tool.slug === 'concrete-quantity-calculator' && <Concrete />}
+          {tool.slug === 'excavation-calculator' && <Excavation />}
+          {tool.slug === 'paint-calculator' && <Paint />}
+          {tool.slug === 'plaster-calculator' && <Plaster />}
+          {tool.slug === 'tile-flooring-calculator' && <TileFlooring />}
+        </div>
+      ) : (
+        <ToolIsland
+          client:load
+          toolId={tool.id}
+          archetype={tool.archetype}
+          preset={preset}
+          sampleId={tool.sample}
+          print={tool.capabilities.print === true}
+          enableUserPresets={userPresetsEnabled(preset)}
+        />
+      )}
       <section
         class="supporting"
         aria-labelledby="tool-information-title"

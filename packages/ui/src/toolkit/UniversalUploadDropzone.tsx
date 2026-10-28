@@ -14,6 +14,7 @@ export interface UniversalUploadDropzoneProps {
   browseText?: string;
   supportHint?: string;
   renderImgThumbnail?: boolean;
+  linkBrowse?: boolean;
 }
 
 function formatBytes(bytes: number): string {
@@ -26,8 +27,8 @@ function CloudUploadIcon() {
   return (
     <svg
       class={styles.cloudIcon}
-      width="22"
-      height="22"
+      width="34"
+      height="34"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -152,40 +153,50 @@ function DropzonePrompt({
   primaryText,
   browseText,
   supportHint,
+  linkBrowse = false,
 }: {
   primaryText: string;
   browseText: string;
   supportHint: string;
+  linkBrowse?: boolean;
 }) {
+  const isLink = linkBrowse || /click\s+to\s+browse/i.test(browseText);
   const cleanBrowse =
     browseText.replace(/^or\s+/i, '').replace(/^click\s+to\s+/i, '') || 'Browse files';
   return (
-    <>
+    <div class={styles.promptWrap}>
       <CloudUploadIcon />
       <span class={styles.primaryText}>{primaryText}</span>
-      <div class={styles.browseButtonRow}>
-        <span class={styles.orText}>or</span>
-        <span class={styles.uploadBrowseBtn}>
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-          <span>{cleanBrowse}</span>
-        </span>
-      </div>
+      {isLink ? (
+        <div class={styles.browseLinkRow}>
+          <span class={styles.orText}>or</span>{' '}
+          <span class={styles.browseLinkText}>click to browse files</span>
+        </div>
+      ) : (
+        <div class={styles.browseButtonRow}>
+          <span class={styles.orText}>or</span>
+          <span class={styles.uploadBrowseBtn}>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span>{cleanBrowse}</span>
+          </span>
+        </div>
+      )}
       <span class={styles.supportHint}>{supportHint}</span>
-    </>
+    </div>
   );
 }
 
@@ -202,6 +213,7 @@ export function UniversalUploadDropzone({
   browseText = 'click to browse files',
   supportHint = 'Supports JPG, PNG, WebP, BMP. You can upload multiple images at once.',
   renderImgThumbnail = false,
+  linkBrowse = false,
 }: UniversalUploadDropzoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -263,6 +275,7 @@ export function UniversalUploadDropzone({
           primaryText={primaryText}
           browseText={browseText}
           supportHint={supportHint}
+          linkBrowse={linkBrowse}
         />
       </label>
 

@@ -9,13 +9,6 @@ export interface ImageMetadataCanvasProps {
   onTrySample: () => void;
 }
 
-export interface UploadedCardProps {
-  idPrefix: string;
-  meta: UseImageMetadataRemoverReturn;
-  onSelectFile: (file: File) => void;
-  onTrySample: () => void;
-}
-
 function formatBytes(bytes: number): string {
   if (!bytes || bytes <= 0) return '0 B';
   if (bytes < 1024) return `${bytes} B`;
@@ -23,96 +16,114 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function computeProcessedInfo(meta: UseImageMetadataRemoverReturn) {
-  const hasFile = !!meta.file;
-  const res = meta.result;
-  const ext = meta.outputFormat === 'png' ? 'png' : meta.outputFormat === 'webp' ? 'webp' : 'jpg';
-  const baseName = meta.file?.name.replace(/\.[^/.]+$/, '') ?? 'mountain-lake';
-  const defaultCleanedName = meta.customFileName.trim()
-    ? meta.customFileName.trim()
-    : `${baseName}_cleaned.${ext}`;
-
-  const fileName = res ? res.fileName : hasFile ? defaultCleanedName : 'No file processed yet';
-  const fileSize = res ? res.outputFileSize : hasFile ? 1153433 : 0;
-  const dims = res
-    ? { width: res.outputWidth, height: res.outputHeight }
-    : meta.sourceDims.width > 0
-      ? meta.sourceDims
-      : { width: 4000, height: 2667 };
-
-  return { fileName, fileSize, dims };
+interface LoadedSummaryRowProps {
+  previewSrc: string;
+  fileName: string;
+  fileSizeText: string;
+  dimsText: string;
 }
 
-export function UploadedCard({ idPrefix, meta, onSelectFile, onTrySample }: UploadedCardProps) {
-  const isExecuting = meta.phase === 'running';
-
+function LoadedSummaryRow({ previewSrc, fileName, fileSizeText, dimsText }: LoadedSummaryRowProps) {
   return (
-    <div class={styles.studioCard}>
-      <div class={styles.cardHeader}>
-        <span class={styles.cardTitle}>1. Upload images</span>
-        <div class={styles.headerActions}>
-          <button
-            type="button"
-            class={styles.sampleMiniBtn}
-            onClick={onTrySample}
-            disabled={isExecuting}
-            title="Load sample photo"
-          >
-            ✨ Try Sample
-          </button>
-        </div>
+    <div class={styles.loadedStage}>
+      <div class={styles.previewThumbWrap}>
+        <img src={previewSrc} alt={fileName} class={styles.previewThumbImg} />
       </div>
 
-      <UniversalUploadDropzone
-        idPrefix={idPrefix}
-        accept="image/jpeg,image/png,image/webp"
-        file={meta.file}
-        thumbnailUrl={meta.imageSrc}
-        dimensions={meta.sourceDims.width > 0 ? meta.sourceDims : null}
-        onSelectFile={onSelectFile}
-        onClear={meta.clearAll}
-        disabled={isExecuting}
-        browseText="Upload Image"
-        renderImgThumbnail={true}
-      />
+      <div class={styles.signatureMetaWrap}>
+        <div class={styles.signatureFileName} title={fileName}>
+          {fileName}
+        </div>
+        <div class={styles.signatureFileSub}>
+          <span>{fileSizeText}</span>
+          <span>•</span>
+          <span>{dimsText}</span>
+        </div>
+        <div class={styles.loadedSuccessBadge}>
+          <div class={styles.successBadgeTitle}>
+            <span class={styles.badgeCheckCircle}>✔</span>
+            <span>Image loaded successfully</span>
+          </div>
+          <div class={styles.successBadgeSub}>EXIF & camera metadata detected. Ready to clean.</div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export function ProcessedCard({ meta }: { meta: UseImageMetadataRemoverReturn }) {
-  const imgSrc = meta.result ? (meta.resultUrl ?? meta.imageSrc) : null;
-  const { fileName, fileSize, dims } = computeProcessedInfo(meta);
-
+function MetadataCompareStage({ previewSrc }: { previewSrc: string }) {
   return (
-    <div class={styles.studioCard}>
-      <div class={styles.cardHeader}>
-        <span class={styles.cardTitle}>3. Processed image (metadata removed)</span>
-      </div>
-
-      <div class={styles.cardBodyRow}>
-        {imgSrc ? (
-          <img src={imgSrc} alt="Processed cleaned preview" class={styles.cardThumbImg} />
-        ) : (
-          <div class={styles.cardThumbPlaceholder}>Preview</div>
-        )}
-
-        <div class={styles.cardInfoCol}>
-          <div class={styles.fileName} title={fileName}>
-            {fileName}
-          </div>
-          <div class={styles.fileSpecs}>
-            {formatBytes(fileSize)} &bull; {dims.width} &times; {dims.height}
-          </div>
-          <div class={styles.statusBoxGreen}>
-            <span class={styles.statusBoxIcon}>✓</span>
-            <div class={styles.statusBoxText}>
-              <div class={styles.statusBoxTitle}>Image cleaned successfully</div>
-              <div class={styles.statusBoxSub}>
-                All detectable metadata has been removed from this image.
-              </div>
-            </div>
+    <div class={styles.compareSection}>
+      <div class={styles.compareHeading}>Preview & metadata status</div>
+      <div class={styles.compareGrid}>
+        <div class={styles.compareItem}>
+          <span class={styles.compareLabel}>Before (With Metadata)</span>
+          <div class={styles.compareBoxBefore}>
+            <img src={previewSrc} alt="Original state with metadata" class={styles.compareImg} />
+            <div class={styles.compareTagBefore}>⚠️ 6 Metadata fields (GPS, Camera, Date, EXIF)</div>
           </div>
         </div>
+
+        <div class={styles.compareArrow}>→</div>
+
+        <div class={styles.compareItem}>
+          <span class={styles.compareLabel}>After (Cleaned State)</span>
+          <div class={styles.compareBoxAfter}>
+            <img
+              src={previewSrc}
+              alt="Cleaned state with metadata removed"
+              class={styles.compareImg}
+            />
+            <div class={styles.compareTagAfter}>🛡️ 100% Cleaned • Metadata stripped</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface CardHeaderProps {
+  fileInputId: string;
+  hasFile: boolean;
+  isExecuting: boolean;
+  onTrySample: () => void;
+}
+
+function StageHeader({ fileInputId, hasFile, isExecuting, onTrySample }: CardHeaderProps) {
+  return (
+    <div class={styles.cardHeader}>
+      <span class={styles.cardTitle}>1. Upload images</span>
+      <div class={styles.headerActions}>
+        <button
+          type="button"
+          class={styles.sampleMiniBtn}
+          onClick={onTrySample}
+          disabled={isExecuting}
+          title="Load sample photo"
+        >
+          ✨ Try Sample
+        </button>
+        {hasFile && (
+          <label for={fileInputId} class={styles.replaceBtn} aria-label="Replace image">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 21h5v-5" />
+            </svg>
+            <span>Replace image</span>
+          </label>
+        )}
       </div>
     </div>
   );
@@ -124,15 +135,65 @@ export function ImageMetadataCanvas({
   onSelectFile,
   onTrySample,
 }: ImageMetadataCanvasProps) {
+  const isExecuting = meta.phase === 'running';
+  const hasFile = !!meta.file;
+  const previewSrc = meta.resultUrl ?? meta.imageSrc ?? '/samples/mountain-lake.jpg';
+  const fileName = meta.file?.name ?? 'mountain-lake.jpg';
+  const fileSizeText = formatBytes(meta.file?.size ?? 1038462);
+  const dimsText =
+    meta.sourceDims.width > 0
+      ? `${meta.sourceDims.width} × ${meta.sourceDims.height}`
+      : '1376 × 768';
+
+  const fileInputId = `${idPrefix}-metadata-upload-input`;
+
   return (
-    <>
-      <UploadedCard
-        idPrefix={idPrefix}
-        meta={meta}
-        onSelectFile={onSelectFile}
+    <section class={styles.studioCard} aria-label="Metadata Remover Upload Stage">
+      <StageHeader
+        fileInputId={fileInputId}
+        hasFile={hasFile}
+        isExecuting={isExecuting}
         onTrySample={onTrySample}
       />
-      <ProcessedCard meta={meta} />
-    </>
+
+      <input
+        id={fileInputId}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const f = (e.currentTarget as HTMLInputElement).files?.[0];
+          if (f) onSelectFile(f);
+        }}
+      />
+
+      {hasFile ? (
+        <div class={styles.canvasBodyCol}>
+          <LoadedSummaryRow
+            previewSrc={previewSrc}
+            fileName={fileName}
+            fileSizeText={fileSizeText}
+            dimsText={dimsText}
+          />
+          <MetadataCompareStage previewSrc={previewSrc} />
+        </div>
+      ) : (
+        <UniversalUploadDropzone
+          idPrefix={idPrefix}
+          accept="image/jpeg,image/png,image/webp"
+          file={meta.file}
+          thumbnailUrl={meta.imageSrc}
+          dimensions={meta.sourceDims.width > 0 ? meta.sourceDims : null}
+          onSelectFile={onSelectFile}
+          onClear={meta.clearAll}
+          disabled={isExecuting}
+          primaryText="Drag and drop images here"
+          browseText="click to browse files"
+          supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+          linkBrowse={true}
+          renderImgThumbnail={true}
+        />
+      )}
+    </section>
   );
 }

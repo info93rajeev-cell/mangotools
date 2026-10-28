@@ -1,9 +1,9 @@
 import type { CropFile } from './imageFileInspection.ts';
 
 export const SAMPLE_NAME = 'mountain-lake.jpg';
-export const SAMPLE_WIDTH = 4000;
-export const SAMPLE_HEIGHT = 2667;
-export const SAMPLE_SIZE = 2516582; // 2.4 MB
+export const SAMPLE_WIDTH = 1376;
+export const SAMPLE_HEIGHT = 768;
+export const SAMPLE_SIZE = 1038462;
 
 const FALLBACK_JPEG = new Uint8Array([
   0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00, 0x48,

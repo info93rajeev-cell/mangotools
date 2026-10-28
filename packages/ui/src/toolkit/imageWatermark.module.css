@@ -610,3 +610,121 @@
   background: rgba(6, 95, 70, 0.3);
   color: #6ee7b7;
 }
+
+/* TILED WATERMARK & ENHANCED CONTROLS */
+.tiledSvgOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.modeTabsRow {
+  display: flex;
+  gap: 4px;
+}
+
+.modeTabBtn {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 5px;
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text, #334155);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.modeTabBtn[data-active="true"] {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.chipBtn {
+  background: var(--color-surface-subtle, #f1f5f9);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--color-text-muted, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chipBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.tiledInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 6px;
+}
+
+.tiledBadgeIcon {
+  font-size: 16px;
+  color: #2563eb;
+}
+
+.tiledBadgeContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tiledBadgeTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.tiledBadgeSub {
+  font-size: 9.5px;
+  color: #475569;
+}
+
+.colorPresetsRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.colorPresetDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease;
+}
+
+.colorPresetDot:hover {
+  transform: scale(1.15);
+}

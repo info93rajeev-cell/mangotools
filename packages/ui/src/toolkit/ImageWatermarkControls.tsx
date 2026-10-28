@@ -28,6 +28,16 @@ const POS_GRID_ITEMS: Array<{
   { id: 'bottom-right', gridPos: [2, 2], name: 'Bottom Right' },
 ];
 
+const QUICK_TEXT_CHIPS = ['SAMPLE', 'BeyondTheAI', 'CONFIDENTIAL', 'DRAFT', '© COPYRIGHT'];
+
+const COLOR_PRESETS = [
+  { hex: '#ffffff', label: 'White' },
+  { hex: '#000000', label: 'Black' },
+  { hex: '#ef4444', label: 'Red' },
+  { hex: '#f59e0b', label: 'Gold' },
+  { hex: '#3b82f6', label: 'Blue' },
+];
+
 const FORMAT_ITEMS = [
   { id: 'jpg' as const, title: 'JPG', sub: 'Best for photos', note: 'Smaller file size' },
   { id: 'png' as const, title: 'PNG', sub: 'Best for graphics', note: 'Supports transparency' },
@@ -59,8 +69,38 @@ interface WatermarkSettingsCardProps {
 }
 
 function WatermarkTextAndPos({ idPrefix, watermark }: WatermarkSettingsCardProps) {
+  const isTiled = watermark.position === 'tiled';
+
   return (
     <div class={styles.subCol}>
+      <div class={styles.inputGroup}>
+        <span class={styles.fieldLabel}>Pattern style</span>
+        <div class={styles.modeTabsRow}>
+          <button
+            type="button"
+            class={styles.modeTabBtn}
+            data-active={isTiled ? 'true' : 'false'}
+            onClick={() => watermark.setPosition('tiled')}
+          >
+            <span>⊞</span>
+            <span>Full-Body Tiled</span>
+          </button>
+          <button
+            type="button"
+            class={styles.modeTabBtn}
+            data-active={!isTiled ? 'true' : 'false'}
+            onClick={() =>
+              watermark.setPosition(
+                watermark.position === 'tiled' ? 'bottom-right' : watermark.position,
+              )
+            }
+          >
+            <span>⊡</span>
+            <span>Single Corner / Center</span>
+          </button>
+        </div>
+      </div>
+
       <div class={styles.inputGroup}>
         <label for={`${idPrefix}-text`} class={styles.fieldLabel}>
           Watermark text
@@ -74,10 +114,22 @@ function WatermarkTextAndPos({ idPrefix, watermark }: WatermarkSettingsCardProps
           value={watermark.text}
           onInput={(e) => watermark.setText((e.target as HTMLInputElement).value)}
         />
+        <div class={styles.chipsRow}>
+          {QUICK_TEXT_CHIPS.map((chip) => (
+            <button
+              key={chip}
+              type="button"
+              class={styles.chipBtn}
+              onClick={() => watermark.setText(chip)}
+            >
+              {chip}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div class={styles.inputGroup}>
-        <span class={styles.fieldLabel}>Position</span>
+        <span class={styles.fieldLabel}>Position & Layout</span>
         <select
           id={`${idPrefix}-position`}
           aria-label="Position"
@@ -87,27 +139,38 @@ function WatermarkTextAndPos({ idPrefix, watermark }: WatermarkSettingsCardProps
             watermark.setPosition((e.target as HTMLSelectElement).value as WatermarkPosition)
           }
         >
+          <option value="bottom-right">Bottom right</option>
           <option value="top-left">Top left</option>
           <option value="top-right">Top right</option>
           <option value="center">Center</option>
           <option value="bottom-left">Bottom left</option>
-          <option value="bottom-right">Bottom right</option>
+          <option value="tiled">Full-body tiled</option>
         </select>
 
-        <div class={styles.pos3x3Grid}>
-          {POS_GRID_ITEMS.map((item, idx) => (
-            <button
-              key={idx}
-              type="button"
-              class={styles.posSlotBtn}
-              data-active={isPosActive(item, watermark.position) ? 'true' : 'false'}
-              onClick={() => watermark.setPosition(item.id)}
-              title={item.name}
-            >
-              <span class={styles.posDot}>•</span>
-            </button>
-          ))}
-        </div>
+        {isTiled ? (
+          <div class={styles.tiledInfoBox}>
+            <span class={styles.tiledBadgeIcon}>⊞</span>
+            <div class={styles.tiledBadgeContent}>
+              <span class={styles.tiledBadgeTitle}>Full-Body Diagonal Pattern</span>
+              <span class={styles.tiledBadgeSub}>-28° repeating grid across canvas</span>
+            </div>
+          </div>
+        ) : (
+          <div class={styles.pos3x3Grid}>
+            {POS_GRID_ITEMS.map((item, idx) => (
+              <button
+                key={idx}
+                type="button"
+                class={styles.posSlotBtn}
+                data-active={isPosActive(item, watermark.position) ? 'true' : 'false'}
+                onClick={() => watermark.setPosition(item.id)}
+                title={item.name}
+              >
+                <span class={styles.posDot}>•</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -184,6 +247,18 @@ function WatermarkStyleSliders({ idPrefix, watermark }: WatermarkSettingsCardPro
             value={watermark.color}
             onInput={(e) => watermark.setColor((e.target as HTMLInputElement).value)}
           />
+          <div class={styles.colorPresetsRow}>
+            {COLOR_PRESETS.map((p) => (
+              <button
+                key={p.hex}
+                type="button"
+                class={styles.colorPresetDot}
+                style={{ backgroundColor: p.hex }}
+                title={p.label}
+                onClick={() => watermark.setColor(p.hex)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

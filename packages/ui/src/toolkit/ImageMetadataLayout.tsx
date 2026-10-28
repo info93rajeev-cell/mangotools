@@ -1,7 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
-import { ProcessedCard, UploadedCard } from './ImageMetadataCanvas.tsx';
-import { DetectedMetadataCard, OutputSettingsCard } from './ImageMetadataControls.tsx';
+import { ImageMetadataCanvas } from './ImageMetadataCanvas.tsx';
+import { ImageMetadataControls } from './ImageMetadataControls.tsx';
 import { ImageMetadataResult } from './ImageMetadataResult.tsx';
 import styles from './imageMetadata.module.css';
 import { useImageMetadataRemover } from './useImageMetadataRemover.ts';
@@ -25,16 +25,14 @@ export function ImageMetadataLayout({
 
   return (
     <div class={styles.container} data-image-metadata-remover-studio="">
-      <div class={styles.metaGrid2x2}>
-        <UploadedCard
+      <div class={styles.studioTop2Col}>
+        <ImageMetadataCanvas
           idPrefix={idPrefix}
           meta={meta}
           onSelectFile={meta.handleFileSelected}
           onTrySample={meta.loadSample}
         />
-        <DetectedMetadataCard meta={meta} />
-        <ProcessedCard meta={meta} />
-        <OutputSettingsCard idPrefix={idPrefix} meta={meta} />
+        <ImageMetadataControls idPrefix={idPrefix} preset={preset} meta={meta} />
       </div>
 
       <ImageMetadataResult idPrefix={idPrefix} preset={preset} meta={meta} />

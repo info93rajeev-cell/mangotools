@@ -119,7 +119,7 @@ export function ImageMetadataResult({
   return (
     <div class={styles.verificationCard}>
       <div class={styles.cardHeader}>
-        <span class={styles.cardTitle}>5. Verification result</span>
+        <span class={styles.cardTitle}>4. Verification result</span>
       </div>
 
       <div class={styles.verifMetricsRow}>
