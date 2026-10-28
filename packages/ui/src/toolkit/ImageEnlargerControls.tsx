@@ -247,15 +247,37 @@ function EnhancerSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>3. Pro Quality Enhancer</span>
-        <button
-          type="button"
-          class={styles.stageBtn}
-          onClick={enlarger.resetSettings}
-          disabled={disabled}
-          title="Reset to defaults"
-        >
-          Reset
-        </button>
+        <div class={styles.historyActions}>
+          <button
+            type="button"
+            class={styles.historyBtn}
+            onClick={enlarger.undo}
+            disabled={!enlarger.canUndo || disabled}
+            title="Undo last change (Ctrl+Z)"
+            aria-label="Undo"
+          >
+            ↺ Undo
+          </button>
+          <button
+            type="button"
+            class={styles.historyBtn}
+            onClick={enlarger.redo}
+            disabled={!enlarger.canRedo || disabled}
+            title="Redo change (Ctrl+Y)"
+            aria-label="Redo"
+          >
+            ↻ Redo
+          </button>
+          <button
+            type="button"
+            class={styles.miniGhostBtn}
+            onClick={enlarger.resetSettings}
+            disabled={disabled}
+            title="Reset to defaults"
+          >
+            Reset
+          </button>
+        </div>
       </div>
 
       <button
@@ -270,6 +292,17 @@ function EnhancerSection({
       </button>
 
       <PrecisionSliders enlarger={enlarger} disabled={disabled} />
+
+      <button
+        type="button"
+        class={styles.applyBtn}
+        onClick={enlarger.applyChanges}
+        disabled={disabled}
+        data-applied={String(enlarger.isApplied)}
+        title="Apply current enhancement changes"
+      >
+        <span>{enlarger.isApplied ? '✔ Changes Applied' : '⚡ Apply Enhancement'}</span>
+      </button>
     </section>
   );
 }

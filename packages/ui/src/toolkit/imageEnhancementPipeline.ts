@@ -166,3 +166,41 @@ export async function executeEnhancementPipeline(
   ctx.putImageData(imgData, 0, 0);
   return canvas;
 }
+
+/**
+ * Fast preview enhancement for real-time 60fps slider adjustments.
+ */
+export function generatePreviewCanvas(
+  sourceBitmap: ImageBitmap,
+  settings: EnhancementSettings,
+  maxDim = 900,
+): HTMLCanvasElement {
+  let w = sourceBitmap.width;
+  let h = sourceBitmap.height;
+  if (w > maxDim || h > maxDim) {
+    if (w > h) {
+      h = Math.round((h * maxDim) / w);
+      w = maxDim;
+    } else {
+      w = Math.round((w * maxDim) / h);
+      h = maxDim;
+    }
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'medium';
+  ctx.drawImage(sourceBitmap, 0, 0, w, h);
+
+  const imgData = ctx.getImageData(0, 0, w, h);
+  applySharpness(imgData.data, w, h, settings.sharpness);
+  applyColorGrading(imgData.data, settings);
+  ctx.putImageData(imgData, 0, 0);
+
+  return canvas;
+}

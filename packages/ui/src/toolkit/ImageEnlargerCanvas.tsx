@@ -11,14 +11,46 @@ function StageToolbar({
   zoom,
   hasImage,
   onZoom,
+  onResetSplit,
+  onHoldOriginalStart,
+  onHoldOriginalEnd,
 }: {
   zoom: number;
   hasImage: boolean;
   onZoom: (update: (z: number) => number) => void;
+  onResetSplit: () => void;
+  onHoldOriginalStart: () => void;
+  onHoldOriginalEnd: () => void;
 }) {
   return (
     <div class={styles.stageToolbar}>
-      <span class={styles.stageTitle}>Visual Stage (Before / After)</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <span class={styles.stageTitle}>Visual Stage (Before / After)</span>
+        {hasImage && (
+          <button
+            type="button"
+            class={styles.compareBtn}
+            onMouseDown={onHoldOriginalStart}
+            onMouseUp={onHoldOriginalEnd}
+            onTouchStart={onHoldOriginalStart}
+            onTouchEnd={onHoldOriginalEnd}
+            title="Click and hold to compare with original image"
+          >
+            👁️ Hold: View Before
+          </button>
+        )}
+        {hasImage && (
+          <button
+            type="button"
+            class={styles.miniStageBtn}
+            onClick={onResetSplit}
+            title="Reset split position to 50%"
+          >
+            50% Split
+          </button>
+        )}
+      </div>
+
       <div class={styles.stageControls}>
         <button
           type="button"
@@ -53,92 +85,123 @@ function StageToolbar({
   );
 }
 
-function StageSplitView({ enlarger, zoom }: { enlarger: UseImageEnlargerReturn; zoom: number }) {
-  const enhancedSrc = enlarger.resultUrl ?? enlarger.imageSrc;
+function StageSplitView({
+  enlarger,
+  zoom,
+  containerRef,
+}: {
+  enlarger: UseImageEnlargerReturn;
+  zoom: number;
+  containerRef: { current: HTMLDivElement | null };
+}) {
+  const enhancedSrc = enlarger.previewUrl ?? enlarger.resultUrl ?? enlarger.imageSrc;
+  const originalSrc = enlarger.imageSrc;
+  const splitPos = enlarger.isShowingOriginal ? 100 : enlarger.splitPos;
 
   return (
     <div
+      ref={containerRef}
+      class={styles.stageSplitContainer}
       style={{
-        position: 'relative',
-        display: 'inline-block',
         transform: `scale(${zoom / 100})`,
         transformOrigin: 'center center',
         transition: 'transform 0.1s ease',
       }}
     >
+      {/* Enhanced Image (Underneath) */}
       <img
         src={enhancedSrc ?? ''}
         alt="Enhanced view"
         class={styles.stageImage}
         draggable={false}
       />
-      {enlarger.resultUrl && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            overflow: 'hidden',
-            width: `${enlarger.splitPos}%`,
-          }}
-        >
-          <img
-            src={enlarger.imageSrc ?? ''}
-            alt="Original view"
-            class={styles.stageImage}
-            style={{ maxWidth: 'none', height: '100%' }}
-            draggable={false}
-          />
+
+      {/* Original Image (Clipped overlay) */}
+      <div class={styles.splitClipLayer} style={{ width: `${splitPos}%` }}>
+        <img
+          src={originalSrc ?? ''}
+          alt="Original view"
+          class={styles.stageImage}
+          style={{ maxWidth: 'none', height: '100%' }}
+          draggable={false}
+        />
+      </div>
+
+      {/* Draggable Divider Line */}
+      {!enlarger.isShowingOriginal && (
+        <div class={styles.splitBar} style={{ left: `${splitPos}%` }}>
+          <div class={styles.splitHandle} title="Drag left/right to compare Before and After">
+            ↔
+          </div>
         </div>
       )}
-      {enlarger.resultUrl && (
-        <div class={styles.splitBar} style={{ left: `${enlarger.splitPos}%` }}>
-          <div class={styles.splitHandle}>↔</div>
-        </div>
-      )}
+
+      {/* Floating Badges */}
+      <div class={styles.beforeBadge} style={{ opacity: splitPos > 12 ? 1 : 0 }}>
+        Before (Original)
+      </div>
+      <div class={styles.afterBadge} style={{ opacity: splitPos < 88 ? 1 : 0 }}>
+        After (Enhanced)
+      </div>
     </div>
   );
 }
 
 export function ImageEnlargerCanvas({ enlarger }: ImageEnlargerCanvasProps) {
   const [zoom, setZoom] = useState(100);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const imageBoxRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
 
   const hasImage = !!enlarger.imageSrc;
 
-  const handlePointerMove = (e: PointerEvent) => {
-    if (!isDragging.current || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+  const updateSplit = (clientX: number) => {
+    if (!imageBoxRef.current) return;
+    const rect = imageBoxRef.current.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
     enlarger.setSplitPos(Math.round((x / rect.width) * 100));
+  };
+
+  const handlePointerDown = (e: PointerEvent) => {
+    isDragging.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    updateSplit(e.clientX);
+  };
+
+  const handlePointerMove = (e: PointerEvent) => {
+    if (!isDragging.current) return;
+    updateSplit(e.clientX);
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
   };
 
   return (
     <section class={styles.stagePanel} aria-label="Visual Comparison Stage">
-      <StageToolbar zoom={zoom} hasImage={hasImage} onZoom={setZoom} />
+      <StageToolbar
+        zoom={zoom}
+        hasImage={hasImage}
+        onZoom={setZoom}
+        onResetSplit={() => enlarger.setSplitPos(50)}
+        onHoldOriginalStart={() => enlarger.setIsShowingOriginal(true)}
+        onHoldOriginalEnd={() => enlarger.setIsShowingOriginal(false)}
+      />
+
       <div
-        ref={containerRef}
         class={styles.canvasWrapper}
-        onPointerDown={() => {
-          isDragging.current = true;
-        }}
-        onPointerUp={() => {
-          isDragging.current = false;
-        }}
-        onPointerLeave={() => {
-          isDragging.current = false;
-        }}
-        onPointerMove={(e) => handlePointerMove(e as unknown as PointerEvent)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        style={{ cursor: hasImage ? 'ew-resize' : 'default' }}
       >
         {!hasImage ? (
           <div style={{ color: '#888', fontSize: '12px' }}>
             Upload a photo or click "Try Sample" to begin
           </div>
         ) : (
-          <StageSplitView enlarger={enlarger} zoom={zoom} />
+          <StageSplitView enlarger={enlarger} zoom={zoom} containerRef={imageBoxRef} />
         )}
 
         {hasImage && (

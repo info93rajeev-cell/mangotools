@@ -276,6 +276,156 @@
   box-shadow: 0 0 0 1.5px #d97706;
 }
 
+/* HISTORY BUTTONS (UNDO / REDO) */
+.historyActions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.historyBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 9.5px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+  transition: all 0.15s ease;
+}
+
+.historyBtn:hover:not(:disabled) {
+  background: var(--color-surface-hover, rgba(0, 0, 0, 0.04));
+  color: var(--color-text);
+  border-color: #d97706;
+}
+
+.historyBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* APPLY CHANGES BUTTON */
+.applyBtn {
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--color-accent, #ffb000);
+  color: #0f172a;
+  border: 1.5px solid #d97706;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.2);
+  transition: all 0.15s ease;
+  margin-top: 4px;
+}
+
+.applyBtn:hover:not(:disabled) {
+  background: #f59e0b;
+  transform: translateY(-0.5px);
+}
+
+.applyBtn[data-applied="true"] {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #059669;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
+}
+
+.applyBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* COMPARE HOLD BUTTON & STAGE CONTROLS */
+.compareBtn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 1.5px 6px;
+  font-size: 9.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.compareBtn:hover {
+  background: #1d4ed8;
+}
+
+.miniStageBtn {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.5px 5px;
+  font-size: 9.5px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.miniStageBtn:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+}
+
+/* BEFORE / AFTER FLOATING BADGES & SPLIT VIEW */
+.stageSplitContainer {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+.splitClipLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.beforeBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.15s ease;
+}
+
+.afterBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(37, 99, 235, 0.85);
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.15s ease;
+}
+
 .primaryActionBtn {
   width: 100%;
   padding: 8px 12px;

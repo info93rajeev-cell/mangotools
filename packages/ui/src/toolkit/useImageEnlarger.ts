@@ -1,7 +1,6 @@
-import type { OpWarning } from '@mangotools/core';
 import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import {
@@ -10,36 +9,33 @@ import {
   type EnhancementSettings,
   executeEnhancementPipeline,
 } from './imageEnhancementPipeline.ts';
+import {
+  type EnlargeOutputFormat,
+  type ImageEnlargerResultData,
+  renderAndExportBytes,
+  useEnlargeHistory,
+  useEnlargeInitialSample,
+  useEnlargeKeyboardShortcuts,
+  useEnlargePreview,
+} from './imageEnlargerHelpers.ts';
 import { type CropFile, inspectAndDecodeImage, MIME_MAP } from './imageFileInspection.ts';
-import { wrapImageBytesInPdf } from './imagePdfExport.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 
-export type EnlargeOutputFormat = 'png' | 'jpg' | 'webp' | 'pdf';
-
-export interface ImageEnlargerResultData {
-  fileName: string;
-  bytes: Uint8Array;
-  originalWidth: number;
-  originalHeight: number;
-  outputWidth: number;
-  outputHeight: number;
-  originalFileSize: number;
-  outputFileSize: number;
-  scale: number;
-  outputFormat: string;
-  sharpness: number;
-  contrast: number;
-  warnings: OpWarning[];
-}
+export type { EnlargeOutputFormat, ImageEnlargerResultData };
 
 export interface UseImageEnlargerReturn {
   file: CropFile | null;
   sourceDims: { width: number; height: number };
   imageSrc: string | null;
+  previewUrl: string | null;
   phase: FilePhase;
   settings: EnhancementSettings;
   isAutoEnhance: boolean;
+  isApplied: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
   splitPos: number;
+  isShowingOriginal: boolean;
   outputFormat: EnlargeOutputFormat;
   customFileName: string;
   result: ImageEnlargerResultData | null;
@@ -51,9 +47,13 @@ export interface UseImageEnlargerReturn {
   setBrightness: (val: number) => void;
   setVibrance: (val: number) => void;
   setWarmth: (val: number) => void;
+  applyChanges: () => void;
+  undo: () => void;
+  redo: () => void;
   setOutputFormat: (fmt: EnlargeOutputFormat) => void;
   setCustomFileName: (name: string) => void;
   setSplitPos: (pos: number) => void;
+  setIsShowingOriginal: (show: boolean) => void;
   toggleAutoEnhance: () => void;
   resetSettings: () => void;
   reset: () => void;
@@ -64,52 +64,78 @@ export interface UseImageEnlargerReturn {
 }
 
 function useEnlargeSliders() {
-  const [settings, setSettings] = useState<EnhancementSettings>({
-    ...DEFAULT_ENHANCEMENT,
-  });
+  const [settings, setSettings] = useState<EnhancementSettings>({ ...DEFAULT_ENHANCEMENT });
   const [isAutoEnhance, setIsAutoEnhance] = useState(false);
+  const [isApplied, setIsApplied] = useState(true);
+  const hist = useEnlargeHistory();
+
+  const applyChanges = useCallback(() => {
+    hist.pushHistory(settings);
+    setIsApplied(true);
+  }, [settings, hist.pushHistory]);
+
+  const undo = useCallback(() => {
+    if (hist.historyIndex > 0) {
+      const prev = hist.history[hist.historyIndex - 1];
+      hist.setHistoryIndex(hist.historyIndex - 1);
+      setSettings(prev);
+      setIsApplied(true);
+    }
+  }, [hist]);
+
+  const redo = useCallback(() => {
+    if (hist.historyIndex < hist.history.length - 1) {
+      const next = hist.history[hist.historyIndex + 1];
+      hist.setHistoryIndex(hist.historyIndex + 1);
+      setSettings(next);
+      setIsApplied(true);
+    }
+  }, [hist]);
 
   const toggleAutoEnhance = useCallback(() => {
     setIsAutoEnhance((prev) => {
       const next = !prev;
-      setSettings((s) => ({
-        ...s,
+      const nextSettings = {
+        ...settings,
         ...(next ? AUTO_ENHANCE_PRESET : DEFAULT_ENHANCEMENT),
-        scale: s.scale,
-      }));
+        scale: settings.scale,
+      };
+      setSettings(nextSettings);
+      hist.pushHistory(nextSettings);
+      setIsApplied(true);
       return next;
     });
-  }, []);
+  }, [settings, hist.pushHistory]);
 
   const resetSettings = useCallback(() => {
     setIsAutoEnhance(false);
-    setSettings({ ...DEFAULT_ENHANCEMENT });
+    const def = { ...DEFAULT_ENHANCEMENT, scale: settings.scale };
+    setSettings(def);
+    hist.pushHistory(def);
+    setIsApplied(true);
+  }, [settings.scale, hist.pushHistory]);
+
+  const updateSetting = useCallback((updater: (s: EnhancementSettings) => EnhancementSettings) => {
+    setIsAutoEnhance(false);
+    setIsApplied(false);
+    setSettings(updater);
   }, []);
 
   return {
     settings,
     isAutoEnhance,
-    setScale: (scale: 1 | 2 | 4) => setSettings((s) => ({ ...s, scale })),
-    setSharpness: (val: number) => {
-      setIsAutoEnhance(false);
-      setSettings((s) => ({ ...s, sharpness: val }));
-    },
-    setContrast: (val: number) => {
-      setIsAutoEnhance(false);
-      setSettings((s) => ({ ...s, contrast: val }));
-    },
-    setBrightness: (val: number) => {
-      setIsAutoEnhance(false);
-      setSettings((s) => ({ ...s, brightness: val }));
-    },
-    setVibrance: (val: number) => {
-      setIsAutoEnhance(false);
-      setSettings((s) => ({ ...s, vibrance: val }));
-    },
-    setWarmth: (val: number) => {
-      setIsAutoEnhance(false);
-      setSettings((s) => ({ ...s, warmth: val }));
-    },
+    isApplied,
+    canUndo: hist.historyIndex > 0,
+    canRedo: hist.historyIndex < hist.history.length - 1,
+    undo,
+    redo,
+    applyChanges,
+    setScale: (scale: 1 | 2 | 4) => updateSetting((s) => ({ ...s, scale })),
+    setSharpness: (val: number) => updateSetting((s) => ({ ...s, sharpness: val })),
+    setContrast: (val: number) => updateSetting((s) => ({ ...s, contrast: val })),
+    setBrightness: (val: number) => updateSetting((s) => ({ ...s, brightness: val })),
+    setVibrance: (val: number) => updateSetting((s) => ({ ...s, vibrance: val })),
+    setWarmth: (val: number) => updateSetting((s) => ({ ...s, warmth: val })),
     toggleAutoEnhance,
     resetSettings,
   };
@@ -165,38 +191,7 @@ function useEnlargeLoader(updatePhase: (next: FilePhase) => void) {
     updatePhase('idle');
   }, [updatePhase]);
 
-  return {
-    file,
-    sourceDims,
-    imageSrc,
-    error,
-    setError,
-    decodedRef,
-    loadFile,
-    loadSample,
-    reset,
-  };
-}
-
-async function renderAndExportBytes(
-  canvas: HTMLCanvasElement,
-  format: EnlargeOutputFormat,
-  baseName: string,
-): Promise<{ finalBytes: Uint8Array; finalName: string }> {
-  const mime = format === 'pdf' ? 'image/png' : (MIME_MAP[format] ?? 'image/png');
-  const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob((b) => resolve(b), mime, 0.92),
-  );
-  if (!blob) throw new Error('Canvas export failed');
-
-  let finalBytes = new Uint8Array(await blob.arrayBuffer()) as Uint8Array;
-  const finalName = `${baseName}.${format}`;
-
-  if (format === 'pdf') {
-    const wrapped = await wrapImageBytesInPdf(finalBytes, 'IMAGE_RESIZE_FAILED');
-    if (wrapped.ok) finalBytes = wrapped.value.pdfBytes;
-  }
-  return { finalBytes, finalName };
+  return { file, sourceDims, imageSrc, error, setError, decodedRef, loadFile, loadSample, reset };
 }
 
 function useEnlargeExecution(
@@ -259,6 +254,7 @@ export function useImageEnlarger(
 ): UseImageEnlargerReturn {
   const [phase, setPhase] = useState<FilePhase>('idle');
   const [splitPos, setSplitPos] = useState(50);
+  const [isShowingOriginal, setIsShowingOriginal] = useState(false);
   const [outputFormat, setOutputFormat] = useState<EnlargeOutputFormat>('png');
   const [customFileName, setCustomFileName] = useState('');
 
@@ -272,14 +268,14 @@ export function useImageEnlarger(
 
   const loader = useEnlargeLoader(updatePhase);
   const sliders = useEnlargeSliders();
+  const previewUrl = useEnlargePreview(
+    loader.decodedRef.current,
+    loader.imageSrc,
+    sliders.settings,
+  );
 
-  const initialMountRef = useRef(true);
-  useEffect(() => {
-    if (initialMountRef.current && !loader.file) {
-      initialMountRef.current = false;
-      void loader.loadSample();
-    }
-  }, [loader]);
+  useEnlargeInitialSample(loader.file, loader.loadSample);
+  useEnlargeKeyboardShortcuts(sliders.undo, sliders.redo);
 
   const exec = useEnlargeExecution(
     loader,
@@ -309,13 +305,16 @@ export function useImageEnlarger(
     ...loader,
     phase,
     splitPos,
+    isShowingOriginal,
     outputFormat,
     customFileName,
+    previewUrl,
     ...exec,
     ...sliders,
     setOutputFormat,
     setCustomFileName,
     setSplitPos,
+    setIsShowingOriginal,
     downloadResult,
   };
 }
