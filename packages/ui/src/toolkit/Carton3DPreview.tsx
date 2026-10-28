@@ -10,9 +10,19 @@ interface Carton3DPreviewProps {
   unit: VolumetricUnit;
 }
 
+const volumetricReferenceImage = '/logistics/volumetric-reference-sample.jpg';
+
+const VIEW_LABELS: Record<'3d' | 'top' | 'side' | 'front', string> = {
+  '3d': '3D View',
+  top: 'Top View',
+  side: 'Side View',
+  front: 'Front View',
+};
+
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio carton preview
 export function Carton3DPreview({ items, selectedId, onSelectId, unit }: Carton3DPreviewProps) {
   const [view, setView] = useState<'3d' | 'top' | 'side' | 'front'>('3d');
+  const [calculated, setCalculated] = useState(false);
   const [zoom, setZoom] = useState(1);
 
   const selectedItem = items.find((i) => i.id === selectedId) ||
@@ -33,10 +43,12 @@ export function Carton3DPreview({ items, selectedId, onSelectId, unit }: Carton3
     setView('3d');
   };
 
+  const showReference = view === '3d' && !calculated;
+
   return (
     <div class={styles.card} data-carton-3d-preview="">
       <div class={styles.cardHead}>
-        <span class={styles.cardTitle}>3D Preview (Selected Item)</span>
+        <span class={styles.cardTitle}>3D Package Visualization</span>
         <div class={styles.viewGroup}>
           {(['3d', 'top', 'side', 'front'] as const).map((angle) => (
             <button
@@ -46,54 +58,86 @@ export function Carton3DPreview({ items, selectedId, onSelectId, unit }: Carton3
               aria-pressed={view === angle}
               onClick={() => setView(angle)}
             >
-              {angle === '3d' ? '3D' : angle.charAt(0).toUpperCase() + angle.slice(1)}
+              {VIEW_LABELS[angle]}
             </button>
           ))}
         </div>
       </div>
 
-      <div class={styles.canvasWrap}>
-        {view === '3d' ? (
-          <SvgRealistic3DCarton
-            length={selectedItem.length}
-            width={selectedItem.width}
-            height={selectedItem.height}
-            unit={unit}
-            zoom={zoom}
+      {showReference ? (
+        <figure class={styles.reference}>
+          <img
+            src={volumetricReferenceImage}
+            alt="3D Volumetric shipping package illustration"
+            width="518"
+            height="215"
           />
-        ) : (
-          <SvgRealistic2DCarton
-            view={view}
-            length={selectedItem.length}
-            width={selectedItem.width}
-            height={selectedItem.height}
-            unit={unit}
-            zoom={zoom}
-          />
-        )}
+          <figcaption>
+            <span>Sample illustration — not the calculated loading plan.</span>
+            <button type="button" class={styles.artMode} onClick={() => setCalculated(true)}>
+              Show Calculated Layout
+            </button>
+          </figcaption>
+        </figure>
+      ) : (
+        <div class={styles.canvasWrap}>
+          {view === '3d' ? (
+            <SvgRealistic3DCarton
+              length={selectedItem.length}
+              width={selectedItem.width}
+              height={selectedItem.height}
+              unit={unit}
+              zoom={zoom}
+            />
+          ) : (
+            <SvgRealistic2DCarton
+              view={view}
+              length={selectedItem.length}
+              width={selectedItem.width}
+              height={selectedItem.height}
+              unit={unit}
+              zoom={zoom}
+            />
+          )}
 
-        <div class={styles.zoomOverlay}>
-          <button type="button" class={styles.zoomBtn} onClick={handleZoomIn} aria-label="Zoom in">
-            +
-          </button>
-          <button
-            type="button"
-            class={styles.zoomBtn}
-            onClick={handleZoomOut}
-            aria-label="Zoom out"
-          >
-            −
-          </button>
-          <button
-            type="button"
-            class={styles.zoomBtn}
-            onClick={handleReset}
-            aria-label="Reset zoom and view"
-          >
-            ↺
-          </button>
+          <div class={styles.zoomOverlay}>
+            <button
+              type="button"
+              class={styles.zoomBtn}
+              onClick={handleZoomIn}
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              class={styles.zoomBtn}
+              onClick={handleZoomOut}
+              aria-label="Zoom out"
+            >
+              −
+            </button>
+            <button
+              type="button"
+              class={styles.zoomBtn}
+              onClick={handleReset}
+              aria-label="Reset zoom and view"
+            >
+              ↺
+            </button>
+            {view === '3d' ? (
+              <button
+                type="button"
+                class={styles.artMode}
+                style={{ marginLeft: '4px' }}
+                onClick={() => setCalculated(false)}
+              >
+                Sample Artwork
+              </button>
+            ) : null}
+          </div>
         </div>
-      </div>
+      )}
 
       <div class={styles.cardFooter}>
         <select

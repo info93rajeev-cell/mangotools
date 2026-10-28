@@ -100,7 +100,9 @@ describe('post-build page checks', () => {
       scriptHashes: ["'sha256-b'", "'sha256-a'", "'sha256-a'"],
       indexable: false,
     });
-    expect(text).toContain("script-src 'self' 'wasm-unsafe-eval' 'sha256-a' 'sha256-b';");
+    expect(text).toContain(
+      "script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com 'sha256-a' 'sha256-b';",
+    );
     expect(text).toContain("frame-ancestors 'none'");
     expect(text).toContain('X-Robots-Tag: noindex');
     const production = headersFile({ scriptHashes: [], indexable: true });
@@ -148,9 +150,11 @@ describe('post-build page checks', () => {
     ]);
   });
 
-  it('configures CSP connect-src to permit models from R2 custom domain', () => {
+  it('configures CSP connect-src to permit models from R2 custom domain and Cloudflare insights', () => {
     const text = headersFile({ scriptHashes: [], indexable: true });
-    expect(text).toContain("connect-src 'self' https://models.beyandtheai.com blob:");
+    expect(text).toContain(
+      "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com blob:",
+    );
   });
 
   it('finds entry modules and static imports but not dynamic imports', () => {

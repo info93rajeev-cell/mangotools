@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
-import { GLYPHS, type GlyphName } from './cbmGlyphs.ts';
+import { Icon } from '../primitives/Icon.tsx';
+import type { GlyphName } from './cbmGlyphs.ts';
 import {
   averagePerPiece,
   type CompositionItem,
@@ -16,13 +17,12 @@ import { cbmWorkbenchText as w } from './cbmWorkbenchStrings.ts';
 const PALETTE_SIZE = 8;
 const swatch = (number: number) => s[`c${(number - 1) % PALETTE_SIZE}`] ?? '';
 
-function Glyph({ name }: { name: GlyphName }) {
-  return (
-    <svg class={s.glyph} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d={GLYPHS[name]} />
-    </svg>
-  );
-}
+const KPI_ICONS: Record<GlyphName, 'box' | 'weight' | 'rotate-ccw'> = {
+  pieces: 'box',
+  volume: 'box',
+  weight: 'weight',
+  average: 'rotate-ccw',
+};
 
 interface KpiProps {
   glyph: GlyphName;
@@ -36,8 +36,8 @@ interface KpiProps {
 function Kpi({ glyph, label, short, tone, children }: KpiProps) {
   return (
     <div class={`${s.kpi} ${tone ?? ''}`} data-kpi={glyph}>
+      <Icon name={KPI_ICONS[glyph] ?? 'box'} />
       <dt>
-        <Glyph name={glyph} />
         {short ? (
           <>
             <span class={s.longLabel}>{label}</span>

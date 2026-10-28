@@ -149,6 +149,8 @@ function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind
   );
 }
 
+const cbmReferenceImage = '/logistics/cbm-reference-sample.jpg';
+
 /** Shipment visualization: the active package drawn as an illustrative stack, never a loading plan. */
 export function CbmVisualizationPanel({
   row,
@@ -160,9 +162,11 @@ export function CbmVisualizationPanel({
   className?: string;
 }) {
   const [view, setView] = useState<ViewKind>('iso');
+  const [calculated, setCalculated] = useState(false);
   const [open, setOpen] = useState(true);
   const phone = usePhone();
   const shown = !phone || open;
+  const showReference = view === 'iso' && !calculated;
   return (
     <section class={`${s.panel} ${className}`} aria-labelledby="cbm-visual-title">
       <div class={s.head}>
@@ -185,13 +189,41 @@ export function CbmVisualizationPanel({
       </div>
       {shown ? (
         <div id="cbm-visual-body" class={s.body}>
-          <div class={s.stage}>
-            <Illustration row={row} name={packageName(row, index)} view={view} phone={phone} />
-          </div>
-          <p class={s.caption}>
-            <Icon name="info" />
-            <span>{t.illustrative}</span>
-          </p>
+          {showReference ? (
+            <figure class={s.reference} data-reference-artwork="">
+              <img
+                src={cbmReferenceImage}
+                alt="3D CBM cargo illustration on wooden pallet"
+                width="518"
+                height="220"
+              />
+              <figcaption>
+                <span>{t.illustrative}</span>
+                <button type="button" class={s.artMode} onClick={() => setCalculated(true)}>
+                  Show Calculated Layout
+                </button>
+              </figcaption>
+            </figure>
+          ) : (
+            <>
+              <div class={s.stage}>
+                <Illustration row={row} name={packageName(row, index)} view={view} phone={phone} />
+              </div>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <p class={s.caption}>
+                  <Icon name="info" />
+                  <span>{t.illustrative}</span>
+                </p>
+                {view === 'iso' ? (
+                  <button type="button" class={s.artMode} onClick={() => setCalculated(false)}>
+                    Sample Artwork
+                  </button>
+                ) : null}
+              </div>
+            </>
+          )}
         </div>
       ) : null}
     </section>

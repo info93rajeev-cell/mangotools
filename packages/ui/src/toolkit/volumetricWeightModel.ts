@@ -80,11 +80,19 @@ export interface VolumetricCalculationResult {
   itemCalculations: Array<{
     id: string;
     description: string;
+    length: number;
+    width: number;
+    height: number;
+    unit: VolumetricUnit;
+    quantity: number;
     volumeCm3PerPiece: number;
     volumeM3PerPiece: number;
     volumetricWeightKgPerPiece: number;
+    rowTotalVolCm3: number;
+    rowTotalVolM3: number;
     totalVolumetricWeightKg: number;
     totalActualWeightKg: number;
+    chargeableWeightKg: number;
   }>;
 }
 
@@ -131,14 +139,25 @@ export function computeVolumetricWeight(
     totalActualWeightKg += rowActualKg;
     totalVolumetricWeightKg += rowVolWeightKg;
 
+    const roundedRowActualKg = Math.round(rowActualKg * 10) / 10;
+    const roundedRowVolWeightKg = Math.round(rowVolWeightKg * 10) / 10;
+
     return {
       id: item.id,
       description: item.description || 'Package',
+      length: item.length,
+      width: item.width,
+      height: item.height,
+      unit,
+      quantity: qty,
       volumeCm3PerPiece: Math.round(volPieceCm3),
       volumeM3PerPiece: Math.round(volPieceM3 * 1000) / 1000,
       volumetricWeightKgPerPiece: Math.round(volWeightPieceKg * 100) / 100,
-      totalVolumetricWeightKg: Math.round(rowVolWeightKg * 10) / 10,
-      totalActualWeightKg: Math.round(rowActualKg * 10) / 10,
+      rowTotalVolCm3: Math.round(rowTotalVolCm3),
+      rowTotalVolM3: Math.round((rowTotalVolCm3 / 1_000_000) * 1000) / 1000,
+      totalVolumetricWeightKg: roundedRowVolWeightKg,
+      totalActualWeightKg: roundedRowActualKg,
+      chargeableWeightKg: Math.max(roundedRowActualKg, roundedRowVolWeightKg),
     };
   });
 

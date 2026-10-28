@@ -177,7 +177,9 @@ test('security headers and CSP are served', async ({ request }) => {
   const response = await request.get('/gst-calculator');
   const headers = response.headers();
   expect(headers['content-security-policy']).toContain("frame-ancestors 'none'");
-  expect(headers['content-security-policy']).toMatch(/script-src 'self'( 'sha256-[^']+')+;/);
+  expect(headers['content-security-policy']).toMatch(
+    /script-src 'self' 'wasm-unsafe-eval' https:\/\/static\.cloudflareinsights\.com( 'sha256-[^']+')+;/,
+  );
   expect(headers['x-content-type-options']).toBe('nosniff');
   expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
   expect(headers['x-robots-tag']).toBeUndefined();

@@ -90,7 +90,13 @@ export const sha256 = (text: string) =>
   `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
 
 const SEO_TEMPLATES = new Set(['home', 'tools', 'category', 'tool', 'page']);
-const ALLOWED_HOSTS = ['schema.org', 'www.w3.org', 'models.beyandtheai.com'];
+const ALLOWED_HOSTS = [
+  'schema.org',
+  'www.w3.org',
+  'models.beyandtheai.com',
+  'static.cloudflareinsights.com',
+  'cloudflareinsights.com',
+];
 
 function checkHead(page: PageFacts, siteUrl: string): string[] {
   const problems: string[] = [];
@@ -185,11 +191,11 @@ export interface HeadersOptions {
 export function headersFile({ scriptHashes, indexable }: HeadersOptions): string {
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'wasm-unsafe-eval' ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
+    `script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
-    "connect-src 'self' https://models.beyandtheai.com blob:",
+    "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com blob:",
     "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",
