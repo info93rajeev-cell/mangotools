@@ -253,6 +253,14 @@
   gap: 3px;
   box-sizing: border-box;
   min-width: 0;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  &[data-drag-over="true"] {
+    border-color: var(--color-primary, #3b82f6);
+    background: rgba(59, 130, 246, 0.04);
+  }
 }
 
 .cardHeader {
