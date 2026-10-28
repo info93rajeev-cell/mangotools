@@ -6,6 +6,7 @@ import { computeSizeChange } from '../../lib/size-change.ts';
 import { renderWatermarked } from './canvas-pipeline.ts';
 import {
   type ImageFile,
+  type ImageWatermarkInput,
   imageWatermarkInput,
   imageWatermarkOutput,
   imageWatermarkParams,
@@ -19,6 +20,68 @@ const SUPPORTS_ALPHA: Record<ResolvedImageFormat, boolean> = { jpg: false, png: 
 
 function qualityFraction(quality: number | undefined): number | undefined {
   return quality === undefined ? undefined : quality / 100;
+}
+
+function resolveFormatAndWarnings(
+  outputFormat: 'same' | ResolvedImageFormat,
+  sourceType: ResolvedImageFormat,
+) {
+  const requestedFormat: ResolvedImageFormat = outputFormat === 'same' ? sourceType : outputFormat;
+  const flattenToWhite = SUPPORTS_ALPHA[sourceType] && !SUPPORTS_ALPHA[requestedFormat];
+  const warnings = [...STANDING_WARNINGS];
+  if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
+  if (outputFormat !== 'same' && outputFormat === sourceType) {
+    warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
+  }
+  return { requestedFormat, flattenToWhite, warnings };
+}
+
+async function encodeWatermark(
+  canvas: OffscreenCanvas,
+  format: ResolvedImageFormat,
+  quality: number | undefined,
+) {
+  const encoded = await encodeCanvas(canvas, format, qualityFraction(quality));
+  const warnings = [];
+  if (encoded.fellBackFromWebp) warnings.push(warning('IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG'));
+  const bytes = new Uint8Array(await encoded.blob.arrayBuffer()) as Uint8Array<ArrayBuffer>;
+  return { bytes, finalFormat: encoded.finalFormat, warnings };
+}
+
+function buildWatermarkPayload(
+  file: ImageFile,
+  bytes: Uint8Array<ArrayBuffer>,
+  finalFormat: ResolvedImageFormat,
+  sourceType: ResolvedImageFormat,
+  width: number,
+  height: number,
+  input: ImageWatermarkInput,
+  text: string,
+) {
+  const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
+  return {
+    bytes,
+    fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
+      suffix: '-watermarked',
+      fallbackBase: 'watermarked-image',
+    }),
+    originalWidth: width,
+    originalHeight: height,
+    outputWidth: width,
+    outputHeight: height,
+    originalFileSize: file.bytes.byteLength,
+    outputFileSize: bytes.byteLength,
+    ...sizeChange,
+    originalFormat: sourceType,
+    outputFormat: finalFormat,
+    watermarkText: text,
+    position: input.position,
+    opacity: input.opacity,
+    fontSize: input.fontSize,
+    color: input.color,
+    angle: input.angle ?? -28,
+    density: input.density ?? 50,
+  };
 }
 
 export const imageWatermark = defineOperation({
@@ -58,16 +121,10 @@ export const imageWatermark = defineOperation({
     if (!decoded.ok) return decoded;
     const { bitmap, sourceType, width, height } = decoded.value;
 
-    const requestedFormat: ResolvedImageFormat =
-      input.outputFormat === 'same' ? sourceType : input.outputFormat;
-    const flattenToWhite = SUPPORTS_ALPHA[sourceType] && !SUPPORTS_ALPHA[requestedFormat];
-    const warnings = [...STANDING_WARNINGS];
-    if (flattenToWhite) warnings.push(warning('IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'));
-    // Only for an *explicit* same-format request, never for 'same' itself — matching image.resize@1's
-    // own IMAGE_SAME_FORMAT_REENCODED logic exactly (see its own operation.ts and README.md).
-    if (input.outputFormat !== 'same' && input.outputFormat === sourceType) {
-      warnings.push(warning('IMAGE_SAME_FORMAT_REENCODED'));
-    }
+    const { requestedFormat, flattenToWhite, warnings } = resolveFormatAndWarnings(
+      input.outputFormat,
+      sourceType,
+    );
 
     let canvas: OffscreenCanvas;
     try {
@@ -79,6 +136,8 @@ export const imageWatermark = defineOperation({
         input.fontSize,
         input.color,
         flattenToWhite,
+        input.angle ?? -28,
+        input.density ?? 50,
       );
     } catch {
       bitmap.close();
@@ -86,43 +145,23 @@ export const imageWatermark = defineOperation({
     }
     bitmap.close();
 
-    let bytes: Uint8Array;
+    let bytes: Uint8Array<ArrayBuffer>;
     let finalFormat: ResolvedImageFormat;
     try {
-      const encoded = await encodeCanvas(canvas, requestedFormat, qualityFraction(input.quality));
-      if (encoded.fellBackFromWebp) warnings.push(warning('IMAGE_WEBP_NOT_SUPPORTED_FALLBACK_PNG'));
-      finalFormat = encoded.finalFormat;
-      bytes = new Uint8Array(await encoded.blob.arrayBuffer());
+      const res = await encodeWatermark(canvas, requestedFormat, input.quality);
+      warnings.push(...res.warnings);
+      finalFormat = res.finalFormat;
+      bytes = res.bytes;
     } catch {
       return err('IMAGE_WATERMARK_FAILED');
     }
 
-    const sizeChange = computeSizeChange(file.bytes.byteLength, bytes.byteLength);
-    if (sizeChange.sizeDifferenceBytes < 0)
+    if (file.bytes.byteLength < bytes.byteLength) {
       warnings.push(warning('IMAGE_OUTPUT_LARGER_THAN_INPUT'));
+    }
 
     return ok(
-      {
-        bytes,
-        fileName: deriveOutputFileName(finalFormat, file.name, input.outputFileName, {
-          suffix: '-watermarked',
-          fallbackBase: 'watermarked-image',
-        }),
-        originalWidth: width,
-        originalHeight: height,
-        outputWidth: width,
-        outputHeight: height,
-        originalFileSize: file.bytes.byteLength,
-        outputFileSize: bytes.byteLength,
-        ...sizeChange,
-        originalFormat: sourceType,
-        outputFormat: finalFormat,
-        watermarkText: text,
-        position: input.position,
-        opacity: input.opacity,
-        fontSize: input.fontSize,
-        color: input.color,
-      },
+      buildWatermarkPayload(file, bytes, finalFormat, sourceType, width, height, input, text),
       warnings,
     );
   },

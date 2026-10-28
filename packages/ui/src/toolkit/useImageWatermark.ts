@@ -38,6 +38,8 @@ export interface WatermarkResultData {
   opacity: number;
   fontSize: number;
   color: string;
+  angle?: number;
+  density?: number;
   sizeDifferenceBytes: number;
   warnings: OpWarning[];
 }
@@ -50,6 +52,8 @@ interface WatermarkRunConfig {
   opacity: number;
   fontSize: number;
   color: string;
+  angle: number;
+  density: number;
   outputFormat: WatermarkOutputFormat;
   quality: number;
   customFileName: string;
@@ -82,6 +86,8 @@ async function executeWatermarkWorker(
     opacity: cfg.opacity,
     fontSize: cfg.fontSize,
     color: cfg.color,
+    angle: cfg.angle,
+    density: cfg.density,
     outputFormat: workerFormat,
     quality: cfg.quality,
     outputFileName: cfg.customFileName.trim() ? cfg.customFileName.trim() : undefined,
@@ -109,6 +115,8 @@ async function executeWatermarkWorker(
     opacity: Number(val.opacity),
     fontSize: Number(val.fontSize),
     color: String(val.color),
+    angle: val.angle !== undefined ? Number(val.angle) : cfg.angle,
+    density: val.density !== undefined ? Number(val.density) : cfg.density,
     sizeDifferenceBytes: Number(val.sizeDifferenceBytes),
     warnings,
   });
@@ -125,6 +133,8 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
   const [opacity, setOpacity] = useState(50);
   const [fontSize, setFontSize] = useState(32);
   const [color, setColor] = useState('#ffffff');
+  const [angle, setAngle] = useState(-28);
+  const [density, setDensity] = useState(50);
   const [outputFormat, setOutputFormat] = useState<WatermarkOutputFormat>('same');
   const [quality, setQuality] = useState(85);
   const [customFileName, setCustomFileName] = useState('');
@@ -275,6 +285,8 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       opacity,
       fontSize,
       color,
+      angle,
+      density,
       outputFormat,
       quality,
       customFileName,
@@ -334,6 +346,10 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
     setFontSize,
     color,
     setColor,
+    angle,
+    setAngle,
+    density,
+    setDensity,
     outputFormat,
     setOutputFormat,
     quality,

@@ -96,6 +96,10 @@ describe('image.watermark validation (Node-testable, pre-decode paths only)', ()
     expect((await run({ ...baseInput, opacity: 101, file })).ok).toBe(false);
     expect((await run({ ...baseInput, fontSize: 1, file })).ok).toBe(false);
     expect((await run({ ...baseInput, color: 'white', file })).ok).toBe(false);
+    expect((await run({ ...baseInput, angle: -190, file })).ok).toBe(false);
+    expect((await run({ ...baseInput, angle: 190, file })).ok).toBe(false);
+    expect((await run({ ...baseInput, density: 5, file })).ok).toBe(false);
+    expect((await run({ ...baseInput, density: 105, file })).ok).toBe(false);
   });
 
   it('has an English message for every error code it can return', () => {

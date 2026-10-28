@@ -59,8 +59,12 @@ export function ImageWatermarkCanvas({
   const hasFile = !!watermark.file;
   const overlayText = watermark.text.trim() || 'BeyondTheAI';
 
-  const patternW = Math.max(160, Math.round(overlayText.length * watermark.fontSize * 0.65 + 70));
-  const patternH = Math.max(80, Math.round(watermark.fontSize * 3.2));
+  const densityFactor = 50 / Math.max(10, Math.min(100, watermark.density));
+  const patternW = Math.max(
+    80,
+    Math.round((overlayText.length * watermark.fontSize * 0.65 + 70) * densityFactor),
+  );
+  const patternH = Math.max(35, Math.round(watermark.fontSize * 3.2 * densityFactor));
 
   return (
     <div class={styles.studioCard}>
@@ -103,7 +107,7 @@ export function ImageWatermarkCanvas({
                     width={patternW}
                     height={patternH}
                     patternUnits="userSpaceOnUse"
-                    patternTransform="rotate(-28)"
+                    patternTransform={`rotate(${watermark.angle})`}
                   >
                     <text
                       x={patternW / 2}

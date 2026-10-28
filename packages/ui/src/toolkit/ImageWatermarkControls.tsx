@@ -5,6 +5,7 @@ import type {
   WatermarkOutputFormat,
   WatermarkPosition,
 } from './useImageWatermark.ts';
+import { WatermarkTiledControls } from './WatermarkTiledControls.tsx';
 
 export interface ImageWatermarkControlsProps {
   idPrefix: string;
@@ -148,13 +149,7 @@ function WatermarkTextAndPos({ idPrefix, watermark }: WatermarkSettingsCardProps
         </select>
 
         {isTiled ? (
-          <div class={styles.tiledInfoBox}>
-            <span class={styles.tiledBadgeIcon}>⊞</span>
-            <div class={styles.tiledBadgeContent}>
-              <span class={styles.tiledBadgeTitle}>Full-Body Diagonal Pattern</span>
-              <span class={styles.tiledBadgeSub}>-28° repeating grid across canvas</span>
-            </div>
-          </div>
+          <WatermarkTiledControls idPrefix={idPrefix} watermark={watermark} />
         ) : (
           <div class={styles.pos3x3Grid}>
             {POS_GRID_ITEMS.map((item, idx) => (

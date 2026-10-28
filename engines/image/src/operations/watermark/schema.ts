@@ -35,6 +35,10 @@ export const imageWatermarkInput = z.strictObject({
   outputFormat: imageOutputFormat,
   /** 0-100; only meaningful for `jpg`/`webp` output. Ignored for `png`, which has no quality knob. */
   quality: z.number().min(0).max(100).optional(),
+  /** Angle in degrees (-180 to 180, default -28). Meaningful for tiled watermark. Optional. */
+  angle: z.number().min(-180).max(180).optional(),
+  /** Density percentage 10-100 (default 50). Controls repeating grid spacing for tiled watermark. Optional. */
+  density: z.number().min(10).max(100).optional(),
   /** User-entered output name, normalized by `deriveOutputFileName`. Optional; see lib/file-name.ts. */
   outputFileName: z.string().optional(),
 });
@@ -62,6 +66,8 @@ export const imageWatermarkOutput = z.strictObject({
   opacity: z.number(),
   fontSize: z.number(),
   color: z.string(),
+  angle: z.number().optional(),
+  density: z.number().optional(),
 });
 
 export type ImageWatermarkInput = z.infer<typeof imageWatermarkInput>;

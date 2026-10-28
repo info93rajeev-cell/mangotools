@@ -51,6 +51,8 @@ export function renderWatermarked(
   fontSizePx: number,
   color: string,
   flattenToWhite: boolean,
+  angleDeg: number = -28,
+  density: number = 50,
 ): OffscreenCanvas {
   const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
   const ctx = canvas.getContext('2d');
@@ -69,10 +71,12 @@ export function renderWatermarked(
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const angle = (-28 * Math.PI) / 180;
+    const angle = (angleDeg * Math.PI) / 180;
     const textWidth = ctx.measureText(text).width;
-    const stepX = Math.max(160, textWidth + 80);
-    const stepY = Math.max(90, fontSizePx * 3.8);
+    const safeDensity = Math.max(10, Math.min(100, density));
+    const factor = 50 / safeDensity;
+    const stepX = Math.max(80, Math.round((textWidth + 80) * factor));
+    const stepY = Math.max(35, Math.round(fontSizePx * 3.8 * factor));
 
     const diagonal = Math.hypot(canvas.width, canvas.height);
     ctx.translate(canvas.width / 2, canvas.height / 2);
