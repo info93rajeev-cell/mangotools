@@ -21,6 +21,7 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
+import { renderDataStudioLayout } from './data-studio/dataStudioDispatch.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { renderImageStudioLayout } from './imageStudioDispatch.tsx';
 import { PackingListItemsLayout } from './PackingListItemsLayout.tsx';
@@ -166,6 +167,9 @@ function ArchetypeLayout(props: ArchetypeProps) {
 
   const studio = renderImageStudioLayout(props);
   if (studio) return studio;
+
+  const dataStudio = renderDataStudioLayout(props);
+  if (dataStudio) return dataStudio;
 
   if (archetype === 'A') {
     return (
