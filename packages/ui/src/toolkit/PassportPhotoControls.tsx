@@ -96,26 +96,28 @@ export function PassportPhotoControls({
             renderImgThumbnail={true}
           />
 
-          <div style={{ marginTop: '4px' }}>
-            <button
-              type="button"
-              class={styles.miniGhostBtn}
-              style={{
-                width: '100%',
-                padding: '6px 10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                fontWeight: 600,
-              }}
-              onClick={onOpenCamera}
-              disabled={isExecuting}
-            >
-              <span>📷</span>
-              <span>Take Selfie (Front Camera)</span>
-            </button>
-          </div>
+          {!hasFile && (
+            <div style={{ marginTop: '4px' }}>
+              <button
+                type="button"
+                class={styles.miniGhostBtn}
+                style={{
+                  width: '100%',
+                  padding: '6px 10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  fontWeight: 600,
+                }}
+                onClick={onOpenCamera}
+                disabled={isExecuting}
+              >
+                <span>📷</span>
+                <span>Take Selfie (Front Camera)</span>
+              </button>
+            </div>
+          )}
 
           {!hasFile && (
             <div class={styles.emptyStateNotice}>

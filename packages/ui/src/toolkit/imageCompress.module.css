@@ -31,6 +31,18 @@
     gap: var(--space-2);
     width: 100%;
   }
+
+  .workbench3Panel[data-has-file="true"] > .canvasPanel {
+    order: 1;
+  }
+
+  .workbench3Panel[data-has-file="true"] > .controlPanel {
+    order: 2;
+  }
+
+  .workbench3Panel[data-has-file="true"] > .resultPanel {
+    order: 3;
+  }
 }
 
 /* PANEL 1: CONTROL PANEL */

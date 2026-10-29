@@ -26,7 +26,7 @@ export function ImageCompressLayout({
   return (
     <div class={styles.container} data-image-compress-layout="">
       {/* 3-PANEL COMPRESS WORKBENCH */}
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!compress.file)}>
         {/* PANEL 1: CONTROLS & INPUTS */}
         <ImageCompressControls
           idPrefix={idPrefix}

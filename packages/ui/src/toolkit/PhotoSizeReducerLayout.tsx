@@ -26,7 +26,7 @@ export function PhotoSizeReducerLayout({
   return (
     <div class={styles.container} data-photo-size-reducer-layout="">
       {/* 3-PANEL PHOTO REDUCTION WORKBENCH */}
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!photoSize.file)}>
         {/* PANEL 1: CONTROLS & INPUTS */}
         <PhotoSizeReducerControls
           idPrefix={idPrefix}

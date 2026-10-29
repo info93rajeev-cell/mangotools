@@ -28,7 +28,7 @@ export function ImageFormatConverterLayout({
   return (
     <div class={styles.container} data-image-format-converter-layout="">
       {/* 3-PANEL FORMAT CONVERTER WORKBENCH */}
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!converter.file)}>
         {/* PANEL 1: CONTROLS & INPUTS */}
         <ImageFormatConverterControls
           idPrefix={idPrefix}

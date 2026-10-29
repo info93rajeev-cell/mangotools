@@ -115,7 +115,6 @@ function StageRightTabs({
     { id: 'adjust', glyph: '🎛️', label: 'Adjust', title: 'Manual Adjustments' },
     { id: 'filters', glyph: '🎨', label: 'Filters', title: 'Natural Filters' },
     { id: 'retouch', glyph: '🩹', label: 'Retouch', title: 'Spot Blemish Retouch' },
-    { id: 'background', glyph: '🏁', label: 'Background', title: 'Background Color' },
   ];
 
   return (

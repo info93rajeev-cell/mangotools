@@ -300,59 +300,6 @@ function RetouchTabSection({ enhance }: { enhance: UsePassportEnhanceStateReturn
   );
 }
 
-function BackgroundTabSection() {
-  return (
-    <div class={styles.backgroundTabContent}>
-      <div class={styles.adjustHeaderRow}>
-        <span class={styles.tabSectionTitle}>Official Background Color</span>
-        <span class={styles.bgSpecBadge}>ICAO Spec</span>
-      </div>
-
-      <div class={styles.bgPresetsRow}>
-        <button type="button" class={`${styles.bgSwatchBtn} ${styles.bgActiveSwatch}`}>
-          <span
-            class={styles.colorCircle}
-            style={{ background: '#ffffff', border: '1px solid #cbd5e1' }}
-          />
-          <span>Plain White</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn}>
-          <span
-            class={styles.colorCircle}
-            style={{ background: '#f8f9fa', border: '1px solid #cbd5e1' }}
-          />
-          <span>Off-White</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn}>
-          <span
-            class={styles.colorCircle}
-            style={{ background: '#e0f2fe', border: '1px solid #93c5fd' }}
-          />
-          <span>Light Blue</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn}>
-          <span
-            class={styles.colorCircle}
-            style={{ background: '#f1f5f9', border: '1px solid #cbd5e1' }}
-          />
-          <span>Light Gray</span>
-        </button>
-      </div>
-
-      <div class={styles.bgNoticeCallout}>
-        <span>ℹ️</span>
-        <span>
-          Embassies (India, US, UK, Schengen) require a uniform plain white or light backdrop.
-        </span>
-      </div>
-
-      <a href="/image-background-remover" class={styles.bgRemoverLinkBtn}>
-        <span>✂️ Remove Complex Background with AI Background Remover →</span>
-      </a>
-    </div>
-  );
-}
-
 export function PassportFiltersAdjustmentsCard({
   passport,
   enhance,
@@ -366,9 +313,7 @@ export function PassportFiltersAdjustmentsCard({
         ? 'Manual Photo Adjustments'
         : activeTab === 'filters'
           ? 'Natural Visa & Passport Filters'
-          : activeTab === 'retouch'
-            ? 'Spot Blemish Retouch'
-            : 'Official Background Options';
+          : 'Spot Blemish Retouch';
 
   return (
     <div class={styles.filtersAdjustmentsCard}>
@@ -385,7 +330,6 @@ export function PassportFiltersAdjustmentsCard({
       {activeTab === 'adjust' && <AdjustTabSection enhance={enhance} />}
       {activeTab === 'filters' && <FiltersTabSection enhance={enhance} />}
       {activeTab === 'retouch' && <RetouchTabSection enhance={enhance} />}
-      {activeTab === 'background' && <BackgroundTabSection />}
     </div>
   );
 }

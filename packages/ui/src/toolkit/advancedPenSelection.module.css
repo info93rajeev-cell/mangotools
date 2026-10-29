@@ -103,6 +103,16 @@
   .studioGrid {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+  }
+  .studioGrid[data-has-file="true"] > .canvasCenterColumn {
+    order: 1;
+  }
+  .studioGrid[data-has-file="true"] > .leftControlsColumn {
+    order: 2;
+  }
+  .studioGrid[data-has-file="true"] > .rightControlsColumn {
+    order: 3;
   }
 }
 

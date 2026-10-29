@@ -28,7 +28,7 @@ export function ImageResizeLayout({
   return (
     <div class={styles.container} data-image-resize-layout="">
       {/* 3-PANEL RESIZE WORKBENCH */}
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!resize.file)}>
         {/* PANEL 1: CONTROLS & INPUTS */}
         <ImageResizeControls
           idPrefix={idPrefix}

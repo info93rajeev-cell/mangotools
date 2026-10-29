@@ -262,24 +262,24 @@ export function UniversalUploadDropzone({
           if (selected) onSelectFile(selected);
         }}
       />
-      <label
-        for={fileInputId}
-        class={styles.dropzoneBox}
-        data-dragover={String(isDragOver)}
-        data-upload-button=""
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <DropzonePrompt
-          primaryText={primaryText}
-          browseText={browseText}
-          supportHint={supportHint}
-          linkBrowse={linkBrowse}
-        />
-      </label>
-
-      {file && (
+      {!file ? (
+        <label
+          for={fileInputId}
+          class={styles.dropzoneBox}
+          data-dragover={String(isDragOver)}
+          data-upload-button=""
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <DropzonePrompt
+            primaryText={primaryText}
+            browseText={browseText}
+            supportHint={supportHint}
+            linkBrowse={linkBrowse}
+          />
+        </label>
+      ) : (
         <LoadedFileCard
           file={file}
           fileInputId={fileInputId}

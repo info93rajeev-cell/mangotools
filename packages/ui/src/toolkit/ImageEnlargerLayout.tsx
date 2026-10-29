@@ -25,7 +25,7 @@ export function ImageEnlargerLayout({
 
   return (
     <div class={styles.container} data-image-enlarger-layout="">
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!enlarger.file)}>
         {/* PANEL 1: CONTROLS & SLIDERS */}
         <ImageEnlargerControls
           idPrefix={idPrefix}

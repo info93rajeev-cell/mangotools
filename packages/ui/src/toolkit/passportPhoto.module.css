@@ -439,11 +439,6 @@
   color: var(--color-text-muted);
 }
 
-/* Keep both upload dropzone box and loaded photo card visible simultaneously */
-.controlPanel [data-universal-upload-dropzone] label[data-upload-button] {
-  display: flex;
-}
-
 .controlPanel [data-universal-upload-dropzone] .dropzoneBox {
   padding: 10px 12px;
 }

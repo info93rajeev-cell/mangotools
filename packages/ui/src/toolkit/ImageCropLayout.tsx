@@ -41,7 +41,7 @@ export function ImageCropLayout({
   return (
     <div class={styles.container} data-image-crop-layout="">
       {/* 3-PANEL CROP WORKBENCH */}
-      <div class={styles.workbench3Panel}>
+      <div class={styles.workbench3Panel} data-has-file={String(!!crop.file)}>
         {/* PANEL 1: CONTROLS & INPUTS */}
         <ImageCropControls
           idPrefix={idPrefix}

@@ -19,7 +19,7 @@ export function AdvancedPenStudioLayout({ notify }: AdvancedPenStudioLayoutProps
       <AdvancedPenHeader penSelection={penSelection} />
 
       {/* 3-COLUMN STUDIO WORKBENCH */}
-      <div class={styles.studioGrid}>
+      <div class={styles.studioGrid} data-has-file={String(!!penSelection.image)}>
         {/* Left Column: Steps 1 & 2 */}
         <AdvancedPenControls penSelection={penSelection} />
 

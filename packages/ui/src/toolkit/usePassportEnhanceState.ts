@@ -8,7 +8,7 @@ import {
   ZERO_ADJUSTMENTS,
 } from './passportEnhanceEngine.ts';
 
-export type EnhanceToolTab = 'crop' | 'adjust' | 'filters' | 'retouch' | 'background';
+export type EnhanceToolTab = 'crop' | 'adjust' | 'filters' | 'retouch';
 
 export interface UsePassportEnhanceStateReturn {
   activeTab: EnhanceToolTab;

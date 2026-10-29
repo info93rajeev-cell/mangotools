@@ -55,7 +55,7 @@ export function ImageBackgroundRemoverLayout({
         <AdvancedPenStudioLayout notify={notify} />
       ) : (
         /* STANDARD 3-PANEL AUTO REMOVAL WORKBENCH */
-        <div class={styles.workbench3Panel}>
+        <div class={styles.workbench3Panel} data-has-file={String(!!bgRemover.file)}>
           <ImageBackgroundRemoverControls
             idPrefix={idPrefix}
             preset={preset}
