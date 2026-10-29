@@ -38,6 +38,11 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
           <span class="count">{count}</span>
         </div>
         <p>{category.summary}</p>
+        <div class="category-trust-strip">
+          <span class="trust-badge"><span>⚡</span> Instant In-Browser</span>
+          <span class="trust-badge"><span>🔒</span> 100% Private</span>
+          <span class="trust-badge"><span>🛡️</span> Zero Server Upload</span>
+        </div>
       </header>
       {
         tools.length > 1 ? (
@@ -108,10 +113,62 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
   .page {
     display: grid;
     gap: var(--space-8);
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .head {
     display: grid;
     gap: var(--space-2);
+  }
+  .category-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #0b693e;
+    background: #eaf8f0;
+    border: 1px solid #b7ebd0;
+    padding: 3px 9px;
+    border-radius: 9999px;
+  }
+  @media (max-width: 650px) {
+    .page {
+      gap: var(--space-4);
+      padding-top: 4px;
+    }
+    .head {
+      gap: 4px;
+    }
+    .title-row h1 {
+      font-size: 1.5rem;
+      line-height: 1.8rem;
+    }
+    .head p {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    .category-trust-strip {
+      gap: 6px;
+    }
+    .trust-badge {
+      font-size: 10.5px;
+      padding: 2px 7px;
+    }
+    .start {
+      gap: 6px;
+    }
+    .start a {
+      font-size: 12px;
+      padding: 0 8px;
+      min-height: 28px;
+    }
   }
   .title-row {
     display: flex;

@@ -1,6 +1,9 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useState } from 'preact/hooks';
 import styles from './dataStudio.module.css';
+import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { UrlEncoderAuxCards } from './UrlEncoderAuxCards.tsx';
 import { useUrlEncoderStudio } from './useUrlEncoderStudio.ts';
 
 export interface UrlEncoderStudioLayoutProps {
@@ -29,13 +32,24 @@ function UrlInputPanel({
   onInput: (v: string) => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128279;</span>
           <strong>Input Text / URL</strong>
         </div>
         <div class={styles.toolactions}>
+          <button
+            type="button"
+            class={styles.sampleMiniBtn}
+            data-try-sample=""
+            onClick={() =>
+              onInput('https://api.example.com/search?q=beyond the ai&filter=developer & tools')
+            }
+            title="Load sample URL"
+          >
+            ✨ Try sample
+          </button>
           <button
             type="button"
             class={direction === 'encode' ? styles.btnPrimary : styles.btnSecondary}
@@ -121,7 +135,7 @@ function UrlOutputPanel({
   onDownload: () => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128187;</span>
@@ -179,7 +193,7 @@ function UrlSidePanel({
   queryParams: [string, string][];
 }) {
   return (
-    <div class={styles.side}>
+    <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128202;</span>Summary
@@ -232,80 +246,48 @@ function UrlSidePanel({
   );
 }
 
-function UrlAuxCards({
-  mode,
-  onMode,
-  queryParams,
+function UrlStatusBar({
+  direction,
+  onDirection,
+  onCopy,
+  onDownload,
+  onReset,
+  notify,
 }: {
-  mode: 'component' | 'full-url' | 'form';
-  onMode: (m: 'component' | 'full-url' | 'form') => void;
-  queryParams: [string, string][];
+  direction: 'encode' | 'decode';
+  onDirection: (fn: (d: 'encode' | 'decode') => 'encode' | 'decode') => void;
+  onCopy: () => void;
+  onDownload: () => void;
+  onReset: () => void;
+  notify: (msg: string) => void;
 }) {
   return (
-    <div class={styles.aux}>
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Mode
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Operation Mode</span>
-          <select
-            class={styles.optSelect}
-            value={mode}
-            onChange={(e) =>
-              onMode((e.target as HTMLSelectElement).value as 'component' | 'full-url' | 'form')
-            }
-          >
-            <option value="component">Component (encodeURIComponent)</option>
-            <option value="full-url">Full URL (encodeURI)</option>
-            <option value="form">Form Data (spaces as +)</option>
-          </select>
-        </label>
-        <div class={styles.optCheckboxRow}>
-          <span class={styles.chipGreen}>UTF-8 Safe</span>
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9776;</span>Query Params ({queryParams.length})
-        </div>
-        <div style={{ overflowY: 'auto', maxHeight: 85 }}>
-          {queryParams.length > 0 ? (
-            queryParams.map(([k, v]) => (
-              <div key={k} class={styles.kv}>
-                <span>{k}</span>
-                <b>{v}</b>
-              </div>
-            ))
-          ) : (
-            <div class={styles.optHelptext}>No ?key=val parameters detected in text.</div>
-          )}
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Rules
-        </div>
-        <div class={styles.rowchips}>
-          <span class={styles.chipBlue}>%20 &bull; space</span>
-          <span class={styles.chipPurple}>%2B &bull; +</span>
-          <span class={styles.chipAmber}>%26 &bull; &amp;</span>
-        </div>
-        <div class={styles.optHelptext} style={{ marginTop: 4 }}>
-          RFC 3986 standard escapes.
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Diagnostics
-        </div>
-        <div class={styles.optHelptext}>
-          Malformed % sequences and invalid UTF-8 report clear errors.
-        </div>
-      </section>
+    <div class={styles.statusBar}>
+      <button
+        type="button"
+        class={styles.btnSecondary}
+        onClick={() => notify('Local browser-safe processing')}
+      >
+        &#9432; Runs on your device &middot; Browser-local
+      </button>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button
+          type="button"
+          class={styles.btnGold}
+          onClick={() => onDirection((d) => (d === 'encode' ? 'encode' : 'decode'))}
+        >
+          {direction === 'encode' ? 'Encode URL' : 'Decode URL'}
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
+          Copy result
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
+          Download
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onReset}>
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
@@ -316,6 +298,7 @@ export function UrlEncoderStudioLayout({
   store,
   notify,
 }: UrlEncoderStudioLayoutProps) {
+  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
   const {
     input,
     handleInput,
@@ -335,7 +318,8 @@ export function UrlEncoderStudioLayout({
 
   return (
     <div class={styles.container} data-url-encoder-studio-layout="">
-      <div class={styles.work}>
+      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
+      <div class={styles.work} data-mobile-view={mobileView}>
         <UrlInputPanel
           idPrefix={idPrefix}
           input={input}
@@ -357,35 +341,16 @@ export function UrlEncoderStudioLayout({
         <UrlSidePanel mode={mode} error={error} parts={parts} queryParams={queryParams} />
       </div>
 
-      <UrlAuxCards mode={mode} onMode={setMode} queryParams={queryParams} />
+      <UrlEncoderAuxCards mode={mode} onMode={setMode} queryParams={queryParams} />
 
-      <div class={styles.statusBar}>
-        <button
-          type="button"
-          class={styles.btnSecondary}
-          onClick={() => notify('Local browser-safe processing')}
-        >
-          &#9432; Runs on your device &middot; Browser-local
-        </button>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button
-            type="button"
-            class={styles.btnGold}
-            onClick={() => setDirection((d) => (d === 'encode' ? 'encode' : 'decode'))}
-          >
-            {direction === 'encode' ? 'Encode URL' : 'Decode URL'}
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleCopy}>
-            Copy result
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleDownload}>
-            Download
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleReset}>
-            Reset
-          </button>
-        </div>
-      </div>
+      <UrlStatusBar
+        direction={direction}
+        onDirection={setDirection}
+        onCopy={handleCopy}
+        onDownload={handleDownload}
+        onReset={handleReset}
+        notify={notify}
+      />
     </div>
   );
 }

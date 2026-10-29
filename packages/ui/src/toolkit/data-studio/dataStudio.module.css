@@ -8,6 +8,56 @@
   box-sizing: border-box;
 }
 
+/* Mobile View Switcher Tab Bar */
+.mobileViewSwitcher {
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .mobileViewSwitcher {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #dce4f2;
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .mobileViewTab {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 3px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .mobileViewTabActive {
+    background: #ffffff;
+    color: #1267ed;
+    box-shadow: 0 1px 3px rgba(18, 103, 237, 0.15);
+  }
+
+  .tabIcon {
+    font-size: 11px;
+    line-height: 1;
+  }
+}
+
 /* 3-Panel Main Work Area */
 .work {
   display: grid;
@@ -30,13 +80,91 @@
     display: flex;
     flex-direction: column;
     height: auto;
-    gap: 12px;
+    gap: 6px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Single Screen Split Arrangement: Both Input & Output visible without scrolling */
+  .container[data-mobile-view="split"] .work {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .container[data-mobile-view="split"] .panel {
+    padding: 6px 9px;
+    gap: 4px;
+    border-radius: 8px;
+  }
+
+  .container[data-mobile-view="split"] .toolbar {
+    min-height: 24px;
+    gap: 4px;
+  }
+
+  .container[data-mobile-view="split"] .tooltitle {
+    font-size: 12.5px;
+  }
+
+  .container[data-mobile-view="split"] .toolIcon {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    font-size: 11px;
+  }
+
+  .container[data-mobile-view="split"] .panel .editor {
+    height: 120px;
+    min-height: 100px;
+    max-height: 135px;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 6px 8px;
+  }
+
+  .container[data-mobile-view="split"] .panel .bigoutput {
+    height: 120px;
+    min-height: 100px;
+    max-height: 135px;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 6px 8px;
+  }
+
+  .container[data-mobile-view="split"] .panel .tablewrap {
+    height: 120px;
+    max-height: 135px;
+  }
+
+  .container[data-mobile-view="split"] .noteLine {
+    font-size: 9.5px;
+    padding-top: 1px;
+  }
+
+  /* Single Panel Focus Modes */
+  .container[data-mobile-view="input"] .outputPanel,
+  .container[data-mobile-view="input"] .sidePanel {
+    display: none;
+  }
+
+  .container[data-mobile-view="output"] .inputPanel,
+  .container[data-mobile-view="output"] .sidePanel {
+    display: none;
+  }
+
+  .container[data-mobile-view="input"] .panel .editor,
+  .container[data-mobile-view="output"] .panel .editor,
+  .container[data-mobile-view="output"] .panel .bigoutput {
+    height: 250px;
+    min-height: 200px;
   }
 }
 
 /* Panel Design */
 .panel {
   min-width: 0;
+  max-width: 100%;
   border: 1px solid #dce4f2;
   background: linear-gradient(180deg, #fff, #fff 72%, #fcfdff);
   border-radius: 9px;
@@ -46,6 +174,14 @@
   flex-direction: column;
   gap: 8px;
   min-height: 0;
+  box-sizing: border-box;
+}
+
+.inputPanel,
+.outputPanel,
+.sidePanel {
+  min-width: 0;
+  max-width: 100%;
   box-sizing: border-box;
 }
 

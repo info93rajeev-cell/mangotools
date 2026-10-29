@@ -1,6 +1,9 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useState } from 'preact/hooks';
+import { CsvToJsonAuxCards } from './CsvToJsonAuxCards.tsx';
 import styles from './dataStudio.module.css';
+import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
 import { useCsvToJsonStudio } from './useCsvToJsonStudio.ts';
 
 export interface CsvToJsonStudioLayoutProps {
@@ -25,15 +28,21 @@ function CsvInputPanel({
   onInput: (v: string) => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#8862;</span>
           <strong>Input CSV / TSV</strong>
         </div>
         <div class={styles.toolactions}>
-          <button type="button" class={styles.btnSecondary} onClick={onReset}>
-            Sample
+          <button
+            type="button"
+            class={styles.sampleMiniBtn}
+            data-try-sample=""
+            onClick={onReset}
+            title="Load sample CSV"
+          >
+            ✨ Try sample
           </button>
         </div>
       </div>
@@ -97,7 +106,7 @@ function CsvOutputPanel({
   onDownload: () => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#123;&#125;</span>
@@ -157,7 +166,7 @@ function CsvSidePanel({
   parsed: { headers: string[]; rows: string[][]; delimiter: string };
 }) {
   return (
-    <div class={styles.side}>
+    <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#10003;</span>Import Health
@@ -204,87 +213,40 @@ function CsvSidePanel({
   );
 }
 
-function CsvAuxCards({
-  delimiterChoice,
-  onDelimiter,
-  formatShape,
-  onFormatShape,
+function CsvStatusBar({
+  onCopy,
+  onDownload,
+  onReset,
+  notify,
 }: {
-  delimiterChoice: 'auto' | ',' | ';' | '\t' | '|';
-  onDelimiter: (d: 'auto' | ',' | ';' | '\t' | '|') => void;
-  formatShape: 'objects' | '2d-array' | 'ndjson';
-  onFormatShape: (s: 'objects' | '2d-array' | 'ndjson') => void;
+  onCopy: () => void;
+  onDownload: () => void;
+  onReset: () => void;
+  notify: (msg: string) => void;
 }) {
   return (
-    <div class={styles.aux}>
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Parsing Options
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Delimiter</span>
-          <select
-            class={styles.optSelect}
-            value={delimiterChoice}
-            onChange={(e) =>
-              onDelimiter((e.target as HTMLSelectElement).value as 'auto' | ',' | ';' | '\t' | '|')
-            }
-          >
-            <option value="auto">Auto detected</option>
-            <option value=",">Comma (,)</option>
-            <option value=";">Semicolon (;)</option>
-            <option value="&#9;">Tab (\t)</option>
-            <option value="|">Pipe (|)</option>
-          </select>
-        </label>
-        <div class={styles.optCheckboxRow}>
-          <span class={styles.chipGreen}>First row headers</span>
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Data Fidelity
-        </div>
-        <div class={styles.rowchips}>
-          <span class={styles.chipGreen}>Strings first</span>
-          <span class={styles.chipAmber}>Keep leading zeros (00124)</span>
-        </div>
-        <div class={styles.optHelptext} style={{ marginTop: 4 }}>
-          ID and SKU columns stay intact without truncation.
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#123;&#125;</span>Output Shape
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>JSON format</span>
-          <select
-            class={styles.optSelect}
-            value={formatShape}
-            onChange={(e) =>
-              onFormatShape(
-                (e.target as HTMLSelectElement).value as 'objects' | '2d-array' | 'ndjson',
-              )
-            }
-          >
-            <option value="objects">Array of objects</option>
-            <option value="2d-array">2D Array / Nested</option>
-            <option value="ndjson">JSON Lines (NDJSON)</option>
-          </select>
-        </label>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced Parsing
-        </div>
-        <div class={styles.optHelptext}>
-          Quotes &middot; multiline fields &middot; BOM &middot; blank/null policy.
-        </div>
-      </section>
+    <div class={styles.statusBar}>
+      <button
+        type="button"
+        class={styles.btnSecondary}
+        onClick={() => notify('Local browser-safe processing')}
+      >
+        &#9432; Runs on your device &middot; Browser-local
+      </button>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button type="button" class={styles.btnGold} onClick={onCopy}>
+          Convert to JSON
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
+          Copy result
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
+          Download
+        </button>
+        <button type="button" class={styles.btnSecondary} onClick={onReset}>
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
@@ -295,6 +257,7 @@ export function CsvToJsonStudioLayout({
   store,
   notify,
 }: CsvToJsonStudioLayoutProps) {
+  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
   const {
     input,
     handleInput,
@@ -313,7 +276,8 @@ export function CsvToJsonStudioLayout({
 
   return (
     <div class={styles.container} data-csv-to-json-studio-layout="">
-      <div class={styles.work}>
+      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
+      <div class={styles.work} data-mobile-view={mobileView}>
         <CsvInputPanel
           idPrefix={idPrefix}
           input={input}
@@ -334,36 +298,19 @@ export function CsvToJsonStudioLayout({
         <CsvSidePanel parsed={parsed} />
       </div>
 
-      <CsvAuxCards
+      <CsvToJsonAuxCards
         delimiterChoice={delimiterChoice}
         onDelimiter={setDelimiterChoice}
         formatShape={formatShape}
         onFormatShape={setFormatShape}
       />
 
-      <div class={styles.statusBar}>
-        <button
-          type="button"
-          class={styles.btnSecondary}
-          onClick={() => notify('Local browser-safe processing')}
-        >
-          &#9432; Runs on your device &middot; Browser-local
-        </button>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button type="button" class={styles.btnGold} onClick={handleCopy}>
-            Convert to JSON
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleCopy}>
-            Copy result
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleDownload}>
-            Download
-          </button>
-          <button type="button" class={styles.btnSecondary} onClick={handleReset}>
-            Reset
-          </button>
-        </div>
-      </div>
+      <CsvStatusBar
+        onCopy={handleCopy}
+        onDownload={handleDownload}
+        onReset={handleReset}
+        notify={notify}
+      />
     </div>
   );
 }

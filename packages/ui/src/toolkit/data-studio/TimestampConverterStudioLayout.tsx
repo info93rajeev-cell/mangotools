@@ -1,7 +1,10 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useState } from 'preact/hooks';
 import styles from './dataStudio.module.css';
-import { COMMON_TIMEZONES, useTimestampStudio } from './useTimestampStudio.ts';
+import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { TimestampAuxCards } from './TimestampAuxCards.tsx';
+import { useTimestampStudio } from './useTimestampStudio.ts';
 
 export interface TimestampConverterStudioLayoutProps {
   idPrefix: string;
@@ -29,13 +32,22 @@ function TimestampInputPanel({
   onInput: (v: string) => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128337;</span>
           <strong>Unix Timestamp → Date</strong>
         </div>
         <div class={styles.toolactions}>
+          <button
+            type="button"
+            class={styles.sampleMiniBtn}
+            data-try-sample=""
+            onClick={onCurrentTime}
+            title="Use current timestamp"
+          >
+            ✨ Try sample
+          </button>
           <button type="button" class={styles.btnSecondary} onClick={onCurrentTime}>
             Current Time
           </button>
@@ -114,7 +126,7 @@ function TimestampDatePanel({
   onDownload: () => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128197;</span>
@@ -183,7 +195,7 @@ function TimestampSidePanel({
   leapYear: boolean;
 }) {
   return (
-    <div class={styles.side}>
+    <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128338;</span>Formats
@@ -223,101 +235,6 @@ function TimestampSidePanel({
         <div class={styles.kv}>
           <span>Timezone</span>
           <b>IANA Supported</b>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function TimestampAuxCards({
-  customDate,
-  onDateChange,
-  timezone,
-  onTimezoneChange,
-  unit,
-  onUnitChange,
-}: {
-  customDate: string;
-  onDateChange: (d: string) => void;
-  timezone: string;
-  onTimezoneChange: (t: string) => void;
-  unit: string;
-  onUnitChange: (u: 'seconds' | 'milliseconds' | 'microseconds' | 'nanoseconds') => void;
-}) {
-  return (
-    <div class={styles.aux}>
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128197;</span>Date → Timestamp
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Select Date</span>
-          <input
-            type="date"
-            class={styles.optSelect}
-            value={customDate}
-            onChange={(e) => onDateChange((e.target as HTMLInputElement).value)}
-          />
-        </label>
-        <div class={styles.optCheckboxRow}>
-          <span class={styles.chipGreen}>00:00:00 UTC</span>
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#127758;</span>Time Zone
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Display zone</span>
-          <select
-            class={styles.optSelect}
-            value={timezone}
-            onChange={(e) => onTimezoneChange((e.target as HTMLSelectElement).value)}
-          >
-            {COMMON_TIMEZONES.map((tz) => (
-              <option key={tz.id} value={tz.id}>
-                {tz.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div class={styles.optHelptext}>UTC is always calculated alongside.</div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Precision
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Input Unit</span>
-          <select
-            class={styles.optSelect}
-            value={unit}
-            onChange={(e) =>
-              onUnitChange(
-                (e.target as HTMLSelectElement).value as
-                  | 'seconds'
-                  | 'milliseconds'
-                  | 'microseconds'
-                  | 'nanoseconds',
-              )
-            }
-          >
-            <option value="seconds">Explicit seconds (10 digits)</option>
-            <option value="milliseconds">Milliseconds (13 digits)</option>
-            <option value="microseconds">Microseconds (16 digits)</option>
-            <option value="nanoseconds">Nanoseconds (19 digits)</option>
-          </select>
-        </label>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced
-        </div>
-        <div class={styles.optHelptext}>
-          Supports negative timestamps before 1970 and leap seconds.
         </div>
       </section>
     </div>
@@ -367,11 +284,12 @@ function TimestampStatusBar({
 interface TimestampWorkGridProps {
   idPrefix: string;
   state: ReturnType<typeof useTimestampStudio>;
+  mobileView: MobileViewMode;
 }
 
-function TimestampWorkGrid({ idPrefix, state }: TimestampWorkGridProps) {
+function TimestampWorkGrid({ idPrefix, state, mobileView }: TimestampWorkGridProps) {
   return (
-    <div class={styles.work}>
+    <div class={styles.work} data-mobile-view={mobileView}>
       <TimestampInputPanel
         idPrefix={idPrefix}
         input={state.input}
@@ -409,11 +327,13 @@ export function TimestampConverterStudioLayout({
   store,
   notify,
 }: TimestampConverterStudioLayoutProps) {
+  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
   const state = useTimestampStudio(snapshot, store, notify);
 
   return (
     <div class={styles.container} data-timestamp-converter-studio-layout="">
-      <TimestampWorkGrid idPrefix={idPrefix} state={state} />
+      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
+      <TimestampWorkGrid idPrefix={idPrefix} state={state} mobileView={mobileView} />
       <TimestampAuxCards
         customDate={state.customDate}
         onDateChange={state.handleDateToTimestamp}

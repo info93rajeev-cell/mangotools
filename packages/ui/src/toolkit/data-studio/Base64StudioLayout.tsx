@@ -1,6 +1,9 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useState } from 'preact/hooks';
+import { Base64AuxCards } from './Base64AuxCards.tsx';
 import styles from './dataStudio.module.css';
+import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
 import { useBase64Studio } from './useBase64Studio.ts';
 
 export interface Base64StudioLayoutProps {
@@ -19,6 +22,7 @@ function Base64InputPanel({
   sourceBytes,
   onDirection,
   onInput,
+  onSample,
 }: {
   idPrefix: string;
   input: string;
@@ -27,15 +31,27 @@ function Base64InputPanel({
   sourceBytes: number;
   onDirection: (d: 'encode' | 'decode') => void;
   onInput: (v: string) => void;
+  onSample?: () => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#60;&#47;&#62;</span>
           <strong>{direction === 'encode' ? 'Input Text' : 'Input Base64'}</strong>
         </div>
         <div class={styles.toolactions}>
+          {onSample && (
+            <button
+              type="button"
+              class={styles.btnSecondary}
+              onClick={onSample}
+              data-try-sample=""
+              title="Load sample text"
+            >
+              ✨ Try sample
+            </button>
+          )}
           <button
             type="button"
             class={direction === 'encode' ? styles.btnPrimary : styles.btnSecondary}
@@ -109,7 +125,7 @@ function Base64OutputPanel({
   onDownload: () => void;
 }) {
   return (
-    <section class={styles.panel}>
+    <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128274;</span>
@@ -176,7 +192,7 @@ function Base64SidePanel({
   lineWrap: 'none' | '76';
 }) {
   return (
-    <div class={styles.side}>
+    <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128202;</span>Transfer Summary
@@ -226,98 +242,6 @@ function Base64SidePanel({
         <div class={styles.kv}>
           <span>Reversible</span>
           <b>100% Client-side</b>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function Base64AuxCards({
-  variant,
-  onVariant,
-  padding,
-  onPadding,
-  lineWrap,
-  onLineWrap,
-}: {
-  variant: 'standard' | 'url-safe';
-  onVariant: (v: 'standard' | 'url-safe') => void;
-  padding: boolean;
-  onPadding: (p: boolean) => void;
-  lineWrap: 'none' | '76';
-  onLineWrap: (w: 'none' | '76') => void;
-}) {
-  return (
-    <div class={styles.aux}>
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Base64 Variant
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Alphabet</span>
-          <select
-            class={styles.optSelect}
-            value={variant}
-            onChange={(e) =>
-              onVariant((e.target as HTMLSelectElement).value as 'standard' | 'url-safe')
-            }
-          >
-            <option value="standard">Standard (RFC 4648)</option>
-            <option value="url-safe">URL-safe (RFC 4648 §5)</option>
-          </select>
-        </label>
-        <div class={styles.optCheckboxRow}>
-          <label class={styles.optCheckbox}>
-            <input
-              type="checkbox"
-              checked={padding}
-              onChange={(e) => onPadding((e.target as HTMLInputElement).checked)}
-            />
-            Keep padding (=)
-          </label>
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128196;</span>Text &amp; Encoding
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Character set</span>
-          <select class={styles.optSelect} disabled value="utf8">
-            <option value="utf8">UTF-8 Unicode</option>
-          </select>
-        </label>
-        <div class={styles.optHelptext}>
-          Emoji and international scripts preserved without loss.
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Line Formatting
-        </div>
-        <label class={styles.optField}>
-          <span class={styles.optLabel}>Line wrapping</span>
-          <select
-            class={styles.optSelect}
-            value={lineWrap}
-            onChange={(e) => onLineWrap((e.target as HTMLSelectElement).value as 'none' | '76')}
-          >
-            <option value="none">None (Single line)</option>
-            <option value="76">76 characters (MIME)</option>
-          </select>
-        </label>
-        <div class={styles.optHelptext}>MIME &middot; Data URI &middot; Whitespace policy</div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Safety &amp; Diagnostics
-        </div>
-        <div class={styles.optHelptext}>
-          Invalid alphabet, padding and UTF-8 decoding errors are reported distinctly. No network
-          upload.
         </div>
       </section>
     </div>
@@ -386,6 +310,7 @@ function Base64WorkGrid({ idPrefix, state }: Base64WorkGridProps) {
         sourceBytes={state.sourceBytes}
         onDirection={state.setDirection}
         onInput={state.handleInput}
+        onSample={state.handleReset}
       />
       <Base64OutputPanel
         idPrefix={idPrefix}
@@ -412,9 +337,16 @@ function Base64WorkGrid({ idPrefix, state }: Base64WorkGridProps) {
 
 export function Base64StudioLayout({ idPrefix, snapshot, store, notify }: Base64StudioLayoutProps) {
   const state = useBase64Studio(snapshot, store, notify);
+  const [mobileView, setMobileView] = useState<StudioMobileView>('split');
 
   return (
-    <div class={styles.container} data-base64-studio-layout="">
+    <div class={styles.container} data-base64-studio-layout="" data-mobile-view={mobileView}>
+      <MobileViewSwitcher
+        view={mobileView}
+        onChange={setMobileView}
+        inputTitle={state.direction === 'encode' ? 'Text Input' : 'Base64 Input'}
+        outputTitle={state.direction === 'encode' ? 'Base64 Output' : 'Decoded Text'}
+      />
       <Base64WorkGrid idPrefix={idPrefix} state={state} />
       <Base64AuxCards
         variant={state.variant}

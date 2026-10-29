@@ -34,6 +34,14 @@ import { useToolStore } from './useToolStore.ts';
 const INVOICE_MULTI_ITEM_PRESET_ID = 'export/invoice-commercial';
 const PACKING_LIST_MULTI_ITEM_PRESET_ID = 'export/packing-list';
 const CBM_SHIPMENT_PRESET_ID = 'logistics/cbm-shipment';
+const DATA_STUDIO_TOOL_IDS = new Set([
+  'json-formatter',
+  'base64-encode-decode',
+  'url-encode-decode',
+  'csv-to-json',
+  'json-to-csv',
+  'timestamp-converter',
+]);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -137,14 +145,17 @@ function ToolIslandView(props: ToolIslandViewProps) {
     message,
     ...layoutProps
   } = props;
+  const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
-      {standardCalculator ? null : (
+      {standardCalculator || isDataStudio ? null : (
         <TopBar sampleId={sampleId} onTrySample={() => props.calculatorActions.onTrySample?.()} />
       )}
       <TransferNotice preset={preset} idPrefix={props.idPrefix} visible={transferred} />
       <ArchetypeLayout {...layoutProps} preset={preset} toolId={toolId} archetype={archetype} />
-      {archetype === 'D' || standardCalculator ? null : <ActionBar {...actionBar} />}
+      {archetype === 'D' || standardCalculator || isDataStudio ? null : (
+        <ActionBar {...actionBar} />
+      )}
       <Toast message={message} />
     </div>
   );
