@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
+import { PassportMobileCropStage } from './PassportMobileCropStage.tsx';
 import { PassportMobileLanding } from './PassportMobileLanding.tsx';
 import { type MobileToolTab, PassportMobileToolTabs } from './PassportMobileToolTabs.tsx';
 import styles from './passportMobileStudio.module.css';
@@ -116,6 +117,15 @@ function MobileStudioNavTabs({
       <button
         type="button"
         class={styles.toolTabBtn}
+        data-active={String(activeTab === 'crop')}
+        onClick={() => onSelectTab('crop')}
+      >
+        <span>◰</span>
+        <span>Crop</span>
+      </button>
+      <button
+        type="button"
+        class={styles.toolTabBtn}
         data-active={String(activeTab === 'presets')}
         onClick={() => onSelectTab('presets')}
       >
@@ -152,6 +162,15 @@ function MobileStudioNavTabs({
       <button
         type="button"
         class={styles.toolTabBtn}
+        data-active={String(activeTab === 'background')}
+        onClick={() => onSelectTab('background')}
+      >
+        <span>🏁</span>
+        <span>BG</span>
+      </button>
+      <button
+        type="button"
+        class={styles.toolTabBtn}
         data-active={String(activeTab === 'sheet')}
         onClick={() => onSelectTab('sheet')}
       >
@@ -173,7 +192,7 @@ export function PassportMobileStudio({
   onResetToLanding,
   onOpenCamera,
 }: PassportMobileStudioProps) {
-  const [activeTab, setActiveTab] = useState<MobileToolTab>('presets');
+  const [activeTab, setActiveTab] = useState<MobileToolTab>('crop');
   const isExecuting = passport.phase === 'running';
 
   // Open studio if explicitly entered OR if user has loaded a custom file (not default sample)
@@ -185,7 +204,11 @@ export function PassportMobileStudio({
 
   if (!isEffectiveOpen || !passport.file) {
     return (
-      <div class={styles.mobileStudioWrap} data-passport-mobile-studio="">
+      <div
+        class={styles.mobileStudioWrap}
+        data-passport-mobile-studio=""
+        data-mobile-studio-active="false"
+      >
         <PassportMobileLanding
           idPrefix={idPrefix}
           preset={preset}
@@ -199,7 +222,11 @@ export function PassportMobileStudio({
   }
 
   return (
-    <div class={styles.mobileStudioWrap} data-passport-mobile-studio="">
+    <div
+      class={styles.mobileStudioWrap}
+      data-passport-mobile-studio=""
+      data-mobile-studio-active="true"
+    >
       <div class={styles.studioContainer}>
         {/* Top Bar with Status and Actions */}
         <div class={styles.studioTopBar}>
@@ -223,8 +250,12 @@ export function PassportMobileStudio({
           </div>
         </div>
 
-        {/* Sticky Top Live Preview */}
-        <MobileStudioPreview passport={passport} enhance={enhance} />
+        {/* Sticky Top Live Preview: Crop Stage or Enhanced Before/After Split */}
+        {activeTab === 'crop' ? (
+          <PassportMobileCropStage passport={passport} />
+        ) : (
+          <MobileStudioPreview passport={passport} enhance={enhance} />
+        )}
 
         {/* Segmented Navigation Tabs */}
         <MobileStudioNavTabs activeTab={activeTab} onSelectTab={setActiveTab} />
