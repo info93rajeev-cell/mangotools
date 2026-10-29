@@ -4,6 +4,7 @@ import { PassportMobileCropStage } from './PassportMobileCropStage.tsx';
 import { PassportMobileLanding } from './PassportMobileLanding.tsx';
 import { PassportMobileSheetSection } from './PassportMobileSheetSection.tsx';
 import { type MobileToolTab, PassportMobileToolTabs } from './PassportMobileToolTabs.tsx';
+import { PassportPrintSheetPreview } from './PassportPrintSheetPreview.tsx';
 import styles from './passportMobileStudio.module.css';
 import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
 import type { UsePassportPhotoReturn } from './usePassportPhoto.ts';
@@ -30,7 +31,8 @@ function MobileStudioPreview({ passport, enhance }: MobilePreviewProps) {
   const [isDragging, setIsDragging] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const rawImgSrc = passport.imageSrc || '/samples/passport-portrait.jpg';
+  const rawImgSrc =
+    passport.croppedImageSrc || passport.imageSrc || '/samples/passport-portrait.jpg';
   const displayEnhancedSrc = enhancedBlobUrl || rawImgSrc;
 
   const handlePointerDown = (e: PointerEvent) => {
@@ -163,15 +165,6 @@ function MobileStudioNavTabs({
       <button
         type="button"
         class={styles.toolTabBtn}
-        data-active={String(activeTab === 'background')}
-        onClick={() => onSelectTab('background')}
-      >
-        <span>🏁</span>
-        <span>BG</span>
-      </button>
-      <button
-        type="button"
-        class={styles.toolTabBtn}
         data-active={String(activeTab === 'sheet')}
         onClick={() => onSelectTab('sheet')}
       >
@@ -251,9 +244,11 @@ export function PassportMobileStudio({
           </div>
         </div>
 
-        {/* Sticky Top Live Preview: Crop Stage or Enhanced Before/After Split */}
+        {/* Sticky Top Live Preview: Crop Stage, Print Sheet Preview, or Enhanced Before/After Split */}
         {activeTab === 'crop' ? (
           <PassportMobileCropStage passport={passport} />
+        ) : activeTab === 'sheet' ? (
+          <PassportPrintSheetPreview passport={passport} />
         ) : (
           <MobileStudioPreview passport={passport} enhance={enhance} />
         )}

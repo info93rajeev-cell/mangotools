@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { PassportSheetControls } from './PassportSheetControls.tsx';
+import { PassportTipsCard } from './PassportTipsCard.tsx';
 import enhanceStyles from './passportEnhance.module.css';
 import styles from './passportPhoto.module.css';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
@@ -283,6 +284,8 @@ export function PassportPhotoControls({
                 disabled={isExecuting}
               />
             )}
+
+            <PassportTipsCard />
           </>
         )}
       </div>

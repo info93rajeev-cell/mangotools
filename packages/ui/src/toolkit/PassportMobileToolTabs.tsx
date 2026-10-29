@@ -6,14 +6,7 @@ import {
   type UsePassportPhotoReturn,
 } from './usePassportPhoto.ts';
 
-export type MobileToolTab =
-  | 'crop'
-  | 'presets'
-  | 'adjust'
-  | 'filters'
-  | 'retouch'
-  | 'background'
-  | 'sheet';
+export type MobileToolTab = 'crop' | 'presets' | 'adjust' | 'filters' | 'retouch' | 'sheet';
 
 const FILTER_ITEMS = [
   { id: 'none', label: 'None' },
@@ -292,39 +285,17 @@ function RetouchTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn
           onInput={(e) => setAdjustment('skinSmooth', Number((e.target as HTMLInputElement).value))}
         />
       </div>
-    </div>
-  );
-}
 
-function BackgroundTabContent() {
-  return (
-    <div class={styles.tabContentStack}>
-      <span class={styles.sectionMiniTitle}>Official Background Color (Optional):</span>
-      <div class={styles.bgSwatchesGrid}>
-        <button type="button" class={styles.bgSwatchBtn} data-active="true">
-          <div
-            class={styles.swatchCircle}
-            style={{ background: '#ffffff', border: '1px solid #ccc' }}
-          />
-          <span>Plain White (US/Schengen)</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn} data-active="false">
-          <div class={styles.swatchCircle} style={{ background: '#ebf5ff' }} />
-          <span>Light Blue</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn} data-active="false">
-          <div class={styles.swatchCircle} style={{ background: '#f3f4f6' }} />
-          <span>Light Gray</span>
-        </button>
-        <button type="button" class={styles.bgSwatchBtn} data-active="false">
-          <div class={styles.swatchCircle} style={{ background: '#fffbeb' }} />
-          <span>Light Cream</span>
-        </button>
-      </div>
-      <div class={styles.alignmentCallout}>
-        <span>ℹ️</span>
+      <div class={styles.alignmentCallout} style={{ marginTop: '8px' }}>
+        <span>💡</span>
         <span>
-          Standard visa & passport specifications accept original plain light backgrounds.
+          Need background removal? Use our{' '}
+          <a
+            href="/image-background-remover"
+            style={{ color: '#60a5fa', textDecoration: 'underline' }}
+          >
+            Image Background Remover →
+          </a>
         </span>
       </div>
     </div>
@@ -346,9 +317,9 @@ function SheetTabContent({ passport }: { passport: UsePassportPhotoReturn }) {
           value={paperSize}
           onChange={(e) => setPaperSize((e.target as HTMLInputElement).value as typeof paperSize)}
         >
-          <option value="quarter-a4">4×6 inch (Quarter A4) - Standard Photo Paper</option>
-          <option value="a4">A4 Full Sheet (210×297 mm)</option>
-          <option value="half-a4">Half A4 / A5 (148×210 mm)</option>
+          <option value="4x6">4×6 inch (Quarter A4) - Standard Photo Paper (6 Photos)</option>
+          <option value="a4">A4 Full Sheet (210×297 mm) - 8 Photos Grid</option>
+          <option value="a5">Half A4 / A5 (148×210 mm) - 4 Photos Grid</option>
         </select>
       </div>
 
@@ -391,7 +362,6 @@ export function PassportMobileToolTabs({
   if (activeTab === 'adjust') return <AdjustTabContent enhance={enhance} />;
   if (activeTab === 'filters') return <FiltersTabContent enhance={enhance} />;
   if (activeTab === 'retouch') return <RetouchTabContent enhance={enhance} />;
-  if (activeTab === 'background') return <BackgroundTabContent />;
   if (activeTab === 'sheet') return <SheetTabContent passport={passport} />;
   return null;
 }

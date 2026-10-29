@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { downloadBytes } from './actions.ts';
+import type { PixelRect } from './imageWorkbenchGeometry.ts';
 import {
   computeSheetLayout,
   type PaperSizeId,
@@ -14,8 +14,37 @@ export interface UsePassportSheetProps {
   targetWidth: number;
   targetHeight: number;
   imageSrc: string | null;
+  cropRect?: PixelRect | null;
+  croppedImageSrc?: string | null;
   customFileName: string;
   notify: (msg: string) => void;
+}
+
+function sliceImageToCanvas(
+  img: HTMLImageElement,
+  cropRect: PixelRect,
+  targetWidth: number,
+  targetHeight: number,
+): HTMLCanvasElement | null {
+  const canvas = document.createElement('canvas');
+  const targetW = targetWidth > 0 ? targetWidth : Math.round(cropRect.width);
+  const targetH = targetHeight > 0 ? targetHeight : Math.round(cropRect.height);
+  canvas.width = targetW;
+  canvas.height = targetH;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.drawImage(
+    img,
+    cropRect.x,
+    cropRect.y,
+    cropRect.width,
+    cropRect.height,
+    0,
+    0,
+    targetW,
+    targetH,
+  );
+  return canvas;
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Sheet state and studio print actions
@@ -24,6 +53,8 @@ export function usePassportSheetState({
   targetWidth,
   targetHeight,
   imageSrc,
+  cropRect,
+  croppedImageSrc,
   customFileName,
   notify,
 }: UsePassportSheetProps) {
@@ -43,17 +74,24 @@ export function usePassportSheetState({
     [paperSize, physicalSize.widthMm, physicalSize.heightMm, photoCount],
   );
 
-  // Helper to load current photo image for sheet canvas rendering
-  const loadPhotoImage = useCallback(async (): Promise<HTMLImageElement | null> => {
-    if (!imageSrc) return null;
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = () => resolve(null);
-      img.src = imageSrc;
+  // Helper to load current photo image for sheet canvas rendering (sliced to crop if needed)
+  const loadPhotoImage = useCallback(async (): Promise<CanvasImageSource | null> => {
+    const src = croppedImageSrc || imageSrc;
+    if (!src) return null;
+    const img = await new Promise<HTMLImageElement | null>((resolve) => {
+      const el = new Image();
+      el.crossOrigin = 'anonymous';
+      el.onload = () => resolve(el);
+      el.onerror = () => resolve(null);
+      el.src = src;
     });
-  }, [imageSrc]);
+    if (!img) return null;
+
+    if (!croppedImageSrc && cropRect && cropRect.width > 0 && cropRect.height > 0) {
+      return sliceImageToCanvas(img, cropRect, targetWidth, targetHeight) ?? img;
+    }
+    return img;
+  }, [croppedImageSrc, imageSrc, cropRect, targetWidth, targetHeight]);
 
   const generateSheetCanvas = useCallback(async () => {
     const img = await loadPhotoImage();
@@ -98,17 +136,20 @@ export function usePassportSheetState({
       );
       if (!blob) return;
 
-      const bytes = new Uint8Array(await blob.arrayBuffer());
-      const baseName = customFileName.trim() || 'passport-sheet';
-      const cleanBase = baseName.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'passport-sheet';
-      const fileName = `${cleanBase}-${paperSize}-${photoCount}photos.jpg`;
-
-      downloadBytes(bytes, fileName, 'image/jpeg');
+      const fileName = `${customFileName.trim() || 'passport'}-print-sheet-${sheetLayout.paper.id}.jpg`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       notify(`Downloaded ${fileName}`);
     } finally {
       setIsGeneratingSheet(false);
     }
-  }, [imageSrc, generateSheetCanvas, customFileName, paperSize, photoCount, notify]);
+  }, [imageSrc, generateSheetCanvas, sheetLayout, customFileName, notify]);
 
   return {
     paperSize,
@@ -120,11 +161,8 @@ export function usePassportSheetState({
     activeStageView,
     setActiveStageView,
     isGeneratingSheet,
-    physicalSize,
     sheetLayout,
     printSheet,
     downloadSheet,
   };
 }
-
-export type UsePassportSheetReturn = ReturnType<typeof usePassportSheetState>;

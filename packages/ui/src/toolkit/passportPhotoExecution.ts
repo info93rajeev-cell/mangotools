@@ -156,6 +156,7 @@ export async function performPassportExecution(
     quality: s.quality,
     customFileName: s.customFileName,
     cropRect: isCropActive && s.cropRect.width > 0 ? s.cropRect : null,
+    sourceDims: s.sourceDims,
   };
 
   const outcome = await executePassportWorker(cfg);

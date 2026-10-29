@@ -29,11 +29,9 @@ export function PassportMobileSheetSection({ passport }: PassportMobileSheetSect
           value={paperSize}
           onChange={(e) => setPaperSize((e.target as HTMLInputElement).value as typeof paperSize)}
         >
-          <option value="quarter-a4">
-            4×6 inch (Quarter A4) - Standard Photo Paper (6 Photos)
-          </option>
+          <option value="4x6">4×6 inch (Quarter A4) - Standard Photo Paper (6 Photos)</option>
           <option value="a4">A4 Full Sheet (210×297 mm) - 8 Photos Grid</option>
-          <option value="half-a4">Half A4 / A5 (148×210 mm) - 4 Photos Grid</option>
+          <option value="a5">Half A4 / A5 (148×210 mm) - 4 Photos Grid</option>
         </select>
       </div>
 

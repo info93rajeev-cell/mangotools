@@ -76,9 +76,9 @@ export function PassportPrintSheetPreview({ passport }: PassportPrintSheetPrevie
                   height: `${heightPct}%`,
                 }}
               >
-                {hasFile && passport.imageSrc ? (
+                {hasFile && (passport.croppedImageSrc || passport.imageSrc) ? (
                   <img
-                    src={passport.imageSrc}
+                    src={passport.croppedImageSrc || passport.resultUrl || passport.imageSrc || ''}
                     alt={`Passport print ${slot.index + 1}`}
                     class={styles.slotImage}
                   />

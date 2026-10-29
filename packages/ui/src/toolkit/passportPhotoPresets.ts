@@ -87,6 +87,7 @@ export interface PassportRunConfig {
   quality: number;
   customFileName: string;
   cropRect?: PixelRect | null;
+  sourceDims?: { width: number; height: number };
 }
 
 export async function convertPassportToPdf(
@@ -119,32 +120,52 @@ export async function convertPassportToPdf(
   });
 }
 
+async function cropActiveFile(cfg: PassportRunConfig): Promise<Result<PassportFile>> {
+  if (!cfg.cropRect || cfg.cropRect.width <= 0 || cfg.cropRect.height <= 0) {
+    return ok(cfg.file);
+  }
+  const sourceW =
+    cfg.sourceDims && cfg.sourceDims.width > 0
+      ? cfg.sourceDims.width
+      : Math.round(cfg.cropRect.x + cfg.cropRect.width);
+  const sourceH =
+    cfg.sourceDims && cfg.sourceDims.height > 0
+      ? cfg.sourceDims.height
+      : Math.round(cfg.cropRect.y + cfg.cropRect.height);
+
+  const cropX = Math.max(0, Math.min(sourceW - 1, Math.floor(cfg.cropRect.x)));
+  const cropY = Math.max(0, Math.min(sourceH - 1, Math.floor(cfg.cropRect.y)));
+  const cropWidth = Math.max(1, Math.min(sourceW - cropX, Math.floor(cfg.cropRect.width)));
+  const cropHeight = Math.max(1, Math.min(sourceH - cropY, Math.floor(cfg.cropRect.height)));
+
+  const cropInput = {
+    file: { name: cfg.file.name, bytes: cfg.file.bytes },
+    cropX,
+    cropY,
+    cropWidth,
+    cropHeight,
+    outputFormat: 'png' as const,
+  };
+  const cropOutcome = await getWorkerHost().run('image.crop@1', cropInput, {});
+  if (!cropOutcome.ok) return err(cropOutcome.error.code, cropOutcome.error);
+
+  const cropVal = cropOutcome.value as { bytes: Uint8Array; fileName: string };
+  return ok({
+    name: cropVal.fileName,
+    bytes: cropVal.bytes,
+    size: cropVal.bytes.byteLength,
+  });
+}
+
 export async function executePassportWorker(
   cfg: PassportRunConfig,
 ): Promise<Result<PassportPhotoResultData>> {
   const isPdf = cfg.outputFormat === 'pdf';
   const workerFormat = isPdf ? 'png' : cfg.outputFormat;
 
-  let activeFile = cfg.file;
-  if (cfg.cropRect && cfg.cropRect.width > 0 && cfg.cropRect.height > 0) {
-    const cropInput = {
-      file: { name: cfg.file.name, bytes: cfg.file.bytes },
-      cropX: Math.max(0, Math.round(cfg.cropRect.x)),
-      cropY: Math.max(0, Math.round(cfg.cropRect.y)),
-      cropWidth: Math.max(1, Math.round(cfg.cropRect.width)),
-      cropHeight: Math.max(1, Math.round(cfg.cropRect.height)),
-      outputFormat: 'png' as const,
-    };
-    const cropOutcome = await getWorkerHost().run('image.crop@1', cropInput, {});
-    if (cropOutcome.ok) {
-      const cropVal = cropOutcome.value as { bytes: Uint8Array; fileName: string };
-      activeFile = {
-        name: cropVal.fileName,
-        bytes: cropVal.bytes,
-        size: cropVal.bytes.byteLength,
-      };
-    }
-  }
+  const cropped = await cropActiveFile(cfg);
+  if (!cropped.ok) return err(cropped.error.code, cropped.error);
+  const activeFile = cropped.value;
 
   const input = {
     file: { name: activeFile.name, bytes: activeFile.bytes },

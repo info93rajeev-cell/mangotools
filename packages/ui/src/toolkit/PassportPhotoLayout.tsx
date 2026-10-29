@@ -57,12 +57,12 @@ export function PassportPhotoLayout({
   };
 
   useEffect(() => {
-    const src = passport.imageSrc || '/samples/passport-portrait.jpg';
+    const src = passport.croppedImageSrc || passport.imageSrc || '/samples/passport-portrait.jpg';
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => setImageElement(img);
     img.src = src;
-  }, [passport.imageSrc]);
+  }, [passport.croppedImageSrc, passport.imageSrc]);
 
   const enhance = usePassportEnhanceState(imageElement);
 
