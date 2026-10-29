@@ -32,13 +32,32 @@ export function PassportEnhanceStage({
   const stageRef = useRef<HTMLDivElement | null>(null);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
 
-  const handleSplitMouseDown = (e: MouseEvent) => {
+  const handleSplitPointerDown = (e: PointerEvent) => {
     e.preventDefault();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     setIsDraggingSplit(true);
   };
 
-  const handleStageMouseMove = useCallback(
-    (e: MouseEvent) => {
+  const handleSplitPointerMove = (e: PointerEvent) => {
+    if (isDraggingSplit && stageRef.current) {
+      const rect = stageRef.current.getBoundingClientRect();
+      const rawX = e.clientX - rect.left;
+      const pct = Math.max(5, Math.min(95, Math.round((rawX / rect.width) * 100)));
+      setSplitPosition(pct);
+    }
+  };
+
+  const handleSplitPointerUp = (e: PointerEvent) => {
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      // Ignored if already released
+    }
+    setIsDraggingSplit(false);
+  };
+
+  const handleStagePointerMove = useCallback(
+    (e: PointerEvent) => {
       if (isDraggingSplit && stageRef.current) {
         const rect = stageRef.current.getBoundingClientRect();
         const rawX = e.clientX - rect.left;
@@ -49,7 +68,7 @@ export function PassportEnhanceStage({
     [isDraggingSplit, setSplitPosition],
   );
 
-  const handleStageMouseUp = useCallback(() => {
+  const handleStagePointerUp = useCallback(() => {
     setIsDraggingSplit(false);
   }, []);
 
@@ -68,13 +87,12 @@ export function PassportEnhanceStage({
   const displayEnhancedSrc = enhancedBlobUrl || rawImgSrc;
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: Mouse drag tracking for stage canvas
     <div
       class={styles.enhanceStageCard}
       ref={stageRef}
-      onMouseMove={handleStageMouseMove}
-      onMouseUp={handleStageMouseUp}
-      onMouseLeave={handleStageMouseUp}
+      onPointerMove={handleStagePointerMove}
+      onPointerUp={handleStagePointerUp}
+      onPointerCancel={handleStagePointerUp}
     >
       {/* CARD 5 HEADER */}
       <div class={styles.stageCardHeader}>
@@ -155,11 +173,23 @@ export function PassportEnhanceStage({
           </div>
 
           {/* Dividing Split Line & Drag Handle */}
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: Draggable split handle */}
           <div
             class={styles.splitDividerBar}
-            style={{ left: `${splitPosition}%` }}
-            onMouseDown={handleSplitMouseDown}
+            style={{ left: `${splitPosition}%`, touchAction: 'none' }}
+            role="slider"
+            aria-label="Before and after split slider"
+            aria-valuenow={splitPosition}
+            aria-valuemin={5}
+            aria-valuemax={95}
+            tabIndex={0}
+            onPointerDown={handleSplitPointerDown}
+            onPointerMove={handleSplitPointerMove}
+            onPointerUp={handleSplitPointerUp}
+            onPointerCancel={handleSplitPointerUp}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowLeft') setSplitPosition(Math.max(5, splitPosition - 5));
+              else if (e.key === 'ArrowRight') setSplitPosition(Math.min(95, splitPosition + 5));
+            }}
           >
             <div class={styles.splitHandleCircle}>
               <span class={styles.splitHandleArrows}>‹ ›</span>

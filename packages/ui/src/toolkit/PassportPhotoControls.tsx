@@ -15,6 +15,7 @@ export interface PassportPhotoControlsProps {
   passport: UsePassportPhotoReturn;
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
+  onOpenCamera?: () => void;
 }
 
 const FORMAT_OPTIONS: { id: PassportOutputFormat; name: string }[] = [
@@ -31,6 +32,7 @@ export function PassportPhotoControls({
   passport,
   onSelectFile,
   onTrySample,
+  onOpenCamera,
 }: PassportPhotoControlsProps) {
   const fileInputId = `${idPrefix}-file-input`;
   const isExecuting = passport.phase === 'running';
@@ -47,6 +49,15 @@ export function PassportPhotoControls({
               <span class={styles.sectionTitle}>Upload Photo</span>
             </div>
             <div class={styles.headerActions}>
+              <button
+                type="button"
+                class={styles.miniGhostBtn}
+                onClick={onOpenCamera}
+                disabled={isExecuting}
+                title="Take selfie with camera"
+              >
+                📷 Camera
+              </button>
               <button
                 type="button"
                 class={styles.miniGhostBtn}
@@ -83,6 +94,27 @@ export function PassportPhotoControls({
             linkBrowse={true}
             renderImgThumbnail={true}
           />
+
+          <div style={{ marginTop: '4px' }}>
+            <button
+              type="button"
+              class={styles.miniGhostBtn}
+              style={{
+                width: '100%',
+                padding: '6px 10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                fontWeight: 600,
+              }}
+              onClick={onOpenCamera}
+              disabled={isExecuting}
+            >
+              <span>📷</span>
+              <span>Take Selfie (Front Camera)</span>
+            </button>
+          </div>
 
           {!hasFile && (
             <div class={styles.emptyStateNotice}>

@@ -8,6 +8,26 @@
   box-sizing: border-box;
 }
 
+/* Responsive viewport containers */
+.mobileOnly {
+  display: none;
+}
+
+.desktopOnly {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 650px) {
+  .mobileOnly {
+    display: block;
+    width: 100%;
+  }
+  .desktopOnly {
+    display: none;
+  }
+}
+
 /* 3-PANEL WORKBENCH */
 .workbench3Panel {
   display: grid;

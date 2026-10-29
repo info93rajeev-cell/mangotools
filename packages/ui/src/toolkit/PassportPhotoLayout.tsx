@@ -2,6 +2,8 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { PassportCameraModal } from './PassportCameraModal.tsx';
+import { PassportMobileStudio } from './PassportMobileStudio.tsx';
 import { PassportPhotoCanvas } from './PassportPhotoCanvas.tsx';
 import { PassportPhotoControls } from './PassportPhotoControls.tsx';
 import { PassportPhotoResult } from './PassportPhotoResult.tsx';
@@ -26,6 +28,7 @@ export function PassportPhotoLayout({
 }: PassportPhotoLayoutProps) {
   const passport = usePassportPhoto(preset, toolId, notify, onPhase);
   const [imageElement, setImageElement] = useState<HTMLImageElement | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   useEffect(() => {
     const src = passport.imageSrc || '/samples/passport-portrait.jpg';
@@ -39,23 +42,46 @@ export function PassportPhotoLayout({
 
   return (
     <div class={styles.container} data-passport-photo-layout="">
-      {/* 3-PANEL PASSPORT WORKBENCH */}
-      <div class={styles.workbench3Panel}>
-        {/* PANEL 1: CONTROLS & PRESETS (CARDS 1-4) */}
-        <PassportPhotoControls
+      {/* MOBILE SINGLE-SCREEN WORKBENCH (State A Landing or State B Working Studio) */}
+      <div class={styles.mobileOnly}>
+        <PassportMobileStudio
           idPrefix={idPrefix}
           preset={preset}
           passport={passport}
+          enhance={enhance}
           onSelectFile={(file) => void passport.loadFile(file)}
           onTrySample={() => void passport.loadSample()}
+          onOpenCamera={() => setIsCameraOpen(true)}
         />
-
-        {/* PANEL 2: INTERACTIVE VISUAL WORKSPACE (CARDS 5 & 6) */}
-        <PassportPhotoCanvas idPrefix={idPrefix} passport={passport} enhance={enhance} />
-
-        {/* PANEL 3: OUTPUT PREVIEW & SUMMARY (CARD 7) */}
-        <PassportPhotoResult idPrefix={idPrefix} passport={passport} enhance={enhance} />
       </div>
+
+      {/* DESKTOP 3-PANEL WORKBENCH */}
+      <div class={styles.desktopOnly}>
+        <div class={styles.workbench3Panel}>
+          {/* PANEL 1: CONTROLS & PRESETS (CARDS 1-4) */}
+          <PassportPhotoControls
+            idPrefix={idPrefix}
+            preset={preset}
+            passport={passport}
+            onSelectFile={(file) => void passport.loadFile(file)}
+            onTrySample={() => void passport.loadSample()}
+            onOpenCamera={() => setIsCameraOpen(true)}
+          />
+
+          {/* PANEL 2: INTERACTIVE VISUAL WORKSPACE (CARDS 5 & 6) */}
+          <PassportPhotoCanvas idPrefix={idPrefix} passport={passport} enhance={enhance} />
+
+          {/* PANEL 3: OUTPUT PREVIEW & SUMMARY (CARD 7) */}
+          <PassportPhotoResult idPrefix={idPrefix} passport={passport} enhance={enhance} />
+        </div>
+      </div>
+
+      {/* IN-BROWSER WEBRTC FRONT CAMERA CAPTURE MODAL */}
+      <PassportCameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={(file) => void passport.loadFile(file)}
+      />
 
       {passport.error && (
         <InlineAlert tone="danger" role="alert" data-passport-error="">
