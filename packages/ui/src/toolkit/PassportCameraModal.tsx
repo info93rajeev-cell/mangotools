@@ -231,6 +231,19 @@ export function PassportCameraModal({ isOpen, onClose, onCapture }: PassportCame
 
   const handleUsePhoto = () => {
     if (capturedBlob) {
+      try {
+        const downloadUrl = URL.createObjectURL(capturedBlob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `passport-selfie-${Date.now()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 5000);
+      } catch {
+        // Ignored
+      }
+
       const file = new File([capturedBlob], 'passport-selfie.jpg', { type: 'image/jpeg' });
       onCapture(file);
       onClose();

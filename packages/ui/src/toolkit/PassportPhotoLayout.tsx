@@ -29,6 +29,32 @@ export function PassportPhotoLayout({
   const passport = usePassportPhoto(preset, toolId, notify, onPhase);
   const [imageElement, setImageElement] = useState<HTMLImageElement | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isMobileStudioOpen, setIsMobileStudioOpen] = useState(false);
+
+  useEffect(() => {
+    if (
+      passport.file &&
+      passport.file.name !== 'passport-portrait.jpg' &&
+      passport.file.name !== 'sample-passport-portrait.jpg'
+    ) {
+      setIsMobileStudioOpen(true);
+    }
+  }, [passport.file]);
+
+  const handleSelectFile = (file: File) => {
+    setIsMobileStudioOpen(true);
+    void passport.loadFile(file);
+  };
+
+  const handleTrySample = () => {
+    setIsMobileStudioOpen(true);
+    void passport.loadSample();
+  };
+
+  const handleResetToLanding = () => {
+    setIsMobileStudioOpen(false);
+    passport.clearAll();
+  };
 
   useEffect(() => {
     const src = passport.imageSrc || '/samples/passport-portrait.jpg';
@@ -49,8 +75,10 @@ export function PassportPhotoLayout({
           preset={preset}
           passport={passport}
           enhance={enhance}
-          onSelectFile={(file) => void passport.loadFile(file)}
-          onTrySample={() => void passport.loadSample()}
+          isStudioOpen={isMobileStudioOpen}
+          onSelectFile={handleSelectFile}
+          onTrySample={handleTrySample}
+          onResetToLanding={handleResetToLanding}
           onOpenCamera={() => setIsCameraOpen(true)}
         />
       </div>
@@ -63,8 +91,8 @@ export function PassportPhotoLayout({
             idPrefix={idPrefix}
             preset={preset}
             passport={passport}
-            onSelectFile={(file) => void passport.loadFile(file)}
-            onTrySample={() => void passport.loadSample()}
+            onSelectFile={handleSelectFile}
+            onTrySample={handleTrySample}
             onOpenCamera={() => setIsCameraOpen(true)}
           />
 
@@ -80,7 +108,7 @@ export function PassportPhotoLayout({
       <PassportCameraModal
         isOpen={isCameraOpen}
         onClose={() => setIsCameraOpen(false)}
-        onCapture={(file) => void passport.loadFile(file)}
+        onCapture={handleSelectFile}
       />
 
       {passport.error && (

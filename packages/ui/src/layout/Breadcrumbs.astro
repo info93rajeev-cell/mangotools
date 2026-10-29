@@ -60,4 +60,14 @@ const { items } = Astro.props;
   [aria-current='page'] {
     color: var(--color-text);
   }
+  @media (max-width: 650px) {
+    ol {
+      font-size: 11px;
+      line-height: 1.2;
+      gap: 2px;
+    }
+    li + li::before {
+      padding-inline: 2px;
+    }
+  }
 </style>

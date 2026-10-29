@@ -11,8 +11,10 @@ export interface PassportMobileStudioProps {
   preset: ResolvedPreset;
   passport: UsePassportPhotoReturn;
   enhance: UsePassportEnhanceStateReturn;
+  isStudioOpen: boolean;
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
+  onResetToLanding: () => void;
   onOpenCamera: () => void;
 }
 
@@ -147,6 +149,15 @@ function MobileStudioNavTabs({
         <span>🩹</span>
         <span>Retouch</span>
       </button>
+      <button
+        type="button"
+        class={styles.toolTabBtn}
+        data-active={String(activeTab === 'sheet')}
+        onClick={() => onSelectTab('sheet')}
+      >
+        <span>🖨️</span>
+        <span>Sheet</span>
+      </button>
     </div>
   );
 }
@@ -156,38 +167,31 @@ export function PassportMobileStudio({
   preset,
   passport,
   enhance,
+  isStudioOpen,
   onSelectFile,
   onTrySample,
+  onResetToLanding,
   onOpenCamera,
 }: PassportMobileStudioProps) {
   const [activeTab, setActiveTab] = useState<MobileToolTab>('presets');
-  const [isStudioEntered, setIsStudioEntered] = useState(false);
   const isExecuting = passport.phase === 'running';
 
-  const handleSelectFile = (file: File) => {
-    setIsStudioEntered(true);
-    onSelectFile(file);
-  };
+  // Open studio if explicitly entered OR if user has loaded a custom file (not default sample)
+  const isCustomFile =
+    !!passport.file &&
+    passport.file.name !== 'passport-portrait.jpg' &&
+    passport.file.name !== 'sample-passport-portrait.jpg';
+  const isEffectiveOpen = isStudioOpen || isCustomFile;
 
-  const handleTrySample = () => {
-    setIsStudioEntered(true);
-    onTrySample();
-  };
-
-  const handleResetToLanding = () => {
-    setIsStudioEntered(false);
-    passport.clearAll();
-  };
-
-  if (!isStudioEntered || !passport.file) {
+  if (!isEffectiveOpen || !passport.file) {
     return (
       <div class={styles.mobileStudioWrap} data-passport-mobile-studio="">
         <PassportMobileLanding
           idPrefix={idPrefix}
           preset={preset}
           passport={passport}
-          onSelectFile={handleSelectFile}
-          onTrySample={handleTrySample}
+          onSelectFile={onSelectFile}
+          onTrySample={onTrySample}
           onOpenCamera={onOpenCamera}
         />
       </div>
@@ -213,7 +217,7 @@ export function PassportMobileStudio({
             <button type="button" class={styles.studioMiniBtn} onClick={onOpenCamera}>
               <span>📷 Selfie</span>
             </button>
-            <button type="button" class={styles.studioMiniBtn} onClick={handleResetToLanding}>
+            <button type="button" class={styles.studioMiniBtn} onClick={onResetToLanding}>
               <span>🔄 Change</span>
             </button>
           </div>
@@ -253,6 +257,16 @@ export function PassportMobileStudio({
           >
             <span>📥</span>
             <span>Download</span>
+          </button>
+          <button
+            type="button"
+            class={styles.printSheetMiniBtn}
+            onClick={() => void passport.downloadSheet()}
+            disabled={isExecuting}
+            title="Save Printable Multi-Photo Sheet"
+          >
+            <span>🖨️</span>
+            <span>Sheet</span>
           </button>
         </div>
       </div>

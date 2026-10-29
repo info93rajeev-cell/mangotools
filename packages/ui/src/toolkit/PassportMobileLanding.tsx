@@ -1,7 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { BiometricGuideSvg } from './PassportCropWorkbench.tsx';
 import styles from './passportMobileStudio.module.css';
-import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import { PASSPORT_PRESETS, type UsePassportPhotoReturn } from './usePassportPhoto.ts';
 
 export interface PassportMobileLandingProps {
@@ -14,7 +13,7 @@ export interface PassportMobileLandingProps {
 }
 
 export function PassportMobileLanding({
-  idPrefix,
+  idPrefix: _idPrefix,
   passport,
   onSelectFile,
   onTrySample,
@@ -22,46 +21,60 @@ export function PassportMobileLanding({
 }: PassportMobileLandingProps) {
   const isExecuting = passport.phase === 'running';
 
+  const handleFileInput = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      onSelectFile(file);
+    }
+  };
+
   return (
     <div class={styles.landingCard}>
-      <div class={styles.landingTitleRow}>
-        <span style={{ fontSize: '13px', fontWeight: '800' }}>Upload & Quick Setup</span>
-        <span class={styles.landingBadge}>🛡️ 100% In-Browser</span>
-      </div>
-
-      <button
-        type="button"
-        class={styles.cameraHeroBtn}
-        onClick={onOpenCamera}
-        data-open-camera-button=""
-      >
-        <span>📷</span>
-        <span>Take Selfie (Front Camera)</span>
-      </button>
-
-      <UniversalUploadDropzone
-        idPrefix={`${idPrefix}-mobile`}
-        accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        file={passport.file}
-        thumbnailUrl={passport.imageSrc}
-        dimensions={passport.sourceDims.width ? passport.sourceDims : null}
-        onSelectFile={onSelectFile}
-        onClear={passport.clearAll}
-        disabled={isExecuting}
-        primaryText="Drag & drop passport photo here"
-        browseText="or browse files"
-        supportHint="Supports JPG, PNG, WebP. Fits official visa standards."
-        renderImgThumbnail={true}
-      />
-
-      <div class={styles.sampleActionRow}>
+      {/* 2-PART COMPACT ACTION ROW: SELFIE + UPLOAD */}
+      <div class={styles.twoPartActionRow}>
+        {/* PART 1: FRONT CAMERA SELFIE */}
         <button
           type="button"
-          class={styles.sampleActionBtn}
+          class={styles.actionCardBtn}
+          data-action-cam="true"
+          onClick={onOpenCamera}
+          disabled={isExecuting}
+          data-open-camera-button=""
+        >
+          <div class={styles.actionIconCircle}>📷</div>
+          <div class={styles.actionTextCol}>
+            <span class={styles.actionMainText}>Take Selfie</span>
+            <span class={styles.actionSubText}>Front Camera</span>
+          </div>
+        </button>
+
+        {/* PART 2: UPLOAD / DRAG & DROP PHOTO */}
+        <label class={styles.actionCardBtn} data-action-upload="true">
+          <input
+            type="file"
+            accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+            class={styles.hiddenFileInput}
+            onChange={handleFileInput}
+            disabled={isExecuting}
+          />
+          <div class={styles.actionIconCircle}>📁</div>
+          <div class={styles.actionTextCol}>
+            <span class={styles.actionMainText}>Upload Photo</span>
+            <span class={styles.actionSubText}>Browse / Drop</span>
+          </div>
+        </label>
+      </div>
+
+      {/* COMPACT SAMPLE LINK */}
+      <div class={styles.sampleRow}>
+        <button
+          type="button"
+          class={styles.samplePillBtn}
           onClick={onTrySample}
           disabled={isExecuting}
         >
-          <span>✨ Try Sample Photo (Ava)</span>
+          ✨ Or Try Sample Photo (Ava)
         </button>
       </div>
 

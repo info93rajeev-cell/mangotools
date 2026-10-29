@@ -6,7 +6,7 @@ import {
   type UsePassportPhotoReturn,
 } from './usePassportPhoto.ts';
 
-export type MobileToolTab = 'presets' | 'adjust' | 'filters' | 'retouch';
+export type MobileToolTab = 'presets' | 'adjust' | 'filters' | 'retouch' | 'sheet';
 
 const FILTER_ITEMS = [
   { id: 'none', label: 'None' },
@@ -182,6 +182,55 @@ function RetouchTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn
   );
 }
 
+function SheetTabContent({ passport }: { passport: UsePassportPhotoReturn }) {
+  const { sheetLayout, isGeneratingSheet, printSheet, downloadSheet, paperSize, setPaperSize } =
+    passport;
+  return (
+    <div class={styles.sheetTabWrap}>
+      <div class={styles.sheetConfigRow}>
+        <span style={{ fontSize: '11px', fontWeight: 700 }}>
+          Paper Layout: {sheetLayout.paper.name} ({sheetLayout.photoCount} photos)
+        </span>
+        <select
+          class={styles.studioMiniBtn}
+          style={{ width: '100%', padding: '6px' }}
+          value={paperSize}
+          onChange={(e) => setPaperSize((e.target as HTMLInputElement).value as typeof paperSize)}
+        >
+          <option value="quarter-a4">4×6 inch (Quarter A4) - Standard Photo Paper</option>
+          <option value="a4">A4 Full Sheet (210×297 mm)</option>
+          <option value="half-a4">Half A4 / A5 (148×210 mm)</option>
+        </select>
+      </div>
+
+      <div class={styles.sheetActionButtonsRow}>
+        <button
+          type="button"
+          class={styles.printDirectBtn}
+          onClick={() => void printSheet()}
+          disabled={isGeneratingSheet}
+        >
+          <span>🖨️</span>
+          <span>Direct Print Sheet</span>
+        </button>
+        <button
+          type="button"
+          class={styles.shareWhatsAppBtn}
+          onClick={() => void downloadSheet()}
+          disabled={isGeneratingSheet}
+        >
+          <span>📄</span>
+          <span>Save Sheet for WhatsApp / Print (JPG)</span>
+        </button>
+      </div>
+
+      <div class={styles.sheetNotice}>
+        <span>✓ 300 DPI High-Res Grid with Scissors Guidelines</span>
+      </div>
+    </div>
+  );
+}
+
 export function PassportMobileToolTabs({
   activeTab,
   passport,
@@ -193,6 +242,7 @@ export function PassportMobileToolTabs({
       {activeTab === 'adjust' && <AdjustTabContent enhance={enhance} />}
       {activeTab === 'filters' && <FiltersTabContent enhance={enhance} />}
       {activeTab === 'retouch' && <RetouchTabContent enhance={enhance} />}
+      {activeTab === 'sheet' && <SheetTabContent passport={passport} />}
     </div>
   );
 }
