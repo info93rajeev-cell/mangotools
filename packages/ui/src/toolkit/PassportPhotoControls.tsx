@@ -77,9 +77,11 @@ export function PassportPhotoControls({
             onSelectFile={onSelectFile}
             onClear={passport.clearAll}
             disabled={isExecuting}
-            primaryText="Drag and drop an image here"
-            browseText="or click to browse files"
-            supportHint="Supports JPG, PNG, WebP. You can upload multiple images."
+            primaryText="Drag and drop images here"
+            browseText="click to browse files"
+            supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+            linkBrowse={true}
+            renderImgThumbnail={true}
           />
 
           {!hasFile && (

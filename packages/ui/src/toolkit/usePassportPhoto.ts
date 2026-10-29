@@ -65,6 +65,7 @@ export interface UsePassportPhotoReturn {
   loadFile: (file: File) => Promise<void>;
   loadSample: () => Promise<void>;
   clearAll: () => void;
+  executeGenerate: () => Promise<void>;
   executeResizeAndDownload: () => Promise<void>;
   downloadResult: () => void;
 
@@ -286,6 +287,19 @@ export function usePassportPhoto(
     }
   }, []);
 
+  const executeGenerate = useCallback(
+    () =>
+      performPassportExecution(
+        preset,
+        toolId,
+        notify,
+        s as unknown as PassportExecutionState,
+        s.isCropActive,
+        false,
+      ),
+    [preset, toolId, notify, s],
+  );
+
   const executeResizeAndDownload = useCallback(
     () =>
       performPassportExecution(
@@ -294,20 +308,24 @@ export function usePassportPhoto(
         notify,
         s as unknown as PassportExecutionState,
         s.isCropActive,
+        true,
       ),
     [preset, toolId, notify, s],
   );
 
   const downloadResult = useCallback(() => {
-    if (!s.result) return;
-    const mime =
-      s.result.outputFormat === 'pdf'
-        ? 'application/pdf'
-        : (MIME_MAP[s.result.outputFormat] ?? 'image/jpeg');
-    downloadBytes(s.result.bytes, s.result.fileName, mime);
-    notify(`Downloaded ${s.result.fileName}`);
-    track('tool_complete', { toolId, method: 'download' });
-  }, [s.result, notify, toolId]);
+    if (s.result) {
+      const mime =
+        s.result.outputFormat === 'pdf'
+          ? 'application/pdf'
+          : (MIME_MAP[s.result.outputFormat] ?? 'image/jpeg');
+      downloadBytes(s.result.bytes, s.result.fileName, mime);
+      notify(`Downloaded ${s.result.fileName}`);
+      track('tool_complete', { toolId, method: 'download' });
+    } else {
+      void executeResizeAndDownload();
+    }
+  }, [s.result, notify, toolId, executeResizeAndDownload]);
 
   return {
     file: s.file,
@@ -337,6 +355,7 @@ export function usePassportPhoto(
     setCropRect: s.setCropRect,
     setIsCropActive: s.setIsCropActive,
     ...actions,
+    executeGenerate,
     executeResizeAndDownload,
     downloadResult,
     ...sheet,

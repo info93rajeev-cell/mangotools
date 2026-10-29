@@ -115,34 +115,40 @@ export function clearPassportState(s: PassportExecutionState) {
   s.updatePhase('idle');
 }
 
+function validatePassportInputs(s: PassportExecutionState): boolean {
+  if (s.invalidFile) {
+    s.setError(`"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`);
+    s.updatePhase('error');
+    return false;
+  }
+  if (!s.file) {
+    s.setError('Add a photo, then enter the pixel dimensions required by your application.');
+    s.updatePhase('error');
+    return false;
+  }
+  if (s.targetWidth <= 0 || s.targetHeight <= 0) {
+    s.setError('Enter a width and height greater than 0.');
+    s.updatePhase('error');
+    return false;
+  }
+  return true;
+}
+
 export async function performPassportExecution(
   preset: ResolvedPreset,
   toolId: string,
   notify: (msg: string) => void,
   s: PassportExecutionState,
   isCropActive = true,
+  triggerDownload = false,
 ) {
-  if (s.invalidFile) {
-    s.setError(`"${s.invalidFile.name}" is not a JPG, PNG, or WebP image.`);
-    s.updatePhase('error');
-    return;
-  }
-  if (!s.file) {
-    s.setError('Add a photo, then enter the pixel dimensions required by your application.');
-    s.updatePhase('error');
-    return;
-  }
-  if (s.targetWidth <= 0 || s.targetHeight <= 0) {
-    s.setError('Enter a width and height greater than 0.');
-    s.updatePhase('error');
-    return;
-  }
+  if (!validatePassportInputs(s)) return;
   s.updatePhase('running');
   s.setError(null);
 
   const cfg: PassportRunConfig = {
     preset,
-    file: s.file,
+    file: s.file as PassportFile,
     targetWidth: s.targetWidth,
     targetHeight: s.targetHeight,
     keepAspectRatio: s.keepAspectRatio,
@@ -166,9 +172,14 @@ export async function performPassportExecution(
     res.outputFormat === 'pdf' ? 'application/pdf' : (MIME_MAP[res.outputFormat] ?? 'image/jpeg');
   const blobUrl = URL.createObjectURL(new Blob([res.bytes as BlobPart], { type: mime }));
   s.setResultUrl(blobUrl);
-  downloadBytes(res.bytes, res.fileName, mime);
-  notify(`Downloaded ${res.fileName}`);
   s.updatePhase('result');
   track('tool_run', { toolId });
-  track('tool_complete', { toolId, method: 'download' });
+
+  if (triggerDownload) {
+    downloadBytes(res.bytes, res.fileName, mime);
+    notify(`Downloaded ${res.fileName}`);
+    track('tool_complete', { toolId, method: 'download' });
+  } else {
+    notify('Passport photo generated successfully! Ready for download.');
+  }
 }

@@ -419,9 +419,9 @@
   color: var(--color-text-muted);
 }
 
-/* When file is loaded in passport photo resizer, hide the large drop prompt and show only the file pill */
-.controlPanel [data-universal-upload-dropzone]:has([data-file-card]) label[data-upload-button] {
-  display: none;
+/* Keep both upload dropzone box and loaded photo card visible simultaneously */
+.controlPanel [data-universal-upload-dropzone] label[data-upload-button] {
+  display: flex;
 }
 
 .controlPanel [data-universal-upload-dropzone] .dropzoneBox {

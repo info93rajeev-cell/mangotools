@@ -111,6 +111,129 @@ function E2eLocators({
   );
 }
 
+interface PassportActionButtonsProps {
+  passport: UsePassportPhotoReturn;
+  isExecuting: boolean;
+  hasFile: boolean;
+  onCopy: () => void;
+}
+
+function PassportActionButtons({
+  passport,
+  isExecuting,
+  hasFile,
+  onCopy,
+}: PassportActionButtonsProps) {
+  return (
+    <div class={styles.actionGroup}>
+      <button
+        type="button"
+        class={enhanceStyles.generateGoldBtn}
+        name="Generate passport photo"
+        aria-label="Generate passport photo"
+        onClick={() => void passport.executeGenerate()}
+        disabled={isExecuting || !hasFile}
+        data-generate-button=""
+      >
+        <span class={styles.btnIcon}>⚡</span>
+        <span class={styles.btnText}>Apply & Generate Photo</span>
+      </button>
+
+      <button
+        type="button"
+        class={enhanceStyles.downloadGreenBtn}
+        name="Download passport photo"
+        aria-label="Download passport photo"
+        onClick={() =>
+          void (passport.result ? passport.downloadResult() : passport.executeResizeAndDownload())
+        }
+        disabled={isExecuting || !hasFile}
+        data-download-button=""
+      >
+        <span class={styles.btnIcon}>📥</span>
+        <span class={styles.btnText}>Download passport photo</span>
+      </button>
+
+      <button
+        type="button"
+        class={enhanceStyles.printSheetBlueBtn}
+        name="Print Sheet"
+        aria-label="Print Sheet"
+        onClick={() => void passport.printSheet()}
+        disabled={isExecuting || !hasFile}
+      >
+        <span class={styles.btnIcon}>🖨️</span>
+        <span class={styles.btnText}>Print Sheet ({passport.photoCount} photos)</span>
+      </button>
+
+      <div class={enhanceStyles.secondaryPillsRow}>
+        <button
+          type="button"
+          class={enhanceStyles.secondaryPillBtn}
+          onClick={() => void passport.downloadSheet()}
+          disabled={isExecuting || !hasFile}
+        >
+          📄 Sheet JPG
+        </button>
+        <button
+          type="button"
+          class={enhanceStyles.secondaryPillBtn}
+          onClick={() => {
+            passport.setOutputFormat('webp');
+            void (passport.result
+              ? passport.downloadResult()
+              : passport.executeResizeAndDownload());
+          }}
+          disabled={isExecuting || !hasFile}
+        >
+          WebP
+        </button>
+        <button
+          type="button"
+          class={enhanceStyles.secondaryPillBtn}
+          onClick={onCopy}
+          disabled={isExecuting || !hasFile}
+        >
+          📋 Copy
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PassportTipsCard() {
+  return (
+    <div class={enhanceStyles.tipsCard}>
+      <div class={enhanceStyles.tipsHeader}>
+        <span>💡</span>
+        <span class={enhanceStyles.tipsTitle}>Tips for best results</span>
+      </div>
+      <ul class={enhanceStyles.tipsList}>
+        <li>
+          <span class={enhanceStyles.tipCheck}>✓</span>
+          <span>Use good lighting and plain background</span>
+        </li>
+        <li>
+          <span class={enhanceStyles.tipCheck}>✓</span>
+          <span>Keep a neutral facial expression</span>
+        </li>
+        <li>
+          <span class={enhanceStyles.tipCheck}>✓</span>
+          <span>Use subtle filters only (do not over-edit)</span>
+        </li>
+        <li>
+          <span class={enhanceStyles.tipCheck}>✓</span>
+          <span>Final image should look like you</span>
+        </li>
+        <li>
+          <span class={enhanceStyles.tipCheck}>✓</span>
+          <span>Check official guidelines for your application</span>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 export function PassportPhotoResult({
   idPrefix: _idPrefix,
   passport,
@@ -144,7 +267,6 @@ export function PassportPhotoResult({
   return (
     <aside class={styles.resultPanel} aria-label="Passport Output Specs">
       <div class={styles.panelCard}>
-        {/* HEADER */}
         <div class={styles.sectionHeader}>
           <div class={enhanceStyles.headerStepBadgeRow}>
             <span class={enhanceStyles.stepBadgeGreen}>7</span>
@@ -152,7 +274,6 @@ export function PassportPhotoResult({
           </div>
         </div>
 
-        {/* TOP TABS: FINAL PHOTO vs COMPARE */}
         <div class={enhanceStyles.outputViewTabs}>
           <button
             type="button"
@@ -174,9 +295,7 @@ export function PassportPhotoResult({
           </button>
         </div>
 
-        {/* CROPPED PHOTO PREVIEW BOX WITH DIMENSION ARROWS */}
         <div class={enhanceStyles.finalPhotoPreviewBox}>
-          {/* Top dimension arrow */}
           <div class={enhanceStyles.dimArrowTop}>
             <span class={enhanceStyles.dimArrowLine} />
             <span class={enhanceStyles.dimBadgeText}>{outW} px</span>
@@ -191,7 +310,6 @@ export function PassportPhotoResult({
                 class={enhanceStyles.finalPreviewImg}
               />
             </div>
-            {/* Right dimension arrow */}
             <div class={enhanceStyles.dimArrowRight}>
               <span class={enhanceStyles.dimArrowLineVert} />
               <span class={enhanceStyles.dimBadgeTextVert}>{outH} px</span>
@@ -200,10 +318,8 @@ export function PassportPhotoResult({
           </div>
         </div>
 
-        {/* SPECIFICATIONS TABLE */}
         <SpecsTable passport={passport} outW={outW} outH={outH} />
 
-        {/* READY STATUS BADGE */}
         <div class={enhanceStyles.readyStatusBadge}>
           <span class={enhanceStyles.greenCheckCircle}>✓</span>
           <div class={enhanceStyles.readyTextGroup}>
@@ -215,75 +331,14 @@ export function PassportPhotoResult({
           </div>
         </div>
 
-        {/* PRIMARY DOWNLOAD PHOTO CTA */}
-        <div class={styles.actionGroup}>
-          <button
-            type="button"
-            class={enhanceStyles.downloadAmberBtn}
-            name="Download passport photo"
-            aria-label="Download passport photo"
-            onClick={() => void passport.executeResizeAndDownload()}
-            disabled={isExecuting || !hasFile}
-          >
-            <span class={styles.btnIcon}>📥</span>
-            <span class={styles.btnText}>Download Photo</span>
-            <span class={enhanceStyles.btnArrow}>▼</span>
-          </button>
+        <PassportActionButtons
+          passport={passport}
+          isExecuting={isExecuting}
+          hasFile={hasFile}
+          onCopy={() => void copyToClipboard()}
+        />
 
-          {/* SECONDARY ACTION PILLS */}
-          <div class={enhanceStyles.secondaryPillsRow}>
-            <button
-              type="button"
-              class={enhanceStyles.secondaryPillBtn}
-              onClick={() => {
-                passport.setOutputFormat('webp');
-                void passport.executeResizeAndDownload();
-              }}
-              disabled={isExecuting || !hasFile}
-            >
-              Download WebP
-            </button>
-
-            <button
-              type="button"
-              class={enhanceStyles.secondaryPillBtn}
-              onClick={() => void copyToClipboard()}
-              disabled={isExecuting || !hasFile}
-            >
-              📋 Copy Image
-            </button>
-          </div>
-        </div>
-
-        {/* TIPS FOR BEST RESULTS CARD */}
-        <div class={enhanceStyles.tipsCard}>
-          <div class={enhanceStyles.tipsHeader}>
-            <span>💡</span>
-            <span class={enhanceStyles.tipsTitle}>Tips for best results</span>
-          </div>
-          <ul class={enhanceStyles.tipsList}>
-            <li>
-              <span class={enhanceStyles.tipCheck}>✓</span>
-              <span>Use good lighting and plain background</span>
-            </li>
-            <li>
-              <span class={enhanceStyles.tipCheck}>✓</span>
-              <span>Keep a neutral facial expression</span>
-            </li>
-            <li>
-              <span class={enhanceStyles.tipCheck}>✓</span>
-              <span>Use subtle filters only (do not over-edit)</span>
-            </li>
-            <li>
-              <span class={enhanceStyles.tipCheck}>✓</span>
-              <span>Final image should look like you</span>
-            </li>
-            <li>
-              <span class={enhanceStyles.tipCheck}>✓</span>
-              <span>Check official guidelines for your application</span>
-            </li>
-          </ul>
-        </div>
+        <PassportTipsCard />
       </div>
 
       <E2eLocators passport={passport} outW={outW} outH={outH} />
