@@ -28,6 +28,7 @@ export interface UsePassportEnhanceStateReturn {
   spotEdits: SpotEdit[];
   addSpotEdit: (edit: SpotEdit) => void;
   undoSpotEdit: () => void;
+  clearSpotEdits: () => void;
   enhancedBlobUrl: string | null;
   brushSize: number;
   setBrushSize: (size: number) => void;
@@ -124,6 +125,10 @@ export function usePassportEnhanceState(
     setSpotEdits((prev) => prev.slice(0, -1));
   }, []);
 
+  const clearSpotEdits = useCallback(() => {
+    setSpotEdits([]);
+  }, []);
+
   useEnhanceRenderer(
     imageElement,
     activeFilter,
@@ -151,6 +156,7 @@ export function usePassportEnhanceState(
     spotEdits,
     addSpotEdit,
     undoSpotEdit,
+    clearSpotEdits,
     enhancedBlobUrl,
     brushSize,
     setBrushSize,

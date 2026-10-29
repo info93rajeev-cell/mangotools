@@ -48,7 +48,7 @@ export function PassportPhotoCanvas({ idPrefix, passport, enhance }: PassportPho
         {activeStageView === 'single' ? (
           <div class={enhanceStyles.enhanceStudioCenterStack}>
             <PassportEnhanceStage idPrefix={idPrefix} passport={passport} enhance={enhance} />
-            <PassportFiltersAdjustmentsCard enhance={enhance} />
+            <PassportFiltersAdjustmentsCard passport={passport} enhance={enhance} />
           </div>
         ) : (
           <PassportPrintSheetPreview passport={passport} />
