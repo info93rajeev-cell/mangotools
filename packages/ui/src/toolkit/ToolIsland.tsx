@@ -21,6 +21,7 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
+import { DynamicUniversalTaxLayout } from './DynamicUniversalTaxLayout.tsx';
 import { renderDataStudioLayout } from './data-studio/dataStudioDispatch.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
 import { renderImageStudioLayout } from './imageStudioDispatch.tsx';
@@ -119,10 +120,15 @@ interface ArchetypeProps {
   calculatorActions: CalculatorWorkspaceActions;
   enableUserPresets?: boolean | undefined;
 }
-const isStandardCalculator = (archetype: ToolIslandProps['archetype'], presetId: string) =>
+const isStandardCalculator = (
+  archetype: ToolIslandProps['archetype'],
+  presetId: string,
+  toolId?: string,
+) =>
   archetype === 'B' &&
   presetId !== INVOICE_MULTI_ITEM_PRESET_ID &&
-  presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID;
+  presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID &&
+  toolId !== 'gst-calculator';
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -146,19 +152,43 @@ function ToolIslandView(props: ToolIslandViewProps) {
     ...layoutProps
   } = props;
   const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
+  const isCustomStudio = isDataStudio || toolId === 'gst-calculator';
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
-      {standardCalculator || isDataStudio ? null : (
+      {standardCalculator || isCustomStudio ? null : (
         <TopBar sampleId={sampleId} onTrySample={() => props.calculatorActions.onTrySample?.()} />
       )}
       <TransferNotice preset={preset} idPrefix={props.idPrefix} visible={transferred} />
       <ArchetypeLayout {...layoutProps} preset={preset} toolId={toolId} archetype={archetype} />
-      {archetype === 'D' || standardCalculator || isDataStudio ? null : (
+      {archetype === 'D' || standardCalculator || isCustomStudio ? null : (
         <ActionBar {...actionBar} />
       )}
       <Toast message={message} />
     </div>
   );
+}
+
+function renderSpecialCalculators(props: ArchetypeProps) {
+  const { toolId, preset, idPrefix, snapshot, store, notify } = props;
+  if (toolId === 'gst-calculator') {
+    return <DynamicUniversalTaxLayout notify={notify} />;
+  }
+  if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
+    return (
+      <InvoiceItemsLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />
+    );
+  }
+  if (preset.id === PACKING_LIST_MULTI_ITEM_PRESET_ID) {
+    return (
+      <PackingListItemsLayout
+        idPrefix={idPrefix}
+        preset={preset}
+        snapshot={snapshot}
+        store={store}
+      />
+    );
+  }
+  return null;
 }
 
 /** The one layout matching this tool's archetype. */
@@ -182,6 +212,9 @@ function ArchetypeLayout(props: ArchetypeProps) {
   const dataStudio = renderDataStudioLayout(props);
   if (dataStudio) return dataStudio;
 
+  const special = renderSpecialCalculators(props);
+  if (special) return special;
+
   if (archetype === 'A') {
     return (
       <TransformLayout
@@ -202,21 +235,6 @@ function ArchetypeLayout(props: ArchetypeProps) {
         preset={preset}
         notify={notify}
         onPhase={onFilePhase}
-      />
-    );
-  }
-  if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
-    return (
-      <InvoiceItemsLayout idPrefix={idPrefix} preset={preset} snapshot={snapshot} store={store} />
-    );
-  }
-  if (preset.id === PACKING_LIST_MULTI_ITEM_PRESET_ID) {
-    return (
-      <PackingListItemsLayout
-        idPrefix={idPrefix}
-        preset={preset}
-        snapshot={snapshot}
-        store={store}
       />
     );
   }

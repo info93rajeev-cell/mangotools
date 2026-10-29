@@ -1,0 +1,712 @@
+/* ---------- Universal Tax Calculator Studio Styles ---------- */
+
+.studioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* TOP CALLOUT BANNER */
+.saveCalloutBanner {
+  background: linear-gradient(135deg, #fefce8 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.calloutLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calloutIcon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.calloutTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.calloutTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.calloutSub {
+  font-size: 11px;
+  color: #047857;
+}
+
+.calloutSparkles {
+  font-size: 16px;
+  color: #eab308;
+}
+
+/* TOP BAR COUNTRY SELECTOR & TAX SYSTEM SWITCHER */
+.topBarNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+}
+
+.countryPillsRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.countryPillBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.countryPillBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.countryPillBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+}
+
+.navDivider {
+  width: 1px;
+  height: 22px;
+  background: #cbd5e1;
+  margin: 0 4px;
+}
+
+.taxSystemNavGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taxSystemNavLabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.taxSystemTabs {
+  display: inline-flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 2px;
+  border-radius: 7px;
+}
+
+.taxSystemTabBtn {
+  padding: 4px 9px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.taxSystemTabBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* 3-COLUMN STUDIO GRID */
+.studio3Col {
+  display: grid;
+  grid-template-columns: minmax(310px, 335px) minmax(360px, 1fr) minmax(310px, 335px);
+  gap: 10px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.studioColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* CARD PRIMITIVES */
+.taxCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cardTitleWithBadge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.stepBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stepBadge1 {
+  background: #2563eb;
+}
+.stepBadge2 {
+  background: #16a34a;
+}
+.stepBadge3 {
+  background: #059669;
+}
+.stepBadge4 {
+  background: #7c3aed;
+}
+.stepBadge5 {
+  background: #9333ea;
+}
+
+.cardTitleText {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cardHeaderSub {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: -4px;
+}
+
+/* SEGMENTED CONTROLS */
+.segmentedControl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f1f5f9;
+  padding: 2.5px;
+  border-radius: 7px;
+  gap: 3px;
+}
+
+.segmentBtn {
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.segmentBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* FORM FIELDS & ROW LAYOUTS */
+.fieldsGrid2Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.formFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+
+.fieldLabel {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.fieldInput {
+  padding: 6px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #f8fafc;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+}
+
+.discountInputRow {
+  display: flex;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.discountTypeSelect {
+  border: none;
+  border-right: 1px solid #cbd5e1;
+  background: #e2e8f0;
+  padding: 6px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  outline: none;
+}
+
+.discountValInput {
+  border: none;
+  padding: 6px 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  background: transparent;
+  width: 100%;
+  outline: none;
+}
+
+/* ADVANCED ACCORDION */
+.advancedToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 9px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.advancedDrawer {
+  padding: 6px 8px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.advancedCheckboxRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* RESULTS CARD HIGHLIGHTS */
+.headlineHeroCard {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.headlineTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.headlineSub {
+  font-size: 11px;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.headlineAmount {
+  font-size: 27px;
+  font-weight: 800;
+  color: #047857;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.headlineRateBadge {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.effectiveRateSub {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #166534;
+}
+
+/* 4-KPI METRICS ROW */
+.kpiMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.kpiCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpiHeader {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.kpiVal {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* DONUT CHART & BREAKDOWN */
+.donutBreakdownContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.donutSvgCol {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.donutCenterLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.donutTotalVal {
+  font-size: 11px;
+  font-weight: 750;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.donutTotalSub {
+  font-size: 8.5px;
+  color: #64748b;
+  line-height: 1;
+}
+
+.breakdownTableCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  padding-bottom: 2px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.breakdownRow:last-child {
+  border-bottom: none;
+}
+
+.breakdownLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.breakdownDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.breakdownValGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.breakdownAmount {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.breakdownPercent {
+  font-size: 10px;
+  color: #64748b;
+}
+
+/* NOTICE BANNER */
+.savingsNotice {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 7px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.savingsNoticeText {
+  font-size: 10.5px;
+  color: #1e40af;
+  line-height: 1.35;
+}
+
+.savingsMoneyIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ACTION BUTTONS */
+.actionBtnsRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.calculateBtn {
+  background: #f59e0b;
+  color: #0f172a;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.calculateBtn:hover {
+  background: #d97706;
+}
+
+.ghostActionBtn {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 7px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.ghostActionBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* SLABS TABLE */
+.slabsHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.slabsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+}
+
+.slabsTable th {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 5px 6px;
+  text-align: left;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.slabsTable td {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 5px 6px;
+  color: #1e293b;
+}
+
+.slabsIconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 1px 3px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.slabsIconBtn:hover {
+  opacity: 1;
+}
+
+/* FORMULA NOTE CARD */
+.formulaTabsRow {
+  display: flex;
+  gap: 3px;
+  background: #f1f5f9;
+  padding: 2px;
+  border-radius: 6px;
+}
+
+.formulaTabBtn {
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.formulaTabBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.formulaContentCard {
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 10.5px;
+  color: #713f12;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 960px) {
+  .studio3Col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .kpiMetricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .donutBreakdownContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+}

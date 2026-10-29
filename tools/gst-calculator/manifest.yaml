@@ -8,24 +8,24 @@ version: 0.1.1
 changelog:
   - { version: 0.1.1, date: 2026-10-07, type: changed, summary: "Compact workspace with paired controls and collapsed supporting sections." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with add/remove GST, CGST/SGST and IGST split." }
-name: GST Calculator
-shortName: GST
-summary: Add or remove GST and split it into CGST and SGST or IGST, with every step shown.
+name: Universal Tax Calculator
+shortName: Tax Calculator
+summary: Calculate GST, VAT, sales tax, and custom tax slabs for India and other countries — right in your browser.
 archetype: B
 preset: estimate/gst.india
 sample: invoice-18
 taxonomy:
   category: business
   tags: [tax, invoicing]
-  synonyms: [gst calculation, cgst sgst calculator, igst calculator, reverse gst calculator, gst inclusive calculator]
+  synonyms: [universal tax calculator, gst calculator, vat calculator, sales tax calculator, gst calculation, cgst sgst calculator, igst calculator, reverse gst calculator, gst inclusive calculator]
 capabilities: { print: true, share: true }
 privacy: { dataClass: public, network: none }
 disclaimer: professional
 seo:
-  title: GST Calculator – Add or Remove GST, CGST SGST IGST
-  description: Calculate GST on any amount. Add or remove GST at 5%, 18%, 40% or a custom rate and see the CGST, SGST or IGST split. Runs in your browser.
-  primaryKeyword: gst calculator
-  secondaryKeywords: [reverse gst calculator, cgst sgst calculator]
+  title: Universal Tax Calculator – GST, VAT, Sales Tax & Tax Slabs
+  description: Calculate GST, VAT, sales tax, and custom slabs for India, USA, UK, UAE, Canada and other countries. Accurate inclusive and exclusive tax calculator online.
+  primaryKeyword: universal tax calculator
+  secondaryKeywords: [gst calculator, vat calculator, sales tax calculator, reverse tax calculator]
 graph:
   related: [profit-margin-calculator, markup-calculator]
 quality:
