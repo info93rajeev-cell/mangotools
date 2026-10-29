@@ -1,0 +1,227 @@
+/* CARD 7: OUTPUT PREVIEW & SUMMARY CSS */
+.headerStepBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stepBadgeGreen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: #10b981;
+}
+
+.outputViewTabs {
+  display: flex;
+  gap: 4px;
+  padding: 2px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.outputViewTabBtn {
+  flex: 1;
+  padding: 3px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button.outputTabActive {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.finalPhotoPreviewBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 4px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+.dimArrowTop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 120px;
+  margin-bottom: 3px;
+}
+.dimArrowLine {
+  flex: 1;
+  height: 1px;
+  background: #94a3b8;
+}
+.dimBadgeText {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #475569;
+}
+.photoWithSideArrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.photoFrame {
+  width: 110px;
+  height: 140px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+.finalPreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dimArrowRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 130px;
+}
+.dimArrowLineVert {
+  flex: 1;
+  width: 1px;
+  background: #94a3b8;
+}
+.dimBadgeTextVert {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.readyStatusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+.greenCheckCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.readyTextGroup {
+  display: flex;
+  flex-direction: column;
+}
+.readyTitle {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #15803d;
+}
+.readySubtitle {
+  font-size: 9px;
+  color: #166534;
+}
+
+.downloadAmberBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 10px;
+  background: #f59e0b;
+  color: #ffffff;
+  border: 1px solid #d97706;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
+  transition: all 0.15s ease;
+  margin-top: 4px;
+}
+.downloadAmberBtn:hover:not(:disabled) {
+  background: #d97706;
+}
+.btnArrow {
+  font-size: 9px;
+}
+
+.secondaryPillsRow {
+  display: flex;
+  gap: 5px;
+  margin-top: 3px;
+}
+.secondaryPillBtn {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+.secondaryPillBtn:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+/* TIPS CARD */
+.tipsCard {
+  background: #fdf4ff;
+  border: 1px solid #f0abfc;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-top: 5px;
+}
+.tipsHeader {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #86198f;
+  margin-bottom: 3px;
+}
+.tipsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tipsList li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  color: #701a75;
+}
+.tipCheck {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 9px;
+}

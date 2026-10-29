@@ -1,0 +1,413 @@
+import { useCallback, useRef, useState } from 'preact/hooks';
+import styles from './advancedPenSelection.module.css';
+import { type BezierPoint, findClosestSegment, pathToSvgD } from './bezierPathModel.ts';
+import type { UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts';
+
+function SvgCalloutBadge({ anchor }: { anchor: BezierPoint }) {
+  return (
+    <g class={styles.calloutGroup} pointerEvents="none">
+      <path
+        d={`M ${anchor.x + 90} ${anchor.y - 40} Q ${anchor.x + 40} ${anchor.y - 30} ${anchor.x + 10} ${anchor.y}`}
+        fill="none"
+        stroke="#ec4899"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        markerEnd="url(#arrowhead)"
+      />
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto">
+          <polygon points="0 1, 8 4, 0 7" fill="#ec4899" />
+        </marker>
+      </defs>
+      <rect
+        x={anchor.x + 80}
+        y={anchor.y - 85}
+        width="230"
+        height="42"
+        rx="8"
+        fill="#fce7f3"
+        stroke="#f472b6"
+        strokeWidth="1.5"
+      />
+      <text
+        x={anchor.x + 92}
+        y={anchor.y - 69}
+        fill="#be185d"
+        fontSize="11"
+        fontWeight="700"
+        fontFamily="Inter, sans-serif"
+      >
+        Editable pen tool path
+      </text>
+      <text
+        x={anchor.x + 92}
+        y={anchor.y - 54}
+        fill="#be185d"
+        fontSize="10"
+        fontFamily="Inter, sans-serif"
+      >
+        with anchor points and handles
+      </text>
+    </g>
+  );
+}
+
+function SvgTangentHandles({
+  selectedPt,
+  selectedPointIndex,
+  onHandleMouseDown,
+}: {
+  selectedPt: BezierPoint;
+  selectedPointIndex: number;
+  onHandleMouseDown: (idx: number, type: 'cp1' | 'cp2', e: MouseEvent) => void;
+}) {
+  return (
+    <g class={styles.handlesGroup}>
+      <line
+        x1={selectedPt.x}
+        y1={selectedPt.y}
+        x2={selectedPt.cp1x}
+        y2={selectedPt.cp1y}
+        stroke="#3b82f6"
+        strokeWidth="1.5"
+      />
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
+      <circle
+        cx={selectedPt.cp1x}
+        cy={selectedPt.cp1y}
+        r="4.5"
+        fill="#ffffff"
+        stroke="#2563eb"
+        strokeWidth="2"
+        class={styles.handleCircle}
+        onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp1', e)}
+      />
+      <line
+        x1={selectedPt.x}
+        y1={selectedPt.y}
+        x2={selectedPt.cp2x}
+        y2={selectedPt.cp2y}
+        stroke="#3b82f6"
+        strokeWidth="1.5"
+      />
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
+      <circle
+        cx={selectedPt.cp2x}
+        cy={selectedPt.cp2y}
+        r="4.5"
+        fill="#ffffff"
+        stroke="#2563eb"
+        strokeWidth="2"
+        class={styles.handleCircle}
+        onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp2', e)}
+      />
+    </g>
+  );
+}
+
+function SvgAnchorPoints({
+  points,
+  selectedPointIndex,
+  onNodeClick,
+  onNodeMouseDown,
+}: {
+  points: BezierPoint[];
+  selectedPointIndex: number | null;
+  onNodeClick: (idx: number, e: MouseEvent) => void;
+  onNodeMouseDown: (idx: number, e: MouseEvent) => void;
+}) {
+  return (
+    <g>
+      {points.map((pt, idx) => {
+        const isSelected = idx === selectedPointIndex;
+        return (
+          // biome-ignore lint/a11y/noStaticElementInteractions: Bezier anchor point interaction
+          <circle
+            key={pt.id}
+            cx={pt.x}
+            cy={pt.y}
+            r={isSelected ? '6.5' : '4.5'}
+            fill={isSelected ? '#3b82f6' : '#ffffff'}
+            stroke={isSelected ? '#1d4ed8' : '#2563eb'}
+            strokeWidth={isSelected ? '2.5' : '2'}
+            class={styles.anchorNode}
+            onClick={(e) => onNodeClick(idx, e)}
+            onMouseDown={(e) => onNodeMouseDown(idx, e)}
+          />
+        );
+      })}
+    </g>
+  );
+}
+
+function CanvasTopToolbar({
+  zoom,
+  setZoom,
+  setPan,
+}: {
+  zoom: number;
+  setZoom: (fn: (z: number) => number) => void;
+  setPan: (p: { x: number; y: number }) => void;
+}) {
+  return (
+    <div class={styles.canvasHeader}>
+      <div class={styles.canvasTitleGroup}>
+        <span class={styles.stepBadge}>3</span>
+        <span class={styles.canvasTitle}>Edit Selection (Zoom & Pan)</span>
+      </div>
+
+      <div class={styles.zoomToolbar}>
+        <button
+          type="button"
+          class={styles.toolIconBtn}
+          title="Zoom Out"
+          onClick={() => setZoom((prev) => Math.max(25, prev - 25))}
+        >
+          −
+        </button>
+        <span class={styles.zoomPercentBadge}>{zoom}%</span>
+        <button
+          type="button"
+          class={styles.toolIconBtn}
+          title="Zoom In"
+          onClick={() => setZoom((prev) => Math.min(400, prev + 25))}
+        >
+          +
+        </button>
+        <button
+          type="button"
+          class={styles.toolIconBtn}
+          title="Pan Tool"
+          onClick={() => setPan({ x: 0, y: 0 })}
+        >
+          ✋
+        </button>
+        <button
+          type="button"
+          class={styles.toolIconBtn}
+          title="Fit to Screen"
+          onClick={() => {
+            setZoom(() => 100);
+            setPan({ x: 0, y: 0 });
+          }}
+        >
+          ⛶
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function useCanvasDragHandlers(
+  pan: { x: number; y: number },
+  setPan: (p: { x: number; y: number }) => void,
+  imageDims: { width: number; height: number },
+  onMovePoint: (idx: number, x: number, y: number) => void,
+  onMoveHandle: (idx: number, handle: 'cp1' | 'cp2', x: number, y: number) => void,
+  svgRef: { current: SVGSVGElement | null },
+) {
+  const [isDraggingPan, setIsDraggingPan] = useState(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [draggingTarget, setDraggingTarget] = useState<{
+    pointIndex: number;
+    type: 'anchor' | 'cp1' | 'cp2';
+  } | null>(null);
+
+  const getSvgCoords = useCallback(
+    (e: MouseEvent) => {
+      if (!svgRef.current) return null;
+      const rect = svgRef.current.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) * (imageDims.width / rect.width),
+        y: (e.clientY - rect.top) * (imageDims.height / rect.height),
+      };
+    },
+    [imageDims, svgRef],
+  );
+
+  const handleMouseDown = useCallback(
+    (e: MouseEvent) => {
+      if (e.button === 1 || (e.button === 0 && e.altKey)) {
+        setIsDraggingPan(true);
+        setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      }
+    },
+    [pan],
+  );
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDraggingPan) {
+        setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+        return;
+      }
+      if (!draggingTarget) return;
+      const coords = getSvgCoords(e);
+      if (!coords) return;
+      if (draggingTarget.type === 'anchor') {
+        onMovePoint(draggingTarget.pointIndex, coords.x, coords.y);
+      } else {
+        onMoveHandle(draggingTarget.pointIndex, draggingTarget.type, coords.x, coords.y);
+      }
+    },
+    [isDraggingPan, dragStart, draggingTarget, getSvgCoords, onMovePoint, onMoveHandle, setPan],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDraggingPan(false);
+    setDraggingTarget(null);
+  }, []);
+
+  return {
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    draggingTarget,
+    isDraggingPan,
+    setDraggingTarget,
+    getSvgCoords,
+  };
+}
+
+export interface AdvancedPenCanvasProps {
+  penSelection: UseAdvancedPenSelectionReturn;
+}
+
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio canvas view
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Canvas interaction logic
+export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
+  const {
+    imageSrc,
+    imageDims,
+    path,
+    selectedPointIndex,
+    activeTool,
+    bgMode,
+    customColor,
+    showOriginal,
+    showMask,
+    zoom,
+    pan,
+    cutoutResult,
+    setSelectedPointIndex,
+    setZoom,
+    setPan,
+    onMovePoint,
+    onMoveHandle,
+    onInsertPoint,
+    onDeletePoint,
+  } = penSelection;
+
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const dragHandlers = useCanvasDragHandlers(
+    pan,
+    setPan,
+    imageDims,
+    onMovePoint,
+    onMoveHandle,
+    svgRef,
+  );
+
+  const handleSvgClick = useCallback(
+    (e: MouseEvent) => {
+      if (dragHandlers.draggingTarget || dragHandlers.isDraggingPan) return;
+      const coords = dragHandlers.getSvgCoords(e);
+      if (!coords || activeTool !== 'add') return;
+      const closest = findClosestSegment(path, coords.x, coords.y);
+      if (closest && closest.distance < 40) {
+        onInsertPoint(closest.segmentIndex, closest.t);
+      }
+    },
+    [dragHandlers, activeTool, path, onInsertPoint],
+  );
+
+  const selectedPt = selectedPointIndex !== null ? path.points[selectedPointIndex] : null;
+
+  return (
+    <div class={styles.centerCanvasCard}>
+      <CanvasTopToolbar zoom={zoom} setZoom={setZoom} setPan={setPan} />
+
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Interactive canvas stage for mouse drag and path manipulation */}
+      <div
+        class={`${styles.canvasStageWrapper} ${
+          bgMode === 'white'
+            ? styles.bgWhite
+            : bgMode === 'black'
+              ? styles.bgBlack
+              : bgMode === 'custom'
+                ? styles.bgCustom
+                : styles.bgCheckerboard
+        }`}
+        style={bgMode === 'custom' ? { backgroundColor: customColor } : undefined}
+        onMouseDown={dragHandlers.handleMouseDown}
+        onMouseMove={dragHandlers.handleMouseMove}
+        onMouseUp={dragHandlers.handleMouseUp}
+      >
+        <div
+          class={styles.canvasTransformContainer}
+          style={{
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom / 100})`,
+            transformOrigin: 'center center',
+          }}
+        >
+          {showOriginal ? (
+            imageSrc && <img src={imageSrc} alt="Original" class={styles.stageImage} />
+          ) : cutoutResult ? (
+            <img src={cutoutResult.blobUrl} alt="Cutout" class={styles.stageImage} />
+          ) : (
+            imageSrc && <img src={imageSrc} alt="Base" class={styles.stageImage} />
+          )}
+
+          {showMask && (
+            // biome-ignore lint/a11y/useKeyWithClickEvents: Canvas click is handled by mouse coordinates
+            <svg
+              ref={svgRef}
+              class={styles.pathOverlaySvg}
+              viewBox={`0 0 ${imageDims.width} ${imageDims.height}`}
+              onClick={handleSvgClick}
+              role="img"
+              aria-label="Editable vector Bezier path"
+            >
+              <title>Editable vector Bezier path</title>
+              <path
+                d={pathToSvgD(path)}
+                class={styles.selectionCurve}
+                fill="none"
+                stroke="#2563eb"
+                strokeWidth="2.5"
+                strokeDasharray="4 2"
+              />
+              {path.points.length > 10 && <SvgCalloutBadge anchor={path.points[10]} />}
+              {selectedPt && selectedPointIndex !== null && (
+                <SvgTangentHandles
+                  selectedPt={selectedPt}
+                  selectedPointIndex={selectedPointIndex}
+                  onHandleMouseDown={(idx, type, e) => {
+                    e.stopPropagation();
+                    dragHandlers.setDraggingTarget({ pointIndex: idx, type });
+                  }}
+                />
+              )}
+              <SvgAnchorPoints
+                points={path.points}
+                selectedPointIndex={selectedPointIndex}
+                onNodeClick={(idx, e) => {
+                  e.stopPropagation();
+                  if (activeTool === 'delete') onDeletePoint(idx);
+                  else setSelectedPointIndex(idx);
+                }}
+                onNodeMouseDown={(idx, e) => {
+                  e.stopPropagation();
+                  setSelectedPointIndex(idx);
+                  if (activeTool !== 'delete') {
+                    dragHandlers.setDraggingTarget({ pointIndex: idx, type: 'anchor' });
+                  }
+                }}
+              />
+            </svg>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

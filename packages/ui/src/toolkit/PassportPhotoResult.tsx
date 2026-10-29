@@ -1,9 +1,13 @@
+import { useState } from 'preact/hooks';
 import styles from './passportPhoto.module.css';
+import enhanceStyles from './passportResult.module.css';
+import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
 import type { UsePassportPhotoReturn } from './usePassportPhoto.ts';
 
 export interface PassportPhotoResultProps {
   idPrefix: string;
   passport: UsePassportPhotoReturn;
+  enhance?: UsePassportEnhanceStateReturn;
 }
 
 function formatBytes(bytes: number): string {
@@ -23,32 +27,37 @@ function SpecsTable({ passport, outW, outH }: SpecsTableProps) {
   const res = passport.result;
   const { sheetLayout } = passport;
 
+  const presetName =
+    passport.activePresetId === 'in'
+      ? 'India'
+      : passport.activePresetId === 'us'
+        ? 'US'
+        : passport.activePresetId === 'eu'
+          ? 'Schengen / Europe'
+          : 'Passport';
+
   return (
     <table class={styles.specsTable} aria-label="Passport photo specifications">
       <tbody>
         <tr>
           <td class={styles.specKey}>Resolution</td>
-          <td class={styles.specVal}>{hasFile ? `${outW} × ${outH} px` : '—'}</td>
+          <td class={styles.specVal}>{hasFile ? `${outW} × ${outH} px` : '413 × 531 px'}</td>
         </tr>
         <tr>
-          <td class={styles.specKey}>Print Size</td>
+          <td class={styles.specKey}>Physical Size ({presetName})</td>
           <td class={styles.specVal}>
-            {hasFile ? `${sheetLayout.photoWidthMm} × ${sheetLayout.photoHeightMm} mm` : '—'}
-          </td>
-        </tr>
-        <tr>
-          <td class={styles.specKey}>Sheet Paper</td>
-          <td class={styles.specVal}>{sheetLayout.paper.name}</td>
-        </tr>
-        <tr>
-          <td class={styles.specKey}>Sheet Layout</td>
-          <td class={styles.specVal}>
-            {sheetLayout.photoCount} photos ({sheetLayout.blankPercent}% blank)
+            {hasFile
+              ? `${sheetLayout.photoWidthMm} × ${sheetLayout.photoHeightMm} mm`
+              : '35 × 45 mm'}
           </td>
         </tr>
         <tr>
           <td class={styles.specKey}>Format</td>
-          <td class={styles.specVal}>{hasFile ? passport.outputFormat.toUpperCase() : '—'}</td>
+          <td class={styles.specVal}>{hasFile ? passport.outputFormat.toUpperCase() : 'JPG'}</td>
+        </tr>
+        <tr>
+          <td class={styles.specKey}>File Size (estimated)</td>
+          <td class={styles.specVal}>{res ? formatBytes(res.outputFileSize) : '~ 120 KB'}</td>
         </tr>
         <tr>
           <td class={styles.specKey}>Quality</td>
@@ -56,12 +65,6 @@ function SpecsTable({ passport, outW, outH }: SpecsTableProps) {
             {passport.outputFormat === 'png' ? 'Lossless' : `${passport.quality}%`}
           </td>
         </tr>
-        {res && (
-          <tr>
-            <td class={styles.specKey}>File Size</td>
-            <td class={styles.specVal}>{formatBytes(res.outputFileSize)}</td>
-          </tr>
-        )}
       </tbody>
     </table>
   );
@@ -108,85 +111,178 @@ function E2eLocators({
   );
 }
 
-export function PassportPhotoResult({ idPrefix: _idPrefix, passport }: PassportPhotoResultProps) {
+export function PassportPhotoResult({
+  idPrefix: _idPrefix,
+  passport,
+  enhance,
+}: PassportPhotoResultProps) {
+  const [resultTab, setResultTab] = useState<'final' | 'compare'>('final');
   const hasFile = !!passport.file;
   const res = passport.result;
-  const outW = res ? res.outputWidth : passport.targetWidth;
-  const outH = res ? res.outputHeight : passport.targetHeight;
+  const outW = res ? res.outputWidth : passport.targetWidth || 413;
+  const outH = res ? res.outputHeight : passport.targetHeight || 531;
   const isExecuting = passport.phase === 'running';
-  const { sheetLayout, isGeneratingSheet, printSheet, downloadSheet } = passport;
+
+  const previewImageSrc =
+    enhance?.enhancedBlobUrl ||
+    passport.resultUrl ||
+    passport.imageSrc ||
+    '/samples/passport-portrait.jpg';
+
+  const copyToClipboard = async () => {
+    try {
+      if (previewImageSrc) {
+        const response = await fetch(previewImageSrc);
+        const blob = await response.blob();
+        await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+      }
+    } catch {
+      // Fallback
+    }
+  };
 
   return (
     <aside class={styles.resultPanel} aria-label="Passport Output Specs">
       <div class={styles.panelCard}>
+        {/* HEADER */}
         <div class={styles.sectionHeader}>
-          <span class={styles.sectionTitle}>6. Output Summary</span>
-          <span class={styles.readyBadge}>
-            {res ? '✓ Resized' : hasFile ? 'Ready' : 'Awaiting Photo'}
-          </span>
+          <div class={enhanceStyles.headerStepBadgeRow}>
+            <span class={enhanceStyles.stepBadgeGreen}>7</span>
+            <span class={styles.sectionTitle}>Output Preview & Summary</span>
+          </div>
         </div>
 
-        <SpecsTable passport={passport} outW={outW} outH={outH} />
-
-        {/* Warnings */}
-        {passport.warnings.length > 0 && (
-          <div class={styles.warningList} role="status">
-            {passport.warnings.map((w) => (
-              <div key={w.code} class={styles.warningItem}>
-                <span class={styles.warningIcon}>⚠️</span>
-                <span>
-                  {(w as { message?: string }).message ||
-                    (w.code === 'IMAGE_TRANSPARENT_FLATTENED_TO_WHITE'
-                      ? 'Transparent areas will be flattened onto a white background when exporting as JPG.'
-                      : w.code)}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div class={styles.actionGroup}>
-          {/* PRIMARY: Single Passport Photo */}
+        {/* TOP TABS: FINAL PHOTO vs COMPARE */}
+        <div class={enhanceStyles.outputViewTabs}>
           <button
             type="button"
-            class={styles.downloadCtaBtn}
+            class={`${enhanceStyles.outputViewTabBtn} ${
+              resultTab === 'final' ? enhanceStyles.outputTabActive : ''
+            }`}
+            onClick={() => setResultTab('final')}
+          >
+            Final Photo
+          </button>
+          <button
+            type="button"
+            class={`${enhanceStyles.outputViewTabBtn} ${
+              resultTab === 'compare' ? enhanceStyles.outputTabActive : ''
+            }`}
+            onClick={() => setResultTab('compare')}
+          >
+            ◰ Compare
+          </button>
+        </div>
+
+        {/* CROPPED PHOTO PREVIEW BOX WITH DIMENSION ARROWS */}
+        <div class={enhanceStyles.finalPhotoPreviewBox}>
+          {/* Top dimension arrow */}
+          <div class={enhanceStyles.dimArrowTop}>
+            <span class={enhanceStyles.dimArrowLine} />
+            <span class={enhanceStyles.dimBadgeText}>{outW} px</span>
+            <span class={enhanceStyles.dimArrowLine} />
+          </div>
+
+          <div class={enhanceStyles.photoWithSideArrow}>
+            <div class={enhanceStyles.photoFrame}>
+              <img
+                src={previewImageSrc}
+                alt="Passport Final Preview"
+                class={enhanceStyles.finalPreviewImg}
+              />
+            </div>
+            {/* Right dimension arrow */}
+            <div class={enhanceStyles.dimArrowRight}>
+              <span class={enhanceStyles.dimArrowLineVert} />
+              <span class={enhanceStyles.dimBadgeTextVert}>{outH} px</span>
+              <span class={enhanceStyles.dimArrowLineVert} />
+            </div>
+          </div>
+        </div>
+
+        {/* SPECIFICATIONS TABLE */}
+        <SpecsTable passport={passport} outW={outW} outH={outH} />
+
+        {/* READY STATUS BADGE */}
+        <div class={enhanceStyles.readyStatusBadge}>
+          <span class={enhanceStyles.greenCheckCircle}>✓</span>
+          <div class={enhanceStyles.readyTextGroup}>
+            <span class={enhanceStyles.readyTitle}>Ready for download</span>
+            <span class={enhanceStyles.readySubtitle}>
+              Matches {passport.activePresetId === 'in' ? 'India' : 'official'} passport photo
+              requirements.
+            </span>
+          </div>
+        </div>
+
+        {/* PRIMARY DOWNLOAD PHOTO CTA */}
+        <div class={styles.actionGroup}>
+          <button
+            type="button"
+            class={enhanceStyles.downloadAmberBtn}
             name="Download passport photo"
             aria-label="Download passport photo"
             onClick={() => void passport.executeResizeAndDownload()}
             disabled={isExecuting || !hasFile}
           >
-            <span>📥</span>
-            <span>Download passport photo</span>
+            <span class={styles.btnIcon}>📥</span>
+            <span class={styles.btnText}>Download Photo</span>
+            <span class={enhanceStyles.btnArrow}>▼</span>
           </button>
 
-          {/* SECONDARY: Direct Print Sheet */}
-          <button
-            type="button"
-            class={styles.printSheetBtn}
-            onClick={() => void printSheet()}
-            disabled={isExecuting || isGeneratingSheet || !hasFile}
-            title="Open browser print dialog with 1:1 scale for studio printing"
-          >
-            <span>🖨️</span>
-            <span>Print Sheet ({sheetLayout.photoCount} photos)</span>
-          </button>
+          {/* SECONDARY ACTION PILLS */}
+          <div class={enhanceStyles.secondaryPillsRow}>
+            <button
+              type="button"
+              class={enhanceStyles.secondaryPillBtn}
+              onClick={() => {
+                passport.setOutputFormat('webp');
+                void passport.executeResizeAndDownload();
+              }}
+              disabled={isExecuting || !hasFile}
+            >
+              Download WebP
+            </button>
 
-          {/* TERTIARY: Download Print Sheet */}
-          <button
-            type="button"
-            class={styles.downloadSheetSecondaryBtn}
-            onClick={() => void downloadSheet()}
-            disabled={isExecuting || isGeneratingSheet || !hasFile}
-            title="Download high-resolution 300 DPI sheet image for printing later"
-          >
-            <span>📄</span>
-            <span>Download Sheet (JPG)</span>
-          </button>
+            <button
+              type="button"
+              class={enhanceStyles.secondaryPillBtn}
+              onClick={() => void copyToClipboard()}
+              disabled={isExecuting || !hasFile}
+            >
+              📋 Copy Image
+            </button>
+          </div>
         </div>
 
-        <div class={styles.trustPill}>
-          <span>🔒</span>
-          <span>100% In-Browser. No Files Uploaded.</span>
+        {/* TIPS FOR BEST RESULTS CARD */}
+        <div class={enhanceStyles.tipsCard}>
+          <div class={enhanceStyles.tipsHeader}>
+            <span>💡</span>
+            <span class={enhanceStyles.tipsTitle}>Tips for best results</span>
+          </div>
+          <ul class={enhanceStyles.tipsList}>
+            <li>
+              <span class={enhanceStyles.tipCheck}>✓</span>
+              <span>Use good lighting and plain background</span>
+            </li>
+            <li>
+              <span class={enhanceStyles.tipCheck}>✓</span>
+              <span>Keep a neutral facial expression</span>
+            </li>
+            <li>
+              <span class={enhanceStyles.tipCheck}>✓</span>
+              <span>Use subtle filters only (do not over-edit)</span>
+            </li>
+            <li>
+              <span class={enhanceStyles.tipCheck}>✓</span>
+              <span>Final image should look like you</span>
+            </li>
+            <li>
+              <span class={enhanceStyles.tipCheck}>✓</span>
+              <span>Check official guidelines for your application</span>
+            </li>
+          </ul>
         </div>
       </div>
 

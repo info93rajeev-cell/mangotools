@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { PassportSheetControls } from './PassportSheetControls.tsx';
+import enhanceStyles from './passportEnhance.module.css';
 import styles from './passportPhoto.module.css';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import {
@@ -41,7 +42,10 @@ export function PassportPhotoControls({
         {/* SECTION 1: SOURCE PHOTO */}
         <section class={styles.controlSection}>
           <div class={styles.sectionHeader}>
-            <span class={styles.sectionTitle}>1. Portrait Photo</span>
+            <div class={enhanceStyles.headerStepBadgeRow}>
+              <span class={enhanceStyles.stepBadgePink}>1</span>
+              <span class={styles.sectionTitle}>Upload Photo</span>
+            </div>
             <div class={styles.headerActions}>
               <button
                 type="button"
@@ -73,9 +77,9 @@ export function PassportPhotoControls({
             onSelectFile={onSelectFile}
             onClear={passport.clearAll}
             disabled={isExecuting}
-            primaryText="Drag and drop images here"
-            browseText="click to browse files"
-            supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+            primaryText="Drag and drop an image here"
+            browseText="or click to browse files"
+            supportHint="Supports JPG, PNG, WebP. You can upload multiple images."
           />
 
           {!hasFile && (
@@ -90,7 +94,10 @@ export function PassportPhotoControls({
             {/* SECTION 2: OFFICIAL PRESETS */}
             <section class={styles.controlSection}>
               <div class={styles.sectionHeader}>
-                <span class={styles.sectionTitle}>2. Official Visa & Passport Presets</span>
+                <div class={enhanceStyles.headerStepBadgeRow}>
+                  <span class={enhanceStyles.stepBadgeGreen}>2</span>
+                  <span class={styles.sectionTitle}>Official Visa & Passport Presets</span>
+                </div>
               </div>
               <div class={styles.presetPillsGrid}>
                 {PASSPORT_PRESETS.map((p) => {
@@ -118,7 +125,10 @@ export function PassportPhotoControls({
             {/* SECTION 3: TARGET PIXEL DIMENSIONS & RATIO LOCK */}
             <section class={styles.controlSection}>
               <div class={styles.sectionHeader}>
-                <span class={styles.sectionTitle}>3. Photo Dimensions</span>
+                <div class={enhanceStyles.headerStepBadgeRow}>
+                  <span class={enhanceStyles.stepBadgeBlue}>3</span>
+                  <span class={styles.sectionTitle}>Photo Dimensions</span>
+                </div>
                 <label class={styles.switchLabel}>
                   <input
                     type="checkbox"
@@ -147,7 +157,7 @@ export function PassportPhotoControls({
                       }
                       disabled={isExecuting}
                     />
-                    <span class={styles.dimSuffix}>W px</span>
+                    <span class={styles.dimSuffix}>px</span>
                   </div>
                 </div>
 
@@ -163,19 +173,19 @@ export function PassportPhotoControls({
                       }
                       disabled={isExecuting}
                     />
-                    <span class={styles.dimSuffix}>H px</span>
+                    <span class={styles.dimSuffix}>px</span>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* SECTION 4: STUDIO PRINT SHEET SETUP */}
-            <PassportSheetControls idPrefix={idPrefix} passport={passport} disabled={isExecuting} />
-
-            {/* SECTION 5: OUTPUT FORMAT & QUALITY */}
+            {/* SECTION 4: OUTPUT FORMAT & QUALITY */}
             <section class={styles.controlSection}>
               <div class={styles.sectionHeader}>
-                <span class={styles.sectionTitle}>5. Output Format & Quality</span>
+                <div class={enhanceStyles.headerStepBadgeRow}>
+                  <span class={enhanceStyles.stepBadgePurple}>4</span>
+                  <span class={styles.sectionTitle}>Output Format & Quality</span>
+                </div>
               </div>
               <div class={styles.formatRow}>
                 <div class={styles.formatField} style={{ flex: 1.5 }}>
@@ -230,6 +240,15 @@ export function PassportPhotoControls({
                 </div>
               </div>
             </section>
+
+            {/* SECTION: STUDIO PRINT SHEET SETUP (when in sheet view) */}
+            {passport.activeStageView === 'sheet' && (
+              <PassportSheetControls
+                idPrefix={idPrefix}
+                passport={passport}
+                disabled={isExecuting}
+              />
+            )}
           </>
         )}
       </div>

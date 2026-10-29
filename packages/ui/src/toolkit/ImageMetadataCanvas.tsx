@@ -14,7 +14,7 @@ function formatBytes(bytes: number): string {
   if (!bytes || bytes <= 0) return '0 B';
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 interface LoadedSummaryRowProps {
@@ -130,7 +130,6 @@ function StageHeader({ fileInputId, hasFile, isExecuting, onTrySample }: CardHea
   );
 }
 
-// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio canvas layout
 export function ImageMetadataCanvas({
   idPrefix,
   meta,
@@ -147,7 +146,7 @@ export function ImageMetadataCanvas({
       ? `${meta.sourceDims.width} × ${meta.sourceDims.height}`
       : '1376 × 768';
 
-  const fileInputId = `${idPrefix}-metadata-upload-input`;
+  const fileInputId = `${idPrefix}-universal-upload-input`;
   const [isDragOver, setIsDragOver] = useState(false);
 
   return (
@@ -180,44 +179,28 @@ export function ImageMetadataCanvas({
         onTrySample={onTrySample}
       />
 
-      <input
-        id={fileInputId}
-        type="file"
+      {/* Universal Drag & Drop Card prompt */}
+      <UniversalUploadDropzone
+        idPrefix={idPrefix}
         accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        style={{ display: 'none' }}
-        onChange={(e) => {
-          const f = (e.currentTarget as HTMLInputElement).files?.[0];
-          if (f) onSelectFile(f);
-        }}
+        onSelectFile={onSelectFile}
+        disabled={isExecuting}
+        primaryText="Drag and drop images here"
+        browseText="click to browse files"
+        supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
+        linkBrowse={true}
       />
 
-      {hasFile ? (
-        <div class={styles.canvasBodyCol}>
-          <LoadedSummaryRow
-            previewSrc={previewSrc}
-            fileName={fileName}
-            fileSizeText={fileSizeText}
-            dimsText={dimsText}
-          />
-          <MetadataCompareStage previewSrc={previewSrc} />
-        </div>
-      ) : (
-        <UniversalUploadDropzone
-          idPrefix={idPrefix}
-          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-          file={meta.file}
-          thumbnailUrl={meta.imageSrc}
-          dimensions={meta.sourceDims.width > 0 ? meta.sourceDims : null}
-          onSelectFile={onSelectFile}
-          onClear={meta.clearAll}
-          disabled={isExecuting}
-          primaryText="Drag and drop images here"
-          browseText="click to browse files"
-          supportHint="Supports JPG, PNG, WebP, BMP. You can upload multiple images at once."
-          linkBrowse={true}
-          renderImgThumbnail={true}
+      {/* Loaded file information and Before/After reference previews */}
+      <div class={styles.canvasBodyCol}>
+        <LoadedSummaryRow
+          previewSrc={previewSrc}
+          fileName={fileName}
+          fileSizeText={fileSizeText}
+          dimsText={dimsText}
         />
-      )}
+        <MetadataCompareStage previewSrc={previewSrc} />
+      </div>
     </section>
   );
 }

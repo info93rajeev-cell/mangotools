@@ -1,14 +1,18 @@
-import { PassportCropWorkbench } from './PassportCropWorkbench.tsx';
+import { PassportEnhanceStage } from './PassportEnhanceStage.tsx';
+import { PassportFiltersAdjustmentsCard } from './PassportFiltersAdjustmentsCard.tsx';
 import { PassportPrintSheetPreview } from './PassportPrintSheetPreview.tsx';
+import enhanceStyles from './passportEnhance.module.css';
 import styles from './passportPhoto.module.css';
+import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
 import type { UsePassportPhotoReturn } from './usePassportPhoto.ts';
 
 export interface PassportPhotoCanvasProps {
   idPrefix: string;
   passport: UsePassportPhotoReturn;
+  enhance: UsePassportEnhanceStateReturn;
 }
 
-export function PassportPhotoCanvas({ idPrefix, passport }: PassportPhotoCanvasProps) {
+export function PassportPhotoCanvas({ idPrefix, passport, enhance }: PassportPhotoCanvasProps) {
   const { activeStageView, setActiveStageView, sheetLayout } = passport;
 
   return (
@@ -24,7 +28,7 @@ export function PassportPhotoCanvas({ idPrefix, passport }: PassportPhotoCanvasP
             onClick={() => setActiveStageView('single')}
             title="Single Photo Crop & Biometric Alignment"
           >
-            👤 1. Photo & Crop
+            👤 1. Photo & Enhance Studio
           </button>
           <button
             type="button"
@@ -39,10 +43,13 @@ export function PassportPhotoCanvas({ idPrefix, passport }: PassportPhotoCanvasP
         </div>
       </div>
 
-      {/* VIEW STAGE: CROP WORKBENCH OR PRINT SHEET PREVIEW */}
+      {/* VIEW STAGE: ENHANCE STUDIO OR PRINT SHEET PREVIEW */}
       <div class={styles.stageContentArea}>
         {activeStageView === 'single' ? (
-          <PassportCropWorkbench idPrefix={idPrefix} passport={passport} />
+          <div class={enhanceStyles.enhanceStudioCenterStack}>
+            <PassportEnhanceStage idPrefix={idPrefix} passport={passport} enhance={enhance} />
+            <PassportFiltersAdjustmentsCard enhance={enhance} />
+          </div>
         ) : (
           <PassportPrintSheetPreview passport={passport} />
         )}

@@ -1,0 +1,762 @@
+/* ---------- Advanced Bezier Pen Selection & Feather Studio CSS ---------- */
+.studioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* HEADER */
+.studioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+}
+.headerInfo,
+.titleWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.headerBrandBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #eff6ff;
+  font-size: 18px;
+  border: 1px solid #bfdbfe;
+}
+.studioTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+.studioSubtitle {
+  font-size: 11px;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+.headerActionToolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.headerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.headerBtn:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+.headerBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.headerBtnDanger {
+  color: #dc2626;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.headerBtnDanger:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+/* 3-COLUMN WORKBENCH GRID */
+.studioGrid {
+  display: grid;
+  grid-template-columns: minmax(250px, 280px) minmax(380px, 1fr) minmax(260px, 290px);
+  gap: 10px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .studioGrid {
+    grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .studioGrid {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* CARDS & CONTAINERS */
+.leftControlsColumn,
+.rightControlsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.controlCard {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.cardHeader,
+.stepTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.stepBadge,
+.stepBadgePink,
+.stepBadgeGreen,
+.stepBadgeAmber,
+.stepBadgeBlue,
+.stepBadgePurple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.stepBadge {
+  background: #2563eb;
+}
+.stepBadgePink {
+  background: #ec4899;
+}
+.stepBadgeGreen {
+  background: #10b981;
+}
+.stepBadgeAmber {
+  background: #f59e0b;
+}
+.stepBadgeBlue {
+  background: #3b82f6;
+}
+.stepBadgePurple {
+  background: #8b5cf6;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.stepDescription {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* BUTTONS & TOOLBARS */
+.actionButtonGroup {
+  display: flex;
+  gap: 6px;
+}
+.primaryUploadBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.primaryUploadBtn:hover {
+  background: #1d4ed8;
+}
+
+.autoSelectBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.autoSelectBtn:hover {
+  background: #fce7f3;
+}
+
+.selectWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.inputLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+}
+.toolSelect {
+  padding: 5px 8px;
+  font-size: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+/* 2x3 TOOL GRID */
+.toolGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.gridToolBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 4px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.gridToolBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.gridToolIcon {
+  font-size: 14px;
+}
+.gridToolText {
+  font-size: 10px;
+  font-weight: 600;
+  color: #334155;
+}
+button.toolActive {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+button.toolActive .gridToolText {
+  color: #1d4ed8;
+}
+.brushAddBtn {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.brushRemoveBtn {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.pathActionRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.pathPillBtn {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+}
+.pathPillBtn:hover {
+  background: #e2e8f0;
+}
+
+/* CENTER CANVAS */
+.centerCanvasCard {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.canvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.canvasTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.canvasTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.zoomToolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.toolIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.zoomPercentBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  min-width: 36px;
+  text-align: center;
+}
+.canvasStageWrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 440px;
+  cursor: crosshair;
+}
+.bgCheckerboard {
+  background-color: #f1f5f9;
+  background-image:
+    linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+    linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0px;
+}
+div.bgWhite {
+  background: #ffffff;
+}
+div.bgBlack {
+  background: #09090b;
+}
+.canvasTransformContainer {
+  position: relative;
+  display: inline-block;
+  max-width: 95%;
+  max-height: 95%;
+}
+.stageImage {
+  display: block;
+  max-width: 100%;
+  max-height: 420px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+.pathOverlaySvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+.anchorNode {
+  cursor: move;
+  transition: r 0.1s ease;
+}
+.anchorNode:hover {
+  r: 7px;
+}
+.handleCircle {
+  cursor: pointer;
+}
+.handleCircle:hover {
+  r: 6px;
+}
+
+/* RIGHT PANEL & SLIDERS */
+.sliderGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.sliderLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sliderTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+}
+.sliderValueBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.rangeInput {
+  width: 100%;
+  height: 4px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+.bgSwatchRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.bgSwatchBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button.swatchActive {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+.swatchPreviewChecker {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background-image:
+    linear-gradient(45deg, #cbd5e1 25%, transparent 25%),
+    linear-gradient(-45deg, #cbd5e1 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #cbd5e1 75%),
+    linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
+  background-size: 8px 8px;
+}
+.swatchPreviewWhite {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+.swatchPreviewBlack {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #0f172a;
+}
+.swatchPreviewCustom {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+}
+.swatchLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: #475569;
+}
+.previewCheckboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+}
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.downloadPngBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 12px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+  transition: background 0.15s ease;
+}
+.downloadPngBtn:hover:not(:disabled) {
+  background: #059669;
+}
+.btnSubtext {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+.exportPillsRow {
+  display: flex;
+  gap: 6px;
+}
+.secondaryExportBtn {
+  flex: 1;
+  padding: 5px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+.secondaryExportBtn:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+/* WORKFLOW 5-STEP SECTION */
+.workflowSection {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 4px;
+}
+.workflowStepsContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+}
+.workflowStepCard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 140px;
+  flex-shrink: 0;
+}
+.workflowStepHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.workflowStepTitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.workflowThumbWrapper {
+  position: relative;
+  width: 140px;
+  height: 95px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+}
+.workflowThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.workflowThumbImgCutout {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.thumbSilhouetteOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(59, 130, 246, 0.4);
+}
+.thumbSvgOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.featherComparison {
+  position: relative;
+}
+.featherSplitBar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+.featherBadgeLeft,
+.featherBadgeRight {
+  position: absolute;
+  bottom: 3px;
+  font-size: 7px;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+.featherBadgeLeft {
+  left: 3px;
+}
+.featherBadgeRight {
+  right: 3px;
+}
+.workflowStepCaption {
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+  color: #64748b;
+  line-height: 1.25;
+}
+.workflowStepCaption strong {
+  color: #1e293b;
+}
+.stepArrow {
+  font-size: 14px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* USE CASES CARD */
+.useCasesCard {
+  flex-shrink: 0;
+  min-width: 230px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+.useCasesHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.useCasesStar {
+  font-size: 12px;
+}
+.useCasesTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.useCasesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.useCasesList li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  color: #334155;
+}
+.checkIcon {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 10px;
+}
+
+/* MODE SWITCHER TABS */
+.modeSwitcherBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  width: fit-content;
+  margin-bottom: 2px;
+}
+.modeTabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.modeTabBtn:hover {
+  color: #1e293b;
+}
+button.modeTabActive {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
