@@ -2,8 +2,10 @@ import { useCallback, useRef, useState } from 'preact/hooks';
 import {
   clampRectToBounds,
   defaultSelectionRect,
+  type HandlePosition,
   moveRect,
   type PixelRect,
+  resizeRect,
 } from './imageWorkbenchGeometry.ts';
 import { BiometricGuideSvg } from './PassportCropWorkbench.tsx';
 import styles from './passportMobileStudio.module.css';
@@ -15,8 +17,8 @@ export interface PassportMobileCropStageProps {
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Mobile crop stage with pointer gesture handlers
 export function PassportMobileCropStage({ passport }: PassportMobileCropStageProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [dragMode, setDragMode] = useState<'move' | HandlePosition | null>(null);
   const dragStartRef = useRef<{ clientX: number; clientY: number; startRect: PixelRect }>({
     clientX: 0,
     clientY: 0,
@@ -30,16 +32,17 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
       ? passport.cropRect
       : defaultSelectionRect({ width: sourceW, height: sourceH }, passport.activeCropRatio);
 
-  const getContainerScale = useCallback(() => {
-    if (!containerRef.current) return 1;
-    const rect = containerRef.current.getBoundingClientRect();
-    return Math.min(rect.width / sourceW, rect.height / sourceH);
-  }, [sourceW, sourceH]);
+  const getStageScale = useCallback(() => {
+    if (!stageRef.current) return 1;
+    const rect = stageRef.current.getBoundingClientRect();
+    return rect.width / sourceW;
+  }, [sourceW]);
 
-  const handlePointerDown = (e: PointerEvent) => {
+  const handleStart = (e: PointerEvent, mode: 'move' | HandlePosition) => {
     e.preventDefault();
+    e.stopPropagation();
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    setIsDragging(true);
+    setDragMode(mode);
     dragStartRef.current = {
       clientX: e.clientX,
       clientY: e.clientY,
@@ -48,16 +51,28 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
   };
 
   const handlePointerMove = (e: PointerEvent) => {
-    if (!isDragging) return;
-    const scale = getContainerScale();
+    if (!dragMode) return;
+    const scale = getStageScale();
     if (scale <= 0) return;
     const deltaX = (e.clientX - dragStartRef.current.clientX) / scale;
     const deltaY = (e.clientY - dragStartRef.current.clientY) / scale;
-    const newRect = moveRect(dragStartRef.current.startRect, deltaX, deltaY, {
-      width: sourceW,
-      height: sourceH,
-    });
-    passport.setCropRect(newRect);
+    const bounds = { width: sourceW, height: sourceH };
+
+    if (dragMode === 'move') {
+      passport.setCropRect(moveRect(dragStartRef.current.startRect, deltaX, deltaY, bounds));
+    } else {
+      passport.setCropRect(
+        resizeRect(
+          dragStartRef.current.startRect,
+          dragMode,
+          deltaX,
+          deltaY,
+          bounds,
+          passport.activeCropRatio,
+          30,
+        ),
+      );
+    }
   };
 
   const handlePointerUp = (e: PointerEvent) => {
@@ -66,7 +81,7 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
     } catch {
       // Ignored
     }
-    setIsDragging(false);
+    setDragMode(null);
   };
 
   const handleNudge = (dx: number, dy: number) => {
@@ -92,67 +107,102 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
     passport.setCropRect(newRect);
   };
 
-  // Convert crop rect into percentage for CSS positioning
   const leftPct = (crop.x / sourceW) * 100;
   const topPct = (crop.y / sourceH) * 100;
   const widthPct = (crop.width / sourceW) * 100;
   const heightPct = (crop.height / sourceH) * 100;
-
   const rawImgSrc = passport.imageSrc || '/samples/passport-portrait.jpg';
 
   return (
     <div class={styles.cropStageSection}>
-      <div class={styles.cropStageViewport} ref={containerRef}>
-        <img src={rawImgSrc} alt="Passport source" class={styles.cropSourceImage} />
-
-        {/* Dimmed Overlay with Cutout */}
+      <div class={styles.cropStageViewport}>
         <div
-          class={styles.cropDimmedMask}
-          style={{
-            clipPath: `polygon(
-              0% 0%, 0% 100%, 100% 100%, 100% 0%, 0% 0%,
-              ${leftPct}% ${topPct}%,
-              ${leftPct + widthPct}% ${topPct}%,
-              ${leftPct + widthPct}% ${topPct + heightPct}%,
-              ${leftPct}% ${topPct + heightPct}%,
-              ${leftPct}% ${topPct}%
-            )`,
-          }}
-        />
-
-        {/* Interactive Crop Frame Box */}
-        <section
-          class={styles.cropInteractiveBox}
-          style={{
-            left: `${leftPct}%`,
-            top: `${topPct}%`,
-            width: `${widthPct}%`,
-            height: `${heightPct}%`,
-          }}
-          onPointerDown={handlePointerDown}
+          class={styles.cropStageInner}
+          ref={stageRef}
+          style={{ aspectRatio: `${sourceW} / ${sourceH}` }}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          aria-label="Passport crop frame"
         >
-          {/* Biometric Guidelines (Crown, Eye Line, Chin Line) */}
-          {passport.showGuides && (
-            <div class={styles.cropGuideWrapper}>
-              <BiometricGuideSvg />
+          <img src={rawImgSrc} alt="Passport source" class={styles.cropSourceImage} />
+
+          {/* Dimmed Overlay with Cutout */}
+          <div
+            class={styles.cropDimmedMask}
+            style={{
+              clipPath: `polygon(
+                0% 0%, 0% 100%, 100% 100%, 100% 0%, 0% 0%,
+                ${leftPct}% ${topPct}%,
+                ${leftPct + widthPct}% ${topPct}%,
+                ${leftPct + widthPct}% ${topPct + heightPct}%,
+                ${leftPct}% ${topPct + heightPct}%,
+                ${leftPct}% ${topPct}%
+              )`,
+            }}
+          />
+
+          {/* Interactive Crop Frame Box */}
+          <section
+            class={styles.cropInteractiveBox}
+            style={{
+              left: `${leftPct}%`,
+              top: `${topPct}%`,
+              width: `${widthPct}%`,
+              height: `${heightPct}%`,
+            }}
+            onPointerDown={(e) => handleStart(e, 'move')}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            aria-label="Passport crop frame"
+          >
+            {/* Biometric Guidelines (Crown, Eye Line, Chin Line) */}
+            {passport.showGuides && (
+              <div class={styles.cropGuideWrapper}>
+                <BiometricGuideSvg />
+              </div>
+            )}
+
+            {/* Touch-Friendly Corner Handles */}
+            <div
+              class={`${styles.cropHandle} ${styles.handleNW}`}
+              role="slider"
+              aria-label="Resize Top-Left"
+              aria-valuenow={Math.round(crop.width)}
+              tabIndex={0}
+              onPointerDown={(e) => handleStart(e, 'nw')}
+            />
+            <div
+              class={`${styles.cropHandle} ${styles.handleNE}`}
+              role="slider"
+              aria-label="Resize Top-Right"
+              aria-valuenow={Math.round(crop.width)}
+              tabIndex={0}
+              onPointerDown={(e) => handleStart(e, 'ne')}
+            />
+            <div
+              class={`${styles.cropHandle} ${styles.handleSW}`}
+              role="slider"
+              aria-label="Resize Bottom-Left"
+              aria-valuenow={Math.round(crop.width)}
+              tabIndex={0}
+              onPointerDown={(e) => handleStart(e, 'sw')}
+            />
+            <div
+              class={`${styles.cropHandle} ${styles.handleSE}`}
+              role="slider"
+              aria-label="Resize Bottom-Right"
+              aria-valuenow={Math.round(crop.width)}
+              tabIndex={0}
+              onPointerDown={(e) => handleStart(e, 'se')}
+            />
+
+            {/* Center Drag Hint */}
+            <div class={styles.cropCenterGrip}>
+              <span>✥ Drag or Pinch to Fit</span>
             </div>
-          )}
-
-          {/* Corner Handles */}
-          <div class={`${styles.cropHandle} ${styles.handleNW}`} />
-          <div class={`${styles.cropHandle} ${styles.handleNE}`} />
-          <div class={`${styles.cropHandle} ${styles.handleSW}`} />
-          <div class={`${styles.cropHandle} ${styles.handleSE}`} />
-
-          {/* Center Drag Hint */}
-          <div class={styles.cropCenterGrip}>
-            <span>✥ Drag to align</span>
-          </div>
-        </section>
+          </section>
+        </div>
 
         {/* Top Controls Overlay */}
         <div class={styles.cropTopToolbar}>
@@ -162,7 +212,7 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
             onClick={() => passport.setShowGuides(!passport.showGuides)}
             title="Toggle Biometric Oval"
           >
-            <span>{passport.showGuides ? '🟢 Guides: ON' : '⚪ Guides: OFF'}</span>
+            <span>{passport.showGuides ? '🟢 Oval: ON' : '⚪ Oval: OFF'}</span>
           </button>
           <button
             type="button"
@@ -170,7 +220,7 @@ export function PassportMobileCropStage({ passport }: PassportMobileCropStagePro
             onClick={() => passport.resetCrop()}
             title="Auto-center face in crop frame"
           >
-            <span>↺ Center Face</span>
+            <span>↺ Center</span>
           </button>
         </div>
 

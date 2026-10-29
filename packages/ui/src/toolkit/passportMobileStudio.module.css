@@ -336,18 +336,21 @@
 
 /* SEGMENTED TOOL TABS */
 .toolTabsBar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .toolTabBtn {
-  flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
-  padding: 8px 4px;
-  font-size: 11px;
+  padding: 6px 2px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -356,7 +359,10 @@
   align-items: center;
   gap: 2px;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .toolTabBtn[data-active="true"] {
@@ -367,10 +373,7 @@
 
 /* TOOLS BODY */
 .toolBodyArea {
-  padding: 12px;
-  max-height: 280px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -565,14 +568,26 @@
 .cropStageViewport {
   position: relative;
   width: 100%;
-  height: 36vh;
+  height: 38vh;
   min-height: 250px;
-  max-height: 310px;
+  max-height: 340px;
   background: #09090b;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.cropStageInner {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
 }
 
 .cropSourceImage {
@@ -581,6 +596,7 @@
   object-fit: contain;
   user-select: none;
   pointer-events: none;
+  display: block;
 }
 
 .cropDimmedMask {
@@ -614,28 +630,42 @@
 
 .cropHandle {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   background: #f59e0b;
-  border: 1.5px solid #ffffff;
-  border-radius: 2px;
+  border: 2px solid #ffffff;
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  touch-action: none;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.cropHandle::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
 }
 
 .handleNW {
-  top: -5px;
-  left: -5px;
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
 }
 .handleNE {
-  top: -5px;
-  right: -5px;
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
 }
 .handleSW {
-  bottom: -5px;
-  left: -5px;
+  bottom: -7px;
+  left: -7px;
+  cursor: nesw-resize;
 }
 .handleSE {
-  bottom: -5px;
-  right: -5px;
+  bottom: -7px;
+  right: -7px;
+  cursor: nwse-resize;
 }
 
 .cropCenterGrip {
@@ -717,6 +747,109 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.cropHintRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alignmentCallout {
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.filterPillsScroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 2px 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filterPillBtn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filterPillBtn[data-active="true"] {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.tabSlidersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sliderGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rangeSlider {
+  width: 100%;
+  accent-color: #2563eb;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  background: var(--color-border);
+}
+
+.sheetActionButtonsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.printDirectBtn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.shareWhatsAppBtn {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .quickPresetsSection {
@@ -832,4 +965,67 @@
   font-size: 11px;
   text-align: center;
   font-weight: 600;
+}
+
+/* ---------- MULTI-PHOTO PRINT SHEET SECTION CARD ---------- */
+.sheetSectionCard {
+  margin-top: 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 6px;
+}
+
+.sectionHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.sheetLayoutMeta {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.guidelinesCard {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guidelinesTitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: #d97706;
+}
+
+.guidelinesList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 10.5px;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.4;
 }

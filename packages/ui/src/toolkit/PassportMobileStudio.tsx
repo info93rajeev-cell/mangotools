@@ -2,6 +2,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
 import { PassportMobileCropStage } from './PassportMobileCropStage.tsx';
 import { PassportMobileLanding } from './PassportMobileLanding.tsx';
+import { PassportMobileSheetSection } from './PassportMobileSheetSection.tsx';
 import { type MobileToolTab, PassportMobileToolTabs } from './PassportMobileToolTabs.tsx';
 import styles from './passportMobileStudio.module.css';
 import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
@@ -300,6 +301,9 @@ export function PassportMobileStudio({
             <span>Sheet</span>
           </button>
         </div>
+
+        {/* Dedicated Multi-Photo Print Sheet & WhatsApp Section */}
+        <PassportMobileSheetSection passport={passport} />
       </div>
     </div>
   );
