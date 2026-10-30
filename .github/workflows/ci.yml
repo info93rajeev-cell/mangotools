@@ -3,6 +3,9 @@ name: ci
 on:
   push:
   pull_request:
+  schedule:
+    - cron: '30 20 * * *' # 02:00 IST nightly: full three-browser suite
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,10 +15,60 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  quick:
+    # Every push and PR: fast gate (~10 min) so results arrive before the next deploy.
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    name: verify · build · e2e (Node 24, Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+      PW_BROWSERS: chromium
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: pnpm verify (Biome, gen, typecheck, architecture, Vitest)
+        run: pnpm verify
+
+      - name: pnpm build (development build + post-build checks)
+        run: pnpm build
+
+      - name: pnpm build:deploy (production deployment build + deploy checks)
+        run: pnpm build:deploy
+        env:
+          MANGOTOOLS_ENV: production
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: pnpm test:e2e (Chromium e2e, a11y, seo)
+        run: pnpm test:e2e --project=e2e-chromium --project=a11y --project=seo
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-quick
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+
   ci:
+    # Nightly and on demand: the full suite on Chromium, Firefox and WebKit.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     name: verify · build · e2e (Node 24, Chromium/Firefox/WebKit)
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
     steps:
