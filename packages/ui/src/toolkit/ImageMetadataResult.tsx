@@ -1,7 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import styles from './imageMetadata.module.css';
-import { messageFor } from './presentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import type {
   MetadataRemoverResultData,
   UseImageMetadataRemoverReturn,
@@ -11,13 +12,6 @@ export interface ImageMetadataResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   meta: UseImageMetadataRemoverReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (!bytes || bytes <= 0) return '0 B';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function getOriginalFormat(fileName?: string): string {
@@ -95,7 +89,7 @@ function ContractDl({ res, displayFmt, originalFmt, sourceDims }: ContractDlProp
 
 export function ImageMetadataResult({
   idPrefix: _idPrefix,
-  preset,
+  preset: _preset,
   meta,
 }: ImageMetadataResultProps) {
   const res = meta.result;
@@ -141,7 +135,7 @@ export function ImageMetadataResult({
         <div class={styles.metricBox}>
           <span class={styles.metricTitle}>Output size</span>
           <div class={styles.sizeValRow}>
-            <span class={styles.metricVal}>{formatBytes(cleanBytes)}</span>
+            <span class={styles.metricVal}>{formatImageBytes(cleanBytes)}</span>
             <span class={styles.reductionBadge}>{reduction}% smaller</span>
           </div>
         </div>
@@ -177,7 +171,7 @@ export function ImageMetadataResult({
       {meta.error && (
         <div class={styles.errorContainer} data-error="">
           <InlineAlert tone="danger" role="alert">
-            {(meta.error as { message?: string }).message ?? messageFor(preset, meta.error)}
+            {resolveImageErrorMessage(meta.error, meta.file?.name ?? meta.invalidFile?.name)}
           </InlineAlert>
         </div>
       )}

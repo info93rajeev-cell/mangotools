@@ -1,8 +1,8 @@
 import type { OpWarning } from '@mangotools/core';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { formatFileSize } from '../archetypes/FileQueue.tsx';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageCrop.module.css';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { label, messageFor } from './presentation.ts';
 export interface ImageCropResultData {
   fileName: string;
@@ -73,7 +73,7 @@ export function ImageCropResult({ preset, result, resultUrl, onDownload }: Image
         </div>
         <div class={styles.resultRow} data-result-row="output-size">
           <dt>Output file size</dt>
-          <dd>{formatFileSize(result.outputFileSize)}</dd>
+          <dd>{formatImageBytes(result.outputFileSize)}</dd>
         </div>
         <div class="sr-only" data-output="outputWidth">
           <dd>{result.outputWidth}</dd>

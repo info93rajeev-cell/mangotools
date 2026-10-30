@@ -1,6 +1,7 @@
 import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { downloadBytes } from './actions.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import {
   inspectAndDecodeImage,
   MIME_MAP,
@@ -56,8 +57,12 @@ export async function inspectPassportFile(raw: File, s: PassportExecutionState) 
 
   if (!isKnownImage) {
     s.setFile(null);
+    s.setSourceDims({ width: 0, height: 0 });
+    s.setImageSrc(null);
+    s.setResult(null);
+    s.setResultUrl(null);
     s.setInvalidFile(raw);
-    s.setError(`"${raw.name}" is not a JPG, PNG, or WebP image.`);
+    s.setError(resolveImageErrorMessage('IMAGE_INVALID_FILE_TYPE', raw.name));
     s.updatePhase('error');
     return;
   }
@@ -65,7 +70,12 @@ export async function inspectPassportFile(raw: File, s: PassportExecutionState) 
 
   const res = await inspectAndDecodeImage(raw);
   if (!res.ok) {
-    s.setError(res.error.messageKey || `"${raw.name}" is not a JPG, PNG, or WebP image.`);
+    s.setFile(null);
+    s.setSourceDims({ width: 0, height: 0 });
+    s.setImageSrc(null);
+    s.setResult(null);
+    s.setResultUrl(null);
+    s.setError(resolveImageErrorMessage(res.error, raw.name));
     s.updatePhase('error');
     return;
   }

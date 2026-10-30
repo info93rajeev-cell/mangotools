@@ -1,17 +1,12 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './imageEnlarger.module.css';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import type { UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
 export interface ImageEnlargerResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   enlarger: UseImageEnlargerReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlargerResultProps) {
@@ -67,7 +62,7 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
           {hasResult && (
             <tr>
               <td class={styles.specKey}>Output Size</td>
-              <td class={styles.specVal}>{formatBytes(res.outputFileSize)}</td>
+              <td class={styles.specVal}>{formatImageBytes(res.outputFileSize)}</td>
             </tr>
           )}
         </tbody>
@@ -82,7 +77,12 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
           onClick={() => {
             void enlarger.executeEnlarge();
           }}
-          disabled={!enlarger.file || enlarger.phase === 'running'}
+          disabled={
+            !enlarger.file ||
+            enlarger.phase === 'running' ||
+            enlarger.phase === 'error' ||
+            !!enlarger.error
+          }
         >
           <span>📥</span>
           <span>

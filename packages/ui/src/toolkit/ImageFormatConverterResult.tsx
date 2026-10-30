@@ -1,6 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import styles from './imageFormatConverter.module.css';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { messageFor } from './presentation.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
@@ -8,12 +10,6 @@ export interface ImageFormatConverterResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   converter: UseImageFormatConverterReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 const STANDING_WARNING_CODES = new Set([
@@ -75,7 +71,7 @@ function ResultCockpit({
           </tr>
           <tr>
             <td class={styles.metricKey}>Output File Size</td>
-            <td class={styles.metricVal}>{formatBytes(res.outputFileSize)}</td>
+            <td class={styles.metricVal}>{formatImageBytes(res.outputFileSize)}</td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Size Difference</td>
@@ -110,48 +106,97 @@ function ResultCockpit({
   );
 }
 
+function computeEstimatedKb(converter: UseImageFormatConverterReturn): number {
+  const baseSize = converter.file?.size ?? 1024 * 500;
+  if (converter.targetFormat === 'png') {
+    return Math.max(1, Math.round((baseSize * 1.2) / 1024));
+  }
+  return Math.max(1, Math.round((baseSize * (converter.quality / 100)) / 1024));
+}
+
+function ReadyStatusBanner({
+  isError,
+  hasFile,
+  errorText,
+}: {
+  isError: boolean;
+  hasFile: boolean;
+  errorText: string;
+}) {
+  if (isError) {
+    return (
+      <div
+        class={styles.statusBanner}
+        role="alert"
+        style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }}
+      >
+        <span>⚠️ {errorText}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      class={styles.statusBanner}
+      role="status"
+      style={{
+        background: hasFile ? 'var(--color-bg)' : 'transparent',
+        color: 'var(--color-text)',
+        borderColor: hasFile ? 'var(--color-border)' : 'transparent',
+      }}
+    >
+      <span>{hasFile ? '✓ Ready to Convert' : '⏳ Awaiting Image'}</span>
+    </div>
+  );
+}
+
+function ReadyPreviewThumb({
+  hasFile,
+  isError,
+  imageSrc,
+}: {
+  hasFile: boolean;
+  isError: boolean;
+  imageSrc: string | null;
+}) {
+  if (hasFile && imageSrc) {
+    return (
+      <div class={styles.previewThumbContainer}>
+        <div
+          role="presentation"
+          aria-hidden="true"
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${imageSrc})`,
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div class={styles.previewThumbContainer}>
+      <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>
+        {isError ? 'Unable to load image' : 'Awaiting Image'}
+      </div>
+    </div>
+  );
+}
+
 function ReadyCockpit({ converter }: { converter: UseImageFormatConverterReturn }) {
   const hasFile = !!converter.file;
-  const estSizeKb = Math.max(
-    1,
-    Math.round(
-      converter.targetFormat === 'png'
-        ? ((converter.file?.size ?? 1024 * 500) * 1.2) / 1024
-        : ((converter.file?.size ?? 1024 * 500) * (converter.quality / 100)) / 1024,
-    ),
-  );
+  const isError = converter.phase === 'error' || !!converter.error;
+  const estSizeKb = computeEstimatedKb(converter);
+  const errorText = resolveImageErrorMessage(converter.error, converter.file?.name);
 
   return (
     <div class={styles.previewCockpitCard} data-convert-ready-panel="">
-      <div
-        class={styles.statusBanner}
-        style={{
-          background: hasFile ? 'var(--color-bg)' : 'transparent',
-          color: 'var(--color-text)',
-          borderColor: hasFile ? 'var(--color-border)' : 'transparent',
-        }}
-      >
-        <span>{hasFile ? '✓ Ready to Convert' : '⏳ Awaiting Image'}</span>
-      </div>
-
-      <div class={styles.previewThumbContainer}>
-        {hasFile && converter.imageSrc ? (
-          <div
-            role="presentation"
-            aria-hidden="true"
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${converter.imageSrc})`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-            }}
-          />
-        ) : (
-          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Image</div>
-        )}
-      </div>
+      <ReadyStatusBanner isError={isError} hasFile={hasFile} errorText={errorText} />
+      <ReadyPreviewThumb hasFile={hasFile} isError={isError} imageSrc={converter.imageSrc} />
 
       <table class={styles.metricsTable} aria-label="Target Conversion Specifications">
         <tbody>
@@ -196,7 +241,7 @@ function ReadyCockpit({ converter }: { converter: UseImageFormatConverterReturn 
         class={styles.downloadCtaBtn}
         data-download-converted=""
         onClick={() => void converter.executeConvertAndDownload()}
-        disabled={converter.phase === 'running'}
+        disabled={converter.phase === 'running' || isError || !hasFile}
       >
         <span>⬇️</span>
         <span>Download converted image</span>
@@ -210,7 +255,7 @@ export function ImageFormatConverterResult({
   preset,
   converter,
 }: ImageFormatConverterResultProps) {
-  const hasResult = !!converter.result && !!converter.resultUrl;
+  const hasResult = !converter.error && !!converter.result && !!converter.resultUrl;
 
   return (
     <aside class={styles.resultPanel} aria-label="Conversion Specs and Results">

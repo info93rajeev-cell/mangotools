@@ -1,5 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import styles from './signatureResizer.module.css';
 import type { UseSignatureResizerReturn } from './useSignatureResizer.ts';
 
@@ -9,11 +11,7 @@ export interface SignatureResizerResultProps {
   signature: UseSignatureResizerReturn;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+const formatBytes = formatImageBytes;
 
 function ErrorNotice({
   error,
@@ -31,7 +29,7 @@ function ErrorNotice({
       } bytes at ${error.details?.width ?? outW} × ${
         error.details?.height ?? outH
       } px. Relax the limit or allow smaller dimensions.`
-    : (error as { message?: string }).message || 'An error occurred.';
+    : resolveImageErrorMessage(error);
 
   return (
     <div class={styles.errorContainer} data-signature-error="" style={{ marginTop: '4px' }}>

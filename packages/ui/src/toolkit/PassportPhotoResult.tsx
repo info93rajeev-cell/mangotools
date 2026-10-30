@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import styles from './passportPhoto.module.css';
 import enhanceStyles from './passportResult.module.css';
 import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
@@ -10,11 +11,7 @@ export interface PassportPhotoResultProps {
   enhance?: UsePassportEnhanceStateReturn;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
+const formatBytes = formatImageBytes;
 
 interface SpecsTableProps {
   passport: UsePassportPhotoReturn;
@@ -132,7 +129,7 @@ function PassportActionButtons({
         name="Generate passport photo"
         aria-label="Generate passport photo"
         onClick={() => void passport.executeGenerate()}
-        disabled={isExecuting || !hasFile}
+        disabled={isExecuting || !hasFile || !passport.imageSrc || !!passport.error}
         data-generate-button=""
       >
         <span class={styles.btnIcon}>⚡</span>
@@ -147,7 +144,7 @@ function PassportActionButtons({
         onClick={() =>
           void (passport.result ? passport.downloadResult() : passport.executeResizeAndDownload())
         }
-        disabled={isExecuting || !hasFile}
+        disabled={isExecuting || !hasFile || !passport.imageSrc || !!passport.error}
         data-download-button=""
       >
         <span class={styles.btnIcon}>📥</span>
@@ -160,7 +157,7 @@ function PassportActionButtons({
         name="Print Sheet"
         aria-label="Print Sheet"
         onClick={() => void passport.printSheet()}
-        disabled={isExecuting || !hasFile}
+        disabled={isExecuting || !hasFile || !passport.imageSrc || !!passport.error}
       >
         <span class={styles.btnIcon}>🖨️</span>
         <span class={styles.btnText}>Print Sheet ({passport.photoCount} photos)</span>

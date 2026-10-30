@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
 import { ImageWatermarkCanvas } from './ImageWatermarkCanvas.tsx';
 import { ImageWatermarkControls } from './ImageWatermarkControls.tsx';
 import { ImageWatermarkResult } from './ImageWatermarkResult.tsx';
@@ -18,10 +19,14 @@ export function ImageWatermarkLayout({
   idPrefix,
   toolId: _toolId,
   preset,
-  notify: _notify,
+  notify,
   onPhase,
 }: ImageWatermarkLayoutProps) {
-  const watermark = useImageWatermark(preset, onPhase);
+  const watermark = useImageWatermark(preset, onPhase, notify);
+
+  const hasFile = !!watermark.file;
+  const isError = watermark.phase === 'error' || !!watermark.error;
+  const isBusy = watermark.phase === 'running';
 
   return (
     <div class={styles.container} data-image-watermark-studio="">
@@ -36,6 +41,18 @@ export function ImageWatermarkLayout({
       </div>
 
       <ImageWatermarkResult idPrefix={idPrefix} preset={preset} watermark={watermark} />
+
+      <ImageMobileActionBar
+        hasFile={hasFile}
+        phase={watermark.phase}
+        primaryLabel={isBusy ? 'Applying...' : 'Apply & Download'}
+        onPrimaryClick={() => void watermark.executeWatermarkAndDownload()}
+        outputFileSize={watermark.result?.outputFileSize}
+        onDownload={watermark.downloadResult}
+        downloadLabel="Download watermarked image"
+        isDownloadDisabled={!hasFile || isBusy || isError}
+        onReset={watermark.clearAll}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import {
   inspectAndDecodeImage,
   type CropFile as MetadataFile,
@@ -147,6 +148,7 @@ type MetadataCoreState = ReturnType<typeof useMetadataCoreState>;
 async function performClean(
   preset: ResolvedPreset,
   s: MetadataCoreState,
+  notify?: (msg: string) => void,
 ): Promise<Result<MetadataRemoverResultData>> {
   if (s.invalidFile) {
     const errRes: OpError = {
@@ -156,6 +158,7 @@ async function performClean(
     };
     s.setError(errRes);
     s.setPhase('error');
+    notify?.(resolveImageErrorMessage(errRes, s.invalidFile.name));
     return err('IMAGE_INVALID_FILE_TYPE', errRes);
   }
   if (!s.file) {
@@ -165,6 +168,7 @@ async function performClean(
     };
     s.setError(errRes);
     s.setPhase('error');
+    notify?.(resolveImageErrorMessage(errRes));
     return err('IMAGE_NO_FILE_SELECTED', errRes);
   }
   s.setPhase('running');
@@ -183,6 +187,7 @@ async function performClean(
     if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
     s.setResultUrl(null);
     s.setPhase('error');
+    notify?.(resolveImageErrorMessage(runRes.error, s.file.name));
     return runRes;
   }
   const data = runRes.value;
@@ -216,7 +221,7 @@ function resetMetadataState(s: MetadataCoreState) {
   s.setPhase('idle');
 }
 
-function useMetadataFileSelection(s: MetadataCoreState) {
+function useMetadataFileSelection(s: MetadataCoreState, notify?: (msg: string) => void) {
   useEffect(() => {
     void loadSample();
   }, []);
@@ -249,35 +254,58 @@ function useMetadataFileSelection(s: MetadataCoreState) {
       URL.revokeObjectURL(s.resultUrl);
       s.setResultUrl(null);
     }
-    const inspected = await inspectAndDecodeImage(browserFile);
-    if (!inspected.ok) {
+    try {
+      const inspected = await inspectAndDecodeImage(browserFile);
+      if (!inspected.ok) {
+        s.setInvalidFile({ name: browserFile.name });
+        s.setFile(null);
+        if (s.imageSrc) {
+          URL.revokeObjectURL(s.imageSrc);
+          s.setImageSrc(null);
+        }
+        s.setSourceDims({ width: 0, height: 0 });
+        s.setPhase('error');
+        s.setError(inspected.error);
+        notify?.(resolveImageErrorMessage(inspected.error, browserFile.name));
+        return;
+      }
+      if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+      s.setFile(inspected.value.file);
+      s.setImageSrc(inspected.value.blobUrl);
+      s.setSourceDims(inspected.value.dims);
+      s.setPhase('idle');
+    } catch {
       s.setInvalidFile({ name: browserFile.name });
       s.setFile(null);
       if (s.imageSrc) {
         URL.revokeObjectURL(s.imageSrc);
-        s.setImageSrc(null);
+        setImageSrcSafe(s, null);
       }
       s.setSourceDims({ width: 0, height: 0 });
       s.setPhase('error');
-      s.setError({
-        code: inspected.error.code,
-        messageKey: inspected.error.code,
-        details: { name: browserFile.name },
-      });
-      return;
+      const errObj: OpError = {
+        code: 'IMAGE_UNREADABLE',
+        messageKey: 'IMAGE_UNREADABLE',
+      };
+      s.setError(errObj);
+      notify?.(resolveImageErrorMessage(errObj, browserFile.name));
     }
-    if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
-    s.setFile(inspected.value.file);
-    s.setImageSrc(inspected.value.blobUrl);
-    s.setSourceDims(inspected.value.dims);
-    s.setPhase('idle');
   }
 
   return { loadSample, handleFileSelected, clearAll: () => resetMetadataState(s) };
 }
 
-function useMetadataDownloadActions(preset: ResolvedPreset, s: MetadataCoreState) {
-  const executeClean = () => performClean(preset, s);
+function setImageSrcSafe(s: MetadataCoreState, val: string | null) {
+  if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+  s.setImageSrc(val);
+}
+
+function useMetadataDownloadActions(
+  preset: ResolvedPreset,
+  s: MetadataCoreState,
+  notify?: (msg: string) => void,
+) {
+  const executeClean = () => performClean(preset, s, notify);
 
   async function executeCleanAndDownload() {
     const runRes = await executeClean();
@@ -301,10 +329,11 @@ function useMetadataDownloadActions(preset: ResolvedPreset, s: MetadataCoreState
 export function useImageMetadataRemover(
   preset: ResolvedPreset,
   onPhase?: (phase: FilePhase) => void,
+  notify?: (msg: string) => void,
 ) {
   const s = useMetadataCoreState(onPhase);
-  const fileActions = useMetadataFileSelection(s);
-  const downloadActions = useMetadataDownloadActions(preset, s);
+  const fileActions = useMetadataFileSelection(s, notify);
+  const downloadActions = useMetadataDownloadActions(preset, s, notify);
 
   return {
     file: s.file,

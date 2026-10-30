@@ -1,5 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { PhotoSizeReducerCanvas } from './PhotoSizeReducerCanvas.tsx';
 import { PhotoSizeReducerControls } from './PhotoSizeReducerControls.tsx';
 import { PhotoSizeReducerResult } from './PhotoSizeReducerResult.tsx';
@@ -42,6 +44,22 @@ export function PhotoSizeReducerLayout({
         {/* PANEL 3: LIVE SPECS & RESULT */}
         <PhotoSizeReducerResult idPrefix={idPrefix} preset={preset} photoSize={photoSize} />
       </div>
+
+      <ImageMobileActionBar
+        hasFile={!!photoSize.file && !!photoSize.imageSrc}
+        phase={photoSize.phase}
+        primaryLabel="Reduce Photo Size"
+        onPrimaryClick={() => void photoSize.executeReduceAndDownload()}
+        outputFileSize={photoSize.result?.outputFileSize}
+        onDownload={photoSize.downloadResult}
+        downloadLabel={
+          photoSize.result
+            ? `Download · ${formatImageBytes(photoSize.result.outputFileSize)}`
+            : 'Download'
+        }
+        isDownloadDisabled={photoSize.phase !== 'result' || !photoSize.result}
+        onReset={photoSize.reset}
+      />
     </div>
   );
 }

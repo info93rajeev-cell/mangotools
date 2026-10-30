@@ -5,9 +5,11 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import { ImageCropCanvas } from './ImageCropCanvas.tsx';
 import { ImageCropControls } from './ImageCropControls.tsx';
 import { ImageCropResult } from './ImageCropResult.tsx';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
 import styles from './imageCrop.module.css';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { defaultSelectionRect } from './imageWorkbenchGeometry.ts';
-import { messageFor } from './presentation.ts';
 import { SAMPLE_SIZE } from './samplePalaceImage.ts';
 import { useImageCrop } from './useImageCrop.ts';
 
@@ -125,9 +127,23 @@ export function ImageCropLayout({
 
       {crop.phase === 'error' && crop.error && (
         <InlineAlert tone="danger" role="alert" data-crop-error="">
-          {messageFor(preset, crop.error)}
+          {resolveImageErrorMessage(crop.error, crop.file?.name)}
         </InlineAlert>
       )}
+
+      <ImageMobileActionBar
+        hasFile={!!crop.file && !!crop.imageSrc}
+        phase={crop.phase}
+        primaryLabel="Crop Image"
+        onPrimaryClick={crop.runCrop}
+        outputFileSize={crop.result?.outputFileSize}
+        onDownload={crop.downloadCurrentResult}
+        downloadLabel={
+          crop.result ? `Download · ${formatImageBytes(crop.result.outputFileSize)}` : 'Download'
+        }
+        isDownloadDisabled={crop.phase !== 'result' || !crop.result}
+        onReset={crop.clearAll}
+      />
     </div>
   );
 }

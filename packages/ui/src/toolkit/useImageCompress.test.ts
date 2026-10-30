@@ -210,4 +210,39 @@ describe('useImageCompress Hook', () => {
       'application/pdf',
     );
   });
+
+  it('resets state and dimensions to zero when loading an invalid file', async () => {
+    const notify = vi.fn();
+    const onPhase = vi.fn();
+
+    // Start with a previously loaded file
+    hooks.values[0] = {
+      name: 'valid.jpg',
+      bytes: new Uint8Array([1, 2, 3]),
+      size: 3,
+    } as CompressFile;
+    hooks.values[2] = { width: 1920, height: 1080 };
+    hooks.values[7] = 'result'; // phase
+    hooks.values[8] = { fileName: 'valid-compressed.jpg' }; // result
+
+    hooks.stateIndex = 0;
+    hooks.refIndex = 0;
+    const hook = useImageCompress(dummyPreset, 'image-compress', notify, onPhase);
+
+    // Now user loads an invalid or corrupted file
+    const invalidFile = new File([new Uint8Array([0, 0, 0])], 'corrupt.txt', {
+      type: 'text/plain',
+    });
+
+    await hook.loadFile(invalidFile);
+
+    // State must be completely reset
+    expect(hooks.values[0]).toBeNull(); // file === null
+    expect(hooks.values[2]).toEqual({ width: 0, height: 0 }); // sourceDims === {0, 0}
+    expect(hooks.values[7]).toBe('error'); // phase === 'error'
+    expect(hooks.values[8]).toBeNull(); // result === null
+    expect(notify).toHaveBeenCalledWith(
+      expect.stringContaining('is not a supported JPG, PNG, or WebP image'),
+    );
+  });
 });

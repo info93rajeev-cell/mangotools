@@ -1,0 +1,103 @@
+/* Sticky mobile action bar for Image & Media tools */
+.mobileBarWrap {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .mobileBarWrap {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.08);
+    padding: 10px 16px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+  }
+
+  .mobileBarInner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .primaryBtn {
+    flex: 1;
+    min-height: 44px;
+    background: #f59e0b;
+    color: #0f172a;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    transition: background 0.15s ease;
+  }
+
+  .primaryBtn:hover:not(:disabled) {
+    background: #d97706;
+  }
+
+  .primaryBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .downloadBtn {
+    flex: 2;
+    min-height: 44px;
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
+    transition: background 0.15s ease;
+  }
+
+  .downloadBtn:hover:not(:disabled) {
+    background: #15803d;
+  }
+
+  .downloadBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .resetBtn {
+    min-height: 44px;
+    min-width: 44px;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+
+  .resetBtn:hover {
+    background: #e2e8f0;
+  }
+}

@@ -1,19 +1,14 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import styles from './imageBackgroundRemover.module.css';
-import { messageFor } from './presentation.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import type { UseImageBackgroundRemoverReturn } from './useImageBackgroundRemover.ts';
 
 export interface ImageBackgroundRemoverResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   bgRemover: UseImageBackgroundRemoverReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverReturn }) {
@@ -49,12 +44,12 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
           </tr>
           <tr>
             <td class={styles.metricKey}>Original Size</td>
-            <td class={styles.metricVal}>{formatBytes(res.originalFileSize)}</td>
+            <td class={styles.metricVal}>{formatImageBytes(res.originalFileSize)}</td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Cutout Size</td>
             <td class={styles.metricVal} style={{ fontWeight: 'var(--weight-bold)' }}>
-              {formatBytes(res.outputFileSize)}
+              {formatImageBytes(res.outputFileSize)}
             </td>
           </tr>
           <tr>
@@ -139,7 +134,7 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
           <tr>
             <td class={styles.metricKey}>Source Size</td>
             <td class={styles.metricVal}>
-              {hasFile ? formatBytes(bgRemover.file?.size ?? 0) : '—'}
+              {hasFile ? formatImageBytes(bgRemover.file?.size ?? 0) : '—'}
             </td>
           </tr>
           <tr>
@@ -174,7 +169,12 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
         data-action="download-result"
         name="Download transparent image"
         onClick={() => void bgRemover.executeRemoveBackgroundAndDownload()}
-        disabled={bgRemover.phase === 'running'}
+        disabled={
+          bgRemover.phase === 'running' ||
+          bgRemover.phase === 'error' ||
+          !hasFile ||
+          !!bgRemover.error
+        }
       >
         <span>⬇️</span>
         <span>Download transparent image</span>
@@ -184,14 +184,17 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
 }
 
 function ErrorCallout({
-  preset,
+  preset: _preset,
   bgRemover,
 }: {
   preset: ResolvedPreset;
   bgRemover: UseImageBackgroundRemoverReturn;
 }) {
   if (!bgRemover.error) return null;
-  const msg = messageFor(preset, bgRemover.error);
+  const msg = resolveImageErrorMessage(
+    bgRemover.error,
+    bgRemover.file?.name ?? bgRemover.invalidFile?.name,
+  );
   const detailMsg =
     typeof bgRemover.error.details?.message === 'string'
       ? (bgRemover.error.details.message as string)
@@ -286,13 +289,13 @@ function HiddenMetricsDl({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRe
         <div data-output="outputFileSize">
           <dt>Cutout size</dt>
           <dd data-raw-value={res ? res.outputFileSize : undefined}>
-            {res ? formatBytes(res.outputFileSize) : ''}
+            {res ? formatImageBytes(res.outputFileSize) : ''}
           </dd>
         </div>
         <div data-output="originalFileSize">
           <dt>Original size</dt>
           <dd data-raw-value={res ? res.originalFileSize : undefined}>
-            {res ? formatBytes(res.originalFileSize) : ''}
+            {res ? formatImageBytes(res.originalFileSize) : ''}
           </dd>
         </div>
         <div data-output="outputWidth">

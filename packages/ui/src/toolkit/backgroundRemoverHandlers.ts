@@ -5,6 +5,7 @@ import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import { FORMAT_MIME_MAP } from './backgroundRemoverDownload.ts';
 import type { BgRunConfig } from './backgroundRemoverWorker.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import {
   type BgState,
   dispatchRemoval,
@@ -59,7 +60,7 @@ export async function handleRun(
     s.setError(outcome.error);
     s.setPhase('error');
     onPhase('error');
-    notify(`Background removal failed: ${outcome.error.code}`);
+    notify(resolveImageErrorMessage(outcome.error, s.file?.name));
     return null;
   }
 

@@ -3,6 +3,7 @@ import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { ImageMetadataCanvas } from './ImageMetadataCanvas.tsx';
 import { ImageMetadataControls } from './ImageMetadataControls.tsx';
 import { ImageMetadataResult } from './ImageMetadataResult.tsx';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
 import styles from './imageMetadata.module.css';
 import { useImageMetadataRemover } from './useImageMetadataRemover.ts';
 
@@ -18,10 +19,14 @@ export function ImageMetadataLayout({
   idPrefix,
   toolId: _toolId,
   preset,
-  notify: _notify,
+  notify,
   onPhase,
 }: ImageMetadataLayoutProps) {
-  const meta = useImageMetadataRemover(preset, onPhase);
+  const meta = useImageMetadataRemover(preset, onPhase, notify);
+
+  const hasFile = !!meta.file;
+  const isError = meta.phase === 'error' || !!meta.error;
+  const isBusy = meta.phase === 'running';
 
   return (
     <div class={styles.container} data-image-metadata-remover-studio="">
@@ -36,6 +41,18 @@ export function ImageMetadataLayout({
       </div>
 
       <ImageMetadataResult idPrefix={idPrefix} preset={preset} meta={meta} />
+
+      <ImageMobileActionBar
+        hasFile={hasFile}
+        phase={meta.phase}
+        primaryLabel={isBusy ? 'Cleaning...' : 'Clean & Download'}
+        onPrimaryClick={() => void meta.executeCleanAndDownload()}
+        outputFileSize={meta.result?.outputFileSize}
+        onDownload={meta.downloadResult}
+        downloadLabel="Download cleaned image"
+        isDownloadDisabled={!hasFile || isBusy || isError}
+        onReset={meta.clearAll}
+      />
     </div>
   );
 }

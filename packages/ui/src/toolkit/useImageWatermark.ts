@@ -4,6 +4,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import {
   inspectAndDecodeImage,
   MIME_MAP,
@@ -123,7 +124,11 @@ async function executeWatermarkWorker(
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Hook manages comprehensive state and worker execution for image watermarking
-export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: FilePhase) => void) {
+export function useImageWatermark(
+  preset: ResolvedPreset,
+  onPhase?: (phase: FilePhase) => void,
+  notify?: (msg: string) => void,
+) {
   const [file, setFile] = useState<WatermarkFile | null>(null);
   const [invalidFile, setInvalidFile] = useState<{ name: string } | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -195,8 +200,28 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       setResultUrl(null);
     }
 
-    const inspected = await inspectAndDecodeImage(browserFile);
-    if (!inspected.ok) {
+    try {
+      const inspected = await inspectAndDecodeImage(browserFile);
+      if (!inspected.ok) {
+        setInvalidFile({ name: browserFile.name });
+        setFile(null);
+        if (imageSrc) {
+          URL.revokeObjectURL(imageSrc);
+          setImageSrc(null);
+        }
+        setSourceDims({ width: 0, height: 0 });
+        setPhase('error');
+        setError(inspected.error);
+        notify?.(resolveImageErrorMessage(inspected.error, browserFile.name));
+        return;
+      }
+
+      if (imageSrc) URL.revokeObjectURL(imageSrc);
+      setFile(inspected.value.file);
+      setImageSrc(inspected.value.blobUrl);
+      setSourceDims(inspected.value.dims);
+      setPhase('idle');
+    } catch {
       setInvalidFile({ name: browserFile.name });
       setFile(null);
       if (imageSrc) {
@@ -205,19 +230,13 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       }
       setSourceDims({ width: 0, height: 0 });
       setPhase('error');
-      setError({
-        code: inspected.error.code,
-        messageKey: inspected.error.code,
-        details: { name: browserFile.name },
-      });
-      return;
+      const errObj: OpError = {
+        code: 'IMAGE_UNREADABLE',
+        messageKey: 'IMAGE_UNREADABLE',
+      };
+      setError(errObj);
+      notify?.(resolveImageErrorMessage(errObj, browserFile.name));
     }
-
-    if (imageSrc) URL.revokeObjectURL(imageSrc);
-    setFile(inspected.value.file);
-    setImageSrc(inspected.value.blobUrl);
-    setSourceDims(inspected.value.dims);
-    setPhase('idle');
   }
 
   function clearAll() {
@@ -298,6 +317,7 @@ export function useImageWatermark(preset: ResolvedPreset, onPhase?: (phase: File
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(null);
       setPhase('error');
+      notify?.(resolveImageErrorMessage(runRes.error, file.name));
       return runRes;
     }
 

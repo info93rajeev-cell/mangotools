@@ -4,8 +4,10 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import { ImageFormatConverterCanvas } from './ImageFormatConverterCanvas.tsx';
 import { ImageFormatConverterControls } from './ImageFormatConverterControls.tsx';
 import { ImageFormatConverterResult } from './ImageFormatConverterResult.tsx';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import styles from './imageFormatConverter.module.css';
-import { messageFor } from './presentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { useImageFormatConverter } from './useImageFormatConverter.ts';
 
 export interface ImageFormatConverterLayoutProps {
@@ -47,9 +49,25 @@ export function ImageFormatConverterLayout({
 
       {converter.phase === 'error' && converter.error && (
         <InlineAlert tone="danger" role="alert" data-convert-error="">
-          {messageFor(preset, converter.error)}
+          {resolveImageErrorMessage(converter.error, converter.file?.name)}
         </InlineAlert>
       )}
+
+      <ImageMobileActionBar
+        hasFile={!!converter.file && !!converter.imageSrc}
+        phase={converter.phase}
+        primaryLabel="Convert Format"
+        onPrimaryClick={() => void converter.executeConvertAndDownload()}
+        outputFileSize={converter.result?.outputFileSize}
+        onDownload={converter.downloadResult}
+        downloadLabel={
+          converter.result
+            ? `Download · ${formatImageBytes(converter.result.outputFileSize)}`
+            : 'Download'
+        }
+        isDownloadDisabled={converter.phase !== 'result' || !converter.result}
+        onReset={converter.reset}
+      />
     </div>
   );
 }

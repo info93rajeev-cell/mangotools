@@ -1,127 +1,25 @@
-import { err, type OpError, type OpWarning, ok, type Result } from '@mangotools/core';
-import { getWorkerHost, track } from '@mangotools/runtime';
+import type { OpError } from '@mangotools/core';
+import { track } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import {
   type CropFile as ConvertFile,
   inspectAndDecodeImage,
   MIME_MAP,
 } from './imageFileInspection.ts';
-import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import {
+  executeConvertWorker,
+  type ImageFormatConverterResultData,
+} from './imageFormatConverterWorker.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 
 export type TargetImageFormat = 'jpg' | 'png' | 'webp' | 'pdf';
-export type { ConvertFile };
+export type { ConvertFile, ImageFormatConverterResultData };
 
 const FORMAT_MIME_MAP: Record<string, string> = { ...MIME_MAP, pdf: 'application/pdf' };
-
-export interface ImageFormatConverterResultData {
-  fileName: string;
-  bytes: Uint8Array;
-  originalWidth: number;
-  originalHeight: number;
-  outputWidth: number;
-  outputHeight: number;
-  originalFileSize: number;
-  outputFileSize: number;
-  sizeDifferenceBytes: number;
-  sizeChangePercent: number;
-  originalFormat: string;
-  outputFormat: string;
-  warnings: OpWarning[];
-}
-
-interface ConvertRunConfig {
-  preset: ResolvedPreset;
-  file: ConvertFile;
-  sourceDims: { width: number; height: number };
-  targetFormat: TargetImageFormat;
-  quality: number;
-  customFileName: string;
-}
-
-async function convertImageToPdf(
-  cfg: ConvertRunConfig,
-): Promise<Result<ImageFormatConverterResultData>> {
-  const wrapped = await wrapImageBytesInPdf(cfg.file.bytes, 'IMAGE_RESIZE_FAILED');
-  if (!wrapped.ok) return wrapped;
-
-  const rawBase = cfg.customFileName.trim() || cfg.file.name.replace(/\.[^.]+$/, '');
-  const cleanBase = rawBase.replace(/[^a-zA-Z0-9_\- ]/g, '').trim() || 'image';
-  const fileName = `${cleanBase.replace(/-converted$/, '')}-converted.pdf`;
-
-  const isPng = cfg.file.name.toLowerCase().endsWith('.png');
-  const isJpg =
-    cfg.file.name.toLowerCase().endsWith('.jpg') || cfg.file.name.toLowerCase().endsWith('.jpeg');
-
-  return ok({
-    fileName,
-    bytes: wrapped.value.pdfBytes,
-    originalWidth: cfg.sourceDims.width,
-    originalHeight: cfg.sourceDims.height,
-    outputWidth: cfg.sourceDims.width,
-    outputHeight: cfg.sourceDims.height,
-    originalFileSize: cfg.file.size,
-    outputFileSize: wrapped.value.pdfBytes.byteLength,
-    sizeDifferenceBytes: cfg.file.size - wrapped.value.pdfBytes.byteLength,
-    sizeChangePercent: Math.round(
-      ((wrapped.value.pdfBytes.byteLength - cfg.file.size) / cfg.file.size) * 100,
-    ),
-    originalFormat: isPng ? 'png' : isJpg ? 'jpg' : 'webp',
-    outputFormat: 'pdf',
-    warnings: [],
-  });
-}
-
-async function executeConvertWorker(
-  cfg: ConvertRunConfig,
-): Promise<Result<ImageFormatConverterResultData>> {
-  if (cfg.targetFormat === 'pdf') {
-    return convertImageToPdf(cfg);
-  }
-  const maxPixels = 80_000_000;
-  let targetWidth = cfg.sourceDims.width;
-  let targetHeight = cfg.sourceDims.height;
-  const currentPixels = targetWidth * targetHeight;
-  if (currentPixels > maxPixels && currentPixels > 0) {
-    const scale = Math.sqrt(maxPixels / currentPixels);
-    targetWidth = Math.max(1, Math.floor(targetWidth * scale));
-    targetHeight = Math.max(1, Math.floor(targetHeight * scale));
-  }
-  const input = {
-    file: { name: cfg.file.name, bytes: cfg.file.bytes },
-    targetWidth,
-    targetHeight,
-    keepAspectRatio: true,
-    outputFormat: cfg.targetFormat,
-    quality: cfg.targetFormat === 'jpg' || cfg.targetFormat === 'webp' ? cfg.quality : undefined,
-    outputFileName: cfg.customFileName.trim() ? cfg.customFileName.trim() : undefined,
-  };
-  const outcome = await getWorkerHost().run(cfg.preset.operation, input, cfg.preset.params);
-  if (!outcome.ok) return err(outcome.error.code, outcome.error);
-  const val = outcome.value as Record<string, unknown>;
-  const warnings = outcome.warnings ?? [];
-  return ok(
-    {
-      fileName: String(val.fileName),
-      bytes: val.bytes as Uint8Array,
-      originalWidth: Number(val.originalWidth),
-      originalHeight: Number(val.originalHeight),
-      outputWidth: Number(val.outputWidth),
-      outputHeight: Number(val.outputHeight),
-      originalFileSize: Number(val.originalFileSize),
-      outputFileSize: Number(val.outputFileSize),
-      sizeDifferenceBytes: Number(val.sizeDifferenceBytes),
-      sizeChangePercent: Number(val.sizeChangePercent),
-      originalFormat: String(val.originalFormat),
-      outputFormat: String(val.outputFormat),
-      warnings,
-    },
-    warnings,
-  );
-}
 
 function useConvertState() {
   const [file, setFile] = useState<ConvertFile | null>(null);
@@ -179,10 +77,16 @@ async function handleLoad(
   try {
     const res = await inspectAndDecodeImage(rawFile);
     if (!res.ok) {
+      if (s.imageSrc) {
+        URL.revokeObjectURL(s.imageSrc);
+        s.setImageSrc(null);
+      }
       s.setFile(null);
+      s.setSourceDims({ width: 0, height: 0 });
+      s.setSourceFormat(null);
       s.setError(res.error);
       s.setPhase('error');
-      notify(`Cannot open image: ${res.error.code}`);
+      notify(resolveImageErrorMessage(res.error, rawFile.name));
       return;
     }
     if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
@@ -192,7 +96,15 @@ async function handleLoad(
     s.setSourceDims(res.value.dims);
     s.setCustomFileName('');
   } catch {
-    notify('Failed to read image file');
+    if (s.imageSrc) {
+      URL.revokeObjectURL(s.imageSrc);
+      s.setImageSrc(null);
+    }
+    s.setFile(null);
+    s.setSourceDims({ width: 0, height: 0 });
+    s.setSourceFormat(null);
+    s.setPhase('error');
+    notify(resolveImageErrorMessage({ code: 'IMAGE_UNREADABLE' }, rawFile.name));
   }
 }
 
@@ -249,7 +161,7 @@ async function handleRun(
     s.setError(outcome.error);
     s.setPhase('error');
     onPhase('error');
-    notify(`Conversion failed: ${outcome.error.code}`);
+    notify(resolveImageErrorMessage(outcome.error, s.file?.name));
     return null;
   }
   if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);

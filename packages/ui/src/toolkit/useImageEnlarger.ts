@@ -18,6 +18,7 @@ import {
   useEnlargeKeyboardShortcuts,
   useEnlargePreview,
 } from './imageEnlargerHelpers.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import { type CropFile, inspectAndDecodeImage, MIME_MAP } from './imageFileInspection.ts';
 import { createPalaceSample } from './samplePalaceImage.ts';
 
@@ -141,32 +142,62 @@ function useEnlargeSliders() {
   };
 }
 
-function useEnlargeLoader(updatePhase: (next: FilePhase) => void) {
+function resetEnlargeLoaderState(
+  decodedRef: { current: ImageBitmap | null },
+  imageSrc: string | null,
+  setFile: (f: CropFile | null) => void,
+  setSourceDims: (d: { width: number; height: number }) => void,
+  setImageSrc: (s: string | null) => void,
+) {
+  decodedRef.current?.close();
+  decodedRef.current = null;
+  setFile(null);
+  setSourceDims({ width: 0, height: 0 });
+  if (imageSrc) URL.revokeObjectURL(imageSrc);
+  setImageSrc(null);
+}
+
+function useEnlargeLoader(updatePhase: (next: FilePhase) => void, notify: (msg: string) => void) {
   const [file, setFile] = useState<CropFile | null>(null);
   const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const decodedRef = useRef<ImageBitmap | null>(null);
 
+  const clearState = useCallback(() => {
+    resetEnlargeLoaderState(decodedRef, imageSrc, setFile, setSourceDims, setImageSrc);
+  }, [imageSrc]);
+
   const loadFile = useCallback(
     async (raw: File) => {
       updatePhase('running');
       setError(null);
-      const res = await inspectAndDecodeImage(raw);
-      if (!res.ok) {
-        setError(res.error.code);
+      try {
+        const res = await inspectAndDecodeImage(raw);
+        if (!res.ok) {
+          clearState();
+          const msg = resolveImageErrorMessage(res.error, raw.name);
+          setError(msg);
+          updatePhase('error');
+          notify(msg);
+          return;
+        }
+        decodedRef.current?.close();
+        const bitmap = await createImageBitmap(new Blob([res.value.file.bytes as BlobPart]));
+        decodedRef.current = bitmap;
+        setFile(res.value.file);
+        setSourceDims(res.value.dims);
+        setImageSrc(res.value.blobUrl);
+        updatePhase('idle');
+      } catch {
+        clearState();
+        const msg = resolveImageErrorMessage({ code: 'IMAGE_UNREADABLE' }, raw.name);
+        setError(msg);
         updatePhase('error');
-        return;
+        notify(msg);
       }
-      decodedRef.current?.close();
-      const bitmap = await createImageBitmap(new Blob([res.value.file.bytes as BlobPart]));
-      decodedRef.current = bitmap;
-      setFile(res.value.file);
-      setSourceDims(res.value.dims);
-      setImageSrc(res.value.blobUrl);
-      updatePhase('idle');
     },
-    [updatePhase],
+    [updatePhase, notify, clearState],
   );
 
   const loadSample = useCallback(async () => {
@@ -182,14 +213,10 @@ function useEnlargeLoader(updatePhase: (next: FilePhase) => void) {
   }, [updatePhase]);
 
   const reset = useCallback(() => {
-    decodedRef.current?.close();
-    decodedRef.current = null;
-    setFile(null);
-    setSourceDims({ width: 0, height: 0 });
-    setImageSrc(null);
+    clearState();
     setError(null);
     updatePhase('idle');
-  }, [updatePhase]);
+  }, [clearState, updatePhase]);
 
   return { file, sourceDims, imageSrc, error, setError, decodedRef, loadFile, loadSample, reset };
 }
@@ -238,8 +265,10 @@ function useEnlargeExecution(
       notify(`Downloaded ${finalName}`);
       track('tool_complete', { toolId, method: 'download' });
     } catch (e) {
-      loader.setError(e instanceof Error ? e.message : 'Enhancement failed');
+      const msg = e instanceof Error ? e.message : 'Enhancement failed';
+      loader.setError(msg);
       updatePhase('error');
+      notify(msg);
     }
   }, [loader, sliders.settings, outputFormat, customFileName, toolId, updatePhase, notify]);
 
@@ -266,7 +295,7 @@ export function useImageEnlarger(
     [onPhase],
   );
 
-  const loader = useEnlargeLoader(updatePhase);
+  const loader = useEnlargeLoader(updatePhase, notify);
   const sliders = useEnlargeSliders();
   const previewUrl = useEnlargePreview(
     loader.decodedRef.current,

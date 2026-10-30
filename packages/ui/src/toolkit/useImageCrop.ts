@@ -147,9 +147,17 @@ async function handleLoadFile(
 ) {
   if (userInteractedRef) userInteractedRef.current = true;
   clearOutcome();
-  if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
+  if (s.imageSrc) {
+    URL.revokeObjectURL(s.imageSrc);
+    s.setImageSrc(null);
+  }
+  s.setFile(null);
+  s.setSourceDims({ width: 0, height: 0 });
   const res = await inspectAndDecodeImage(selected);
   if (!res.ok) {
+    s.setFile(null);
+    s.setImageSrc(null);
+    s.setSourceDims({ width: 0, height: 0 });
     s.setError(res.error);
     setPhase('error');
     return;

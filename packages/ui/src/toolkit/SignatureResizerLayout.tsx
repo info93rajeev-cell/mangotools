@@ -1,5 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { SignatureResizerCanvas } from './SignatureResizerCanvas.tsx';
 import { SignatureResizerControls } from './SignatureResizerControls.tsx';
 import { SignatureResizerResult } from './SignatureResizerResult.tsx';
@@ -40,6 +42,22 @@ export function SignatureResizerLayout({
         />
       </div>
       <SignatureResizerResult idPrefix={idPrefix} preset={preset} signature={signature} />
+
+      <ImageMobileActionBar
+        hasFile={!!signature.file && !!signature.imageSrc}
+        phase={signature.phase}
+        primaryLabel="Resize Signature"
+        onPrimaryClick={() => void signature.executeResizeAndDownload()}
+        outputFileSize={signature.result?.outputFileSize}
+        onDownload={() => void signature.executeResizeAndDownload()}
+        downloadLabel={
+          signature.result
+            ? `Download · ${formatImageBytes(signature.result.outputFileSize)}`
+            : 'Download Signature'
+        }
+        isDownloadDisabled={signature.phase === 'error' || !signature.file}
+        onReset={signature.clearAll}
+      />
     </div>
   );
 }

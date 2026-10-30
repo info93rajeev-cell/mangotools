@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import styles from './photoSizeReducer.module.css';
 import { messageFor } from './presentation.ts';
 import { NoteList } from './ResultNotices.tsx';
@@ -11,11 +12,7 @@ export interface PhotoSizeReducerResultProps {
   photoSize: UsePhotoSizeReducerReturn;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
+const formatBytes = formatImageBytes;
 
 function ResultCockpit({
   preset,
@@ -106,7 +103,12 @@ function ResultCockpit({
           class={styles.downloadCtaBtn}
           data-action="download-reduced"
           onClick={photoSize.downloadResult}
-          disabled={photoSize.phase === 'running'}
+          disabled={
+            photoSize.phase === 'running' ||
+            !photoSize.result ||
+            !photoSize.resultUrl ||
+            photoSize.phase === 'error'
+          }
         >
           <span>⬇️</span>
           <span>Download reduced photo</span>
@@ -194,7 +196,12 @@ function ReadyCockpit({ photoSize }: { photoSize: UsePhotoSizeReducerReturn }) {
           class={styles.applyCtaBtn}
           data-action="apply-reduce"
           onClick={() => void photoSize.executeReduce()}
-          disabled={photoSize.phase === 'running' || !hasFile}
+          disabled={
+            photoSize.phase === 'running' ||
+            !hasFile ||
+            !photoSize.imageSrc ||
+            photoSize.phase === 'error'
+          }
           title="Apply settings and preview reduced photo quality"
         >
           <span>{photoSize.phase === 'running' ? '⏳' : '⚡'}</span>
@@ -206,7 +213,12 @@ function ReadyCockpit({ photoSize }: { photoSize: UsePhotoSizeReducerReturn }) {
           class={styles.downloadCtaBtn}
           data-action="download-reduced"
           onClick={() => void photoSize.executeReduceAndDownload()}
-          disabled={photoSize.phase === 'running' || !hasFile}
+          disabled={
+            photoSize.phase === 'running' ||
+            !hasFile ||
+            !photoSize.imageSrc ||
+            photoSize.phase === 'error'
+          }
         >
           <span>⬇️</span>
           <span>Download reduced photo</span>

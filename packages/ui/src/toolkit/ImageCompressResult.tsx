@@ -1,7 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import styles from './imageCompress.module.css';
-import { messageFor } from './presentation.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import type { UseImageCompressReturn } from './useImageCompress.ts';
 
 export interface ImageCompressResultProps {
@@ -10,11 +11,7 @@ export interface ImageCompressResultProps {
   compress: UseImageCompressReturn;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
+const formatBytes = formatImageBytes;
 
 function ResultCockpit({ compress }: { compress: UseImageCompressReturn }) {
   if (!compress.result) return null;
@@ -75,7 +72,12 @@ function ResultCockpit({ compress }: { compress: UseImageCompressReturn }) {
         class={styles.downloadCtaBtn}
         data-action="download-compressed"
         onClick={compress.downloadResult}
-        disabled={compress.phase === 'running'}
+        disabled={
+          compress.phase === 'running' ||
+          !compress.result ||
+          !compress.resultUrl ||
+          compress.phase === 'error'
+        }
       >
         <span>⬇️</span>
         <span>Download compressed image</span>
@@ -157,7 +159,7 @@ function ReadyCockpit({ compress }: { compress: UseImageCompressReturn }) {
         class={styles.downloadCtaBtn}
         data-action="download-compressed"
         onClick={() => void compress.executeCompressAndDownload()}
-        disabled={compress.phase === 'running'}
+        disabled={compress.phase === 'running' || !compress.file || compress.phase === 'error'}
       >
         <span>⬇️</span>
         <span>Download compressed image</span>
@@ -166,18 +168,12 @@ function ReadyCockpit({ compress }: { compress: UseImageCompressReturn }) {
   );
 }
 
-function ErrorCallout({
-  preset,
-  compress,
-}: {
-  preset: ResolvedPreset;
-  compress: UseImageCompressReturn;
-}) {
+function ErrorCallout({ compress }: { preset: ResolvedPreset; compress: UseImageCompressReturn }) {
   if (!compress.error) return null;
   const isNotSmaller = compress.error.code === 'IMAGE_COMPRESSION_NOT_SMALLER';
   const msg = isNotSmaller
     ? 'No smaller result was achieved without degrading quality below 50%.'
-    : messageFor(preset, compress.error);
+    : resolveImageErrorMessage(compress.error, compress.file?.name);
 
   return (
     <div class={styles.errorContainer} data-compress-error="">
@@ -193,16 +189,18 @@ function ErrorCallout({
           </span>
         </div>
       )}
-      <button
-        type="button"
-        class={styles.downloadCtaBtn}
-        data-action="download-compressed"
-        onClick={() => void compress.executeCompressAndDownload()}
-        disabled={compress.phase === 'running'}
-      >
-        <span>⬇️</span>
-        <span>Download compressed image</span>
-      </button>
+      {isNotSmaller && compress.file && (
+        <button
+          type="button"
+          class={styles.downloadCtaBtn}
+          data-action="download-compressed"
+          onClick={() => void compress.executeCompressAndDownload()}
+          disabled={compress.phase === 'running'}
+        >
+          <span>⬇️</span>
+          <span>Download original image</span>
+        </button>
+      )}
     </div>
   );
 }

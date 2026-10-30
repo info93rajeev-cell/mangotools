@@ -4,6 +4,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import { inspectAndDecodeImage, type CropFile as ResizeFile } from './imageFileInspection.ts';
 import {
   type ResizeFile as ExportedResizeFile,
@@ -94,17 +95,29 @@ async function handleLoad(
 ) {
   userInteractedRef.current = true;
   invalidate();
+  if (s.imageSrc) {
+    URL.revokeObjectURL(s.imageSrc);
+    s.setImageSrc(null);
+  }
+  s.setFile(null);
+  s.setSourceDims({ width: 0, height: 0 });
   try {
     const res = await inspectAndDecodeImage(rawFile);
     if (!res.ok) {
+      s.setFile(null);
+      s.setSourceDims({ width: 0, height: 0 });
       s.setError(res.error);
       s.setPhase('error');
-      notify(`Cannot open image: ${res.error.code}`);
+      notify(resolveImageErrorMessage(res.error, rawFile.name));
       return;
     }
     applyLoadedImage(s, res.value, 1);
-  } catch {
-    notify('Failed to read image file');
+  } catch (err) {
+    s.setFile(null);
+    s.setSourceDims({ width: 0, height: 0 });
+    s.setError({ code: 'IMAGE_UNREADABLE', messageKey: 'IMAGE_UNREADABLE' });
+    s.setPhase('error');
+    notify(resolveImageErrorMessage(err, rawFile.name));
   }
 }
 
@@ -169,7 +182,7 @@ async function handleRun(
     s.setError(outcome.error);
     s.setPhase('error');
     onPhase('error');
-    notify(`Resize failed: ${outcome.error.code}`);
+    notify(resolveImageErrorMessage(outcome.error, s.file?.name));
     return null;
   }
   if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);

@@ -6,6 +6,7 @@ import penStyles from './advancedPenSelection.module.css';
 import { ImageBackgroundRemoverCanvas } from './ImageBackgroundRemoverCanvas.tsx';
 import { ImageBackgroundRemoverControls } from './ImageBackgroundRemoverControls.tsx';
 import { ImageBackgroundRemoverResult } from './ImageBackgroundRemoverResult.tsx';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
 import styles from './imageBackgroundRemover.module.css';
 import { useImageBackgroundRemover } from './useImageBackgroundRemover.ts';
 
@@ -26,6 +27,10 @@ export function ImageBackgroundRemoverLayout({
 }: ImageBackgroundRemoverLayoutProps) {
   const [activeMode, setActiveMode] = useState<'quick' | 'pen'>('pen');
   const bgRemover = useImageBackgroundRemover(preset, toolId, notify, onPhase);
+
+  const hasFile = !!bgRemover.file;
+  const isError = bgRemover.phase === 'error' || !!bgRemover.error;
+  const isBusy = bgRemover.phase === 'running';
 
   return (
     <div class={styles.container} data-image-bg-remover-layout="">
@@ -55,7 +60,7 @@ export function ImageBackgroundRemoverLayout({
         <AdvancedPenStudioLayout notify={notify} />
       ) : (
         /* STANDARD 3-PANEL AUTO REMOVAL WORKBENCH */
-        <div class={styles.workbench3Panel} data-has-file={String(!!bgRemover.file)}>
+        <div class={styles.workbench3Panel} data-has-file={String(hasFile)}>
           <ImageBackgroundRemoverControls
             idPrefix={idPrefix}
             preset={preset}
@@ -66,6 +71,20 @@ export function ImageBackgroundRemoverLayout({
           <ImageBackgroundRemoverCanvas idPrefix={idPrefix} bgRemover={bgRemover} />
           <ImageBackgroundRemoverResult idPrefix={idPrefix} preset={preset} bgRemover={bgRemover} />
         </div>
+      )}
+
+      {activeMode === 'quick' && (
+        <ImageMobileActionBar
+          hasFile={hasFile}
+          phase={bgRemover.phase}
+          primaryLabel={isBusy ? 'Removing background...' : 'Remove Background'}
+          onPrimaryClick={() => void bgRemover.executeRemoveBackgroundAndDownload()}
+          outputFileSize={bgRemover.result?.outputFileSize}
+          onDownload={() => void bgRemover.downloadResult('original')}
+          downloadLabel="Download transparent image"
+          isDownloadDisabled={!hasFile || isBusy || isError}
+          onReset={bgRemover.reset}
+        />
       )}
     </div>
   );

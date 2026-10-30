@@ -1,20 +1,14 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
+import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import styles from './imageWatermark.module.css';
-import { messageFor } from './presentation.ts';
 import type { UseImageWatermarkReturn, WatermarkResultData } from './useImageWatermark.ts';
 
 export interface ImageWatermarkResultProps {
   idPrefix: string;
   preset: ResolvedPreset;
   watermark: UseImageWatermarkReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (!bytes || bytes <= 0) return '0 B';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function getOriginalFormat(fileName?: string): string {
@@ -104,7 +98,7 @@ function ContractDl({ res, watermark, displayFmt, originalFmt, dims }: ContractD
 
 export function ImageWatermarkResult({
   idPrefix: _idPrefix,
-  preset,
+  preset: _preset,
   watermark,
 }: ImageWatermarkResultProps) {
   const res = watermark.result;
@@ -146,7 +140,7 @@ export function ImageWatermarkResult({
         <div class={styles.metricBox}>
           <span class={styles.metricTitle}>Output size</span>
           <div class={styles.sizeValRow}>
-            <span class={styles.metricVal}>{formatBytes(outBytes)}</span>
+            <span class={styles.metricVal}>{formatImageBytes(outBytes)}</span>
             <span class={styles.reductionBadge}>+8% larger</span>
           </div>
         </div>
@@ -178,8 +172,10 @@ export function ImageWatermarkResult({
       {watermark.error && (
         <div class={styles.errorContainer} data-error="">
           <InlineAlert tone="danger" role="alert">
-            {(watermark.error as { message?: string }).message ??
-              messageFor(preset, watermark.error)}
+            {resolveImageErrorMessage(
+              watermark.error,
+              watermark.file?.name ?? watermark.invalidFile?.name,
+            )}
           </InlineAlert>
         </div>
       )}

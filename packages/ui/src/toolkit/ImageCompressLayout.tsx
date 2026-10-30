@@ -3,7 +3,9 @@ import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { ImageCompressCanvas } from './ImageCompressCanvas.tsx';
 import { ImageCompressControls } from './ImageCompressControls.tsx';
 import { ImageCompressResult } from './ImageCompressResult.tsx';
+import { ImageMobileActionBar } from './ImageMobileActionBar.tsx';
 import styles from './imageCompress.module.css';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { useImageCompress } from './useImageCompress.ts';
 
 export interface ImageCompressLayoutProps {
@@ -42,6 +44,22 @@ export function ImageCompressLayout({
         {/* PANEL 3: LIVE SPECS & RESULT */}
         <ImageCompressResult idPrefix={idPrefix} preset={preset} compress={compress} />
       </div>
+
+      <ImageMobileActionBar
+        hasFile={!!compress.file && !!compress.imageSrc}
+        phase={compress.phase}
+        primaryLabel="Compress Image"
+        onPrimaryClick={() => void compress.executeCompressAndDownload()}
+        outputFileSize={compress.result?.outputFileSize}
+        onDownload={compress.downloadResult}
+        downloadLabel={
+          compress.result
+            ? `Download · ${formatImageBytes(compress.result.outputFileSize)}`
+            : 'Download'
+        }
+        isDownloadDisabled={compress.phase !== 'result' || !compress.result}
+        onReset={compress.reset}
+      />
     </div>
   );
 }
