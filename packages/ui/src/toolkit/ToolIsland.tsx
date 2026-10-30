@@ -23,6 +23,7 @@ import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput
 import { DynamicAmazonFeeLayout } from './DynamicAmazonFeeLayout.tsx';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
 import { DynamicMarkupCalculatorLayout } from './DynamicMarkupCalculatorLayout.tsx';
+import { DynamicPdfDocumentLayout } from './DynamicPdfDocumentLayout.tsx';
 import { DynamicSellerProfitabilityLayout } from './DynamicSellerProfitabilityLayout.tsx';
 import { DynamicUniversalTaxLayout } from './DynamicUniversalTaxLayout.tsx';
 import { renderDataStudioLayout } from './data-studio/dataStudioDispatch.tsx';
@@ -52,6 +53,7 @@ const BUSINESS_STUDIO_TOOL_IDS = new Set([
   'amazon-india-seller-fee-profit-estimator',
   'markup-calculator',
 ]);
+const PDF_STUDIO_TOOL_IDS = new Set(['pdf-merge', 'pdf-split']);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -161,7 +163,8 @@ function ToolIslandView(props: ToolIslandViewProps) {
     ...layoutProps
   } = props;
   const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
-  const isCustomStudio = isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId);
+  const isPdfStudio = PDF_STUDIO_TOOL_IDS.has(toolId);
+  const isCustomStudio = isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId) || isPdfStudio;
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       {standardCalculator || isCustomStudio ? null : (
@@ -232,6 +235,10 @@ function ArchetypeLayout(props: ArchetypeProps) {
 
   const special = renderSpecialCalculators(props);
   if (special) return special;
+
+  if (PDF_STUDIO_TOOL_IDS.has(toolId)) {
+    return <DynamicPdfDocumentLayout toolId={toolId} notify={notify} />;
+  }
 
   if (archetype === 'A') {
     return (
