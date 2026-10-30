@@ -96,6 +96,10 @@ const ALLOWED_HOSTS = [
   'models.beyandtheai.com',
   'static.cloudflareinsights.com',
   'cloudflareinsights.com',
+  // Microsoft Clarity (consent-first, production only): see apps/web/public/clarity-init.js.
+  'www.clarity.ms',
+  '*.clarity.ms',
+  'c.bing.com',
 ];
 
 function checkHead(page: PageFacts, siteUrl: string): string[] {
@@ -191,11 +195,11 @@ export interface HeadersOptions {
 export function headersFile({ scriptHashes, indexable }: HeadersOptions): string {
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
+    `script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms ${[...new Set(scriptHashes)].sort().join(' ')}`.trim(),
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    "img-src 'self' https://*.clarity.ms https://c.bing.com data: blob:",
     "font-src 'self'",
-    "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com blob:",
+    "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com https://*.clarity.ms https://c.bing.com blob:",
     "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",

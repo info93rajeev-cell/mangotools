@@ -28,7 +28,7 @@ export default defineConfig({
       algorithm: 'SHA-256',
       directives: [
         "default-src 'self'",
-        "img-src 'self' data: blob: https://*.clarity.ms https://c.bing.com",
+        "img-src 'self' https://*.clarity.ms https://c.bing.com data: blob:",
         "font-src 'self'",
         "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com https://*.clarity.ms https://c.bing.com blob:",
         "worker-src 'self' blob:",
