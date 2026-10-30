@@ -747,6 +747,8 @@
 .categoryListScroll {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  contain: inline-size;
   gap: 6px;
   max-height: 230px;
   overflow-y: auto;
@@ -784,15 +786,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
 }
 
 .categoryTitleText {
   font-size: 11.5px;
   font-weight: 600;
   color: #1e293b;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
 }
 
 .categoryRatePill {

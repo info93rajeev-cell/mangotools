@@ -41,6 +41,10 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Universal Tax: rate-finder titles wrap instead of forcing one line. The nowrap title had no
+  `min-width: 0`, so its min-content width stretched the page to 412px on 320–375px phones and
+  pushed fixed-position toasts off-screen. New e2e guard: `tests/e2e/gst-mobile-overflow.spec.ts`.
+
 - #198: add bounded result tables for the two merged Survey operations using ScrollableItemTable.
   Callers provide `survey.section.*` / `survey.column.*` strings and existing engine check labels.
   Quantities use three-place display, with exact raw values retained in cell titles; opaque labels,
