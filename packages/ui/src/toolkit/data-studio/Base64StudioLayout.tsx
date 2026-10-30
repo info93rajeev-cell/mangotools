@@ -1,10 +1,11 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { Base64AuxCards } from './Base64AuxCards.tsx';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
-import { useBase64Studio } from './useBase64Studio.ts';
+import { DEFAULT_TEXT, useBase64Studio } from './useBase64Studio.ts';
 
 export interface Base64StudioLayoutProps {
   idPrefix: string;
@@ -18,66 +19,101 @@ function Base64InputPanel({
   idPrefix,
   input,
   direction,
-  variant,
   sourceBytes,
   onDirection,
   onInput,
   onSample,
+  onOpenFile,
+  onPaste,
+  onClear,
 }: {
   idPrefix: string;
   input: string;
   direction: 'encode' | 'decode';
-  variant: 'standard' | 'url-safe';
   sourceBytes: number;
   onDirection: (d: 'encode' | 'decode') => void;
   onInput: (v: string) => void;
-  onSample?: () => void;
+  onSample: () => void;
+  onOpenFile: (e: Event) => void;
+  onPaste: () => void;
+  onClear: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        class={styles.hiddenFileInput}
+        onChange={onOpenFile}
+        tabIndex={-1}
+      />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#60;&#47;&#62;</span>
           <strong>{direction === 'encode' ? 'Input Text' : 'Input Base64'}</strong>
         </div>
         <div class={styles.toolactions}>
-          {onSample && (
-            <button
-              type="button"
-              class={styles.btnSecondary}
-              onClick={onSample}
-              data-try-sample=""
-              title="Load sample text"
-            >
-              ✨ Try sample
-            </button>
-          )}
           <button
             type="button"
-            class={direction === 'encode' ? styles.btnPrimary : styles.btnSecondary}
-            onClick={() => onDirection('encode')}
+            class={styles.btnSecondary}
+            onClick={onSample}
+            data-try-sample=""
+            title="Load sample text"
           >
-            Encode
+            ✨ Try sample
           </button>
           <button
             type="button"
-            class={direction === 'decode' ? styles.btnPrimary : styles.btnSecondary}
-            onClick={() => onDirection('decode')}
+            class={styles.btnSecondary}
+            onClick={() => fileInputRef.current?.click()}
+            title="Open text or binary file"
           >
-            Decode
+            &#128194; Open File
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
+          >
+            &#128203; Paste
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onClear}
+            title="Clear input text"
+          >
+            Clear
           </button>
         </div>
       </div>
       <div class={styles.rowchips}>
-        <span
-          class={`${styles.chip} ${direction === 'encode' ? styles.chipBlue : styles.chipPurple}`}
+        <button
+          type="button"
+          class={`${styles.chip} ${direction === 'encode' ? styles.chipBlue : styles.chipAmber}`}
+          onClick={() => onDirection('encode')}
         >
-          {direction === 'encode' ? 'Mode: Encode' : 'Mode: Decode'}
-        </span>
-        <span class={styles.chipGreen}>UTF-8</span>
-        <span class={styles.chipAmber}>
-          {variant === 'standard' ? 'Standard RFC 4648' : 'Base64URL'}
-        </span>
+          Encode
+        </button>
+        <button
+          type="button"
+          class={`${styles.chip} ${direction === 'decode' ? styles.chipPurple : styles.chipAmber}`}
+          onClick={() => onDirection('decode')}
+        >
+          Decode
+        </button>
+        <span class={styles.chipGreen}>Text</span>
+        <button
+          type="button"
+          class={`${styles.chip} ${styles.chipAmber}`}
+          style={{ border: 'none', cursor: 'pointer' }}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          File
+        </button>
       </div>
       <div class={styles.editorWrapper}>
         <textarea
@@ -96,7 +132,7 @@ function Base64InputPanel({
       <div class={styles.noteLine}>
         <span>UTF-8 Unicode source</span>
         <span>
-          {input.length} chars &middot; {sourceBytes} bytes
+          {input.length} characters &middot; {sourceBytes} bytes
         </span>
       </div>
     </section>
@@ -104,21 +140,21 @@ function Base64InputPanel({
 }
 
 function Base64OutputPanel({
-  idPrefix,
   direction,
   variant,
   output,
   error,
+  sourceBytes,
   outputLength,
   onSwap,
   onCopy,
   onDownload,
 }: {
-  idPrefix: string;
   direction: 'encode' | 'decode';
   variant: 'standard' | 'url-safe';
   output: string;
   error: string | null;
+  sourceBytes: number;
   outputLength: number;
   onSwap: () => void;
   onCopy: () => void;
@@ -132,7 +168,7 @@ function Base64OutputPanel({
           <strong>{direction === 'encode' ? 'Base64 Output' : 'Decoded Text'}</strong>
         </div>
         <div class={styles.toolactions}>
-          <button type="button" class={styles.btnSecondary} onClick={onSwap}>
+          <button type="button" class={styles.btnSecondary} onClick={onSwap} title="Swap fields">
             Swap &#8644;
           </button>
           <button type="button" class={styles.btnSecondary} onClick={onCopy}>
@@ -145,19 +181,17 @@ function Base64OutputPanel({
       </div>
       <div class={styles.rowchips}>
         <span class={styles.chipBlue}>
-          {variant === 'standard' ? 'Standard Base64' : 'URL-safe'}
+          {variant === 'standard' ? 'Standard Base64' : 'Base64URL'}
         </span>
-        <span class={styles.chipGreen}>{error ? 'Error' : 'Processed ✓'}</span>
+        <span class={styles.chipGreen}>{error ? 'Error' : 'Encoded ✓'}</span>
       </div>
-      <div class={styles.editorWrapper}>
-        <textarea
-          id={`${idPrefix}-output`}
-          class={styles.editor}
-          value={error ? `Error: ${error}` : output}
-          readOnly
-          spellcheck={false}
-        />
+      <div class={styles.bigoutput}>{error ? `Error: ${error}` : output}</div>
+
+      <div class={styles.conversionRatioStrip}>
+        <span>UTF-8 text</span> &rarr; <span>{sourceBytes} bytes</span> &rarr;{' '}
+        <span>{outputLength} Base64 chars</span>
       </div>
+
       <div style={{ marginTop: 'auto' }}>
         <div class={error ? styles.badgeErr : styles.badgeOk}>
           <span>{error ? '⚠' : '✓'}</span>
@@ -182,14 +216,12 @@ function Base64SidePanel({
   expansionRatio,
   variant,
   padding,
-  lineWrap,
 }: {
   sourceBytes: number;
   outputLength: number;
   expansionRatio: string;
   variant: 'standard' | 'url-safe';
   padding: boolean;
-  lineWrap: 'none' | '76';
 }) {
   return (
     <div class={`${styles.side} ${styles.sidePanel}`}>
@@ -203,7 +235,7 @@ function Base64SidePanel({
             <b>{sourceBytes}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniPurple}`}>
-            <small>Output chars</small>
+            <small>Base64 chars</small>
             <b>{outputLength}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniAmber}`}>
@@ -225,143 +257,98 @@ function Base64SidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#9881;</span>Binary / Text Modes
+          <span class={styles.toolIcon}>&#9881;</span>Binary / Text modes
         </div>
         <div class={styles.kv}>
-          <span>Content Type</span>
+          <span>Content type</span>
           <b>Text (UTF-8)</b>
         </div>
         <div class={styles.kv}>
           <span>Padding</span>
-          <b>{padding ? '= enabled' : 'no padding'}</b>
+          <b>{padding ? '= enabled' : 'none'}</b>
         </div>
         <div class={styles.kv}>
-          <span>Line Wrap</span>
-          <b>{lineWrap === '76' ? '76 (MIME)' : 'None'}</b>
+          <span>File support</span>
+          <b>Binary-safe</b>
         </div>
         <div class={styles.kv}>
-          <span>Reversible</span>
-          <b>100% Client-side</b>
+          <span>Invalid input</span>
+          <b>Report error</b>
         </div>
       </section>
     </div>
   );
 }
 
-function Base64StatusBar({
-  direction,
-  onDirection,
-  onCopy,
-  onDownload,
-  onReset,
-  notify,
-}: {
-  direction: 'encode' | 'decode';
-  onDirection: (d: 'encode' | 'decode') => void;
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-  notify: (msg: string) => void;
-}) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => notify('Local browser-safe processing')}
-      >
-        &#9432; Runs on your device &middot; Browser-local
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button
-          type="button"
-          class={styles.btnGold}
-          onClick={() => onDirection(direction === 'encode' ? 'encode' : 'decode')}
-        >
-          {direction === 'encode' ? 'Encode to Base64' : 'Decode from Base64'}
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
-    </div>
-  );
-}
-
-interface Base64WorkGridProps {
-  idPrefix: string;
-  state: ReturnType<typeof useBase64Studio>;
-}
-
-function Base64WorkGrid({ idPrefix, state }: Base64WorkGridProps) {
-  return (
-    <div class={styles.work}>
-      <Base64InputPanel
-        idPrefix={idPrefix}
-        input={state.input}
-        direction={state.direction}
-        variant={state.variant}
-        sourceBytes={state.sourceBytes}
-        onDirection={state.setDirection}
-        onInput={state.handleInput}
-        onSample={state.handleReset}
-      />
-      <Base64OutputPanel
-        idPrefix={idPrefix}
-        direction={state.direction}
-        variant={state.variant}
-        output={state.output}
-        error={state.error}
-        outputLength={state.outputLength}
-        onSwap={state.handleSwap}
-        onCopy={state.handleCopy}
-        onDownload={state.handleDownload}
-      />
-      <Base64SidePanel
-        sourceBytes={state.sourceBytes}
-        outputLength={state.outputLength}
-        expansionRatio={state.expansionRatio}
-        variant={state.variant}
-        padding={state.padding}
-        lineWrap={state.lineWrap}
-      />
-    </div>
-  );
-}
-
 export function Base64StudioLayout({ idPrefix, snapshot, store, notify }: Base64StudioLayoutProps) {
-  const state = useBase64Studio(snapshot, store, notify);
   const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const studio = useBase64Studio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-base64-studio-layout="" data-mobile-view={mobileView}>
-      <MobileViewSwitcher
-        view={mobileView}
-        onChange={setMobileView}
-        inputTitle={state.direction === 'encode' ? 'Text Input' : 'Base64 Input'}
-        outputTitle={state.direction === 'encode' ? 'Base64 Output' : 'Decoded Text'}
-      />
-      <Base64WorkGrid idPrefix={idPrefix} state={state} />
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
+        <Base64InputPanel
+          idPrefix={idPrefix}
+          input={studio.input}
+          direction={studio.direction}
+          sourceBytes={studio.sourceBytes}
+          onDirection={studio.setDirection}
+          onInput={studio.handleInput}
+          onSample={() => {
+            studio.handleInput(DEFAULT_TEXT);
+            studio.setDirection('encode');
+            notify('Sample text loaded');
+          }}
+          onOpenFile={studio.handleOpenFile}
+          onPaste={studio.handlePaste}
+          onClear={studio.handleClear}
+        />
+
+        <Base64OutputPanel
+          direction={studio.direction}
+          variant={studio.variant}
+          output={studio.output}
+          error={studio.error}
+          sourceBytes={studio.sourceBytes}
+          outputLength={studio.outputLength}
+          onSwap={studio.handleSwap}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
+        />
+
+        <Base64SidePanel
+          sourceBytes={studio.sourceBytes}
+          outputLength={studio.outputLength}
+          expansionRatio={studio.expansionRatio}
+          variant={studio.variant}
+          padding={studio.padding}
+        />
+      </main>
+
       <Base64AuxCards
-        variant={state.variant}
-        onVariant={state.setVariant}
-        padding={state.padding}
-        onPadding={state.setPadding}
-        lineWrap={state.lineWrap}
-        onLineWrap={state.setLineWrap}
+        variant={studio.variant}
+        onVariant={studio.setVariant}
+        padding={studio.padding}
+        onPadding={studio.setPadding}
+        lineWrap={studio.lineWrap}
+        onLineWrap={studio.setLineWrap}
+        onOpenFile={studio.handleOpenFile}
       />
-      <Base64StatusBar
-        direction={state.direction}
-        onDirection={state.setDirection}
-        onCopy={state.handleCopy}
-        onDownload={state.handleDownload}
-        onReset={state.handleReset}
+
+      <DataStudioStatusBar
+        primaryLabel={studio.direction === 'encode' ? 'Encode to Base64' : 'Decode Base64'}
+        onPrimary={() => {
+          if (studio.direction === 'encode') {
+            notify('Encoded to Base64');
+          } else {
+            notify('Decoded from Base64');
+          }
+        }}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={studio.handleReset}
         notify={notify}
       />
     </div>

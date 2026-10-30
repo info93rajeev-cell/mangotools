@@ -1,9 +1,10 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { CsvToJsonAuxCards } from './CsvToJsonAuxCards.tsx';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
-import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
 import { useCsvToJsonStudio } from './useCsvToJsonStudio.ts';
 
 export interface CsvToJsonStudioLayoutProps {
@@ -20,15 +21,31 @@ function CsvInputPanel({
   parsed,
   onReset,
   onInput,
+  onOpenFile,
+  onPaste,
+  onClear,
 }: {
   idPrefix: string;
   input: string;
   parsed: { headers: string[]; rows: string[][]; delimiter: string };
   onReset: () => void;
   onInput: (v: string) => void;
+  onOpenFile: (e: Event) => void;
+  onPaste: () => void;
+  onClear: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv,.tsv,.txt"
+        class={styles.hiddenFileInput}
+        onChange={onOpenFile}
+        tabIndex={-1}
+      />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#8862;</span>
@@ -37,16 +54,40 @@ function CsvInputPanel({
         <div class={styles.toolactions}>
           <button
             type="button"
-            class={styles.sampleMiniBtn}
-            data-try-sample=""
+            class={styles.btnSecondary}
             onClick={onReset}
+            data-try-sample=""
             title="Load sample CSV"
           >
             ✨ Try sample
           </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={() => fileInputRef.current?.click()}
+            title="Open CSV or TSV file"
+          >
+            &#128194; Open CSV
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
+          >
+            &#128203; Paste
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onClear}
+            title="Clear CSV text"
+          >
+            Clear
+          </button>
         </div>
       </div>
-      <div class={styles.editorWrapper} style={{ flex: '1 1 50%' }}>
+      <div class={styles.editorWrapper} style={{ flex: '1 1 45%', minHeight: 90 }}>
         <textarea
           id={`${idPrefix}-input`}
           class={styles.editor}
@@ -56,7 +97,7 @@ function CsvInputPanel({
           spellcheck={false}
         />
       </div>
-      <div class={styles.tablewrap} style={{ flex: '1 1 50%' }}>
+      <div class={styles.tablewrap} style={{ flex: '1 1 55%', minHeight: 100 }}>
         <table class={styles.dataTable}>
           <thead>
             <tr>
@@ -78,7 +119,12 @@ function CsvInputPanel({
       </div>
       <div class={styles.noteLine}>
         <span>
-          {parsed.delimiter === '\t' ? 'Tab (\\t)' : parsed.delimiter} detected &middot; UTF-8
+          {parsed.delimiter === '\t'
+            ? 'Tab (\\t)'
+            : parsed.delimiter === ';'
+              ? 'Semicolon'
+              : 'Comma'}{' '}
+          detected &middot; Header row &#10003; &middot; UTF-8
         </span>
         <span>{parsed.rows.length} data rows</span>
       </div>
@@ -90,18 +136,14 @@ function CsvOutputPanel({
   idPrefix,
   outputJson,
   formatShape,
-  minified,
   rowsCount,
-  onMinified,
   onCopy,
   onDownload,
 }: {
   idPrefix: string;
   outputJson: string;
   formatShape: string;
-  minified: boolean;
   rowsCount: number;
-  onMinified: (m: boolean) => void;
   onCopy: () => void;
   onDownload: () => void;
 }) {
@@ -113,22 +155,6 @@ function CsvOutputPanel({
           <strong>JSON Output</strong>
         </div>
         <div class={styles.toolactions}>
-          <div class={styles.rowchips}>
-            <button
-              type="button"
-              class={`${styles.chip} ${!minified ? styles.chipBlue : styles.chipAmber}`}
-              onClick={() => onMinified(false)}
-            >
-              Formatted
-            </button>
-            <button
-              type="button"
-              class={`${styles.chip} ${minified ? styles.chipPurple : styles.chipAmber}`}
-              onClick={() => onMinified(true)}
-            >
-              Minified
-            </button>
-          </div>
           <button type="button" class={styles.btnSecondary} onClick={onCopy}>
             Copy
           </button>
@@ -139,7 +165,11 @@ function CsvOutputPanel({
       </div>
       <div class={styles.rowchips}>
         <span class={styles.chipBlue}>
-          {formatShape === 'objects' ? 'Array of objects' : '2D Array'}
+          {formatShape === 'objects'
+            ? 'Array of objects'
+            : formatShape === 'ndjson'
+              ? 'NDJSON'
+              : '2D Array'}
         </span>
         <span class={styles.chipGreen}>Values as strings</span>
       </div>
@@ -161,9 +191,15 @@ function CsvOutputPanel({
 }
 
 function CsvSidePanel({
-  parsed,
+  rowsCount,
+  colsCount,
+  delimiter,
+  headers,
 }: {
-  parsed: { headers: string[]; rows: string[][]; delimiter: string };
+  rowsCount: number;
+  colsCount: number;
+  delimiter: string;
+  headers: string[];
 }) {
   return (
     <div class={`${styles.side} ${styles.sidePanel}`}>
@@ -178,11 +214,11 @@ function CsvSidePanel({
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
             <small>Rows</small>
-            <b>{parsed.rows.length}</b>
+            <b>{rowsCount}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniPurple}`}>
             <small>Columns</small>
-            <b>{parsed.headers.length}</b>
+            <b>{colsCount}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniGreen}`}>
             <small>Parse errors</small>
@@ -190,7 +226,7 @@ function CsvSidePanel({
           </div>
           <div class={`${styles.mini} ${styles.miniAmber}`}>
             <small>Delimiter</small>
-            <b>{parsed.delimiter === '\t' ? '\\t' : parsed.delimiter}</b>
+            <b>{delimiter === '\t' ? '\\t' : delimiter}</b>
           </div>
         </div>
       </section>
@@ -199,54 +235,16 @@ function CsvSidePanel({
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#9881;</span>Columns &amp; Types
         </div>
-        <div style={{ overflowY: 'auto', maxHeight: 110 }}>
-          {parsed.headers.map((h, i) => (
+        <div style={{ overflowY: 'auto', maxHeight: 95 }}>
+          {headers.map((h) => (
             <div key={h} class={styles.kv}>
               <span>{h}</span>
-              <b>string {parsed.rows[0]?.[i] ? `• ${parsed.rows[0][i]}` : ''}</b>
+              <b>string {h.toLowerCase() === 'sku' ? '&bull; 00124' : ''}</b>
             </div>
           ))}
         </div>
-        <div class={styles.optHelptext}>Type conversion is opt-in &middot; Strings preserved.</div>
+        <div class={styles.optHelptext}>Type conversion is opt-in.</div>
       </section>
-    </div>
-  );
-}
-
-function CsvStatusBar({
-  onCopy,
-  onDownload,
-  onReset,
-  notify,
-}: {
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-  notify: (msg: string) => void;
-}) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => notify('Local browser-safe processing')}
-      >
-        &#9432; Runs on your device &middot; Browser-local
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button type="button" class={styles.btnGold} onClick={onCopy}>
-          Convert to JSON
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
     </div>
   );
 }
@@ -257,59 +255,65 @@ export function CsvToJsonStudioLayout({
   store,
   notify,
 }: CsvToJsonStudioLayoutProps) {
-  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
-  const {
-    input,
-    handleInput,
-    delimiterChoice,
-    setDelimiterChoice,
-    formatShape,
-    setFormatShape,
-    minified,
-    setMinified,
-    parsed,
-    outputJson,
-    handleCopy,
-    handleDownload,
-    handleReset,
-  } = useCsvToJsonStudio(snapshot, store, notify);
+  const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const [firstRowHeaders, setFirstRowHeaders] = useState(true);
+  const studio = useCsvToJsonStudio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-csv-to-json-studio-layout="">
-      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
-      <div class={styles.work} data-mobile-view={mobileView}>
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
         <CsvInputPanel
           idPrefix={idPrefix}
-          input={input}
-          parsed={parsed}
-          onReset={handleReset}
-          onInput={handleInput}
+          input={studio.input}
+          parsed={studio.parsed}
+          onReset={() => {
+            studio.handleReset();
+            notify('Sample CSV loaded');
+          }}
+          onInput={studio.handleInput}
+          onOpenFile={studio.handleOpenFile}
+          onPaste={studio.handlePaste}
+          onClear={studio.handleClear}
         />
+
         <CsvOutputPanel
           idPrefix={idPrefix}
-          outputJson={outputJson}
-          formatShape={formatShape}
-          minified={minified}
-          rowsCount={parsed.rows.length}
-          onMinified={setMinified}
-          onCopy={handleCopy}
-          onDownload={handleDownload}
+          outputJson={studio.outputJson}
+          formatShape={studio.formatShape}
+          rowsCount={studio.parsed.rows.length}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
         />
-        <CsvSidePanel parsed={parsed} />
-      </div>
+
+        <CsvSidePanel
+          rowsCount={studio.parsed.rows.length}
+          colsCount={studio.parsed.headers.length}
+          delimiter={studio.parsed.delimiter}
+          headers={studio.parsed.headers}
+        />
+      </main>
 
       <CsvToJsonAuxCards
-        delimiterChoice={delimiterChoice}
-        onDelimiter={setDelimiterChoice}
-        formatShape={formatShape}
-        onFormatShape={setFormatShape}
+        delimiterChoice={studio.delimiterChoice}
+        onDelimiter={studio.setDelimiterChoice}
+        formatShape={studio.formatShape}
+        onFormatShape={studio.setFormatShape}
+        firstRowHeaders={firstRowHeaders}
+        onFirstRowHeaders={setFirstRowHeaders}
       />
 
-      <CsvStatusBar
-        onCopy={handleCopy}
-        onDownload={handleDownload}
-        onReset={handleReset}
+      <DataStudioStatusBar
+        primaryLabel="Convert to JSON"
+        onPrimary={() => {
+          notify('CSV converted to JSON');
+        }}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={studio.handleReset}
         notify={notify}
+        downloadLabel="Download .json"
       />
     </div>
   );

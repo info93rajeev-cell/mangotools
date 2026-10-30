@@ -1,9 +1,10 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { JsonToCsvAuxCards } from './JsonToCsvAuxCards.tsx';
-import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
 import { useJsonToCsvStudio } from './useJsonToCsvStudio.ts';
 
 export interface JsonToCsvStudioLayoutProps {
@@ -21,6 +22,9 @@ function JsonToCsvInputPanel({
   rowsCount,
   onReset,
   onInput,
+  onOpenFile,
+  onPaste,
+  onClear,
 }: {
   idPrefix: string;
   input: string;
@@ -28,9 +32,22 @@ function JsonToCsvInputPanel({
   rowsCount: number;
   onReset: () => void;
   onInput: (v: string) => void;
+  onOpenFile: (e: Event) => void;
+  onPaste: () => void;
+  onClear: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json,application/json,text/plain"
+        class={styles.hiddenFileInput}
+        onChange={onOpenFile}
+        tabIndex={-1}
+      />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#123;&#125;</span>
@@ -39,12 +56,36 @@ function JsonToCsvInputPanel({
         <div class={styles.toolactions}>
           <button
             type="button"
-            class={styles.sampleMiniBtn}
-            data-try-sample=""
+            class={styles.btnSecondary}
             onClick={onReset}
+            data-try-sample=""
             title="Load sample JSON"
           >
             ✨ Try sample
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={() => fileInputRef.current?.click()}
+            title="Open JSON file"
+          >
+            &#128194; Open JSON
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
+          >
+            &#128203; Paste
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onClear}
+            title="Clear JSON input"
+          >
+            Clear
           </button>
         </div>
       </div>
@@ -128,21 +169,15 @@ function JsonToCsvTablePanel({
 }
 
 function JsonToCsvSidePanel({
-  idPrefix,
-  rowsCount,
-  headersCount,
-  delimiter,
-  includeHeaders,
-  error,
+  recordsCount,
+  columnsCount,
   rawCsv,
+  delimiter,
 }: {
-  idPrefix: string;
-  rowsCount: number;
-  headersCount: number;
-  delimiter: string;
-  includeHeaders: boolean;
-  error: string | null;
+  recordsCount: number;
+  columnsCount: number;
   rawCsv: string;
+  delimiter: string;
 }) {
   return (
     <div class={`${styles.side} ${styles.sidePanel}`}>
@@ -153,11 +188,11 @@ function JsonToCsvSidePanel({
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
             <small>Records</small>
-            <b>{rowsCount}</b>
+            <b>{recordsCount}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniPurple}`}>
             <small>Columns</small>
-            <b>{headersCount}</b>
+            <b>{columnsCount}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniGreen}`}>
             <small>Missing</small>
@@ -177,60 +212,14 @@ function JsonToCsvSidePanel({
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128196;</span>CSV Output
         </div>
-        <div class={styles.editorWrapper} style={{ height: 110 }}>
-          <textarea
-            id={`${idPrefix}-output`}
-            class={styles.editor}
-            value={error ? `Error: ${error}` : rawCsv}
-            readOnly
-            spellcheck={false}
-          />
-        </div>
-        <div class={styles.noteLine}>
+        <div class={styles.rawCsvPreview}>{rawCsv}</div>
+        <div class={styles.noteLine} style={{ marginTop: 4 }}>
           <span>
-            Delimiter: {delimiter === ',' ? 'comma' : delimiter === '\t' ? 'tab' : 'semicolon'}
+            Delimiter: {delimiter === '\t' ? 'tab' : delimiter === ';' ? 'semicolon' : 'comma'}
           </span>
-          <span>Header: {includeHeaders ? 'yes' : 'no'}</span>
+          <span>Header: yes</span>
         </div>
       </section>
-    </div>
-  );
-}
-
-function JsonToCsvStatusBar({
-  onCopy,
-  onDownload,
-  onReset,
-  notify,
-}: {
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-  notify: (msg: string) => void;
-}) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => notify('Local browser-safe processing')}
-      >
-        &#9432; Runs on your device &middot; Browser-local
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button type="button" class={styles.btnGold} onClick={onCopy}>
-          Convert to CSV
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
     </div>
   );
 }
@@ -241,73 +230,65 @@ export function JsonToCsvStudioLayout({
   store,
   notify,
 }: JsonToCsvStudioLayoutProps) {
-  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
-  const {
-    input,
-    handleInput,
-    delimiter,
-    setDelimiter,
-    includeHeaders,
-    setIncludeHeaders,
-    useBom,
-    setUseBom,
-    formulaSafety,
-    setFormulaSafety,
-    parsedData,
-    error,
-    headers,
-    rows,
-    rawCsv,
-    handleCopy,
-    handleDownload,
-    handleReset,
-  } = useJsonToCsvStudio(snapshot, store, notify);
+  const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const studio = useJsonToCsvStudio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-json-to-csv-studio-layout="">
-      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
-      <div class={styles.work} data-mobile-view={mobileView}>
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
         <JsonToCsvInputPanel
           idPrefix={idPrefix}
-          input={input}
-          parsedData={parsedData}
-          rowsCount={rows.length}
-          onReset={handleReset}
-          onInput={handleInput}
+          input={studio.input}
+          parsedData={studio.parsedData}
+          rowsCount={studio.rows.length}
+          onReset={() => {
+            studio.handleReset();
+            notify('Sample JSON loaded');
+          }}
+          onInput={studio.handleInput}
+          onOpenFile={studio.handleOpenFile}
+          onPaste={studio.handlePaste}
+          onClear={studio.handleClear}
         />
+
         <JsonToCsvTablePanel
-          headers={headers}
-          rows={rows}
-          onCopy={handleCopy}
-          onDownload={handleDownload}
+          headers={studio.headers}
+          rows={studio.rows}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
         />
+
         <JsonToCsvSidePanel
-          idPrefix={idPrefix}
-          rowsCount={rows.length}
-          headersCount={headers.length}
-          delimiter={delimiter}
-          includeHeaders={includeHeaders}
-          error={error}
-          rawCsv={rawCsv}
+          recordsCount={studio.rows.length}
+          columnsCount={studio.headers.length}
+          rawCsv={studio.rawCsv}
+          delimiter={studio.delimiter}
         />
-      </div>
+      </main>
 
       <JsonToCsvAuxCards
-        delimiter={delimiter}
-        onDelimiter={setDelimiter}
-        includeHeaders={includeHeaders}
-        onIncludeHeaders={setIncludeHeaders}
-        useBom={useBom}
-        onUseBom={setUseBom}
-        formulaSafety={formulaSafety}
-        onFormulaSafety={setFormulaSafety}
+        delimiter={studio.delimiter}
+        onDelimiter={studio.setDelimiter}
+        includeHeaders={studio.includeHeaders}
+        onIncludeHeaders={studio.setIncludeHeaders}
+        useBom={studio.useBom}
+        onUseBom={studio.setUseBom}
+        formulaSafety={studio.formulaSafety}
+        onFormulaSafety={studio.setFormulaSafety}
       />
 
-      <JsonToCsvStatusBar
-        onCopy={handleCopy}
-        onDownload={handleDownload}
-        onReset={handleReset}
+      <DataStudioStatusBar
+        primaryLabel="Convert to CSV"
+        onPrimary={() => {
+          notify('JSON converted to CSV');
+        }}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={studio.handleReset}
         notify={notify}
+        downloadLabel="Download .csv"
       />
     </div>
   );

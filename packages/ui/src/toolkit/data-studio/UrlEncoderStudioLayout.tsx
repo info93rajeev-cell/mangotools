@@ -1,10 +1,11 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
-import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
 import { UrlEncoderAuxCards } from './UrlEncoderAuxCards.tsx';
-import { useUrlEncoderStudio } from './useUrlEncoderStudio.ts';
+import { DEFAULT_URL, useUrlEncoderStudio } from './useUrlEncoderStudio.ts';
 
 export interface UrlEncoderStudioLayoutProps {
   idPrefix: string;
@@ -22,6 +23,10 @@ function UrlInputPanel({
   onDirection,
   onMode,
   onInput,
+  onSample,
+  onOpenFile,
+  onPaste,
+  onClear,
 }: {
   idPrefix: string;
   input: string;
@@ -30,9 +35,22 @@ function UrlInputPanel({
   onDirection: (d: 'encode' | 'decode') => void;
   onMode: (m: 'component' | 'full-url' | 'form') => void;
   onInput: (v: string) => void;
+  onSample: () => void;
+  onOpenFile: (e: Event) => void;
+  onPaste: () => void;
+  onClear: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        class={styles.hiddenFileInput}
+        onChange={onOpenFile}
+        tabIndex={-1}
+      />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128279;</span>
@@ -41,52 +59,67 @@ function UrlInputPanel({
         <div class={styles.toolactions}>
           <button
             type="button"
-            class={styles.sampleMiniBtn}
+            class={styles.btnSecondary}
+            onClick={onSample}
             data-try-sample=""
-            onClick={() =>
-              onInput('https://api.example.com/search?q=beyond the ai&filter=developer & tools')
-            }
             title="Load sample URL"
           >
             ✨ Try sample
           </button>
           <button
             type="button"
-            class={direction === 'encode' ? styles.btnPrimary : styles.btnSecondary}
-            onClick={() => onDirection('encode')}
+            class={styles.btnSecondary}
+            onClick={() => fileInputRef.current?.click()}
+            title="Open file"
           >
-            Encode
+            &#128194; Open File
           </button>
           <button
             type="button"
-            class={direction === 'decode' ? styles.btnPrimary : styles.btnSecondary}
-            onClick={() => onDirection('decode')}
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
           >
-            Decode
+            &#128203; Paste
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onClear}
+            title="Clear input text"
+          >
+            Clear
           </button>
         </div>
       </div>
       <div class={styles.rowchips}>
         <button
           type="button"
-          class={`${styles.chip} ${mode === 'component' ? styles.chipBlue : styles.chipAmber}`}
+          class={`${styles.chip} ${direction === 'encode' ? styles.chipBlue : styles.chipAmber}`}
+          onClick={() => onDirection('encode')}
+        >
+          Encode
+        </button>
+        <button
+          type="button"
+          class={`${styles.chip} ${direction === 'decode' ? styles.chipPurple : styles.chipAmber}`}
+          onClick={() => onDirection('decode')}
+        >
+          Decode
+        </button>
+        <button
+          type="button"
+          class={`${styles.chip} ${mode === 'component' ? styles.chipGreen : styles.chipAmber}`}
           onClick={() => onMode('component')}
         >
           Component
         </button>
         <button
           type="button"
-          class={`${styles.chip} ${mode === 'full-url' ? styles.chipPurple : styles.chipAmber}`}
-          onClick={() => onMode('full-url')}
-        >
-          Full URL
-        </button>
-        <button
-          type="button"
-          class={`${styles.chip} ${mode === 'form' ? styles.chipGreen : styles.chipAmber}`}
+          class={`${styles.chip} ${mode === 'form' ? styles.chipPurple : styles.chipAmber}`}
           onClick={() => onMode('form')}
         >
-          Form / Query
+          Query / Form
         </button>
       </div>
       <div class={styles.editorWrapper}>
@@ -103,22 +136,21 @@ function UrlInputPanel({
         <span>&#9432;</span>
         <div>
           {mode === 'component'
-            ? 'Component mode percent-encodes all reserved delimiters including ? and &.'
+            ? 'This example encodes a component; full URL parsing is a separate mode.'
             : mode === 'full-url'
               ? 'Full URL mode preserves protocol, domain, and path slashes.'
-              : 'Form mode converts spaces to + (application/x-www-form-urlencoded).'}
+              : 'Form/query mode encodes spaces as + (application/x-www-form-urlencoded).'}
         </div>
       </div>
       <div class={styles.noteLine}>
-        <span>UTF-8 &middot; Percent-encoding</span>
-        <span>{input.length} characters</span>
+        <span>UTF-8 &bull; Percent-encoding</span>
+        <span>Literal + preserved in component mode</span>
       </div>
     </section>
   );
 }
 
 function UrlOutputPanel({
-  idPrefix,
   mode,
   output,
   error,
@@ -126,7 +158,6 @@ function UrlOutputPanel({
   onCopy,
   onDownload,
 }: {
-  idPrefix: string;
   mode: 'component' | 'full-url' | 'form';
   output: string;
   error: string | null;
@@ -139,10 +170,10 @@ function UrlOutputPanel({
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128187;</span>
-          <strong>Result</strong>
+          <strong>Encoded Result</strong>
         </div>
         <div class={styles.toolactions}>
-          <button type="button" class={styles.btnSecondary} onClick={onSwap}>
+          <button type="button" class={styles.btnSecondary} onClick={onSwap} title="Swap fields">
             Swap &#8644;
           </button>
           <button type="button" class={styles.btnSecondary} onClick={onCopy}>
@@ -153,19 +184,12 @@ function UrlOutputPanel({
           </button>
         </div>
       </div>
-      <div class={styles.rowchips}>
-        <span class={styles.chipBlue}>Space → {mode === 'form' ? '+' : '%20'}</span>
-        <span class={styles.chipPurple}>+ → %2B</span>
-        <span class={styles.chipAmber}>/ → {mode === 'component' ? '%2F' : '/'}</span>
-      </div>
-      <div class={styles.editorWrapper}>
-        <textarea
-          id={`${idPrefix}-output`}
-          class={styles.editor}
-          value={error ? `Error: ${error}` : output}
-          readOnly
-          spellcheck={false}
-        />
+      <div class={styles.bigoutput}>{error ? `Error: ${error}` : output}</div>
+      <div class={styles.replacementChips}>
+        <span class={styles.chipBlue}>Space &rarr; {mode === 'form' ? '+' : '%20'}</span>
+        <span class={styles.chipPurple}>+ &rarr; %2B</span>
+        <span class={styles.chipAmber}>/ &rarr; {mode === 'component' ? '%2F' : '/'}</span>
+        <span class={styles.chipGreen}>Non-ASCII &rarr; UTF-8</span>
       </div>
       <div style={{ marginTop: 'auto' }}>
         <div class={error ? styles.badgeErr : styles.badgeOk}>
@@ -186,22 +210,24 @@ function UrlSidePanel({
   error,
   parts,
   queryParams,
+  onInspect,
 }: {
   mode: string;
   error: string | null;
   parts: { scheme: string; host: string };
   queryParams: [string, string][];
+  onInspect?: () => void;
 }) {
   return (
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128202;</span>Summary
+          <span class={styles.toolIcon}>&#128202;</span>Encoding Summary
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
             <small>Mode</small>
-            <b>{mode}</b>
+            <b>{mode === 'component' ? 'Component' : mode === 'full-url' ? 'Full URL' : 'Form'}</b>
           </div>
           <div class={`${styles.mini} ${styles.miniGreen}`}>
             <small>Charset</small>
@@ -217,13 +243,13 @@ function UrlSidePanel({
           </div>
         </div>
         <div class={styles.callout}>
-          Form mode encodes spaces as <b>+</b>; component uses <b>%20</b>.
+          Form/query mode may encode spaces as <b>+</b>; component mode uses <b>%20</b>.
         </div>
       </section>
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128065;</span>URL Inspector
+          <span class={styles.toolIcon}>&#128065;</span>Sample URL Inspector
         </div>
         <div class={styles.kv}>
           <span>Scheme</span>
@@ -234,60 +260,24 @@ function UrlSidePanel({
           <b>{parts.host}</b>
         </div>
         <div class={styles.kv}>
-          <span>Query Keys</span>
+          <span>Query keys</span>
           <b>{queryParams.length}</b>
         </div>
         <div class={styles.kv}>
-          <span>Status</span>
-          <b>{error ? 'Malformed' : 'Valid'}</b>
+          <span>Fragment</span>
+          <b>&mdash;</b>
+        </div>
+        <div class={styles.noteLine} style={{ marginTop: 4 }}>
+          <button
+            type="button"
+            class={`${styles.chip} ${styles.chipBlue}`}
+            style={{ border: 'none', cursor: 'pointer' }}
+            onClick={onInspect}
+          >
+            Open inspector
+          </button>
         </div>
       </section>
-    </div>
-  );
-}
-
-function UrlStatusBar({
-  direction,
-  onDirection,
-  onCopy,
-  onDownload,
-  onReset,
-  notify,
-}: {
-  direction: 'encode' | 'decode';
-  onDirection: (fn: (d: 'encode' | 'decode') => 'encode' | 'decode') => void;
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-  notify: (msg: string) => void;
-}) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => notify('Local browser-safe processing')}
-      >
-        &#9432; Runs on your device &middot; Browser-local
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button
-          type="button"
-          class={styles.btnGold}
-          onClick={() => onDirection((d) => (d === 'encode' ? 'encode' : 'decode'))}
-        >
-          {direction === 'encode' ? 'Encode URL' : 'Decode URL'}
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
     </div>
   );
 }
@@ -298,57 +288,67 @@ export function UrlEncoderStudioLayout({
   store,
   notify,
 }: UrlEncoderStudioLayoutProps) {
-  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
-  const {
-    input,
-    handleInput,
-    direction,
-    setDirection,
-    mode,
-    setMode,
-    output,
-    error,
-    queryParams,
-    parts,
-    handleCopy,
-    handleDownload,
-    handleSwap,
-    handleReset,
-  } = useUrlEncoderStudio(snapshot, store, notify);
+  const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const studio = useUrlEncoderStudio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-url-encoder-studio-layout="">
-      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
-      <div class={styles.work} data-mobile-view={mobileView}>
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
         <UrlInputPanel
           idPrefix={idPrefix}
-          input={input}
-          direction={direction}
-          mode={mode}
-          onDirection={setDirection}
-          onMode={setMode}
-          onInput={handleInput}
+          input={studio.input}
+          direction={studio.direction}
+          mode={studio.mode}
+          onDirection={studio.setDirection}
+          onMode={studio.setMode}
+          onInput={studio.handleInput}
+          onSample={() => {
+            studio.handleInput(DEFAULT_URL);
+            notify('Sample URL loaded');
+          }}
+          onOpenFile={studio.handleOpenFile}
+          onPaste={studio.handlePaste}
+          onClear={studio.handleClear}
         />
+
         <UrlOutputPanel
-          idPrefix={idPrefix}
-          mode={mode}
-          output={output}
-          error={error}
-          onSwap={handleSwap}
-          onCopy={handleCopy}
-          onDownload={handleDownload}
+          mode={studio.mode}
+          output={studio.output}
+          error={studio.error}
+          onSwap={studio.handleSwap}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
         />
-        <UrlSidePanel mode={mode} error={error} parts={parts} queryParams={queryParams} />
-      </div>
 
-      <UrlEncoderAuxCards mode={mode} onMode={setMode} queryParams={queryParams} />
+        <UrlSidePanel
+          mode={studio.mode}
+          error={studio.error}
+          parts={studio.parts}
+          queryParams={studio.queryParams}
+          onInspect={() => notify(`Inspecting ${studio.queryParams.length} query params`)}
+        />
+      </main>
 
-      <UrlStatusBar
-        direction={direction}
-        onDirection={setDirection}
-        onCopy={handleCopy}
-        onDownload={handleDownload}
-        onReset={handleReset}
+      <UrlEncoderAuxCards
+        mode={studio.mode}
+        direction={studio.direction}
+        onModeChange={(m, d) => {
+          studio.setMode(m);
+          if (d) studio.setDirection(d);
+        }}
+        queryParams={studio.queryParams}
+      />
+
+      <DataStudioStatusBar
+        primaryLabel={studio.direction === 'encode' ? 'Encode URL' : 'Decode URL'}
+        onPrimary={() => {
+          notify(studio.direction === 'encode' ? 'URL Encoded' : 'URL Decoded');
+        }}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={studio.handleReset}
         notify={notify}
       />
     </div>

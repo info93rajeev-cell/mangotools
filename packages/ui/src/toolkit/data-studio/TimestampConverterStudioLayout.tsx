@@ -1,10 +1,11 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
-import { type MobileViewMode, MobileViewSwitcher } from './MobileViewSwitcher.tsx';
+import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
 import { TimestampAuxCards } from './TimestampAuxCards.tsx';
-import { useTimestampStudio } from './useTimestampStudio.ts';
+import { COMMON_TIMEZONES, DEFAULT_TIMESTAMP, useTimestampStudio } from './useTimestampStudio.ts';
 
 export interface TimestampConverterStudioLayoutProps {
   idPrefix: string;
@@ -22,6 +23,8 @@ function TimestampInputPanel({
   onUnit,
   onCurrentTime,
   onInput,
+  onPaste,
+  onClear,
 }: {
   idPrefix: string;
   input: string;
@@ -30,59 +33,83 @@ function TimestampInputPanel({
   onUnit: (u: 'seconds' | 'milliseconds' | 'microseconds' | 'nanoseconds') => void;
   onCurrentTime: () => void;
   onInput: (v: string) => void;
+  onPaste: () => void;
+  onClear: () => void;
 }) {
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#128337;</span>
-          <strong>Unix Timestamp → Date</strong>
+          <strong>Unix Timestamp &rarr; Date</strong>
         </div>
         <div class={styles.toolactions}>
           <button
             type="button"
-            class={styles.sampleMiniBtn}
-            data-try-sample=""
+            class={styles.btnSecondary}
             onClick={onCurrentTime}
+            data-try-sample=""
             title="Use current timestamp"
           >
             ✨ Try sample
           </button>
-          <button type="button" class={styles.btnSecondary} onClick={onCurrentTime}>
-            Current Time
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onCurrentTime}
+            title="Use current system time"
+          >
+            &#128337; Use current time
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
+          >
+            &#128203; Paste
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onClear}
+            title="Clear timestamp"
+          >
+            Clear
           </button>
         </div>
       </div>
       <div class={styles.rowchips}>
-        <span class={`${styles.chip} ${styles.chipBlue}`}>Timestamp → Date</span>
-        <span class={`${styles.chip} ${styles.chipPurple}`}>ISO 8601</span>
+        <span class={`${styles.chip} ${styles.chipBlue}`}>Timestamp &rarr; Date</span>
+        <span class={`${styles.chip} ${styles.chipPurple}`}>Date &rarr; Timestamp</span>
+        <span class={`${styles.chip} ${styles.chipAmber}`}>Batch mode</span>
       </div>
-      <label class={styles.optField} style={{ marginTop: 6 }}>
+      <label class={styles.optField} style={{ marginTop: 4 }}>
         <span class={styles.optLabel}>Unix timestamp integer</span>
         <input
           id={`${idPrefix}-input`}
           type="text"
           class={styles.optSelect}
-          style={{ fontSize: 16, fontWeight: 700, color: '#176bfa', minHeight: 38 }}
+          style={{ fontSize: 17, fontWeight: 750, color: '#176bfa', minHeight: 38 }}
           value={input}
           onInput={(e) => onInput((e.target as HTMLInputElement).value)}
           placeholder="e.g. 1704067200"
         />
       </label>
       <div class={styles.optField}>
-        <span class={styles.optLabel}>Unit</span>
-        <div style={{ display: 'flex', gap: 4 }}>
+        <span class={styles.optLabel}>Input unit</span>
+        <div class={styles.unitSegment}>
           {(['seconds', 'milliseconds', 'microseconds', 'nanoseconds'] as const).map((u) => (
             <button
               key={u}
               type="button"
-              class={`${styles.chip} ${unit === u ? styles.chipBlue : styles.chipAmber}`}
+              class={`${styles.unitSegmentBtn} ${unit === u ? styles.unitSegmentBtnActive : ''}`}
               onClick={() => onUnit(u)}
             >
               {u === 'seconds'
-                ? 'Sec'
+                ? 'Seconds'
                 : u === 'milliseconds'
-                  ? 'ms'
+                  ? 'Milliseconds'
                   : u === 'microseconds'
                     ? 'µs'
                     : 'ns'}
@@ -90,41 +117,51 @@ function TimestampInputPanel({
           ))}
         </div>
       </div>
-      <div class={styles.callout} style={{ marginTop: 'auto' }}>
+      <div class={styles.callout}>
         <span>&#9432;</span>
-        <div>Unix epoch reference: 1970-01-01 00:00:00 UTC.</div>
+        <div>Unix epoch reference: 1970-01-01 00:00:00 UTC. No automatic unit guessing.</div>
       </div>
-      <div class={styles.badgeOk}>
-        <span>&#10004;</span>
-        <strong>{error ? error : `Valid ${input.length}-digit Unix timestamp`}</strong>
+      <div style={{ marginTop: 'auto' }}>
+        <div class={error ? styles.badgeErr : styles.badgeOk}>
+          <span>{error ? '⚠' : '✓'}</span>
+          <strong>{error ? error : `Valid ${input.length}-digit Unix timestamp`}</strong>
+        </div>
       </div>
     </section>
   );
 }
 
 function TimestampDatePanel({
-  idPrefix,
   utcString,
   isoString,
   dateObj,
-  localTime,
   relativeText,
   selectedTzTime,
   timezone,
+  onTimezoneChange,
   onCopy,
   onDownload,
 }: {
-  idPrefix: string;
   utcString: string;
   isoString: string;
   dateObj: Date | null;
-  localTime: string;
   relativeText: string;
   selectedTzTime: string;
   timezone: string;
+  onTimezoneChange: (tz: string) => void;
   onCopy: () => void;
   onDownload: () => void;
 }) {
+  const dateFormatted = dateObj
+    ? dateObj.toLocaleDateString('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : 'Invalid Date';
+  const timeFormatted = dateObj ? `${utcString.split(' ').slice(4, 5)[0] || '00:00:00'} UTC` : '';
+
   return (
     <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
@@ -141,44 +178,47 @@ function TimestampDatePanel({
           </button>
         </div>
       </div>
-      <div
-        class={styles.bigoutput}
-        style={{ fontSize: 18, color: '#112248', minHeight: 70, flex: 'none' }}
-      >
-        <div style={{ fontSize: 13, color: '#657b9b' }}>UTC Calendar Date</div>
-        <strong style={{ color: '#1668f8', fontSize: 17 }}>{utcString}</strong>
+
+      <div class={styles.bigoutput} style={{ minHeight: 76, padding: '10px 12px' }}>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#12264e' }}>{dateFormatted}</div>
+        <div style={{ fontSize: 16, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
+          {timeFormatted}
+        </div>
       </div>
-      <div class={styles.miniGrid}>
+
+      <div class={styles.miniGrid} style={{ marginTop: 2 }}>
         <div class={`${styles.mini} ${styles.miniBlue}`}>
-          <small>UTC Time</small>
-          <b>{dateObj ? dateObj.toTimeString().slice(0, 8) : '—'}</b>
+          <small>UTC</small>
+          <b>{timeFormatted.replace(' UTC', '') || '00:00:00'}</b>
         </div>
         <div class={`${styles.mini} ${styles.miniGreen}`}>
-          <small>Local Time</small>
-          <b>{localTime}</b>
+          <small>{timezone.split('/')[1] || timezone}</small>
+          <b>{selectedTzTime.split(',')[1]?.trim() || selectedTzTime}</b>
         </div>
         <div class={`${styles.mini} ${styles.miniPurple}`}>
-          <small>ISO Date</small>
-          <b style={{ fontSize: 13 }}>{isoString.slice(0, 10)}</b>
+          <small>ISO 8601</small>
+          <b>{isoString.split('T')[0] || isoString}</b>
         </div>
         <div class={`${styles.mini} ${styles.miniAmber}`}>
           <small>Relative</small>
-          <b style={{ fontSize: 13 }}>{relativeText}</b>
+          <b>{relativeText}</b>
         </div>
       </div>
+
       <div class={styles.optField} style={{ marginTop: 'auto' }}>
-        <span class={styles.optLabel}>Zone Time ({timezone})</span>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#098650', padding: '4px 0' }}>
-          {selectedTzTime}
-        </div>
+        <span class={styles.optLabel}>Timezone</span>
+        <select
+          class={styles.optSelect}
+          value={timezone}
+          onChange={(e) => onTimezoneChange((e.target as HTMLSelectElement).value)}
+        >
+          {COMMON_TIMEZONES.map((tz) => (
+            <option key={tz.id} value={tz.id}>
+              {tz.label}
+            </option>
+          ))}
+        </select>
       </div>
-      <input
-        id={`${idPrefix}-output`}
-        type="text"
-        readOnly
-        value={isoString}
-        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, width: 0 }}
-      />
     </section>
   );
 }
@@ -198,125 +238,48 @@ function TimestampSidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128338;</span>Formats
+          <span class={styles.toolIcon}>&#128337;</span>Timestamp Formats
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
             <small>Seconds</small>
-            <b style={{ fontSize: 13 }}>{secondsVal}</b>
+            <b>{secondsVal}</b>
           </div>
-          <div class={`${styles.mini} ${styles.miniPurple} ${styles.miniSmall}`}>
+          <div class={`${styles.mini} ${styles.miniPurple}`}>
             <small>Milliseconds</small>
             <b>{millisVal}</b>
           </div>
         </div>
         <div class={styles.kv}>
           <span>ISO / RFC 3339</span>
-          <b style={{ fontSize: 10 }}>{isoString}</b>
+          <b>{isoString}</b>
         </div>
         <div class={styles.kv}>
-          <span>Unix Era</span>
-          <b>{Number(secondsVal) >= 0 ? 'After epoch' : 'Before epoch'}</b>
+          <span>Unix era</span>
+          <b>After epoch</b>
         </div>
       </section>
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#9745;</span>Calendar Checks
+          <span class={styles.toolIcon}>&#128197;</span>Calendar Checks
         </div>
         <div class={styles.badgeOk}>
           <span>&#10004;</span>
-          <strong>Valid UTC Date</strong>
+          <strong>Valid UTC date</strong>
         </div>
         <div class={styles.kv}>
-          <span>Leap Year</span>
-          <b>{leapYear ? 'Yes (Leap ✓)' : 'No (Common)'}</b>
+          <span>Leap year</span>
+          <b>{leapYear ? 'Yes ✓' : 'No'}</b>
         </div>
         <div class={styles.kv}>
           <span>Timezone</span>
-          <b>IANA Supported</b>
+          <b>IANA supported</b>
+        </div>
+        <div class={styles.callout}>
+          Ambiguous DST local times require an explicit offset or zone rule.
         </div>
       </section>
-    </div>
-  );
-}
-
-function TimestampStatusBar({
-  onCurrentTime,
-  onCopy,
-  onDownload,
-  onReset,
-  notify,
-}: {
-  onCurrentTime: () => void;
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-  notify: (msg: string) => void;
-}) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => notify('Local browser-safe processing')}
-      >
-        &#9432; Runs on your device &middot; Browser-local
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button type="button" class={styles.btnGold} onClick={onCurrentTime}>
-          Convert Timestamp
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
-    </div>
-  );
-}
-
-interface TimestampWorkGridProps {
-  idPrefix: string;
-  state: ReturnType<typeof useTimestampStudio>;
-  mobileView: MobileViewMode;
-}
-
-function TimestampWorkGrid({ idPrefix, state, mobileView }: TimestampWorkGridProps) {
-  return (
-    <div class={styles.work} data-mobile-view={mobileView}>
-      <TimestampInputPanel
-        idPrefix={idPrefix}
-        input={state.input}
-        unit={state.unit}
-        error={state.error}
-        onUnit={state.setUnit}
-        onCurrentTime={state.handleUseCurrentTime}
-        onInput={state.handleInput}
-      />
-      <TimestampDatePanel
-        idPrefix={idPrefix}
-        utcString={state.utcString}
-        isoString={state.isoString}
-        dateObj={state.dateObj}
-        localTime={state.localTime}
-        relativeText={state.relativeText}
-        selectedTzTime={state.selectedTzTime}
-        timezone={state.timezone}
-        onCopy={state.handleCopy}
-        onDownload={state.handleDownload}
-      />
-      <TimestampSidePanel
-        secondsVal={state.secondsVal}
-        millisVal={state.millisVal}
-        isoString={state.isoString}
-        leapYear={state.leapYear}
-      />
     </div>
   );
 }
@@ -327,26 +290,67 @@ export function TimestampConverterStudioLayout({
   store,
   notify,
 }: TimestampConverterStudioLayoutProps) {
-  const [mobileView, setMobileView] = useState<MobileViewMode>('split');
-  const state = useTimestampStudio(snapshot, store, notify);
+  const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const studio = useTimestampStudio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-timestamp-converter-studio-layout="">
-      <MobileViewSwitcher activeView={mobileView} onChange={setMobileView} />
-      <TimestampWorkGrid idPrefix={idPrefix} state={state} mobileView={mobileView} />
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
+        <TimestampInputPanel
+          idPrefix={idPrefix}
+          input={studio.input}
+          unit={studio.unit}
+          error={studio.error}
+          onUnit={studio.setUnit}
+          onCurrentTime={studio.handleUseCurrentTime}
+          onInput={studio.handleInput}
+          onPaste={studio.handlePaste}
+          onClear={studio.handleClear}
+        />
+
+        <TimestampDatePanel
+          utcString={studio.utcString}
+          isoString={studio.isoString}
+          dateObj={studio.dateObj}
+          relativeText={studio.relativeText}
+          selectedTzTime={studio.selectedTzTime}
+          timezone={studio.timezone}
+          onTimezoneChange={studio.setTimezone}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
+        />
+
+        <TimestampSidePanel
+          secondsVal={studio.secondsVal}
+          millisVal={studio.millisVal}
+          isoString={studio.isoString}
+          leapYear={studio.leapYear}
+        />
+      </main>
+
       <TimestampAuxCards
-        customDate={state.customDate}
-        onDateChange={state.handleDateToTimestamp}
-        timezone={state.timezone}
-        onTimezoneChange={state.setTimezone}
-        unit={state.unit}
-        onUnitChange={state.setUnit}
+        customDate={studio.customDate}
+        onDateChange={studio.handleDateToTimestamp}
+        timezone={studio.timezone}
+        onTimezoneChange={studio.setTimezone}
+        unit={studio.unit}
+        onUnitChange={studio.setUnit}
       />
-      <TimestampStatusBar
-        onCurrentTime={state.handleUseCurrentTime}
-        onCopy={state.handleCopy}
-        onDownload={state.handleDownload}
-        onReset={state.handleReset}
+
+      <DataStudioStatusBar
+        primaryLabel="Convert Timestamp"
+        onPrimary={() => {
+          notify('Timestamp Converted');
+        }}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={() => {
+          studio.handleInput(DEFAULT_TIMESTAMP);
+          studio.setUnit('seconds');
+          notify('Reset to default timestamp');
+        }}
         notify={notify}
       />
     </div>

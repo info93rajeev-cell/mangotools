@@ -43,6 +43,90 @@ export function inspectUrl(input: string): {
   return { params, parts };
 }
 
+function createUrlHandlers(
+  state: { output: string; error: string | null },
+  setInput: (v: string) => void,
+  setDirection: (fn: (d: 'encode' | 'decode') => 'encode' | 'decode') => void,
+  store: ToolStore,
+  notify: (msg: string) => void,
+) {
+  const handleCopy = async () => {
+    if (!state.output) return;
+    const ok = await copyText(state.output);
+    notify(ok ? 'Copied to clipboard!' : 'Failed to copy');
+  };
+
+  const handleDownload = () => {
+    if (!state.output) return;
+    downloadText(state.output, 'url-encoded.txt', 'text/plain');
+    notify('Downloaded url-encoded.txt');
+  };
+
+  const handleSwap = () => {
+    if (state.output && !state.error) {
+      setInput(state.output);
+      store.set('text', state.output);
+      setDirection((d) => (d === 'encode' ? 'decode' : 'encode'));
+      notify('Swapped Input and Output');
+    }
+  };
+
+  const handleReset = () => {
+    setInput(DEFAULT_URL);
+    store.set('text', DEFAULT_URL);
+    setDirection(() => 'encode');
+    notify('Reset to default URL');
+  };
+
+  const handleClear = () => {
+    setInput('');
+    store.set('text', '');
+    notify('Cleared input');
+  };
+
+  const handlePaste = async () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setInput(text);
+          store.set('text', text);
+          notify('Pasted from clipboard');
+          return;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    notify('Use Ctrl+V or Cmd+V to paste');
+  };
+
+  const handleOpenFile = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = typeof reader.result === 'string' ? reader.result : '';
+      setInput(content);
+      store.set('text', content);
+      notify(`Loaded ${file.name}`);
+    };
+    reader.readAsText(file);
+    target.value = '';
+  };
+
+  return {
+    handleCopy,
+    handleDownload,
+    handleSwap,
+    handleReset,
+    handleClear,
+    handlePaste,
+    handleOpenFile,
+  };
+}
+
 export function useUrlEncoderStudio(
   snapshot: ToolSnapshot,
   store: ToolStore,
@@ -75,33 +159,7 @@ export function useUrlEncoderStudio(
     store.set('text', v);
   };
 
-  const handleCopy = async () => {
-    if (!output) return;
-    const ok = await copyText(output);
-    notify(ok ? 'Copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!output) return;
-    downloadText(output, 'url-encoded.txt', 'text/plain');
-    notify('Downloaded url-encoded.txt');
-  };
-
-  const handleSwap = () => {
-    if (output && !error) {
-      setInput(output);
-      store.set('text', output);
-      setDirection((d) => (d === 'encode' ? 'decode' : 'encode'));
-      notify('Swapped Input and Output');
-    }
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_URL);
-    store.set('text', DEFAULT_URL);
-    setDirection('encode');
-    notify('Reset to default URL');
-  };
+  const handlers = createUrlHandlers({ output, error }, setInput, setDirection, store, notify);
 
   return {
     input,
@@ -114,9 +172,6 @@ export function useUrlEncoderStudio(
     error,
     queryParams,
     parts,
-    handleCopy,
-    handleDownload,
-    handleSwap,
-    handleReset,
+    ...handlers,
   };
 }

@@ -6,7 +6,8 @@ export type MobileViewMode = StudioMobileView;
 export interface MobileViewSwitcherProps {
   view?: StudioMobileView;
   activeView?: StudioMobileView;
-  onChange: (v: StudioMobileView) => void;
+  onChange?: (v: StudioMobileView) => void;
+  onViewChange?: (v: StudioMobileView) => void;
   inputTitle?: string;
   outputTitle?: string;
 }
@@ -15,16 +16,22 @@ export function MobileViewSwitcher({
   view,
   activeView,
   onChange,
+  onViewChange,
   inputTitle = 'Input',
   outputTitle = 'Output',
 }: MobileViewSwitcherProps) {
   const currentView = activeView ?? view ?? 'split';
+  const handleChange = (v: StudioMobileView) => {
+    onChange?.(v);
+    onViewChange?.(v);
+  };
+
   return (
     <div class={styles.mobileViewSwitcher} data-mobile-view-switcher="">
       <button
         type="button"
         class={`${styles.mobileViewTab} ${currentView === 'split' ? styles.mobileViewTabActive : ''}`}
-        onClick={() => onChange('split')}
+        onClick={() => handleChange('split')}
         aria-label="View both input and output on screen"
       >
         <span class={styles.tabIcon}>⚡</span>
@@ -33,7 +40,7 @@ export function MobileViewSwitcher({
       <button
         type="button"
         class={`${styles.mobileViewTab} ${currentView === 'input' ? styles.mobileViewTabActive : ''}`}
-        onClick={() => onChange('input')}
+        onClick={() => handleChange('input')}
         aria-label="View input only"
       >
         <span class={styles.tabIcon}>📝</span>
@@ -42,7 +49,7 @@ export function MobileViewSwitcher({
       <button
         type="button"
         class={`${styles.mobileViewTab} ${currentView === 'output' ? styles.mobileViewTabActive : ''}`}
-        onClick={() => onChange('output')}
+        onClick={() => handleChange('output')}
         aria-label="View output only"
       >
         <span class={styles.tabIcon}>📊</span>

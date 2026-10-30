@@ -77,6 +77,94 @@ function computeBase64(
   };
 }
 
+function createBase64Handlers(
+  state: { output: string; error: string | null; direction: 'encode' | 'decode' },
+  setInput: (v: string) => void,
+  setDirection: (fn: (d: 'encode' | 'decode') => 'encode' | 'decode') => void,
+  store: ToolStore,
+  notify: (msg: string) => void,
+) {
+  const handleCopy = async () => {
+    if (!state.output) return;
+    const ok = await copyText(state.output);
+    notify(ok ? 'Copied to clipboard!' : 'Failed to copy');
+  };
+
+  const handleDownload = () => {
+    if (!state.output) return;
+    downloadText(
+      state.output,
+      state.direction === 'encode' ? 'encoded.b64' : 'decoded.txt',
+      'text/plain',
+    );
+    notify('Downloaded file');
+  };
+
+  const handleSwap = () => {
+    if (state.output && !state.error) {
+      setInput(state.output);
+      store.set('text', state.output);
+      setDirection((d) => (d === 'encode' ? 'decode' : 'encode'));
+      notify('Swapped Input and Output');
+    }
+  };
+
+  const handleReset = () => {
+    setInput(DEFAULT_TEXT);
+    store.set('text', DEFAULT_TEXT);
+    setDirection(() => 'encode');
+    notify('Reset to default sample');
+  };
+
+  const handleClear = () => {
+    setInput('');
+    store.set('text', '');
+    notify('Cleared input');
+  };
+
+  const handlePaste = async () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setInput(text);
+          store.set('text', text);
+          notify('Pasted from clipboard');
+          return;
+        }
+      } catch {
+        // Fallback or permission denied
+      }
+    }
+    notify('Use Ctrl+V or Cmd+V to paste');
+  };
+
+  const handleOpenFile = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = typeof reader.result === 'string' ? reader.result : '';
+      setInput(content);
+      store.set('text', content);
+      notify(`Loaded ${file.name}`);
+    };
+    reader.readAsText(file);
+    target.value = '';
+  };
+
+  return {
+    handleCopy,
+    handleDownload,
+    handleSwap,
+    handleReset,
+    handleClear,
+    handlePaste,
+    handleOpenFile,
+  };
+}
+
 export function useBase64Studio(
   snapshot: ToolSnapshot,
   store: ToolStore,
@@ -110,33 +198,13 @@ export function useBase64Studio(
     store.set('text', v);
   };
 
-  const handleCopy = async () => {
-    if (!output) return;
-    const ok = await copyText(output);
-    notify(ok ? 'Copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!output) return;
-    downloadText(output, direction === 'encode' ? 'encoded.b64' : 'decoded.txt', 'text/plain');
-    notify('Downloaded file');
-  };
-
-  const handleSwap = () => {
-    if (output && !error) {
-      setInput(output);
-      store.set('text', output);
-      setDirection((d) => (d === 'encode' ? 'decode' : 'encode'));
-      notify('Swapped Input and Output');
-    }
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_TEXT);
-    store.set('text', DEFAULT_TEXT);
-    setDirection('encode');
-    notify('Reset to default sample');
-  };
+  const handlers = createBase64Handlers(
+    { output, error, direction },
+    setInput,
+    setDirection,
+    store,
+    notify,
+  );
 
   return {
     input,
@@ -154,9 +222,6 @@ export function useBase64Studio(
     sourceBytes,
     outputLength,
     expansionRatio,
-    handleCopy,
-    handleDownload,
-    handleSwap,
-    handleReset,
+    ...handlers,
   };
 }

@@ -5,10 +5,14 @@ export function SideMetricsPanel({
   parsedResult,
   inputLength,
   inputLines,
+  activeTab,
+  onTab,
 }: {
   parsedResult: { valid: boolean; error: string | null; stats: JsonStats | null };
   inputLength: number;
   inputLines: number;
+  activeTab?: 'raw' | 'tree' | 'table';
+  onTab?: (t: 'raw' | 'tree' | 'table') => void;
 }) {
   return (
     <div class={`${styles.side} ${styles.sidePanel}`}>
@@ -21,7 +25,7 @@ export function SideMetricsPanel({
             <span>&#10004;</span>
             <div>
               <strong>Valid JSON</strong>
-              <div style={{ fontSize: 10.5, color: '#098650' }}>RFC 8259 compliant</div>
+              <div style={{ fontSize: 10.5, color: '#098650' }}>No syntax errors found.</div>
             </div>
           </div>
         ) : (
@@ -49,25 +53,65 @@ export function SideMetricsPanel({
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#9881;</span>Data Structure
         </div>
+        {onTab && (
+          <div class={styles.rowchips}>
+            <button
+              type="button"
+              class={`${styles.chip} ${activeTab === 'tree' ? styles.chipBlue : styles.chipAmber}`}
+              onClick={() => onTab('tree')}
+            >
+              Tree
+            </button>
+            <button
+              type="button"
+              class={`${styles.chip} ${activeTab === 'table' ? styles.chipPurple : styles.chipAmber}`}
+              onClick={() => onTab('table')}
+            >
+              Table
+            </button>
+            <button
+              type="button"
+              class={`${styles.chip} ${activeTab === 'raw' ? styles.chipGreen : styles.chipAmber}`}
+              onClick={() => onTab('raw')}
+            >
+              Raw
+            </button>
+          </div>
+        )}
         <div class={styles.kv}>
-          <span>Root Type</span>
-          <b>{parsedResult.stats?.rootType ?? 'Unknown'}</b>
+          <span>Root</span>
+          <b>{parsedResult.stats?.rootType ?? 'Object'}</b>
         </div>
         <div class={styles.kv}>
-          <span>Objects Count</span>
+          <span>Objects</span>
           <b>{parsedResult.stats?.objects ?? 0}</b>
         </div>
         <div class={styles.kv}>
-          <span>Arrays Count</span>
+          <span>Arrays</span>
           <b>{parsedResult.stats?.arrays ?? 0}</b>
         </div>
         <div class={styles.kv}>
-          <span>Max Depth</span>
-          <b>{parsedResult.stats?.maxDepth ?? 0} levels</b>
+          <span>Depth</span>
+          <b>{parsedResult.stats?.maxDepth ?? 1} levels</b>
         </div>
       </section>
     </div>
   );
+}
+
+export interface JsonAuxCardsProps {
+  indent: '2' | '4' | 'tab' | 'min';
+  onIndent: (v: '2' | '4' | 'tab' | 'min') => void;
+  sortKeys: boolean;
+  onSortKeys: (v: boolean) => void;
+  syntaxHighlight: boolean;
+  onSyntaxHighlight: (v: boolean) => void;
+  lineNumbers: boolean;
+  onLineNumbers: (v: boolean) => void;
+  searchQuery: string;
+  onSearch: (v: string) => void;
+  searchMatches: number;
+  stats: JsonStats | null;
 }
 
 export function JsonAuxCards({
@@ -75,20 +119,15 @@ export function JsonAuxCards({
   onIndent,
   sortKeys,
   onSortKeys,
+  syntaxHighlight,
+  onSyntaxHighlight,
+  lineNumbers,
+  onLineNumbers,
   searchQuery,
   onSearch,
   searchMatches,
   stats,
-}: {
-  indent: '2' | '4' | 'tab';
-  onIndent: (v: '2' | '4' | 'tab') => void;
-  sortKeys: boolean;
-  onSortKeys: (v: boolean) => void;
-  searchQuery: string;
-  onSearch: (v: string) => void;
-  searchMatches: number;
-  stats: JsonStats | null;
-}) {
+}: JsonAuxCardsProps) {
   return (
     <div class={styles.aux}>
       <section class={styles.optcard}>
@@ -100,21 +139,32 @@ export function JsonAuxCards({
           <select
             class={styles.optSelect}
             value={indent}
-            onChange={(e) => onIndent((e.target as HTMLSelectElement).value as '2' | '4' | 'tab')}
+            onChange={(e) =>
+              onIndent((e.target as HTMLSelectElement).value as '2' | '4' | 'tab' | 'min')
+            }
           >
             <option value="2">2 spaces</option>
             <option value="4">4 spaces</option>
             <option value="tab">Tab</option>
+            <option value="min">Minified</option>
           </select>
         </label>
         <div class={styles.optCheckboxRow}>
           <label class={styles.optCheckbox}>
             <input
               type="checkbox"
-              checked={sortKeys}
-              onChange={(e) => onSortKeys((e.target as HTMLInputElement).checked)}
+              checked={syntaxHighlight}
+              onChange={(e) => onSyntaxHighlight((e.target as HTMLInputElement).checked)}
             />
-            Sort keys (A-Z)
+            Syntax highlights
+          </label>
+          <label class={styles.optCheckbox}>
+            <input
+              type="checkbox"
+              checked={lineNumbers}
+              onChange={(e) => onLineNumbers((e.target as HTMLInputElement).checked)}
+            />
+            Line numbers
           </label>
         </div>
       </section>
@@ -127,7 +177,17 @@ export function JsonAuxCards({
           <span class={styles.chipPurple}>Duplicate check</span>
           <span class={styles.chipBlue}>BigInt safe</span>
         </div>
-        <div class={styles.optHelptext} style={{ marginTop: 4 }}>
+        <div class={styles.optCheckboxRow} style={{ marginTop: 6 }}>
+          <label class={styles.optCheckbox}>
+            <input
+              type="checkbox"
+              checked={sortKeys}
+              onChange={(e) => onSortKeys((e.target as HTMLInputElement).checked)}
+            />
+            Sort keys (A-Z)
+          </label>
+        </div>
+        <div class={styles.optHelptext} style={{ marginTop: 2 }}>
           Numeric fidelity &middot; Schema validation &middot; Error path &middot; Key sorting
         </div>
       </section>
@@ -144,7 +204,7 @@ export function JsonAuxCards({
           aria-label="Search keys or values"
           onInput={(e) => onSearch((e.target as HTMLInputElement).value)}
         />
-        <div class={styles.optHelptext}>
+        <div class={styles.optHelptext} style={{ marginTop: 4 }}>
           {searchQuery
             ? `${searchMatches} match${searchMatches === 1 ? '' : 'es'} found`
             : 'Find in formatted JSON'}

@@ -158,12 +158,35 @@ function createTimestampHandlers(
     notify('Reset to default timestamp');
   };
 
+  const handleClear = () => {
+    handleInput('');
+    notify('Cleared timestamp');
+  };
+
+  const handlePaste = async () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          handleInput(text.trim());
+          notify('Pasted timestamp from clipboard');
+          return;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    notify('Use Ctrl+V or Cmd+V to paste');
+  };
+
   return {
     handleUseCurrentTime,
     handleDateToTimestamp,
     handleCopy,
     handleDownload,
     handleReset,
+    handleClear,
+    handlePaste,
   };
 }
 
@@ -180,9 +203,7 @@ export function useTimestampStudio(
 
   useEffect(() => {
     const val = snapshot.values.text;
-    if (typeof val === 'string' && val.trim().length > 0 && val !== input) {
-      setInput(val);
-    }
+    if (typeof val === 'string' && val.trim().length > 0 && val !== input) setInput(val);
   }, [snapshot.values.text]);
 
   const [unit, setUnit] = useState<'seconds' | 'milliseconds' | 'microseconds' | 'nanoseconds'>(
@@ -199,15 +220,7 @@ export function useTimestampStudio(
   };
 
   const handlers = createTimestampHandlers(
-    {
-      isoString: computed.isoString,
-      secondsVal: computed.secondsVal,
-      millisVal: computed.millisVal,
-      utcString: computed.utcString,
-      timezone,
-      selectedTzTime: computed.selectedTzTime,
-      dateObj: computed.dateObj,
-    },
+    { ...computed, timezone },
     input,
     handleInput,
     setUnit,
@@ -223,16 +236,7 @@ export function useTimestampStudio(
     timezone,
     setTimezone,
     customDate,
-    dateObj: computed.dateObj,
-    error: computed.error,
-    utcString: computed.utcString,
-    isoString: computed.isoString,
-    localTime: computed.localTime,
-    selectedTzTime: computed.selectedTzTime,
-    relativeText: computed.relativeText,
-    leapYear: computed.leapYear,
-    secondsVal: computed.secondsVal,
-    millisVal: computed.millisVal,
+    ...computed,
     ...handlers,
   };
 }

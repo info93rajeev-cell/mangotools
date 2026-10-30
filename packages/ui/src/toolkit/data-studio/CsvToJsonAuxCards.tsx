@@ -5,11 +5,15 @@ export function CsvToJsonAuxCards({
   onDelimiter,
   formatShape,
   onFormatShape,
+  firstRowHeaders,
+  onFirstRowHeaders,
 }: {
   delimiterChoice: 'auto' | ',' | ';' | '\t' | '|';
   onDelimiter: (d: 'auto' | ',' | ';' | '\t' | '|') => void;
   formatShape: 'objects' | '2d-array' | 'ndjson';
   onFormatShape: (s: 'objects' | '2d-array' | 'ndjson') => void;
+  firstRowHeaders?: boolean;
+  onFirstRowHeaders?: (v: boolean) => void;
 }) {
   return (
     <div class={styles.aux}>
@@ -26,7 +30,7 @@ export function CsvToJsonAuxCards({
               onDelimiter((e.target as HTMLSelectElement).value as 'auto' | ',' | ';' | '\t' | '|')
             }
           >
-            <option value="auto">Auto detected</option>
+            <option value="auto">Auto detected: comma</option>
             <option value=",">Comma (,)</option>
             <option value=";">Semicolon (;)</option>
             <option value="&#9;">Tab (\t)</option>
@@ -34,7 +38,15 @@ export function CsvToJsonAuxCards({
           </select>
         </label>
         <div class={styles.optCheckboxRow}>
-          <span class={styles.chipGreen}>First row headers</span>
+          <label class={styles.optCheckbox}>
+            <input
+              type="checkbox"
+              checked={firstRowHeaders ?? true}
+              onChange={(e) => onFirstRowHeaders?.((e.target as HTMLInputElement).checked)}
+            />
+            First row headers
+          </label>
+          <span class={styles.chipGreen}>Trim whitespace</span>
         </div>
       </section>
 
@@ -44,10 +56,10 @@ export function CsvToJsonAuxCards({
         </div>
         <div class={styles.rowchips}>
           <span class={styles.chipGreen}>Strings first</span>
-          <span class={styles.chipAmber}>Keep leading zeros (00124)</span>
+          <span class={styles.chipAmber}>Keep 00124</span>
         </div>
         <div class={styles.optHelptext} style={{ marginTop: 4 }}>
-          ID and SKU columns stay intact without truncation.
+          No automatic numeric coercion. ID and SKU columns stay intact without truncation.
         </div>
       </section>
 
@@ -67,10 +79,22 @@ export function CsvToJsonAuxCards({
             }
           >
             <option value="objects">Array of objects</option>
-            <option value="2d-array">2D Array / Nested</option>
+            <option value="2d-array">Array of arrays (2D)</option>
             <option value="ndjson">JSON Lines (NDJSON)</option>
           </select>
         </label>
+        <div class={styles.optCheckboxRow}>
+          <label class={styles.optCheckbox}>
+            <input
+              type="checkbox"
+              checked={formatShape === 'ndjson'}
+              onChange={(e) =>
+                onFormatShape((e.target as HTMLInputElement).checked ? 'ndjson' : 'objects')
+              }
+            />
+            JSON Lines
+          </label>
+        </div>
       </section>
 
       <section class={styles.optcard}>
@@ -78,7 +102,8 @@ export function CsvToJsonAuxCards({
           <span class={styles.optIcon}>&#9889;</span>Advanced Parsing
         </div>
         <div class={styles.optHelptext}>
-          Quotes &middot; multiline fields &middot; BOM &middot; blank/null policy.
+          Quotes &middot; multiline fields &middot; BOM &middot; blank/null policy &middot; ragged
+          rows.
         </div>
       </section>
     </div>

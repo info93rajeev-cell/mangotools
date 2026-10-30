@@ -1,11 +1,12 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
+import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { JsonAuxCards, SideMetricsPanel } from './JsonFormatterAuxCards.tsx';
 import { JsonTreeView } from './JsonTreeView.tsx';
 import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
-import { type ParseResult, useJsonFormatterStudio } from './useJsonFormatterStudio.ts';
+import { DEFAULT_JSON, useJsonFormatterStudio } from './useJsonFormatterStudio.ts';
 
 export interface JsonFormatterStudioLayoutProps {
   idPrefix: string;
@@ -22,33 +23,61 @@ function InputPanel({
   onAction,
   onInput,
   onSample,
+  onOpenFile,
+  onPaste,
 }: {
   idPrefix: string;
   input: string;
   action: 'format' | 'minify' | 'validate';
   onAction: (a: 'format' | 'minify' | 'validate') => void;
   onInput: (val: string) => void;
-  onSample?: () => void;
+  onSample: () => void;
+  onOpenFile: (e: Event) => void;
+  onPaste: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <section class={`${styles.panel} ${styles.inputPanel}`}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json,application/json,text/plain"
+        class={styles.hiddenFileInput}
+        onChange={onOpenFile}
+        tabIndex={-1}
+      />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
           <span class={styles.toolIcon}>&#123;&#125;</span>
           <strong>Input JSON</strong>
         </div>
         <div class={styles.toolactions}>
-          {onSample && (
-            <button
-              type="button"
-              class={styles.btnSecondary}
-              onClick={onSample}
-              data-try-sample=""
-              title="Load sample JSON"
-            >
-              ✨ Try sample
-            </button>
-          )}
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onSample}
+            data-try-sample=""
+            title="Load sample JSON"
+          >
+            ✨ Try sample
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={() => fileInputRef.current?.click()}
+            title="Open JSON file from device"
+          >
+            &#128194; Open File
+          </button>
+          <button
+            type="button"
+            class={styles.btnSecondary}
+            onClick={onPaste}
+            title="Paste from clipboard"
+          >
+            &#128203; Paste
+          </button>
           <button
             type="button"
             class={action === 'format' ? styles.btnPrimary : styles.btnSecondary}
@@ -83,7 +112,7 @@ function InputPanel({
         />
       </div>
       <div class={styles.noteLine}>
-        <span>Local parsing &middot; UTF-8 &middot; No upload</span>
+        <span>Local parsing &middot; UTF-8 &middot; no server upload</span>
         <span>
           {input.split('\n').length} lines &middot; {input.length} chars
         </span>
@@ -210,159 +239,76 @@ function OutputPanel({
   );
 }
 
-interface JsonStatusBarProps {
-  onNotify: (msg: string) => void;
-  onFormat: () => void;
-  onCopy: () => void;
-  onDownload: () => void;
-  onReset: () => void;
-}
-
-function JsonStatusBar({ onNotify, onFormat, onCopy, onDownload, onReset }: JsonStatusBarProps) {
-  return (
-    <div class={styles.statusBar}>
-      <button
-        type="button"
-        class={styles.btnSecondary}
-        onClick={() => onNotify('Local browser-safe processing')}
-      >
-        &#9432; Runs 100% on device
-      </button>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button type="button" class={styles.btnGold} onClick={onFormat}>
-          Format &amp; Validate JSON
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          Download
-        </button>
-        <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
-        </button>
-      </div>
-    </div>
-  );
-}
-
-interface JsonWorkGridProps {
-  idPrefix: string;
-  input: string;
-  action: 'format' | 'minify' | 'validate';
-  onAction: (a: 'format' | 'minify' | 'validate') => void;
-  onInput: (val: string) => void;
-  onSample: () => void;
-  outputFormatted: string;
-  activeTab: 'raw' | 'tree' | 'table';
-  onTab: (t: 'raw' | 'tree' | 'table') => void;
-  onCopy: () => void;
-  onDownload: () => void;
-  parsedResult: ParseResult;
-  tableData: { headers: string[]; rows: Record<string, unknown>[] } | null;
-}
-
-function JsonWorkGrid(props: JsonWorkGridProps) {
-  return (
-    <div class={styles.work}>
-      <InputPanel
-        idPrefix={props.idPrefix}
-        input={props.input}
-        action={props.action}
-        onAction={props.onAction}
-        onInput={props.onInput}
-        onSample={props.onSample}
-      />
-      <OutputPanel
-        idPrefix={props.idPrefix}
-        outputFormatted={props.outputFormatted}
-        activeTab={props.activeTab}
-        onTab={props.onTab}
-        onCopy={props.onCopy}
-        onDownload={props.onDownload}
-        parsedResult={props.parsedResult}
-        tableData={props.tableData}
-      />
-      <SideMetricsPanel
-        parsedResult={props.parsedResult}
-        inputLength={props.input.length}
-        inputLines={props.input.split('\n').length}
-      />
-    </div>
-  );
-}
-
 export function JsonFormatterStudioLayout({
   idPrefix,
   snapshot,
   store,
   notify,
 }: JsonFormatterStudioLayoutProps) {
-  const {
-    input,
-    handleInput,
-    indent,
-    setIndent,
-    action,
-    setAction,
-    sortKeys,
-    setSortKeys,
-    activeTab,
-    setActiveTab,
-    searchQuery,
-    setSearchQuery,
-    parsedResult,
-    outputFormatted,
-    searchMatches,
-    tableData,
-    handleCopy,
-    handleDownload,
-    handleReset,
-  } = useJsonFormatterStudio(snapshot, store, notify);
-
   const [mobileView, setMobileView] = useState<StudioMobileView>('split');
+  const studio = useJsonFormatterStudio(snapshot, store, notify);
 
   return (
-    <div class={styles.container} data-json-formatter-layout="" data-mobile-view={mobileView}>
-      <MobileViewSwitcher
-        view={mobileView}
-        onChange={setMobileView}
-        inputTitle="JSON Input"
-        outputTitle="Formatted JSON"
-      />
-      <JsonWorkGrid
-        idPrefix={idPrefix}
-        input={input}
-        action={action}
-        onAction={setAction}
-        onInput={handleInput}
-        onSample={handleReset}
-        outputFormatted={outputFormatted}
-        activeTab={activeTab}
-        onTab={setActiveTab}
-        onCopy={handleCopy}
-        onDownload={handleDownload}
-        parsedResult={parsedResult}
-        tableData={tableData}
-      />
+    <div class={styles.container} data-mobile-view={mobileView}>
+      <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
+
+      <main class={styles.work}>
+        <InputPanel
+          idPrefix={idPrefix}
+          input={studio.input}
+          action={studio.action}
+          onAction={studio.setAction}
+          onInput={studio.handleInput}
+          onSample={() => {
+            studio.handleInput(DEFAULT_JSON);
+            notify('Sample JSON loaded');
+          }}
+          onOpenFile={studio.handleOpenFile}
+          onPaste={studio.handlePaste}
+        />
+
+        <OutputPanel
+          idPrefix={idPrefix}
+          outputFormatted={studio.outputFormatted}
+          activeTab={studio.activeTab}
+          onTab={studio.setActiveTab}
+          onCopy={studio.handleCopy}
+          onDownload={studio.handleDownload}
+          parsedResult={studio.parsedResult}
+          tableData={studio.tableData}
+        />
+
+        <SideMetricsPanel
+          parsedResult={studio.parsedResult}
+          inputLength={studio.input.length}
+          inputLines={studio.input.split('\n').length}
+          activeTab={studio.activeTab}
+          onTab={studio.setActiveTab}
+        />
+      </main>
 
       <JsonAuxCards
-        indent={indent}
-        onIndent={setIndent}
-        sortKeys={sortKeys}
-        onSortKeys={setSortKeys}
-        searchQuery={searchQuery}
-        onSearch={setSearchQuery}
-        searchMatches={searchMatches}
-        stats={parsedResult.stats}
+        indent={studio.indent}
+        onIndent={studio.setIndent}
+        sortKeys={studio.sortKeys}
+        onSortKeys={studio.setSortKeys}
+        syntaxHighlight={studio.syntaxHighlight}
+        onSyntaxHighlight={studio.setSyntaxHighlight}
+        lineNumbers={studio.lineNumbers}
+        onLineNumbers={studio.setLineNumbers}
+        searchQuery={studio.searchQuery}
+        onSearch={studio.setSearchQuery}
+        searchMatches={studio.searchMatches}
+        stats={studio.parsedResult.stats}
       />
 
-      <JsonStatusBar
-        onNotify={notify}
-        onFormat={() => setAction('format')}
-        onCopy={handleCopy}
-        onDownload={handleDownload}
-        onReset={handleReset}
+      <DataStudioStatusBar
+        primaryLabel="Format &amp; Validate JSON"
+        onPrimary={() => studio.setAction('format')}
+        onCopy={studio.handleCopy}
+        onDownload={studio.handleDownload}
+        onReset={studio.handleReset}
+        notify={notify}
       />
     </div>
   );

@@ -107,12 +107,12 @@ function formatJsonOutput(
   parsedResult: { valid: boolean; data: unknown },
   sortKeys: boolean,
   action: 'format' | 'minify' | 'validate',
-  indent: '2' | '4' | 'tab',
+  indent: '2' | '4' | 'tab' | 'min',
 ) {
   if (!parsedResult.valid || parsedResult.data === null) return '';
   let processed: unknown = parsedResult.data;
   if (sortKeys) processed = sortJsonKeys(processed);
-  if (action === 'minify') return JSON.stringify(processed);
+  if (action === 'minify' || indent === 'min') return JSON.stringify(processed);
   const space = indent === 'tab' ? '\t' : indent === '4' ? 4 : 2;
   return JSON.stringify(processed, null, space);
 }
@@ -178,7 +178,39 @@ function createJsonHandlers(
     notify('Reset to default sample JSON');
   };
 
-  return { handleCopy, handleDownload, handleReset };
+  const handlePaste = async () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setInput(text);
+          store.set('text', text);
+          notify('Pasted from clipboard');
+          return;
+        }
+      } catch {
+        // Fallback or permission denied
+      }
+    }
+    notify('Use Ctrl+V or Cmd+V to paste');
+  };
+
+  const handleOpenFile = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = typeof reader.result === 'string' ? reader.result : '';
+      setInput(content);
+      store.set('text', content);
+      notify(`Loaded ${file.name}`);
+    };
+    reader.readAsText(file);
+    target.value = '';
+  };
+
+  return { handleCopy, handleDownload, handleReset, handlePaste, handleOpenFile };
 }
 
 export function useJsonFormatterStudio(
@@ -199,9 +231,11 @@ export function useJsonFormatterStudio(
     }
   }, [snapshot.values.text]);
 
-  const [indent, setIndent] = useState<'2' | '4' | 'tab'>('2');
+  const [indent, setIndent] = useState<'2' | '4' | 'tab' | 'min'>('2');
   const [action, setAction] = useState<'format' | 'minify' | 'validate'>('format');
   const [sortKeys, setSortKeys] = useState(false);
+  const [syntaxHighlight, setSyntaxHighlight] = useState(true);
+  const [lineNumbers, setLineNumbers] = useState(true);
   const [activeTab, setActiveTab] = useState<'raw' | 'tree' | 'table'>('raw');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -216,7 +250,7 @@ export function useJsonFormatterStudio(
   );
   const tableData = useMemo(() => extractTableData(parsedResult), [parsedResult]);
 
-  const { handleCopy, handleDownload, handleReset } = createJsonHandlers(
+  const handlers = createJsonHandlers(
     { activeTab, outputFormatted, parsedResult },
     setInput,
     store,
@@ -237,6 +271,10 @@ export function useJsonFormatterStudio(
     setAction,
     sortKeys,
     setSortKeys,
+    syntaxHighlight,
+    setSyntaxHighlight,
+    lineNumbers,
+    setLineNumbers,
     activeTab,
     setActiveTab,
     searchQuery,
@@ -245,8 +283,6 @@ export function useJsonFormatterStudio(
     outputFormatted,
     searchMatches,
     tableData,
-    handleCopy,
-    handleDownload,
-    handleReset,
+    ...handlers,
   };
 }

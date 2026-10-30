@@ -92,6 +92,80 @@ export function processJsonToCsv(
   }
 }
 
+function createJsonToCsvHandlers(
+  rawCsv: string,
+  useBom: boolean,
+  setInput: (v: string) => void,
+  store: ToolStore,
+  notify: (msg: string) => void,
+) {
+  const handleCopy = async () => {
+    if (!rawCsv) return;
+    const ok = await copyText(rawCsv);
+    notify(ok ? 'CSV copied to clipboard!' : 'Failed to copy');
+  };
+
+  const handleDownload = () => {
+    if (!rawCsv) return;
+    const content = useBom ? `\uFEFF${rawCsv}` : rawCsv;
+    downloadText(content, 'exported.csv', 'text/csv');
+    notify('Downloaded exported.csv');
+  };
+
+  const handleReset = () => {
+    setInput(DEFAULT_JSON);
+    store.set('text', DEFAULT_JSON);
+    notify('Reset to default sample JSON');
+  };
+
+  const handleClear = () => {
+    setInput('');
+    store.set('text', '');
+    notify('Cleared input');
+  };
+
+  const handlePaste = async () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setInput(text);
+          store.set('text', text);
+          notify('Pasted from clipboard');
+          return;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    notify('Use Ctrl+V or Cmd+V to paste');
+  };
+
+  const handleOpenFile = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = typeof reader.result === 'string' ? reader.result : '';
+      setInput(content);
+      store.set('text', content);
+      notify(`Loaded ${file.name}`);
+    };
+    reader.readAsText(file);
+    target.value = '';
+  };
+
+  return {
+    handleCopy,
+    handleDownload,
+    handleReset,
+    handleClear,
+    handlePaste,
+    handleOpenFile,
+  };
+}
+
 export function useJsonToCsvStudio(
   snapshot: ToolSnapshot,
   store: ToolStore,
@@ -125,24 +199,7 @@ export function useJsonToCsvStudio(
     store.set('text', val);
   };
 
-  const handleCopy = async () => {
-    if (!rawCsv) return;
-    const ok = await copyText(rawCsv);
-    notify(ok ? 'CSV copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!rawCsv) return;
-    const content = useBom ? `\uFEFF${rawCsv}` : rawCsv;
-    downloadText(content, 'exported.csv', 'text/csv');
-    notify('Downloaded exported.csv');
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_JSON);
-    store.set('text', DEFAULT_JSON);
-    notify('Reset to default sample JSON');
-  };
+  const handlers = createJsonToCsvHandlers(rawCsv, useBom, setInput, store, notify);
 
   return {
     input,
@@ -160,8 +217,6 @@ export function useJsonToCsvStudio(
     headers,
     rows,
     rawCsv,
-    handleCopy,
-    handleDownload,
-    handleReset,
+    ...handlers,
   };
 }

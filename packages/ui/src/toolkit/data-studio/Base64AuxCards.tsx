@@ -1,3 +1,4 @@
+import { useRef } from 'preact/hooks';
 import styles from './dataStudio.module.css';
 
 export function Base64AuxCards({
@@ -7,6 +8,7 @@ export function Base64AuxCards({
   onPadding,
   lineWrap,
   onLineWrap,
+  onOpenFile,
 }: {
   variant: 'standard' | 'url-safe';
   onVariant: (v: 'standard' | 'url-safe') => void;
@@ -14,7 +16,10 @@ export function Base64AuxCards({
   onPadding: (p: boolean) => void;
   lineWrap: 'none' | '76';
   onLineWrap: (w: 'none' | '76') => void;
+  onOpenFile?: (e: Event) => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div class={styles.aux}>
       <section class={styles.optcard}>
@@ -47,8 +52,15 @@ export function Base64AuxCards({
       </section>
 
       <section class={styles.optcard}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          class={styles.hiddenFileInput}
+          onChange={onOpenFile}
+          tabIndex={-1}
+        />
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128196;</span>Text &amp; Encoding
+          <span class={styles.optIcon}>&#128196;</span>Text &amp; Files
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Character set</span>
@@ -56,14 +68,21 @@ export function Base64AuxCards({
             <option value="utf8">UTF-8 Unicode</option>
           </select>
         </label>
-        <div class={styles.optHelptext}>
-          Emoji and international scripts preserved without loss.
+        <div class={styles.optCheckboxRow}>
+          <button
+            type="button"
+            class={styles.chipAmber}
+            style={{ border: 'none', cursor: 'pointer', padding: '3px 8px', borderRadius: 5 }}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            &#128194; Upload file to encode
+          </button>
         </div>
       </section>
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Line Formatting
+          <span class={styles.optIcon}>&#9889;</span>Advanced
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Line wrapping</span>
@@ -84,8 +103,8 @@ export function Base64AuxCards({
           <span class={styles.optIcon}>&#128737;</span>Safety &amp; Diagnostics
         </div>
         <div class={styles.optHelptext}>
-          Invalid alphabet, padding and UTF-8 decoding errors are reported distinctly. No network
-          upload.
+          Invalid alphabet, padding and UTF-8 decoding errors are reported distinctly. Large files
+          are handled client-side without upload.
         </div>
       </section>
     </div>

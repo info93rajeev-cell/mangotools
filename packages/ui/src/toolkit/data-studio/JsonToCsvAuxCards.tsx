@@ -27,12 +27,14 @@ export function JsonToCsvAuxCards({
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Record path</span>
-          <select class={styles.optSelect} disabled value="$[*]">
+          <select class={styles.optSelect} value="$[*]">
             <option value="$[*]">$[*] (Root Array)</option>
+            <option value="$">$ (Root Object)</option>
+            <option value="custom">Custom JSONPath</option>
           </select>
         </label>
         <div class={styles.optCheckboxRow}>
-          <span class={styles.chipGreen}>Union all keys</span>
+          <span class={styles.chipGreen}>✓ Union all keys</span>
         </div>
       </section>
 
@@ -42,8 +44,10 @@ export function JsonToCsvAuxCards({
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Object handling</span>
-          <select class={styles.optSelect} disabled value="flatten">
-            <option value="flatten">JSON stringify / Dot paths</option>
+          <select class={styles.optSelect} value="flatten">
+            <option value="flatten">Flatten with dot paths</option>
+            <option value="keep">Keep as JSON string</option>
+            <option value="omit">Omit nested objects</option>
           </select>
         </label>
         <div class={styles.optHelptext}>Arrays remain explicit JSON text.</div>
@@ -72,7 +76,7 @@ export function JsonToCsvAuxCards({
               checked={includeHeaders}
               onChange={(e) => onIncludeHeaders((e.target as HTMLInputElement).checked)}
             />
-            Headers
+            Include headers
           </label>
           <label class={styles.optCheckbox}>
             <input
@@ -80,7 +84,7 @@ export function JsonToCsvAuxCards({
               checked={useBom}
               onChange={(e) => onUseBom((e.target as HTMLInputElement).checked)}
             />
-            BOM
+            UTF-8 BOM
           </label>
         </div>
       </section>
@@ -100,7 +104,8 @@ export function JsonToCsvAuxCards({
           </label>
         </div>
         <div class={styles.optHelptext} style={{ marginTop: 2 }}>
-          Prevents dangerous spreadsheet formula injection.
+          Formula-like cells are flagged. Review export policy before opening untrusted values in
+          spreadsheet software.
         </div>
       </section>
     </div>

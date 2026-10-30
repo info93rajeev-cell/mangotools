@@ -769,3 +769,148 @@
 .dataTable tbody tr:hover {
   background: #f5faff;
 }
+
+/* Callto & Utility Actions Bar */
+.utility {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.utilityBtn {
+  background: #ffffff;
+  border: 1px solid #e1e9f3;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 630;
+  color: #526b8f;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.utilityBtn:hover {
+  background: #f7faff;
+  border-color: #cbdcf3;
+  color: #1765f3;
+}
+
+.callto {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+@media (max-width: 650px) {
+  .utility {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .utilityBtn:last-child {
+    grid-column: span 2;
+  }
+
+  .callto {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .callto .btnGold {
+    grid-column: span 2;
+  }
+}
+
+/* Base64 Visual Conversion Ratio Strip */
+.conversionRatioStrip {
+  margin-top: 8px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: #f1f7ff;
+  border: 1px solid #dce9fc;
+  display: flex;
+  justify-content: space-around;
+  gap: 5px;
+  align-items: center;
+  color: #4c6591;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Timestamp Unit Segmented Control */
+.unitSegment {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cbdcf3;
+  background: #ffffff;
+  border-radius: 7px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.unitSegmentBtn {
+  font-size: 11px;
+  font-weight: 650;
+  padding: 6px 11px;
+  white-space: nowrap;
+  color: #50647f;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.unitSegmentBtn:hover {
+  background: #f1f6ff;
+  color: #1664f5;
+}
+
+.unitSegmentBtnActive {
+  background: #1664f5;
+  color: #ffffff;
+  font-weight: 750;
+}
+
+.unitSegmentBtnActive:hover {
+  background: #1255d6;
+  color: #ffffff;
+}
+
+/* URL Replacement Chips */
+.replacementChips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* Hidden File Input for Clean File Pickers */
+.hiddenFileInput {
+  display: none;
+}
+
+/* Raw CSV Output Editor Preview Box */
+.rawCsvPreview {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  background: #f8fbff;
+  border: 1px solid #dce7f7;
+  border-radius: 7px;
+  padding: 8px;
+  color: #273754;
+  height: 120px;
+  overflow: auto;
+  white-space: pre;
+  box-sizing: border-box;
+}
