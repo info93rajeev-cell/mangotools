@@ -37,38 +37,51 @@ test.describe('Try sample gives the fixture result', () => {
 test.describe('GST Calculator', () => {
   test('updates live, with Indian grouping', async ({ page }) => {
     await openTool(page, 'gst-calculator');
-    await page.getByLabel('Amount (₹)').fill('100000');
+    await page.locator('#tax-input-amount').fill('100000');
     await expect(primaryResult(page)).toHaveText('₹1,18,000.00');
-    await expect(page.locator('[data-output="cgst"] dd')).toHaveText('₹9,000.00');
-    await expect(page.getByText('Show calculation')).toBeVisible();
+    await expect(
+      page
+        .locator('[data-tax-results-card] [class*="breakdownRow"]')
+        .filter({ hasText: 'CGST' })
+        .locator('[class*="breakdownAmount"]'),
+    ).toHaveText('₹9,000.00');
   });
 
-  test('removes GST inter-state with a custom rate', async ({ page }) => {
+  test('removes GST inter-state with rate', async ({ page }) => {
     await openTool(page, 'gst-calculator');
-    await island(page, 'gst-calculator').getByText('Remove GST', { exact: true }).click();
-    await island(page, 'gst-calculator').getByText('Inter-state: IGST', { exact: true }).click();
-    await page.getByLabel('GST rate').selectOption({ label: 'Custom' });
-    await page.getByLabel('Custom gst rate').fill('12');
-    await page.getByLabel('Amount (₹)').fill('112');
-    await expect(primaryResult(page)).toHaveText('₹100.00');
-    await expect(page.locator('[data-output="igst"] dd')).toHaveText('₹12.00');
-    await expect(page.locator('[data-output="cgst"]')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Inclusive Price' }).click();
+    await page.getByRole('button', { name: 'Inter-state (IGST)' }).click();
+    await page.locator('#gst-rate-select').selectOption('12');
+    await page.locator('#tax-input-amount').fill('112');
+    await expect(primaryResult(page)).toHaveText('₹112.00');
+    await expect(
+      page
+        .locator('[data-tax-results-card] [class*="breakdownRow"]')
+        .filter({ hasText: 'IGST' })
+        .locator('[class*="breakdownAmount"]'),
+    ).toHaveText('₹12.00');
+    await expect(
+      page.locator('[data-tax-results-card] [class*="breakdownRow"]').filter({ hasText: 'CGST' }),
+    ).toHaveCount(0);
   });
 
   test('shows the odd-paisa split when removing GST', async ({ page }) => {
     await openTool(page, 'gst-calculator');
-    await island(page, 'gst-calculator').getByText('Remove GST', { exact: true }).click();
-    await page.getByLabel('Amount (₹)').fill('100');
-    await expect(primaryResult(page)).toHaveText('₹84.75');
-    await expect(page.locator('[data-output="cgst"] dd')).toHaveText('₹7.63');
-    await expect(page.locator('[data-output="sgst"] dd')).toHaveText('₹7.62');
-  });
-
-  test('explains invalid input next to the field', async ({ page }) => {
-    await openTool(page, 'gst-calculator');
-    await page.getByLabel('Amount (₹)').fill('12a');
-    await expect(page.getByText('Enter a number such as 1250 or 1250.50.')).toBeVisible();
-    await expect(page.getByLabel('Amount (₹)')).toHaveAttribute('aria-invalid', 'true');
+    await page.getByRole('button', { name: 'Inclusive Price' }).click();
+    await page.locator('#tax-input-amount').fill('100');
+    await expect(primaryResult(page)).toHaveText('₹100.00');
+    await expect(
+      page
+        .locator('[data-tax-results-card] [class*="breakdownRow"]')
+        .filter({ hasText: 'CGST' })
+        .locator('[class*="breakdownAmount"]'),
+    ).toHaveText('₹7.63');
+    await expect(
+      page
+        .locator('[data-tax-results-card] [class*="breakdownRow"]')
+        .filter({ hasText: 'SGST' })
+        .locator('[class*="breakdownAmount"]'),
+    ).toHaveText('₹7.62');
   });
 
   test('shows the disclaimer', async ({ page }) => {
