@@ -1,79 +1,9 @@
 import type { JSX } from 'preact';
+import { HeavyBookBanner, PdfMiniThumbnails } from './PdfSplitThumbnails.tsx';
 import styles from './pdfStudio.module.css';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
-
-function HeavyBookBanner({ totalPages }: { totalPages: number }) {
-  if (totalPages < 1500) return null;
-  return (
-    <div
-      style={{
-        background: '#f0f9ff',
-        border: '1px solid #7dd3fc',
-        borderRadius: '8px',
-        padding: '8px 10px',
-        marginBottom: '10px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '3px',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <span style={{ fontSize: '14px' }}>📚</span>
-        <strong style={{ fontSize: '12px', color: '#0369a1' }}>
-          Heavy Book Engine (1,600 Pages Active)
-        </strong>
-      </div>
-      <p style={{ fontSize: '11px', color: '#0c4a6e', margin: 0, lineHeight: 1.35 }}>
-        Split into 16 chapters (100 pages each) locally. No Adobe sign-in, upload limits, or tab
-        freezing.
-      </p>
-    </div>
-  );
-}
-
-function PdfMiniThumbnails() {
-  return (
-    <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '6px 2px' }}>
-      {[1, 2, 3, 4, 5].map((pg) => (
-        <div
-          key={pg}
-          style={{
-            minWidth: '58px',
-            height: '76px',
-            border: pg === 1 ? '2px solid #2563eb' : '1px solid #cbd5e1',
-            borderRadius: '6px',
-            background: '#fff',
-            padding: '4px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-            <div
-              style={{
-                height: '4px',
-                background: pg === 1 ? '#bfdbfe' : '#e2e8f0',
-                borderRadius: '2px',
-              }}
-            />
-            <div
-              style={{ height: '3px', background: '#e2e8f0', borderRadius: '2px', width: '85%' }}
-            />
-          </div>
-          <span
-            style={{ fontSize: '10px', fontWeight: 700, color: pg === 1 ? '#2563eb' : '#64748b' }}
-          >
-            {pg}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
   const { fileName, totalPages, fileSizeBytes, clearAll, handleAddNativeFile } = studio;
@@ -90,14 +20,14 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> PDF File
         </h2>
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             type="button"
             onClick={studio.splitHeavyBookIntoChapters}
             style={{
               fontSize: '11px',
-              padding: '2px 8px',
-              borderRadius: '4px',
+              padding: '4px 10px',
+              borderRadius: '6px',
               border: '1px solid #7dd3fc',
               background: '#f0f9ff',
               color: '#0369a1',
@@ -122,7 +52,7 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
       <HeavyBookBanner totalPages={totalPages} />
 
       {fileName ? (
-        <div class={styles.fileRow} style={{ background: '#fef2f2', borderColor: '#fecaca' }}>
+        <div class={styles.fileRow} style={{ background: '#ffffff', borderColor: '#cbd5e1' }}>
           <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
           </div>
@@ -182,24 +112,27 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
 
   if (mode === 'ranges') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '11.5px',
+            fontSize: '12px',
             color: '#475569',
+            fontWeight: 600,
           }}
         >
-          <span>Page ranges (e.g. 1-10, 11-20)</span>
-          <span>{ranges.length} ranges selected</span>
+          <span>Page ranges (e.g. 1-12, 13-42)</span>
+          <span>
+            {ranges.length} ranges • {totalPages} pages selected
+          </span>
         </div>
         <div class={styles.rangeChipsRow}>
           {ranges.map((r) => (
             <span key={r.id} class={styles.rangeChip}>
               {r.start} – {r.end}
               <button type="button" class={styles.chipCloseBtn} onClick={() => removeRange(r.id)}>
-                ×
+                ✕
               </button>
             </span>
           ))}
@@ -248,11 +181,12 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
     <p
       style={{
         fontSize: '12px',
-        color: '#475569',
+        color: '#334155',
         margin: 0,
         background: '#f8fafc',
-        padding: '8px',
-        borderRadius: '6px',
+        padding: '10px 12px',
+        borderRadius: '7px',
+        border: '1px solid #e2e8f0',
       }}
     >
       Extracts all {totalPages} pages into individual separate single-page PDF files.
@@ -271,27 +205,43 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-        {SPLIT_MODES.map(([m, label, sub]) => (
-          <button
-            key={m}
-            type="button"
-            class={`${styles.radioCard} ${mode === m ? styles.radioCardActive : ''}`}
-            onClick={() => setMode(m as SplitMode)}
-            style={{ textAlign: 'left', padding: '6px 8px' }}
-          >
-            <span
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+        {SPLIT_MODES.map(([m, label, sub]) => {
+          const isActive = mode === m;
+          return (
+            <button
+              key={m}
+              type="button"
+              class={`${styles.radioCard} ${isActive ? styles.radioCardActive : ''}`}
+              onClick={() => setMode(m as SplitMode)}
               style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: mode === m ? '#1d4ed8' : '#1e293b',
+                textAlign: 'left',
+                padding: '8px 10px',
+                background: isActive ? '#2563eb' : '#ffffff',
+                borderColor: isActive ? '#1d4ed8' : '#e2e8f0',
               }}
             >
-              {label}
-            </span>
-            <span style={{ fontSize: '9.5px', color: '#64748b' }}>{sub}</span>
-          </button>
-        ))}
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: isActive ? '#ffffff' : '#0f172a',
+                }}
+              >
+                {label}
+              </span>
+              <span
+                style={{
+                  fontSize: '10px',
+                  color: isActive ? '#dbeafe' : '#64748b',
+                  fontWeight: 500,
+                }}
+              >
+                {sub}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <ModeInputs studio={studio} />
@@ -315,14 +265,22 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
 
   return (
     <div class={styles.card}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '8px',
+          fontSize: '12px',
+          fontWeight: 600,
+        }}
+      >
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
           <input
             type="checkbox"
             checked={keepBookmarks}
             onChange={(e) => setKeepBookmarks(e.currentTarget.checked)}
           />
-          <span>Keep bookmarks (if available)</span>
+          <span>Keep bookmarks</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
           <input
@@ -330,7 +288,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
             checked={separateFiles}
             onChange={(e) => setSeparateFiles(e.currentTarget.checked)}
           />
-          <span>Create a separate file for each range</span>
+          <span>Separate files</span>
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
           <input
@@ -338,7 +296,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
             checked={compressOutput}
             onChange={(e) => setCompressOutput(e.currentTarget.checked)}
           />
-          <span>Compress output files (smaller size)</span>
+          <span>Compress output</span>
         </label>
       </div>
 
@@ -359,8 +317,9 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          fontSize: '12px',
+          gap: '8px',
+          fontSize: '12.5px',
+          fontWeight: 600,
           cursor: 'pointer',
         }}
       >

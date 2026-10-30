@@ -4,7 +4,7 @@ import type { usePdfToWordStudio } from './usePdfConvertStudio.ts';
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 
 function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
-  const { fileName, totalPages, fileSizeBytes, clearAll } = studio;
+  const { fileName, totalPages, fileSizeBytes, clearAll, loadSamplePdfToWord } = studio;
   const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   return (
@@ -15,14 +15,14 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         </h2>
         <button
           type="button"
-          onClick={studio.loadSamplePdfToWord}
+          onClick={loadSamplePdfToWord}
           style={{
             fontSize: '11px',
-            padding: '2px 8px',
-            borderRadius: '4px',
-            border: '1px solid #fecaca',
-            background: '#fef2f2',
-            color: '#dc2626',
+            padding: '4px 10px',
+            borderRadius: '6px',
+            border: '1px solid #bfdbfe',
+            background: '#eff6ff',
+            color: '#1d4ed8',
             fontWeight: 700,
             cursor: 'pointer',
           }}
@@ -31,7 +31,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         </button>
       </div>
       {fileName ? (
-        <div class={styles.fileRow} style={{ background: '#fef2f2', borderColor: '#fecaca' }}>
+        <div class={styles.fileRow} style={{ background: '#ffffff', borderColor: '#bfdbfe' }}>
           <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
           </div>
@@ -45,6 +45,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
             type="button"
             class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
             onClick={clearAll}
+            title="Clear file"
           >
             ✕
           </button>
@@ -53,6 +54,8 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         <div class={styles.dropZone}>
           <span class={styles.dropIcon}>📄+</span>
           <p class={styles.dropMainText}>Drag & drop a PDF file here</p>
+          <p class={styles.dropSubText}>or click to browse and select a file</p>
+          <span class={styles.chooseBtn}>Choose PDF File</span>
         </div>
       )}
     </div>
@@ -95,17 +98,18 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '8px',
-            background: '#f8fafc',
-            borderRadius: '6px',
+            padding: '10px 12px',
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '8px',
             cursor: 'pointer',
           }}
         >
           <div>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: '#1e293b' }}>
+            <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e3a8a' }}>
               OCR for scanned PDFs
             </div>
-            <div style={{ fontSize: '10.5px', color: '#64748b' }}>
+            <div style={{ fontSize: '11px', color: '#64748b' }}>
               Extract text from scanned PDFs and images
             </div>
           </div>
@@ -115,13 +119,14 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
             onChange={(e) => setEnableOcr(e.currentTarget.checked)}
           />
         </label>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <label
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              fontSize: '12px',
+              fontSize: '12.5px',
+              fontWeight: 600,
               cursor: 'pointer',
             }}
           >
@@ -137,7 +142,8 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              fontSize: '12px',
+              fontSize: '12.5px',
+              fontWeight: 600,
               cursor: 'pointer',
             }}
           >
@@ -183,32 +189,36 @@ function PdfToWordSummaryCard({ totalPages }: { totalPages: number }) {
     <div class={styles.card}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span>📋</span> Conversion Summary
+          <span style={{ color: '#2563eb' }}>📋</span> Conversion Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#f0fdf4', color: '#166534', borderColor: '#bbf7d0' }}
+          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
         >
           ✓ Ready to convert
         </span>
       </div>
       <div class={styles.statTilesGrid}>
-        <div class={styles.statTile}>
+        <div class={`${styles.statTile} ${styles.statTilePurple}`}>
+          <span style={{ fontSize: '13px' }}>📑</span>
           <span class={styles.statVal}>{totalPages}</span>
           <span class={styles.statLabel}>Input pages</span>
           <span class={styles.statSub}>From PDF file</span>
         </div>
-        <div class={styles.statTile}>
+        <div class={`${styles.statTile} ${styles.statTileGreen}`}>
+          <span style={{ fontSize: '13px' }}>📊</span>
           <span class={styles.statVal}>~1.8 MB</span>
           <span class={styles.statLabel}>Estimated DOCX</span>
           <span class={styles.statSub}>After conversion</span>
         </div>
-        <div class={styles.statTile}>
+        <div class={`${styles.statTile} ${styles.statTileAmber}`}>
+          <span style={{ fontSize: '13px' }}>⭐</span>
           <span class={styles.statVal}>High</span>
           <span class={styles.statLabel}>Detected text</span>
           <span class={styles.statSub}>Text-based PDF</span>
         </div>
-        <div class={styles.statTile}>
+        <div class={`${styles.statTile} ${styles.statTileBlue}`}>
+          <span style={{ fontSize: '13px' }}>✓</span>
           <span class={styles.statVal}>Ready</span>
           <span class={styles.statLabel}>Conversion</span>
           <span class={styles.statSub}>All set</span>
@@ -228,39 +238,50 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
       <div class={styles.card}>
         <div class={styles.cardHeader}>
           <h2 class={styles.cardTitle}>
-            <span>📝</span> Editable Output Preview
+            <span style={{ color: '#2563eb' }}>📝</span> Editable Output Preview
           </h2>
+          <span
+            style={{
+              fontSize: '11px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              fontWeight: 700,
+            }}
+          >
+            ✏️ Editable in Word
+          </span>
         </div>
         <div
           style={{
-            background: '#f8fafc',
-            border: '1px solid #e2e8f0',
-            borderRadius: '7px',
-            padding: '10px',
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '8px',
+            padding: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
           }}
         >
-          <div
+          <h3 style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#1e40af', fontWeight: 800 }}>
+            Vendor Agreement
+          </h3>
+          <p
             style={{
-              background: '#fff',
-              border: '1px solid #cbd5e1',
-              borderRadius: '5px',
-              padding: '10px',
+              margin: '0 0 8px 0',
+              fontSize: '11.5px',
+              color: '#334155',
+              lineHeight: '1.4',
             }}
           >
-            <h3 style={{ margin: '0 0 6px 0', fontSize: '13px', color: '#1e40af' }}>
-              Vendor Agreement
-            </h3>
-            <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: '#475569' }}>
-              <strong>1. Agreement Overview:</strong> High precision digital service delivery SLA
-              terms.
-            </p>
-          </div>
+            <strong>1. Agreement Overview:</strong> High-precision digital service delivery and
+            enterprise SLA terms. Tables, columns, and styles preserved.
+          </p>
         </div>
         <div class={styles.privacyNotice}>
-          <span>🔒</span>
+          <span style={{ fontSize: '18px' }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — All processing is done locally on
-            your device.
+            your device. We do not upload, store or share your files.
           </span>
         </div>
         <button
@@ -269,7 +290,7 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
           disabled={isProcessing || totalPages === 0}
           onClick={() => void executeConvertToWord()}
         >
-          {isProcessing ? '⏳ Converting to Word...' : '📄 Convert to Word ➔'}
+          {isProcessing ? '⏳ Converting to Word...' : '📄 Convert to Word →'}
         </button>
         <div class={styles.secondaryActionRow}>
           <button
