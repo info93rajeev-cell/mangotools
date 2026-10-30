@@ -1,5 +1,6 @@
 import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import styles from './imageToPdfStudio.module.css';
 import type {
   FitModeOption,
@@ -9,11 +10,7 @@ import type {
   PdfImageItem,
 } from './usePdfStudioState.ts';
 
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+export const formatBytes = formatImageBytes;
 
 export function UploadSection({
   idPrefix,
@@ -137,7 +134,7 @@ export function ImageListRow({
         <span class={styles.itemName} title={item.name}>
           {item.name}
         </span>
-        <span class={styles.itemMeta}>
+        <span class={styles.itemMeta} title={BINARY_SIZE_NOTE}>
           {item.width} × {item.height} • {formatBytes(item.size)}
         </span>
       </div>

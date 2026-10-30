@@ -16,6 +16,8 @@ export interface PassportPresetItem {
   height: number;
   unit: string;
   desc: string;
+  maxKB?: number;
+  minKB?: number;
 }
 
 export const PASSPORT_PRESETS: PassportPresetItem[] = [
@@ -49,7 +51,9 @@ export const PASSPORT_PRESETS: PassportPresetItem[] = [
     width: 213,
     height: 213,
     unit: '213×213 px',
-    desc: 'NSDL / UTIITSL',
+    desc: 'NSDL / UTIITSL (≤ 50 KB)',
+    maxKB: 50,
+    minKB: 10,
   },
   {
     id: 'ssc_upsc',
@@ -57,7 +61,9 @@ export const PASSPORT_PRESETS: PassportPresetItem[] = [
     width: 350,
     height: 450,
     unit: '350×450 px',
-    desc: 'Govt Applications',
+    desc: 'Govt Applications (20–50 KB)',
+    maxKB: 50,
+    minKB: 20,
   },
 ];
 
@@ -74,6 +80,7 @@ export interface PassportPhotoResultData {
   sizeChangePercent: number;
   originalFormat: string;
   outputFormat: string;
+  targetFileSizeBytes?: number | null;
   warnings: OpWarning[];
 }
 
@@ -86,6 +93,8 @@ export interface PassportRunConfig {
   outputFormat: PassportOutputFormat;
   quality: number;
   customFileName: string;
+  maxFileSizeKB?: number;
+  minFileSizeKB?: number;
   cropRect?: PixelRect | null;
   sourceDims?: { width: number; height: number };
 }

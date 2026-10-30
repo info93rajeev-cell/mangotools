@@ -1,16 +1,11 @@
 import { useState } from 'preact/hooks';
 import styles from './imageCompress.module.css';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import type { UseImageCompressReturn } from './useImageCompress.ts';
 
 export interface ImageCompressCanvasProps {
   idPrefix: string;
   compress: UseImageCompressReturn;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export function ImageCompressCanvas({ idPrefix: _idPrefix, compress }: ImageCompressCanvasProps) {
@@ -95,11 +90,12 @@ export function ImageCompressCanvas({ idPrefix: _idPrefix, compress }: ImageComp
 
       {hasFile && (
         <div class={styles.canvasFooterBar}>
-          <div class={styles.dimensionsBadge}>
+          <div class={styles.dimensionsBadge} title={BINARY_SIZE_NOTE}>
             <span>
               {compress.sourceDims.width} × {compress.sourceDims.height} px • Original:{' '}
-              {formatBytes(compress.file?.size ?? 0)}
-              {compress.result && ` → Compressed: ${formatBytes(compress.result.outputFileSize)}`}
+              {formatImageBytes(compress.file?.size ?? 0)}
+              {compress.result &&
+                ` → Compressed: ${formatImageBytes(compress.result.outputFileSize)}`}
             </span>
           </div>
           <span class={styles.privacyPill}>

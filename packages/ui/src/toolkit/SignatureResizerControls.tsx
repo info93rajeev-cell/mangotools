@@ -330,7 +330,9 @@ export function SignatureResizerControls({
             name="Download signature"
             aria-label="Download signature"
             onClick={() => void signature.executeResizeAndDownload()}
-            disabled={isExecuting || !signature.file || signature.phase === 'error'}
+            disabled={
+              isExecuting || !signature.file || signature.phase === 'error' || !!signature.error
+            }
           >
             <svg
               width="15"

@@ -11,6 +11,20 @@ export interface ImageBackgroundRemoverResultProps {
   bgRemover: UseImageBackgroundRemoverReturn;
 }
 
+export function isBgDownloadDisabled(bgRemover: {
+  file: unknown;
+  result?: unknown;
+  error: unknown;
+  phase: string;
+}): boolean {
+  return (
+    !bgRemover.file ||
+    !!bgRemover.error ||
+    bgRemover.phase === 'running' ||
+    bgRemover.phase === 'error'
+  );
+}
+
 function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverReturn }) {
   if (!bgRemover.result) return null;
   const res = bgRemover.result;
@@ -71,7 +85,7 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
           name="Download transparent image"
           aria-label="Download transparent image"
           onClick={() => void bgRemover.downloadResult('original')}
-          disabled={bgRemover.phase === 'running'}
+          disabled={isBgDownloadDisabled(bgRemover)}
         >
           <span>⬇️</span>
           <span>
@@ -84,7 +98,7 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
           data-action="download-fast"
           name="Download Web Fast (500px)"
           onClick={() => void bgRemover.downloadResult('fast')}
-          disabled={bgRemover.phase === 'running'}
+          disabled={isBgDownloadDisabled(bgRemover)}
         >
           <span>⚡</span>
           <span>Download Web Fast (500px, ~360 KB)</span>
@@ -169,12 +183,7 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
         data-action="download-result"
         name="Download transparent image"
         onClick={() => void bgRemover.executeRemoveBackgroundAndDownload()}
-        disabled={
-          bgRemover.phase === 'running' ||
-          bgRemover.phase === 'error' ||
-          !hasFile ||
-          !!bgRemover.error
-        }
+        disabled={isBgDownloadDisabled(bgRemover)}
       >
         <span>⬇️</span>
         <span>Download transparent image</span>
@@ -254,10 +263,10 @@ function ErrorCallout({
           type="button"
           class={styles.downloadCtaBtn}
           style={{ flex: 1, minWidth: '130px' }}
-          data-action="download-result"
+          data-action="retry-remove"
           name="Retry background removal"
           onClick={() => void bgRemover.executeRemoveBackground()}
-          disabled={bgRemover.phase === 'running'}
+          disabled={!bgRemover.file || bgRemover.phase === 'running'}
         >
           <span>🔄</span>
           <span>Retry</span>

@@ -6,6 +6,11 @@
  */
 
 /**
+ * Honest unit explanation for binary calculation (1024 bytes per KB).
+ */
+export const BINARY_SIZE_NOTE = '1 KB = 1,024 bytes';
+
+/**
  * Formats byte counts into human-friendly strings with clear units (B, KB, MB).
  * Uses binary calculation (1024 bytes per KB) with 1 decimal place below 10.
  */

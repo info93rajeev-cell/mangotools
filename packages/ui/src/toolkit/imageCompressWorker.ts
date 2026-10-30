@@ -3,6 +3,7 @@ import { getWorkerHost } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { CropFile as CompressFile } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import { getStrictMaxFileSizeBytes } from './imageSizeFormat.ts';
 
 export type CompressOutputFormat = 'same' | 'jpg' | 'png' | 'webp' | 'pdf';
 
@@ -23,6 +24,7 @@ export interface ImageCompressResultData {
   dimensions: string;
   status: string;
   encodeAttempts: number;
+  targetFileSizeBytes?: number | null;
   warnings: OpWarning[];
 }
 
@@ -106,6 +108,7 @@ export async function executeCompressWorker(
     dimensions: String(val.dimensions),
     status: String(val.status),
     encodeAttempts: Number(val.encodeAttempts),
+    targetFileSizeBytes: cfg.maxFileSizeKB ? getStrictMaxFileSizeBytes(cfg.maxFileSizeKB) : null,
     warnings,
   };
 

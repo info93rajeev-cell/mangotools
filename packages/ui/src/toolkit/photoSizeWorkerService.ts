@@ -3,6 +3,7 @@ import { getWorkerHost } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { type CropFile, MIME_MAP } from './imageFileInspection.ts';
 import { wrapImageBytesInPdf } from './imagePdfExport.ts';
+import { getStrictMaxFileSizeBytes } from './imageSizeFormat.ts';
 
 export type PhotoSizeOutputFormat = 'jpg' | 'png' | 'webp' | 'pdf';
 export type PhotoFile = CropFile | File;
@@ -67,7 +68,7 @@ export async function convertPhotoSizeToPdf(
     ),
     originalFormat: reduced.originalFormat,
     outputFormat: 'pdf',
-    targetFileSizeBytes: cfg.maxFileSizeKB ? cfg.maxFileSizeKB * 1000 : null,
+    targetFileSizeBytes: cfg.maxFileSizeKB ? getStrictMaxFileSizeBytes(cfg.maxFileSizeKB) : null,
     encodeAttempts: reduced.encodeAttempts,
     warnings: reduced.warnings,
   });

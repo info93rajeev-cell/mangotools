@@ -3,7 +3,8 @@ import styles from './advancedPenSelection.module.css';
 export function AdvancedPenWorkflowGuide() {
   return (
     <div class={styles.workflowSection}>
-      <div class={styles.workflowStepsContainer}>
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: Scrollable content must be keyboard-focusable (WCAG 2.1.1). */}
+      <section class={styles.workflowStepsContainer} tabIndex={0} aria-label="Workflow steps">
         {/* Step 1 */}
         <div class={styles.workflowStepCard}>
           <div class={styles.workflowStepHeader}>
@@ -168,7 +169,7 @@ export function AdvancedPenWorkflowGuide() {
             </li>
           </ul>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

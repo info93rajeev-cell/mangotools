@@ -89,7 +89,7 @@
 
 .orText {
   font-size: 12px;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, #475569);
 }
 
 .uploadBrowseBtn {
@@ -100,7 +100,8 @@
   color: #0f172a;
   border: 1.2px solid #cbd5e1;
   border-radius: 4px;
-  padding: 2px 8px;
+  min-height: 28px;
+  padding: 4px 10px;
   font-size: 11px;
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -118,13 +119,14 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 600;
-  color: #334155;
+  color: #1e293b;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
-  padding: 1.5px 5px;
+  min-height: 24px;
+  padding: 3px 8px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -137,7 +139,7 @@
 
 .supportHint {
   font-size: 11.5px;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, #475569);
   line-height: 1.3;
   margin-top: 3px;
 }
@@ -182,8 +184,8 @@
 }
 
 .fileMeta {
-  font-size: 9px;
-  color: var(--color-text-muted, #64748b);
+  font-size: 10px;
+  color: var(--color-text-muted, #475569);
 }
 
 .removeBtn {
@@ -242,7 +244,7 @@
 }
 
 :global([data-theme="dark"]) .orText {
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 :global([data-theme="dark"]) .uploadBrowseBtn {
@@ -270,7 +272,7 @@
 }
 
 :global([data-theme="dark"]) .supportHint {
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
 :global([data-theme="dark"]) .fileCard {
@@ -287,5 +289,5 @@
 }
 
 :global([data-theme="dark"]) .fileMeta {
-  color: #94a3b8;
+  color: #cbd5e1;
 }

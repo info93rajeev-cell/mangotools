@@ -2,6 +2,7 @@ import { err, type OpWarning, ok, type Result } from '@mangotools/core';
 import { getWorkerHost } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { CropFile as SignatureFile } from './imageFileInspection.ts';
+import { getStrictMaxFileSizeBytes } from './imageSizeFormat.ts';
 import {
   createSignatureSample,
   SAMPLE_SIGNATURE_HEIGHT,
@@ -124,7 +125,12 @@ export async function executeSignatureWorker(
     sizeChangePercent: Number(val.sizeChangePercent),
     originalFormat: String(val.originalFormat),
     outputFormat: String(val.outputFormat),
-    targetFileSizeBytes: val.targetFileSizeBytes != null ? Number(val.targetFileSizeBytes) : null,
+    targetFileSizeBytes:
+      val.targetFileSizeBytes != null
+        ? Number(val.targetFileSizeBytes)
+        : cfg.maxFileSizeKB
+          ? getStrictMaxFileSizeBytes(cfg.maxFileSizeKB)
+          : null,
     encodeAttempts: Number(val.encodeAttempts ?? 1),
     warnings,
   });

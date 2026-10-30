@@ -1,6 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
-import { formatImageBytes } from './imageSizeFormat.ts';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import styles from './photoSizeReducer.module.css';
 import { messageFor } from './presentation.ts';
 import { NoteList } from './ResultNotices.tsx';
@@ -48,19 +48,25 @@ function ResultCockpit({
         <tbody>
           <tr>
             <td class={styles.metricKey}>Target Limit</td>
-            <td class={styles.metricVal}>
+            <td class={styles.metricVal} title={BINARY_SIZE_NOTE}>
               {res.targetFileSizeBytes ? `≤ ${formatBytes(res.targetFileSizeBytes)}` : 'Auto'}
             </td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Output Size</td>
-            <td class={styles.metricVal} style={{ fontWeight: 'var(--weight-bold)' }}>
+            <td
+              class={styles.metricVal}
+              style={{ fontWeight: 'var(--weight-bold)' }}
+              title={BINARY_SIZE_NOTE}
+            >
               {formatBytes(res.outputFileSize)}
             </td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Original Size</td>
-            <td class={styles.metricVal}>{formatBytes(res.originalFileSize)}</td>
+            <td class={styles.metricVal} title={BINARY_SIZE_NOTE}>
+              {formatBytes(res.originalFileSize)}
+            </td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Reduction</td>

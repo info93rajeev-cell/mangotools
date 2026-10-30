@@ -230,7 +230,8 @@
 
 .posSlotBtn {
   width: 32px;
-  height: 24px;
+  height: 28px;
+  min-height: 28px;
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   background: var(--color-surface, #ffffff);
@@ -255,7 +256,7 @@
 .posDot {
   font-size: 14px;
   line-height: 1;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .posSlotBtn[data-active="true"] .posDot {
@@ -298,8 +299,8 @@
 }
 
 .colorSwatchSquare {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   flex-shrink: 0;
@@ -307,9 +308,10 @@
 }
 
 .colorTextInput {
-  height: 22px;
-  padding: 2px 5px;
-  font-size: 10px;
+  height: 28px;
+  min-height: 28px;
+  padding: 3px 6px;
+  font-size: 10.5px;
   font-family: var(--font-mono, monospace);
   color: var(--color-text, #0f172a);
   border: 1px solid var(--color-border, #cbd5e1);
@@ -326,9 +328,10 @@
 }
 
 .selectInput {
-  height: 22px;
-  padding: 1px 4px;
-  font-size: 10px;
+  height: 28px;
+  min-height: 28px;
+  padding: 2px 6px;
+  font-size: 10.5px;
   color: var(--color-text, #0f172a);
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
@@ -662,13 +665,17 @@
 .chipBtn {
   background: var(--color-surface-subtle, #f1f5f9);
   border: 1px solid var(--color-border, #e2e8f0);
-  border-radius: 3px;
-  padding: 1px 5px;
-  font-size: 9.5px;
+  border-radius: 4px;
+  min-height: 28px;
+  padding: 4px 8px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chipBtn:hover {
@@ -716,8 +723,10 @@
 }
 
 .colorPresetDot {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
   border-radius: 50%;
   border: 1px solid #cbd5e1;
   cursor: pointer;
@@ -777,15 +786,19 @@
 .tiledChipBtn {
   background: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border, #cbd5e1);
-  border-radius: 3px;
-  padding: 1px 4px;
-  font-size: 8.5px;
+  border-radius: 4px;
+  min-height: 28px;
+  padding: 4px 8px;
+  font-size: 9.5px;
   font-weight: 500;
   color: var(--color-text, #334155);
   cursor: pointer;
   line-height: 1.15;
   transition: all 0.12s ease;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tiledChipBtn:hover {

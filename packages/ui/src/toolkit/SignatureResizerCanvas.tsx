@@ -30,7 +30,9 @@ export function SignatureResizerCanvas({
           accept="image/*,image/jpeg,image/png,image/webp"
           file={signature.file}
           thumbnailUrl={signature.imageSrc}
-          dimensions={signature.sourceDims.width > 0 ? signature.sourceDims : null}
+          dimensions={
+            signature.file && signature.sourceDims.width > 0 ? signature.sourceDims : null
+          }
           onSelectFile={onSelectFile}
           onClear={signature.clearAll}
           disabled={signature.phase === 'running'}

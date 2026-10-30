@@ -186,6 +186,13 @@ function useSignatureFileActions(s: SignatureState, userInteractedRef: { current
         s.setImageSrc(null);
       }
       s.setSourceDims({ width: 0, height: 0 });
+      s.setTargetWidth(0);
+      s.setTargetHeight(0);
+      s.setResult(null);
+      if (s.resultUrl) {
+        URL.revokeObjectURL(s.resultUrl);
+        s.setResultUrl(null);
+      }
       s.setPhase('error');
       s.setError({
         code: inspected.error.code,

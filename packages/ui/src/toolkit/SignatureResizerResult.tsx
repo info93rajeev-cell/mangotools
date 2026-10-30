@@ -1,7 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
-import { formatImageBytes } from './imageSizeFormat.ts';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import styles from './signatureResizer.module.css';
 import type { UseSignatureResizerReturn } from './useSignatureResizer.ts';
 
@@ -40,23 +40,16 @@ function ErrorNotice({
   );
 }
 
-export function SignatureResizerResult({
-  idPrefix: _idPrefix,
-  preset: _preset,
+function SignatureSummaryRow({
   signature,
-}: SignatureResizerResultProps) {
-  const res = signature.result;
-  const outW = res ? res.outputWidth : signature.targetWidth;
-  const outH = res ? res.outputHeight : signature.targetHeight;
-  const format = (res ? res.outputFormat : signature.outputFormat).toUpperCase();
-  const fileSizeText = res
-    ? formatBytes(res.outputFileSize)
-    : signature.maxFileSizeKB
-      ? `≤ ${signature.maxFileSizeKB} KB`
-      : '28 KB';
-  const sizeChangeText =
-    res && res.sizeChangePercent > 0 ? `${res.sizeChangePercent}% smaller` : '64% smaller';
-
+  res,
+}: {
+  signature: UseSignatureResizerReturn;
+  res: NonNullable<UseSignatureResizerReturn['result']>;
+}) {
+  const format = res.outputFormat.toUpperCase();
+  const fileSizeText = formatBytes(res.outputFileSize);
+  const sizeChangeText = res.sizeChangePercent > 0 ? `${res.sizeChangePercent}% smaller` : '';
   const bgText =
     signature.background === 'transparent'
       ? 'Transparent'
@@ -65,61 +58,71 @@ export function SignatureResizerResult({
         : 'Original';
 
   return (
+    <div class={styles.resultSummaryRow}>
+      <div class={styles.resultColStatus}>
+        <div class={styles.statusTitleWrap}>
+          <div class={styles.greenCheckCircle}>
+            <span>✓</span>
+          </div>
+          <div class={styles.statusTextWrap}>
+            <span class={styles.statusMainText}>Signature resized successfully!</span>
+            <span class={styles.statusSubText}>Your signature has been trimmed and resized.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class={styles.resultDividerCol}>
+        <span class={styles.resultLabel}>Output format</span>
+        <span class={styles.resultValue}>{format}</span>
+      </div>
+
+      <div class={styles.resultDividerCol}>
+        <span class={styles.resultLabel}>Output size</span>
+        <span class={styles.resultValue}>
+          {res.outputWidth} × {res.outputHeight} px
+        </span>
+      </div>
+
+      <div class={styles.resultDividerCol}>
+        <span class={styles.resultLabel}>File size</span>
+        <div class={styles.fileSizeWrap}>
+          <span class={styles.resultValue} title={BINARY_SIZE_NOTE}>
+            {fileSizeText}
+          </span>
+          {sizeChangeText && <span class={styles.smallerPill}>{sizeChangeText}</span>}
+        </div>
+      </div>
+
+      <div class={styles.resultDividerCol}>
+        <span class={styles.resultLabel}>Background</span>
+        <span class={styles.resultValue}>{bgText}</span>
+      </div>
+    </div>
+  );
+}
+
+export function SignatureResizerResult({
+  idPrefix: _idPrefix,
+  preset: _preset,
+  signature,
+}: SignatureResizerResultProps) {
+  const res = signature.result;
+  const isError = Boolean(signature.error);
+  const outW = res ? res.outputWidth : signature.file ? signature.targetWidth : 0;
+  const outH = res ? res.outputHeight : signature.file ? signature.targetHeight : 0;
+
+  return (
     <section class={styles.resultPanel} aria-label="Signature Processing Results">
       <div class={styles.resultOuterCard}>
         <div class={styles.resultCardHeader}>
           <span class={styles.resultCardTitle}>3. Result</span>
         </div>
 
-        {/* 5-Column Horizontal Result Summary matching reference template */}
-        <div class={styles.resultSummaryRow}>
-          {/* Column 1: Status */}
-          <div class={styles.resultColStatus}>
-            <div class={styles.statusTitleWrap}>
-              <div class={styles.greenCheckCircle}>
-                <span>✓</span>
-              </div>
-              <div class={styles.statusTextWrap}>
-                <span class={styles.statusMainText}>Signature resized successfully!</span>
-                <span class={styles.statusSubText}>
-                  Your signature has been trimmed and resized.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Column 2: Output format */}
-          <div class={styles.resultDividerCol}>
-            <span class={styles.resultLabel}>Output format</span>
-            <span class={styles.resultValue}>{format}</span>
-          </div>
-
-          {/* Column 3: Output size */}
-          <div class={styles.resultDividerCol}>
-            <span class={styles.resultLabel}>Output size</span>
-            <span class={styles.resultValue}>
-              {outW} × {outH} px
-            </span>
-          </div>
-
-          {/* Column 4: File size */}
-          <div class={styles.resultDividerCol}>
-            <span class={styles.resultLabel}>File size</span>
-            <div class={styles.fileSizeWrap}>
-              <span class={styles.resultValue}>{fileSizeText}</span>
-              <span class={styles.smallerPill}>{sizeChangeText}</span>
-            </div>
-          </div>
-
-          {/* Column 5: Background */}
-          <div class={styles.resultDividerCol}>
-            <span class={styles.resultLabel}>Background</span>
-            <span class={styles.resultValue}>{bgText}</span>
-          </div>
-        </div>
-
         {/* Error Notice */}
         {signature.error && <ErrorNotice error={signature.error} outW={outW} outH={outH} />}
+
+        {/* 5-Column Horizontal Result Summary matching reference template */}
+        {!isError && res && <SignatureSummaryRow signature={signature} res={res} />}
 
         {/* Notes element for test accessibility and WCAG notes verification */}
         <details class={styles.notesDisclosure} data-notes="">

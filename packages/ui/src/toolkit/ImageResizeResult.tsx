@@ -1,4 +1,5 @@
 import styles from './imageResize.module.css';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import type { UseImageResizeReturn } from './useImageResize.ts';
 
 export interface ImageResizeResultProps {
@@ -6,10 +7,19 @@ export interface ImageResizeResultProps {
   resize: UseImageResizeReturn;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+export function isResizeDownloadDisabled(resize: {
+  file: unknown;
+  imageSrc: string | null;
+  error: unknown;
+  phase: string;
+}): boolean {
+  return (
+    !resize.file ||
+    !resize.imageSrc ||
+    !!resize.error ||
+    resize.phase === 'running' ||
+    resize.phase === 'error'
+  );
 }
 
 function ResultCockpit({ resize }: { resize: UseImageResizeReturn }) {
@@ -41,7 +51,9 @@ function ResultCockpit({ resize }: { resize: UseImageResizeReturn }) {
           </tr>
           <tr>
             <td class={styles.metricKey}>Output File Size</td>
-            <td class={styles.metricVal}>{formatBytes(res.outputFileSize)}</td>
+            <td class={styles.metricVal} title={BINARY_SIZE_NOTE}>
+              {formatImageBytes(res.outputFileSize)}
+            </td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Size Difference</td>
@@ -154,7 +166,7 @@ function ReadyCockpit({ resize }: { resize: UseImageResizeReturn }) {
         class={styles.downloadCtaBtn}
         data-download-resized=""
         onClick={() => void resize.executeResizeAndDownload()}
-        disabled={resize.phase === 'running'}
+        disabled={isResizeDownloadDisabled(resize)}
       >
         <span>⬇️</span>
         <span>Download resized image</span>

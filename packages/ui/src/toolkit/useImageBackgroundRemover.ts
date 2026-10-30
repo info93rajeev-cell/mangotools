@@ -117,6 +117,29 @@ function useBgState() {
 
 export type BgState = ReturnType<typeof useBgState>;
 
+function resetBgErrorState(
+  s: BgState,
+  rawFile: File,
+  errObj: OpError,
+  notify: (msg: string) => void,
+) {
+  if (s.imageSrc) {
+    URL.revokeObjectURL(s.imageSrc);
+    s.setImageSrc(null);
+  }
+  s.setInvalidFile(rawFile);
+  s.setFile(null);
+  s.setSourceDims({ width: 0, height: 0 });
+  s.setResult(null);
+  if (s.resultUrl) {
+    URL.revokeObjectURL(s.resultUrl);
+    s.setResultUrl(null);
+  }
+  s.setError(errObj);
+  s.setPhase('error');
+  notify(resolveImageErrorMessage(errObj, rawFile.name));
+}
+
 async function handleLoad(
   rawFile: File,
   s: BgState,
@@ -130,37 +153,19 @@ async function handleLoad(
   const isImage =
     rawFile.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp)$/i.test(rawFile.name);
   if (!isImage) {
-    if (s.imageSrc) {
-      URL.revokeObjectURL(s.imageSrc);
-      s.setImageSrc(null);
-    }
-    s.setInvalidFile(rawFile);
-    s.setFile(null);
-    s.setSourceDims({ width: 0, height: 0 });
     const errObj: OpError = {
       code: 'IMAGE_INVALID_FILE_TYPE',
       messageKey: 'IMAGE_INVALID_FILE_TYPE',
       details: { name: rawFile.name },
     };
-    s.setError(errObj);
-    s.setPhase('error');
-    notify(resolveImageErrorMessage(errObj, rawFile.name));
+    resetBgErrorState(s, rawFile, errObj, notify);
     return;
   }
   s.setInvalidFile(null);
   try {
     const res = await inspectAndDecodeImage(rawFile);
     if (!res.ok) {
-      if (s.imageSrc) {
-        URL.revokeObjectURL(s.imageSrc);
-        s.setImageSrc(null);
-      }
-      s.setInvalidFile(rawFile);
-      s.setFile(null);
-      s.setSourceDims({ width: 0, height: 0 });
-      s.setError(res.error);
-      s.setPhase('error');
-      notify(resolveImageErrorMessage(res.error, rawFile.name));
+      resetBgErrorState(s, rawFile, res.error, notify);
       return;
     }
     if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
@@ -169,20 +174,11 @@ async function handleLoad(
     s.setSourceDims(res.value.dims);
     s.setCustomFileName('');
   } catch {
-    if (s.imageSrc) {
-      URL.revokeObjectURL(s.imageSrc);
-      s.setImageSrc(null);
-    }
-    s.setInvalidFile(rawFile);
-    s.setFile(null);
-    s.setSourceDims({ width: 0, height: 0 });
-    s.setPhase('error');
     const errObj: OpError = {
       code: 'IMAGE_UNREADABLE',
       messageKey: 'IMAGE_UNREADABLE',
     };
-    s.setError(errObj);
-    notify(resolveImageErrorMessage(errObj, rawFile.name));
+    resetBgErrorState(s, rawFile, errObj, notify);
   }
 }
 

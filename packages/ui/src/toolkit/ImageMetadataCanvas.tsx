@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import styles from './imageMetadata.module.css';
+import { formatImageBytes } from './imageSizeFormat.ts';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { UseImageMetadataRemoverReturn } from './useImageMetadataRemover.ts';
 
@@ -10,12 +11,7 @@ export interface ImageMetadataCanvasProps {
   onTrySample: () => void;
 }
 
-function formatBytes(bytes: number): string {
-  if (!bytes || bytes <= 0) return '0 B';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
+const formatBytes = formatImageBytes;
 
 interface LoadedSummaryRowProps {
   previewSrc: string;

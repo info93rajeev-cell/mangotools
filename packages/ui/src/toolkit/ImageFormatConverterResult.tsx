@@ -2,7 +2,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import styles from './imageFormatConverter.module.css';
-import { formatImageBytes } from './imageSizeFormat.ts';
+import { BINARY_SIZE_NOTE, formatImageBytes } from './imageSizeFormat.ts';
 import { messageFor } from './presentation.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
@@ -71,7 +71,9 @@ function ResultCockpit({
           </tr>
           <tr>
             <td class={styles.metricKey}>Output File Size</td>
-            <td class={styles.metricVal}>{formatImageBytes(res.outputFileSize)}</td>
+            <td class={styles.metricVal} title={BINARY_SIZE_NOTE}>
+              {formatImageBytes(res.outputFileSize)}
+            </td>
           </tr>
           <tr>
             <td class={styles.metricKey}>Size Difference</td>

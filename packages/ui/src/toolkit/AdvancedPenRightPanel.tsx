@@ -27,6 +27,7 @@ function Step4EdgeCard({
           min="0"
           max="30"
           step="1"
+          aria-label="Feather Radius"
           value={edgeSettings.featherRadius}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -46,6 +47,7 @@ function Step4EdgeCard({
           min="-20"
           max="20"
           step="1"
+          aria-label="Expand or Contract"
           value={edgeSettings.expandContract}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -65,6 +67,7 @@ function Step4EdgeCard({
           min="0"
           max="100"
           step="5"
+          aria-label="Smooth Path"
           value={edgeSettings.smoothPath}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -84,6 +87,7 @@ function Step4EdgeCard({
           min="0"
           max="100"
           step="5"
+          aria-label="Edge Blur"
           value={edgeSettings.edgeBlur}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -206,10 +210,14 @@ function Step5ViewCard({
 function Step6ExportCard({
   downloadCutout,
   isProcessing,
+  hasImage,
 }: {
   downloadCutout: (fmt: 'png' | 'webp' | 'svg') => void;
   isProcessing: boolean;
+  hasImage: boolean;
 }) {
+  const isExportDisabled = isProcessing || !hasImage;
+
   return (
     <div class={styles.controlCard}>
       <div class={styles.cardHeader}>
@@ -223,7 +231,7 @@ function Step6ExportCard({
         type="button"
         class={styles.downloadPngBtn}
         onClick={() => downloadCutout('png')}
-        disabled={isProcessing}
+        disabled={isExportDisabled}
       >
         <span class={styles.btnIcon}>📥</span>
         <span>Download PNG</span>
@@ -235,7 +243,7 @@ function Step6ExportCard({
           type="button"
           class={styles.secondaryExportBtn}
           onClick={() => downloadCutout('webp')}
-          disabled={isProcessing}
+          disabled={isExportDisabled}
         >
           Download WebP
         </button>
@@ -243,7 +251,7 @@ function Step6ExportCard({
           type="button"
           class={styles.secondaryExportBtn}
           onClick={() => downloadCutout('svg')}
-          disabled={isProcessing}
+          disabled={isExportDisabled}
         >
           Export Path (SVG)
         </button>
@@ -285,7 +293,11 @@ export function AdvancedPenRightPanel({ penSelection }: AdvancedPenRightPanelPro
         showMask={showMask}
         setShowMask={setShowMask}
       />
-      <Step6ExportCard downloadCutout={downloadCutout} isProcessing={isProcessing} />
+      <Step6ExportCard
+        downloadCutout={downloadCutout}
+        isProcessing={isProcessing}
+        hasImage={!!penSelection.imageSrc}
+      />
     </div>
   );
 }
