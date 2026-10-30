@@ -215,6 +215,12 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
     }
   }, []);
 
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
+
   const handleCopySummary = async () => {
     const text = `JPG to PDF: ${s.images.length} images, ${s.pageSize.toUpperCase()} (${s.orientation}), ${s.outputFileName}`;
     try {

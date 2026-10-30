@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import {
   AmazonFeeCenterCardsWrapper,
   AmazonFeeLeftCardsWrapper,
@@ -51,6 +51,12 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
   const [isTourOpen, setIsTourOpen] = useState(
     () => !isTourCompleted('amazon-india-seller-fee-profit-estimator'),
   );
+
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
 
   return (
     <div class={styles.studioContainer} data-amazon-fee-studio="" data-testid="amazon-fee-studio">

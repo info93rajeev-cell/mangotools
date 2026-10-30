@@ -332,6 +332,12 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
     }
   }, [currentToolKey]);
 
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
+
   const studios = {
     merge: usePdfMergeStudio(notify),
     split: usePdfSplitStudio(notify),

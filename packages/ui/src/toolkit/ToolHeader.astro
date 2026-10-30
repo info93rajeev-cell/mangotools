@@ -16,18 +16,39 @@ const badge = privacyBadge(processing);
 <div class="tool-header">
   <div class="title-row">
     <h1>{name}</h1>
-    {
-      badge ? (
-        <p class="privacy" title={badge.detail} data-processing={processing}>
-          <Icon name="lock" />
-          <span>{badge.label}</span>
-          <span class="visually-hidden">{badge.detail}</span>
-        </p>
-      ) : null
-    }
+    <div class="header-badges">
+      <button
+        type="button"
+        class="guide-btn"
+        data-guide-trigger=""
+        title="How this tool works (step-by-step guide)"
+        aria-label="Step-by-step tool guide"
+      >
+        <span aria-hidden="true">💡</span>
+        <span>Guide</span>
+      </button>
+      {
+        badge ? (
+          <p class="privacy" title={badge.detail} data-processing={processing}>
+            <Icon name="lock" />
+            <span>{badge.label}</span>
+            <span class="visually-hidden">{badge.detail}</span>
+          </p>
+        ) : null
+      }
+    </div>
   </div>
   <p class="summary">{summary}</p>
 </div>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('[data-guide-trigger]')) {
+      window.dispatchEvent(new CustomEvent('mangotools:open-tour'));
+    }
+  });
+</script>
 
 <style>
   .tool-header {
@@ -40,6 +61,32 @@ const badge = privacyBadge(processing);
     align-items: center;
     justify-content: space-between;
     gap: var(--space-2) var(--space-4);
+  }
+  .header-badges {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .guide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px var(--space-3) 3px var(--space-2);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text, #0f172a);
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 150ms ease;
+  }
+  .guide-btn:hover {
+    background: var(--color-surface-hover, #f8fafc);
+    border-color: #f59e0b;
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.15);
   }
   .privacy {
     display: inline-flex;
@@ -72,7 +119,7 @@ const badge = privacyBadge(processing);
       margin-bottom: 0;
     }
     .title-row {
-      gap: 2px;
+      gap: 4px;
       align-items: center;
     }
     .title-row h1 {
@@ -80,6 +127,10 @@ const badge = privacyBadge(processing);
       line-height: 1.15;
       letter-spacing: -0.3px;
       margin: 0;
+    }
+    .guide-btn {
+      padding: 2px 8px;
+      font-size: 12px;
     }
     .privacy {
       display: none;

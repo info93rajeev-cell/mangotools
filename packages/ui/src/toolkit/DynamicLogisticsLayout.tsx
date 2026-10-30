@@ -146,6 +146,12 @@ export function DynamicLogisticsLayout(props: ToolIslandProps) {
   );
 
   useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
+
+  useEffect(() => {
     const id = props.toolId || props.preset.id;
     if (id === 'pallet-loading-calculator' || id === 'logistics/pallet') {
       void import('./PalletLoadingLayout.tsx').then((m) => {

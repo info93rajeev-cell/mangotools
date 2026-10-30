@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import {
   MarkupCenterCardsWrapper,
@@ -49,6 +49,12 @@ export interface MarkupCalculatorStudioLayoutProps {
 export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioLayoutProps) {
   const state = useMarkupCalculator(notify);
   const [isTourOpen, setIsTourOpen] = useState(() => !isTourCompleted('markup-calculator'));
+
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
 
   return (
     <div

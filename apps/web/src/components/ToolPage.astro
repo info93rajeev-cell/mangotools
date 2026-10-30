@@ -2,6 +2,7 @@
 import type { RegistryTool } from '@mangotools/schemas';
 import { presetCurrency } from '@mangotools/ui/toolkit/presentation.ts';
 import { ToolIsland } from '@mangotools/ui/toolkit/ToolIsland.tsx';
+import { DynamicUniversalTourManager, TOOLS_WITH_BUILTIN_TOUR } from '@mangotools/ui/toolkit/DynamicUniversalTourManager.tsx';
 import { t } from '@mangotools/ui/strings/en.ts';
 import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
@@ -78,6 +79,9 @@ const isCivil = [
           print={tool.capabilities.print === true}
           enableUserPresets={userPresetsEnabled(preset)}
         />
+      )}
+      {!TOOLS_WITH_BUILTIN_TOUR.has(tool.slug) && (
+        <DynamicUniversalTourManager client:idle toolId={tool.slug} />
       )}
       <section
         class="supporting"

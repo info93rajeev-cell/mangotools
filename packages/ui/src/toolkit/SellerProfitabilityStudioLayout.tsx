@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import {
   SellerProfitabilityDetailsCard,
@@ -63,6 +63,12 @@ export interface SellerProfitabilityStudioLayoutProps {
 export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityStudioLayoutProps) {
   const state = useSellerProfitability(notify);
   const [isTourOpen, setIsTourOpen] = useState(() => !isTourCompleted('profit-margin-calculator'));
+
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
 
   return (
     <div

@@ -67,6 +67,12 @@ export function UniversalTaxStudioLayout({ notify }: UniversalTaxStudioLayoutPro
     }
   }, []);
 
+  useEffect(() => {
+    const handleOpen = () => setIsTourOpen(true);
+    window.addEventListener('mangotools:open-tour', handleOpen);
+    return () => window.removeEventListener('mangotools:open-tour', handleOpen);
+  }, []);
+
   return (
     <div class={styles.studioContainer} data-universal-tax-studio="">
       {/* 1. TOP CALLOUT PROMOTIONAL / ACCURACY BANNER */}
