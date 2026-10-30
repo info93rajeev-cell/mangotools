@@ -1,8 +1,9 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import type { ComponentType } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { DynamicToolTour } from './DynamicToolTour.tsx';
 import type { ToolIslandProps } from './ToolIsland.tsx';
-import { isTourCompleted, ToolOnboardingTour, type TourStep } from './ToolOnboardingTour.tsx';
+import { isTourCompleted, type TourStep } from './tourStorage.ts';
 
 const CBM_STEPS: TourStep[] = [
   {
@@ -134,7 +135,10 @@ function getLogisticsTour(toolId: string): { toolId: string; steps: TourStep[] }
  * Keeps entry bundles well under strict post-build JS budgets.
  */
 export function DynamicLogisticsLayout(props: ToolIslandProps) {
-  const [Comp, setComp] = useState<ComponentType<{ preset?: ResolvedPreset }> | null>(null);
+  const [Comp, setComp] = useState<ComponentType<{
+    preset?: ResolvedPreset;
+    onLaunchTour?: () => void;
+  }> | null>(null);
   const toolKey = props.toolId || props.preset.id;
   const tour = getLogisticsTour(toolKey);
   const [isTourOpen, setIsTourOpen] = useState(() =>
@@ -165,9 +169,9 @@ export function DynamicLogisticsLayout(props: ToolIslandProps) {
   if (!Comp) return null;
   return (
     <>
-      <Comp preset={props.preset} />
+      <Comp preset={props.preset} onLaunchTour={() => setIsTourOpen(true)} />
       {tour ? (
-        <ToolOnboardingTour
+        <DynamicToolTour
           toolId={tour.toolId}
           steps={tour.steps}
           isOpen={isTourOpen}

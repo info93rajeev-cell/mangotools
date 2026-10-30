@@ -17,7 +17,13 @@ import { useCbmPageChrome } from './useCbmPageChrome.ts';
 import { useCbmShipment } from './useCbmShipment.ts';
 import { useCbmWorkbench } from './useCbmWorkbench.ts';
 
-export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
+export function CbmShipmentLayout({
+  preset,
+  onLaunchTour,
+}: {
+  preset: ResolvedPreset;
+  onLaunchTour?: () => void;
+}) {
   const [state, controller] = useCbmShipment();
   const bench = useCbmWorkbench(state, controller);
   const text = shipmentSummary(state);
@@ -30,6 +36,7 @@ export function CbmShipmentLayout({ preset }: { preset: ResolvedPreset }) {
         summary={text}
         onVisualization={bench.showVisualization}
         onUnits={bench.showUnits}
+        onLaunchTour={onLaunchTour}
       />
       <div class={s.workspace}>
         <div class={s.left}>

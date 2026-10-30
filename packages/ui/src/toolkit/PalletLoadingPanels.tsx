@@ -163,18 +163,25 @@ interface PalletLoadingActionBarProps {
   copyFeedback: boolean;
   onCopySummary: () => void;
   onReset: () => void;
+  onLaunchTour?: () => void;
 }
 
 export function PalletLoadingActionBar({
   copyFeedback,
   onCopySummary,
   onReset,
+  onLaunchTour,
 }: PalletLoadingActionBarProps) {
   return (
     <div class={styles.actionBar}>
       <button type="button" class={styles.primaryCalculateBtn}>
         <span aria-hidden="true">🧮</span> Calculate Pallet Loading
       </button>
+      {onLaunchTour ? (
+        <button type="button" class={styles.secondaryBtn} onClick={onLaunchTour}>
+          <span aria-hidden="true">💡</span> Guide
+        </button>
+      ) : null}
       <button type="button" class={styles.secondaryBtn} onClick={() => window.print()}>
         <span aria-hidden="true">🖨️</span> Print / Save PDF
       </button>

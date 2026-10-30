@@ -11,6 +11,7 @@ interface Props {
   summary: string;
   onVisualization: () => void;
   onUnits: () => void;
+  onLaunchTour?: () => void;
 }
 
 /** Phone-only overflow menu from the reference ("…"): Copy Summary. */
@@ -51,9 +52,20 @@ function MoreMenu({ printable, summary }: Props) {
 }
 
 function Toolbar(props: Props & { placement: string }) {
-  const { printable, onVisualization, onUnits, placement } = props;
+  const { printable, onVisualization, onUnits, onLaunchTour, placement } = props;
   return (
     <fieldset class={s.quickActions} data-placement={placement} aria-label={w.toolbar}>
+      {onLaunchTour ? (
+        <button
+          type="button"
+          onClick={onLaunchTour}
+          title="Step-by-step tool guide"
+          aria-label="Step-by-step tool guide"
+        >
+          <Icon name="info" />
+          <span class={s.label}>Guide</span>
+        </button>
+      ) : null}
       <button type="button" onClick={onVisualization}>
         <Icon name="box" />
         <span class={s.label}>{w.toolbar3d}</span>

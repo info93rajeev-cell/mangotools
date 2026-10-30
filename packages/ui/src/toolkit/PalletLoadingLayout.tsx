@@ -19,10 +19,11 @@ import {
 
 interface PalletLoadingLayoutProps {
   preset?: ResolvedPreset;
+  onLaunchTour?: () => void;
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio pallet loading layout
-export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProps) {
+export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoadingLayoutProps) {
   const [input, setInput] = useState<PalletLoadingInput>(DEFAULT_PALLET_INPUT);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
@@ -386,6 +387,7 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
         copyFeedback={copyFeedback}
         onCopySummary={handleCopySummary}
         onReset={handleReset}
+        onLaunchTour={onLaunchTour}
       />
     </div>
   );

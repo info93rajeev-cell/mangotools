@@ -2,6 +2,7 @@ import type { ComponentType } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import type { ImageBackgroundRemoverLayoutProps } from './ImageBackgroundRemoverLayout.tsx';
 import type { ImageCompressLayoutProps } from './ImageCompressLayout.tsx';
+import type { ImageCropLayoutProps } from './ImageCropLayout.tsx';
 import type { ImageEnlargerLayoutProps } from './ImageEnlargerLayout.tsx';
 import type { ImageFormatConverterLayoutProps } from './ImageFormatConverterLayout.tsx';
 import type { ImageMetadataLayoutProps } from './ImageMetadataLayout.tsx';
@@ -11,6 +12,19 @@ import type { ImageWatermarkLayoutProps } from './ImageWatermarkLayout.tsx';
 import type { PassportPhotoLayoutProps } from './PassportPhotoLayout.tsx';
 import type { PhotoSizeReducerLayoutProps } from './PhotoSizeReducerLayout.tsx';
 import type { SignatureResizerLayoutProps } from './SignatureResizerLayout.tsx';
+
+export function DynamicImageCropLayout(props: ImageCropLayoutProps) {
+  const [Comp, setComp] = useState<ComponentType<ImageCropLayoutProps> | null>(null);
+
+  useEffect(() => {
+    void import('./ImageCropLayout.tsx').then((m) => {
+      setComp(() => m.ImageCropLayout);
+    });
+  }, []);
+
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
 
 export function DynamicImageResizeLayout(props: ImageResizeLayoutProps) {
   const [Comp, setComp] = useState<ComponentType<ImageResizeLayoutProps> | null>(null);

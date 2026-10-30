@@ -4,6 +4,7 @@ import type { FilePhase } from '../archetypes/useFileTool.ts';
 import {
   DynamicImageBackgroundRemoverLayout,
   DynamicImageCompressLayout,
+  DynamicImageCropLayout,
   DynamicImageEnlargerLayout,
   DynamicImageFormatConverterLayout,
   DynamicImageMetadataRemoverLayout,
@@ -14,7 +15,6 @@ import {
   DynamicPhotoSizeReducerLayout,
   DynamicSignatureResizerLayout,
 } from './DynamicImageToolLayouts.tsx';
-import { ImageCropLayout } from './ImageCropLayout.tsx';
 
 const IMAGE_CROP_PRESET_ID = 'image/crop';
 const IMAGE_COMPRESS_PRESET_ID = 'image/compress';
@@ -41,7 +41,7 @@ export function renderBasicImageStudio(props: ImageStudioProps): ComponentChildr
   const { idPrefix, toolId, preset, notify, onFilePhase } = props;
   if (preset.id === IMAGE_CROP_PRESET_ID) {
     return (
-      <ImageCropLayout
+      <DynamicImageCropLayout
         idPrefix={idPrefix}
         toolId={toolId}
         preset={preset}

@@ -20,7 +20,13 @@ import s from './containerWorkspace.module.css';
 import { loadSummary } from './containerWorkspacePresentation.ts';
 import { containerText as t } from './containerWorkspaceStrings.ts';
 import { useContainerWorkspace } from './useContainerWorkspace.ts';
-export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
+export function ContainerLoadingLayout({
+  run,
+  onLaunchTour,
+}: {
+  run?: RunFn;
+  onLaunchTour?: () => void;
+}) {
   const [state, controller] = useContainerWorkspace(run);
   const [selection, setSelection] = useState(0);
   const [feedback, setFeedback] = useState('');
@@ -29,6 +35,17 @@ export function ContainerLoadingLayout({ run }: { run?: RunFn }) {
   return (
     <div class={`${s.root} ${controls.controls} ${reference.layout}`} data-container-workspace="">
       <nav class={reference.utilities} aria-label={t.utilities}>
+        {onLaunchTour ? (
+          <button
+            type="button"
+            aria-label="Step-by-step tool guide"
+            title="Step-by-step tool guide"
+            onClick={onLaunchTour}
+          >
+            <Icon name="info" />
+            Guide
+          </button>
+        ) : null}
         <a href="#container-load-visual">
           <Icon name="container" />
           {t.utility3d}

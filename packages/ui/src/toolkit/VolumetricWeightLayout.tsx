@@ -16,10 +16,14 @@ import {
 
 interface VolumetricWeightLayoutProps {
   preset?: ResolvedPreset;
+  onLaunchTour?: () => void;
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio volumetric weight layout
-export function VolumetricWeightLayout({ preset: _preset }: VolumetricWeightLayoutProps) {
+export function VolumetricWeightLayout({
+  preset: _preset,
+  onLaunchTour,
+}: VolumetricWeightLayoutProps) {
   const [items, setItems] = useState<VolumetricItem[]>(SAMPLE_VOLUMETRIC_ITEMS);
   const [unit, setUnit] = useState<VolumetricUnit>('cm');
   const [standardId, setStandardId] = useState<string>('iata');
@@ -313,6 +317,17 @@ export function VolumetricWeightLayout({ preset: _preset }: VolumetricWeightLayo
           <VolumetricWeightResults result={result} />
 
           <div class={styles.actions}>
+            {onLaunchTour ? (
+              <button
+                type="button"
+                class={styles.printBtn}
+                onClick={onLaunchTour}
+                title="Step-by-step tool guide"
+                aria-label="Step-by-step tool guide"
+              >
+                <Icon name="info" /> Guide
+              </button>
+            ) : null}
             <button type="button" class={styles.printBtn} onClick={() => window.print()}>
               <Icon name="file-text" /> Print / Save PDF
             </button>
