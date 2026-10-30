@@ -22,11 +22,11 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
             onClick={studio.loadSampleWordDocs}
             style={{
               fontSize: '11px',
-              padding: '2px 8px',
-              borderRadius: '4px',
+              padding: '4px 10px',
+              borderRadius: '6px',
               border: '1px solid #bfdbfe',
               background: '#eff6ff',
-              color: '#2563eb',
+              color: '#1d4ed8',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -40,7 +40,7 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
           <div
             key={f.id}
             class={styles.fileRow}
-            style={{ background: '#eff6ff', borderColor: '#bfdbfe' }}
+            style={{ background: '#ffffff', borderColor: '#bfdbfe' }}
           >
             <div class={styles.fileIconBadge} style={{ backgroundColor: '#2563eb' }}>
               DOC
@@ -82,7 +82,7 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
         </h2>
       </div>
       <div class={styles.settingsGrid}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div class={styles.radioCard}>
             <span class={styles.radioTitle}>Page size</span>
             <select
@@ -106,26 +106,38 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
             </select>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <button
             type="button"
             class={`${styles.radioCard} ${exportMode === 'single' ? styles.radioCardActive : ''}`}
             onClick={() => setExportMode('single')}
-            style={{ flex: 1 }}
+            style={{ flex: 1, textAlign: 'left' }}
           >
-            <span class={styles.radioTitle}>Single merged PDF</span>
+            <span class={styles.radioTitle}>
+              <span>{exportMode === 'single' ? '●' : '○'}</span> Single merged PDF
+            </span>
+            <span class={styles.radioDesc}>Combine all Word files</span>
           </button>
           <button
             type="button"
             class={`${styles.radioCard} ${exportMode === 'separate' ? styles.radioCardActive : ''}`}
             onClick={() => setExportMode('separate')}
-            style={{ flex: 1 }}
+            style={{ flex: 1, textAlign: 'left' }}
           >
-            <span class={styles.radioTitle}>One PDF per file</span>
+            <span class={styles.radioTitle}>
+              <span>{exportMode === 'separate' ? '●' : '○'}</span> One PDF per file
+            </span>
+            <span class={styles.radioDesc}>Keep files separate</span>
           </button>
         </div>
         <div
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '12px' }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            fontSize: '12.5px',
+            fontWeight: 600,
+          }}
         >
           <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
             <input
@@ -177,32 +189,36 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
       <div class={styles.card}>
         <div class={styles.cardHeader}>
           <h2 class={styles.cardTitle}>
-            <span>📋</span> Export Summary
+            <span style={{ color: '#2563eb' }}>📋</span> Export Summary
           </h2>
           <span
             class={styles.badgePill}
-            style={{ background: '#f0fdf4', color: '#166534', borderColor: '#bbf7d0' }}
+            style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
           >
             ✓ Ready to convert
           </span>
         </div>
         <div class={styles.statTilesGrid}>
-          <div class={styles.statTile}>
+          <div class={`${styles.statTile} ${styles.statTilePurple}`}>
+            <span style={{ fontSize: '13px' }}>📑</span>
             <span class={styles.statVal}>{totalPages}</span>
             <span class={styles.statLabel}>Total pages</span>
             <span class={styles.statSub}>Across {files.length} files</span>
           </div>
-          <div class={styles.statTile}>
+          <div class={`${styles.statTile} ${styles.statTileGreen}`}>
+            <span style={{ fontSize: '13px' }}>📊</span>
             <span class={styles.statVal}>~{totalMb} MB</span>
             <span class={styles.statLabel}>Estimated size</span>
             <span class={styles.statSub}>After conversion</span>
           </div>
-          <div class={styles.statTile}>
+          <div class={`${styles.statTile} ${styles.statTileBlue}`}>
+            <span style={{ fontSize: '13px' }}>📄</span>
             <span class={styles.statVal}>{pageSize}</span>
             <span class={styles.statLabel}>Page size</span>
             <span class={styles.statSub}>Standard format</span>
           </div>
-          <div class={styles.statTile}>
+          <div class={`${styles.statTile} ${styles.statTileAmber}`}>
+            <span style={{ fontSize: '13px' }}>⭐</span>
             <span class={styles.statVal}>Ready</span>
             <span class={styles.statLabel}>Settings</span>
             <span class={styles.statSub}>Configured</span>
@@ -211,10 +227,10 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
       </div>
       <div class={styles.card}>
         <div class={styles.privacyNotice}>
-          <span>🔒</span>
+          <span style={{ fontSize: '18px' }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — All conversion runs locally on your
-            device.
+            device. We do not upload, store or share your files.
           </span>
         </div>
         <button
@@ -223,7 +239,7 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
           disabled={isProcessing || files.length === 0}
           onClick={() => void executeWordToPdf()}
         >
-          {isProcessing ? '⏳ Creating PDF...' : '📄 Create PDF ➔'}
+          {isProcessing ? '⏳ Creating PDF...' : '📄 Create PDF →'}
         </button>
         <div class={styles.secondaryActionRow}>
           <button

@@ -4,6 +4,8 @@ import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
 
+const ROW_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#8b5cf6'];
+
 function PdfMergeDropCard({
   handleAddNativeFiles,
   loadSampleFiles,
@@ -27,8 +29,8 @@ function PdfMergeDropCard({
           onClick={loadSampleFiles}
           style={{
             fontSize: '11px',
-            padding: '2px 8px',
-            borderRadius: '4px',
+            padding: '4px 10px',
+            borderRadius: '6px',
             border: '1px solid #bfdbfe',
             background: '#eff6ff',
             color: '#1d4ed8',
@@ -40,9 +42,12 @@ function PdfMergeDropCard({
         </button>
       </div>
       <label class={styles.dropZone}>
-        <span class={styles.dropIcon}>📄+</span>
+        <div class={styles.dropIcon}>📄+</div>
         <p class={styles.dropMainText}>Drag & drop PDF files here</p>
         <p class={styles.dropSubText}>or click to browse and select multiple files</p>
+        <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+          Supports multiple PDF files • Files stay in your browser • Max 100 MB per file
+        </span>
         <span class={styles.chooseBtn}>Choose PDF Files</span>
         <input
           type="file"
@@ -68,7 +73,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
           <span class={styles.stepNum}>2</span> Arrange files in the order you want to merge
         </h2>
         <span class={styles.headerCounter}>
-          {files.length} files • {totalPages} pages • {totalMb} MB
+          {files.length} files • Total: {totalPages} pages • {totalMb} MB
         </span>
       </div>
       <div class={styles.fileList}>
@@ -80,7 +85,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
             <span class={styles.fileIndex}>{idx + 1}</span>
             <div
               class={styles.fileIconBadge}
-              style={{ backgroundColor: file.themeColor || '#ef4444' }}
+              style={{ backgroundColor: file.themeColor || ROW_COLORS[idx % ROW_COLORS.length] }}
             >
               PDF
             </div>
@@ -97,6 +102,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
                 class={styles.iconBtn}
                 disabled={idx === 0}
                 onClick={() => moveFile(idx, idx - 1)}
+                title="Move up"
               >
                 ↑
               </button>
@@ -105,16 +111,23 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
                 class={styles.iconBtn}
                 disabled={idx === files.length - 1}
                 onClick={() => moveFile(idx, idx + 1)}
+                title="Move down"
               >
                 ↓
               </button>
-              <button type="button" class={styles.iconBtn} onClick={() => rotateFile(idx)}>
+              <button
+                type="button"
+                class={styles.iconBtn}
+                onClick={() => rotateFile(idx)}
+                title="Rotate 90°"
+              >
                 ↻
               </button>
               <button
                 type="button"
                 class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
                 onClick={() => removeFile(idx)}
+                title="Remove file"
               >
                 🗑
               </button>
@@ -151,7 +164,9 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
             onClick={() => setMergeMethod('concatenate')}
             style={{ textAlign: 'left' }}
           >
-            <span class={styles.radioTitle}>Concatenate (normal order)</span>
+            <span class={styles.radioTitle}>
+              <span>{mergeMethod === 'concatenate' ? '●' : '○'}</span> Concatenate (normal order)
+            </span>
             <span class={styles.radioDesc}>Append files one after another</span>
           </button>
           <button
@@ -160,37 +175,46 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
             onClick={() => setMergeMethod('interleave')}
             style={{ textAlign: 'left' }}
           >
-            <span class={styles.radioTitle}>Interleave pages</span>
+            <span class={styles.radioTitle}>
+              <span>{mergeMethod === 'interleave' ? '●' : '○'}</span> Interleave pages
+            </span>
             <span class={styles.radioDesc}>Take 1 page from each file in turn</span>
           </button>
         </div>
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '12.5px',
-            cursor: 'pointer',
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={addBookmarks}
-            onChange={(e) => setAddBookmarks(e.currentTarget.checked)}
-          />
-          <span>Add bookmarks for each file in merged PDF</span>
-        </label>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="merged-output-name">
-            Output file name
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+          <label
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '3px',
+              fontSize: '12.5px',
+              cursor: 'pointer',
+            }}
+          >
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
+              <input
+                type="checkbox"
+                checked={addBookmarks}
+                onChange={(e) => setAddBookmarks(e.currentTarget.checked)}
+              />
+              <span>Add bookmarks for each file</span>
+            </span>
+            <span style={{ fontSize: '11px', color: '#64748b', paddingLeft: '20px' }}>
+              Add file names as bookmarks in the merged PDF
+            </span>
           </label>
-          <input
-            id="merged-output-name"
-            class={styles.textInput}
-            value={outputFileName}
-            onInput={(e) => setOutputFileName(e.currentTarget.value)}
-            placeholder="Merged-Document.pdf"
-          />
+          <div class={styles.inputRow}>
+            <label class={styles.inputLabel} for="merged-output-name">
+              Output file name
+            </label>
+            <input
+              id="merged-output-name"
+              class={styles.textInput}
+              value={outputFileName}
+              onInput={(e) => setOutputFileName(e.currentTarget.value)}
+              placeholder="Merged-Document.pdf"
+            />
+          </div>
         </div>
       </div>
     </div>

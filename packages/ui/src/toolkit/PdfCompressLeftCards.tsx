@@ -19,17 +19,17 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF file
         </h2>
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             type="button"
             onClick={studio.loadSampleCompress}
             style={{
               fontSize: '11px',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd6fe',
-              background: '#f5f3ff',
-              color: '#7c3aed',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              border: '1px solid #bfdbfe',
+              background: '#eff6ff',
+              color: '#1d4ed8',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -49,8 +49,8 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
       </div>
 
       {fileName ? (
-        <div class={styles.fileRow} style={{ background: '#f5f3ff', borderColor: '#ddd6fe' }}>
-          <div class={styles.fileIconBadge} style={{ backgroundColor: '#7c3aed' }}>
+        <div class={styles.fileRow} style={{ background: '#ffffff', borderColor: '#cbd5e1' }}>
+          <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
           </div>
           <div class={styles.fileDetails}>
@@ -107,10 +107,8 @@ const PRESET_OPTIONS = [
   ['custom', '⚙️ Custom', 'Fine-tune compression manually', 'Your own settings'],
 ] as const;
 
-function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }) {
+function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }) {
   const {
-    imageQuality,
-    setImageQuality,
     convertToGrayscale,
     setConvertToGrayscale,
     removeThumbnails,
@@ -119,24 +117,71 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
     setLinearize,
     preserveSearchableText,
     setPreserveSearchableText,
-    maxOutputSizeMb,
-    setMaxOutputSizeMb,
   } = studio;
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '8px',
+        fontSize: '12.5px',
+        fontWeight: 600,
+      }}
+    >
+      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={convertToGrayscale}
+          onChange={(e) => setConvertToGrayscale(e.currentTarget.checked)}
+        />
+        <span>Convert to grayscale</span>
+      </label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={removeThumbnails}
+          onChange={(e) => setRemoveThumbnails(e.currentTarget.checked)}
+        />
+        <span>Remove thumbnails</span>
+      </label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={linearize}
+          onChange={(e) => setLinearize(e.currentTarget.checked)}
+        />
+        <span>Fast web view</span>
+      </label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={preserveSearchableText}
+          onChange={(e) => setPreserveSearchableText(e.currentTarget.checked)}
+        />
+        <span>Preserve text (OCR)</span>
+      </label>
+    </div>
+  );
+}
+
+function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }) {
+  const { imageQuality, setImageQuality, maxOutputSizeMb, setMaxOutputSizeMb } = studio;
 
   return (
     <details
       style={{
         background: '#f8fafc',
-        padding: '10px',
-        borderRadius: '8px',
+        padding: '12px',
+        borderRadius: '9px',
         border: '1px solid #e2e8f0',
       }}
       open
     >
-      <summary style={{ fontWeight: 600, fontSize: '12px', cursor: 'pointer', color: '#1e293b' }}>
+      <summary style={{ fontWeight: 700, fontSize: '12.5px', cursor: 'pointer', color: '#0f172a' }}>
         ⚙️ Advanced settings (optional)
       </summary>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
         <label class={styles.inputLabel} for="compress-image-quality">
           Image quality: {imageQuality}%
         </label>
@@ -149,42 +194,7 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
           onInput={(e) => setImageQuality(Number(e.currentTarget.value))}
           style={{ width: '100%', accentColor: '#2563eb' }}
         />
-        <div
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '12px' }}
-        >
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={convertToGrayscale}
-              onChange={(e) => setConvertToGrayscale(e.currentTarget.checked)}
-            />
-            <span>Convert to grayscale</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={removeThumbnails}
-              onChange={(e) => setRemoveThumbnails(e.currentTarget.checked)}
-            />
-            <span>Remove thumbnails</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={linearize}
-              onChange={(e) => setLinearize(e.currentTarget.checked)}
-            />
-            <span>Fast web view</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={preserveSearchableText}
-              onChange={(e) => setPreserveSearchableText(e.currentTarget.checked)}
-            />
-            <span>Preserve text (OCR)</span>
-          </label>
-        </div>
+        <PdfCompressOptionCheckboxes studio={studio} />
         <div class={styles.inputRow}>
           <label class={styles.inputLabel} for="compress-max-size">
             Maximum output target (MB)
@@ -215,27 +225,37 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
-        {PRESET_OPTIONS.map(([p, title, desc, tag]) => (
-          <button
-            key={p}
-            type="button"
-            class={`${styles.radioCard} ${preset === p ? styles.radioCardActive : ''}`}
-            onClick={() => setPreset(p as CompressionPreset)}
-            style={{ textAlign: 'left' }}
-          >
-            <span class={styles.radioTitle}>
-              <input type="radio" checked={preset === p} readOnly />
-              {title}
-            </span>
-            <span class={styles.radioDesc}>{desc}</span>
-            <span
-              style={{ fontSize: '10.5px', fontWeight: 700, color: '#2563eb', marginTop: '2px' }}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+        {PRESET_OPTIONS.map(([p, title, desc, tag]) => {
+          const isActive = preset === p;
+          return (
+            <button
+              key={p}
+              type="button"
+              class={`${styles.radioCard} ${isActive ? styles.radioCardActive : ''}`}
+              onClick={() => setPreset(p as CompressionPreset)}
+              style={{ textAlign: 'left', padding: '10px 12px' }}
             >
-              {tag}
-            </span>
-          </button>
-        ))}
+              <span class={styles.radioTitle}>
+                <span style={{ color: isActive ? '#2563eb' : '#94a3b8' }}>
+                  {isActive ? '●' : '○'}
+                </span>
+                {title}
+              </span>
+              <span class={styles.radioDesc}>{desc}</span>
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: isActive ? '#1d4ed8' : '#2563eb',
+                  marginTop: '4px',
+                }}
+              >
+                {tag}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <PdfCompressAdvancedSettings studio={studio} />
