@@ -14,42 +14,59 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
   }
 
   return (
-    <div class={styles.card} data-tour="pdf-upload">
+    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF file
         </h2>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
-            type="button"
-            onClick={studio.loadSampleCompress}
-            style={{
-              fontSize: '11px',
-              padding: '4px 10px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            📄 Sample Dossier
-          </button>
-          <label style={{ fontSize: '12px', color: '#2563eb', cursor: 'pointer', fontWeight: 600 }}>
-            Browse File
-            <input
-              type="file"
-              accept="application/pdf"
-              style={{ display: 'none' }}
-              onChange={onFileInputChange}
-            />
-          </label>
-        </div>
+        <button
+          type="button"
+          onClick={studio.loadSampleCompress}
+          style={{
+            fontSize: '11px',
+            padding: '3px 8px',
+            borderRadius: '6px',
+            border: '1px solid #bfdbfe',
+            background: '#eff6ff',
+            color: '#1d4ed8',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          📄 Sample Dossier
+        </button>
       </div>
 
-      {fileName ? (
-        <div class={styles.fileRow} style={{ background: '#ffffff', borderColor: '#cbd5e1' }}>
+      <label class={styles.dropZoneCompact}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
+            🗜️+
+          </span>
+          <div>
+            <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+              Drag & drop a PDF file here
+            </p>
+            <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+              or click to browse • 100% in-browser compression
+            </p>
+          </div>
+        </div>
+        <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+          Choose PDF File
+        </span>
+        <input
+          type="file"
+          accept="application/pdf"
+          style={{ display: 'none' }}
+          onChange={onFileInputChange}
+        />
+      </label>
+
+      {fileName && (
+        <div
+          class={styles.fileRow}
+          style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '6px' }}
+        >
           <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
           </div>
@@ -68,43 +85,16 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
             ✕
           </button>
         </div>
-      ) : (
-        <label class={styles.dropZone}>
-          <span class={styles.dropIcon}>🗜️+</span>
-          <p class={styles.dropMainText}>Drag & drop a PDF file here, or click to browse</p>
-          <span class={styles.chooseBtn}>Choose PDF File</span>
-          <input
-            type="file"
-            accept="application/pdf"
-            style={{ display: 'none' }}
-            onChange={onFileInputChange}
-          />
-        </label>
       )}
     </div>
   );
 }
 
 const PRESET_OPTIONS = [
-  [
-    'light',
-    '🌱 Light Compression',
-    'Slightly reduce size, minimal quality loss',
-    '~20–40% smaller',
-  ],
-  [
-    'balanced',
-    '⚖️ Balanced (Recommended)',
-    'Good balance of file size and visual quality',
-    '~40–70% smaller',
-  ],
-  [
-    'strong',
-    '📊 Strong Compression',
-    'Maximum size reduction with lower quality',
-    '~70–90% smaller',
-  ],
-  ['custom', '⚙️ Custom', 'Fine-tune compression manually', 'Your own settings'],
+  ['light', '🌱 Light Compression', 'Minimal quality loss', '~20–40% smaller'],
+  ['balanced', '⚖️ Balanced (Recommended)', 'Best size and clarity', '~40–70% smaller'],
+  ['strong', '📊 Strong Compression', 'Maximum size reduction', '~70–90% smaller'],
+  ['custom', '⚙️ Custom', 'Fine-tune settings manually', 'Your own specs'],
 ] as const;
 
 function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }) {
@@ -124,12 +114,12 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: '8px',
-        fontSize: '12.5px',
+        gap: '6px',
+        fontSize: '11px',
         fontWeight: 600,
       }}
     >
-      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
         <input
           type="checkbox"
           checked={convertToGrayscale}
@@ -137,7 +127,7 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
         />
         <span>Convert to grayscale</span>
       </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
         <input
           type="checkbox"
           checked={removeThumbnails}
@@ -145,7 +135,7 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
         />
         <span>Remove thumbnails</span>
       </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
         <input
           type="checkbox"
           checked={linearize}
@@ -153,7 +143,7 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
         />
         <span>Fast web view</span>
       </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
         <input
           type="checkbox"
           checked={preserveSearchableText}
@@ -172,17 +162,17 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
     <details
       style={{
         background: '#f8fafc',
-        padding: '12px',
-        borderRadius: '9px',
+        padding: '8px 10px',
+        borderRadius: '8px',
         border: '1px solid #e2e8f0',
+        marginTop: '6px',
       }}
-      open
     >
-      <summary style={{ fontWeight: 700, fontSize: '12.5px', cursor: 'pointer', color: '#0f172a' }}>
+      <summary style={{ fontWeight: 700, fontSize: '11.5px', cursor: 'pointer', color: '#0f172a' }}>
         ⚙️ Advanced settings (optional)
       </summary>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
-        <label class={styles.inputLabel} for="compress-image-quality">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+        <label class={styles.inputLabel} for="compress-image-quality" style={{ fontSize: '11px' }}>
           Image quality: {imageQuality}%
         </label>
         <input
@@ -196,7 +186,7 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
         />
         <PdfCompressOptionCheckboxes studio={studio} />
         <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="compress-max-size">
+          <label class={styles.inputLabel} for="compress-max-size" style={{ fontSize: '11px' }}>
             Maximum output target (MB)
           </label>
           <input
@@ -207,6 +197,7 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
             onInput={(e) => setMaxOutputSizeMb(Number(e.currentTarget.value) || 1)}
             min={1}
             max={100}
+            style={{ padding: '5px 8px', fontSize: '12px' }}
           />
         </div>
       </div>
@@ -218,14 +209,14 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
   const { preset, setPreset } = studio;
 
   return (
-    <div class={styles.card} data-tour="pdf-arrange">
+    <div class={styles.card} data-tour="pdf-arrange" style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Compression settings
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
         {PRESET_OPTIONS.map(([p, title, desc, tag]) => {
           const isActive = preset === p;
           return (
@@ -234,21 +225,23 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
               type="button"
               class={`${styles.radioCard} ${isActive ? styles.radioCardActive : ''}`}
               onClick={() => setPreset(p as CompressionPreset)}
-              style={{ textAlign: 'left', padding: '10px 12px' }}
+              style={{ textAlign: 'left', padding: '6px 8px' }}
             >
-              <span class={styles.radioTitle}>
+              <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
                 <span style={{ color: isActive ? '#2563eb' : '#94a3b8' }}>
                   {isActive ? '●' : '○'}
                 </span>
                 {title}
               </span>
-              <span class={styles.radioDesc}>{desc}</span>
+              <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+                {desc}
+              </span>
               <span
                 style={{
-                  fontSize: '11px',
+                  fontSize: '10.5px',
                   fontWeight: 700,
                   color: isActive ? '#1d4ed8' : '#2563eb',
-                  marginTop: '4px',
+                  marginTop: '2px',
                 }}
               >
                 {tag}
@@ -265,7 +258,7 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
 
 export function PdfCompressLeftCards({ studio }: { studio: CompressStudioState }) {
   return (
-    <div class={styles.scrollCol}>
+    <div class={styles.leftMergeCol}>
       <PdfCompressFileCard studio={studio} />
       <PdfCompressSettingsCard studio={studio} />
     </div>

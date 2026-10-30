@@ -19,7 +19,7 @@ function PdfMergeDropCard({
   }
 
   return (
-    <div class={styles.card} data-tour="pdf-upload">
+    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px', flexShrink: 0 }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF files
@@ -29,7 +29,7 @@ function PdfMergeDropCard({
           onClick={loadSampleFiles}
           style={{
             fontSize: '11px',
-            padding: '4px 10px',
+            padding: '3px 8px',
             borderRadius: '6px',
             border: '1px solid #bfdbfe',
             background: '#eff6ff',
@@ -41,14 +41,23 @@ function PdfMergeDropCard({
           📄 Load 4 Sample Files
         </button>
       </div>
-      <label class={styles.dropZone}>
-        <div class={styles.dropIcon}>📄+</div>
-        <p class={styles.dropMainText}>Drag & drop PDF files here</p>
-        <p class={styles.dropSubText}>or click to browse and select multiple files</p>
-        <span style={{ fontSize: '11.5px', color: '#64748b' }}>
-          Supports multiple PDF files • Files stay in your browser • Max 100 MB per file
+      <label class={styles.dropZoneCompact}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
+            📄+
+          </span>
+          <div>
+            <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+              Drag & drop PDF files here
+            </p>
+            <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+              or click to browse • Max 100 MB per file
+            </p>
+          </div>
+        </div>
+        <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+          Choose PDF Files
         </span>
-        <span class={styles.chooseBtn}>Choose PDF Files</span>
         <input
           type="file"
           accept="application/pdf"
@@ -67,7 +76,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
   const totalPages = files.reduce((acc, f) => acc + f.pageCount, 0);
 
   return (
-    <div class={styles.card} data-tour="pdf-arrange">
+    <div class={styles.mergeListCard} data-tour="pdf-arrange">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Arrange files in the order you want to merge
@@ -76,7 +85,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
           {files.length} files • Total: {totalPages} pages • {totalMb} MB
         </span>
       </div>
-      <div class={styles.fileList}>
+      <div class={styles.mergeListScroll}>
         {files.map((file, idx) => (
           <div key={file.id} class={styles.fileRow}>
             <span class={styles.dragHandle} title="Drag to reorder">
@@ -150,7 +159,11 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
   } = studio;
 
   return (
-    <div class={styles.card} data-tour="pdf-settings">
+    <div
+      class={styles.card}
+      data-tour="pdf-settings"
+      style={{ padding: '8px 12px', flexShrink: 0 }}
+    >
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>3</span> Merge settings
@@ -223,7 +236,7 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
 
 export function PdfMergeLeftCards({ studio }: { studio: MergeStudioState }) {
   return (
-    <div class={styles.scrollCol}>
+    <div class={styles.leftMergeCol}>
       <PdfMergeDropCard
         handleAddNativeFiles={studio.handleAddNativeFiles}
         loadSampleFiles={studio.loadSampleFiles}

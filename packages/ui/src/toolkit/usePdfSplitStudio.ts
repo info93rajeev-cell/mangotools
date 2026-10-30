@@ -290,11 +290,36 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
   const fileState = useSplitFileState(notify);
   const opts = usePdfSplitOptions();
   const actions = useSplitActions(fileState, opts, notify);
+  const [selectedPage, setSelectedPage] = useState(1);
+
+  const onSelectPage = (pg: number) => {
+    setSelectedPage(pg);
+    if (opts.mode === 'extract') {
+      opts.setExtractInput((prev) => {
+        const tokens = prev
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const str = String(pg);
+        if (tokens.includes(str)) {
+          const next = tokens.filter((s) => s !== str);
+          return next.join(', ');
+        }
+        return tokens.length > 0 ? `${prev}, ${str}` : str;
+      });
+      notify?.(`Selected page ${pg} for extraction`);
+    } else {
+      notify?.(`Selected page ${pg} preview`);
+    }
+  };
 
   return {
     ...fileState,
     ...opts,
     ...actions,
+    selectedPage,
+    setSelectedPage,
+    onSelectPage,
     parts: resolveSplitParts(
       opts.mode,
       fileState.totalPages,

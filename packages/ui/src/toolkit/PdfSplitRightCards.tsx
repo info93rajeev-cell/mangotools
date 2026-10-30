@@ -19,7 +19,7 @@ function PdfSplitSummaryCard({
   downloadAsZip: boolean;
 }) {
   return (
-    <div class={styles.card}>
+    <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span style={{ color: '#2563eb' }}>📋</span> Split Summary
@@ -33,25 +33,25 @@ function PdfSplitSummaryCard({
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '13px' }}>📑</span>
+          <span style={{ fontSize: '12px' }}>📑</span>
           <span class={styles.statVal}>{totalPages}</span>
           <span class={styles.statLabel}>Total pages</span>
           <span class={styles.statSub}>Input file</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '13px' }}>📄</span>
+          <span style={{ fontSize: '12px' }}>📄</span>
           <span class={styles.statVal}>{partCount}</span>
           <span class={styles.statLabel}>Split files</span>
           <span class={styles.statSub}>Will be created</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '13px' }}>📊</span>
+          <span style={{ fontSize: '12px' }}>📊</span>
           <span class={styles.statVal}>~{totalMb} MB</span>
           <span class={styles.statLabel}>Est. output size</span>
           <span class={styles.statSub}>After split</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '13px' }}>📦</span>
+          <span style={{ fontSize: '12px' }}>📦</span>
           <span class={styles.statVal}>{downloadAsZip ? 'ZIP Ready' : 'Separate'}</span>
           <span class={styles.statLabel}>Download format</span>
           <span class={styles.statSub}>{downloadAsZip ? 'All in one' : 'Individual'}</span>
@@ -69,7 +69,7 @@ function PdfSplitPreviewGrid({
   totalPages: number;
 }) {
   return (
-    <div class={styles.card}>
+    <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span style={{ color: '#2563eb' }}>👁️</span> Output Preview
@@ -78,63 +78,65 @@ function PdfSplitPreviewGrid({
           {parts.length} files • {totalPages} pages total
         </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
         {parts.slice(0, 4).map((part, idx) => (
           <div
             key={part.name}
             style={{
               background: PART_COLORS[idx % PART_COLORS.length],
               border: `1px solid ${PART_BORDER[idx % PART_BORDER.length]}`,
-              borderRadius: '9px',
-              padding: '10px',
+              borderRadius: '7px',
+              padding: '6px 8px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px',
+              gap: '4px',
               boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span
                 style={{
-                  fontSize: '11.5px',
+                  fontSize: '11px',
                   fontWeight: 800,
                   color: PART_TEXT[idx % PART_TEXT.length],
                 }}
               >
-                Pages {part.startPage} – {part.endPage}
+                Pages {part.startPage}–{part.endPage}
               </span>
-              <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>
-                {part.pageCount} pages
+              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
+                {part.pageCount} {part.pageCount === 1 ? 'page' : 'pages'}
               </span>
             </div>
             <div
               style={{
-                height: '42px',
-                background: '#fff',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                padding: '5px 6px',
+                height: '24px',
+                background: '#ffffff',
+                borderRadius: '4px',
+                border: '1px dashed #cbd5e1',
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
+                alignItems: 'center',
+                padding: '0 6px',
               }}
             >
               <div
-                style={{ height: '4px', background: '#94a3b8', width: '80%', borderRadius: '2px' }}
-              />
-              <div
-                style={{ height: '3px', background: '#cbd5e1', width: '60%', borderRadius: '2px' }}
+                style={{
+                  width: '60%',
+                  height: '3px',
+                  background: '#e2e8f0',
+                  borderRadius: '1.5px',
+                }}
               />
             </div>
             <span
               style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: '#1e293b',
+                fontSize: '10px',
+                color: '#334155',
+                fontWeight: 600,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
+              title={part.name}
             >
               {part.name}
             </span>
@@ -160,7 +162,7 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
   const totalMb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   return (
-    <div class={styles.scrollCol}>
+    <div class={styles.leftMergeCol}>
       <PdfSplitSummaryCard
         totalPages={totalPages}
         partCount={parts.length}
@@ -168,12 +170,11 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
         downloadAsZip={downloadAsZip}
       />
       <PdfSplitPreviewGrid parts={parts} totalPages={totalPages} />
-      <div class={styles.card} data-tour="pdf-action">
-        <div class={styles.privacyNotice}>
-          <span style={{ fontSize: '18px' }}>🔒</span>
+      <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
+          <span style={{ fontSize: '14px' }}>🔒</span>
           <span>
-            <strong>Your files stay in your browser</strong> — All processing is done locally on
-            your device. We do not upload, store or share your files.
+            <strong>Your files stay in your browser</strong> — 100% private client-side processing.
           </span>
         </div>
         <button

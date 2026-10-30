@@ -1,3 +1,4 @@
+import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'preact/hooks';
 import { buildDocxArchive } from './docxZipPacker.ts';
 import {
@@ -119,6 +120,18 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
       s.setFileSizeBytes(SAMPLE_PDF_TO_WORD_FILE.sizeBytes);
       s.setTotalPages(SAMPLE_PDF_TO_WORD_FILE.pageCount);
     },
+    handleAddNativeFile: async (file: File) => {
+      s.setFileName(file.name);
+      s.setFileSizeBytes(file.size);
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        s.setTotalPages(doc.getPageCount());
+      } catch {
+        s.setTotalPages(1);
+      }
+      notify?.(`Loaded ${file.name}`);
+    },
   };
 }
 
@@ -217,6 +230,16 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
           sizeBytes: m.sizeBytes,
         })),
       );
+    },
+    handleAddNativeFiles: (fileList: FileList | File[]) => {
+      const added = Array.from(fileList).map((f, i) => ({
+        id: `word-${Date.now()}-${i}`,
+        name: f.name,
+        pages: 6,
+        sizeBytes: f.size,
+      }));
+      s.setFiles((prev) => [...prev, ...added]);
+      notify?.(`Added ${added.length} Word file(s)`);
     },
   };
 }

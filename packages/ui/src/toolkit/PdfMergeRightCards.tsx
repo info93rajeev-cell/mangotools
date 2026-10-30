@@ -15,7 +15,7 @@ function PdfMergeSummaryCard({
   hasBookmarks: boolean;
 }) {
   return (
-    <div class={styles.card}>
+    <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span style={{ color: '#2563eb' }}>📋</span> Merge Summary
@@ -29,25 +29,25 @@ function PdfMergeSummaryCard({
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '13px' }}>📄</span>
+          <span style={{ fontSize: '12px' }}>📄</span>
           <span class={styles.statVal}>{fileCount}</span>
           <span class={styles.statLabel}>PDF files</span>
           <span class={styles.statSub}>Selected</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '13px' }}>📑</span>
+          <span style={{ fontSize: '12px' }}>📑</span>
           <span class={styles.statVal}>{totalPageCount}</span>
           <span class={styles.statLabel}>Total pages</span>
           <span class={styles.statSub}>Across all files</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '13px' }}>📊</span>
+          <span style={{ fontSize: '12px' }}>📊</span>
           <span class={styles.statVal}>{totalMb} MB</span>
           <span class={styles.statLabel}>Estimated size</span>
           <span class={styles.statSub}>After merge</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '13px' }}>🔖</span>
+          <span style={{ fontSize: '12px' }}>🔖</span>
           <span class={styles.statVal}>{hasBookmarks ? 'Yes' : 'No'}</span>
           <span class={styles.statLabel}>Bookmarks</span>
           <span class={styles.statSub}>File names</span>
@@ -72,7 +72,7 @@ function PdfMergePreviewFlowCard({
   totalPageCount: number;
 }) {
   return (
-    <div class={styles.card}>
+    <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span style={{ color: '#2563eb' }}>👁️</span> Merged Document Preview
@@ -109,7 +109,7 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
   const totalMb = (summary.totalSizeBytes / (1024 * 1024)).toFixed(1);
 
   return (
-    <div class={styles.scrollCol}>
+    <div class={styles.leftMergeCol}>
       <PdfMergeSummaryCard
         fileCount={summary.fileCount}
         totalPageCount={summary.totalPageCount}
@@ -117,12 +117,11 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
         hasBookmarks={summary.hasBookmarks}
       />
       <PdfMergePreviewFlowCard ranges={summary.ranges} totalPageCount={summary.totalPageCount} />
-      <div class={styles.card} data-tour="pdf-action">
-        <div class={styles.privacyNotice}>
-          <span style={{ fontSize: '18px' }}>🔒</span>
+      <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
+          <span style={{ fontSize: '14px' }}>🔒</span>
           <span>
-            <strong>Your files stay in your browser</strong> — All processing is done locally on
-            your device. We do not upload, store or share your files.
+            <strong>Your files stay in your browser</strong> — 100% private client-side processing.
           </span>
         </div>
         <button

@@ -258,18 +258,8 @@ function handleNativeFileDispatch(
   if (activeTab === 'merge') void studios.merge.handleAddNativeFiles(list);
   else if (activeTab === 'split') void studios.split.handleAddNativeFile(list[0]);
   else if (activeTab === 'compress') void studios.compress.handleAddNativeFile(list[0]);
-  else if (activeTab === 'pdfToWord') {
-    studios.pdfToWord.setFileName(list[0].name);
-    studios.pdfToWord.setFileSizeBytes(list[0].size);
-  } else if (activeTab === 'wordToPdf') {
-    const added = Array.from(list).map((f, i) => ({
-      id: String(Date.now() + i),
-      name: f.name,
-      pages: 6,
-      sizeBytes: f.size,
-    }));
-    studios.wordToPdf.setFiles((prev) => [...prev, ...added]);
-  }
+  else if (activeTab === 'pdfToWord') void studios.pdfToWord.handleAddNativeFile(list[0]);
+  else if (activeTab === 'wordToPdf') void studios.wordToPdf.handleAddNativeFiles(list);
 }
 
 function PdfTabRenderer({
