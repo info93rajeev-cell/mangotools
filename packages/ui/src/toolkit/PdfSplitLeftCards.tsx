@@ -4,6 +4,77 @@ import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
 
+function HeavyBookBanner({ totalPages }: { totalPages: number }) {
+  if (totalPages < 1500) return null;
+  return (
+    <div
+      style={{
+        background: '#f0f9ff',
+        border: '1px solid #7dd3fc',
+        borderRadius: '8px',
+        padding: '8px 10px',
+        marginBottom: '10px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '3px',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <span style={{ fontSize: '14px' }}>📚</span>
+        <strong style={{ fontSize: '12px', color: '#0369a1' }}>
+          Heavy Book Engine (1,600 Pages Active)
+        </strong>
+      </div>
+      <p style={{ fontSize: '11px', color: '#0c4a6e', margin: 0, lineHeight: 1.35 }}>
+        Split into 16 chapters (100 pages each) locally. No Adobe sign-in, upload limits, or tab
+        freezing.
+      </p>
+    </div>
+  );
+}
+
+function PdfMiniThumbnails() {
+  return (
+    <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '6px 2px' }}>
+      {[1, 2, 3, 4, 5].map((pg) => (
+        <div
+          key={pg}
+          style={{
+            minWidth: '58px',
+            height: '76px',
+            border: pg === 1 ? '2px solid #2563eb' : '1px solid #cbd5e1',
+            borderRadius: '6px',
+            background: '#fff',
+            padding: '4px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+            <div
+              style={{
+                height: '4px',
+                background: pg === 1 ? '#bfdbfe' : '#e2e8f0',
+                borderRadius: '2px',
+              }}
+            />
+            <div
+              style={{ height: '3px', background: '#e2e8f0', borderRadius: '2px', width: '85%' }}
+            />
+          </div>
+          <span
+            style={{ fontSize: '10px', fontWeight: 700, color: pg === 1 ? '#2563eb' : '#64748b' }}
+          >
+            {pg}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
   const { fileName, totalPages, fileSizeBytes, clearAll, handleAddNativeFile } = studio;
   const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
@@ -19,16 +90,36 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> PDF File
         </h2>
-        <label style={{ fontSize: '12px', color: '#2563eb', cursor: 'pointer', fontWeight: 600 }}>
-          Change File
-          <input
-            type="file"
-            accept="application/pdf"
-            style={{ display: 'none' }}
-            onChange={onFileInputChange}
-          />
-        </label>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <button
+            type="button"
+            onClick={studio.splitHeavyBookIntoChapters}
+            style={{
+              fontSize: '11px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              border: '1px solid #7dd3fc',
+              background: '#f0f9ff',
+              color: '#0369a1',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            📚 1,600-Page Book
+          </button>
+          <label style={{ fontSize: '12px', color: '#2563eb', cursor: 'pointer', fontWeight: 600 }}>
+            Change File
+            <input
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={onFileInputChange}
+            />
+          </label>
+        </div>
       </div>
+
+      <HeavyBookBanner totalPages={totalPages} />
 
       {fileName ? (
         <div class={styles.fileRow} style={{ background: '#fef2f2', borderColor: '#fecaca' }}>
@@ -64,43 +155,7 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
         </label>
       )}
 
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '6px 2px' }}>
-        {[1, 2, 3, 4, 5].map((pg) => (
-          <div
-            key={pg}
-            style={{
-              minWidth: '58px',
-              height: '76px',
-              border: pg === 1 ? '2px solid #2563eb' : '1px solid #cbd5e1',
-              borderRadius: '6px',
-              background: '#fff',
-              padding: '4px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <div
-                style={{
-                  height: '4px',
-                  background: pg === 1 ? '#bfdbfe' : '#e2e8f0',
-                  borderRadius: '2px',
-                }}
-              />
-              <div
-                style={{ height: '3px', background: '#e2e8f0', borderRadius: '2px', width: '85%' }}
-              />
-            </div>
-            <span
-              style={{ fontSize: '10px', fontWeight: 700, color: pg === 1 ? '#2563eb' : '#64748b' }}
-            >
-              {pg}
-            </span>
-          </div>
-        ))}
-      </div>
+      <PdfMiniThumbnails />
     </div>
   );
 }

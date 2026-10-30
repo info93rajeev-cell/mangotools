@@ -6,8 +6,10 @@ type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
 
 function PdfMergeDropCard({
   handleAddNativeFiles,
+  loadSampleFiles,
 }: {
   handleAddNativeFiles: MergeStudioState['handleAddNativeFiles'];
+  loadSampleFiles: MergeStudioState['loadSampleFiles'];
 }) {
   function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
     const list = e.currentTarget.files;
@@ -20,7 +22,22 @@ function PdfMergeDropCard({
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF files
         </h2>
-        <span class={styles.headerCounter}>Max 100 MB per file</span>
+        <button
+          type="button"
+          onClick={loadSampleFiles}
+          style={{
+            fontSize: '11px',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            border: '1px solid #bfdbfe',
+            background: '#eff6ff',
+            color: '#1d4ed8',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          📄 Load 4 Sample Files
+        </button>
       </div>
       <label class={styles.dropZone}>
         <span class={styles.dropIcon}>📄+</span>
@@ -183,7 +200,10 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
 export function PdfMergeLeftCards({ studio }: { studio: MergeStudioState }) {
   return (
     <div class={styles.scrollCol}>
-      <PdfMergeDropCard handleAddNativeFiles={studio.handleAddNativeFiles} />
+      <PdfMergeDropCard
+        handleAddNativeFiles={studio.handleAddNativeFiles}
+        loadSampleFiles={studio.loadSampleFiles}
+      />
       <PdfMergeListCard studio={studio} />
       <PdfMergeSettingsCard studio={studio} />
     </div>

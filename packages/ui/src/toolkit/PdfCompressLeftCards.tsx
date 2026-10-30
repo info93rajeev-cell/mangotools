@@ -19,15 +19,33 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF file
         </h2>
-        <label style={{ fontSize: '12px', color: '#2563eb', cursor: 'pointer', fontWeight: 600 }}>
-          Browse New File
-          <input
-            type="file"
-            accept="application/pdf"
-            style={{ display: 'none' }}
-            onChange={onFileInputChange}
-          />
-        </label>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <button
+            type="button"
+            onClick={studio.loadSampleCompress}
+            style={{
+              fontSize: '11px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              border: '1px solid #ddd6fe',
+              background: '#f5f3ff',
+              color: '#7c3aed',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            📄 Sample Dossier
+          </button>
+          <label style={{ fontSize: '12px', color: '#2563eb', cursor: 'pointer', fontWeight: 600 }}>
+            Browse File
+            <input
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={onFileInputChange}
+            />
+          </label>
+        </div>
       </div>
 
       {fileName ? (

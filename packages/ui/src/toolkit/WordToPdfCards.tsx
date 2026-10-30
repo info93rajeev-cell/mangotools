@@ -13,9 +13,27 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add Word files
         </h2>
-        <span class={styles.headerCounter}>
-          {files.length} files • Total: {totalPages} pages
-        </span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span class={styles.headerCounter}>
+            {files.length} files • {totalPages} pages
+          </span>
+          <button
+            type="button"
+            onClick={studio.loadSampleWordDocs}
+            style={{
+              fontSize: '11px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              border: '1px solid #bfdbfe',
+              background: '#eff6ff',
+              color: '#2563eb',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            📘 Sample DOCX
+          </button>
+        </div>
       </div>
       <div class={styles.fileList}>
         {files.map((f) => (

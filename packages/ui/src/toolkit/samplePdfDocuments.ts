@@ -114,6 +114,14 @@ export const SAMPLE_SPLIT_FILE: SampleDocMeta = {
   summary: 'Annual corporate audit, balance sheets and governance',
 };
 
+export const SAMPLE_HEAVY_BOOK_FILE: SampleDocMeta = {
+  name: 'Medical_Physiology_Textbook_1600_Pages.pdf',
+  pageCount: 1600,
+  sizeBytes: 342 * 1024 * 1024,
+  themeColor: '#0284c7',
+  summary: '1,600-Page Clinical Medicine Textbook (16 Chapters, 100 Pages/Chapter)',
+};
+
 export const SAMPLE_COMPRESS_FILE: SampleDocMeta = {
   name: 'Client-Submission-Pack.pdf',
   pageCount: 86,

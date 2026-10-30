@@ -4,6 +4,7 @@ import { CardGrid, ToolCard } from '@mangotools/ui/discovery/cards.tsx';
 import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
 import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PdfCategoryGuide from './PdfCategoryGuide.astro';
 import { COPY, fill } from '../lib/copy.ts';
 import { toolById, toolLinks } from '../lib/site.ts';
 import { breadcrumbList, itemList } from '../lib/structured-data.ts';
@@ -58,6 +59,8 @@ const count = tools.length === 1 ? copy.one : fill(copy.count, { count: tools.le
           </nav>
         ) : null
       }
+      {category.id === 'pdf' ? <PdfCategoryGuide /> : null}
+
       <section class="block tools" aria-labelledby="all-tools">
         <h2 id="all-tools">{fill(copy.allInCategory, { name: category.name })}</h2>
         <CardGrid>

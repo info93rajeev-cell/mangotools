@@ -1,7 +1,11 @@
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'preact/hooks';
 import { buildZipArchive, type ZipEntry } from './docxZipPacker.ts';
-import { createSamplePdf, SAMPLE_SPLIT_FILE } from './samplePdfDocuments.ts';
+import {
+  createSamplePdf,
+  SAMPLE_HEAVY_BOOK_FILE,
+  SAMPLE_SPLIT_FILE,
+} from './samplePdfDocuments.ts';
 
 export interface SplitRange {
   id: string;
@@ -199,6 +203,13 @@ function useSplitFileState(notify?: (msg: string) => void) {
       setFileName(SAMPLE_SPLIT_FILE.name);
       setFileSizeBytes(SAMPLE_SPLIT_FILE.sizeBytes);
       setTotalPages(SAMPLE_SPLIT_FILE.pageCount);
+      setFileBytes(null);
+    },
+    loadHeavyBookSample: () => {
+      setFileName(SAMPLE_HEAVY_BOOK_FILE.name);
+      setFileSizeBytes(SAMPLE_HEAVY_BOOK_FILE.sizeBytes);
+      setTotalPages(SAMPLE_HEAVY_BOOK_FILE.pageCount);
+      setFileBytes(null);
     },
     handleAddNativeFile: async (file: File) => {
       try {
@@ -306,6 +317,13 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
       ]);
     },
     removeRange: (id: string) => opts.setRanges((p) => p.filter((r) => r.id !== id)),
+    splitHeavyBookIntoChapters: () => {
+      fileState.loadHeavyBookSample();
+      opts.setMode('chunks');
+      opts.setChunkSize(100);
+      opts.setPattern('Textbook_Chapter_{n}');
+      notify?.('Loaded 1,600-page book: 16 chapters of 100 pages each ready to split!');
+    },
     copySummary: () => {
       void navigator.clipboard.writeText(
         `BeyondTheAI PDF Split: ${fileState.fileName} (${fileState.totalPages} pages), Mode: ${opts.mode}`,

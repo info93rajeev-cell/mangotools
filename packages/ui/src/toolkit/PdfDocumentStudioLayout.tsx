@@ -187,9 +187,16 @@ function RenderActiveTool({
   );
 }
 
+function resolveInitialPdfTab(toolId?: string): PdfToolTab {
+  if (toolId === 'pdf-split') return 'split';
+  if (toolId === 'compress-pdf') return 'compress';
+  if (toolId === 'pdf-to-word') return 'pdfToWord';
+  if (toolId === 'word-to-pdf') return 'wordToPdf';
+  return 'merge';
+}
+
 export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioProps) {
-  const initialTab: PdfToolTab = toolId === 'pdf-split' ? 'split' : 'merge';
-  const [activeTab, setActiveTab] = useState<PdfToolTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<PdfToolTab>(resolveInitialPdfTab(toolId));
 
   const mergeStudio = usePdfMergeStudio(notify);
   const splitStudio = usePdfSplitStudio(notify);

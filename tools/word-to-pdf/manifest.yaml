@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: word-to-pdf
+slug: word-to-pdf
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: convert Word DOCX documents to standard PDF files entirely in the browser." }
+name: Word to PDF
+shortName: Word to PDF
+summary: Convert Microsoft Word DOCX and DOC files into standard PDF documents in your browser with zero server uploads.
+archetype: D
+preset: pdf/word-to-pdf
+taxonomy:
+  category: pdf
+  tags: [pdf, convert, documents]
+  synonyms: [word to pdf, docx to pdf, convert word to pdf, word pdf converter, doc to pdf, browser word to pdf]
+graph:
+  related: [pdf-to-word, pdf-merge, pdf-split, compress-pdf, jpg-to-pdf]
+capabilities: { export: [pdf] }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: Word to PDF – Convert DOCX to PDF Free Online
+  description: Convert Microsoft Word documents (.docx, .doc) to PDF files online in your browser. Clean margins, standard page sizing, and zero server uploads.
+  primaryKeyword: word to pdf
+  secondaryKeywords: [docx to pdf, convert word to pdf, word pdf converter]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/pdf pdf.merge@1 fixtures 001-007", locator: "engines/pdf/src/operations/merge/fixtures" }
+  lastVerified: 2026-10-30

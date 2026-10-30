@@ -1,0 +1,13 @@
+id: 001-sample
+preset: pdf/compress
+source:
+  type: synthetic
+  citation: "one-page.pdf (1 page, 100x100) synthetic test fixture"
+input:
+  files:
+    - { name: one-page.pdf, bytes: { path: one-page.pdf } }
+expected:
+  fileName: merged.pdf
+  fileCount: 1
+  totalPageCount: 1
+expectedWarnings: [PDF_MERGE_VERIFY_OUTPUT, PDF_MERGE_FEATURES_MAY_NOT_BE_PRESERVED, PDF_MERGE_LARGE_OR_PROTECTED_MAY_FAIL, PDF_MERGE_AUTHORIZED_USE_ONLY]

@@ -24,6 +24,7 @@ export async function buildSite(env: string, outDir: string): Promise<void> {
       MANGOTOOLS_ENV: env,
       MANGOTOOLS_OUT_DIR: outDir,
       ASTRO_TELEMETRY_DISABLED: '1',
+      RAYON_NUM_THREADS: process.env.RAYON_NUM_THREADS ?? '4',
     },
   });
   if (result.status !== 0)

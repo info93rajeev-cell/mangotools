@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: pdf-to-word
+slug: pdf-to-word
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: convert PDF documents to editable Microsoft Word DOCX files in browser." }
+name: PDF to Word
+shortName: PDF to Word
+summary: Convert PDF documents to editable Microsoft Word DOCX files entirely in your browser with layout preservation.
+archetype: D
+preset: pdf/pdf-to-word
+taxonomy:
+  category: pdf
+  tags: [pdf, convert, documents]
+  synonyms: [pdf to word, pdf to docx, convert pdf to word, pdf word converter, editable word from pdf, free pdf to word]
+graph:
+  related: [word-to-pdf, pdf-merge, pdf-split, compress-pdf, jpg-to-pdf]
+capabilities: { export: [docx] }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: PDF to Word – Convert PDF to DOCX Free Online
+  description: Convert PDF documents to editable Microsoft Word DOCX files right in your browser. Preserves tables, headings, and formatting with zero server upload.
+  primaryKeyword: pdf to word
+  secondaryKeywords: [pdf to docx, convert pdf to word, pdf word converter]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/pdf pdf.merge@1 fixtures 001-007", locator: "engines/pdf/src/operations/merge/fixtures" }
+  lastVerified: 2026-10-30

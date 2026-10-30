@@ -46,6 +46,7 @@ describe('registry pipeline — valid repository', () => {
       'base64-encode-decode',
       'brickwork-calculator',
       'cbm-calculator',
+      'compress-pdf',
       'concrete-quantity-calculator',
       'container-loading-calculator',
       'csv-to-json',
@@ -70,6 +71,7 @@ describe('registry pipeline — valid repository', () => {
       'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
+      'pdf-to-word',
       'photo-size-reducer',
       'plaster-calculator',
       'profit-margin-calculator',
@@ -78,6 +80,7 @@ describe('registry pipeline — valid repository', () => {
       'timestamp-converter',
       'url-encode-decode',
       'volumetric-weight-calculator',
+      'word-to-pdf',
     ]);
     expect(Object.keys(registry?.presets ?? {}).length).toBe(
       real.presets.filter((p) => (p.data as { abstract?: boolean }).abstract !== true).length,
@@ -458,9 +461,16 @@ describe('category visibility threshold', () => {
       'pdf',
       'media',
     ]);
-    expect(visibleAt(4)).toEqual(['construction', 'logistics', 'business', 'developer', 'media']);
-    expect(visibleAt(5)).toEqual(['construction', 'developer', 'media']);
-    expect(visibleAt(6)).toEqual(['construction', 'developer', 'media']);
+    expect(visibleAt(4)).toEqual([
+      'construction',
+      'logistics',
+      'business',
+      'developer',
+      'pdf',
+      'media',
+    ]);
+    expect(visibleAt(5)).toEqual(['construction', 'developer', 'pdf', 'media']);
+    expect(visibleAt(6)).toEqual(['construction', 'developer', 'pdf', 'media']);
     expect(visibleAt(7)).toEqual(['media']);
     expect(visibleAt(8)).toEqual(['media']);
     expect(visibleAt(9)).toEqual(['media']);

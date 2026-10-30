@@ -1,0 +1,149 @@
+---
+// apps/web/src/components/PdfCategoryGuide.astro
+---
+
+<link rel="stylesheet" href="/pdf/pdf-guide.css" />
+
+<div class="pdf-guide-container">
+  <!-- Heavy Book Engine Hero Callout -->
+  <div class="hero-callout">
+    <div class="hero-callout-icon">📚</div>
+    <div class="hero-callout-content">
+      <div class="hero-badge-row">
+        <span class="heavy-badge">✨ High-Capacity Engine</span>
+        <span class="speed-badge">⚡ 1,500–1,600+ Page Support</span>
+        <span class="privacy-badge">🔒 100% In-Browser</span>
+      </div>
+      <h2 class="hero-title">Handles Heavy Books & Multi-Volume Documents Without Uploads</h2>
+      <p class="hero-desc">
+        Need to split a 1,600-page medical or engineering textbook? Other online tools freeze or hit file limits, forcing you to use complex Adobe tools. BeyondTheAI splits, merges, and compresses massive documents directly on your CPU — no sign-up, no upload timeouts, and zero hassle.
+      </p>
+      <div class="hero-actions">
+        <a href="/pdf-split" class="hero-action-btn primary">
+          ✂️ Split 1,600-Page Book into Chapters
+        </a>
+        <a href="/pdf-merge" class="hero-action-btn secondary">
+          📄 Merge Multi-Part PDFs
+        </a>
+        <a href="/compress-pdf" class="hero-action-btn secondary">
+          🗜️ Compress Large Files
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-Step Sequence Guide -->
+  <section class="sequence-section" aria-labelledby="how-it-works-heading">
+    <div class="section-header">
+      <h2 id="how-it-works-heading" class="section-title">How It Works — Step-by-Step Sequence</h2>
+      <span class="section-sub">Simple, fast, and transparent workflow designed for everyday productivity</span>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-badge">Step 1</div>
+        <div class="step-icon">📂</div>
+        <h3 class="step-heading">Add Files or Pick a Sample</h3>
+        <p class="step-text">
+          Drag and drop your PDF or Word files, or try our pre-loaded samples (including 1,600-page textbooks and corporate contracts).
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-badge">Step 2</div>
+        <div class="step-icon">⚙️</div>
+        <h3 class="step-heading">Configure Your Action</h3>
+        <p class="step-text">
+          Reorder pages, split into 100-page chapters, specify custom ranges, choose balanced compression, or convert to Word DOCX.
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-badge">Step 3</div>
+        <div class="step-icon">⬇️</div>
+        <h3 class="step-heading">1-Click Instant Download</h3>
+        <p class="step-text">
+          Everything is compiled right in your browser tab. Click download for your ready PDF, DOCX, or ZIP file without waiting in server queues.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Sample Reference Showcase -->
+  <section class="sample-showcase" aria-labelledby="sample-docs-heading">
+    <div class="section-header">
+      <h2 id="sample-docs-heading" class="section-title">Pre-Loaded Document Samples & Use Cases</h2>
+      <span class="section-sub">Try any of these document templates directly inside the tools with zero setup</span>
+    </div>
+
+    <div class="samples-grid">
+      <!-- Sample 1 -->
+      <a href="/pdf-split" class="sample-card">
+        <div class="sample-header">
+          <span class="sample-tag tag-blue">📚 Big Book Mode</span>
+          <span class="sample-pages">1,600 Pages • 342 MB</span>
+        </div>
+        <div class="sample-preview preview-blue">
+          <div class="doc-line doc-line-title"></div>
+          <div class="doc-line doc-line-long"></div>
+          <div class="doc-line doc-line-med"></div>
+          <div class="doc-badge-pill">16 Chapters (100 pgs each)</div>
+        </div>
+        <h3 class="sample-title">Medical Physiology & Anatomy Reference</h3>
+        <p class="sample-desc">Massive 1,600-page textbook. Split into 16 easy-to-read 100-page chapter files or extract single units instantly.</p>
+        <span class="sample-cta">Try in PDF Split &rarr;</span>
+      </a>
+
+      <!-- Sample 2 -->
+      <a href="/pdf-merge" class="sample-card">
+        <div class="sample-header">
+          <span class="sample-tag tag-purple">📄 PDF Merge</span>
+          <span class="sample-pages">4 Files • 124 Pages</span>
+        </div>
+        <div class="sample-preview preview-purple">
+          <div class="doc-line doc-line-title"></div>
+          <div class="doc-line doc-line-long"></div>
+          <div class="doc-line doc-line-med"></div>
+          <div class="doc-badge-pill">Master Agreement + Annexures</div>
+        </div>
+        <h3 class="sample-title">Corporate Master Services Contract</h3>
+        <p class="sample-desc">Combines agreement terms, technical annexures, and signed audit schedules with automatic table of contents bookmarks.</p>
+        <span class="sample-cta">Try in PDF Merge &rarr;</span>
+      </a>
+
+      <!-- Sample 3 -->
+      <a href="/compress-pdf" class="sample-card">
+        <div class="sample-header">
+          <span class="sample-tag tag-green">🗜️ Compress PDF</span>
+          <span class="sample-pages">86 Pages • -65% Size</span>
+        </div>
+        <div class="sample-preview preview-green">
+          <div class="doc-line doc-line-title"></div>
+          <div class="doc-line doc-line-long"></div>
+          <div class="doc-line doc-line-med"></div>
+          <div class="doc-badge-pill">24.8 MB &rarr; 8.6 MB</div>
+        </div>
+        <h3 class="sample-title">Annual Corporate Audit Dossier</h3>
+        <p class="sample-desc">Reduces heavy client submission packs and scans down to lightweight, email-ready sizes without losing visual text sharpness.</p>
+        <span class="sample-cta">Try in Compress PDF &rarr;</span>
+      </a>
+
+      <!-- Sample 4 -->
+      <a href="/pdf-to-word" class="sample-card">
+        <div class="sample-header">
+          <span class="sample-tag tag-amber">📝 PDF to Word</span>
+          <span class="sample-pages">42 Pages • Tables Preserved</span>
+        </div>
+        <div class="sample-preview preview-amber">
+          <div class="doc-line doc-line-title"></div>
+          <div class="doc-line doc-line-long"></div>
+          <div class="doc-line doc-line-med"></div>
+          <div class="doc-badge-pill">Native DOCX OpenXML</div>
+        </div>
+        <h3 class="sample-title">Executive Project Proposal & SOW</h3>
+        <p class="sample-desc">Extracts editable paragraphs, heading styles, and financial pricing tables directly into a clean Microsoft Word file.</p>
+        <span class="sample-cta">Try in PDF to Word &rarr;</span>
+      </a>
+    </div>
+  </section>
+</div>

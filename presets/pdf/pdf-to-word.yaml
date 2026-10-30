@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: pdf/pdf-to-word
+version: 0.1.0
+extends: pdf/merge
+operation: pdf.merge@1
+ui:
+  archetypes: [D]
+  fileAccept: application/pdf
+outputs:
+  fileCount: { labelKey: output.filesConverted, format: number, order: 1, primary: true }
+  totalPageCount: { labelKey: output.totalPages, format: number, order: 2 }
+  fileName: { labelKey: output.outputFile, format: text, order: 3 }
+strings:
+  en:
+    fileTool.dropHint: "Drag and drop PDF files here, or choose files."
+    fileTool.queueLabel: "Selected PDF to convert"
+    fileTool.outputNamePlaceholder: "converted.docx"
+    fileTool.downloadCta: "Download Word document"
+    fileTool.noFilesYet: "Add a PDF file above to convert to DOCX."
+    output.filesConverted: "Files converted"
+    output.totalPages: "Total pages"
+    output.outputFile: "Output file"

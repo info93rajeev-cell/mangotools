@@ -53,7 +53,13 @@ const BUSINESS_STUDIO_TOOL_IDS = new Set([
   'amazon-india-seller-fee-profit-estimator',
   'markup-calculator',
 ]);
-const PDF_STUDIO_TOOL_IDS = new Set(['pdf-merge', 'pdf-split']);
+const PDF_STUDIO_TOOL_IDS = new Set([
+  'pdf-merge',
+  'pdf-split',
+  'compress-pdf',
+  'pdf-to-word',
+  'word-to-pdf',
+]);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';

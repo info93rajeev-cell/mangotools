@@ -13,7 +13,22 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Upload PDF File
         </h2>
-        <span class={styles.headerCounter}>Supports PDF files • Max 100 MB</span>
+        <button
+          type="button"
+          onClick={studio.loadSamplePdfToWord}
+          style={{
+            fontSize: '11px',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            border: '1px solid #fecaca',
+            background: '#fef2f2',
+            color: '#dc2626',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          📄 Sample Contract
+        </button>
       </div>
       {fileName ? (
         <div class={styles.fileRow} style={{ background: '#fef2f2', borderColor: '#fecaca' }}>

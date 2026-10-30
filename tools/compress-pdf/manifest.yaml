@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: compress-pdf
+slug: compress-pdf
+status: beta
+tier: T3
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: compress PDF documents locally with balanced and custom quality presets." }
+name: Compress PDF
+shortName: Compress PDF
+summary: Reduce PDF file size with smart compression presets. Runs entirely in your browser with zero uploads.
+archetype: D
+preset: pdf/compress
+taxonomy:
+  category: pdf
+  tags: [pdf, compress, documents]
+  synonyms: [compress pdf, reduce pdf size, pdf compressor, shrink pdf, compress pdf online, browser pdf compressor]
+graph:
+  related: [pdf-merge, pdf-split, pdf-to-word, word-to-pdf, jpg-to-pdf]
+capabilities: { export: [pdf] }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: Compress PDF – Reduce File Size Free Online
+  description: Free browser-based Compress PDF tool to reduce PDF file size with balanced and strong presets. Fast, secure, and nothing is ever uploaded to a server.
+  primaryKeyword: compress pdf
+  secondaryKeywords: [reduce pdf size, pdf compressor, shrink pdf]
+quality:
+  verifiedAgainst:
+    - { citation: "engines/pdf pdf.merge@1 fixtures 001-007", locator: "engines/pdf/src/operations/merge/fixtures" }
+  lastVerified: 2026-10-30

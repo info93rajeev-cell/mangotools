@@ -34,6 +34,7 @@ describe('privacy.dataClass classification', () => {
       'amazon-india-seller-fee-profit-estimator',
       'base64-encode-decode',
       'cbm-calculator',
+      'compress-pdf',
       'csv-to-json',
       'export-commercial-invoice-generator',
       'export-packing-list-generator',
@@ -51,9 +52,11 @@ describe('privacy.dataClass classification', () => {
       'passport-photo-resizer',
       'pdf-merge',
       'pdf-split',
+      'pdf-to-word',
       'photo-size-reducer',
       'signature-resizer',
       'url-encode-decode',
+      'word-to-pdf',
     ];
     const actual = tools
       .filter((t) => t.privacy.dataClass === 'personal')

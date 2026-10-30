@@ -123,18 +123,20 @@ categories:
     name: PDF & Documents
     icon: file-text
     order: 70
-    summary: Merge PDF files, split a PDF by page range, and convert JPG images to PDF, entirely in your browser.
+    summary: Merge, split, compress, and convert PDF and Word documents in your browser — handles heavy books up to 1,500+ pages.
     seo:
-      title: PDF Tools – Merge, Split & Convert JPG to PDF Online
-      description: Free PDF tools to merge, split by page range, and convert JPG images to PDF. Runs entirely in your browser — no upload, no sign-up, no ads.
+      title: PDF Tools – Merge, Split, Compress & Convert Free Online
+      description: Free browser PDF tools to merge, split heavy books, compress, and convert between PDF and Word. 100% private with zero server uploads.
     about:
-      - PDF Merge combines multiple PDF files into a single PDF, in the order you choose, entirely in your browser. PDF Split extracts a page range from a PDF into a new PDF. JPG to PDF converts one or more JPG or JPEG images into a single PDF, one image per page. Nothing is uploaded to a server for any of these tools.
-      - These are simple, browser-first tools. Bookmarks, forms, annotations and other advanced PDF features from the original files may not be preserved by PDF Merge or PDF Split, image orientation from camera metadata may not be preserved by JPG to PDF, and very large, encrypted, password-protected or corrupted files may fail to process.
+      - PDF & Documents tools let you merge multiple documents, split large files and heavy 1,500+ page books into chapters, compress PDF file size, and convert between Word DOCX and PDF — all running directly inside your browser with zero server uploads.
+      - Every operation runs locally on your device, ensuring complete confidentiality for contracts, invoices, textbooks, and personal documents.
     faq:
       - q: Are these PDF tools free?
-        a: Yes. PDF Merge, PDF Split and JPG to PDF are free to use, with no sign-up and no ads.
+        a: Yes. Every PDF tool is free to use with no sign-up, no watermarks, and no ads.
       - q: Are my files uploaded anywhere?
-        a: No. Every tool processes your files in this browser. Nothing is uploaded to a server.
+        a: No. Every tool processes your files locally in this browser. Nothing is uploaded to any server.
+      - q: Can I split large books with 1,500+ pages?
+        a: Yes. The High-Capacity Splitter easily splits 1,500 to 1,600+ page textbooks and manuals into chapters or custom ranges without freezing your browser.
   - id: media
     slug: media
     name: Image & Media
