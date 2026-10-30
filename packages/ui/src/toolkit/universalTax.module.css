@@ -10,6 +10,40 @@
   box-sizing: border-box;
 }
 
+/* TOP HEADER TITLE ROW */
+.topHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+}
+
+.pageSubtitle {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
 /* TOP CALLOUT BANNER */
 .saveCalloutBanner {
   background: linear-gradient(135deg, #fefce8 0%, #ecfdf5 100%);
@@ -109,6 +143,12 @@
   height: 22px;
   background: #cbd5e1;
   margin: 0 4px;
+}
+
+.taxSystemNavWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .taxSystemNavGroup {
@@ -452,6 +492,16 @@
 }
 
 /* DONUT CHART & BREAKDOWN */
+.breakdownTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
 .donutBreakdownContainer {
   display: flex;
   align-items: center;
@@ -566,11 +616,17 @@
 }
 
 /* ACTION BUTTONS */
-.actionBtnsRow {
+.actionBtnsRow,
+.desktopOnlyActions {
   display: flex;
   align-items: center;
   gap: 7px;
   flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.mobileOnlyActions {
+  display: none;
 }
 
 .calculateBtn {
@@ -965,6 +1021,42 @@
 
 /* RESPONSIVE MEDIA QUERIES */
 @media (max-width: 960px) {
+  .topHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .saveCalloutBanner {
+    width: 100%;
+  }
+
+  .topBarNav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .countryPillsRow {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .countryPillBtn {
+    flex-shrink: 0;
+  }
+
+  .navDivider {
+    display: none;
+  }
+
+  .taxSystemNavWrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
   .studio3Col {
     display: flex;
     flex-direction: column;
@@ -978,5 +1070,29 @@
   .donutBreakdownContainer {
     flex-direction: column;
     align-items: center;
+  }
+
+  .desktopOnlyActions {
+    display: none;
+  }
+
+  .mobileOnlyActions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .mobileOnlyActions .calculateBtn {
+    flex: 1.5;
+    justify-content: center;
+  }
+
+  .mobileOnlyActions .ghostActionBtn {
+    flex: 1;
+    justify-content: center;
+    font-size: 11px;
+    padding: 7px 8px;
   }
 }

@@ -90,9 +90,15 @@ function KpiMetricsGrid({
 function DonutBreakdownSection({
   results,
   currencySymbol,
+  country,
+  isComposition,
+  cessRate,
 }: {
   results: UseUniversalTaxReturn['results'];
   currencySymbol: string;
+  country: UseUniversalTaxReturn['country'];
+  isComposition: boolean;
+  cessRate: number;
 }) {
   const radius = 36;
   const strokeWidth = 14;
@@ -107,62 +113,83 @@ function DonutBreakdownSection({
     return { ...comp, strokeDasharray, strokeDashoffset };
   });
 
+  const displayComponents = [...results.components];
+  if (
+    country === 'in' &&
+    !isComposition &&
+    cessRate === 0 &&
+    !displayComponents.some((c) => c.name.startsWith('CESS'))
+  ) {
+    displayComponents.push({
+      name: 'CESS @ 0%',
+      rate: 0,
+      amount: 0,
+      percentage: 0,
+      color: '#f43f5e',
+    });
+  }
+
   return (
-    <div class={styles.donutBreakdownContainer}>
-      <div class={styles.donutSvgCol}>
-        <svg
-          width="90"
-          height="90"
-          viewBox="0 0 90 90"
-          aria-label="Tax Split Donut Chart"
-          role="img"
-        >
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="none"
-            stroke="#e2e8f0"
-            strokeWidth={strokeWidth}
-          />
-          {slices.map((s, idx) => (
+    <div>
+      <div class={styles.breakdownTitleRow}>
+        <span>📊 Tax split &amp; breakdown</span>
+      </div>
+      <div class={styles.donutBreakdownContainer}>
+        <div class={styles.donutSvgCol}>
+          <svg
+            width="90"
+            height="90"
+            viewBox="0 0 90 90"
+            aria-label="Tax Split Donut Chart"
+            role="img"
+          >
             <circle
-              key={idx}
               cx={center}
               cy={center}
               r={radius}
               fill="none"
-              stroke={s.color}
+              stroke="#e2e8f0"
               strokeWidth={strokeWidth}
-              strokeDasharray={s.strokeDasharray}
-              strokeDashoffset={s.strokeDashoffset}
-              transform={`rotate(-90 ${center} ${center})`}
             />
-          ))}
-        </svg>
-        <div class={styles.donutCenterLabel}>
-          <div class={styles.donutTotalVal}>
-            {formatCurrencyNumber(results.totalTax, currencySymbol)}
+            {slices.map((s, idx) => (
+              <circle
+                key={idx}
+                cx={center}
+                cy={center}
+                r={radius}
+                fill="none"
+                stroke={s.color}
+                strokeWidth={strokeWidth}
+                strokeDasharray={s.strokeDasharray}
+                strokeDashoffset={s.strokeDashoffset}
+                transform={`rotate(-90 ${center} ${center})`}
+              />
+            ))}
+          </svg>
+          <div class={styles.donutCenterLabel}>
+            <div class={styles.donutTotalVal}>
+              {formatCurrencyNumber(results.totalTax, currencySymbol)}
+            </div>
+            <div class={styles.donutTotalSub}>Total Tax</div>
           </div>
-          <div class={styles.donutTotalSub}>Total Tax</div>
         </div>
-      </div>
 
-      <div class={styles.breakdownTableCol}>
-        {results.components.map((c, idx) => (
-          <div key={idx} class={styles.breakdownRow}>
-            <div class={styles.breakdownLabelGroup}>
-              <span class={styles.breakdownDot} style={{ background: c.color }} />
-              <span>{c.name}</span>
+        <div class={styles.breakdownTableCol}>
+          {displayComponents.map((c, idx) => (
+            <div key={idx} class={styles.breakdownRow}>
+              <div class={styles.breakdownLabelGroup}>
+                <span class={styles.breakdownDot} style={{ background: c.color }} />
+                <span>{c.name}</span>
+              </div>
+              <div class={styles.breakdownValGroup}>
+                <span class={styles.breakdownAmount}>
+                  {formatCurrencyNumber(c.amount, currencySymbol)}
+                </span>
+                <span class={styles.breakdownPercent}>{c.percentage}%</span>
+              </div>
             </div>
-            <div class={styles.breakdownValGroup}>
-              <span class={styles.breakdownAmount}>
-                {formatCurrencyNumber(c.amount, currencySymbol)}
-              </span>
-              <span class={styles.breakdownPercent}>{c.percentage}%</span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -210,7 +237,13 @@ export function UniversalTaxResultsCard({ tax }: UniversalTaxResultsCardProps) {
         currencySymbol={currencySymbol}
       />
 
-      <DonutBreakdownSection results={results} currencySymbol={currencySymbol} />
+      <DonutBreakdownSection
+        results={results}
+        currencySymbol={currencySymbol}
+        country={tax.country}
+        isComposition={tax.isComposition}
+        cessRate={tax.cessRate}
+      />
 
       <div class={styles.savingsNotice}>
         <div class={styles.savingsNoticeText}>
@@ -227,10 +260,10 @@ export function UniversalTaxResultsCard({ tax }: UniversalTaxResultsCardProps) {
         </span>
       </div>
 
-      <div class={styles.actionBtnsRow}>
+      <div class={styles.desktopOnlyActions}>
         <button type="button" class={styles.calculateBtn} onClick={copySummary}>
-          <span>🧮</span>
-          <span>Calculate & Copy</span>
+          <span>▦</span>
+          <span>Calculate Tax</span>
         </button>
         <button type="button" class={styles.ghostActionBtn} onClick={copySummary}>
           <span>📋</span>

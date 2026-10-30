@@ -223,6 +223,14 @@ export function UniversalTaxCountryOptionsCard({ tax }: UniversalTaxCountryOptio
             {currentProfile.flag} {currentProfile.name} Tax Options
           </span>
         </div>
+        <span
+          style={{ fontSize: '12px', color: '#64748b', cursor: 'help' }}
+          title="Configure jurisdiction-specific tax rules"
+          role="img"
+          aria-label="Tax options help"
+        >
+          ❔
+        </span>
       </div>
 
       {tax.country === 'in' && <IndiaGstOptionsSection tax={tax} />}
