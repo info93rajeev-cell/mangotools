@@ -19,7 +19,7 @@ function PdfMergeDropCard({
   }
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF files
@@ -67,7 +67,7 @@ function PdfMergeListCard({ studio }: { studio: MergeStudioState }) {
   const totalPages = files.reduce((acc, f) => acc + f.pageCount, 0);
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-arrange">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Arrange files in the order you want to merge
@@ -150,7 +150,7 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
   } = studio;
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-settings">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>3</span> Merge settings

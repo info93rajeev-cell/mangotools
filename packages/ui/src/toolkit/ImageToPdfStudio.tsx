@@ -1,18 +1,23 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
-import { ImageListSection, SettingsSection, UploadSection } from './ImageToPdfLeftSections.tsx';
-import styles from './imageToPdfStudio.module.css';
-import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
+import { JpgToPdfArrangeCard, JpgToPdfUploadCard } from './JpgToPdfLeftCards.tsx';
 import {
-  type FitModeOption,
-  type MarginsOption,
-  type OrientationOption,
-  type PageSizeOption,
-  type PdfImageItem,
-  usePdfStudioState,
-} from './usePdfStudioState.ts';
-
-export type { FitModeOption, MarginsOption, OrientationOption, PageSizeOption, PdfImageItem };
+  JpgToPdfActionCard,
+  JpgToPdfPreviewCard,
+  JpgToPdfSummaryCard,
+} from './JpgToPdfRightCards.tsx';
+import { JpgToPdfSettingsCard } from './JpgToPdfSettingsCard.tsx';
+import styles from './jpgToPdfStudio.module.css';
+import { JpgToPdfIcon } from './PdfToolIcons.tsx';
+import {
+  isTourCompleted,
+  ToolOnboardingTour,
+  TourLauncherButton,
+  type TourStep,
+} from './ToolOnboardingTour.tsx';
+import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
+import { type PdfImageItem, usePdfStudioState } from './usePdfStudioState.ts';
 
 export interface ImageToPdfStudioProps {
   idPrefix: string;
@@ -23,309 +28,220 @@ export interface ImageToPdfStudioProps {
   onPhase?: (phase: FilePhase) => void;
 }
 
-function FormatSwitcher({ converter }: { converter: UseImageFormatConverterReturn }) {
-  return (
-    <div class={styles.formatSwitcherBar}>
-      <div class={styles.formatTabs} role="tablist" aria-label="Target format">
-        <button
-          type="button"
-          class={styles.formatTab}
-          data-active={String(converter.targetFormat === 'jpg')}
-          onClick={() => converter.setTargetFormat('jpg')}
-        >
-          JPG
-        </button>
-        <button
-          type="button"
-          class={styles.formatTab}
-          data-active={String(converter.targetFormat === 'png')}
-          onClick={() => converter.setTargetFormat('png')}
-        >
-          PNG
-        </button>
-        <button
-          type="button"
-          class={styles.formatTab}
-          data-active={String(converter.targetFormat === 'webp')}
-          onClick={() => converter.setTargetFormat('webp')}
-        >
-          WebP
-        </button>
-        <button
-          type="button"
-          class={styles.formatTab}
-          data-active="true"
-          onClick={() => converter.setTargetFormat('pdf')}
-        >
-          PDF
-        </button>
-      </div>
-      <span class={styles.modeDescription}>
-        Multi-Image PDF Studio mode active • Combine multiple images into a single document
-      </span>
-    </div>
-  );
+const JPG_TO_PDF_TOUR_STEPS: TourStep[] = [
+  {
+    id: 'step-upload',
+    targetSelector: '[data-tour="upload"]',
+    stepNumber: 1,
+    title: '1. Add JPG Images',
+    description:
+      'Drag & drop image files (JPG, PNG, WebP) or click "Load Sample" in the header to test.',
+    hint: 'Multi-image upload supported — 100% in-browser processing.',
+  },
+  {
+    id: 'step-arrange',
+    targetSelector: '[data-tour="arrange"]',
+    stepNumber: 2,
+    title: '2. Arrange & Rotate Pages',
+    description:
+      'Use the up/down arrows or drag handles to set page order, and rotate images 90° if needed.',
+  },
+  {
+    id: 'step-settings',
+    targetSelector: '[data-tour="settings"]',
+    stepNumber: 3,
+    title: '3. Configure Page & Fit Settings',
+    description:
+      'Set page size (A4, Letter), orientation (Portrait/Landscape), fit mode, and output file name.',
+  },
+  {
+    id: 'step-action',
+    targetSelector: '[data-tour="action"]',
+    stepNumber: 4,
+    title: '4. Instant Summary & Create PDF',
+    description:
+      'Review page counts and previews, then click the golden "Create PDF" button to download.',
+    hint: 'Zero server uploads — guaranteed 100% private to your device.',
+  },
+];
+
+function swap<T>(arr: T[], i: number, j: number): T[] {
+  if (i < 0 || j < 0 || i >= arr.length || j >= arr.length) return arr;
+  const next = [...arr];
+  const t = next[i];
+  next[i] = next[j];
+  next[j] = t;
+  return next;
 }
 
-function PreviewSection({
-  images,
-  orientation,
-  margins,
-  fitMode,
+function removeItem(arr: PdfImageItem[], id: string): PdfImageItem[] {
+  const target = arr.find((item) => item.id === id);
+  if (target?.blobUrl.startsWith('blob:')) URL.revokeObjectURL(target.blobUrl);
+  return arr.filter((item) => item.id !== id);
+}
+
+function reorder<T>(arr: T[], from: number, to: number): T[] {
+  const next = [...arr];
+  const [removed] = next.splice(from, 1);
+  next.splice(to, 0, removed);
+  return next;
+}
+
+function JpgToPdfTopBar({
+  onOpenImages,
+  onLoadSamples,
+  onClearAll,
+  onLaunchTour,
 }: {
-  images: PdfImageItem[];
-  orientation: OrientationOption;
-  margins: MarginsOption;
-  fitMode: FitModeOption;
+  onOpenImages: () => void;
+  onLoadSamples: () => void;
+  onClearAll: () => void;
+  onLaunchTour: () => void;
 }) {
   return (
-    <section class={styles.previewContainer}>
-      <h2 class={styles.sectionHeading}>
-        4. PDF preview ({images.length} {images.length === 1 ? 'page' : 'pages'})
-      </h2>
-
-      {images.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '36px 16px', color: '#64748b' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '14px' }}>No pages yet</p>
-          <p style={{ margin: 0, fontSize: '12px' }}>
-            Upload images on the left to see page previews.
+    <div class={styles.topBar}>
+      <div class={styles.toolHeading}>
+        <div class={styles.toolIconBox}>
+          <JpgToPdfIcon />
+        </div>
+        <div class={styles.titleMeta}>
+          <div class={styles.titleRow}>
+            <h1 class={styles.titleText}>JPG to PDF</h1>
+            <div class={styles.badgePills}>
+              <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
+                ⚡ Instant In-Browser
+              </span>
+              <span class={styles.badgePill}>🔒 100% Private</span>
+              <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>🛡️ No Sign-Up Needed</span>
+            </div>
+          </div>
+          <p class={styles.subtitleText}>
+            Convert one or more JPG images into a single PDF, in the order you choose. Fast, private
+            and easy to use in your browser.
           </p>
         </div>
-      ) : (
-        <div class={styles.previewGrid}>
-          {images.map((item, index) => {
-            const itemOrient =
-              orientation === 'auto'
-                ? item.width >= item.height
-                  ? 'landscape'
-                  : 'portrait'
-                : orientation;
-
-            return (
-              <div key={item.id} class={styles.pageCard}>
-                <div class={styles.paperSheet} data-orientation={itemOrient} data-margin={margins}>
-                  <img
-                    src={item.blobUrl}
-                    alt={`Page ${index + 1}`}
-                    class={styles.previewImage}
-                    data-fit={fitMode}
-                  />
-                </div>
-                <span class={styles.pageNumber}>{index + 1}</span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </section>
-  );
-}
-
-function ResultSection({
-  imagesCount,
-  outputFileName,
-  isCompiling,
-  onDownload,
-}: {
-  imagesCount: number;
-  outputFileName: string;
-  isCompiling: boolean;
-  onDownload: () => void;
-}) {
-  return (
-    <section class={styles.resultSection}>
-      <h2 class={styles.sectionHeading}>5. Conversion result</h2>
-      <div class={styles.successBanner}>
-        <div class={styles.successLeft}>
-          <svg
-            class={styles.checkCircle}
-            viewBox="0 0 24 24"
-            fill="#16a34a"
-            role="img"
-            aria-label="Success checkmark"
-          >
-            <title>Success checkmark</title>
-            <circle cx="12" cy="12" r="10" fill="#16a34a" />
-            <path
-              d="m9 12 2 2 4-4"
-              stroke="#ffffff"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <div class={styles.successText}>
-            <p class={styles.successTitle}>{imagesCount > 0 ? 'PDF ready!' : 'Ready to convert'}</p>
-            <p class={styles.successSubtitle}>
-              {imagesCount > 0
-                ? `${imagesCount} images have been combined into one PDF file.`
-                : 'Add your images to combine them into a PDF.'}
-            </p>
-          </div>
-        </div>
-
-        {imagesCount > 0 && (
-          <div class={styles.successStats}>
-            <div class={styles.statItem}>
-              <span class={styles.statLabel}>Total pages</span>
-              <span class={styles.statValue}>{imagesCount}</span>
-            </div>
-            <div class={styles.statItem}>
-              <span class={styles.statLabel}>Output file name</span>
-              <span class={styles.statValue}>{outputFileName}</span>
-            </div>
-          </div>
-        )}
       </div>
 
-      <button
-        type="button"
-        class={styles.downloadPdfBtn}
-        onClick={onDownload}
-        disabled={imagesCount === 0 || isCompiling}
-      >
-        <span>📥</span>
-        <span>{isCompiling ? 'Compiling PDF...' : 'Download PDF'}</span>
-      </button>
-
-      <p class={styles.privacyFootnote}>
-        Your PDF is processed in your browser. No data is uploaded to our servers.
-      </p>
-    </section>
-  );
-}
-
-function RelatedActionCard() {
-  return (
-    <a href="/pdf-to-jpg" class={styles.relatedActionCard}>
-      <div class={styles.relatedLeft}>
-        <span class={styles.relatedIcon}>📄</span>
-        <span>
-          Need PDF to image? <span class={styles.relatedLinkText}>See upcoming tools &gt;</span>
-        </span>
+      <div class={styles.topActions}>
+        <button type="button" class={styles.actionBtnGhost} onClick={onOpenImages}>
+          📁 Open Images
+        </button>
+        <button type="button" class={styles.actionBtnGhost} onClick={onLoadSamples}>
+          📑 Load Sample
+        </button>
+        <button
+          type="button"
+          class={`${styles.actionBtnGhost} ${styles.actionBtnDanger}`}
+          onClick={onClearAll}
+        >
+          🗑️ Clear All
+        </button>
+        <TourLauncherButton onClick={onLaunchTour} />
       </div>
-      <span class={styles.relatedArrow}>&gt;</span>
-    </a>
-  );
-}
-
-function LeftWorkbenchColumn({
-  idPrefix,
-  s,
-}: {
-  idPrefix: string;
-  s: ReturnType<typeof usePdfStudioState>;
-}) {
-  return (
-    <div class={styles.leftColumn}>
-      <UploadSection
-        idPrefix={idPrefix}
-        fileInputRef={s.fileInputRef}
-        isDragging={s.isDragging}
-        onProcessFiles={(files) => void s.processFiles(files)}
-        onLoadSample={() => void s.loadSamples()}
-        setIsDragging={s.setIsDragging}
-      />
-
-      <ImageListSection
-        images={s.images}
-        onClearAll={s.clearAll}
-        onMoveUp={(index) => {
-          if (index <= 0) return;
-          s.setImages((prev) => {
-            const next = [...prev];
-            const temp = next[index - 1];
-            next[index - 1] = next[index];
-            next[index] = temp;
-            return next;
-          });
-        }}
-        onMoveDown={(index) => {
-          if (index >= s.images.length - 1) return;
-          s.setImages((prev) => {
-            const next = [...prev];
-            const temp = next[index + 1];
-            next[index + 1] = next[index];
-            next[index] = temp;
-            return next;
-          });
-        }}
-        onRemoveItem={(id) => {
-          s.setImages((prev) => {
-            const target = prev.find((item) => item.id === id);
-            if (target?.blobUrl.startsWith('blob:')) URL.revokeObjectURL(target.blobUrl);
-            return prev.filter((item) => item.id !== id);
-          });
-        }}
-        onReorder={(from, to) => {
-          s.setImages((prev) => {
-            const next = [...prev];
-            const [removed] = next.splice(from, 1);
-            next.splice(to, 0, removed);
-            return next;
-          });
-        }}
-      />
-
-      <SettingsSection
-        idPrefix={idPrefix}
-        pageSize={s.pageSize}
-        orientation={s.orientation}
-        fitMode={s.fitMode}
-        margins={s.margins}
-        outputFileName={s.outputFileName}
-        onSetPageSize={s.setPageSize}
-        onSetOrientation={s.setOrientation}
-        onSetFitMode={s.setFitMode}
-        onSetMargins={s.setMargins}
-        onSetOutputFileName={s.setOutputFileName}
-      />
     </div>
   );
 }
 
-function RightWorkbenchColumn({
+function JpgToPdfWorkbench({
+  props,
   s,
-  cleanName,
+  onCopySummary,
 }: {
+  props: ImageToPdfStudioProps;
   s: ReturnType<typeof usePdfStudioState>;
-  cleanName: string;
+  onCopySummary: () => void;
 }) {
   return (
-    <div class={styles.rightColumn}>
-      <PreviewSection
-        images={s.images}
-        orientation={s.orientation}
-        margins={s.margins}
-        fitMode={s.fitMode}
-      />
+    <div class={styles.workbenchGrid}>
+      <div class={styles.column}>
+        <JpgToPdfUploadCard
+          idPrefix={props.idPrefix}
+          fileInputRef={s.fileInputRef}
+          isDragging={s.isDragging}
+          setIsDragging={s.setIsDragging}
+          onProcessFiles={(files) => void s.processFiles(files)}
+        />
+        <JpgToPdfArrangeCard
+          images={s.images}
+          onMoveUp={(index) => s.setImages((prev) => swap(prev, index, index - 1))}
+          onMoveDown={(index) => s.setImages((prev) => swap(prev, index, index + 1))}
+          onRotate={s.rotateImage}
+          onRemoveItem={(id) => s.setImages((prev) => removeItem(prev, id))}
+          onReorder={(from, to) => s.setImages((prev) => reorder(prev, from, to))}
+        />
+        <JpgToPdfSettingsCard
+          idPrefix={props.idPrefix}
+          pageSize={s.pageSize}
+          orientation={s.orientation}
+          fitMode={s.fitMode}
+          margins={s.margins}
+          outputFileName={s.outputFileName}
+          onSetPageSize={s.setPageSize}
+          onSetOrientation={s.setOrientation}
+          onSetFitMode={s.setFitMode}
+          onSetMargins={s.setMargins}
+          onSetOutputFileName={s.setOutputFileName}
+        />
+      </div>
 
-      <ResultSection
-        imagesCount={s.images.length}
-        outputFileName={cleanName}
-        isCompiling={s.isCompiling}
-        onDownload={() => void s.downloadPdf()}
-      />
-
-      <RelatedActionCard />
+      <div class={styles.column}>
+        <JpgToPdfSummaryCard
+          images={s.images}
+          pageSize={s.pageSize}
+          orientation={s.orientation}
+          outputFileName={s.outputFileName}
+        />
+        <JpgToPdfPreviewCard images={s.images} />
+        <JpgToPdfActionCard
+          imagesCount={s.images.length}
+          isCompiling={s.isCompiling}
+          onDownload={() => void s.downloadPdf()}
+          onCopySummary={onCopySummary}
+          onReset={s.clearAll}
+        />
+      </div>
     </div>
   );
 }
 
 export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
-  const cleanName = s.outputFileName.trim().endsWith('.pdf')
-    ? s.outputFileName.trim()
-    : `${s.outputFileName.trim() || 'images'}.pdf`;
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isTourCompleted('jpg-to-pdf')) {
+      const timer = setTimeout(() => setIsTourOpen(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleCopySummary = async () => {
+    const text = `JPG to PDF: ${s.images.length} images, ${s.pageSize.toUpperCase()} (${s.orientation}), ${s.outputFileName}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      props.notify?.('Summary copied to clipboard');
+    } catch {
+      props.notify?.('Failed to copy');
+    }
+  };
 
   return (
     <div class={styles.studioContainer} data-image-to-pdf-studio="">
-      {props.converter && <FormatSwitcher converter={props.converter} />}
+      <JpgToPdfTopBar
+        onOpenImages={() => s.fileInputRef.current?.click()}
+        onLoadSamples={() => void s.loadSamples()}
+        onClearAll={s.clearAll}
+        onLaunchTour={() => setIsTourOpen(true)}
+      />
 
-      <div class={styles.workbenchGrid}>
-        <LeftWorkbenchColumn idPrefix={props.idPrefix} s={s} />
-        <RightWorkbenchColumn s={s} cleanName={cleanName} />
-      </div>
+      <JpgToPdfWorkbench props={props} s={s} onCopySummary={handleCopySummary} />
+
+      <ToolOnboardingTour
+        toolId="jpg-to-pdf"
+        steps={JPG_TO_PDF_TOUR_STEPS}
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+      />
     </div>
   );
 }

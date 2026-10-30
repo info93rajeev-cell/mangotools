@@ -51,7 +51,7 @@ const isCivil = [
     <div class="page">
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf'].includes(tool.slug) ? (
+        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf'].includes(tool.slug) ? (
           <h1 class="visually-hidden">{tool.seo.h1 ?? tool.name}</h1>
         ) : (
           <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />

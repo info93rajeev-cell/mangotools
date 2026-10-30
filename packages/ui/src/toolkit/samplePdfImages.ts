@@ -20,105 +20,101 @@ const TINY_JPEG = new Uint8Array([
   0x00, 0xbf, 0x80, 0xff, 0xd9,
 ]);
 
-function drawMountainLake(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.55);
-  sky.addColorStop(0, '#1e3a8a');
-  sky.addColorStop(1, '#93c5fd');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.fillStyle = '#334155';
-  ctx.beginPath();
-  ctx.moveTo(0, h * 0.55);
-  ctx.lineTo(w * 0.25, h * 0.2);
-  ctx.lineTo(w * 0.5, h * 0.55);
-  ctx.fill();
-
+function drawReceipt(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillStyle = '#f8fafc';
-  ctx.beginPath();
-  ctx.moveTo(w * 0.2, h * 0.27);
-  ctx.lineTo(w * 0.25, h * 0.2);
-  ctx.lineTo(w * 0.3, h * 0.27);
-  ctx.fill();
-
-  ctx.fillStyle = '#0284c7';
-  ctx.fillRect(0, h * 0.55, w, h * 0.45);
-}
-
-function drawBeach(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.5);
-  sky.addColorStop(0, '#0284c7');
-  sky.addColorStop(1, '#67e8f9');
-  ctx.fillStyle = sky;
   ctx.fillRect(0, 0, w, h);
-
-  ctx.fillStyle = '#0891b2';
-  ctx.fillRect(0, h * 0.5, w, h * 0.25);
-
-  ctx.fillStyle = '#fde047';
-  ctx.fillRect(0, h * 0.75, w, h * 0.25);
-
-  ctx.fillStyle = '#15803d';
-  ctx.beginPath();
-  ctx.arc(w * 0.75, h * 0.3, 25, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-function drawCity(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.65);
-  sky.addColorStop(0, '#312e81');
-  sky.addColorStop(1, '#f97316');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, w, h);
-
   ctx.fillStyle = '#0f172a';
-  for (let i = 0; i < 8; i++) {
-    const bW = w / 8;
-    const bH = 80 + ((i * 37) % 100);
-    ctx.fillRect(i * bW, h * 0.7 - bH, bW - 4, bH + h * 0.3);
+  ctx.font = 'bold 20px monospace';
+  ctx.fillText('RECEIPT #8492', 30, 45);
+  ctx.fillStyle = '#64748b';
+  ctx.font = '12px monospace';
+  ctx.fillText('Store #104 • 2026-10-30', 30, 70);
+  ctx.fillRect(30, 85, w - 60, 2);
+  for (let i = 0; i < 5; i++) {
+    ctx.fillText(`Item 0${i + 1} ......... $${(12.5 * (i + 1)).toFixed(2)}`, 30, 115 + i * 26);
   }
+  ctx.fillRect(30, 255, w - 60, 2);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 16px monospace';
+  ctx.fillText('TOTAL: $187.50', 30, 285);
 }
 
-function drawForest(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const bg = ctx.createLinearGradient(0, 0, 0, h);
-  bg.addColorStop(0, '#064e3b');
-  bg.addColorStop(1, '#022c22');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.fillStyle = '#022c22';
-  for (let i = 0; i < 6; i++) {
-    const tx = 30 + i * 50;
-    ctx.beginPath();
-    ctx.moveTo(tx, h * 0.25);
-    ctx.lineTo(tx - 25, h);
-    ctx.lineTo(tx + 25, h);
-    ctx.fill();
-  }
-}
-
-function drawSunset(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.65);
-  sky.addColorStop(0, '#ea580c');
-  sky.addColorStop(1, '#fde047');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, w, h);
-
+function drawInvoice(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(w * 0.5, h * 0.62, 20, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#1e3a8a';
+  ctx.fillRect(30, 30, w - 60, 40);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.fillText('COMMERCIAL INVOICE', 45, 56);
+  ctx.fillStyle = '#334155';
+  ctx.font = '12px sans-serif';
+  ctx.fillText('Billed to: Global Tech Logistics Inc.', 30, 100);
+  ctx.fillStyle = '#cbd5e1';
+  for (let i = 0; i < 4; i++) {
+    ctx.fillRect(30, 125 + i * 32, w - 60, 20);
+  }
+  ctx.fillStyle = '#16a34a';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.fillText('PAID IN FULL', 30, 280);
+}
 
-  ctx.fillStyle = '#78350f';
-  ctx.fillRect(0, h * 0.65, w, h * 0.35);
+function drawIdScan(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.fillStyle = '#f1f5f9';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#e0f2fe';
+  ctx.strokeStyle = '#0284c7';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.roundRect(40, 40, w - 80, h - 80, 12);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(60, 65, 90, 110);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.fillText('IDENTIFICATION CARD', 170, 85);
+  ctx.font = '12px sans-serif';
+  ctx.fillText('Name: Alex Carter', 170, 115);
+  ctx.fillText('ID: AGY-88319-X', 170, 140);
+  ctx.fillText('Verified: YES', 170, 165);
+}
+
+function drawFormPage(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.fillText('APPLICATION FORM', 30, 45);
+  ctx.fillStyle = '#94a3b8';
+  for (let i = 0; i < 6; i++) {
+    ctx.strokeRect(30, 70 + i * 36, 18, 18);
+    ctx.fillRect(60, 75 + i * 36, w - 100, 10);
+  }
+}
+
+function drawWorksheet(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#059669';
+  ctx.fillRect(30, 30, w - 60, 24);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.fillText('MONTHLY AUDIT WORKSHEET', 40, 47);
+  ctx.strokeStyle = '#e2e8f0';
+  for (let r = 0; r < 7; r++) {
+    for (let c = 0; c < 4; c++) {
+      ctx.strokeRect(30 + c * 105, 60 + r * 30, 105, 30);
+    }
+  }
 }
 
 const SAMPLE_SPECS = [
-  { name: 'mountain-lake.jpg', width: 4000, height: 2667, size: 2450000, draw: drawMountainLake },
-  { name: 'beach.jpg', width: 3840, height: 2160, size: 1820000, draw: drawBeach },
-  { name: 'city.jpg', width: 3840, height: 2160, size: 1540000, draw: drawCity },
-  { name: 'forest.jpg', width: 4000, height: 2667, size: 2100000, draw: drawForest },
-  { name: 'sunset.jpg', width: 3840, height: 2160, size: 1650000, draw: drawSunset },
+  { name: 'Receipt.jpg', width: 1240, height: 1754, size: 1200000, draw: drawReceipt },
+  { name: 'Invoice.jpg', width: 1654, height: 2339, size: 2100000, draw: drawInvoice },
+  { name: 'ID-Scan.jpg', width: 1920, height: 1080, size: 1600000, draw: drawIdScan },
+  { name: 'Form-Page.jpg', width: 1275, height: 1650, size: 1800000, draw: drawFormPage },
+  { name: 'Worksheet.jpg', width: 1440, height: 1920, size: 1700000, draw: drawWorksheet },
 ];
 
 async function renderCanvasSample(spec: (typeof SAMPLE_SPECS)[0]): Promise<ScenicSample | null> {

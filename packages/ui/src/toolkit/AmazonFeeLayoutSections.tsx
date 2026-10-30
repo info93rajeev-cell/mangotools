@@ -15,7 +15,9 @@ import type { AmazonFeeEstimatorState } from './useAmazonFeeEstimator.ts';
 export function AmazonFeeLeftCardsWrapper({ state }: { state: AmazonFeeEstimatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <AmazonFeeInputsCard state={state} />
+      <div data-tour="amazon-inputs">
+        <AmazonFeeInputsCard state={state} />
+      </div>
       <AmazonFeeMarketplaceCard state={state} />
     </div>
   );
@@ -24,9 +26,11 @@ export function AmazonFeeLeftCardsWrapper({ state }: { state: AmazonFeeEstimator
 export function AmazonFeeCenterCardsWrapper({ state }: { state: AmazonFeeEstimatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <AmazonFeeResultsSummaryCard state={state} />
-      <AmazonFeeStatementCard state={state} />
-      <AmazonFeeVisualCard state={state} />
+      <div data-tour="amazon-results">
+        <AmazonFeeResultsSummaryCard state={state} />
+        <AmazonFeeStatementCard state={state} />
+        <AmazonFeeVisualCard state={state} />
+      </div>
     </div>
   );
 }
@@ -34,7 +38,9 @@ export function AmazonFeeCenterCardsWrapper({ state }: { state: AmazonFeeEstimat
 export function AmazonFeeRightCardsWrapper({ state }: { state: AmazonFeeEstimatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <AmazonFeeActionsCard state={state} />
+      <div data-tour="amazon-actions">
+        <AmazonFeeActionsCard state={state} />
+      </div>
       <AmazonFeeComparisonCard state={state} />
       <AmazonFeeNotesCard />
     </div>

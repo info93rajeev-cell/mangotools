@@ -14,7 +14,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
   }
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add PDF file
@@ -218,7 +218,7 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
   const { preset, setPreset } = studio;
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-arrange">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Compression settings

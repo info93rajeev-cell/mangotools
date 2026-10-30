@@ -168,7 +168,7 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
         downloadAsZip={downloadAsZip}
       />
       <PdfSplitPreviewGrid parts={parts} totalPages={totalPages} />
-      <div class={styles.card}>
+      <div class={styles.card} data-tour="pdf-action">
         <div class={styles.privacyNotice}>
           <span style={{ fontSize: '18px' }}>🔒</span>
           <span>

@@ -13,6 +13,7 @@ export interface PdfImageItem {
   height: number;
   bytes: Uint8Array;
   blobUrl: string;
+  rotation?: number;
 }
 
 export type PageSizeOption = 'a4' | 'letter' | 'fit';
@@ -83,6 +84,26 @@ async function executePdfDownload(
   return res.value.pdfBytes;
 }
 
+async function readFiles(files: FileList | File[]): Promise<PdfImageItem[]> {
+  const promises: Promise<PdfImageItem | null>[] = [];
+  for (let i = 0; i < files.length; i++) promises.push(readFileAsItem(files[i], i));
+  const valid = await Promise.all(promises);
+  return valid.filter((item): item is PdfImageItem => item !== null);
+}
+
+async function loadSampleItems(): Promise<PdfImageItem[]> {
+  const samples = await createScenicSampleImages();
+  return samples.map((s, idx) => ({
+    id: `sample-${idx}-${Date.now()}`,
+    name: s.name,
+    size: s.size,
+    width: s.width,
+    height: s.height,
+    bytes: s.bytes,
+    blobUrl: s.blobUrl,
+  }));
+}
+
 function usePdfImages(
   converter?: UseImageFormatConverterReturn,
   notify?: (message: string) => void,
@@ -109,11 +130,7 @@ function usePdfImages(
   }, [converter?.file]);
 
   const processFiles = async (files: FileList | File[]) => {
-    const promises: Promise<PdfImageItem | null>[] = [];
-    for (let i = 0; i < files.length; i++) promises.push(readFileAsItem(files[i], i));
-    const valid = (await Promise.all(promises)).filter(
-      (item): item is PdfImageItem => item !== null,
-    );
+    const valid = await readFiles(files);
     if (valid.length > 0) {
       setImages((prev) => [...prev, ...valid]);
       onPhase?.('idle');
@@ -124,18 +141,8 @@ function usePdfImages(
   const loadSamples = async () => {
     try {
       setIsCompiling(true);
-      const samples = await createScenicSampleImages();
-      setImages(
-        samples.map((s, idx) => ({
-          id: `sample-${idx}-${Date.now()}`,
-          name: s.name,
-          size: s.size,
-          width: s.width,
-          height: s.height,
-          bytes: s.bytes,
-          blobUrl: s.blobUrl,
-        })),
-      );
+      const items = await loadSampleItems();
+      setImages(items);
       onPhase?.('idle');
       notify?.('Loaded 5 sample images');
     } finally {
@@ -151,7 +158,24 @@ function usePdfImages(
     onPhase?.('idle');
   };
 
-  return { images, setImages, isCompiling, setIsCompiling, processFiles, loadSamples, clearAll };
+  const rotateImage = (id: string) => {
+    setImages((prev) =>
+      prev.map((img) =>
+        img.id === id ? { ...img, rotation: ((img.rotation ?? 0) + 90) % 360 } : img,
+      ),
+    );
+  };
+
+  return {
+    images,
+    setImages,
+    isCompiling,
+    setIsCompiling,
+    processFiles,
+    loadSamples,
+    clearAll,
+    rotateImage,
+  };
 }
 
 function usePdfSettings() {

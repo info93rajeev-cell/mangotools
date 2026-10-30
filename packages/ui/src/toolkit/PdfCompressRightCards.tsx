@@ -189,7 +189,7 @@ export function PdfCompressRightCards({ studio }: { studio: CompressStudioState 
         compPercent={compPercent}
         totalPages={totalPages}
       />
-      <div class={styles.card}>
+      <div class={styles.card} data-tour="pdf-action">
         <div class={styles.privacyNotice}>
           <span style={{ fontSize: '18px' }}>🔒</span>
           <span>

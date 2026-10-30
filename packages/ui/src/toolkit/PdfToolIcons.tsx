@@ -172,3 +172,43 @@ export function WordToPdfIcon() {
     </svg>
   );
 }
+
+export function JpgToPdfIcon() {
+  return (
+    <svg
+      width="46"
+      height="46"
+      viewBox="0 0 46 46"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="JPG to PDF Icon"
+    >
+      <title>JPG to PDF Icon</title>
+      <defs>
+        <linearGradient
+          id="jpg2pdfGrad"
+          x1="4"
+          y1="4"
+          x2="42"
+          y2="42"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#c084fc" />
+          <stop offset="1" stopColor="#9333ea" />
+        </linearGradient>
+        <filter id="jpg2pdfShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#9333ea" floodOpacity="0.25" />
+        </filter>
+      </defs>
+      <g filter="url(#jpg2pdfShadow)">
+        <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#jpg2pdfGrad)" />
+        <path d="M28 4L40 16H32C29.7909 16 28 14.2091 28 12V4Z" fill="#e9d5ff" />
+        {/* Image inside card */}
+        <rect x="12" y="19" width="22" height="17" rx="3" fill="#ffffff" fillOpacity="0.9" />
+        <circle cx="17" cy="24" r="2" fill="#9333ea" />
+        <path d="M13 33L19 26L23 30L27 25L33 33H13Z" fill="#c084fc" />
+      </g>
+    </svg>
+  );
+}
