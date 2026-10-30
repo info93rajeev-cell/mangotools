@@ -914,3 +914,177 @@
   white-space: pre;
   box-sizing: border-box;
 }
+
+@media (max-width: 400px) {
+  .utility,
+  .callto {
+    grid-template-columns: 1fr;
+  }
+  .utilityBtn:last-child,
+  .callto .btnGold {
+    grid-column: span 1;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .panel {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .tooltitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .editor,
+:global([data-theme="dark"]) .bigoutput,
+:global([data-theme="dark"]) .rawCsvPreview {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .editor:focus,
+:global([data-theme="dark"]) .bigoutput:focus {
+  border-color: #3b82f6;
+  background: #090d16;
+}
+
+:global([data-theme="dark"]) .treeView {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .treeRow:hover {
+  background: #1e293b;
+}
+
+:global([data-theme="dark"]) .treeKey {
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .treeString {
+  color: #86efac;
+}
+
+:global([data-theme="dark"]) .treeNumber {
+  color: #fde047;
+}
+
+:global([data-theme="dark"]) .treeBoolean {
+  color: #f472b6;
+}
+
+:global([data-theme="dark"]) .treeNull {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .chip {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .statBox {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .statValue {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .utilityBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .utilityBtn:hover {
+  background: #334155;
+  border-color: #475569;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .unitSegment {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .unitSegmentBtn {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .unitSegmentBtn:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .unitSegmentBtnActive {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .conversionRatioStrip {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .mobileViewSwitcher {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .mobileViewTab {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .mobileViewTabActive {
+  background: #1e293b;
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .btnGhost {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .btnGhost:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .btnOutline {
+  background: #1e293b;
+  border-color: #334155;
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .btnOutline:hover {
+  background: #334155;
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .tablewrap table {
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .tablewrap th {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .tablewrap td {
+  border-color: #334155;
+  color: #f8fafc;
+}

@@ -272,3 +272,8 @@
     height: 200px;
   }
 }
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .reference img {
+  background: radial-gradient(ellipse at center, #1e293b, #0f172a 72%);
+}

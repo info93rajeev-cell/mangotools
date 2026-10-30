@@ -1073,3 +1073,224 @@
     width: 100%;
   }
 }
+
+@media (max-width: 440px) {
+  .previewCard {
+    width: 100%;
+  }
+  .statTilesGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .studioContainer {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .topBar {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .titleText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .subtitleText {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .actionBtnGhost {
+  background: #0f172a;
+  border-color: #334155;
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .actionBtnGhost:hover {
+  background: #1e293b;
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .sectionCard {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .cardDesc {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .dropZone {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .dropZone:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .dropTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .dropSubtitle {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .statTile {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .statNumber {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .previewCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .previewCardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .previewCardMeta {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .previewContainer {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .pageThumbnailCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .pageBadge {
+  background: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .optionSelect,
+:global([data-theme="dark"]) .textInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .optionLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .rangePill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .rangePillActive {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .sliderContainer {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .splitPresetCard {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .splitPresetCard[data-active="true"] {
+  background: #1e3a8a;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .actionBtnNeutral {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .actionBtnNeutral:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .dropZoneCompact {
+  background: #0f172a;
+  border-color: #2563eb;
+}
+
+:global([data-theme="dark"]) .dropZoneCompact:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .dropMainText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .dropSubText {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .fileRow {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .fileName {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fileMeta {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardHeader {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .radioCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .radioTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .thumbItemBtn {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .thumbStrip {
+  background: #0f172a;
+  border-color: #334155;
+}

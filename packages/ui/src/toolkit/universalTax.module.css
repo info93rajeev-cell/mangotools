@@ -682,6 +682,32 @@
   font-size: 10.5px;
 }
 
+.slabsTableWrapper {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  max-width: 100%;
+}
+
+:global([data-theme="dark"]) .slabsTableWrapper {
+  border-color: #334155;
+}
+
+.slabEditFormCard {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+:global([data-theme="dark"]) .slabEditFormCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
 .slabsTable th {
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
@@ -1095,4 +1121,304 @@
     font-size: 11px;
     padding: 7px 8px;
   }
+}
+
+@media (max-width: 480px) {
+  .titleGroup {
+    min-width: 0;
+  }
+  .pageTitle {
+    font-size: 19px;
+  }
+  .saveCalloutBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .kpiMetricsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .mobileOnlyActions {
+    flex-wrap: wrap;
+  }
+  .mobileOnlyActions .calculateBtn,
+  .mobileOnlyActions .ghostActionBtn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .pageTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .pageSubtitle {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .saveCalloutBanner {
+  background: linear-gradient(135deg, #1e293b 0%, #064e3b 100%);
+  border-color: #059669;
+}
+
+:global([data-theme="dark"]) .calloutTitle {
+  color: #34d399;
+}
+
+:global([data-theme="dark"]) .calloutSub {
+  color: #a7f3d0;
+}
+
+:global([data-theme="dark"]) .topBarNav {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .countryPillBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .countryPillBtn:hover {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+:global([data-theme="dark"]) .countryPillBtn[data-active="true"] {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .navDivider {
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .taxSystemNavLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .taxSystemTabs {
+  background: #0f172a;
+}
+
+:global([data-theme="dark"]) .taxSystemTabBtn {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .taxSystemTabBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .taxCard {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardHeaderRow {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .cardHeaderRow label {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .cardTitleText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .cardHeaderSub {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .segmentedControl {
+  background: #0f172a;
+  border: 1px solid #334155;
+}
+
+:global([data-theme="dark"]) .segmentBtn {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .segmentBtn[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .fieldInput,
+:global([data-theme="dark"]) .fieldSelect,
+:global([data-theme="dark"]) .selectInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fieldInput:focus,
+:global([data-theme="dark"]) .fieldSelect:focus,
+:global([data-theme="dark"]) .selectInput:focus {
+  border-color: #3b82f6;
+  background: #090d16;
+}
+
+:global([data-theme="dark"]) .fieldLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .fieldHelp {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .currencyPrefix,
+:global([data-theme="dark"]) .addonPrefix {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .kpiBox {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .kpiLabel {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .kpiValue {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .summaryBanner {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .summaryTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .summaryBigValue {
+  color: #4ade80;
+}
+
+:global([data-theme="dark"]) .breakdownRow {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .breakdownLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .breakdownValue {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .savingsNotice {
+  background: #172554;
+  border-color: #1e40af;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .ghostActionBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .ghostActionBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .secondaryActionBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .slabsTable th {
+  background: #0f172a;
+  border-bottom-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .slabsTable td {
+  border-bottom-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .slabsTable tr:hover {
+  background: #0f172a;
+}
+
+:global([data-theme="dark"]) .formulaContentCard {
+  background: #18181b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .itcToggleRow {
+  background: #0f172a;
+}
+
+:global([data-theme="dark"]) .itcToggleBtn {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .itcToggleBtn[data-active="true"] {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .itcResultCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .itcMetricBox {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .itcMetricLabel {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .itcMetricVal {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .complianceItem {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .complianceItemTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .complianceItemBody {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .categoryItemCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .categoryItemCard:hover {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+:global([data-theme="dark"]) .categoryTitleText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .categoryDescText {
+  color: #94a3b8;
 }

@@ -151,17 +151,7 @@ function InlineAddSlabForm({
   const [notes, setNotes] = useState(initialSlab?.notes ?? 'New tier');
 
   return (
-    <div
-      style={{
-        background: '#f8fafc',
-        border: '1px solid #cbd5e1',
-        borderRadius: '6px',
-        padding: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '6px',
-      }}
-    >
+    <div class={styles.slabEditFormCard}>
       <SlabFormInputs
         min={min}
         setMin={setMin}
@@ -213,7 +203,7 @@ function SlabsTableView({
   currencySymbol: string;
 }) {
   return (
-    <div style={{ overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
+    <div class={styles.slabsTableWrapper}>
       <table class={styles.slabsTable} aria-label="Tax Slabs Table">
         <thead>
           <tr>
@@ -234,7 +224,7 @@ function SlabsTableView({
               <td>{slab.maxAmount !== null ? slab.maxAmount.toLocaleString() : '∞'}</td>
               <td>{slab.rate}%</td>
               <td>{slab.taxType}</td>
-              <td style={{ color: '#64748b' }}>{slab.notes}</td>
+              <td>{slab.notes}</td>
               <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                 <button
                   type="button"
