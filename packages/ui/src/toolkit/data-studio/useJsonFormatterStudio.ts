@@ -1,95 +1,94 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { copyText, downloadText } from '../actions.ts';
+import {
+  analyzeJson,
+  computeDetailedJsonStats,
+  type DetailedJsonStats,
+  type JsonStats,
+  sortJsonKeys,
+} from './jsonStats.ts';
+import { useJsonStudioHandlers } from './useJsonStudioHandlers.ts';
+import { useJsonStudioOptions } from './useJsonStudioState.ts';
+
+export { analyzeJson, type DetailedJsonStats, type JsonStats, sortJsonKeys };
 
 export const DEFAULT_JSON = `{
   "user": {
     "id": 12345,
     "name": "John Doe",
-    "roles": ["admin", "editor"],
-    "active": true
+    "email": "john@example.com",
+    "active": true,
+    "roles": ["admin", "editor", "user"],
+    "profile": {
+      "age": 30,
+      "city": "New York",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true
+      }
+    }
   },
   "posts": [
-    { "id": 1, "title": "Welcome" },
-    { "id": 2, "title": "Guide" }
+    { "id": 1, "title": "Introduction", "views": 100 },
+    { "id": 2, "title": "Getting Started", "views": 250 }
   ]
 }`;
 
-export interface JsonStats {
-  chars: number;
-  lines: number;
-  bytes: number;
-  objects: number;
-  arrays: number;
-  maxDepth: number;
-  rootType: string;
-}
-
-export function analyzeJson(
-  value: unknown,
-  depth = 1,
-): { objects: number; arrays: number; maxDepth: number } {
-  let objects = 0;
-  let arrays = 0;
-  let maxDepth = depth;
-
-  if (Array.isArray(value)) {
-    arrays += 1;
-    for (const item of value) {
-      if (typeof item === 'object' && item !== null) {
-        const sub = analyzeJson(item, depth + 1);
-        objects += sub.objects;
-        arrays += sub.arrays;
-        maxDepth = Math.max(maxDepth, sub.maxDepth);
-      }
-    }
-  } else if (typeof value === 'object' && value !== null) {
-    objects += 1;
-    for (const key of Object.keys(value)) {
-      const subVal = (value as Record<string, unknown>)[key];
-      if (typeof subVal === 'object' && subVal !== null) {
-        const sub = analyzeJson(subVal, depth + 1);
-        objects += sub.objects;
-        arrays += sub.arrays;
-        maxDepth = Math.max(maxDepth, sub.maxDepth);
-      }
-    }
+export const JSON_PRESET_EXAMPLES: Record<string, string> = {
+  user: DEFAULT_JSON,
+  api: `{
+  "status": "success",
+  "code": 200,
+  "data": {
+    "requestId": "req_9921bc4f",
+    "timestamp": 1729864200,
+    "items": [
+      { "sku": "SKU-001", "name": "Wireless Mouse", "price": 24.99, "inStock": true },
+      { "sku": "SKU-002", "name": "Mechanical Keyboard", "price": 89.99, "inStock": false }
+    ],
+    "pagination": { "page": 1, "pageSize": 20, "totalPages": 5, "totalItems": 95 }
   }
-
-  return { objects, arrays, maxDepth };
-}
-
-export function sortJsonKeys(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(sortJsonKeys);
-  if (typeof value === 'object' && value !== null) {
-    const sortedObj: Record<string, unknown> = {};
-    const keys = Object.keys(value).sort();
-    for (const key of keys) {
-      sortedObj[key] = sortJsonKeys((value as Record<string, unknown>)[key]);
-    }
-    return sortedObj;
+}`,
+  ecommerce: `{
+  "product": {
+    "id": "prod_7718",
+    "title": "Ergonomic Office Chair",
+    "brand": "BeyondTheAI Ergonomics",
+    "price": { "amount": 299.00, "currency": "USD", "discount": 0.15 },
+    "dimensions": { "width": 65, "height": 115, "depth": 60, "unit": "cm" },
+    "features": [
+      "Lumbar support adjustment",
+      "Breathable mesh backrest",
+      "3D adjustable armrests"
+    ],
+    "inStock": true,
+    "rating": 4.8
   }
-  return value;
-}
+}`,
+  config: `{
+  "server": {
+    "port": 8080,
+    "host": "0.0.0.0",
+    "ssl": { "enabled": true, "certPath": "/etc/ssl/cert.pem" },
+    "cors": { "allowedOrigins": ["*"], "methods": ["GET", "POST"] }
+  },
+  "database": {
+    "driver": "postgres",
+    "poolSize": 10,
+    "timeoutMs": 5000
+  },
+  "logging": {
+    "level": "info",
+    "structured": true
+  }
+}`,
+};
 
 function parseAndAnalyzeJson(input: string) {
   if (!input.trim()) return { valid: false, error: 'Empty JSON input', data: null, stats: null };
   try {
     const data = JSON.parse(input);
-    const sub = analyzeJson(data);
-    const stats: JsonStats = {
-      chars: input.length,
-      lines: input.split('\n').length,
-      bytes: new TextEncoder().encode(input).length,
-      objects: sub.objects,
-      arrays: sub.arrays,
-      maxDepth: sub.maxDepth,
-      rootType: Array.isArray(data)
-        ? 'Array'
-        : typeof data === 'object' && data !== null
-          ? 'Object'
-          : typeof data,
-    };
+    const stats = computeDetailedJsonStats(data, input);
     return { valid: true, error: null, data, stats };
   } catch (err: unknown) {
     return {
@@ -105,13 +104,15 @@ export type ParseResult = ReturnType<typeof parseAndAnalyzeJson>;
 
 function formatJsonOutput(
   parsedResult: { valid: boolean; data: unknown },
-  sortKeys: boolean,
+  keySorting: 'original' | 'asc' | 'desc',
   action: 'format' | 'minify' | 'validate',
   indent: '2' | '4' | 'tab' | 'min',
 ) {
   if (!parsedResult.valid || parsedResult.data === null) return '';
   let processed: unknown = parsedResult.data;
-  if (sortKeys) processed = sortJsonKeys(processed);
+  if (keySorting === 'asc' || keySorting === 'desc') {
+    processed = sortJsonKeys(processed, keySorting);
+  }
   if (action === 'minify' || indent === 'min') return JSON.stringify(processed);
   const space = indent === 'tab' ? '\t' : indent === '4' ? 4 : 2;
   return JSON.stringify(processed, null, space);
@@ -137,80 +138,22 @@ function extractTableData(
   };
 }
 
-function countSearchMatches(searchQuery: string, outputFormatted: string): number {
+function countSearchMatches(
+  searchQuery: string,
+  outputFormatted: string,
+  matchCase: boolean,
+  useRegex: boolean,
+): number {
   if (!searchQuery.trim() || !outputFormatted) return 0;
   try {
-    return (outputFormatted.match(new RegExp(searchQuery, 'gi')) || []).length;
+    const flags = matchCase ? 'g' : 'gi';
+    const regex = useRegex
+      ? new RegExp(searchQuery, flags)
+      : new RegExp(searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+    return (outputFormatted.match(regex) || []).length;
   } catch {
     return 0;
   }
-}
-
-function createJsonHandlers(
-  inputState: {
-    activeTab: 'raw' | 'tree' | 'table';
-    outputFormatted: string;
-    parsedResult: ParseResult;
-  },
-  setInput: (v: string) => void,
-  store: ToolStore,
-  notify: (msg: string) => void,
-) {
-  const handleCopy = async () => {
-    const text =
-      inputState.activeTab === 'raw'
-        ? inputState.outputFormatted
-        : JSON.stringify(inputState.parsedResult.data, null, 2);
-    if (!text) return;
-    const ok = await copyText(text);
-    notify(ok ? 'JSON copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!inputState.outputFormatted) return;
-    downloadText(inputState.outputFormatted, 'formatted.json', 'application/json');
-    notify('Downloaded formatted.json');
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_JSON);
-    store.set('text', DEFAULT_JSON);
-    notify('Reset to default sample JSON');
-  };
-
-  const handlePaste = async () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          setInput(text);
-          store.set('text', text);
-          notify('Pasted from clipboard');
-          return;
-        }
-      } catch {
-        // Fallback or permission denied
-      }
-    }
-    notify('Use Ctrl+V or Cmd+V to paste');
-  };
-
-  const handleOpenFile = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = typeof reader.result === 'string' ? reader.result : '';
-      setInput(content);
-      store.set('text', content);
-      notify(`Loaded ${file.name}`);
-    };
-    reader.readAsText(file);
-    target.value = '';
-  };
-
-  return { handleCopy, handleDownload, handleReset, handlePaste, handleOpenFile };
 }
 
 export function useJsonFormatterStudio(
@@ -231,54 +174,36 @@ export function useJsonFormatterStudio(
     }
   }, [snapshot.values.text]);
 
-  const [indent, setIndent] = useState<'2' | '4' | 'tab' | 'min'>('2');
-  const [action, setAction] = useState<'format' | 'minify' | 'validate'>('format');
-  const [sortKeys, setSortKeys] = useState(false);
-  const [syntaxHighlight, setSyntaxHighlight] = useState(true);
-  const [lineNumbers, setLineNumbers] = useState(true);
-  const [activeTab, setActiveTab] = useState<'raw' | 'tree' | 'table'>('raw');
-  const [searchQuery, setSearchQuery] = useState('');
+  const opts = useJsonStudioOptions();
 
   const parsedResult = useMemo(() => parseAndAnalyzeJson(input), [input]);
   const outputFormatted = useMemo(
-    () => formatJsonOutput(parsedResult, sortKeys, action, indent),
-    [parsedResult, sortKeys, action, indent],
+    () => formatJsonOutput(parsedResult, opts.keySorting, opts.action, opts.indent),
+    [parsedResult, opts.keySorting, opts.action, opts.indent],
   );
   const searchMatches = useMemo(
-    () => countSearchMatches(searchQuery, outputFormatted),
-    [searchQuery, outputFormatted],
+    () =>
+      countSearchMatches(opts.searchQuery, outputFormatted, opts.searchMatchCase, opts.searchRegex),
+    [opts.searchQuery, outputFormatted, opts.searchMatchCase, opts.searchRegex],
   );
   const tableData = useMemo(() => extractTableData(parsedResult), [parsedResult]);
 
-  const handlers = createJsonHandlers(
-    { activeTab, outputFormatted, parsedResult },
+  const handlers = useJsonStudioHandlers(
+    input,
     setInput,
     store,
     notify,
+    parsedResult,
+    outputFormatted,
+    opts.activeTab,
+    opts.autoFormatOnPaste,
   );
-
-  const handleInput = (val: string) => {
-    setInput(val);
-    store.set('text', val);
-  };
 
   return {
     input,
-    handleInput,
-    indent,
-    setIndent,
-    action,
-    setAction,
-    sortKeys,
-    setSortKeys,
-    syntaxHighlight,
-    setSyntaxHighlight,
-    lineNumbers,
-    setLineNumbers,
-    activeTab,
-    setActiveTab,
-    searchQuery,
-    setSearchQuery,
+    ...opts,
+    sortKeys: opts.keySorting !== 'original',
+    setSortKeys: (v: boolean) => opts.setKeySorting(v ? 'asc' : 'original'),
     parsedResult,
     outputFormatted,
     searchMatches,

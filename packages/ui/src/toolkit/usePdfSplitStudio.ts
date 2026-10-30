@@ -286,6 +286,34 @@ function useSplitActions(
   return { isProcessing, generatedBlobUrl, executeSplit, downloadResult };
 }
 
+function handlePageSelection(
+  pg: number,
+  mode: SplitMode,
+  totalPages: number,
+  setExtractInput: (fn: (prev: string) => string) => void,
+  setRanges: (fn: (prev: SplitRange[]) => SplitRange[]) => void,
+  notify?: (msg: string) => void,
+) {
+  if (mode === 'extract') {
+    setExtractInput((prev) => {
+      const tokens = prev
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const str = String(pg);
+      if (tokens.includes(str)) return tokens.filter((s) => s !== str).join(', ');
+      return tokens.length > 0 ? `${prev}, ${str}` : str;
+    });
+    notify?.(`Selected page ${pg} for extraction`);
+  } else {
+    setRanges((p) => [
+      ...p,
+      { id: `r-${Date.now()}`, start: pg, end: Math.min(pg + 5, totalPages || pg) },
+    ]);
+    notify?.(`Added page ${pg} range`);
+  }
+}
+
 export function usePdfSplitStudio(notify?: (msg: string) => void) {
   const fileState = useSplitFileState(notify);
   const opts = usePdfSplitOptions();
@@ -294,23 +322,14 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
 
   const onSelectPage = (pg: number) => {
     setSelectedPage(pg);
-    if (opts.mode === 'extract') {
-      opts.setExtractInput((prev) => {
-        const tokens = prev
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const str = String(pg);
-        if (tokens.includes(str)) {
-          const next = tokens.filter((s) => s !== str);
-          return next.join(', ');
-        }
-        return tokens.length > 0 ? `${prev}, ${str}` : str;
-      });
-      notify?.(`Selected page ${pg} for extraction`);
-    } else {
-      notify?.(`Selected page ${pg} preview`);
-    }
+    handlePageSelection(
+      pg,
+      opts.mode,
+      fileState.totalPages,
+      opts.setExtractInput,
+      opts.setRanges,
+      notify,
+    );
   };
 
   return {

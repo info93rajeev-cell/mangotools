@@ -52,7 +52,7 @@ const isCivil = [
     <div class="page">
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf', 'gst-calculator', 'seller-profitability-calculator', 'amazon-india-seller-fee-profit-estimator', 'markup-calculator'].includes(tool.slug) ? (
+        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf', 'gst-calculator', 'profit-margin-calculator', 'seller-profitability-calculator', 'amazon-india-seller-fee-profit-estimator', 'markup-calculator', 'json-formatter', 'base64-encode-decode', 'url-encode-decode', 'csv-to-json', 'json-to-csv', 'timestamp-converter'].includes(tool.slug) ? (
           <h1 class="visually-hidden">{tool.seo.h1 ?? tool.name}</h1>
         ) : (
           <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />

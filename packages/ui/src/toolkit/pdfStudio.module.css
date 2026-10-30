@@ -3,9 +3,9 @@
 .studioContainer {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110px);
-  max-height: 740px;
-  min-height: 580px;
+  height: calc(100vh - 180px);
+  max-height: 700px;
+  min-height: 560px;
   background: #ffffff;
   border-radius: 14px;
   border: 1px solid #e2e8f0;

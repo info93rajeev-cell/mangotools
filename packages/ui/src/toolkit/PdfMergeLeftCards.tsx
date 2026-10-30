@@ -19,9 +19,9 @@ function PdfMergeDropCard({
   }
 
   return (
-    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px', flexShrink: 0 }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
+    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '6px 10px', flexShrink: 0 }}>
+      <div class={styles.cardHeader} style={{ marginBottom: '4px' }}>
+        <h2 class={styles.cardTitle} style={{ fontSize: '13px' }}>
           <span class={styles.stepNum}>1</span> Add PDF files
         </h2>
         <button
@@ -29,7 +29,7 @@ function PdfMergeDropCard({
           onClick={loadSampleFiles}
           style={{
             fontSize: '11px',
-            padding: '3px 8px',
+            padding: '2px 8px',
             borderRadius: '6px',
             border: '1px solid #bfdbfe',
             background: '#eff6ff',
@@ -41,21 +41,24 @@ function PdfMergeDropCard({
           📄 Load 4 Sample Files
         </button>
       </div>
-      <label class={styles.dropZoneCompact}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
+      <label
+        class={styles.dropZoneCompact}
+        style={{ padding: '4px 8px', minHeight: '38px', gap: '8px' }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span class={styles.dropIcon} style={{ fontSize: '18px' }}>
             📄+
           </span>
           <div>
-            <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+            <p class={styles.dropMainText} style={{ fontSize: '12px', margin: 0 }}>
               Drag & drop PDF files here
             </p>
-            <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+            <p class={styles.dropSubText} style={{ fontSize: '10.5px', margin: 0 }}>
               or click to browse • Max 100 MB per file
             </p>
           </div>
         </div>
-        <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+        <span class={styles.chooseBtn} style={{ padding: '4px 10px', fontSize: '11px' }}>
           Choose PDF Files
         </span>
         <input
