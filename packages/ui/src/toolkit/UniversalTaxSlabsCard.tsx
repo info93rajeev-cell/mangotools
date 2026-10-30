@@ -7,6 +7,71 @@ export interface UniversalTaxSlabsCardProps {
   tax: UseUniversalTaxReturn;
 }
 
+const INDIA_GST_OFFICIAL_SLABS = [
+  { rate: '0%', title: 'Nil / Exempt', items: 'Fresh milk, fruits, vegetables, bread, salt' },
+  { rate: '5%', title: 'Merit Goods', items: 'Tea, coffee, spices, life-saving medicines' },
+  { rate: '12%', title: 'Standard I', items: 'Processed foods, business computers, apparel' },
+  { rate: '18%', title: 'Standard II', items: 'IT services, software, banking, capital goods' },
+  { rate: '28%', title: 'Luxury & Sin', items: 'Automobiles, air conditioners, aerated drinks' },
+];
+
+function IndiaGstOfficialSlabsView({ onSwitchToCustom }: { onSwitchToCustom: () => void }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
+        <table class={styles.slabsTable} aria-label="Official GST Slabs">
+          <thead>
+            <tr>
+              <th>Rate</th>
+              <th>Category</th>
+              <th>Common Goods & Services</th>
+            </tr>
+          </thead>
+          <tbody>
+            {INDIA_GST_OFFICIAL_SLABS.map((slab) => (
+              <tr key={slab.rate}>
+                <td style={{ fontWeight: 700, color: '#2563eb' }}>{slab.rate}</td>
+                <td style={{ fontWeight: 600 }}>{slab.title}</td>
+                <td style={{ color: '#475569', fontSize: '11px' }}>{slab.items}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        style={{
+          background: '#eff6ff',
+          border: '1px solid #bfdbfe',
+          borderRadius: '6px',
+          padding: '8px 10px',
+          fontSize: '11px',
+          color: '#1e40af',
+          lineHeight: '1.4',
+        }}
+      >
+        💡 <strong>Note:</strong> Indian GST applies a flat percentage by commodity HSN code across
+        any invoice amount, rather than progressive price slabs.
+      </div>
+
+      <button
+        type="button"
+        class={styles.ghostActionBtn}
+        style={{
+          alignSelf: 'flex-start',
+          color: '#7c3aed',
+          borderColor: '#c4b5fd',
+          fontSize: '11px',
+          padding: '5px 10px',
+        }}
+        onClick={onSwitchToCustom}
+      >
+        <span>🌐 Need Progressive Slabs? Switch to Custom Slabs</span>
+      </button>
+    </div>
+  );
+}
+
 function SlabsHeaderControls({
   taxSystem,
   setTaxSystem,
@@ -30,10 +95,10 @@ function SlabsHeaderControls({
           value={taxSystem}
           onChange={(e) => setTaxSystem((e.target as HTMLSelectElement).value as TaxSystemType)}
         >
+          <option value="custom_slabs">Custom Slabs (Progressive)</option>
           <option value="vat">VAT (Value Added Tax)</option>
           <option value="sales_tax">Sales Tax</option>
           <option value="gst">GST (Goods & Services Tax)</option>
-          <option value="custom_slabs">Custom Slabs (Progressive)</option>
         </select>
       </div>
 
@@ -216,41 +281,56 @@ function SlabsTableView({
 }
 
 export function UniversalTaxSlabsCard({ tax }: UniversalTaxSlabsCardProps) {
-  const { taxSystem, setTaxSystem, taxSlabs, addTaxSlab, deleteTaxSlab, currencySymbol } = tax;
+  const { taxSystem, setTaxSystem, taxSlabs, addTaxSlab, deleteTaxSlab, currencySymbol, country } =
+    tax;
   const [isAddingSlab, setIsAddingSlab] = useState(false);
+
+  const isIndiaGst = country === 'in' && taxSystem === 'gst';
 
   return (
     <section class={styles.taxCard} aria-label="Universal Tax Setup" data-tax-slabs-card="">
       <div class={styles.cardHeaderRow}>
         <div class={styles.cardTitleWithBadge}>
           <span class={`${styles.stepBadge} ${styles.stepBadge4}`}>4</span>
-          <span class={styles.cardTitleText}>Universal Tax Setup</span>
+          <span class={styles.cardTitleText}>
+            {isIndiaGst ? 'Official GST Rates & Categories' : 'Universal Tax Setup'}
+          </span>
         </div>
       </div>
-      <div class={styles.cardHeaderSub}>Create or edit tax slabs and rules for any country.</div>
+      <div class={styles.cardHeaderSub}>
+        {isIndiaGst
+          ? 'Standard GST rate brackets applicable to goods and services in India.'
+          : 'Create or edit progressive tax slabs and rules for custom jurisdictions.'}
+      </div>
 
-      <SlabsHeaderControls
-        taxSystem={taxSystem}
-        setTaxSystem={setTaxSystem}
-        isAddingSlab={isAddingSlab}
-        setIsAddingSlab={setIsAddingSlab}
-      />
+      {isIndiaGst ? (
+        <IndiaGstOfficialSlabsView onSwitchToCustom={() => setTaxSystem('custom_slabs')} />
+      ) : (
+        <>
+          <SlabsHeaderControls
+            taxSystem={taxSystem}
+            setTaxSystem={setTaxSystem}
+            isAddingSlab={isAddingSlab}
+            setIsAddingSlab={setIsAddingSlab}
+          />
 
-      {isAddingSlab && (
-        <InlineAddSlabForm
-          onSave={(slab) => {
-            addTaxSlab(slab);
-            setIsAddingSlab(false);
-          }}
-          onCancel={() => setIsAddingSlab(false)}
-        />
+          {isAddingSlab && (
+            <InlineAddSlabForm
+              onSave={(slab) => {
+                addTaxSlab(slab);
+                setIsAddingSlab(false);
+              }}
+              onCancel={() => setIsAddingSlab(false)}
+            />
+          )}
+
+          <SlabsTableView
+            taxSlabs={taxSlabs}
+            deleteTaxSlab={deleteTaxSlab}
+            currencySymbol={currencySymbol}
+          />
+        </>
       )}
-
-      <SlabsTableView
-        taxSlabs={taxSlabs}
-        deleteTaxSlab={deleteTaxSlab}
-        currencySymbol={currencySymbol}
-      />
     </section>
   );
 }

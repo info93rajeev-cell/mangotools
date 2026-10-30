@@ -20,7 +20,10 @@ import { InlineAlert, Toast, useToast } from '../primitives/feedback.tsx';
 import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
+import { DynamicAmazonFeeLayout } from './DynamicAmazonFeeLayout.tsx';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
+import { DynamicMarkupCalculatorLayout } from './DynamicMarkupCalculatorLayout.tsx';
+import { DynamicSellerProfitabilityLayout } from './DynamicSellerProfitabilityLayout.tsx';
 import { DynamicUniversalTaxLayout } from './DynamicUniversalTaxLayout.tsx';
 import { renderDataStudioLayout } from './data-studio/dataStudioDispatch.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
@@ -42,6 +45,12 @@ const DATA_STUDIO_TOOL_IDS = new Set([
   'csv-to-json',
   'json-to-csv',
   'timestamp-converter',
+]);
+const BUSINESS_STUDIO_TOOL_IDS = new Set([
+  'gst-calculator',
+  'profit-margin-calculator',
+  'amazon-india-seller-fee-profit-estimator',
+  'markup-calculator',
 ]);
 export interface ToolIslandProps {
   toolId: string;
@@ -128,7 +137,7 @@ const isStandardCalculator = (
   archetype === 'B' &&
   presetId !== INVOICE_MULTI_ITEM_PRESET_ID &&
   presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID &&
-  toolId !== 'gst-calculator';
+  !BUSINESS_STUDIO_TOOL_IDS.has(toolId ?? '');
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -152,7 +161,7 @@ function ToolIslandView(props: ToolIslandViewProps) {
     ...layoutProps
   } = props;
   const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
-  const isCustomStudio = isDataStudio || toolId === 'gst-calculator';
+  const isCustomStudio = isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId);
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       {standardCalculator || isCustomStudio ? null : (
@@ -172,6 +181,15 @@ function renderSpecialCalculators(props: ArchetypeProps) {
   const { toolId, preset, idPrefix, snapshot, store, notify } = props;
   if (toolId === 'gst-calculator') {
     return <DynamicUniversalTaxLayout notify={notify} />;
+  }
+  if (toolId === 'profit-margin-calculator') {
+    return <DynamicSellerProfitabilityLayout notify={notify} />;
+  }
+  if (toolId === 'amazon-india-seller-fee-profit-estimator') {
+    return <DynamicAmazonFeeLayout notify={notify} />;
+  }
+  if (toolId === 'markup-calculator') {
+    return <DynamicMarkupCalculatorLayout notify={notify} />;
   }
   if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
     return (

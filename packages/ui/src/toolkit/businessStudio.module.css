@@ -1,0 +1,390 @@
+.studioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.studio3Col {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 0.85fr;
+  gap: 12px;
+  width: 100%;
+  align-items: start;
+}
+
+.studioColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.businessCard {
+  background: #ffffff;
+  border: 1px solid #dce7f7;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cardHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.iconViolet {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.iconBlue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.iconGreen {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.iconAmber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.iconPink {
+  background: #fce7f3;
+  color: #db2777;
+}
+
+.iconCyan {
+  background: #cffafe;
+  color: #0891b2;
+}
+
+.modeTabs {
+  display: flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.modeTab {
+  flex: 1;
+  text-align: center;
+  padding: 6px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.modeTab:hover {
+  color: #1e293b;
+}
+
+.modeTab[data-active="true"] {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+}
+
+.fieldGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fieldGrid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 7px 9px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.fieldInput:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+}
+
+.headlineHero {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headlineTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headlineAmount {
+  font-size: 24px;
+  font-weight: 900;
+  color: #065f46;
+  margin-top: 2px;
+}
+
+.kpiBadge {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.kpiGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.kpiCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpiLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.kpiValue {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.itemizedTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.itemizedTable th {
+  text-align: left;
+  padding: 6px 4px;
+  color: #64748b;
+  font-weight: 700;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.itemizedTable td {
+  padding: 6px 4px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.itemizedTable td:last-child,
+.itemizedTable th:last-child {
+  text-align: right;
+  font-weight: 700;
+}
+
+.segmentedBar {
+  display: flex;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.segmentedLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.yellowActionBtn {
+  width: 100%;
+  background: #f59e0b;
+  color: #0f172a;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.yellowActionBtn:hover {
+  background: #d97706;
+}
+
+.ghostActionBtn {
+  flex: 1;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ghostActionBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+}
+
+.noteBox {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.warnBox {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.divider {
+  height: 1px;
+  background: #f1f5f9;
+  border: none;
+  margin: 4px 0;
+}
+
+@media (max-width: 900px) {
+  .studio3Col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .studioColumn {
+    width: 100%;
+  }
+
+  .card1Inputs {
+    order: 1;
+  }
+
+  .cardActions {
+    order: 2;
+  }
+
+  .cardResults {
+    order: 3;
+  }
+
+  .cardBreakdown {
+    order: 4;
+  }
+
+  .cardVisual {
+    order: 5;
+  }
+
+  .cardAdvanced {
+    order: 6;
+  }
+
+  .cardNotes {
+    order: 7;
+  }
+}
