@@ -1,19 +1,142 @@
 import styles from './businessStudio.module.css';
-import type { AmazonFeeEstimatorState } from './useAmazonFeeEstimator.ts';
+import {
+  AMAZON_CATEGORY_PRESETS,
+  type AmazonFeeEstimatorState,
+  type AmazonShippingZone,
+} from './useAmazonFeeEstimator.ts';
 
-export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState }) {
+function AmazonListingBasicFields({ state }: { state: AmazonFeeEstimatorState }) {
   const {
-    fulfilmentMode,
-    setFulfilmentMode,
     sellingPrice,
     setSellingPrice,
     productPackagingCost,
     setProductPackagingCost,
+    category,
+    setCategory,
+    setReferralFee,
+  } = state;
+
+  return (
+    <>
+      <div class={styles.fieldGrid2}>
+        <div class={styles.fieldGroup}>
+          <label class={styles.fieldLabel} for="amz-sp">
+            Selling price (₹)
+          </label>
+          <input
+            id="amz-sp"
+            type="number"
+            class={styles.fieldInput}
+            value={sellingPrice}
+            onInput={(e) => {
+              const val = Number((e.target as HTMLInputElement).value) || 0;
+              setSellingPrice(val);
+            }}
+          />
+        </div>
+        <div class={styles.fieldGroup}>
+          <label class={styles.fieldLabel} for="amz-cost">
+            Product + pack (₹)
+          </label>
+          <input
+            id="amz-cost"
+            type="number"
+            class={styles.fieldInput}
+            value={productPackagingCost}
+            onInput={(e) =>
+              setProductPackagingCost(Number((e.target as HTMLInputElement).value) || 0)
+            }
+          />
+        </div>
+      </div>
+
+      <div class={styles.fieldGroup}>
+        <label class={styles.fieldLabel} for="amz-category">
+          Product category
+        </label>
+        <select
+          id="amz-category"
+          class={styles.fieldInput}
+          value={category}
+          onChange={(e) => {
+            const catId = (e.target as HTMLSelectElement).value;
+            setCategory(catId);
+            const found = AMAZON_CATEGORY_PRESETS.find((c) => c.id === catId);
+            if (found && found.id !== 'custom') {
+              setReferralFee(Math.round((sellingPrice * found.rate) / 100));
+            }
+          }}
+        >
+          {AMAZON_CATEGORY_PRESETS.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    </>
+  );
+}
+
+function AmazonShippingWeightFields({ state }: { state: AmazonFeeEstimatorState }) {
+  const {
+    shippingZone,
+    setShippingZone,
     packedWeight,
     setPackedWeight,
     monthlyQty,
     setMonthlyQty,
   } = state;
+
+  return (
+    <div class={styles.fieldGrid3}>
+      <div class={styles.fieldGroup}>
+        <label class={styles.fieldLabel} for="amz-zone">
+          Delivery zone
+        </label>
+        <select
+          id="amz-zone"
+          class={styles.fieldInput}
+          value={shippingZone}
+          onChange={(e) =>
+            setShippingZone((e.target as HTMLSelectElement).value as AmazonShippingZone)
+          }
+        >
+          <option value="local">Local (City)</option>
+          <option value="regional">Regional</option>
+          <option value="national">National</option>
+        </select>
+      </div>
+      <div class={styles.fieldGroup}>
+        <label class={styles.fieldLabel} for="amz-weight">
+          Weight (g)
+        </label>
+        <input
+          id="amz-weight"
+          type="number"
+          class={styles.fieldInput}
+          value={packedWeight}
+          onInput={(e) => setPackedWeight(Number((e.target as HTMLInputElement).value) || 0)}
+        />
+      </div>
+      <div class={styles.fieldGroup}>
+        <label class={styles.fieldLabel} for="amz-qty">
+          Units / mo
+        </label>
+        <input
+          id="amz-qty"
+          type="number"
+          class={styles.fieldInput}
+          value={monthlyQty}
+          onInput={(e) => setMonthlyQty(Number((e.target as HTMLInputElement).value) || 1)}
+        />
+      </div>
+    </div>
+  );
+}
+
+export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState }) {
+  const { fulfilmentMode, setFulfilmentMode } = state;
 
   return (
     <section
@@ -22,7 +145,7 @@ export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState 
     >
       <div class={styles.cardHeading}>
         <span class={`${styles.cardIcon} ${styles.iconViolet}`}>▣</span>
-        <span>Listing & Fulfilment</span>
+        <span>Listing & Fulfilment Channel</span>
       </div>
 
       <div class={styles.modeTabs}>
@@ -52,60 +175,8 @@ export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState 
         </button>
       </div>
 
-      <div class={styles.fieldGroup}>
-        <label class={styles.fieldLabel} for="amz-sp">
-          Selling price (₹)
-        </label>
-        <input
-          id="amz-sp"
-          type="number"
-          class={styles.fieldInput}
-          value={sellingPrice}
-          onInput={(e) => setSellingPrice(Number((e.target as HTMLInputElement).value) || 0)}
-        />
-      </div>
-
-      <div class={styles.fieldGrid2}>
-        <div class={styles.fieldGroup}>
-          <label class={styles.fieldLabel} for="amz-cost">
-            Product + packaging (₹)
-          </label>
-          <input
-            id="amz-cost"
-            type="number"
-            class={styles.fieldInput}
-            value={productPackagingCost}
-            onInput={(e) =>
-              setProductPackagingCost(Number((e.target as HTMLInputElement).value) || 0)
-            }
-          />
-        </div>
-        <div class={styles.fieldGroup}>
-          <label class={styles.fieldLabel} for="amz-weight">
-            Packed weight (grams)
-          </label>
-          <input
-            id="amz-weight"
-            type="number"
-            class={styles.fieldInput}
-            value={packedWeight}
-            onInput={(e) => setPackedWeight(Number((e.target as HTMLInputElement).value) || 0)}
-          />
-        </div>
-      </div>
-
-      <div class={styles.fieldGroup}>
-        <label class={styles.fieldLabel} for="amz-qty">
-          Estimated units sold / month
-        </label>
-        <input
-          id="amz-qty"
-          type="number"
-          class={styles.fieldInput}
-          value={monthlyQty}
-          onInput={(e) => setMonthlyQty(Number((e.target as HTMLInputElement).value) || 1)}
-        />
-      </div>
+      <AmazonListingBasicFields state={state} />
+      <AmazonShippingWeightFields state={state} />
     </section>
   );
 }
@@ -126,7 +197,7 @@ export function AmazonFeeMarketplaceCard({ state }: { state: AmazonFeeEstimatorS
     <section class={`${styles.businessCard} ${styles.cardAdvanced}`} aria-label="Amazon Fee Inputs">
       <div class={styles.cardHeading}>
         <span class={`${styles.cardIcon} ${styles.iconBlue}`}>⚙</span>
-        <span>Manual Amazon Fee Inputs</span>
+        <span>Amazon Fees & Operational Costs</span>
       </div>
 
       <div class={styles.fieldGrid2}>
@@ -144,7 +215,7 @@ export function AmazonFeeMarketplaceCard({ state }: { state: AmazonFeeEstimatorS
         </div>
         <div class={styles.fieldGroup}>
           <label class={styles.fieldLabel} for="amz-closing">
-            Closing + handling (₹)
+            Closing + Weight (₹)
           </label>
           <input
             id="amz-closing"
@@ -159,7 +230,7 @@ export function AmazonFeeMarketplaceCard({ state }: { state: AmazonFeeEstimatorS
       <div class={styles.fieldGrid2}>
         <div class={styles.fieldGroup}>
           <label class={styles.fieldLabel} for="amz-gst">
-            GST on fees (₹, 18%)
+            18% Fee GST (₹)
           </label>
           <input
             id="amz-gst"
@@ -171,7 +242,7 @@ export function AmazonFeeMarketplaceCard({ state }: { state: AmazonFeeEstimatorS
         </div>
         <div class={styles.fieldGroup}>
           <label class={styles.fieldLabel} for="amz-ads">
-            Ads + returns (₹)
+            Ads & Returns / order (₹)
           </label>
           <input
             id="amz-ads"
@@ -183,8 +254,19 @@ export function AmazonFeeMarketplaceCard({ state }: { state: AmazonFeeEstimatorS
         </div>
       </div>
 
-      <div class={styles.noteBox}>
-        Enter fees from your Amazon Seller Central schedule. All calculations run client-side.
+      <div
+        style={{
+          background: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '6px',
+          padding: '6px 8px',
+          fontSize: '11px',
+          color: '#475569',
+          lineHeight: '1.35',
+        }}
+      >
+        💡 <strong>Pro Seller Tip:</strong> GST-registered sellers can claim 100% of the 18% Fee GST
+        back as Input Tax Credit (ITC) in GSTR-3B.
       </div>
     </section>
   );

@@ -197,6 +197,12 @@
   gap: 8px;
 }
 
+.kpiGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
 .kpiCard {
   border: 1px solid #e2e8f0;
   border-radius: 6px;

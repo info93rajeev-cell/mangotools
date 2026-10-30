@@ -44,7 +44,7 @@ export function AmazonFeeResultsSummaryCard({ state }: { state: AmazonFeeEstimat
         </div>
       </div>
 
-      <div class={styles.kpiGrid2}>
+      <div class={styles.kpiGrid3}>
         <div class={styles.kpiCard}>
           <span class={styles.kpiLabel}>Profit Margin</span>
           <span class={styles.kpiValue} style={{ color: isProfitable ? '#059669' : '#dc2626' }}>
@@ -54,7 +54,13 @@ export function AmazonFeeResultsSummaryCard({ state }: { state: AmazonFeeEstimat
         <div class={styles.kpiCard}>
           <span class={styles.kpiLabel}>Amazon Fees + GST</span>
           <span class={styles.kpiValue} style={{ color: '#7c3aed' }}>
-            ₹{calculation.amazonFeesWithGst.toFixed(2)}
+            ₹{calculation.amazonFeesWithGst.toFixed(0)}
+          </span>
+        </div>
+        <div class={styles.kpiCard}>
+          <span class={styles.kpiLabel}>Bank Settlement</span>
+          <span class={styles.kpiValue} style={{ color: '#2563eb' }}>
+            ₹{calculation.bankPayout.toFixed(0)}
           </span>
         </div>
       </div>
@@ -100,15 +106,19 @@ export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorSta
             <td style={{ color: '#64748b' }}>−₹{productPackagingCost.toFixed(2)}</td>
           </tr>
           <tr>
-            <td>Referral + Closing + Handling</td>
-            <td style={{ color: '#64748b' }}>−₹{(referralFee + closingHandling).toFixed(2)}</td>
+            <td>Referral Fee</td>
+            <td style={{ color: '#64748b' }}>−₹{referralFee.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Closing + Weight Handling</td>
+            <td style={{ color: '#64748b' }}>−₹{closingHandling.toFixed(2)}</td>
           </tr>
           <tr>
             <td>Fee GST (18%)</td>
             <td style={{ color: '#64748b' }}>−₹{feeGst.toFixed(2)}</td>
           </tr>
           <tr>
-            <td>Advertising + Expected Returns</td>
+            <td>Advertising + Returns Reserve</td>
             <td style={{ color: '#64748b' }}>−₹{adsReturns.toFixed(2)}</td>
           </tr>
           <tr style={{ background: '#f8fafc', fontWeight: 800 }}>
@@ -138,34 +148,34 @@ export function AmazonFeeVisualCard({ state }: { state: AmazonFeeEstimatorState 
       <div class={styles.segmentedBar}>
         <div
           style={{ width: `${calculation.costPct}%`, background: '#2563eb' }}
-          title={`Product Cost ${calculation.costPct}%`}
+          title={`Product: ${calculation.costPct}%`}
         />
         <div
-          style={{ width: `${calculation.feePct}%`, background: '#9333ea' }}
-          title={`Amazon Fees ${calculation.feePct}%`}
+          style={{ width: `${calculation.feePct}%`, background: '#7c3aed' }}
+          title={`Amazon Fees: ${calculation.feePct}%`}
         />
         <div
           style={{ width: `${calculation.otherPct}%`, background: '#f59e0b' }}
-          title={`Other Costs ${calculation.otherPct}%`}
+          title={`Ads & Returns: ${calculation.otherPct}%`}
         />
         <div
           style={{ width: `${calculation.profitPct}%`, background: '#10b981' }}
-          title={`Net Profit ${calculation.profitPct}%`}
+          title={`Profit: ${calculation.profitPct}%`}
         />
       </div>
 
-      <div class={styles.segmentedLegend}>
+      <div class={styles.legendRow}>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#2563eb' }} />
           Cost {calculation.costPct}%
         </span>
         <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#9333ea' }} />
-          Amazon fees {calculation.feePct}%
+          <span class={styles.legendDot} style={{ background: '#7c3aed' }} />
+          Fees {calculation.feePct}%
         </span>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#f59e0b' }} />
-          Other {calculation.otherPct}%
+          Ads {calculation.otherPct}%
         </span>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#10b981' }} />

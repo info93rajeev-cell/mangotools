@@ -24,7 +24,7 @@ export function MarkupActionsCard({ state }: { state: MarkupCalculatorState }) {
         onClick={copySummary}
         title="Calculate Price and copy summary"
       >
-        <span>▦ Calculate & Copy Price</span>
+        <span>▦ Calculate & Copy Result</span>
       </button>
 
       <div class={styles.actionsRow}>
@@ -73,7 +73,37 @@ export function MarkupComparisonCard() {
 }
 
 export function MarkupNotesCard({ state }: { state: MarkupCalculatorState }) {
-  const { calculation } = state;
+  const { activeTab, calculation, stackedCalc } = state;
+
+  if (activeTab === 'stacked_discount') {
+    return (
+      <section
+        class={`${styles.businessCard} ${styles.cardNotes}`}
+        aria-label="Discount Truth Formula"
+      >
+        <div class={styles.cardHeading}>
+          <span class={`${styles.cardIcon} ${styles.iconViolet}`}>𝑓</span>
+          <span>Successive Discount Formula</span>
+        </div>
+
+        <div class={styles.noteBox}>
+          <div>
+            <strong>
+              Why {stackedCalc.nominalSumDiscount}% is actually {stackedCalc.realEffectiveDiscount}
+              %:
+            </strong>
+          </div>
+          <div style={{ marginTop: '2px', color: '#1e40af', fontSize: '11px' }}>
+            Formula: Net Multiplier = (1 − d₁) × (1 − d₂) × (1 − d₃)
+          </div>
+          <div style={{ marginTop: '4px', fontSize: '10.5px' }}>
+            Each extra coupon applies to the <em>already discounted balance</em>, not the initial
+            MRP.
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section class={`${styles.businessCard} ${styles.cardNotes}`} aria-label="Formula and Working">

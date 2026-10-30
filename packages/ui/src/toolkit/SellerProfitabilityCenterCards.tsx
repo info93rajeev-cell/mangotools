@@ -48,7 +48,7 @@ export function SellerProfitabilityResultsSummaryCard({
         </div>
       </div>
 
-      <div class={styles.kpiGrid2}>
+      <div class={styles.kpiGrid3}>
         <div class={styles.kpiCard}>
           <span class={styles.kpiLabel}>Net Margin</span>
           <span class={styles.kpiValue} style={{ color: isProfitable ? '#059669' : '#dc2626' }}>
@@ -61,13 +61,19 @@ export function SellerProfitabilityResultsSummaryCard({
             {calculation.markupOnCost}%
           </span>
         </div>
+        <div class={styles.kpiCard}>
+          <span class={styles.kpiLabel}>Bank Settlement</span>
+          <span class={styles.kpiValue} style={{ color: '#2563eb' }}>
+            ₹{calculation.cashSettlementPayout.toFixed(0)}
+          </span>
+        </div>
       </div>
     </section>
   );
 }
 
 export function SellerProfitabilityDetailsCard({ state }: { state: SellerProfitabilityState }) {
-  const { sellingPrice, productCost, calculation } = state;
+  const { sellingPrice, productCost, adCost, otherCharges, calculation } = state;
 
   return (
     <section
@@ -88,7 +94,7 @@ export function SellerProfitabilityDetailsCard({ state }: { state: SellerProfita
         </thead>
         <tbody>
           <tr>
-            <td>Selling Price (Revenue)</td>
+            <td>Selling Price (Gross)</td>
             <td style={{ color: '#2563eb' }}>₹{sellingPrice.toFixed(2)}</td>
           </tr>
           <tr>
@@ -96,19 +102,27 @@ export function SellerProfitabilityDetailsCard({ state }: { state: SellerProfita
             <td style={{ color: '#64748b' }}>−₹{productCost.toFixed(2)}</td>
           </tr>
           <tr>
-            <td>Packaging + Shipping</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.packagingShipping.toFixed(2)}</td>
+            <td>Fulfillment (Ship + Warehouse + Labour)</td>
+            <td style={{ color: '#64748b' }}>−₹{calculation.directFulfillment.toFixed(2)}</td>
           </tr>
           <tr>
-            <td>Marketplace Commission</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.commissionAmount.toFixed(2)}</td>
+            <td>Marketplace Fees (Commission & Closing)</td>
+            <td style={{ color: '#64748b' }}>−₹{calculation.totalMarketplaceFees.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Marketplace Fee GST (18%)</td>
+            <td style={{ color: '#64748b' }}>−₹{calculation.marketplaceFeeGst.toFixed(2)}</td>
           </tr>
           <tr>
             <td>Advertising + Other</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.adsOther.toFixed(2)}</td>
+            <td style={{ color: '#64748b' }}>−₹{(adCost + otherCharges).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>RTO / Returns Loss Allocation</td>
+            <td style={{ color: '#64748b' }}>−₹{calculation.rtoLossPerUnit.toFixed(2)}</td>
           </tr>
           <tr style={{ background: '#f8fafc', fontWeight: 800 }}>
-            <td>Total Expenses</td>
+            <td>Total Real Expenses</td>
             <td style={{ color: '#dc2626' }}>₹{calculation.totalExpenses.toFixed(2)}</td>
           </tr>
           <tr style={{ background: '#f0fdf4', fontWeight: 800 }}>
@@ -144,53 +158,41 @@ export function SellerProfitabilityVisualCard({ state }: { state: SellerProfitab
         </div>
       </div>
 
-      <div class={styles.segmentedBar}>
+      <div class={styles.stackedBarContainer}>
         <div
-          style={{
-            width: `${calculation.costPct}%`,
-            background: '#2563eb',
-            transition: 'width 0.2s',
-          }}
-          title={`Product Cost ${calculation.costPct}%`}
+          class={styles.barSegment}
+          style={{ width: `${calculation.costPct}%`, background: '#2563eb' }}
+          title={`Product: ${calculation.costPct}%`}
         />
         <div
-          style={{
-            width: `${calculation.extrasPct}%`,
-            background: '#f59e0b',
-            transition: 'width 0.2s',
-          }}
-          title={`Packaging/Shipping ${calculation.extrasPct}%`}
+          class={styles.barSegment}
+          style={{ width: `${calculation.fulfillmentPct}%`, background: '#f59e0b' }}
+          title={`Fulfillment: ${calculation.fulfillmentPct}%`}
         />
         <div
-          style={{
-            width: `${calculation.feesPct}%`,
-            background: '#9333ea',
-            transition: 'width 0.2s',
-          }}
-          title={`Fees/Ads ${calculation.feesPct}%`}
+          class={styles.barSegment}
+          style={{ width: `${calculation.feesPct}%`, background: '#7c3aed' }}
+          title={`Fees & GST: ${calculation.feesPct}%`}
         />
         <div
-          style={{
-            width: `${calculation.profitPct}%`,
-            background: '#10b981',
-            transition: 'width 0.2s',
-          }}
-          title={`Net Profit ${calculation.profitPct}%`}
+          class={styles.barSegment}
+          style={{ width: `${calculation.profitPct}%`, background: '#10b981' }}
+          title={`Net Profit: ${calculation.profitPct}%`}
         />
       </div>
 
-      <div class={styles.segmentedLegend}>
+      <div class={styles.legendRow}>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#2563eb' }} />
           Product {calculation.costPct}%
         </span>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#f59e0b' }} />
-          Extras {calculation.extrasPct}%
+          Fulfillment {calculation.fulfillmentPct}%
         </span>
         <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#9333ea' }} />
-          Fees {calculation.feesPct}%
+          <span class={styles.legendDot} style={{ background: '#7c3aed' }} />
+          Fees & GST {calculation.feesPct}%
         </span>
         <span class={styles.legendItem}>
           <span class={styles.legendDot} style={{ background: '#10b981' }} />
