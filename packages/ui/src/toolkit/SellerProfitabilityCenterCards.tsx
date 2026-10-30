@@ -1,133 +1,120 @@
 import styles from './businessStudio.module.css';
 import type { SellerProfitabilityState } from './useSellerProfitability.ts';
 
-export function SellerProfitabilityResultsSummaryCard({
-  state,
-}: {
-  state: SellerProfitabilityState;
-}) {
+export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfitabilityState }) {
   const { calculation } = state;
-  const isProfitable = calculation.netProfit >= 0;
+  const isProfit = calculation.netProfit >= 0;
 
   return (
-    <section class={`${styles.businessCard} ${styles.cardResults}`} aria-label="Results Summary">
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconGreen}`}>✓</span>
+    <section class={styles.card} aria-label="Profitability Summary">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoGreen}`}>✓</span>
         <span>Profitability Summary</span>
       </div>
 
-      <div
-        class={styles.headlineHero}
-        style={{
-          background: isProfitable
-            ? 'linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%)'
-            : 'linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%)',
-          borderColor: isProfitable ? '#a7f3d0' : '#fecaca',
-        }}
-      >
-        <div>
-          <div class={styles.headlineTitle} style={{ color: isProfitable ? '#047857' : '#b91c1c' }}>
-            {isProfitable ? 'Net Profit per Sale' : 'Net Loss per Sale'}
-          </div>
-          <div
-            class={styles.headlineAmount}
-            style={{ color: isProfitable ? '#065f46' : '#991b1b' }}
-          >
-            ₹ {calculation.netProfit.toFixed(2)}
-          </div>
-        </div>
-
-        <div
-          class={styles.kpiBadge}
-          style={{
-            background: isProfitable ? '#d1fae5' : '#fee2e2',
-            color: isProfitable ? '#065f46' : '#991b1b',
-          }}
-        >
-          {calculation.netMargin}% margin
-        </div>
+      <div class={`${styles.headlineResult} ${!isProfit ? styles.headlineResultLoss : ''}`}>
+        <small>{isProfit ? 'Net Profit per Order' : 'Net Loss per Order'}</small>
+        <strong>
+          ₹{' '}
+          {calculation.netProfit.toLocaleString('en-IN', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </strong>
       </div>
 
-      <div class={styles.kpiGrid3}>
-        <div class={styles.kpiCard}>
-          <span class={styles.kpiLabel}>Net Margin</span>
-          <span class={styles.kpiValue} style={{ color: isProfitable ? '#059669' : '#dc2626' }}>
-            {calculation.netMargin}%
-          </span>
+      <div class={styles.metrics}>
+        <div class={styles.metric}>
+          <span class={`${styles.ico} ${styles.icoGreen}`}>％</span>
+          <div class={styles.metricTextGroup}>
+            <small>Net margin</small>
+            <strong style={{ color: isProfit ? '#059669' : '#dc2626' }}>
+              {calculation.netMargin}%
+            </strong>
+          </div>
         </div>
-        <div class={styles.kpiCard}>
-          <span class={styles.kpiLabel}>Markup on Cost</span>
-          <span class={styles.kpiValue} style={{ color: '#7c3aed' }}>
-            {calculation.markupOnCost}%
-          </span>
+
+        <div class={styles.metric}>
+          <span class={`${styles.ico} ${styles.icoViolet}`}>↗</span>
+          <div class={styles.metricTextGroup}>
+            <small>Markup on cost</small>
+            <strong>{calculation.markupOnCost}%</strong>
+          </div>
         </div>
-        <div class={styles.kpiCard}>
-          <span class={styles.kpiLabel}>Bank Settlement</span>
-          <span class={styles.kpiValue} style={{ color: '#2563eb' }}>
-            ₹{calculation.cashSettlementPayout.toFixed(0)}
-          </span>
+
+        <div class={styles.metric}>
+          <span class={`${styles.ico} ${styles.icoCyan}`}>₹</span>
+          <div class={styles.metricTextGroup}>
+            <small>Monthly profit</small>
+            <strong>
+              ₹{calculation.monthlyProfit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </strong>
+          </div>
+        </div>
+
+        <div class={styles.metric}>
+          <span class={`${styles.ico} ${styles.icoAmber}`}>≋</span>
+          <div class={styles.metricTextGroup}>
+            <small>Total cost</small>
+            <strong>
+              ₹{calculation.totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </strong>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-export function SellerProfitabilityDetailsCard({ state }: { state: SellerProfitabilityState }) {
-  const { sellingPrice, productCost, adCost, otherCharges, calculation } = state;
+export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfitabilityState }) {
+  const { productCost, packagingCost, shippingCost, adCost, otherCharges, calculation } = state;
+  const packAndShip = packagingCost + shippingCost;
+  const adsAndOther = adCost + otherCharges;
 
   return (
-    <section
-      class={`${styles.businessCard} ${styles.cardBreakdown}`}
-      aria-label="Financial Details"
-    >
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconViolet}`}>▥</span>
-        <span>Financial Details</span>
+    <section class={styles.card} aria-label="Revenue and Cost Breakdown">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoViolet}`}>▥</span>
+        <span>Revenue & Cost Breakdown</span>
       </div>
 
-      <table class={styles.itemizedTable} aria-label="Itemized Profit Statement">
+      <table class={styles.smallTable} aria-label="Cost Breakdown Table">
         <thead>
           <tr>
             <th>Item</th>
-            <th>Amount (₹)</th>
+            <th>₹ per sale</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Selling Price (Gross)</td>
-            <td style={{ color: '#2563eb' }}>₹{sellingPrice.toFixed(2)}</td>
+            <td>Product cost</td>
+            <td>₹{productCost.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
           </tr>
           <tr>
-            <td>Product Cost</td>
-            <td style={{ color: '#64748b' }}>−₹{productCost.toFixed(2)}</td>
+            <td>Packaging + shipping</td>
+            <td>₹{packAndShip.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
           </tr>
           <tr>
-            <td>Fulfillment (Ship + Warehouse + Labour)</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.directFulfillment.toFixed(2)}</td>
+            <td>Commission</td>
+            <td>
+              ₹{calculation.commissionAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </td>
           </tr>
           <tr>
-            <td>Marketplace Fees (Commission & Closing)</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.totalMarketplaceFees.toFixed(2)}</td>
+            <td>Ads + other</td>
+            <td>₹{adsAndOther.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
           </tr>
-          <tr>
-            <td>Marketplace Fee GST (18%)</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.marketplaceFeeGst.toFixed(2)}</td>
+          <tr style={{ fontWeight: 800 }}>
+            <td>Total expenses</td>
+            <td style={{ color: '#dc2626' }}>
+              ₹{calculation.totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </td>
           </tr>
-          <tr>
-            <td>Advertising + Other</td>
-            <td style={{ color: '#64748b' }}>−₹{(adCost + otherCharges).toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>RTO / Returns Loss Allocation</td>
-            <td style={{ color: '#64748b' }}>−₹{calculation.rtoLossPerUnit.toFixed(2)}</td>
-          </tr>
-          <tr style={{ background: '#f8fafc', fontWeight: 800 }}>
-            <td>Total Real Expenses</td>
-            <td style={{ color: '#dc2626' }}>₹{calculation.totalExpenses.toFixed(2)}</td>
-          </tr>
-          <tr style={{ background: '#f0fdf4', fontWeight: 800 }}>
-            <td>Net Profit per Sale</td>
-            <td style={{ color: '#059669' }}>₹{calculation.netProfit.toFixed(2)}</td>
+          <tr style={{ fontWeight: 850, background: '#f0fdf4' }}>
+            <td>Net profit</td>
+            <td style={{ color: '#059669' }}>
+              ₹{calculation.netProfit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -135,70 +122,62 @@ export function SellerProfitabilityDetailsCard({ state }: { state: SellerProfita
   );
 }
 
-export function SellerProfitabilityVisualCard({ state }: { state: SellerProfitabilityState }) {
-  const { monthlyQty, calculation } = state;
+export function SellerWhereMoneyGoesCard({ state }: { state: SellerProfitabilityState }) {
+  const {
+    sellingPrice,
+    productCost,
+    packagingCost,
+    shippingCost,
+    adCost,
+    otherCharges,
+    calculation,
+  } = state;
+  const sp = Math.max(1, sellingPrice);
+  const prodPct = Math.min(100, Math.round((productCost / sp) * 100));
+  const otherPct = Math.min(
+    100,
+    Math.round(((packagingCost + shippingCost + adCost + otherCharges) / sp) * 100),
+  );
+  const feePct = Math.min(
+    100,
+    Math.round(((calculation.totalMarketplaceFees + calculation.marketplaceFeeGst) / sp) * 100),
+  );
+  const profitPct = Math.max(0, Math.round((calculation.netProfit / sp) * 100));
 
   return (
-    <section class={`${styles.businessCard} ${styles.cardVisual}`} aria-label="Visual Breakdown">
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconPink}`}>◔</span>
-        <span>Distribution & Breakdown</span>
+    <section class={styles.card} aria-label="Where the Money Goes">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoPink}`}>◔</span>
+        <span>Where the Money Goes</span>
       </div>
 
-      <div class={styles.kpiGrid2}>
-        <div class={styles.kpiCard}>
-          <span class={styles.kpiLabel}>Total Costs / Sale</span>
-          <span class={styles.kpiValue}>₹{calculation.totalExpenses.toFixed(0)}</span>
-        </div>
-        <div class={styles.kpiCard}>
-          <span class={styles.kpiLabel}>Monthly Profit ({monthlyQty})</span>
-          <span class={styles.kpiValue} style={{ color: '#059669' }}>
-            ₹{calculation.monthlyProfit.toLocaleString()}
-          </span>
-        </div>
+      <div class={styles.bar}>
+        <span style={{ width: `${prodPct}%`, background: '#2581ef' }} />
+        <span style={{ width: `${otherPct}%`, background: '#f6ae27' }} />
+        <span style={{ width: `${feePct}%`, background: '#aa69ea' }} />
+        <span style={{ width: `${profitPct}%`, background: '#18b86b' }} />
       </div>
 
-      <div class={styles.stackedBarContainer}>
-        <div
-          class={styles.barSegment}
-          style={{ width: `${calculation.costPct}%`, background: '#2563eb' }}
-          title={`Product: ${calculation.costPct}%`}
-        />
-        <div
-          class={styles.barSegment}
-          style={{ width: `${calculation.fulfillmentPct}%`, background: '#f59e0b' }}
-          title={`Fulfillment: ${calculation.fulfillmentPct}%`}
-        />
-        <div
-          class={styles.barSegment}
-          style={{ width: `${calculation.feesPct}%`, background: '#7c3aed' }}
-          title={`Fees & GST: ${calculation.feesPct}%`}
-        />
-        <div
-          class={styles.barSegment}
-          style={{ width: `${calculation.profitPct}%`, background: '#10b981' }}
-          title={`Net Profit: ${calculation.profitPct}%`}
-        />
-      </div>
-
-      <div class={styles.legendRow}>
-        <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#2563eb' }} />
-          Product {calculation.costPct}%
-        </span>
-        <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#f59e0b' }} />
-          Fulfillment {calculation.fulfillmentPct}%
-        </span>
-        <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#7c3aed' }} />
-          Fees & GST {calculation.feesPct}%
-        </span>
-        <span class={styles.legendItem}>
-          <span class={styles.legendDot} style={{ background: '#10b981' }} />
-          Profit {calculation.profitPct}%
-        </span>
+      <div class={styles.legend}>
+        <span>🔵 Product {prodPct}%</span>
+        <span>🟠 Other {otherPct}%</span>
+        <span>🟣 Fees {feePct}%</span>
+        <span>🟢 Profit {profitPct}%</span>
       </div>
     </section>
   );
 }
+
+export function SellerProfitabilityCenterCards({ state }: { state: SellerProfitabilityState }) {
+  return (
+    <div class={styles.stack}>
+      <SellerProfitabilitySummaryCard state={state} />
+      <SellerRevenueCostBreakdownCard state={state} />
+      <SellerWhereMoneyGoesCard state={state} />
+    </div>
+  );
+}
+
+export const SellerProfitabilityResultsSummaryCard = SellerProfitabilitySummaryCard;
+export const SellerProfitabilityDetailsCard = SellerRevenueCostBreakdownCard;
+export const SellerProfitabilityVisualCard = SellerWhereMoneyGoesCard;

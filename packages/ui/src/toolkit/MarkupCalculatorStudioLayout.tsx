@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
-import {
-  MarkupCenterCardsWrapper,
-  MarkupLeftCardsWrapper,
-  MarkupRightCardsWrapper,
-} from './MarkupLayoutSections.tsx';
+import { MarkupCenterCards } from './MarkupCenterCards.tsx';
+import { MarkupLeftCards } from './MarkupLeftCards.tsx';
+import { MarkupRightCards } from './MarkupRightCards.tsx';
 import {
   isTourCompleted,
   ToolOnboardingTour,
@@ -18,27 +16,26 @@ const MARKUP_TOUR_STEPS: TourStep[] = [
     id: 'step-inputs',
     targetSelector: '[data-tour="markup-inputs"]',
     stepNumber: 1,
-    title: '1. Cost Price & Markup %',
+    title: '1. Cost Price & Desired Markup',
     description:
-      'Enter your unit cost price and desired markup percentage to compute selling price.',
-    hint: 'You can also work backward from desired revenue.',
+      'Enter your unit base cost and desired markup % (e.g. 40%). Switch to Target Margin or Reverse Calculator mode anytime.',
+    hint: 'Calculations run 100% locally in your browser with zero server uploads.',
   },
   {
     id: 'step-results',
     targetSelector: '[data-tour="markup-results"]',
     stepNumber: 2,
-    title: '2. Selling Price & Profit',
+    title: '2. Recommended Selling Price',
     description:
-      'Review your final calculated selling price, total gross profit, and equivalent margin %.',
-    hint: 'Calculations run in-browser with zero rounding drift.',
+      'Review your calculated selling price, exact gross profit per unit, gross margin %, and bulk volume profit.',
   },
   {
-    id: 'step-actions',
-    targetSelector: '[data-tour="markup-actions"]',
+    id: 'step-comparison',
+    targetSelector: '[data-tour="markup-comparison"]',
     stepNumber: 3,
-    title: '3. Quick Actions & Copy',
+    title: '3. Markup vs Margin Matrix',
     description:
-      'Copy the markup summary to your clipboard or review the margin vs markup reference table.',
+      'Understand the difference between markup (over cost) and margin (over sale price) with the instant reference tier table.',
   },
 ];
 
@@ -56,20 +53,59 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
     return () => window.removeEventListener('mangotools:open-tour', handleOpen);
   }, []);
 
+  const handleSample = () => {
+    state.setCostPrice(500);
+    state.setMarkupPercent(40);
+    state.setQuantity(20);
+    state.setPricingMode('find_price');
+    notify?.('Sample ₹500 product at 40% markup loaded');
+  };
+
+  const handleReset = () => {
+    state.resetToDefaults();
+  };
+
   return (
     <div
       class={styles.studioContainer}
       data-markup-calculator-studio=""
       data-testid="markup-calculator-studio"
     >
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-        <TourLauncherButton onClick={() => setIsTourOpen(true)} />
+      <div class={styles.titleRow}>
+        <div class={styles.titleLeft}>
+          <div class={styles.heroIcon}>％</div>
+          <div class={styles.titleTextGroup}>
+            <h1 class={styles.titleHeading}>Markup Calculator</h1>
+            <p class={styles.subtitle}>
+              Convert cost, markup and target margin into a profitable selling price.
+            </p>
+          </div>
+        </div>
+
+        <div class={styles.topActions}>
+          <button type="button" class={styles.pill} onClick={handleSample}>
+            <span>☼ Try Sample</span>
+          </button>
+          <button type="button" class={styles.pill} onClick={state.copySummary}>
+            <span>▤ Copy</span>
+          </button>
+          <button type="button" class={`${styles.pill} ${styles.pillDanger}`} onClick={handleReset}>
+            <span>↺ Reset</span>
+          </button>
+          <TourLauncherButton onClick={() => setIsTourOpen(true)} />
+        </div>
       </div>
 
-      <div class={styles.studio3Col}>
-        <MarkupLeftCardsWrapper state={state} />
-        <MarkupCenterCardsWrapper state={state} />
-        <MarkupRightCardsWrapper state={state} />
+      <div class={styles.columns}>
+        <div data-tour="markup-inputs">
+          <MarkupLeftCards state={state} />
+        </div>
+        <div data-tour="markup-results">
+          <MarkupCenterCards state={state} />
+        </div>
+        <div data-tour="markup-comparison">
+          <MarkupRightCards state={state} />
+        </div>
       </div>
 
       <ToolOnboardingTour

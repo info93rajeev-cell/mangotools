@@ -1,129 +1,148 @@
+import { useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
-const MARKUP_MARGIN_TIERS = [
-  { markup: '20%', margin: '16.67%' },
-  { markup: '40%', margin: '28.57%' },
-  { markup: '50%', margin: '33.33%' },
-  { markup: '100%', margin: '50.00%' },
-];
-
-export function MarkupActionsCard({ state }: { state: MarkupCalculatorState }) {
-  const { copySummary, downloadCsv } = state;
+export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) {
+  const { markupPercent, calculation } = state;
 
   return (
-    <section class={`${styles.businessCard} ${styles.cardActions}`} aria-label="Quick Actions">
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconAmber}`}>⚡</span>
-        <span>Quick Actions</span>
-      </div>
-
-      <button
-        type="button"
-        class={styles.yellowActionBtn}
-        onClick={copySummary}
-        title="Calculate Price and copy summary"
-      >
-        <span>▦ Calculate & Copy Result</span>
-      </button>
-
-      <div class={styles.actionsRow}>
-        <button type="button" class={styles.ghostActionBtn} onClick={copySummary}>
-          <span>📋 Copy Summary</span>
-        </button>
-        <button type="button" class={styles.ghostActionBtn} onClick={downloadCsv}>
-          <span>📥 Download CSV</span>
-        </button>
-      </div>
-    </section>
-  );
-}
-
-export function MarkupComparisonCard() {
-  return (
-    <section class={`${styles.businessCard} ${styles.cardBreakdown}`} aria-label="Markup vs Margin">
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconCyan}`}>↔</span>
+    <section class={styles.card} aria-label="Markup vs Margin">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoAmber}`}>↔</span>
         <span>Markup vs. Margin</span>
       </div>
 
-      <div style={{ fontSize: '11px', color: '#64748b', lineHeight: '1.4' }}>
-        Markup measures profit over <strong>COST</strong>. Margin measures profit over{' '}
-        <strong>SELLING PRICE</strong>.
+      <div class={styles.strip}>
+        <span>{markupPercent.toFixed(1)}% markup</span>
+        <b>{calculation.grossMargin.toFixed(2)}% margin</b>
       </div>
+      <p class={styles.muted}>
+        Markup measures profit over COST. Margin measures profit over SELLING PRICE.
+      </p>
 
-      <table class={styles.itemizedTable} aria-label="Markup vs Margin Table">
+      <table
+        class={styles.smallTable}
+        aria-label="Markup Margin Tier Table"
+        style={{ marginTop: '8px' }}
+      >
         <thead>
           <tr>
-            <th>Markup %</th>
-            <th>Effective Margin %</th>
+            <th>Markup</th>
+            <th>Margin</th>
           </tr>
         </thead>
         <tbody>
-          {MARKUP_MARGIN_TIERS.map((tier) => (
-            <tr key={tier.markup}>
-              <td style={{ fontWeight: 700, color: '#7c3aed' }}>{tier.markup}</td>
-              <td style={{ fontWeight: 700, color: '#059669' }}>{tier.margin}</td>
-            </tr>
-          ))}
+          <tr>
+            <td>20%</td>
+            <td>16.67%</td>
+          </tr>
+          <tr>
+            <td>40%</td>
+            <td>28.57%</td>
+          </tr>
+          <tr>
+            <td>50%</td>
+            <td>33.33%</td>
+          </tr>
+          <tr>
+            <td>100%</td>
+            <td>50.00%</td>
+          </tr>
         </tbody>
       </table>
     </section>
   );
 }
 
-export function MarkupNotesCard({ state }: { state: MarkupCalculatorState }) {
-  const { activeTab, calculation, stackedCalc } = state;
-
-  if (activeTab === 'stacked_discount') {
-    return (
-      <section
-        class={`${styles.businessCard} ${styles.cardNotes}`}
-        aria-label="Discount Truth Formula"
-      >
-        <div class={styles.cardHeading}>
-          <span class={`${styles.cardIcon} ${styles.iconViolet}`}>𝑓</span>
-          <span>Successive Discount Formula</span>
-        </div>
-
-        <div class={styles.noteBox}>
-          <div>
-            <strong>
-              Why {stackedCalc.nominalSumDiscount}% is actually {stackedCalc.realEffectiveDiscount}
-              %:
-            </strong>
-          </div>
-          <div style={{ marginTop: '2px', color: '#1e40af', fontSize: '11px' }}>
-            Formula: Net Multiplier = (1 − d₁) × (1 − d₂) × (1 − d₃)
-          </div>
-          <div style={{ marginTop: '4px', fontSize: '10.5px' }}>
-            Each extra coupon applies to the <em>already discounted balance</em>, not the initial
-            MRP.
-          </div>
-        </div>
-      </section>
-    );
-  }
+export function MarkupTargetMarginCard({ state }: { state: MarkupCalculatorState }) {
+  const { costPrice, targetMarginPercent, setTargetMarginPercent } = state;
+  const [localCost, setLocalCost] = useState(costPrice);
+  const safeMargin = Math.min(99, Math.max(0, targetMarginPercent));
+  const requiredPrice = safeMargin < 100 ? localCost / (1 - safeMargin / 100) : localCost;
 
   return (
-    <section class={`${styles.businessCard} ${styles.cardNotes}`} aria-label="Formula and Working">
-      <div class={styles.cardHeading}>
-        <span class={`${styles.cardIcon} ${styles.iconViolet}`}>𝑓</span>
-        <span>Formula & Working</span>
+    <section class={styles.card} aria-label="Target Margin Mode">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoCyan}`}>🎯</span>
+        <span>Target Margin Mode</span>
       </div>
 
-      <div class={styles.noteBox}>
-        <div>
-          • <strong>Selling Price</strong> = Cost × (1 + Markup ÷ 100)
+      <div class={styles.grid2}>
+        <div class={styles.field}>
+          <label class={styles.label} for="target-margin-pct">
+            Target margin (%)
+          </label>
+          <input
+            id="target-margin-pct"
+            type="number"
+            class={styles.fieldInput}
+            value={targetMarginPercent}
+            onInput={(e) =>
+              setTargetMarginPercent(Number((e.target as HTMLInputElement).value) || 0)
+            }
+          />
         </div>
-        <div style={{ marginTop: '2px', color: '#1e40af', fontWeight: 600 }}>
-          ₹{calculation.baseCost} × (1 + {state.markupPercent}/100) = ₹{calculation.sellingPrice}
+        <div class={styles.field}>
+          <label class={styles.label} for="target-cost-price">
+            Cost price (₹)
+          </label>
+          <input
+            id="target-cost-price"
+            type="number"
+            class={styles.fieldInput}
+            value={localCost}
+            onInput={(e) => setLocalCost(Number((e.target as HTMLInputElement).value) || 0)}
+          />
         </div>
-        <div style={{ marginTop: '4px' }}>
-          • <strong>Gross Margin</strong> = (Price − Cost) ÷ Price × 100 = {calculation.grossMargin}
-          %
-        </div>
+      </div>
+
+      <div class={styles.strip} style={{ marginTop: '10px' }}>
+        <span>Required price</span>
+        <b>₹{requiredPrice.toFixed(2)}</b>
       </div>
     </section>
   );
 }
+
+export function MarkupQuickActionsCard({ state }: { state: MarkupCalculatorState }) {
+  const { copySummary, downloadCsv, resetToDefaults } = state;
+
+  return (
+    <section class={styles.card} aria-label="Quick Actions">
+      <div class={styles.heading}>
+        <span class={`${styles.ico} ${styles.icoPink}`}>⇩</span>
+        <span>Quick Actions</span>
+      </div>
+
+      <div class={styles.miniList}>
+        <button type="button" class={styles.pill} onClick={copySummary}>
+          <span>▤ Copy Pricing Summary</span>
+        </button>
+        <button type="button" class={styles.pill} onClick={downloadCsv}>
+          <span>⇩ Download CSV</span>
+        </button>
+        <button
+          type="button"
+          class={`${styles.pill} ${styles.pillDanger}`}
+          onClick={resetToDefaults}
+        >
+          <span>↺ Reset Inputs</span>
+        </button>
+      </div>
+    </section>
+  );
+}
+
+export function MarkupRightCards({ state }: { state: MarkupCalculatorState }) {
+  return (
+    <div class={styles.stack}>
+      <MarkupVsMarginCard state={state} />
+      <MarkupTargetMarginCard state={state} />
+      <MarkupQuickActionsCard state={state} />
+    </div>
+  );
+}
+
+export const MarkupActionsCard = MarkupQuickActionsCard;
+export const MarkupComparisonCard = MarkupVsMarginCard;
+export const MarkupNotesCard = MarkupTargetMarginCard;

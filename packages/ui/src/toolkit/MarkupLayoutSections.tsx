@@ -37,7 +37,7 @@ export function MarkupRightCardsWrapper({ state }: { state: MarkupCalculatorStat
       <div data-tour="markup-actions">
         <MarkupActionsCard state={state} />
       </div>
-      <MarkupComparisonCard />
+      <MarkupComparisonCard state={state} />
       <MarkupNotesCard state={state} />
     </div>
   );
