@@ -158,7 +158,9 @@ export const hasSample = (id: string): id is keyof typeof SAMPLES => id in SAMPL
 export const island = (page: Page, id: string) =>
   page.locator(id === 'cbm-calculator' ? '[data-cbm-workspace]' : `[data-tool-island="${id}"]`);
 export const primaryResult = (page: Page) =>
-  page.locator('[data-primary-result] output, [data-cbm-total]');
+  page.locator(
+    '[data-primary-result] output, [data-cbm-total], [data-tax-results-card] span[class*="headlineAmount"]',
+  );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
 
@@ -184,6 +186,10 @@ export async function openRelatedTools(page: Page): Promise<void> {
 export async function waitForResult(page: Page, id: string): Promise<void> {
   if (id === 'cbm-calculator') {
     await expect(page.locator('[data-cbm-total]')).toBeVisible();
+    return;
+  }
+  if (id === 'gst-calculator') {
+    await expect(page.locator('[data-tax-results-card]')).toBeVisible();
     return;
   }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
@@ -227,9 +233,10 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     // Crop has a separate processing action before its result download is available.
     if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
     await page.getByRole('button', { name: tool.downloadCta }).click();
-  } else if (id !== 'cbm-calculator') {
-    // The CBM worksheet opens already filled with its preset sample (the approved CBM design has
-    // no "Try sample" control), so its result is waited for, not produced.
+  } else if (id === 'cbm-calculator' || id === 'gst-calculator') {
+    // The CBM and Universal Tax worksheets open already filled with their calculation result
+    // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
+  } else {
     await page.getByRole('button', { name: 'Try sample' }).click();
   }
   await waitForResult(page, id);

@@ -15,7 +15,7 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
   }
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> PDF File
@@ -198,7 +198,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
   const { mode, setMode } = studio;
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-arrange">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Split Configuration

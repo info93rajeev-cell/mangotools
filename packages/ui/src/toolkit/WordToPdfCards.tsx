@@ -8,7 +8,7 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
   const totalPages = files.reduce((acc, f) => acc + f.pages, 0);
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Add Word files
@@ -225,7 +225,7 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
           </div>
         </div>
       </div>
-      <div class={styles.card}>
+      <div class={styles.card} data-tour="pdf-action">
         <div class={styles.privacyNotice}>
           <span style={{ fontSize: '18px' }}>🔒</span>
           <span>

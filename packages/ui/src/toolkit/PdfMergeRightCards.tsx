@@ -117,7 +117,7 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
         hasBookmarks={summary.hasBookmarks}
       />
       <PdfMergePreviewFlowCard ranges={summary.ranges} totalPageCount={summary.totalPageCount} />
-      <div class={styles.card}>
+      <div class={styles.card} data-tour="pdf-action">
         <div class={styles.privacyNotice}>
           <span style={{ fontSize: '18px' }}>🔒</span>
           <span>

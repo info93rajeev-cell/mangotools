@@ -11,7 +11,9 @@ import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 export function MarkupLeftCardsWrapper({ state }: { state: MarkupCalculatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <MarkupInputsCard state={state} />
+      <div data-tour="markup-inputs">
+        <MarkupInputsCard state={state} />
+      </div>
       <MarkupOptionalAdditionsCard state={state} />
     </div>
   );
@@ -20,9 +22,11 @@ export function MarkupLeftCardsWrapper({ state }: { state: MarkupCalculatorState
 export function MarkupCenterCardsWrapper({ state }: { state: MarkupCalculatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <MarkupResultsSummaryCard state={state} />
-      <MarkupFinancialDetailsCard state={state} />
-      <MarkupVisualCard state={state} />
+      <div data-tour="markup-results">
+        <MarkupResultsSummaryCard state={state} />
+        <MarkupFinancialDetailsCard state={state} />
+        <MarkupVisualCard state={state} />
+      </div>
     </div>
   );
 }
@@ -30,7 +34,9 @@ export function MarkupCenterCardsWrapper({ state }: { state: MarkupCalculatorSta
 export function MarkupRightCardsWrapper({ state }: { state: MarkupCalculatorState }) {
   return (
     <div class={styles.studioColumn}>
-      <MarkupActionsCard state={state} />
+      <div data-tour="markup-actions">
+        <MarkupActionsCard state={state} />
+      </div>
       <MarkupComparisonCard />
       <MarkupNotesCard state={state} />
     </div>

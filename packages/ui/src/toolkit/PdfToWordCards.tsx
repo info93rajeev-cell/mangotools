@@ -8,7 +8,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
   const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Upload PDF File
@@ -75,7 +75,7 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
   } = studio;
 
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>2</span> Conversion Options
@@ -186,7 +186,7 @@ export function PdfToWordLeftCards({ studio }: { studio: PdfToWordState }) {
 
 function PdfToWordSummaryCard({ totalPages }: { totalPages: number }) {
   return (
-    <div class={styles.card}>
+    <div class={styles.card} data-tour="pdf-upload">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span style={{ color: '#2563eb' }}>📋</span> Conversion Summary
@@ -235,7 +235,7 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
   return (
     <div class={styles.scrollCol}>
       <PdfToWordSummaryCard totalPages={totalPages} />
-      <div class={styles.card}>
+      <div class={styles.card} data-tour="pdf-action">
         <div class={styles.cardHeader}>
           <h2 class={styles.cardTitle}>
             <span style={{ color: '#2563eb' }}>📝</span> Editable Output Preview

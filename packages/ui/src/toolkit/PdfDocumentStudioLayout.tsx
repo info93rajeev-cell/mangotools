@@ -1,5 +1,5 @@
 import type { JSX } from 'preact';
-import { useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { PdfCompressLeftCards } from './PdfCompressLeftCards.tsx';
 import { PdfCompressRightCards } from './PdfCompressRightCards.tsx';
 import { PdfMergeLeftCards } from './PdfMergeLeftCards.tsx';
@@ -15,13 +15,15 @@ import {
 } from './PdfToolIcons.tsx';
 import { PdfToWordLeftCards, PdfToWordRightCards } from './PdfToWordCards.tsx';
 import styles from './pdfStudio.module.css';
+import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
+import { isTourCompleted, ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
 import { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 import { usePdfToWordStudio, useWordToPdfStudio } from './usePdfConvertStudio.ts';
 import { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 import { usePdfSplitStudio } from './usePdfSplitStudio.ts';
 import { WordToPdfLeftCards, WordToPdfRightCards } from './WordToPdfCards.tsx';
 
-export type PdfToolTab = 'merge' | 'split' | 'compress' | 'pdfToWord' | 'wordToPdf';
+export type { PdfToolTab };
 
 export interface PdfDocumentStudioProps {
   toolId?: string;
@@ -37,6 +39,7 @@ function ToolHeaderBar({
   onOpen,
   onLoadSample,
   onClear,
+  onLaunchTour,
 }: {
   iconNode: JSX.Element;
   title: string;
@@ -46,6 +49,7 @@ function ToolHeaderBar({
   onOpen?: () => void;
   onLoadSample: () => void;
   onClear: () => void;
+  onLaunchTour?: () => void;
 }) {
   return (
     <div class={styles.topBar}>
@@ -81,6 +85,7 @@ function ToolHeaderBar({
         >
           🗑️ Clear All
         </button>
+        {onLaunchTour && <TourLauncherButton onClick={onLaunchTour} />}
       </div>
     </div>
   );
@@ -97,9 +102,11 @@ function resolveInitialPdfTab(toolId?: string): PdfToolTab {
 function RenderPdfMergeView({
   studio,
   onOpen,
+  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfMergeStudio>;
   onOpen: () => void;
+  onLaunchTour: () => void;
 }) {
   return (
     <>
@@ -112,6 +119,7 @@ function RenderPdfMergeView({
         onOpen={onOpen}
         onLoadSample={studio.loadSampleFiles}
         onClear={studio.clearAll}
+        onLaunchTour={onLaunchTour}
       />
       <div class={styles.studioLayout}>
         <PdfMergeLeftCards studio={studio} />
@@ -124,9 +132,11 @@ function RenderPdfMergeView({
 function RenderPdfSplitView({
   studio,
   onOpen,
+  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfSplitStudio>;
   onOpen: () => void;
+  onLaunchTour: () => void;
 }) {
   return (
     <>
@@ -139,6 +149,7 @@ function RenderPdfSplitView({
         onOpen={onOpen}
         onLoadSample={studio.loadSampleSplit}
         onClear={studio.clearAll}
+        onLaunchTour={onLaunchTour}
       />
       <div class={styles.studioLayout}>
         <PdfSplitLeftCards studio={studio} />
@@ -151,9 +162,11 @@ function RenderPdfSplitView({
 function RenderPdfCompressView({
   studio,
   onOpen,
+  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfCompressStudio>;
   onOpen: () => void;
+  onLaunchTour: () => void;
 }) {
   return (
     <>
@@ -166,6 +179,7 @@ function RenderPdfCompressView({
         onOpen={onOpen}
         onLoadSample={studio.loadSampleCompress}
         onClear={studio.clearAll}
+        onLaunchTour={onLaunchTour}
       />
       <div class={styles.studioLayout}>
         <PdfCompressLeftCards studio={studio} />
@@ -180,11 +194,13 @@ function RenderPdfConvertView({
   onOpen,
   pdfToWordStudio,
   wordToPdfStudio,
+  onLaunchTour,
 }: {
   activeTab: PdfToolTab;
   onOpen: () => void;
   pdfToWordStudio: ReturnType<typeof usePdfToWordStudio>;
   wordToPdfStudio: ReturnType<typeof useWordToPdfStudio>;
+  onLaunchTour: () => void;
 }) {
   if (activeTab === 'pdfToWord') {
     return (
@@ -198,6 +214,7 @@ function RenderPdfConvertView({
           onOpen={onOpen}
           onLoadSample={pdfToWordStudio.loadSamplePdfToWord}
           onClear={pdfToWordStudio.clearAll}
+          onLaunchTour={onLaunchTour}
         />
         <div class={styles.studioLayout}>
           <PdfToWordLeftCards studio={pdfToWordStudio} />
@@ -217,6 +234,7 @@ function RenderPdfConvertView({
         onOpen={onOpen}
         onLoadSample={wordToPdfStudio.loadSampleWordDocs}
         onClear={wordToPdfStudio.clearAll}
+        onLaunchTour={onLaunchTour}
       />
       <div class={styles.studioLayout}>
         <WordToPdfLeftCards studio={wordToPdfStudio} />
@@ -226,38 +244,105 @@ function RenderPdfConvertView({
   );
 }
 
+function handleNativeFileDispatch(
+  activeTab: PdfToolTab,
+  list: FileList,
+  studios: {
+    merge: ReturnType<typeof usePdfMergeStudio>;
+    split: ReturnType<typeof usePdfSplitStudio>;
+    compress: ReturnType<typeof usePdfCompressStudio>;
+    pdfToWord: ReturnType<typeof usePdfToWordStudio>;
+    wordToPdf: ReturnType<typeof useWordToPdfStudio>;
+  },
+) {
+  if (activeTab === 'merge') void studios.merge.handleAddNativeFiles(list);
+  else if (activeTab === 'split') void studios.split.handleAddNativeFile(list[0]);
+  else if (activeTab === 'compress') void studios.compress.handleAddNativeFile(list[0]);
+  else if (activeTab === 'pdfToWord') {
+    studios.pdfToWord.setFileName(list[0].name);
+    studios.pdfToWord.setFileSizeBytes(list[0].size);
+  } else if (activeTab === 'wordToPdf') {
+    const added = Array.from(list).map((f, i) => ({
+      id: String(Date.now() + i),
+      name: f.name,
+      pages: 6,
+      sizeBytes: f.size,
+    }));
+    studios.wordToPdf.setFiles((prev) => [...prev, ...added]);
+  }
+}
+
+function PdfTabRenderer({
+  activeTab,
+  studios,
+  onOpen,
+  onLaunchTour,
+}: {
+  activeTab: PdfToolTab;
+  studios: {
+    merge: ReturnType<typeof usePdfMergeStudio>;
+    split: ReturnType<typeof usePdfSplitStudio>;
+    compress: ReturnType<typeof usePdfCompressStudio>;
+    pdfToWord: ReturnType<typeof usePdfToWordStudio>;
+    wordToPdf: ReturnType<typeof useWordToPdfStudio>;
+  };
+  onOpen: () => void;
+  onLaunchTour: () => void;
+}) {
+  if (activeTab === 'merge') {
+    return (
+      <RenderPdfMergeView studio={studios.merge} onOpen={onOpen} onLaunchTour={onLaunchTour} />
+    );
+  }
+  if (activeTab === 'split') {
+    return (
+      <RenderPdfSplitView studio={studios.split} onOpen={onOpen} onLaunchTour={onLaunchTour} />
+    );
+  }
+  if (activeTab === 'compress') {
+    return (
+      <RenderPdfCompressView
+        studio={studios.compress}
+        onOpen={onOpen}
+        onLaunchTour={onLaunchTour}
+      />
+    );
+  }
+  return (
+    <RenderPdfConvertView
+      activeTab={activeTab}
+      onOpen={onOpen}
+      pdfToWordStudio={studios.pdfToWord}
+      wordToPdfStudio={studios.wordToPdf}
+      onLaunchTour={onLaunchTour}
+    />
+  );
+}
+
 export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioProps) {
   const activeTab = resolveInitialPdfTab(toolId);
+  const currentToolKey = toolId ?? activeTab;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
-  const mergeStudio = usePdfMergeStudio(notify);
-  const splitStudio = usePdfSplitStudio(notify);
-  const compressStudio = usePdfCompressStudio(notify);
-  const pdfToWordStudio = usePdfToWordStudio(notify);
-  const wordToPdfStudio = useWordToPdfStudio(notify);
+  useEffect(() => {
+    if (!isTourCompleted(currentToolKey)) {
+      const timer = setTimeout(() => setIsTourOpen(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [currentToolKey]);
 
-  const handleTriggerOpen = () => {
-    fileInputRef.current?.click();
+  const studios = {
+    merge: usePdfMergeStudio(notify),
+    split: usePdfSplitStudio(notify),
+    compress: usePdfCompressStudio(notify),
+    pdfToWord: usePdfToWordStudio(notify),
+    wordToPdf: useWordToPdfStudio(notify),
   };
 
   const handleFileChange = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
     const list = e.currentTarget.files;
-    if (!list || list.length === 0) return;
-    if (activeTab === 'merge') void mergeStudio.handleAddNativeFiles(list);
-    else if (activeTab === 'split') void splitStudio.handleAddNativeFile(list[0]);
-    else if (activeTab === 'compress') void compressStudio.handleAddNativeFile(list[0]);
-    else if (activeTab === 'pdfToWord') {
-      pdfToWordStudio.setFileName(list[0].name);
-      pdfToWordStudio.setFileSizeBytes(list[0].size);
-    } else if (activeTab === 'wordToPdf') {
-      const added = Array.from(list).map((f, i) => ({
-        id: String(Date.now() + i),
-        name: f.name,
-        pages: 6,
-        sizeBytes: f.size,
-      }));
-      wordToPdfStudio.setFiles((prev) => [...prev, ...added]);
-    }
+    if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);
   };
 
   return (
@@ -270,23 +355,18 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />
-      {activeTab === 'merge' && (
-        <RenderPdfMergeView studio={mergeStudio} onOpen={handleTriggerOpen} />
-      )}
-      {activeTab === 'split' && (
-        <RenderPdfSplitView studio={splitStudio} onOpen={handleTriggerOpen} />
-      )}
-      {activeTab === 'compress' && (
-        <RenderPdfCompressView studio={compressStudio} onOpen={handleTriggerOpen} />
-      )}
-      {(activeTab === 'pdfToWord' || activeTab === 'wordToPdf') && (
-        <RenderPdfConvertView
-          activeTab={activeTab}
-          onOpen={handleTriggerOpen}
-          pdfToWordStudio={pdfToWordStudio}
-          wordToPdfStudio={wordToPdfStudio}
-        />
-      )}
+      <PdfTabRenderer
+        activeTab={activeTab}
+        studios={studios}
+        onOpen={() => fileInputRef.current?.click()}
+        onLaunchTour={() => setIsTourOpen(true)}
+      />
+      <ToolOnboardingTour
+        toolId={currentToolKey}
+        steps={getPdfTourSteps(activeTab)}
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+      />
     </div>
   );
 }
