@@ -52,13 +52,7 @@ export interface UniversalTaxStudioLayoutProps {
 function UniversalTaxHeaderBar({ onOpenTour }: { onOpenTour: () => void }) {
   return (
     <div class={styles.topHeaderRow}>
-      <div class={styles.titleGroup}>
-        <h1 class={styles.pageTitle}>Universal Tax Calculator</h1>
-        <p class={styles.pageSubtitle}>
-          Calculate GST, VAT, sales tax, and custom tax slabs for India and other countries — right
-          in your browser.
-        </p>
-      </div>
+      {/* Title and summary come from the page header (single H1). */}
 
       <div class={styles.saveCalloutBanner}>
         <div class={styles.calloutLeft}>

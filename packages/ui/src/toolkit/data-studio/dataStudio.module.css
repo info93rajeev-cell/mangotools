@@ -595,6 +595,7 @@
     display: flex;
     flex-direction: column;
     height: auto;
+    min-height: 0;
     gap: 8px;
   }
 }
@@ -611,7 +612,10 @@
   gap: 8px;
   min-width: 0;
   height: auto;
-  min-height: 100%;
+  /* Equal heights come from the grid's default stretch; a percentage min-height
+     here resolved against the stacked mobile column and made each card as tall
+     as all four together. */
+  min-height: 0;
   box-sizing: border-box;
 }
 

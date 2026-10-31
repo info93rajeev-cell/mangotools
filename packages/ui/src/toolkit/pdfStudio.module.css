@@ -3,8 +3,9 @@
 .studioContainer {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 180px);
-  max-height: 700px;
+  /* Grow with the content (permanent rule: the page may scroll). A fixed
+     viewport height clipped the last cards, e.g. the PDF to Word actions. */
+  height: auto;
   min-height: 560px;
   background: #ffffff;
   border-radius: 14px;
@@ -147,19 +148,16 @@
 .studioLayout {
   display: grid;
   grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
+  align-items: start;
   gap: 14px;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
 }
 
 .scrollCol {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto;
-  max-height: 100%;
-  padding-right: 4px;
 }
 .scrollCol::-webkit-scrollbar {
   width: 5px;
@@ -174,9 +172,13 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100%;
   min-height: 0;
-  overflow: hidden;
+}
+
+/* Cards keep their natural height; shrinking them let the next card draw over them. */
+.leftMergeCol > *,
+.scrollCol > * {
+  flex-shrink: 0;
 }
 
 .mergeListCard {
@@ -196,6 +198,7 @@
 .mergeListScroll {
   flex: 1;
   min-height: 0;
+  max-height: 360px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -1135,6 +1138,11 @@
     min-width: 0;
     box-sizing: border-box;
     padding: 8px 10px;
+    /* Let the "Choose PDF" button drop under the text instead of being cut off. */
+    flex-wrap: wrap;
+  }
+  .dropZoneCompact > * {
+    min-width: 0;
   }
   .dropIcon {
     font-size: 22px;

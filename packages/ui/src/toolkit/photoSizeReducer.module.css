@@ -28,8 +28,26 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
+    /* The desktop grid uses align-items:start; in a column that shrink-wraps each
+       panel to its widest toolbar, pushing the page past the screen. Stretch instead. */
+    align-items: stretch;
     gap: var(--space-3);
     width: 100%;
+  }
+
+  .workbench3Panel > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .canvasToolbar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .viewModeTab {
+    white-space: nowrap;
   }
 
   .workbench3Panel[data-has-file="true"] > .canvasPanel {

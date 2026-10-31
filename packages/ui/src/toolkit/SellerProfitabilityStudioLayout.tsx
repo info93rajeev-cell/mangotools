@@ -78,12 +78,7 @@ export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityS
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>↗</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Seller Profitability Calculator</h1>
-            <p class={styles.subtitle}>
-              Calculate true selling profit, margin, break-even, fees and return impact per order.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>

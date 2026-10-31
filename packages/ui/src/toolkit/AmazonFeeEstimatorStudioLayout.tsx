@@ -74,13 +74,7 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>▣</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Amazon India Seller Fee & Profit Estimator</h1>
-            <p class={styles.subtitle}>
-              Manual Amazon fee estimator: input your fee rates, analyse settlement and
-              profitability.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>

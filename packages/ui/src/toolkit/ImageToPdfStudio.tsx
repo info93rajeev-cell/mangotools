@@ -101,7 +101,6 @@ function JpgToPdfTopBar({
         </div>
         <div class={styles.titleMeta}>
           <div class={styles.titleRow}>
-            <h1 class={styles.titleText}>JPG to PDF</h1>
             <div class={styles.badgePills}>
               <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
                 ⚡ Instant In-Browser
@@ -110,10 +109,6 @@ function JpgToPdfTopBar({
               <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>🛡️ No Sign-Up Needed</span>
             </div>
           </div>
-          <p class={styles.subtitleText}>
-            Convert one or more JPG images into a single PDF, in the order you choose. Fast, private
-            and easy to use in your browser.
-          </p>
         </div>
       </div>
 

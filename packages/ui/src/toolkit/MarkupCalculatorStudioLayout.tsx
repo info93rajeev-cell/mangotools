@@ -69,12 +69,7 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>％</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Markup Calculator</h1>
-            <p class={styles.subtitle}>
-              Convert cost, markup and target margin into a profitable selling price.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>

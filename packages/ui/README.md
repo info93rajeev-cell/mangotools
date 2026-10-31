@@ -41,6 +41,14 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Layout integrity pass (PR #233 review):
+  - Data studio option cards no longer use a percentage `min-height`. On phones it made each card as tall as all four together and pushed them over the footer.
+  - The PDF studio grows with its content instead of a fixed viewport height. This stops PDF to Word's last card being clipped and the PDF Split options card being covered.
+  - Studio title blocks no longer repeat the page H1 and summary, so each tool page has one `<h1>`.
+  - The PDF drop zone wraps on phones so "Choose PDF" stays visible.
+  - Shared bottom-strip labels wrap at 740px landscape.
+  - Photo Size Reducer stretches its panels on phones and starts empty.
+  - New guard: `tests/e2e/tool-layout-integrity.spec.ts`.
 - Universal Tax: rate-finder titles wrap instead of forcing one line. The nowrap title had no
   `min-width: 0`, so its min-content width stretched the page to 412px on 320–375px phones and
   pushed fixed-position toasts off-screen. New e2e guard: `tests/e2e/gst-mobile-overflow.spec.ts`.
