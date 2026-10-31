@@ -41,6 +41,8 @@
 .reference img {
   display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 215px;
   object-fit: contain;
   background: radial-gradient(ellipse at center, #eef4fb, #ffffff 72%);

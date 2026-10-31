@@ -17,7 +17,7 @@ export function SignatureResizerCanvas({
   const previewSrc = signature.resultUrl ?? signature.imageSrc ?? '/samples/signature.jpg';
 
   return (
-    <main class={styles.canvasContainer} aria-label="Signature Upload Stage">
+    <section class={styles.canvasContainer} aria-label="Signature Upload Stage">
       <div class={styles.panelCard}>
         {/* Card Header */}
         <div class={styles.cardHeader}>
@@ -80,6 +80,6 @@ export function SignatureResizerCanvas({
           </div>
         )}
       </div>
-    </main>
+    </section>
   );
 }

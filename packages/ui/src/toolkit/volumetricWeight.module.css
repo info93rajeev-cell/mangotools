@@ -89,6 +89,14 @@
   gap: 6px;
 }
 
+@media (max-width: 340px) {
+  .cardHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 .cardTitle {
   font-size: 15px;
   font-weight: 700;
@@ -144,9 +152,15 @@
 
 .itemsTable {
   width: 100%;
-  min-width: 380px;
+  min-width: 0;
   border-collapse: collapse;
   font-size: 11px;
+}
+
+@media (min-width: 641px) {
+  .itemsTable {
+    min-width: 380px;
+  }
 }
 
 .itemsTable th,
@@ -155,6 +169,23 @@
   text-align: left;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 8px;
+  }
+  .itemsTable th,
+  .itemsTable td {
+    padding: 3px 2px;
+    font-size: 10px;
+  }
+  .tableInput {
+    height: 26px;
+    font-size: 10.5px;
+    padding: 0 2px;
+    min-width: 0;
+  }
 }
 
 .itemsTable th {
@@ -491,17 +522,29 @@
 /* Breakdown Table */
 .tableScroll {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   max-height: 150px;
-  overflow-y: auto;
+  overflow: auto;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   margin-top: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .detailsTable {
   width: 100%;
+  min-width: 0;
   border-collapse: collapse;
   font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .detailsTable th,
+  .detailsTable td {
+    padding: 2px 3px;
+    font-size: 9.5px;
+  }
 }
 
 .detailsTable th,

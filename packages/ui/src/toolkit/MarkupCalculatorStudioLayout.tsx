@@ -3,12 +3,7 @@ import styles from './businessStudio.module.css';
 import { MarkupCenterCards } from './MarkupCenterCards.tsx';
 import { MarkupLeftCards } from './MarkupLeftCards.tsx';
 import { MarkupRightCards } from './MarkupRightCards.tsx';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { useMarkupCalculator } from './useMarkupCalculator.ts';
 
 const MARKUP_TOUR_STEPS: TourStep[] = [
@@ -45,7 +40,7 @@ export interface MarkupCalculatorStudioLayoutProps {
 
 export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioLayoutProps) {
   const state = useMarkupCalculator(notify);
-  const [isTourOpen, setIsTourOpen] = useState(() => !isTourCompleted('markup-calculator'));
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

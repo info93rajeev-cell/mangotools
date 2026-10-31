@@ -240,6 +240,12 @@
   .card {
     padding: 8px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .heading {
+    flex-wrap: wrap;
+    gap: 4px;
   }
   .card h2 {
     font-size: 14px;

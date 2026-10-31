@@ -17,7 +17,7 @@ interface JsonOutputPanelProps {
 
 export function JsonOutputPanel(props: JsonOutputPanelProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const { activeTab, onTab, onCopy, onDownload, parsedResult } = props;
+  const { activeTab, onTab, parsedResult } = props;
 
   const title = getOutputPanelTitle(activeTab);
 
@@ -37,17 +37,6 @@ export function JsonOutputPanel(props: JsonOutputPanelProps) {
             onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
             hasTableData={!!props.tableData}
           />
-          <button type="button" class={styles.btnSecondary} onClick={onCopy} title="Copy output">
-            📋 Copy
-          </button>
-          <button
-            type="button"
-            class={styles.btnSecondary}
-            onClick={onDownload}
-            title="Download formatted JSON"
-          >
-            💾 Download
-          </button>
         </div>
       </div>
 

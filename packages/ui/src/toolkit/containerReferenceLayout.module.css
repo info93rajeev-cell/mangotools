@@ -6,7 +6,9 @@
   right: 0;
   top: -82px;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+  max-width: 100%;
 }
 .utilities a,
 .utilities button {
@@ -35,15 +37,19 @@
   .utilities {
     position: static;
     margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: 100%;
   }
   .utilities a,
   .utilities button {
-    min-height: 40px;
+    min-height: 36px;
     font-size: 10px;
-    padding: 5px 7px;
+    padding: 4px 6px;
+    min-width: 0;
   }
   .utilities a:nth-child(2) {
-    margin-left: auto;
+    margin-left: 0;
   }
 }
 

@@ -3,12 +3,7 @@ import styles from './businessStudio.module.css';
 import { SellerProfitabilityCenterCards } from './SellerProfitabilityCenterCards.tsx';
 import { SellerProfitabilityLeftCards } from './SellerProfitabilityLeftCards.tsx';
 import { SellerProfitabilityRightCards } from './SellerProfitabilityRightCards.tsx';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { useSellerProfitability } from './useSellerProfitability.ts';
 
 const PROFIT_MARGIN_TOUR_STEPS: TourStep[] = [
@@ -50,9 +45,7 @@ export interface SellerProfitabilityStudioLayoutProps {
 
 export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityStudioLayoutProps) {
   const state = useSellerProfitability(notify);
-  const [isTourOpen, setIsTourOpen] = useState(
-    () => !isTourCompleted('seller-profitability-calculator'),
-  );
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
