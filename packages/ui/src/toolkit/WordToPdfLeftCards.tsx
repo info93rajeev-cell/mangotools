@@ -140,6 +140,45 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
   );
 }
 
+function WordToPdfExportModeButtons({
+  exportMode,
+  setExportMode,
+}: {
+  exportMode: 'single' | 'separate';
+  setExportMode: (m: 'single' | 'separate') => void;
+}) {
+  return (
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      <button
+        type="button"
+        class={`${styles.radioCard} ${exportMode === 'single' ? styles.radioCardActive : ''}`}
+        onClick={() => setExportMode('single')}
+        style={{ flex: '1 1 calc(50% - 4px)', minWidth: 0, textAlign: 'left', padding: '6px 10px' }}
+      >
+        <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+          <span>{exportMode === 'single' ? '●' : '○'}</span> Single merged PDF
+        </span>
+        <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+          Combine all Word files
+        </span>
+      </button>
+      <button
+        type="button"
+        class={`${styles.radioCard} ${exportMode === 'separate' ? styles.radioCardActive : ''}`}
+        onClick={() => setExportMode('separate')}
+        style={{ flex: '1 1 calc(50% - 4px)', minWidth: 0, textAlign: 'left', padding: '6px 10px' }}
+      >
+        <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+          <span>{exportMode === 'separate' ? '●' : '○'}</span> One PDF per file
+        </span>
+        <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+          Keep files separate
+        </span>
+      </button>
+    </div>
+  );
+}
+
 function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
   const {
     pageSize,
@@ -164,7 +203,13 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
         </h2>
       </div>
       <div class={styles.settingsGrid}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+            gap: '8px',
+          }}
+        >
           <div class={styles.radioCard} style={{ padding: '6px 10px' }}>
             <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
               Page size
@@ -194,39 +239,12 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
             </select>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            type="button"
-            class={`${styles.radioCard} ${exportMode === 'single' ? styles.radioCardActive : ''}`}
-            onClick={() => setExportMode('single')}
-            style={{ flex: 1, textAlign: 'left', padding: '6px 10px' }}
-          >
-            <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
-              <span>{exportMode === 'single' ? '●' : '○'}</span> Single merged PDF
-            </span>
-            <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
-              Combine all Word files
-            </span>
-          </button>
-          <button
-            type="button"
-            class={`${styles.radioCard} ${exportMode === 'separate' ? styles.radioCardActive : ''}`}
-            onClick={() => setExportMode('separate')}
-            style={{ flex: 1, textAlign: 'left', padding: '6px 10px' }}
-          >
-            <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
-              <span>{exportMode === 'separate' ? '●' : '○'}</span> One PDF per file
-            </span>
-            <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
-              Keep files separate
-            </span>
-          </button>
-        </div>
+        <WordToPdfExportModeButtons exportMode={exportMode} setExportMode={setExportMode} />
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '6px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '6px 12px',
             fontSize: '11px',
             fontWeight: 600,
           }}

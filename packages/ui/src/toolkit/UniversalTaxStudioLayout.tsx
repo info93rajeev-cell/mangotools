@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { UniversalTaxCountryOptionsCard } from './UniversalTaxCountryOptionsCard.tsx';
 import { UniversalTaxFormulaCard } from './UniversalTaxFormulaCard.tsx';
 import { UniversalTaxInputsCard } from './UniversalTaxInputsCard.tsx';
@@ -163,13 +158,6 @@ function UniversalTaxTopNav({ tax }: { tax: UseUniversalTaxReturn }) {
 export function UniversalTaxStudioLayout({ notify }: UniversalTaxStudioLayoutProps) {
   const tax = useUniversalTax(notify);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted('gst-calculator')) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

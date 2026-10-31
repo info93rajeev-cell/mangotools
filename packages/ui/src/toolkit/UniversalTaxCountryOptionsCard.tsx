@@ -49,9 +49,9 @@ function IndiaGstOptionsSection({ tax }: { tax: UseUniversalTaxReturn }) {
           >
             <option value={0}>0% (Nil)</option>
             <option value={5}>5%</option>
-            <option value={12}>12%</option>
-            <option value={18}>18% (Standard)</option>
-            <option value={28}>28% (Luxury)</option>
+            <option value={12}>12% (Standard)</option>
+            <option value={18}>18% (Standard / Services)</option>
+            <option value={28}>28% (Luxury / Demerit)</option>
           </select>
         </div>
 

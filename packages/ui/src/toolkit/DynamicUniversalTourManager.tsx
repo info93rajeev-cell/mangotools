@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { DynamicToolTour } from './DynamicToolTour.tsx';
-import { isTourCompleted, type TourStep } from './tourStorage.ts';
+import type { TourStep } from './tourStorage.ts';
 
 export const TOOLS_WITH_BUILTIN_TOUR = new Set([
   'gst-calculator',
@@ -25,7 +25,7 @@ export interface DynamicUniversalTourManagerProps {
 
 export function DynamicUniversalTourManager({ toolId }: DynamicUniversalTourManagerProps) {
   const normId = toolId.replace(/^(data|logistics|pdf|image|export)\//, '');
-  const [isTourOpen, setIsTourOpen] = useState(() => !isTourCompleted(normId));
+  const [isTourOpen, setIsTourOpen] = useState(false);
   const [steps, setSteps] = useState<TourStep[] | null>(null);
 
   useEffect(() => {

@@ -210,7 +210,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+      <div class={styles.splitModesGrid}>
         {SPLIT_MODES.map(([m, label, sub]) => {
           const isActive = mode === m;
           return (
@@ -272,9 +272,9 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '6px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
           fontSize: '11.5px',
           fontWeight: 600,
         }}

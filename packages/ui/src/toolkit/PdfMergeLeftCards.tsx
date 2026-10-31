@@ -197,7 +197,13 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
             <span class={styles.radioDesc}>Take 1 page from each file in turn</span>
           </button>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '10px',
+          }}
+        >
           <label
             style={{
               display: 'flex',

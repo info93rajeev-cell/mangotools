@@ -49,7 +49,9 @@ function ThumbnailItem({
       onClick={onSelect}
       title={`Select Page ${pg}`}
       style={{
-        minWidth: '58px',
+        flex: '1 1 0',
+        minWidth: 0,
+        maxWidth: '58px',
         height: '72px',
         border: isSelected ? '2px solid #2563eb' : '1px solid #cbd5e1',
         borderRadius: '6px',
@@ -65,6 +67,7 @@ function ThumbnailItem({
         cursor: 'pointer',
         transition: 'all 0.15s ease',
         outline: 'none',
+        boxSizing: 'border-box',
       }}
     >
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -117,9 +120,11 @@ export function PdfMiniThumbnails({
     <div
       style={{
         display: 'flex',
-        gap: '8px',
-        overflowX: 'auto',
-        padding: '4px 2px',
+        gap: '6px',
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        padding: '4px 0',
         marginTop: '6px',
       }}
     >

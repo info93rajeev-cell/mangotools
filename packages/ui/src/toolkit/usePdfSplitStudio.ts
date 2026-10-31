@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { buildZipArchive, type ZipEntry } from './docxZipPacker.ts';
 import {
   createSamplePdf,
@@ -179,16 +179,10 @@ function usePdfSplitOptions() {
 }
 
 function useSplitFileState(notify?: (msg: string) => void) {
-  const [fileName, setFileName] = useState(SAMPLE_SPLIT_FILE.name);
-  const [fileSizeBytes, setFileSizeBytes] = useState(SAMPLE_SPLIT_FILE.sizeBytes);
-  const [totalPages, setTotalPages] = useState(SAMPLE_SPLIT_FILE.pageCount);
+  const [fileName, setFileName] = useState('');
+  const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
-
-  useEffect(() => {
-    setFileName(SAMPLE_SPLIT_FILE.name);
-    setFileSizeBytes(SAMPLE_SPLIT_FILE.sizeBytes);
-    setTotalPages(SAMPLE_SPLIT_FILE.pageCount);
-  }, []);
 
   return {
     fileName,
@@ -198,6 +192,8 @@ function useSplitFileState(notify?: (msg: string) => void) {
     clearAll: () => {
       setFileName('');
       setTotalPages(0);
+      setFileSizeBytes(0);
+      setFileBytes(null);
     },
     loadSampleSplit: () => {
       setFileName(SAMPLE_SPLIT_FILE.name);

@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { buildDocxArchive } from './docxZipPacker.ts';
 import {
   createSamplePdf,
@@ -34,9 +34,9 @@ async function generateSampleDocx(fileName: string): Promise<string> {
 }
 
 function usePdfToWordState() {
-  const [fileName, setFileName] = useState(SAMPLE_PDF_TO_WORD_FILE.name);
-  const [fileSizeBytes, setFileSizeBytes] = useState(SAMPLE_PDF_TO_WORD_FILE.sizeBytes);
-  const [totalPages, setTotalPages] = useState(SAMPLE_PDF_TO_WORD_FILE.pageCount);
+  const [fileName, setFileName] = useState('');
+  const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [enableOcr, setEnableOcr] = useState(true);
   const [keepHeadings, setKeepHeadings] = useState(true);
   const [preserveTables, setPreserveTables] = useState(true);
@@ -67,12 +67,6 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
   const s = usePdfToWordState();
   const [isProcessing, setIsProcessing] = useState(false);
   const [docxBlobUrl, setDocxBlobUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    s.setFileName(SAMPLE_PDF_TO_WORD_FILE.name);
-    s.setFileSizeBytes(SAMPLE_PDF_TO_WORD_FILE.sizeBytes);
-    s.setTotalPages(SAMPLE_PDF_TO_WORD_FILE.pageCount);
-  }, []);
 
   async function executeConvertToWord() {
     if (!s.fileName) return;
@@ -168,17 +162,6 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
   const s = useWordToPdfState();
   const [isProcessing, setIsProcessing] = useState(false);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    s.setFiles(
-      SAMPLE_WORD_FILES.map((m, i) => ({
-        id: `word-${i}`,
-        name: m.name,
-        pages: m.pageCount,
-        sizeBytes: m.sizeBytes,
-      })),
-    );
-  }, []);
 
   async function executeWordToPdf() {
     if (s.files.length === 0) return;

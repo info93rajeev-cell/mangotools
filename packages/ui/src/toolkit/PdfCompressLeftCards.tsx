@@ -138,9 +138,9 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '6px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '6px 12px',
         fontSize: '11px',
         fontWeight: 600,
       }}
@@ -242,7 +242,13 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+          gap: '6px',
+        }}
+      >
         {PRESET_OPTIONS.map(([p, title, desc, tag]) => {
           const isActive = preset === p;
           return (

@@ -16,7 +16,7 @@ import {
 import { PdfToWordLeftCards, PdfToWordRightCards } from './PdfToWordCards.tsx';
 import styles from './pdfStudio.module.css';
 import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
-import { isTourCompleted, ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
 import { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 import { usePdfToWordStudio, useWordToPdfStudio } from './usePdfConvertStudio.ts';
 import { usePdfMergeStudio } from './usePdfMergeStudio.ts';
@@ -314,13 +314,6 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
   const currentToolKey = toolId ?? activeTab;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted(currentToolKey)) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [currentToolKey]);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
