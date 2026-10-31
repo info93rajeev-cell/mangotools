@@ -41,6 +41,7 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Full screen mode for every tool: `FullscreenToggle.astro` sits next to Guide in `ToolHeader`. It puts the tool page (`[data-fullscreen-root]`) into browser full screen, so the mobile browser bars disappear in landscape. It stays hidden where the Fullscreen API is unavailable (e.g. iPhone Safari). Touch tap targets for Guide and Full screen are 44px. Guard: `tests/e2e/fullscreen.spec.ts`.
 - Layout integrity pass (PR #233 review):
   - Data studio option cards no longer use a percentage `min-height`. On phones it made each card as tall as all four together and pushed them over the footer.
   - The PDF studio grows with its content instead of a fixed viewport height. This stops PDF to Word's last card being clipped and the PDF Split options card being covered.
