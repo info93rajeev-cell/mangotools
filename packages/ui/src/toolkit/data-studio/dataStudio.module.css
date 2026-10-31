@@ -263,6 +263,31 @@
   max-width: 100%;
 }
 
+@media (max-width: 480px) {
+  .toolbar,
+  .inputPanel .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .tooltitle,
+  .inputPanel .tooltitle {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toolactions,
+  .inputPanel .toolactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 /* Code Editor & Display */
 .editorWrapper {
   position: relative;

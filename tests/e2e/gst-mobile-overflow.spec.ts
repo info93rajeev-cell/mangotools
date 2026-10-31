@@ -58,6 +58,8 @@ for (const { name, url } of ALL_TOOLS) {
     }) => {
       await page.setViewportSize({ width, height: 740 });
       await page.goto(url);
+      await page.waitForLoadState('networkidle');
+      await page.waitForFunction(() => document.querySelectorAll('astro-island[ssr]').length === 0);
       await expect(page.locator('main').first()).toBeVisible();
 
       // Ensure page document does not expand past viewport width
