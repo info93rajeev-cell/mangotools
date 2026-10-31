@@ -10,12 +10,7 @@ import {
 import { JpgToPdfSettingsCard } from './JpgToPdfSettingsCard.tsx';
 import styles from './jpgToPdfStudio.module.css';
 import { JpgToPdfIcon } from './PdfToolIcons.tsx';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 import { type PdfImageItem, usePdfStudioState } from './usePdfStudioState.ts';
 
@@ -207,13 +202,6 @@ function JpgToPdfWorkbench({
 export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted('jpg-to-pdf')) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

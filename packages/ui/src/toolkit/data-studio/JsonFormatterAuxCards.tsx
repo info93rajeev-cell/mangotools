@@ -1,139 +1,136 @@
+import { useState } from 'preact/hooks';
 import styles from './dataStudio.module.css';
-import type { JsonStats } from './useJsonFormatterStudio.ts';
-
-export function SideMetricsPanel({
-  parsedResult,
-  inputLength,
-  inputLines,
-  activeTab,
-  onTab,
-}: {
-  parsedResult: { valid: boolean; error: string | null; stats: JsonStats | null };
-  inputLength: number;
-  inputLines: number;
-  activeTab?: 'raw' | 'tree' | 'table';
-  onTab?: (t: 'raw' | 'tree' | 'table') => void;
-}) {
-  return (
-    <div class={`${styles.side} ${styles.sidePanel}`}>
-      <section class={`${styles.panel} ${styles.sideTopCard}`}>
-        <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#10003;</span>Validation &amp; Info
-        </div>
-        {parsedResult.valid ? (
-          <div class={styles.badgeOk}>
-            <span>&#10004;</span>
-            <div>
-              <strong>Valid JSON</strong>
-              <div style={{ fontSize: 10.5, color: '#098650' }}>No syntax errors found.</div>
-            </div>
-          </div>
-        ) : (
-          <div class={styles.badgeErr}>
-            <span>&#9888;</span>
-            <div>
-              <strong>Invalid JSON</strong>
-              <div style={{ fontSize: 10, color: '#a81c34' }}>{parsedResult.error}</div>
-            </div>
-          </div>
-        )}
-        <div class={styles.miniGrid}>
-          <div class={`${styles.mini} ${styles.miniBlue}`}>
-            <small>Characters</small>
-            <b>{parsedResult.stats?.chars ?? inputLength}</b>
-          </div>
-          <div class={`${styles.mini} ${styles.miniGreen}`}>
-            <small>Lines</small>
-            <b>{parsedResult.stats?.lines ?? inputLines}</b>
-          </div>
-        </div>
-      </section>
-
-      <section class={`${styles.panel} ${styles.sideBottomCard}`}>
-        <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#9881;</span>Data Structure
-        </div>
-        {onTab && (
-          <div class={styles.rowchips}>
-            <button
-              type="button"
-              class={`${styles.chip} ${activeTab === 'tree' ? styles.chipBlue : styles.chipAmber}`}
-              onClick={() => onTab('tree')}
-            >
-              Tree
-            </button>
-            <button
-              type="button"
-              class={`${styles.chip} ${activeTab === 'table' ? styles.chipPurple : styles.chipAmber}`}
-              onClick={() => onTab('table')}
-            >
-              Table
-            </button>
-            <button
-              type="button"
-              class={`${styles.chip} ${activeTab === 'raw' ? styles.chipGreen : styles.chipAmber}`}
-              onClick={() => onTab('raw')}
-            >
-              Raw
-            </button>
-          </div>
-        )}
-        <div class={styles.kv}>
-          <span>Root</span>
-          <b>{parsedResult.stats?.rootType ?? 'Object'}</b>
-        </div>
-        <div class={styles.kv}>
-          <span>Objects</span>
-          <b>{parsedResult.stats?.objects ?? 0}</b>
-        </div>
-        <div class={styles.kv}>
-          <span>Arrays</span>
-          <b>{parsedResult.stats?.arrays ?? 0}</b>
-        </div>
-        <div class={styles.kv}>
-          <span>Depth</span>
-          <b>{parsedResult.stats?.maxDepth ?? 1} levels</b>
-        </div>
-      </section>
-    </div>
-  );
-}
+import { SearchInJsonCard, ValidationResultCard } from './JsonSearchAndValidationCards.tsx';
+import type { ParseResult } from './useJsonFormatterStudio.ts';
 
 export interface JsonAuxCardsProps {
   indent: '2' | '4' | 'tab' | 'min';
   onIndent: (v: '2' | '4' | 'tab' | 'min') => void;
-  sortKeys: boolean;
-  onSortKeys: (v: boolean) => void;
+  keySorting: 'original' | 'asc' | 'desc';
+  onKeySorting: (v: 'original' | 'asc' | 'desc') => void;
   syntaxHighlight: boolean;
   onSyntaxHighlight: (v: boolean) => void;
   lineNumbers: boolean;
   onLineNumbers: (v: boolean) => void;
+  autoFormatOnPaste: boolean;
+  onAutoFormatOnPaste: (v: boolean) => void;
   searchQuery: string;
   onSearch: (v: string) => void;
   searchMatches: number;
-  stats: JsonStats | null;
+  searchMatchCase: boolean;
+  onSearchMatchCase: (v: boolean) => void;
+  searchRegex: boolean;
+  onSearchRegex: (v: boolean) => void;
+  detectDuplicates: boolean;
+  onDetectDuplicates: (v: boolean) => void;
+  validateSchema: boolean;
+  onValidateSchema: (v: boolean) => void;
+  allowJson5: boolean;
+  onAllowJson5: (v: boolean) => void;
+  safeBigInt: boolean;
+  onSafeBigInt: (v: boolean) => void;
+  parsedResult: ParseResult;
+  onLoadExample: (key: string) => void;
 }
 
 export function JsonAuxCards({
   indent,
   onIndent,
-  sortKeys,
-  onSortKeys,
+  keySorting,
+  onKeySorting,
   syntaxHighlight,
   onSyntaxHighlight,
   lineNumbers,
   onLineNumbers,
+  autoFormatOnPaste,
+  onAutoFormatOnPaste,
   searchQuery,
   onSearch,
   searchMatches,
-  stats,
+  searchMatchCase,
+  onSearchMatchCase,
+  searchRegex,
+  onSearchRegex,
+  detectDuplicates,
+  onDetectDuplicates,
+  validateSchema,
+  onValidateSchema,
+  allowJson5,
+  onAllowJson5,
+  safeBigInt,
+  onSafeBigInt,
+  parsedResult,
+  onLoadExample,
 }: JsonAuxCardsProps) {
   return (
     <div class={styles.aux}>
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Formatting
-        </div>
+      <FormattingOptionsCard
+        indent={indent}
+        onIndent={onIndent}
+        keySorting={keySorting}
+        onKeySorting={onKeySorting}
+        syntaxHighlight={syntaxHighlight}
+        onSyntaxHighlight={onSyntaxHighlight}
+        lineNumbers={lineNumbers}
+        onLineNumbers={onLineNumbers}
+        autoFormatOnPaste={autoFormatOnPaste}
+        onAutoFormatOnPaste={onAutoFormatOnPaste}
+      />
+      <AdvancedOptionsCard
+        detectDuplicates={detectDuplicates}
+        onDetectDuplicates={onDetectDuplicates}
+        validateSchema={validateSchema}
+        onValidateSchema={onValidateSchema}
+        allowJson5={allowJson5}
+        onAllowJson5={onAllowJson5}
+        safeBigInt={safeBigInt}
+        onSafeBigInt={onSafeBigInt}
+      />
+      <ValidationResultCard parsedResult={parsedResult} />
+      <SearchInJsonCard
+        searchQuery={searchQuery}
+        onSearch={onSearch}
+        searchMatches={searchMatches}
+        searchMatchCase={searchMatchCase}
+        onSearchMatchCase={onSearchMatchCase}
+        searchRegex={searchRegex}
+        onSearchRegex={onSearchRegex}
+        onLoadExample={onLoadExample}
+      />
+    </div>
+  );
+}
+
+function FormattingOptionsCard({
+  indent,
+  onIndent,
+  keySorting,
+  onKeySorting,
+  syntaxHighlight,
+  onSyntaxHighlight,
+  lineNumbers,
+  onLineNumbers,
+  autoFormatOnPaste,
+  onAutoFormatOnPaste,
+}: {
+  indent: '2' | '4' | 'tab' | 'min';
+  onIndent: (v: '2' | '4' | 'tab' | 'min') => void;
+  keySorting: 'original' | 'asc' | 'desc';
+  onKeySorting: (v: 'original' | 'asc' | 'desc') => void;
+  syntaxHighlight: boolean;
+  onSyntaxHighlight: (v: boolean) => void;
+  lineNumbers: boolean;
+  onLineNumbers: (v: boolean) => void;
+  autoFormatOnPaste: boolean;
+  onAutoFormatOnPaste: (v: boolean) => void;
+}) {
+  return (
+    <section class={styles.optcard}>
+      <div class={styles.optTitle}>
+        <span class={styles.optIcon}>⚙️</span>
+        <b>Formatting Options</b>
+      </div>
+      <div class={styles.optFieldsRow}>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Indentation</span>
           <select
@@ -146,86 +143,153 @@ export function JsonAuxCards({
             <option value="2">2 spaces</option>
             <option value="4">4 spaces</option>
             <option value="tab">Tab</option>
-            <option value="min">Minified</option>
+            <option value="min">Compact</option>
           </select>
         </label>
-        <div class={styles.optCheckboxRow}>
-          <label class={styles.optCheckbox}>
-            <input
-              type="checkbox"
-              checked={syntaxHighlight}
-              onChange={(e) => onSyntaxHighlight((e.target as HTMLInputElement).checked)}
-            />
-            Syntax highlights
-          </label>
-          <label class={styles.optCheckbox}>
-            <input
-              type="checkbox"
-              checked={lineNumbers}
-              onChange={(e) => onLineNumbers((e.target as HTMLInputElement).checked)}
-            />
-            Line numbers
-          </label>
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced
-        </div>
-        <div class={styles.rowchips}>
-          <span class={styles.chipPurple}>Duplicate check</span>
-          <span class={styles.chipBlue}>BigInt safe</span>
-        </div>
-        <div class={styles.optCheckboxRow} style={{ marginTop: 6 }}>
-          <label class={styles.optCheckbox}>
-            <input
-              type="checkbox"
-              checked={sortKeys}
-              onChange={(e) => onSortKeys((e.target as HTMLInputElement).checked)}
-            />
-            Sort keys (A-Z)
-          </label>
-        </div>
-        <div class={styles.optHelptext} style={{ marginTop: 2 }}>
-          Numeric fidelity &middot; Schema validation &middot; Error path &middot; Key sorting
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128269;</span>Search in JSON
-        </div>
-        <input
-          type="text"
-          class={styles.optSelect}
-          placeholder="Search keys or values..."
-          value={searchQuery}
-          aria-label="Search keys or values"
-          onInput={(e) => onSearch((e.target as HTMLInputElement).value)}
-        />
-        <div class={styles.optHelptext} style={{ marginTop: 4 }}>
-          {searchQuery
-            ? `${searchMatches} match${searchMatches === 1 ? '' : 'es'} found`
-            : 'Find in formatted JSON'}
-        </div>
-      </section>
-
-      <section class={styles.optcard}>
-        <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128065;</span>Inspection Tools
-        </div>
-        <div class={styles.miniGrid}>
-          <div class={`${styles.mini} ${styles.miniBlue}`}>
-            <small>Objects</small>
-            <b>{stats?.objects ?? 0}</b>
-          </div>
-          <div class={`${styles.mini} ${styles.miniPurple}`}>
-            <small>Arrays</small>
-            <b>{stats?.arrays ?? 0}</b>
-          </div>
-        </div>
-      </section>
-    </div>
+        <label class={styles.optField}>
+          <span class={styles.optLabel}>Key sorting</span>
+          <select
+            class={styles.optSelect}
+            value={keySorting}
+            onChange={(e) =>
+              onKeySorting((e.target as HTMLSelectElement).value as 'original' | 'asc' | 'desc')
+            }
+          >
+            <option value="original">Keep original order</option>
+            <option value="asc">Sort keys (A-Z)</option>
+            <option value="desc">Sort keys (Z-A)</option>
+          </select>
+        </label>
+      </div>
+      <div class={styles.optCheckboxRow}>
+        <label class={styles.optCheckbox}>
+          <input
+            type="checkbox"
+            checked={syntaxHighlight}
+            onChange={(e) => onSyntaxHighlight((e.target as HTMLInputElement).checked)}
+          />
+          Highlight syntax
+        </label>
+        <label class={styles.optCheckbox}>
+          <input
+            type="checkbox"
+            checked={lineNumbers}
+            onChange={(e) => onLineNumbers((e.target as HTMLInputElement).checked)}
+          />
+          Show line numbers
+        </label>
+        <label class={styles.optCheckbox}>
+          <input
+            type="checkbox"
+            checked={autoFormatOnPaste}
+            onChange={(e) => onAutoFormatOnPaste((e.target as HTMLInputElement).checked)}
+          />
+          Auto format on paste
+        </label>
+      </div>
+    </section>
   );
+}
+
+function AdvancedOptionsCard({
+  detectDuplicates,
+  onDetectDuplicates,
+  validateSchema,
+  onValidateSchema,
+  allowJson5,
+  onAllowJson5,
+  safeBigInt,
+  onSafeBigInt,
+}: {
+  detectDuplicates: boolean;
+  onDetectDuplicates: (v: boolean) => void;
+  validateSchema: boolean;
+  onValidateSchema: (v: boolean) => void;
+  allowJson5: boolean;
+  onAllowJson5: (v: boolean) => void;
+  safeBigInt: boolean;
+  onSafeBigInt: (v: boolean) => void;
+}) {
+  const [showMore, setShowMore] = useState(false);
+
+  return (
+    <section class={styles.optcard}>
+      <div class={styles.optTitle}>
+        <span class={styles.optIcon}>🛠️</span>
+        <b>Advanced Options</b>
+        <button type="button" class={styles.optLinkBtn} onClick={() => setShowMore(!showMore)}>
+          {showMore ? 'Show less ∧' : 'Show more ∨'}
+        </button>
+      </div>
+      <div class={styles.switchList}>
+        <ToggleSwitchRow
+          label="Detect duplicate keys"
+          checked={detectDuplicates}
+          onChange={onDetectDuplicates}
+        />
+        <ToggleSwitchRow
+          label="Validate against JSON Schema"
+          tooltip="Enforce required properties, types, and schema formats"
+          checked={validateSchema}
+          onChange={onValidateSchema}
+        />
+        <ToggleSwitchRow
+          label="Allow comments (JSON5)"
+          checked={allowJson5}
+          onChange={onAllowJson5}
+        />
+        <ToggleSwitchRow
+          label="Handle large numbers safely"
+          checked={safeBigInt}
+          onChange={onSafeBigInt}
+        />
+      </div>
+    </section>
+  );
+}
+
+function ToggleSwitchRow({
+  label,
+  tooltip,
+  checked,
+  onChange,
+}: {
+  label: string;
+  tooltip?: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label class={styles.switchRow}>
+      <span class={styles.switchLabel}>
+        {label}
+        {tooltip && (
+          <span class={styles.tooltipIcon} title={tooltip}>
+            ?
+          </span>
+        )}
+      </span>
+      <span class={styles.toggleWrap}>
+        <input
+          type="checkbox"
+          class={styles.toggleInput}
+          checked={checked}
+          onChange={(e) => onChange((e.target as HTMLInputElement).checked)}
+        />
+        <span class={styles.toggleSlider} />
+      </span>
+    </label>
+  );
+}
+
+export function SideMetricsPanel({
+  parsedResult,
+}: {
+  parsedResult: ParseResult;
+  inputLength?: number;
+  inputLines?: number;
+  activeTab?: 'raw' | 'tree' | 'table';
+  onTab?: (t: 'raw' | 'tree' | 'table') => void;
+}) {
+  return <ValidationResultCard parsedResult={parsedResult} />;
 }

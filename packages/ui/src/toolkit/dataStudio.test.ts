@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeJson, sortJsonKeys } from './data-studio/useJsonFormatterStudio';
+import { computeDetailedJsonStats } from './data-studio/jsonStats';
+import { analyzeJson, DEFAULT_JSON, sortJsonKeys } from './data-studio/useJsonFormatterStudio';
 import { computeTimestamp } from './data-studio/useTimestampStudio';
 
 describe('Data Studio - JSON Tools', () => {
@@ -15,6 +16,22 @@ describe('Data Studio - JSON Tools', () => {
     expect(stats.objects).toBe(3); // root, user, profile
     expect(stats.arrays).toBe(1); // tags
     expect(stats.maxDepth).toBe(3);
+  });
+
+  it('computes detailed breakdown matching reference mockup', () => {
+    const parsed = JSON.parse(DEFAULT_JSON);
+    const detailed = computeDetailedJsonStats(parsed, DEFAULT_JSON);
+    expect(detailed.objects).toBe(6);
+    expect(detailed.arrays).toBe(2);
+    expect(detailed.totalKeys).toBe(19);
+    expect(detailed.totalValues).toBe(17);
+    expect(detailed.types.strings).toBe(9);
+    expect(detailed.types.numbers).toBe(6);
+    expect(detailed.types.booleans).toBe(2);
+    expect(detailed.types.nulls).toBe(0);
+    expect(detailed.maxDepth).toBe(4);
+    expect(detailed.bytes).toBeGreaterThan(400);
+    expect(detailed.sizeKb).toBe('439 B');
   });
 
   it('alphabetically sorts json keys recursively', () => {

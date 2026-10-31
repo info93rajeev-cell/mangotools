@@ -71,18 +71,20 @@ function buildIndiaComponents(params: UniversalTaxInputParams, taxable: number, 
 
   if (params.supplyType === 'intra') {
     const halfGst = gstAmount / 2;
+    const cgstRounded = Math.round(halfGst * 100) / 100;
+    const sgstRounded = Math.round((gstAmount - cgstRounded) * 100) / 100;
     comps.push({
       name: `CGST @ ${baseGstRate / 2}%`,
       rate: baseGstRate / 2,
-      amount: Math.round(halfGst * 100) / 100,
-      percentage: totalTax > 0 ? (halfGst / totalTax) * 100 : 50,
+      amount: cgstRounded,
+      percentage: totalTax > 0 ? (cgstRounded / totalTax) * 100 : 50,
       color: '#2563eb',
     });
     comps.push({
       name: `SGST @ ${baseGstRate / 2}%`,
       rate: baseGstRate / 2,
-      amount: Math.round(halfGst * 100) / 100,
-      percentage: totalTax > 0 ? (halfGst / totalTax) * 100 : 50,
+      amount: sgstRounded,
+      percentage: totalTax > 0 ? (sgstRounded / totalTax) * 100 : 50,
       color: '#9333ea',
     });
   } else {

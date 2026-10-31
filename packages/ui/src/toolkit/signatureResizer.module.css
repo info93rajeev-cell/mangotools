@@ -772,3 +772,56 @@
 .errorContainer {
   margin-top: 4px;
 }
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .panelCard {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardHeader {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .miniGhostBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .miniGhostBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .canvasViewport {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .textInput,
+:global([data-theme="dark"]) .selectInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fieldLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .presetPill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .presetPill:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}

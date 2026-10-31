@@ -1,11 +1,18 @@
 import type { JSX } from 'preact';
-import { HeavyBookBanner, PdfMiniThumbnails } from './PdfSplitThumbnails.tsx';
+import { useRef } from 'preact/hooks';
+import {
+  HeavyBookBanner,
+  PdfMiniThumbnails,
+  PdfSplitDropZone,
+  PdfSplitLoadedRow,
+} from './PdfSplitThumbnails.tsx';
 import styles from './pdfStudio.module.css';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
 
 function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     fileName,
     totalPages,
@@ -24,6 +31,13 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
 
   return (
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        style={{ display: 'none' }}
+        onChange={onFileInputChange}
+      />
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> PDF File
@@ -45,59 +59,31 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
           >
             📚 1,600-Page Book
           </button>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              fontSize: '11px',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              border: '1px solid #bfdbfe',
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            {fileName ? 'Change File' : 'Upload PDF'}
+          </button>
         </div>
       </div>
 
       <HeavyBookBanner totalPages={totalPages} />
 
-      <label class={styles.dropZoneCompact}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
-            📄+
-          </span>
-          <div>
-            <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
-              Drag & drop PDF to split
-            </p>
-            <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
-              or click to browse • 100% in-browser processing
-            </p>
-          </div>
-        </div>
-        <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
-          Choose PDF File
-        </span>
-        <input
-          type="file"
-          accept="application/pdf"
-          style={{ display: 'none' }}
-          onChange={onFileInputChange}
-        />
-      </label>
-
-      {fileName && (
-        <div
-          class={styles.fileRow}
-          style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '6px' }}
-        >
-          <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
-            PDF
-          </div>
-          <div class={styles.fileDetails}>
-            <span class={styles.fileName}>{fileName}</span>
-            <span class={styles.fileMeta}>
-              {totalPages} pages • {mb} MB
-            </span>
-          </div>
-          <button
-            type="button"
-            class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-            onClick={clearAll}
-            title="Clear file"
-          >
-            ✕
-          </button>
-        </div>
+      {!fileName ? (
+        <PdfSplitDropZone onChoose={() => fileInputRef.current?.click()} />
+      ) : (
+        <PdfSplitLoadedRow fileName={fileName} totalPages={totalPages} mb={mb} onClear={clearAll} />
       )}
 
       <PdfMiniThumbnails
@@ -224,7 +210,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
         </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+      <div class={styles.splitModesGrid}>
         {SPLIT_MODES.map(([m, label, sub]) => {
           const isActive = mode === m;
           return (
@@ -286,9 +272,9 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '6px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
           fontSize: '11.5px',
           fontWeight: 600,
         }}

@@ -34,7 +34,7 @@ export const COUNTRIES: CountryProfile[] = [
     currencySymbol: '₹',
     defaultTaxSystem: 'gst',
     defaultRate: 18,
-    rates: [0, 5, 12, 18, 28],
+    rates: [0, 0.25, 3, 5, 18, 40],
   },
   {
     id: 'us',

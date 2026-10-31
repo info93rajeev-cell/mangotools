@@ -78,7 +78,13 @@ function PdfSplitPreviewGrid({
           {parts.length} files • {totalPages} pages total
         </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+          gap: '6px',
+        }}
+      >
         {parts.slice(0, 4).map((part, idx) => (
           <div
             key={part.name}

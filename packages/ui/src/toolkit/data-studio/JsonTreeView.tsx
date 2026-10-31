@@ -4,118 +4,132 @@ import styles from './dataStudio.module.css';
 interface JsonTreeViewProps {
   data: unknown;
   depth?: number;
+  rootName?: string;
 }
 
-export function JsonTreeView({ data, depth = 0 }: JsonTreeViewProps) {
-  if (depth > 12) {
-    return <span style={{ color: '#91a5cc' }}>... (max depth)</span>;
-  }
-
-  if (data === null) {
-    return <span class={styles.cb}>null</span>;
-  }
-
-  if (typeof data === 'boolean') {
-    return <span class={styles.cb}>{data ? 'true' : 'false'}</span>;
-  }
-
-  if (typeof data === 'number' || typeof data === 'bigint') {
-    return <span class={styles.cn}>{data.toString()}</span>;
-  }
-
-  if (typeof data === 'string') {
-    return <span class={styles.cs}>"{data}"</span>;
+export function JsonTreeView({ data, depth = 0, rootName = 'root' }: JsonTreeViewProps) {
+  if (data === null || typeof data !== 'object') {
+    return <LeafProperty name={rootName} value={data} />;
   }
 
   if (Array.isArray(data)) {
-    return <JsonArrayNode items={data} depth={depth} />;
+    return <ArrayNode name={rootName} items={data} depth={depth} />;
   }
 
-  if (typeof data === 'object') {
-    return <JsonObjectNode obj={data as Record<string, unknown>} depth={depth} />;
-  }
-
-  return <span>{String(data)}</span>;
+  return (
+    <ObjectNode
+      name={rootName}
+      obj={data as Record<string, unknown>}
+      depth={depth}
+      isRoot={depth === 0}
+    />
+  );
 }
 
-function JsonObjectNode({ obj, depth }: { obj: Record<string, unknown>; depth: number }) {
+function ObjectNode({
+  name,
+  obj,
+  depth,
+  isRoot,
+}: {
+  name: string;
+  obj: Record<string, unknown>;
+  depth: number;
+  isRoot?: boolean;
+}) {
   const [open, setOpen] = useState(depth < 3);
   const keys = Object.keys(obj);
 
-  if (keys.length === 0) return <span>{'{ }'}</span>;
-
   return (
-    <div style={{ marginLeft: depth > 0 ? 14 : 0, fontFamily: 'monospace', fontSize: 11.5 }}>
+    <div class={styles.treeNodeGroup} style={{ paddingLeft: isRoot ? 0 : 16 }}>
       <button
         type="button"
+        class={styles.treeNodeHeader}
         onClick={() => setOpen(!open)}
-        style={{
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-          color: '#1668f8',
-          fontWeight: 700,
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-        }}
+        aria-expanded={open}
       >
-        {open ? '▼' : '▶'} {'{'}
-        {!open && <span style={{ color: '#657b9b' }}> {keys.length} keys </span>}
+        <span class={styles.treeChevron}>{open ? '▾' : '▸'}</span>
+        <span class={isRoot ? styles.treeRootBadge : styles.treeKeyName}>{name}</span>
+        <span class={styles.badgeObject}>{'{ }'} object</span>
+        <span class={styles.treeCountBadge}>{keys.length} keys</span>
       </button>
-      {open ? (
-        <div style={{ paddingLeft: 12, borderLeft: '1px dashed #d5e2f8' }}>
+
+      {open && (
+        <div class={styles.treeChildren}>
           {keys.map((k) => (
-            <div key={k} style={{ lineHeight: 1.6 }}>
-              <span class={styles.ck}>"{k}"</span>: <JsonTreeView data={obj[k]} depth={depth + 1} />
-            </div>
+            <JsonPropertyRow key={k} name={k} value={obj[k]} depth={depth + 1} />
           ))}
-          <div>{'}'}</div>
         </div>
-      ) : (
-        <span>{'}'}</span>
       )}
     </div>
   );
 }
 
-function JsonArrayNode({ items, depth }: { items: unknown[]; depth: number }) {
-  const [open, setOpen] = useState(depth < 2);
-
-  if (items.length === 0) return <span>[ ]</span>;
+function ArrayNode({ name, items, depth }: { name: string; items: unknown[]; depth: number }) {
+  const [open, setOpen] = useState(depth < 3);
 
   return (
-    <div style={{ marginLeft: depth > 0 ? 14 : 0, fontFamily: 'monospace', fontSize: 11.5 }}>
+    <div class={styles.treeNodeGroup} style={{ paddingLeft: 16 }}>
       <button
         type="button"
+        class={styles.treeNodeHeader}
         onClick={() => setOpen(!open)}
-        style={{
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-          color: '#09965c',
-          fontWeight: 700,
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-        }}
+        aria-expanded={open}
       >
-        {open ? '▼' : '▶'} [
-        {!open && <span style={{ color: '#657b9b' }}> {items.length} items </span>}
+        <span class={styles.treeChevron}>{open ? '▾' : '▸'}</span>
+        <span class={styles.treeKeyName}>{name}</span>
+        <span class={styles.badgeArray}>[ ] array</span>
+        <span class={styles.treeCountBadge}>{items.length} items</span>
       </button>
-      {open ? (
-        <div style={{ paddingLeft: 12, borderLeft: '1px dashed #c9efdc' }}>
+
+      {open && (
+        <div class={styles.treeChildren}>
           {items.map((item, idx) => (
-            <div key={idx} style={{ lineHeight: 1.6 }}>
-              <span style={{ color: '#7895c0' }}>{idx}: </span>
-              <JsonTreeView data={item} depth={depth + 1} />
-            </div>
+            <JsonPropertyRow key={String(idx)} name={String(idx)} value={item} depth={depth + 1} />
           ))}
-          <div>]</div>
         </div>
-      ) : (
-        <span>]</span>
       )}
     </div>
   );
+}
+
+function JsonPropertyRow({ name, value, depth }: { name: string; value: unknown; depth: number }) {
+  if (value !== null && typeof value === 'object') {
+    if (Array.isArray(value)) {
+      return <ArrayNode name={name} items={value} depth={depth} />;
+    }
+    return <ObjectNode name={name} obj={value as Record<string, unknown>} depth={depth} />;
+  }
+
+  return <LeafProperty name={name} value={value} />;
+}
+
+function LeafProperty({ name, value }: { name: string; value: unknown }) {
+  const type = value === null ? 'null' : typeof value;
+
+  return (
+    <div class={styles.treeLeafRow}>
+      <span class={styles.treeKeyName}>{name}</span>
+      <TypeBadge type={type} />
+      <span class={styles.treeValue}>
+        {type === 'string' ? `"${String(value)}"` : String(value)}
+      </span>
+    </div>
+  );
+}
+
+function TypeBadge({ type }: { type: string }) {
+  switch (type) {
+    case 'string':
+      return <span class={styles.badgeString}>string</span>;
+    case 'number':
+    case 'bigint':
+      return <span class={styles.badgeNumber}>number</span>;
+    case 'boolean':
+      return <span class={styles.badgeBoolean}>boolean</span>;
+    case 'null':
+      return <span class={styles.badgeNull}>null</span>;
+    default:
+      return <span class={styles.badgeGeneric}>{type}</span>;
+  }
 }

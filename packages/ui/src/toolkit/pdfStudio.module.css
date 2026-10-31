@@ -3,9 +3,9 @@
 .studioContainer {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110px);
-  max-height: 740px;
-  min-height: 580px;
+  height: calc(100vh - 180px);
+  max-height: 700px;
+  min-height: 560px;
   background: #ffffff;
   border-radius: 14px;
   border: 1px solid #e2e8f0;
@@ -677,6 +677,16 @@
 }
 
 /* Range Chips */
+.splitModesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .rangeChipsRow {
   display: flex;
   align-items: center;
@@ -975,101 +985,501 @@
     height: auto;
     max-height: none;
     overflow: visible;
-    padding: 12px;
+    padding: 10px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .topBar {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .toolHeading {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     align-items: flex-start;
     gap: 10px;
+    box-sizing: border-box;
+  }
+  .titleMeta {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 0;
+    box-sizing: border-box;
   }
   .toolIconBox {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
   }
   .titleRow {
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .titleText {
-    font-size: 19px;
+    font-size: 18px;
+    min-width: 0;
+    max-width: 100%;
+    word-break: break-word;
   }
   .badgePills {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 4px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .badgePill {
-    font-size: 10.5px;
-    padding: 2px 7px;
+    font-size: 10px;
+    padding: 2px 6px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .subtitleText {
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 11.5px;
+    line-height: 1.35;
+    min-width: 0;
+    max-width: 100%;
   }
   .topActions {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    box-sizing: border-box;
   }
   .actionBtnGhost {
     flex: 1 1 calc(50% - 6px);
+    min-width: 0;
     justify-content: center;
     text-align: center;
-    font-size: 11.5px;
-    padding: 6px 8px;
+    font-size: 11px;
+    padding: 5px 6px;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-word;
   }
   .studioLayout {
     display: flex;
     flex-direction: column;
     overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
+  .leftMergeCol,
   .scrollCol {
     overflow: visible;
     max-height: none;
     padding-right: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .card,
+  .mergeListCard {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .radioRow {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .radioCard {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .dropZone {
-    padding: 16px 12px;
-    min-height: 110px;
+    padding: 14px 10px;
+    min-height: 100px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .dropZoneCompact {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 8px 10px;
   }
   .dropIcon {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 4px;
   }
   .chooseBtn {
-    padding: 7px 14px;
-    font-size: 12.5px;
+    padding: 6px 12px;
+    font-size: 11.5px;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .statTilesGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .statTile {
+    min-width: 0;
+    max-width: 100%;
+    padding: 6px 6px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .statVal {
+    font-size: 14px;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .statLabel {
+    font-size: 10px;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .statSub {
+    font-size: 9px;
+    min-width: 0;
+    overflow-wrap: break-word;
   }
   .previewRow {
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .previewCard {
     width: calc(50% - 8px);
-    min-width: 110px;
+    min-width: 100px;
+    box-sizing: border-box;
+  }
+  .splitModesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .splitGrid2x2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .presetGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .secondaryActionRow {
     flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .actionBtnPrimaryBlue,
   .actionBtnNeutral {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
+  .sideBySidePreview {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+  .docPreviewMock {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .sideArrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+  .thumbStrip {
+    gap: 4px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .thumbItemBtn {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 54px;
+    height: 68px;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 440px) {
+  .previewCard {
+    width: 100%;
+  }
+  .statTilesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .splitModesGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .topActions .actionBtnGhost {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .statTilesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .studioContainer {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .topBar {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .titleText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .subtitleText {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .actionBtnGhost {
+  background: #0f172a;
+  border-color: #334155;
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .actionBtnGhost:hover {
+  background: #1e293b;
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .sectionCard {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .cardDesc {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .dropZone {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .dropZone:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .dropTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .dropSubtitle {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .statTile {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .statNumber {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .previewCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .previewCardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .previewCardMeta {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .previewContainer {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .pageThumbnailCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .pageBadge {
+  background: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .optionSelect,
+:global([data-theme="dark"]) .textInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .optionLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .rangePill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .rangePillActive {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .sliderContainer {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .splitPresetCard {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .splitPresetCard[data-active="true"] {
+  background: #1e3a8a;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .actionBtnNeutral {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .actionBtnNeutral:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .dropZoneCompact {
+  background: #0f172a;
+  border-color: #2563eb;
+}
+
+:global([data-theme="dark"]) .dropZoneCompact:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .dropMainText {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .dropSubText {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .fileRow {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .fileName {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fileMeta {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardHeader {
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .radioCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .radioTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .thumbItemBtn {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .thumbStrip {
+  background: #0f172a;
+  border-color: #334155;
 }

@@ -14,6 +14,8 @@
 .tourSpotlight {
   position: fixed;
   z-index: 10000;
+  box-sizing: border-box;
+  max-width: 100vw;
   border: 2px solid #f59e0b;
   border-radius: 12px;
   box-shadow:
@@ -136,6 +138,10 @@
 }
 
 .tourHint {
+  box-sizing: border-box;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
   font-size: 11px;
   font-weight: 600;
   color: #2563eb;
@@ -268,12 +274,171 @@
   color: #78350f;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .tourCard {
-    width: calc(100vw - 24px);
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
+    position: fixed;
     top: auto;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 10px 14px;
+    gap: 6px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
+
+  .stepBadge {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .stepLabel {
+    font-size: 10.5px;
+  }
+
+  .closeBtn {
+    min-width: 26px;
+    min-height: 26px;
+    font-size: 14px;
+    padding: 2px;
+  }
+
+  .tourBody {
+    gap: 3px;
+  }
+
+  .tourTitle {
+    font-size: 13px;
+    line-height: 1.25;
+    font-weight: 750;
+  }
+
+  .tourDesc {
+    font-size: 11.5px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tourHint {
+    font-size: 10px;
+    padding: 2px 6px;
+    margin-top: 1px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tourProgressRow {
+    padding: 1px 0;
+    gap: 3px;
+  }
+
+  .progressDot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .progressDot[data-active="true"] {
+    width: 14px;
+    border-radius: 2px;
+  }
+
+  .tourFooter {
+    padding-top: 4px;
+    gap: 6px;
+  }
+
+  .skipBtn {
+    min-height: 32px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .backBtn {
+    min-height: 32px;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 6px;
+  }
+
+  .nextBtn {
+    min-height: 32px;
+    padding: 4px 12px;
+    font-size: 11.5px;
+    border-radius: 6px;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .tourCard {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+}
+
+:global([data-theme="dark"]) .tourTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .tourDesc {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .tourHint {
+  background: #172554;
+  border-color: #1e40af;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .closeBtn {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .closeBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .tourFooter {
+  border-top-color: #334155;
+}
+
+:global([data-theme="dark"]) .skipBtn {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .skipBtn:hover {
+  color: #f8fafc;
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .backBtn {
+  background: #334155;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .backBtn:hover {
+  background: #475569;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .tourLauncherBtn {
+  background: #27272a;
+  border-color: #52525b;
+  color: #fbbf24;
+}
+
+:global([data-theme="dark"]) .tourLauncherBtn:hover {
+  background: #3f3f46;
+  border-color: #71717a;
 }

@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { buildZipArchive, type ZipEntry } from './docxZipPacker.ts';
 import {
   createSamplePdf,
@@ -179,16 +179,10 @@ function usePdfSplitOptions() {
 }
 
 function useSplitFileState(notify?: (msg: string) => void) {
-  const [fileName, setFileName] = useState(SAMPLE_SPLIT_FILE.name);
-  const [fileSizeBytes, setFileSizeBytes] = useState(SAMPLE_SPLIT_FILE.sizeBytes);
-  const [totalPages, setTotalPages] = useState(SAMPLE_SPLIT_FILE.pageCount);
+  const [fileName, setFileName] = useState('');
+  const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
-
-  useEffect(() => {
-    setFileName(SAMPLE_SPLIT_FILE.name);
-    setFileSizeBytes(SAMPLE_SPLIT_FILE.sizeBytes);
-    setTotalPages(SAMPLE_SPLIT_FILE.pageCount);
-  }, []);
 
   return {
     fileName,
@@ -198,6 +192,8 @@ function useSplitFileState(notify?: (msg: string) => void) {
     clearAll: () => {
       setFileName('');
       setTotalPages(0);
+      setFileSizeBytes(0);
+      setFileBytes(null);
     },
     loadSampleSplit: () => {
       setFileName(SAMPLE_SPLIT_FILE.name);
@@ -286,6 +282,34 @@ function useSplitActions(
   return { isProcessing, generatedBlobUrl, executeSplit, downloadResult };
 }
 
+function handlePageSelection(
+  pg: number,
+  mode: SplitMode,
+  totalPages: number,
+  setExtractInput: (fn: (prev: string) => string) => void,
+  setRanges: (fn: (prev: SplitRange[]) => SplitRange[]) => void,
+  notify?: (msg: string) => void,
+) {
+  if (mode === 'extract') {
+    setExtractInput((prev) => {
+      const tokens = prev
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const str = String(pg);
+      if (tokens.includes(str)) return tokens.filter((s) => s !== str).join(', ');
+      return tokens.length > 0 ? `${prev}, ${str}` : str;
+    });
+    notify?.(`Selected page ${pg} for extraction`);
+  } else {
+    setRanges((p) => [
+      ...p,
+      { id: `r-${Date.now()}`, start: pg, end: Math.min(pg + 5, totalPages || pg) },
+    ]);
+    notify?.(`Added page ${pg} range`);
+  }
+}
+
 export function usePdfSplitStudio(notify?: (msg: string) => void) {
   const fileState = useSplitFileState(notify);
   const opts = usePdfSplitOptions();
@@ -294,23 +318,14 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
 
   const onSelectPage = (pg: number) => {
     setSelectedPage(pg);
-    if (opts.mode === 'extract') {
-      opts.setExtractInput((prev) => {
-        const tokens = prev
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const str = String(pg);
-        if (tokens.includes(str)) {
-          const next = tokens.filter((s) => s !== str);
-          return next.join(', ');
-        }
-        return tokens.length > 0 ? `${prev}, ${str}` : str;
-      });
-      notify?.(`Selected page ${pg} for extraction`);
-    } else {
-      notify?.(`Selected page ${pg} preview`);
-    }
+    handlePageSelection(
+      pg,
+      opts.mode,
+      fileState.totalPages,
+      opts.setExtractInput,
+      opts.setRanges,
+      notify,
+    );
   };
 
   return {

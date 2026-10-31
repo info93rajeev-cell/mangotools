@@ -22,10 +22,10 @@ export type BgMode = 'transparent' | 'white' | 'black' | 'custom';
 function usePenImageState(notify: (msg: string) => void) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>('kingfisher-sample.jpg');
+  const [fileName, setFileName] = useState<string>('');
   const [imageDims, setImageDims] = useState<{ width: number; height: number }>({
-    width: 1200,
-    height: 900,
+    width: 0,
+    height: 0,
   });
 
   const loadFile = useCallback(
@@ -62,6 +62,7 @@ function usePenImageState(notify: (msg: string) => void) {
     imageSrc,
     setImageSrc,
     fileName,
+    setFileName,
     imageDims,
     setImageDims,
     loadFile,
@@ -73,10 +74,10 @@ function usePenPathHistory(
   imageDims: { width: number; height: number },
   notify: (msg: string) => void,
 ) {
-  const [path, setPath] = useState<BezierPath>(() => createKingfisherReferencePath(1200, 900));
+  const [path, setPath] = useState<BezierPath>({ points: [], isClosed: false });
   const [history, setHistory] = useState<BezierPath[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
-  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(3);
+  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
 
   const pushHistory = useCallback(
     (newPath: BezierPath) => {
@@ -350,9 +351,21 @@ export function useAdvancedPenSelection(
 
   const mutations = usePathPointMutations(pathState, notify);
 
-  useEffect(() => {
-    void imgState.loadSample();
-  }, [imgState.loadSample]);
+  const loadSample = useCallback(async () => {
+    const img = new Image();
+    img.onload = () => {
+      imgState.setImage(img);
+      imgState.setImageSrc('/samples/kingfisher-sample.jpg');
+      imgState.setFileName('kingfisher-sample.jpg');
+      const w = img.naturalWidth || 1200;
+      const h = img.naturalHeight || 900;
+      imgState.setImageDims({ width: w, height: h });
+      pathState.pushHistory(createKingfisherReferencePath(w, h));
+      pathState.setSelectedPointIndex(3);
+      notify('Sample Kingfisher image loaded');
+    };
+    img.src = '/samples/kingfisher-sample.jpg';
+  }, [imgState, pathState, notify]);
 
   const runAutoSelect = useCallback(() => {
     if (!imgState.image) return;
@@ -365,6 +378,7 @@ export function useAdvancedPenSelection(
     ...pathState,
     ...edgeState,
     ...mutations,
+    loadSample,
     activeTool,
     setActiveTool,
     cutoutResult,

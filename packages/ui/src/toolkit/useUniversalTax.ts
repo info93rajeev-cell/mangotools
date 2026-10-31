@@ -58,7 +58,7 @@ export interface UseUniversalTaxReturn {
 
 function useTaxInputsState() {
   const [priceMode, setPriceMode] = useState<PriceMode>('exclusive');
-  const [amount, setAmount] = useState<number>(1000);
+  const [amount, setAmount] = useState<number>(10000);
   const [quantity, setQuantity] = useState<number>(1);
   const [discountType, setDiscountType] = useState<DiscountType>('currency');
   const [discountValue, setDiscountValue] = useState<number>(0);

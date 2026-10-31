@@ -173,11 +173,14 @@ export function ToolOnboardingTour({
         return;
       }
       const b = el.getBoundingClientRect();
+      const pad = 4;
+      const left = Math.max(2, b.left - pad);
+      const right = Math.min(window.innerWidth - 2, b.right + pad);
       setSpotlight({
-        top: Math.max(0, b.top - 6),
-        left: Math.max(0, b.left - 6),
-        width: b.width + 12,
-        height: b.height + 12,
+        top: Math.max(0, b.top - pad),
+        left,
+        width: Math.max(0, right - left),
+        height: b.height + pad * 2,
       });
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
