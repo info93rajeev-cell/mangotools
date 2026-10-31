@@ -1,15 +1,20 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-// Tools that must never horizontally overflow or have clipped elements on mobile screens (320px, 360px, 375px).
-const MOBILE_TOOLS = [
-  { name: 'Universal Tax Calculator', path: '/gst-calculator', selector: '#gst-rate-select' },
-  { name: 'PDF Merge', path: '/pdf-merge', selector: 'main' },
-  { name: 'PDF Split', path: '/pdf-split', selector: 'main' },
-  { name: 'Compress PDF', path: '/compress-pdf', selector: 'main' },
-  { name: 'PDF to Word', path: '/pdf-to-word', selector: 'main' },
-  { name: 'Word to PDF', path: '/word-to-pdf', selector: 'main' },
-  { name: 'Image Background Remover', path: '/image-background-remover', selector: 'main' },
-];
+interface ToolEntry {
+  slug: string;
+  name: string;
+  url: string;
+  listed?: boolean;
+}
+
+const registry = JSON.parse(
+  readFileSync(join(process.cwd(), 'generated/registry.json'), 'utf8'),
+) as { tools: Record<string, ToolEntry> };
+
+// All tools must never horizontally overflow or clip content on mobile viewports (320px, 360px, 375px).
+const ALL_TOOLS = Object.values(registry.tools).filter((t) => t.listed !== false);
 
 async function getClippedElements(page: Page, viewportWidth: number): Promise<string[]> {
   return page.evaluate((vpWidth) => {
@@ -46,24 +51,27 @@ async function getClippedElements(page: Page, viewportWidth: number): Promise<st
   }, viewportWidth);
 }
 
-for (const { name, path, selector } of MOBILE_TOOLS) {
+for (const { name, url } of ALL_TOOLS) {
   for (const width of [320, 360, 375]) {
     test(`${name} has no horizontal overflow or clipped elements at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 740 });
-      await page.goto(path);
-      await expect(page.locator(selector).first()).toBeVisible();
+      await page.goto(url);
+      await expect(page.locator('main').first()).toBeVisible();
 
       // Ensure page document does not expand past viewport width
       const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-      expect(scrollWidth).toBeLessThanOrEqual(width);
+      expect(
+        scrollWidth,
+        `scrollWidth (${scrollWidth}) should be <= ${width} on ${url}`,
+      ).toBeLessThanOrEqual(width);
 
       // Ensure 0 visible elements in <main> are clipped beyond the viewport
       const clipped = await getClippedElements(page, width);
       expect(
         clipped,
-        `Found ${clipped.length} clipped elements on ${path} at ${width}px:\n${clipped.slice(0, 10).join('\n')}`,
+        `Found ${clipped.length} clipped elements on ${url} at ${width}px:\n${clipped.slice(0, 10).join('\n')}`,
       ).toEqual([]);
     });
   }

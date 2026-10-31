@@ -82,7 +82,29 @@
     height: auto;
     gap: 6px;
     max-width: 100%;
-    overflow-x: hidden;
+    min-width: 0;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tooltitle {
+    width: 100%;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .toolactions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-start;
+    min-width: 0;
   }
 
   /* Single Screen Split Arrangement: Both Input & Output visible without scrolling */
@@ -196,6 +218,8 @@
   justify-content: space-between;
   gap: 6px;
   min-height: 32px;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .tooltitle {
@@ -206,6 +230,8 @@
   gap: 7px;
   align-items: center;
   color: #121b42;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .toolIcon {
@@ -226,6 +252,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 /* Code Editor & Display */
@@ -655,7 +683,7 @@
   height: 48px;
   flex-shrink: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 8px;
   box-sizing: border-box;
@@ -1100,6 +1128,8 @@
   gap: 8px;
   padding: 2px 0 6px 0;
   width: 100%;
+  max-width: 100%;
+  flex-wrap: wrap;
   box-sizing: border-box;
 }
 
@@ -1117,6 +1147,8 @@
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .topActionBtn:hover {
@@ -1526,15 +1558,19 @@ button.btnPrimarySolid:hover {
 
 .treeNodeHeader {
   display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: transparent;
   border: none;
-  padding: 2px 4px;
+  padding: 2px 3px;
   border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 11px;
   text-align: left;
   transition: background 0.1s;
 }
@@ -1546,41 +1582,49 @@ button.btnPrimarySolid:hover {
 .treeChevron {
   color: #64748b;
   font-size: 10px;
-  width: 12px;
+  width: 10px;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .treeKeyName {
   font-weight: 700;
   color: #0f172a;
+  word-break: break-all;
 }
 
 .treeRootBadge {
   background: #fef3c7;
   color: #92400e;
   font-weight: 800;
-  padding: 1px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 10.5px;
+  flex-shrink: 0;
 }
 
 .treeCountBadge {
   color: #64748b;
-  font-size: 10.5px;
+  font-size: 10px;
+  flex-shrink: 0;
 }
 
 .treeChildren {
-  margin-left: 8px;
-  padding-left: 10px;
+  margin-left: 4px;
+  padding-left: 6px;
   border-left: 1px dashed #cbd5e1;
 }
 
 .treeLeafRow {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   align-items: center;
-  gap: 6px;
-  padding: 2px 4px 2px 18px;
-  font-size: 11.5px;
+  gap: 4px;
+  padding: 2px 3px 2px 10px;
+  font-size: 11px;
   line-height: 1.5;
 }
 

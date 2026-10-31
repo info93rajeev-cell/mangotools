@@ -487,6 +487,13 @@
 .guideSvg {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+.guideSvg text {
+  font-size: 3.2px;
+  font-family: inherit;
+  user-select: none;
 }
 
 .emptyStagePlaceholder {

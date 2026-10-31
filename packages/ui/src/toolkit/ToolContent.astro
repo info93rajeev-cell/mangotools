@@ -172,9 +172,13 @@ const SECTION_ICONS: Record<string, string> = {
   .content-disclosure[open] summary::after {
     content: '−';
   }
+  .content-disclosure:not([open]) > .content-body {
+    display: none;
+  }
   .content-disclosure[open] {
     display: grid;
     flex-basis: 100%;
+    grid-column: 1 / -1;
     gap: var(--space-3);
     padding: var(--space-3);
     border: 1px solid var(--color-border);
