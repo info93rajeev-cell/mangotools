@@ -132,17 +132,15 @@ function DataTypeRow({
         </span>
         <span class={styles.dataTypeLabel}>{label}</span>
       </div>
+      <strong class={styles.dataTypeCount}>{count}</strong>
       <div class={styles.dataTypeTrackWrapper}>
+        <span class={styles.dataTypePct}>{pct}%</span>
         <div class={styles.dataTypeTrack}>
           <div
             class={`${styles.dataTypeBar} ${colorClass}`}
             style={{ width: `${Math.min(100, Math.max(pct, count > 0 ? 8 : 0))}%` }}
           />
         </div>
-      </div>
-      <div class={styles.dataTypeCount}>
-        <strong>{count}</strong>
-        <span class={styles.dataTypePct}>{pct}%</span>
       </div>
     </div>
   );

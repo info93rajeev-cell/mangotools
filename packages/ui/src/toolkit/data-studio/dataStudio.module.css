@@ -2586,3 +2586,172 @@ button.btnDangerOutline {
 .noteLineGreen {
   color: #047a48;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   Density pass (reference is a compact dashboard at ~1536px laptop width): smaller but heavier
+   type, tighter cards, the page actions on the title line, plain tree values.
+   --------------------------------------------------------------------------------------------- */
+.tooltitle {
+  font-size: 15.5px;
+}
+.toolIco {
+  width: 22px;
+  height: 22px;
+}
+.btnPrimary,
+.btnSecondary,
+button.btnPrimarySolid,
+button.btnDangerOutline {
+  min-height: 32px;
+  padding: 6px 13px;
+  font-size: 12.5px;
+  gap: 6px;
+}
+.topActionBtn {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+}
+.btnGold,
+.statusBar .btnSecondary {
+  min-height: 40px;
+  font-size: 14px;
+  padding: 8px 20px;
+}
+.panel,
+.optcard {
+  padding: 12px 14px;
+  gap: 8px;
+}
+.optTitle {
+  font-size: 14.5px;
+}
+.optIco {
+  width: 20px;
+  height: 20px;
+}
+.editorContainer {
+  height: clamp(260px, 36vh, 420px);
+}
+.treeScrollContainer {
+  max-height: clamp(260px, 36vh, 420px);
+}
+.outputSplitBody {
+  min-height: 0;
+}
+
+/* Tree: keys are coloured pills, values are plain text (calmer, like the reference) */
+.treeValue {
+  background: transparent;
+  padding: 0 2px;
+  color: #0f172a;
+}
+.treeLeafRow,
+.treeNodeHeader {
+  font-size: 12.5px;
+  padding-block: 2px;
+}
+
+/* Output tabs as separate bordered buttons; active one solid blue */
+.tabPillGroup {
+  background: transparent;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+}
+.tabPill {
+  border: 1px solid #d6e0ee;
+  background: #fff;
+  color: #334155;
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+.tabPillActive {
+  border-color: var(--ds-blue);
+}
+
+/* Data types: label · count · percent above a thicker bar */
+.dataTypeRow {
+  grid-template-columns: minmax(88px, 1fr) 26px minmax(90px, 1.3fr);
+  align-items: end;
+  font-size: 12.5px;
+}
+.dataTypeCount {
+  font-weight: 800;
+  color: #0f172a;
+  text-align: right;
+  align-self: center;
+}
+.dataTypeTrackWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.dataTypePct {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+}
+.dataTypeTrack {
+  height: 7px;
+}
+
+/* Validation: big check and bold numbers */
+.badgeOkCircle {
+  width: 40px;
+  height: 40px;
+}
+.badgeOkCircle .ico {
+  width: 22px;
+  height: 22px;
+}
+.badgeOkText strong {
+  font-size: 16px;
+}
+.badgeOkText small {
+  font-size: 12.5px;
+}
+.metricPill b {
+  font-size: 16px;
+  font-weight: 800;
+}
+.metricPill small {
+  font-size: 11.5px;
+}
+
+/* Page actions share the title line on laptops (reference layout) */
+@media (min-width: 1100px) {
+  .topActionsBar {
+    margin-top: -46px;
+    margin-bottom: 4px;
+    justify-content: flex-end;
+    width: auto;
+    margin-left: auto;
+  }
+}
+.tabPill.tabPillActive {
+  background: var(--ds-blue);
+  color: #fff;
+  border-color: var(--ds-blue);
+}
+/* Tree fills its panel height (matches the editor) instead of a fixed cap */
+.treeScrollContainer {
+  max-height: none;
+}
+.outputViewArea {
+  max-height: clamp(300px, 40vh, 460px);
+}
+/* Option cards in reference proportions so Formatting's three checkboxes fit one line */
+@media (min-width: 901px) {
+  .aux {
+    grid-template-columns: 1.3fr 1fr 0.95fr 1fr;
+  }
+}
+.optCheckboxRow {
+  gap: 6px 12px;
+  font-size: 12.5px;
+}
+.metricPill b {
+  white-space: nowrap;
+  font-size: 15px;
+}

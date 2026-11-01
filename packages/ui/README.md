@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Full-width tool pages and density pass:
+  - Tool pages span the whole screen on every laptop size (`PageContainer` tool width has no cap; studio max-widths removed in tax, business, jpg-to-pdf, pallet, volumetric and civil).
+  - JSON studio is tuned to the reference at about 1536px: page actions share the title line, controls are smaller but heavier, tree values are plain, tabs are separate buttons, data-type percentages sit above thicker bars, validation figures are bold and option cards follow reference proportions.
 - Design tokens v2 (light theme):
   - The palette moves from warm stone to cool navy/slate: page `#f4f7fb`, ink `#0b1736`, muted `#475569`, border `#dbe4f0`. New `--color-primary` and `--shadow-card` tokens; success and accent text are darkened for ≥4.5:1 on the tinted page.
   - JSON editor: syntax colours via an escaped overlay (`jsonSyntaxHighlight.ts`, unit-tested). The existing "Highlight syntax" option now actually works.
