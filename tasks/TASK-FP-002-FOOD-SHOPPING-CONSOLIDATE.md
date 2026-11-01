@@ -60,14 +60,15 @@ consolidated shopping list. It is used later by the Shopping List and Cost Estim
 ## Acceptance
 - `reference/food/fixtures/001-three-recipes-50-guests.yaml` is reproduced exactly, with every
   expected field equal, by `tests/unit/food-engine.test.ts` using the real reference data.
-- Engine fixtures 001–008 pass through `tests/unit/engine-fixtures.test.ts`:
+- Engine fixtures 001–009 pass through `tests/unit/engine-fixtures.test.ts`:
   - one guest;
   - portion factors;
   - Jain flag and Jain exclude;
   - unknown unit;
   - missing ingredient;
   - dimension mismatch;
-  - a non-terminating scale.
+  - a non-terminating scale;
+  - an exact sum of three 1/3 shares (1 g, not 0.999 g).
 - The real-data tests pass:
   - one guest;
   - per-dish portion plus servings per guest;

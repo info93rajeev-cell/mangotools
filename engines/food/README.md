@@ -20,9 +20,10 @@ Scale factor = guests × servingsPerGuest × portionFactor ÷ recipe servings.
 ## Golden fixtures
 - `reference/food/fixtures/001-three-recipes-50-guests.yaml`, checked by
   `tests/unit/food-engine.test.ts` against the real reference data.
-- `src/operations/shopping-consolidate/fixtures/001–008`: one guest, portion factors, the Jain
+- `src/operations/shopping-consolidate/fixtures/001–009`: one guest, portion factors, the Jain
   flag and exclude policies, unknown unit, missing ingredient, dimension mismatch, and rounding
-  of a scale that has no finite decimal.
+  of a scale that has no finite decimal, and 009 proving that totals add exact fractions, never
+  rounded display values.
 
 ## Changelog
 - 0.1.0 — `food.shopping.consolidate@1` added (TASK-FP-002).
