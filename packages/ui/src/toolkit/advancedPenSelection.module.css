@@ -875,3 +875,10 @@ button.modeTabActive {
     min-height: 280px;
   }
 }
+
+/* Phones: a smaller stage so the empty state does not leave a tall blank area */
+@media (max-width: 650px) {
+  .canvasStageWrapper {
+    min-height: 300px;
+  }
+}

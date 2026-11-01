@@ -3144,3 +3144,32 @@ button.btnDangerOutline {
 .optTitle {
   font-size: 15.5px;
 }
+
+/* Phones: panels size to their content. Desktop min-heights and flex-grow made editors and
+   outputs stretch, leaving large empty bands under the text. */
+@media (max-width: 650px) {
+  .work,
+  .workTwoPanel {
+    min-height: 0;
+  }
+  .panel {
+    height: auto;
+    min-height: 0;
+  }
+  .editorWrapper {
+    flex: none;
+    height: auto;
+  }
+  .editorWrapper textarea,
+  .editorWrapper pre {
+    min-height: 140px;
+    max-height: 320px;
+    height: auto;
+  }
+  .editorContainer {
+    height: clamp(240px, 45vh, 360px);
+  }
+  .statusBar {
+    height: auto;
+  }
+}

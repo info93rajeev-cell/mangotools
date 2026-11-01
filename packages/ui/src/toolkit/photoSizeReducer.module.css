@@ -1068,3 +1068,10 @@
   text-align: center;
   color: var(--color-text-muted);
 }
+
+/* Phones: a smaller stage so the empty state does not leave a tall blank area */
+@media (max-width: 650px) {
+  .canvasStageWrapper {
+    min-height: 240px;
+  }
+}
