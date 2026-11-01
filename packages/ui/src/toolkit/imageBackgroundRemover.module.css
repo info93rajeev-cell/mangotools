@@ -156,6 +156,10 @@
   border-radius: var(--radius-sm);
   padding: 2px 5px;
   font-size: 10px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .activeFileName {
@@ -163,7 +167,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 170px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .activeFileMeta {
@@ -209,25 +215,34 @@
 /* REPLACEMENT BG BUTTONS */
 .bgOptionsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .bgOptBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 2px 3px;
-  font-size: 9.5px;
+  padding: 2px 2px;
+  font-size: 9px;
   font-weight: var(--weight-medium);
   color: var(--color-text);
-  height: 22px;
+  min-height: 24px;
   cursor: pointer;
   transition: all 0.15s ease;
+  min-width: 0;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
 }
 
 .bgOptBtn:hover:not(:disabled) {
@@ -247,13 +262,18 @@
   height: 8px;
   border-radius: 2px;
   border: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .formatCard {
@@ -267,6 +287,8 @@
   border-radius: var(--radius-sm);
   background: var(--color-bg);
   color: var(--color-text);
+  min-width: 0;
+  box-sizing: border-box;
   cursor: pointer;
   transition:
     border-color 0.15s,

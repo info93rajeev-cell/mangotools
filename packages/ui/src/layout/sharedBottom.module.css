@@ -28,7 +28,10 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  white-space: nowrap;
+  /* Wrap long labels inside narrow cells (e.g. 740px landscape) instead of pushing
+     the "+" past the screen edge. */
+  white-space: normal;
+  min-width: 0;
 }
 .strip summary :global(.icon) {
   width: 23px;
@@ -51,6 +54,7 @@
   font-size: 23px;
 }
 .strip summary b {
+  flex: none;
   margin-left: auto;
   color: #687185;
   font-size: 21px;
@@ -212,6 +216,72 @@
     font-size: 13px;
   }
 }
+@media (max-width: 480px) {
+  .strip {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .strip summary {
+    white-space: normal;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .bottom {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .strip details {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .strip summary {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .strip summary b {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .disclosureBody {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .disclosureBody a {
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .footer {
+  background: #090d16;
+  border-top-color: #1e293b;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .footer .brand {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .brandRow p,
+:global([data-theme="dark"]) .footer a {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .footer a:hover {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .categories {
+  border-top-color: #1e293b;
+}
+
+:global([data-theme="dark"]) .categories h2 {
+  color: #f8fafc;
+}
+
 @media print {
   .bottom,
   .footer {

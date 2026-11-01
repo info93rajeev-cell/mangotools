@@ -711,3 +711,113 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 500px) {
+  .settingsGrid,
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .cardSubtitle {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .titleMain {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .titleDesc {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .dropzone {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .dropzone:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .dropPrompt {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .dropHint {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .fileRow {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .itemName {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .itemMeta {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .itemThumb {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .miniBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .miniBtn:hover:not(:disabled) {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .selectInput,
+:global([data-theme="dark"]) .textInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fieldLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .secBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .secBtn:hover:not(:disabled) {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .accordionPill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .accordionPill:hover {
+  background: #1e293b;
+  color: #ffffff;
+}

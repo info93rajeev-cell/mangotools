@@ -3,35 +3,46 @@ import { useEffect, useState } from 'preact/hooks';
 import { IconButton } from '../primitives/Button.tsx';
 import { t } from '../strings/en.ts';
 
-const ORDER: Theme[] = ['system', 'light', 'dark'];
-const ICON: Record<Theme, string> = { system: 'monitor', light: 'sun', dark: 'moon' };
-const NAME: Record<Theme, string> = {
-  system: t('theme.system'),
-  light: t('theme.light'),
-  dark: t('theme.dark'),
-};
+function getEffectiveTheme(theme: Theme): 'light' | 'dark' {
+  if (theme === 'dark') return 'dark';
+  if (theme === 'light') return 'light';
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-color-scheme: dark)').matches
+  ) {
+    return 'dark';
+  }
+  return 'light';
+}
 
-/** Cycles System → Light → Dark. The choice is stored locally and applied to <html data-theme>. */
+/** Toggles between Light and Dark theme with immediate visual feedback. */
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('system');
   const [prefs] = useState(() => createPreferences());
 
-  useEffect(() => setTheme(prefs.getTheme()), [prefs]);
+  useEffect(() => {
+    const saved = prefs.getTheme();
+    setTheme(saved);
+  }, [prefs]);
 
-  const next = () => {
-    const value = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length] ?? 'system';
-    setTheme(value);
-    prefs.setTheme(value);
-    applyTheme(value);
-    track('theme_change', { theme: value });
+  const effective = getEffectiveTheme(theme);
+  const icon = effective === 'dark' ? 'moon' : 'sun';
+
+  const toggle = () => {
+    const nextTheme: Theme = effective === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    prefs.setTheme(nextTheme);
+    applyTheme(nextTheme);
+    track('theme_change', { theme: nextTheme });
   };
 
   return (
     <IconButton
       variant="ghost"
-      icon={ICON[theme]}
-      label={t('theme.current', { theme: NAME[theme] })}
-      onClick={next}
+      icon={icon}
+      label={t('theme.current', { theme: t(`theme.${effective}`) })}
+      title={`Switch to ${effective === 'dark' ? 'light' : 'dark'} mode`}
+      onClick={toggle}
       data-theme-toggle=""
       data-theme-value={theme}
     />

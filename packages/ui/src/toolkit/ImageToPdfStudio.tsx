@@ -10,12 +10,7 @@ import {
 import { JpgToPdfSettingsCard } from './JpgToPdfSettingsCard.tsx';
 import styles from './jpgToPdfStudio.module.css';
 import { JpgToPdfIcon } from './PdfToolIcons.tsx';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 import { type PdfImageItem, usePdfStudioState } from './usePdfStudioState.ts';
 
@@ -106,7 +101,6 @@ function JpgToPdfTopBar({
         </div>
         <div class={styles.titleMeta}>
           <div class={styles.titleRow}>
-            <h1 class={styles.titleText}>JPG to PDF</h1>
             <div class={styles.badgePills}>
               <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
                 ⚡ Instant In-Browser
@@ -115,10 +109,6 @@ function JpgToPdfTopBar({
               <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>🛡️ No Sign-Up Needed</span>
             </div>
           </div>
-          <p class={styles.subtitleText}>
-            Convert one or more JPG images into a single PDF, in the order you choose. Fast, private
-            and easy to use in your browser.
-          </p>
         </div>
       </div>
 
@@ -207,13 +197,6 @@ function JpgToPdfWorkbench({
 export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted('jpg-to-pdf')) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

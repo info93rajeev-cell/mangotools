@@ -207,70 +207,78 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
         onMouseMove={dragHandlers.handleMouseMove}
         onMouseUp={dragHandlers.handleMouseUp}
       >
-        <div
-          class={styles.canvasTransformContainer}
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom / 100})`,
-            transformOrigin: 'center center',
-          }}
-        >
-          {showOriginal ? (
-            imageSrc && <img src={imageSrc} alt="Original" class={styles.stageImage} />
-          ) : cutoutResult ? (
-            <img src={cutoutResult.blobUrl} alt="Cutout" class={styles.stageImage} />
-          ) : (
-            imageSrc && <img src={imageSrc} alt="Base" class={styles.stageImage} />
-          )}
+        {!imageSrc ? (
+          <div class={styles.emptyStagePlaceholder}>
+            <span class={styles.emptyStageIcon}>🖼️</span>
+            <p class={styles.emptyStageTitle}>No Image Loaded</p>
+            <p class={styles.emptyStageSubtitle}>Upload an image or load sample to start editing</p>
+          </div>
+        ) : (
+          <div
+            class={styles.canvasTransformContainer}
+            style={{
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom / 100})`,
+              transformOrigin: 'center center',
+            }}
+          >
+            {showOriginal ? (
+              <img src={imageSrc} alt="Original" class={styles.stageImage} />
+            ) : cutoutResult ? (
+              <img src={cutoutResult.blobUrl} alt="Cutout" class={styles.stageImage} />
+            ) : (
+              <img src={imageSrc} alt="Base" class={styles.stageImage} />
+            )}
 
-          {showMask && (
-            // biome-ignore lint/a11y/useKeyWithClickEvents: Canvas click is handled by mouse coordinates
-            <svg
-              ref={svgRef}
-              class={styles.pathOverlaySvg}
-              viewBox={`0 0 ${imageDims.width} ${imageDims.height}`}
-              onClick={handleSvgClick}
-              role="img"
-              aria-label="Editable vector Bezier path"
-            >
-              <title>Editable vector Bezier path</title>
-              <path
-                d={pathToSvgD(path)}
-                class={styles.selectionCurve}
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="2.5"
-                strokeDasharray="4 2"
-              />
-              {path.points.length > 10 && <SvgCalloutBadge anchor={path.points[10]} />}
-              {selectedPt && selectedPointIndex !== null && (
-                <SvgTangentHandles
-                  selectedPt={selectedPt}
+            {showMask && path.points.length > 0 && (
+              // biome-ignore lint/a11y/useKeyWithClickEvents: Canvas click is handled by mouse coordinates
+              <svg
+                ref={svgRef}
+                class={styles.pathOverlaySvg}
+                viewBox={`0 0 ${imageDims.width} ${imageDims.height}`}
+                onClick={handleSvgClick}
+                role="img"
+                aria-label="Editable vector Bezier path"
+              >
+                <title>Editable vector Bezier path</title>
+                <path
+                  d={pathToSvgD(path)}
+                  class={styles.selectionCurve}
+                  fill="none"
+                  stroke="#2563eb"
+                  strokeWidth="2.5"
+                  strokeDasharray="4 2"
+                />
+                {path.points.length > 10 && <SvgCalloutBadge anchor={path.points[10]} />}
+                {selectedPt && selectedPointIndex !== null && (
+                  <SvgTangentHandles
+                    selectedPt={selectedPt}
+                    selectedPointIndex={selectedPointIndex}
+                    onHandleMouseDown={(idx, type, e) => {
+                      e.stopPropagation();
+                      dragHandlers.setDraggingTarget({ pointIndex: idx, type });
+                    }}
+                  />
+                )}
+                <SvgAnchorPoints
+                  points={path.points}
                   selectedPointIndex={selectedPointIndex}
-                  onHandleMouseDown={(idx, type, e) => {
+                  onNodeClick={(idx, e) => {
                     e.stopPropagation();
-                    dragHandlers.setDraggingTarget({ pointIndex: idx, type });
+                    if (activeTool === 'delete') onDeletePoint(idx);
+                    else setSelectedPointIndex(idx);
+                  }}
+                  onNodeMouseDown={(idx, e) => {
+                    e.stopPropagation();
+                    setSelectedPointIndex(idx);
+                    if (activeTool !== 'delete') {
+                      dragHandlers.setDraggingTarget({ pointIndex: idx, type: 'anchor' });
+                    }
                   }}
                 />
-              )}
-              <SvgAnchorPoints
-                points={path.points}
-                selectedPointIndex={selectedPointIndex}
-                onNodeClick={(idx, e) => {
-                  e.stopPropagation();
-                  if (activeTool === 'delete') onDeletePoint(idx);
-                  else setSelectedPointIndex(idx);
-                }}
-                onNodeMouseDown={(idx, e) => {
-                  e.stopPropagation();
-                  setSelectedPointIndex(idx);
-                  if (activeTool !== 'delete') {
-                    dragHandlers.setDraggingTarget({ pointIndex: idx, type: 'anchor' });
-                  }
-                }}
-              />
-            </svg>
-          )}
-        </div>
+              </svg>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

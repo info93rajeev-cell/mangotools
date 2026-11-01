@@ -67,7 +67,7 @@ function Allocation({ state, selected }: { state: LoadSnapshot; selected: number
   return (
     <details
       class={`${s.allocation} ${s.secondary}`}
-      open={typeof window === 'undefined' || window.innerWidth > 700}
+      open={typeof window !== 'undefined' && window.innerWidth > 700}
     >
       <summary>{t.allocation}</summary>
       <div class={s.bar} aria-hidden="true">
@@ -102,7 +102,7 @@ function LoadingDetails({ state }: { state: LoadSnapshot }) {
   return (
     <details
       class={`${s.details} ${s.secondary}`}
-      open={typeof window === 'undefined' || window.innerWidth > 700}
+      open={typeof window !== 'undefined' && window.innerWidth > 700}
     >
       <summary>
         {t.details} <small>· {t.shipmentTotals}</small>

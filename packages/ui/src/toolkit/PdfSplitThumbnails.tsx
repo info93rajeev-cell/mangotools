@@ -1,3 +1,5 @@
+import styles from './pdfStudio.module.css';
+
 export function HeavyBookBanner({ totalPages }: { totalPages: number }) {
   if (totalPages < 1500) return null;
   return (
@@ -47,7 +49,9 @@ function ThumbnailItem({
       onClick={onSelect}
       title={`Select Page ${pg}`}
       style={{
-        minWidth: '58px',
+        flex: '1 1 0',
+        minWidth: 0,
+        maxWidth: '58px',
         height: '72px',
         border: isSelected ? '2px solid #2563eb' : '1px solid #cbd5e1',
         borderRadius: '6px',
@@ -63,6 +67,7 @@ function ThumbnailItem({
         cursor: 'pointer',
         transition: 'all 0.15s ease',
         outline: 'none',
+        boxSizing: 'border-box',
       }}
     >
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -115,9 +120,11 @@ export function PdfMiniThumbnails({
     <div
       style={{
         display: 'flex',
-        gap: '8px',
-        overflowX: 'auto',
-        padding: '4px 2px',
+        gap: '6px',
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        padding: '4px 0',
         marginTop: '6px',
       }}
     >
@@ -130,5 +137,70 @@ export function PdfMiniThumbnails({
         />
       ))}
     </div>
+  );
+}
+
+export function PdfSplitLoadedRow({
+  fileName,
+  totalPages,
+  mb,
+  onClear,
+}: {
+  fileName: string;
+  totalPages: number;
+  mb: string;
+  onClear: () => void;
+}) {
+  return (
+    <div
+      class={styles.fileRow}
+      style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '4px' }}
+    >
+      <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
+        PDF
+      </div>
+      <div class={styles.fileDetails}>
+        <span class={styles.fileName}>{fileName}</span>
+        <span class={styles.fileMeta}>
+          {totalPages} pages • {mb} MB
+        </span>
+      </div>
+      <button
+        type="button"
+        class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+        onClick={onClear}
+        title="Clear file"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
+export function PdfSplitDropZone({ onChoose }: { onChoose: () => void }) {
+  return (
+    <button
+      type="button"
+      class={styles.dropZoneCompact}
+      onClick={onChoose}
+      style={{ cursor: 'pointer', textAlign: 'left', width: '100%' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
+          📄+
+        </span>
+        <div>
+          <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+            Drag & drop PDF to split
+          </p>
+          <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+            or click to browse • 100% in-browser processing
+          </p>
+        </div>
+      </div>
+      <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+        Choose PDF File
+      </span>
+    </button>
   );
 }

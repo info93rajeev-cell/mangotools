@@ -7,8 +7,132 @@ export interface UniversalTaxCountryOptionsCardProps {
   tax: UseUniversalTaxReturn;
 }
 
+function IndiaGstRateSelect({
+  tax,
+  showPre2025Rates,
+  setShowPre2025Rates,
+}: {
+  tax: UseUniversalTaxReturn;
+  showPre2025Rates: boolean;
+  setShowPre2025Rates: (v: boolean) => void;
+}) {
+  const isCustomRate = ![0, 0.25, 3, 5, 12, 18, 28, 40].includes(tax.gstRate);
+  return (
+    <div class={styles.formFieldGroup}>
+      <label class={styles.fieldLabel} for="gst-rate-select">
+        GST rate
+      </label>
+      <select
+        id="gst-rate-select"
+        class={styles.fieldInput}
+        value={isCustomRate ? -1 : tax.gstRate}
+        disabled={tax.isComposition}
+        onChange={(e) => {
+          const val = Number((e.target as HTMLSelectElement).value);
+          if (val !== -1) tax.setGstRate(val);
+        }}
+      >
+        <option value={0}>0% (Nil)</option>
+        <option value={0.25}>0.25%</option>
+        <option value={3}>3%</option>
+        <option value={5}>5%</option>
+        <option value={18}>18% (Standard)</option>
+        <option value={40}>40% (Luxury/Demerit)</option>
+        {showPre2025Rates && (
+          <>
+            <option value={12}>12% (Pre-22 Sep 2025)</option>
+            <option value={28}>28% (Pre-22 Sep 2025)</option>
+          </>
+        )}
+        <option value={-1}>Custom</option>
+      </select>
+
+      {isCustomRate && (
+        <input
+          type="number"
+          class={styles.fieldInput}
+          style={{ marginTop: '4px' }}
+          value={tax.gstRate}
+          min="0"
+          max="100"
+          step="0.01"
+          placeholder="Custom rate %"
+          onChange={(e) =>
+            tax.setGstRate(Math.max(0, Number((e.target as HTMLInputElement).value)))
+          }
+        />
+      )}
+
+      <label
+        class={styles.advancedCheckboxRow}
+        style={{ marginTop: '6px', fontSize: '11px', cursor: 'pointer' }}
+      >
+        <input
+          type="checkbox"
+          checked={showPre2025Rates}
+          onChange={(e) => setShowPre2025Rates((e.target as HTMLInputElement).checked)}
+        />
+        <span>Show pre-22 Sep 2025 rates (12%, 28%)</span>
+      </label>
+    </div>
+  );
+}
+
+function IndiaGstCessSelect({
+  tax,
+  showLegacyCess,
+  setShowLegacyCess,
+}: {
+  tax: UseUniversalTaxReturn;
+  showLegacyCess: boolean;
+  setShowLegacyCess: (v: boolean) => void;
+}) {
+  return (
+    <div class={styles.formFieldGroup}>
+      <label class={styles.advancedCheckboxRow} style={{ fontSize: '11px', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={showLegacyCess}
+          onChange={(e) => {
+            const checked = (e.target as HTMLInputElement).checked;
+            setShowLegacyCess(checked);
+            if (!checked) tax.setCessRate(0);
+          }}
+        />
+        <span>Add legacy compensation cess</span>
+      </label>
+
+      {showLegacyCess && (
+        <div style={{ marginTop: '4px' }}>
+          <label class={styles.fieldLabel} for="cess-rate-select">
+            Legacy compensation cess
+          </label>
+          <select
+            id="cess-rate-select"
+            class={styles.fieldInput}
+            value={tax.cessRate}
+            disabled={tax.isComposition}
+            onChange={(e) => tax.setCessRate(Number((e.target as HTMLSelectElement).value))}
+          >
+            <option value={0}>0% (No cess)</option>
+            <option value={1}>1%</option>
+            <option value={3}>3%</option>
+            <option value={5}>5%</option>
+            <option value={12}>12%</option>
+            <option value={15}>15%</option>
+            <option value={22}>22%</option>
+          </select>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function IndiaGstOptionsSection({ tax }: { tax: UseUniversalTaxReturn }) {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [showPre2025Rates, setShowPre2025Rates] = useState(false);
+  const [showLegacyCess, setShowLegacyCess] = useState(false);
+
   return (
     <>
       <div class={styles.formFieldGroup}>
@@ -36,45 +160,16 @@ function IndiaGstOptionsSection({ tax }: { tax: UseUniversalTaxReturn }) {
       </div>
 
       <div class={styles.fieldsGrid2Col}>
-        <div class={styles.formFieldGroup}>
-          <label class={styles.fieldLabel} for="gst-rate-select">
-            GST rate
-          </label>
-          <select
-            id="gst-rate-select"
-            class={styles.fieldInput}
-            value={tax.gstRate}
-            disabled={tax.isComposition}
-            onChange={(e) => tax.setGstRate(Number((e.target as HTMLSelectElement).value))}
-          >
-            <option value={0}>0% (Nil)</option>
-            <option value={5}>5%</option>
-            <option value={12}>12%</option>
-            <option value={18}>18% (Standard)</option>
-            <option value={28}>28% (Luxury)</option>
-          </select>
-        </div>
-
-        <div class={styles.formFieldGroup}>
-          <label class={styles.fieldLabel} for="cess-rate-select">
-            Cess (optional)
-          </label>
-          <select
-            id="cess-rate-select"
-            class={styles.fieldInput}
-            value={tax.cessRate}
-            disabled={tax.isComposition}
-            onChange={(e) => tax.setCessRate(Number((e.target as HTMLSelectElement).value))}
-          >
-            <option value={0}>0% (No cess)</option>
-            <option value={1}>1%</option>
-            <option value={3}>3%</option>
-            <option value={5}>5%</option>
-            <option value={12}>12%</option>
-            <option value={15}>15%</option>
-            <option value={22}>22%</option>
-          </select>
-        </div>
+        <IndiaGstRateSelect
+          tax={tax}
+          showPre2025Rates={showPre2025Rates}
+          setShowPre2025Rates={setShowPre2025Rates}
+        />
+        <IndiaGstCessSelect
+          tax={tax}
+          showLegacyCess={showLegacyCess}
+          setShowLegacyCess={setShowLegacyCess}
+        />
       </div>
 
       <div class={styles.formFieldGroup}>
@@ -223,6 +318,14 @@ export function UniversalTaxCountryOptionsCard({ tax }: UniversalTaxCountryOptio
             {currentProfile.flag} {currentProfile.name} Tax Options
           </span>
         </div>
+        <span
+          style={{ fontSize: '12px', color: '#64748b', cursor: 'help' }}
+          title="Configure jurisdiction-specific tax rules"
+          role="img"
+          aria-label="Tax options help"
+        >
+          ❔
+        </span>
       </div>
 
       {tax.country === 'in' && <IndiaGstOptionsSection tax={tax} />}

@@ -70,7 +70,7 @@ export function UniversalTaxFormulaCard({ tax }: UniversalTaxFormulaCardProps) {
           <div>• Intra-state: CGST + SGST (e.g. 9% + 9% = 18%)</div>
           <div>• Inter-state: IGST (e.g. 18%)</div>
           <div>• Final Amount = Taxable Amount + Total Tax + Cess (if any)</div>
-          <div>• You can choose inclusive (reverse calculation) or exclusive price mode.</div>
+          <div>• You can choose inclusive or exclusive price mode.</div>
         </div>
       )}
 

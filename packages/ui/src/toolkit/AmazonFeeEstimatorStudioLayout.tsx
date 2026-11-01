@@ -3,12 +3,7 @@ import { AmazonFeeCenterCards } from './AmazonFeeCenterCards.tsx';
 import { AmazonFeeLeftCards } from './AmazonFeeLeftCards.tsx';
 import { AmazonFeeRightCards } from './AmazonFeeRightCards.tsx';
 import styles from './businessStudio.module.css';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { useAmazonFeeEstimator } from './useAmazonFeeEstimator.ts';
 
 const AMAZON_TOUR_STEPS: TourStep[] = [
@@ -51,9 +46,7 @@ export interface AmazonFeeEstimatorStudioLayoutProps {
 
 export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStudioLayoutProps) {
   const state = useAmazonFeeEstimator(notify);
-  const [isTourOpen, setIsTourOpen] = useState(
-    () => !isTourCompleted('amazon-india-seller-fee-profit-estimator'),
-  );
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
@@ -81,13 +74,7 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>▣</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Amazon India Seller Fee & Profit Estimator</h1>
-            <p class={styles.subtitle}>
-              Manual Amazon fee estimator: input your fee rates, analyse settlement and
-              profitability.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>

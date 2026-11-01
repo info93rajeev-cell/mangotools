@@ -226,6 +226,7 @@
 /* 6. Tabs & Mode Switchers */
 .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 5px;
   margin-bottom: 10px;
 }
@@ -234,15 +235,16 @@
   border: 1px solid #cfe0f9;
   background: #ffffff;
   border-radius: 7px;
-  padding: 7px 9px;
-  flex: 1;
+  padding: 6px 8px;
+  flex: 1 1 auto;
+  min-width: 0;
   text-align: center;
   font-size: 11px;
   font-weight: 750;
   color: #3d6198;
   cursor: pointer;
   transition: all 0.15s ease;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .tab:hover {
@@ -568,6 +570,12 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .titleLeft {
+    min-width: 0;
   }
 
   .topActions {
@@ -585,4 +593,151 @@
   .metrics {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 600px) {
+  .titleHeading {
+    font-size: 19px;
+  }
+
+  .lower {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* ---------- Dark Mode Support ---------- */
+:global([data-theme="dark"]) .titleHeading {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .subCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .heading {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fieldInput {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .fieldInput:focus {
+  background: #1e293b;
+  border-color: #3b82f6;
+}
+
+:global([data-theme="dark"]) .fieldLabel {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .valueDisplay {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .muted {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .tab {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .tab:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .tabActive {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .metric {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+:global([data-theme="dark"]) .metric small {
+  color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .metric strong {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .pill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .pill:hover {
+  background: #1e293b;
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .pillDanger {
+  border-color: #7f1d1d;
+  color: #f87171;
+}
+
+:global([data-theme="dark"]) .pillDanger:hover {
+  background: #450a0a;
+}
+
+:global([data-theme="dark"]) .divider {
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .strip {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .headlineResult {
+  background: linear-gradient(110deg, #064e3b, #022c22);
+  border-color: #059669;
+}
+
+:global([data-theme="dark"]) .headlineResult small {
+  color: #6ee7b7;
+}
+
+:global([data-theme="dark"]) .headlineResult strong {
+  color: #34d399;
+}
+
+:global([data-theme="dark"]) .headlineResultLoss {
+  background: linear-gradient(110deg, #7f1d1d, #450a0a);
+  border-color: #dc2626;
+}
+
+:global([data-theme="dark"]) .headlineResultLoss small {
+  color: #fca5a5;
+}
+
+:global([data-theme="dark"]) .headlineResultLoss strong {
+  color: #f87171;
 }

@@ -150,6 +150,40 @@ describe('Universal Tax Engine', () => {
     expect(res.effectiveRate).toBe(7.5);
   });
 
+  it('always ensures CGST + SGST === totalTax across edge-case amounts and rates', () => {
+    const testCases: Array<{ amount: number; rate: number; mode: 'exclusive' | 'inclusive' }> = [
+      { amount: 33.33, rate: 5, mode: 'exclusive' },
+      { amount: 1.0, rate: 5, mode: 'inclusive' },
+      { amount: 0.1, rate: 5, mode: 'exclusive' },
+      { amount: 999.995, rate: 18, mode: 'exclusive' },
+      { amount: 101.01, rate: 3, mode: 'exclusive' },
+    ];
+
+    for (const tc of testCases) {
+      const res = calculateUniversalTax({
+        country: 'in',
+        taxSystem: 'gst',
+        priceMode: tc.mode,
+        amount: tc.amount,
+        quantity: 1,
+        discountType: 'currency',
+        discountValue: 0,
+        shippingCharges: 0,
+        supplyType: 'intra',
+        gstRate: tc.rate,
+        cessRate: 0,
+        isComposition: false,
+        selectedStateIndex: 0,
+        localTaxRate: 0,
+        taxSlabs: [],
+      });
+
+      const cgst = res.components.find((c) => c.name.startsWith('CGST'))?.amount ?? 0;
+      const sgst = res.components.find((c) => c.name.startsWith('SGST'))?.amount ?? 0;
+      expect(Math.round((cgst + sgst) * 100) / 100).toBe(res.totalTax);
+    }
+  });
+
   it('formats Indian and Western currency numbers correctly', () => {
     expect(formatCurrencyNumber(1234567.89, '₹')).toBe('₹ 12,34,567.89');
     expect(formatCurrencyNumber(1234567.89, '$')).toBe('$ 1,234,567.89');

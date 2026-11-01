@@ -28,8 +28,26 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
+    /* The desktop grid uses align-items:start; in a column that shrink-wraps each
+       panel to its widest toolbar, pushing the page past the screen. Stretch instead. */
+    align-items: stretch;
     gap: var(--space-3);
     width: 100%;
+  }
+
+  .workbench3Panel > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .canvasToolbar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .viewModeTab {
+    white-space: nowrap;
   }
 
   .workbench3Panel[data-has-file="true"] > .canvasPanel {
@@ -1013,6 +1031,8 @@
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
+  max-width: calc(100% - 16px);
+  box-sizing: border-box;
   background: rgba(15, 23, 42, 0.85);
   color: #ffffff;
   padding: 6px 12px;
@@ -1020,10 +1040,12 @@
   font-size: 11px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(4px);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
 }
 
 .quickPreviewBtn {

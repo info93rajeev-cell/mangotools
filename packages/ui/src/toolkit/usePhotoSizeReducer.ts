@@ -347,12 +347,7 @@ export function usePhotoSizeReducer(
     };
   }, []);
 
-  // Pre-load Jaipur Palace sample image on mount so the window is NEVER blank!
-  useEffect(() => {
-    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate, userInteractedRef, preset, toolId, onPhase, notify);
-    }
-  }, []);
+  // The tool starts empty; the sample loads only when the user taps "Try Sample".
 
   const actions = usePhotoSizeActions(
     s,
