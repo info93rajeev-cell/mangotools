@@ -76,7 +76,8 @@ function ObjectNode({
 }
 
 function ArrayNode({ name, items, depth }: { name: string; items: unknown[]; depth: number }) {
-  const [open, setOpen] = useState(depth < 3);
+  // Arrays start collapsed (except a root array) so the tree stays compact, like the reference.
+  const [open, setOpen] = useState(depth === 0);
 
   return (
     <div class={styles.treeNodeGroup} style={{ paddingLeft: 16 }}>

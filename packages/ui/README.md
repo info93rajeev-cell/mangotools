@@ -41,6 +41,10 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Design tokens v2 (light theme):
+  - The palette moves from warm stone to cool navy/slate: page `#f4f7fb`, ink `#0b1736`, muted `#475569`, border `#dbe4f0`. New `--color-primary` and `--shadow-card` tokens; success and accent text are darkened for ≥4.5:1 on the tinted page.
+  - JSON editor: syntax colours via an escaped overlay (`jsonSyntaxHighlight.ts`, unit-tested). The existing "Highlight syntax" option now actually works.
+  - Arrays start collapsed. The editor and tree share one compact height. Cards have shadows on the tinted page.
 - Visual upgrade v2, piloted on JSON Formatter (Rajeev's reference):
   - Lucide line icons replace emoji in the JSON studio, the shared data-studio action bar and the shared How to use / Method / FAQ / Related strip.
   - Tool H1 is 40px/800 and card titles 18px/750; buttons are 38–44px with icon and text.

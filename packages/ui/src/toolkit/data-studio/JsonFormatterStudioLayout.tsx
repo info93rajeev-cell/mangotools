@@ -107,6 +107,7 @@ function JsonFormatterMainWork({
           onInput={studio.handleInput}
           onClear={() => studio.handleInput('')}
           lineNumbers={studio.lineNumbers}
+          syntaxHighlight={studio.syntaxHighlight}
         />
       </div>
       <div class={`${styles.panelSlot} ${mobileView === 'input' ? styles.hideOnMobile : ''}`}>
