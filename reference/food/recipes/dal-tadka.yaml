@@ -1,0 +1,55 @@
+# Original BeyondTheAI recipe text. Quantities cross-checked against the sources below.
+id: dal-tadka
+version: 0.1.0
+name: Dal Tadka
+localName: दाल तड़का
+course: dal
+cuisine: North Indian
+diet: vegetarian
+servings: 4
+prepMinutes: 15
+cookMinutes: 30
+ingredients:
+  - { ingredient: toor-dal, quantity: "200", unit: g }
+  - { ingredient: turmeric-powder, quantity: "0.5", unit: tsp }
+  - { ingredient: salt, quantity: "1", unit: tsp, note: adjust to taste }
+  - { ingredient: tomato, quantity: "2", unit: piece, note: chopped }
+  - { ingredient: onion, quantity: "1", unit: piece, note: finely chopped }
+  - { ingredient: ghee, quantity: "2", unit: tbsp }
+  - { ingredient: cumin-seeds, quantity: "1", unit: tsp }
+  - { ingredient: garlic, quantity: "4", unit: piece, note: sliced }
+  - { ingredient: dried-red-chilli, quantity: "2", unit: piece }
+  - { ingredient: asafoetida, quantity: "0.25", unit: tsp }
+  - { ingredient: coriander-leaves, quantity: "2", unit: tbsp }
+steps:
+  - Wash the dal until the water is clear. Pressure cook it with 750 ml water, the turmeric and the salt for 4 to 5 whistles, or simmer it covered for about 40 minutes, until it is completely soft.
+  - Whisk the cooked dal lightly and add hot water a little at a time until it pours like thick soup.
+  - In a separate pan heat the ghee. Add the cumin seeds and, once they crackle, the dried chillies, garlic and asafoetida. Fry until the garlic just turns golden.
+  - Add the onion and cook until soft, then add the tomatoes and cook until they break down.
+  - Pour this tempering into the dal, simmer together for 3 to 4 minutes and check the salt.
+  - Scatter the coriander leaves on top just before serving.
+sources:
+  - title: Dal Tadka (Tempered Lentils)
+    publisher: The Cook's Cook
+    url: https://thecookscook.com/recipes/dal-tadka-tempered-lentils/
+    accessed: 2026-11-02
+    checks: 200 g (1 cup) toor dal; 1/2 tsp turmeric; 1 tsp salt; 2 tbsp ghee; 1 tsp cumin; 2 dried red chillies; 1/4 tsp hing.
+  - title: Dal Tadka
+    publisher: The Take It Easy Chef
+    url: https://thetakeiteasychef.com/?p=94943
+    accessed: 2026-11-02
+    checks: 1 cup toor dal for 4 people; 2 medium tomatoes; 1/2 tsp turmeric; 2 tbsp ghee; 1 tsp cumin.
+  - title: Simple Indian Dal Tadka
+    publisher: Cup of Yum
+    url: https://cupofyum.com/recipes/simple-indian-dal-tadka
+    accessed: 2026-11-02
+    checks: 1 cup toor dal for 4 servings; onion in the dal base; 2 tbsp chopped coriander.
+verification:
+  status: source-checked
+  by: Claude (Engineering Office), desk check
+  date: 2026-11-02
+  notes: >-
+    Three sources use 1 cup toor dal for about 4 servings; one states 1 cup = 200 g. Tempering
+    amounts (ghee, cumin, chillies, hing) match the sources. Garlic varies between sources (4 to 8
+    cloves); 4 is used. Not kitchen-tested. Compounded hing usually contains wheat flour, so the
+    recipe carries the gluten allergen through that ingredient.
