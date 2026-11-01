@@ -1,4 +1,4 @@
-/* CSV → JSON studio (reference: BeyondTheAI Developer & Data, CSV to JSON).
+/* Shared parts of the reference data studios (CSV → JSON, Base64, …): tone tiles, big tabs,
    Builds on dataStudio.module.css; only what that file does not already provide lives here. */
 
 .toneGreen {
@@ -121,7 +121,7 @@
   background: #b45309;
   border-color: #b45309;
 }
-.toneBlue.inputTab {
+.toneBlue.inputTab:not(.inputTabActive) {
   color: #1557d6;
 }
 .toneAmber.inputTab:not(.inputTabActive) {
@@ -609,4 +609,321 @@
 }
 :global([data-theme="dark"]) .quickRed {
   color: #fca5a5;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Base64 studio parts */
+@media (min-width: 1081px) {
+  .equalCols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.b64Editor {
+  position: relative;
+  height: clamp(150px, 20vh, 200px);
+  border: 1px solid #dbe4f0;
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+.b64Output {
+  background: #f7f9fc;
+}
+.b64Textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  border: 0;
+  background: transparent;
+  padding: 14px 44px 14px 14px;
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+  font-size: 14px;
+  line-height: 21px;
+  color: #0b1736;
+  word-break: break-all;
+}
+.b64Textarea:focus {
+  outline: 2px solid #b9d0ff;
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+.b64Notice {
+  height: clamp(150px, 20vh, 200px);
+  box-sizing: border-box;
+}
+.previewImg {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: repeating-conic-gradient(#eef2f7 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+  image-rendering: pixelated;
+}
+.binaryView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: clamp(150px, 20vh, 200px);
+  border: 1px solid #dbe4f0;
+  border-radius: 10px;
+  background: #f7f9fc;
+  padding: 12px;
+  color: #0b1736;
+  text-align: center;
+}
+.hex {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #475569;
+  font-size: 12px;
+}
+.outHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 8px;
+  color: #0b1736;
+  font-size: 14.5px;
+}
+.infoBox {
+  margin-top: 12px;
+  padding: 10px 12px 12px;
+  border: 1px solid #e1e8f2;
+  border-radius: 12px;
+  background: #fbfcfe;
+}
+.infoTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #0b1736;
+  font-size: 14px;
+  font-weight: 700;
+}
+.dot {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--tone);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.dotIco {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.4;
+}
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.b64Aux {
+  grid-template-columns: minmax(0, 517fr) minmax(0, 168fr) minmax(0, 330fr) minmax(0, 338fr);
+  grid-template-areas:
+    "options options quick related"
+    "examples summary summary related";
+}
+.areaOptions {
+  grid-area: options;
+}
+.areaQuick {
+  grid-area: quick;
+}
+.areaRelated {
+  grid-area: related;
+}
+.areaExamples {
+  grid-area: examples;
+}
+.areaSummary {
+  grid-area: summary;
+}
+.b64OptGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.modeChip {
+  gap: 6px;
+}
+.areaSummary .infoGrid {
+  grid-template-columns: 1fr 1fr;
+}
+.modePair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.modePair .inputTab:first-child {
+  border-radius: 10px 0 0 10px;
+}
+.modePair .inputTab:last-child {
+  border-radius: 0 10px 10px 0;
+  border-left: 0;
+}
+.relatedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.relatedItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e1e8f2;
+  border-radius: 10px;
+  background: #fff;
+  color: #0b1736;
+  text-decoration: none;
+}
+.relatedItem:hover {
+  border-color: #b9d0ff;
+  background: #f6f9ff;
+}
+.relatedItem .sumText {
+  flex: 1;
+}
+.relatedItem .sumText b {
+  font-size: 13.5px;
+  white-space: normal;
+}
+.exHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.exTabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.exTabs button {
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: 12.5px;
+}
+.exList {
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.exItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid #e1e8f2;
+  border-radius: 8px;
+  background: #fff;
+}
+.exText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0b1736;
+  font-size: 13.5px;
+}
+.ratioBar {
+  display: flex;
+  gap: 3px;
+  height: 10px;
+  margin-top: 10px;
+}
+.ratioBar span {
+  border-radius: 6px;
+  background: #1665f5;
+}
+.ratioBar span + span {
+  background: #60a5fa;
+}
+.ratioLegend {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  color: #475569;
+  font-size: 12px;
+}
+
+@media (max-width: 1280px) {
+  .b64Aux {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "options options"
+      "quick related"
+      "examples summary";
+  }
+}
+@media (max-width: 650px) {
+  .b64Aux {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: "options" "quick" "related" "examples" "summary";
+  }
+  .b64OptGrid,
+  .infoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .b64OptGrid {
+    grid-template-columns: 1fr;
+  }
+  .modePair .inputTab {
+    white-space: normal;
+    font-size: 12.5px;
+    min-height: 40px;
+  }
+  /* Keeps the related tools card short on phones */
+  .relatedItem small {
+    display: none;
+  }
+  .relatedItem {
+    padding: 6px 10px;
+  }
+  .areaSummary .infoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .outHead {
+    flex-wrap: wrap;
+  }
+}
+:global([data-theme="dark"]) .b64Editor,
+:global([data-theme="dark"]) .binaryView,
+:global([data-theme="dark"]) .infoBox,
+:global([data-theme="dark"]) .relatedItem,
+:global([data-theme="dark"]) .exItem {
+  background: #111c33;
+  border-color: #2a3a58;
+}
+:global([data-theme="dark"]) .b64Textarea,
+:global([data-theme="dark"]) .outHead,
+:global([data-theme="dark"]) .infoTitle,
+:global([data-theme="dark"]) .exText,
+:global([data-theme="dark"]) .relatedItem,
+:global([data-theme="dark"]) .binaryView {
+  color: #e6edf8;
+}
+:global([data-theme="dark"]) .ratioLegend,
+:global([data-theme="dark"]) .hex {
+  color: #a9b7cc;
 }

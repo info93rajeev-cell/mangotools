@@ -1,8 +1,8 @@
 import { Icon } from '../../primitives/Icon.tsx';
-import csv from './csvToJson.module.css';
 import { type CsvDelimiterChoice, DELIMITER_LABEL } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
 import { ToggleSwitchRow } from './JsonFormatterAuxCards.tsx';
+import csv from './studioParts.module.css';
 import type { CsvStudio } from './useCsvToJsonStudio.ts';
 
 const DELIMITERS: CsvDelimiterChoice[] = ['comma', 'semicolon', 'tab', 'pipe', 'auto'];

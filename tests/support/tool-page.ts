@@ -20,7 +20,11 @@ export const SAMPLES = {
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },
   'json-formatter': { archetype: 'A', result: '"id": 12345678901234567890' },
-  'base64-encode-decode': { archetype: 'A', result: 'SGVsbG8sIOKCuSB3b3JsZA==' },
+  // The studio's Sample Text button loads the reference sample shown on first open.
+  'base64-encode-decode': {
+    archetype: 'A',
+    result: 'SGVsbG8sIEJleW9uZFRoZUFJISDwn5GLCkJhc2U2NCBlbmNvZGluZyBleGFtcGxlIHdpdGggVW5pY29kZS4K',
+  },
   'url-encode-decode': {
     archetype: 'A',
     result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
