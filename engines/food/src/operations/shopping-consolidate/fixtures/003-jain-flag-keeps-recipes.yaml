@@ -1,0 +1,83 @@
+id: 003-jain-flag-keeps-recipes
+operation: food.shopping.consolidate@1
+source: {type: hand-verified, citation: 'Jain diets exclude root vegetables such as potato and onion.
+    Policy flag: nothing is removed; the sabzi is reported with its two conflicting ingredients.'}
+params: {diet: jain}
+input:
+  ingredients:
+  - {id: rice, dimension: mass}
+  - id: ghee
+    dimension: volume
+    allergens: [milk]
+    notFor: [vegan]
+  - id: potato
+    dimension: mass
+    notFor: [jain]
+  - id: onion
+    dimension: count
+    notFor: [jain]
+  - {id: tomato, dimension: count}
+  recipes:
+  - id: plain-rice
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: source-checked}
+    ingredients:
+    - {ingredient: rice, quantity: '200', unit: g}
+    - {ingredient: ghee, quantity: '1', unit: tbsp}
+  - id: potato-sabzi
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: draft}
+    ingredients:
+    - {ingredient: potato, quantity: '400', unit: g}
+    - {ingredient: onion, quantity: '1', unit: piece}
+    - {ingredient: tomato, quantity: '1', unit: piece}
+    - {ingredient: ghee, quantity: '1', unit: tsp}
+  selection:
+  - {recipe: plain-rice, recipeVersion: 0.1.0}
+  - {recipe: potato-sabzi, recipeVersion: 0.1.0}
+  guests: 4
+expected:
+  lines:
+  - ingredient: ghee
+    total: '20'
+    unit: ml
+    buy: '20'
+    usedIn: [plain-rice, potato-sabzi]
+  - ingredient: onion
+    total: '1'
+    unit: piece
+    buy: '1'
+    usedIn: [potato-sabzi]
+  - ingredient: potato
+    total: '400'
+    unit: g
+    buy: '400'
+    usedIn: [potato-sabzi]
+  - ingredient: rice
+    total: '200'
+    unit: g
+    buy: '200'
+    usedIn: [plain-rice]
+  - ingredient: tomato
+    total: '1'
+    unit: piece
+    buy: '1'
+    usedIn: [potato-sabzi]
+  recipes:
+  - recipe: plain-rice
+    version: 0.1.0
+    verification: source-checked
+    included: true
+    allergens: [milk]
+    dietConflicts: []
+  - recipe: potato-sabzi
+    version: 0.1.0
+    verification: draft
+    included: true
+    allergens: [milk]
+    dietConflicts: [potato, onion]
+expectedWarnings: [FOOD_DIET_CONFLICT]

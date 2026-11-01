@@ -1,0 +1,88 @@
+id: 001-one-guest-exact-quarters
+operation: food.shopping.consolidate@1
+source: {type: hand-verified, citation: '1 guest ÷ 4 servings = 0.25. Rice 200 g × 0.25 = 50 g; ghee 15
+    ml × 0.25 + 5 ml × 0.25 = 5 ml; potato 400 g × 0.25 = 100 g; onion and tomato 0.25 each, bought as
+    1.'}
+input:
+  ingredients:
+  - {id: rice, dimension: mass}
+  - id: ghee
+    dimension: volume
+    allergens: [milk]
+    notFor: [vegan]
+  - id: potato
+    dimension: mass
+    notFor: [jain]
+  - id: onion
+    dimension: count
+    notFor: [jain]
+  - {id: tomato, dimension: count}
+  recipes:
+  - id: plain-rice
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: source-checked}
+    ingredients:
+    - {ingredient: rice, quantity: '200', unit: g}
+    - {ingredient: ghee, quantity: '1', unit: tbsp}
+  - id: potato-sabzi
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: draft}
+    ingredients:
+    - {ingredient: potato, quantity: '400', unit: g}
+    - {ingredient: onion, quantity: '1', unit: piece}
+    - {ingredient: tomato, quantity: '1', unit: piece}
+    - {ingredient: ghee, quantity: '1', unit: tsp}
+  selection:
+  - {recipe: plain-rice, recipeVersion: 0.1.0}
+  - {recipe: potato-sabzi, recipeVersion: 0.1.0}
+  guests: 1
+expected:
+  scale:
+  - {recipe: plain-rice, factor: '0.25'}
+  - {recipe: potato-sabzi, factor: '0.25'}
+  lines:
+  - ingredient: ghee
+    total: '5'
+    unit: ml
+    buy: '5'
+    usedIn: [plain-rice, potato-sabzi]
+  - ingredient: onion
+    total: '0.25'
+    unit: piece
+    buy: '1'
+    usedIn: [potato-sabzi]
+  - ingredient: potato
+    total: '100'
+    unit: g
+    buy: '100'
+    usedIn: [potato-sabzi]
+  - ingredient: rice
+    total: '50'
+    unit: g
+    buy: '50'
+    usedIn: [plain-rice]
+  - ingredient: tomato
+    total: '0.25'
+    unit: piece
+    buy: '1'
+    usedIn: [potato-sabzi]
+  allergens: [milk]
+  diet: vegetarian
+  recipes:
+  - recipe: plain-rice
+    version: 0.1.0
+    verification: source-checked
+    included: true
+    allergens: [milk]
+    dietConflicts: []
+  - recipe: potato-sabzi
+    version: 0.1.0
+    verification: draft
+    included: true
+    allergens: [milk]
+    dietConflicts: []
+  rounded: []
