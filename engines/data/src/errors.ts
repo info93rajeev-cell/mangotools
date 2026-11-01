@@ -30,6 +30,7 @@ export const messages: Readonly<Record<string, string>> = {
   DATA_JSON_TO_CSV_NESTED_VALUE:
     'The value for "{key}" in item {item} is a nested object or array, which is not supported in this version.',
   DATA_JSON_TO_CSV_NO_COLUMNS: 'The JSON objects have no properties to use as columns.',
+  DATA_JSON_TO_CSV_RECORD_PATH_NOT_FOUND: 'Nothing was found at the record path "{recordPath}".',
   DATA_TIMESTAMP_EMPTY: 'Paste or type a timestamp or date to convert.',
   DATA_TIMESTAMP_INVALID: 'Enter a whole number of seconds or milliseconds, such as 1700000000.',
   DATA_TIMESTAMP_AMBIGUOUS_LENGTH:
