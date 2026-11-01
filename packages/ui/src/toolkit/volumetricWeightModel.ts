@@ -70,6 +70,8 @@ export const SAMPLE_VOLUMETRIC_ITEMS: VolumetricItem[] = [
 ];
 
 export interface VolumetricCalculationResult {
+  /** Rows left out because a size, weight or quantity is missing or not valid. */
+  skippedRowIds: string[];
   totalPieces: number;
   totalVolumeM3: number;
   totalVolumeCm3: number;
@@ -108,6 +110,21 @@ export function convertLengthFromCm(valCm: number, unit: VolumetricUnit): number
   return Math.round(valCm * 10) / 10;
 }
 
+const positive = (n: number) => Number.isFinite(n) && n > 0;
+
+/** A row counts when all sizes are above zero, weight is not negative and quantity is a whole number of at least 1. */
+export function isUsableItem(item: VolumetricItem): boolean {
+  return (
+    positive(item.length) &&
+    positive(item.width) &&
+    positive(item.height) &&
+    Number.isFinite(item.weightKg) &&
+    item.weightKg >= 0 &&
+    Number.isInteger(item.quantity) &&
+    item.quantity >= 1
+  );
+}
+
 export function computeVolumetricWeight(
   items: VolumetricItem[],
   unit: VolumetricUnit,
@@ -119,12 +136,14 @@ export function computeVolumetricWeight(
   let totalVolumetricWeightKg = 0;
 
   const validDivisor = divisor > 0 ? divisor : 6000;
+  const usable = items.filter(isUsableItem);
+  const skippedRowIds = items.filter((i) => !isUsableItem(i)).map((i) => i.id);
 
-  const itemCalculations = items.map((item) => {
+  const itemCalculations = usable.map((item) => {
     const lCm = convertLengthToCm(item.length, unit);
     const wCm = convertLengthToCm(item.width, unit);
     const hCm = convertLengthToCm(item.height, unit);
-    const qty = Math.max(1, item.quantity);
+    const qty = item.quantity;
 
     const volPieceCm3 = lCm * wCm * hCm;
     const volPieceM3 = volPieceCm3 / 1_000_000;
@@ -168,6 +187,7 @@ export function computeVolumetricWeight(
   const totalVolumeM3 = Math.round((totalVolumeCm3 / 1_000_000) * 1000) / 1000;
 
   return {
+    skippedRowIds,
     totalPieces,
     totalVolumeM3,
     totalVolumeCm3: Math.round(totalVolumeCm3),
