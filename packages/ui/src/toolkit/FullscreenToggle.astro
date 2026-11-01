@@ -1,0 +1,128 @@
+---
+/**
+ * Full screen toggle shared by every tool page. It puts the nearest `[data-fullscreen-root]`
+ * (the tool page, which also contains this button) into browser full screen, so the mobile
+ * browser bars disappear. This matters most in landscape. The button stays hidden where the
+ * Fullscreen API is unavailable (e.g. iPhone Safari), so it never shows as a broken control.
+ */
+import { t } from '../strings/en.ts';
+---
+
+<button
+  type="button"
+  class="fullscreen-btn"
+  data-fullscreen-toggle=""
+  data-label-enter={t('fullscreen.enter')}
+  data-label-exit={t('fullscreen.exit')}
+  aria-pressed="false"
+  title={t('fullscreen.enterHint')}
+  hidden
+>
+  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+    <path
+      d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  <span data-fullscreen-label>{t('fullscreen.enter')}</span>
+</button>
+
+<script>
+  const syncButton = (button: HTMLButtonElement, root: Element) => {
+    const active = document.fullscreenElement === root;
+    const label = button.querySelector('[data-fullscreen-label]');
+    const text = (active ? button.dataset.labelExit : button.dataset.labelEnter) ?? '';
+    button.setAttribute('aria-pressed', String(active));
+    if (label) label.textContent = text;
+  };
+
+  // A full screen element is drawn on its own black backdrop, so give it the page's real
+  // background (body, else html); otherwise dark headings vanish on black.
+  const paintLikePage = (root: HTMLElement) => {
+    const transparent = (c: string) => c === 'transparent' || c === 'rgba(0, 0, 0, 0)';
+    const body = getComputedStyle(document.body);
+    const html = getComputedStyle(document.documentElement);
+    const color = transparent(body.backgroundColor) ? html.backgroundColor : body.backgroundColor;
+    root.style.setProperty('--fullscreen-bg', transparent(color) ? '' : color);
+    root.style.setProperty('--fullscreen-bg-image', body.backgroundImage);
+  };
+
+  const toggle = async (root: HTMLElement) => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else {
+        paintLikePage(root);
+        await root.requestFullscreen({ navigationUI: 'hide' });
+      }
+    } catch {
+      // The browser refused (e.g. no user gesture); the button simply stays in its current state.
+    }
+  };
+
+  const setUp = () => {
+    if (!document.fullscreenEnabled) return;
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-fullscreen-toggle]')) {
+      const root = button.closest<HTMLElement>('[data-fullscreen-root]');
+      if (!root) continue;
+      button.hidden = false;
+      button.addEventListener('click', () => void toggle(root));
+      document.addEventListener('fullscreenchange', () => syncButton(button, root));
+    }
+  };
+
+  setUp();
+</script>
+
+<style>
+  .fullscreen-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 28px;
+    padding: 3px var(--space-3) 3px var(--space-2);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text, #0f172a);
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .fullscreen-btn[hidden] {
+    display: none;
+  }
+  .fullscreen-btn:hover {
+    border-color: var(--color-accent, #2563eb);
+  }
+  .fullscreen-btn:focus-visible {
+    outline: 2px solid #0065ff;
+    outline-offset: 2px;
+  }
+  .fullscreen-btn[aria-pressed='true'] {
+    background: #0f172a;
+    border-color: #0f172a;
+    color: #ffffff;
+  }
+  @media (pointer: coarse) {
+    .fullscreen-btn {
+      min-height: 44px;
+      padding-inline: 12px;
+    }
+  }
+
+  /* The full screen root scrolls inside itself and respects notches / home indicators. */
+  :global([data-fullscreen-root]:fullscreen) {
+    overflow-y: auto;
+    background-color: var(--fullscreen-bg, var(--color-bg, #ffffff));
+    background-image: var(--fullscreen-bg-image, none);
+    padding:
+      max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+      max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    box-sizing: border-box;
+  }
+</style>

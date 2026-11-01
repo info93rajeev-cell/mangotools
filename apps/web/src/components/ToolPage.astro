@@ -49,7 +49,7 @@ const isCivil = [
 
 <BaseLayout title={toolTitle(tool)} description={tool.seo.description} path={tool.url} template="tool" jsonLd={jsonLd}>
   <PageContainer width="tool">
-    <div class="page">
+    <div class="page" data-fullscreen-root>
       <div class="top">
         <Breadcrumbs items={crumbs} />
         <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
