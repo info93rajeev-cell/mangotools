@@ -41,6 +41,10 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- JSON Formatter:
+  - Search works. Keys and values are highlighted in the tree, collapsed nodes open when they hold a hit, ↑/↓ and Enter / Shift+Enter step through hits, the count shows "n of m" and an invalid regex is reported (`jsonSearch.ts`, unit and e2e tests).
+  - Input and output now share the width equally, and the summary column gets about 42% of the output.
+  - Above about 1585px the working area scales up in proportion (max 1.3×) so it fills wide screens like the reference.
 - Full-width tool pages and density pass:
   - Tool pages span the whole screen on every laptop size (`PageContainer` tool width has no cap; studio max-widths removed in tax, business, jpg-to-pdf, pallet, volumetric and civil).
   - JSON studio is tuned to the reference at about 1536px: page actions share the title line, controls are smaller but heavier, tree values are plain, tabs are separate buttons, data-type percentages sit above thicker bars, validation figures are bold and option cards follow reference proportions.

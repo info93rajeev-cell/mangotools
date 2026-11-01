@@ -2755,3 +2755,64 @@ button.btnDangerOutline {
   white-space: nowrap;
   font-size: 15px;
 }
+
+/* Search: hits in the tree, current hit, and prev/next controls */
+.searchNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.searchNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d6e0ee;
+  border-radius: 7px;
+  background: #fff;
+  color: #1e40af;
+  cursor: pointer;
+}
+.searchNavBtn:disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+.treeScrollContainer [data-search-hit] {
+  outline: 2px solid #fbbf24;
+  outline-offset: 1px;
+  background-color: #fef3c7;
+}
+.treeScrollContainer [data-search-active] {
+  outline: 2px solid #f59e0b;
+  background-color: #fde68a;
+  color: #0f172a;
+}
+
+/* Reference proportions: input and output share the width equally; inside the output the
+   summary column gets ~42% so its tiles never squeeze. */
+@media (min-width: 1081px) {
+  .workTwoPanel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (min-width: 901px) {
+  .outputSplitBody {
+    grid-template-columns: minmax(0, 1.35fr) minmax(220px, 1fr);
+  }
+}
+.metricText small {
+  white-space: nowrap;
+}
+/* Wide screens: scale the working area (not the page-action row) in reference proportion */
+.workTwoPanel,
+.aux,
+.statusBar {
+  zoom: var(--ds-scale, 1);
+}
+@media (min-width: 1100px) {
+  .topActionsBar {
+    margin-top: -42px;
+  }
+}
