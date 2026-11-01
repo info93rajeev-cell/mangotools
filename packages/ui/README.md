@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- JSON Formatter look & feel:
+  - Reference sizes, weight and depth are restored instead of squeezing the studio into the window: roomy tree rows with bold pills, strings and booleans in soft pills, a yellow root icon, 30px coloured summary icons and 20px figures, roomier data types with thicker bars, heavier icon strokes and deeper card shadows.
+  - Search steps with ‹ ›. Wide screens scale by width only (the page may scroll).
 - Data studios, reference layout:
   - The info sections (Disclaimer, How to use, Method, FAQ, Related tools…) open from pills in the action row (`DataStudioInfoPills.tsx`). The page's strip below only shows the open section.
   - Work-area heights follow content (the old 480px floor is removed); the summary column, tree rows and code lines are tightened.

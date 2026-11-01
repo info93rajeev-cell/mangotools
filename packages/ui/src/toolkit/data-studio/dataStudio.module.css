@@ -2995,3 +2995,152 @@ button.btnDangerOutline {
 .switchList {
   gap: 6px;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   Look & feel pass (Rajeev: match the reference's sizes, weight, depth and icons, not the window).
+   Undoes the earlier squeeze-to-fit; the page may scroll.
+   --------------------------------------------------------------------------------------------- */
+.editorContainer {
+  height: clamp(340px, 48vh, 500px);
+}
+.codeTextarea,
+.codeHighlight,
+.gutterLine {
+  line-height: 20px;
+}
+.gutterLine {
+  height: 20px;
+}
+.outputViewArea {
+  max-height: clamp(360px, 52vh, 560px);
+}
+
+/* Depth: cards float a little more off the tinted page */
+.panel,
+.optcard,
+.structureCard,
+.dataTypesCard {
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 10px 24px rgba(30, 64, 125, 0.08);
+}
+
+/* Tree: roomy rows, bold pills, strings and booleans in soft pills, numbers plain */
+.treeLeafRow,
+.treeNodeHeader {
+  font-size: 13.5px;
+  padding-block: 3px;
+  gap: 8px;
+}
+.treeKeyPill,
+.treeObjectKey,
+.treeArrayKey {
+  padding: 3px 10px;
+  font-weight: 650;
+}
+.badgeObject,
+.badgeArray,
+.badgeString,
+.badgeNumber,
+.badgeBoolean,
+.badgeNull,
+.badgeGeneric,
+.treeCountBadge,
+.treeRootBadge {
+  padding: 3px 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.treeLeafRow[data-type="string"] .treeValue,
+.treeLeafRow[data-type="boolean"] .treeValue {
+  background: #f1f5f9;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+.treeNodeIcon :global(svg) {
+  stroke-width: 2.2;
+}
+.treeNodeIcon[data-kind="root"] {
+  color: #f59e0b;
+}
+.treeNodeIcon .ico {
+  width: 18px;
+  height: 18px;
+}
+
+/* Structure summary: big coloured icons, bold figures */
+.structureCard,
+.dataTypesCard {
+  padding: 12px 14px;
+}
+.structureGrid {
+  gap: 10px;
+}
+.structureMetric {
+  padding: 10px 12px;
+  gap: 12px;
+}
+.metricIco {
+  width: 30px;
+  height: 30px;
+}
+.metricIco :global(svg) {
+  stroke-width: 2.2;
+}
+.metricText small {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.metricText b {
+  font-size: 20px;
+  font-weight: 800;
+}
+.sideCardHeader {
+  font-size: 16.5px;
+  margin-bottom: 10px;
+}
+
+/* Data types: roomy rows, bigger icons, thicker bars */
+.dataTypesList {
+  gap: 10px;
+}
+.dataTypeRow {
+  min-height: 34px;
+  font-size: 13.5px;
+}
+.dataTypeIcon .ico {
+  width: 18px;
+  height: 18px;
+}
+.dataTypeIcon :global(svg) {
+  stroke-width: 2.2;
+}
+.dataTypeCount {
+  font-size: 14px;
+}
+.dataTypePct {
+  font-size: 12px;
+}
+.dataTypeTrack {
+  height: 8px;
+}
+
+/* Icons across the studio read heavier, like the reference */
+.toolIco :global(svg),
+.optIco :global(svg) {
+  stroke-width: 2.2;
+}
+.toolIco {
+  width: 26px;
+  height: 26px;
+}
+.optIco {
+  width: 22px;
+  height: 22px;
+}
+.tooltitle {
+  font-size: 17px;
+}
+.optTitle {
+  font-size: 15.5px;
+}
