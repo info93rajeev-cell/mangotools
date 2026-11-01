@@ -40,6 +40,8 @@ export const jsonToCsvOutput = z.strictObject({
   leadingZeroColumns: z.array(z.string()),
   /** Dot paths (up to three levels) that hold an array of objects; "" is the root. */
   recordPaths: z.array(z.string()),
+  /** The first 100 data rows as the cell texts written (guard included), for a table preview. */
+  previewRows: z.array(z.array(z.string())),
 });
 
 export type JsonToCsvParams = z.infer<typeof jsonToCsvParams>;
