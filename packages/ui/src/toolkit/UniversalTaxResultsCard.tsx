@@ -149,7 +149,7 @@ function DonutBreakdownSection({
               r={radius}
               fill="none"
               stroke="#e2e8f0"
-              strokeWidth={strokeWidth}
+              stroke-width={strokeWidth}
             />
             {slices.map((s, idx) => (
               <circle
@@ -159,9 +159,9 @@ function DonutBreakdownSection({
                 r={radius}
                 fill="none"
                 stroke={s.color}
-                strokeWidth={strokeWidth}
-                strokeDasharray={s.strokeDasharray}
-                strokeDashoffset={s.strokeDashoffset}
+                stroke-width={strokeWidth}
+                stroke-dasharray={s.strokeDasharray}
+                stroke-dashoffset={s.strokeDashoffset}
                 transform={`rotate(-90 ${center} ${center})`}
               />
             ))}

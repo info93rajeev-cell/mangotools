@@ -23,7 +23,7 @@ export function BiometricGuideSvg() {
           strokeWidth="0.8"
           strokeDasharray="2,2"
         />
-        <text x="50" y="10" fill="rgba(245, 158, 11, 0.95)" fontSize="3.5" textAnchor="middle">
+        <text x="50" y="10" fill="rgba(245, 158, 11, 0.95)" fontSize="3.2px" textAnchor="middle">
           Crown (Top of Head)
         </text>
 
@@ -37,7 +37,7 @@ export function BiometricGuideSvg() {
           strokeWidth="0.6"
           strokeDasharray="1.5,1.5"
         />
-        <text x="50" y="43" fill="rgba(59, 130, 246, 0.9)" fontSize="3" textAnchor="middle">
+        <text x="50" y="43" fill="rgba(59, 130, 246, 0.9)" fontSize="3px" textAnchor="middle">
           Eye Line (40-50%)
         </text>
 
@@ -51,7 +51,7 @@ export function BiometricGuideSvg() {
           strokeWidth="0.8"
           strokeDasharray="2,2"
         />
-        <text x="50" y="85" fill="rgba(245, 158, 11, 0.95)" fontSize="3.5" textAnchor="middle">
+        <text x="50" y="85" fill="rgba(245, 158, 11, 0.95)" fontSize="3.2px" textAnchor="middle">
           Chin Line (Bottom)
         </text>
 

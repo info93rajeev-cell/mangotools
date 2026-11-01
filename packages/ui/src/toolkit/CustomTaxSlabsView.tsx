@@ -205,13 +205,22 @@ function SlabsTableView({
   return (
     <div class={styles.slabsTableWrapper}>
       <table class={styles.slabsTable} aria-label="Tax Slabs Table">
+        <colgroup>
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '23%' }} />
+          <col style={{ width: '23%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '13%' }} />
+          <col style={{ width: '11%' }} />
+          <col style={{ width: '11%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>#</th>
-            <th>Min Amount ({currencySymbol})</th>
-            <th>Max Amount ({currencySymbol})</th>
+            <th>Min ({currencySymbol})</th>
+            <th>Max ({currencySymbol})</th>
             <th>Rate</th>
-            <th>Tax Type</th>
+            <th>Type</th>
             <th>Notes</th>
             <th style={{ textAlign: 'center' }}>Actions</th>
           </tr>

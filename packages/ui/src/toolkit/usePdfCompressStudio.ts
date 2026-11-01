@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { createSamplePdf, SAMPLE_COMPRESS_FILE } from './samplePdfDocuments.ts';
 
 export type CompressionPreset = 'light' | 'balanced' | 'strong' | 'custom';
@@ -73,16 +73,10 @@ function useCompressOptions() {
 }
 
 function useCompressFileState(notify?: (msg: string) => void) {
-  const [fileName, setFileName] = useState(SAMPLE_COMPRESS_FILE.name);
-  const [fileSizeBytes, setFileSizeBytes] = useState(SAMPLE_COMPRESS_FILE.sizeBytes);
-  const [totalPages, setTotalPages] = useState(SAMPLE_COMPRESS_FILE.pageCount);
+  const [fileName, setFileName] = useState('');
+  const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
-
-  useEffect(() => {
-    setFileName(SAMPLE_COMPRESS_FILE.name);
-    setFileSizeBytes(SAMPLE_COMPRESS_FILE.sizeBytes);
-    setTotalPages(SAMPLE_COMPRESS_FILE.pageCount);
-  }, []);
 
   return {
     fileName,
@@ -93,6 +87,7 @@ function useCompressFileState(notify?: (msg: string) => void) {
       setFileName('');
       setTotalPages(0);
       setFileSizeBytes(0);
+      setFileBytes(null);
     },
     loadSampleCompress: () => {
       setFileName(SAMPLE_COMPRESS_FILE.name);

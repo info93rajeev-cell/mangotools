@@ -16,7 +16,7 @@ import {
 import { PdfToWordLeftCards, PdfToWordRightCards } from './PdfToWordCards.tsx';
 import styles from './pdfStudio.module.css';
 import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
-import { isTourCompleted, ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
 import { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 import { usePdfToWordStudio, useWordToPdfStudio } from './usePdfConvertStudio.ts';
 import { usePdfMergeStudio } from './usePdfMergeStudio.ts';
@@ -33,7 +33,6 @@ export interface PdfDocumentStudioProps {
 function ToolHeaderBar({
   iconNode,
   title,
-  subtitle,
   badge3,
   openLabel,
   onOpen,
@@ -43,7 +42,6 @@ function ToolHeaderBar({
 }: {
   iconNode: JSX.Element;
   title: string;
-  subtitle: string;
   badge3: string;
   openLabel?: string;
   onOpen?: () => void;
@@ -54,10 +52,11 @@ function ToolHeaderBar({
   return (
     <div class={styles.topBar}>
       <div class={styles.toolHeading}>
-        <div class={styles.toolIconBox}>{iconNode}</div>
+        <div class={styles.toolIconBox} role="img" aria-label={title}>
+          {iconNode}
+        </div>
         <div class={styles.titleMeta}>
           <div class={styles.titleRow}>
-            <h2 class={styles.titleText}>{title}</h2>
             <div class={styles.badgePills}>
               <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
                 ⚡ Instant In-Browser
@@ -66,7 +65,6 @@ function ToolHeaderBar({
               <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>{badge3}</span>
             </div>
           </div>
-          <p class={styles.subtitleText}>{subtitle}</p>
         </div>
       </div>
       <div class={styles.topActions}>
@@ -113,7 +111,6 @@ function RenderPdfMergeView({
       <ToolHeaderBar
         iconNode={<PdfMergeIcon />}
         title="PDF Merge"
-        subtitle="Combine multiple PDF files into one, in the order you choose. Fast, private and easy to use in your browser."
         badge3="🛡️ No Sign-up Needed"
         openLabel="Open Files"
         onOpen={onOpen}
@@ -143,7 +140,6 @@ function RenderPdfSplitView({
       <ToolHeaderBar
         iconNode={<PdfSplitIcon />}
         title="PDF Split"
-        subtitle="Extract page ranges or split a PDF into multiple smaller files, right in your browser."
         badge3="🛡️ Zero Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
@@ -173,7 +169,6 @@ function RenderPdfCompressView({
       <ToolHeaderBar
         iconNode={<PdfCompressIcon />}
         title="Compress PDF"
-        subtitle="Reduce PDF file size for email, portal uploads, and records, while keeping document quality under control."
         badge3="🛡️ No Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
@@ -208,7 +203,6 @@ function RenderPdfConvertView({
         <ToolHeaderBar
           iconNode={<PdfToWordIcon />}
           title="PDF to Word"
-          subtitle="Convert PDF documents into editable Word files while preserving layout, tables, and readable text."
           badge3="🛡️ No Server Upload"
           openLabel="Open Files"
           onOpen={onOpen}
@@ -228,7 +222,6 @@ function RenderPdfConvertView({
       <ToolHeaderBar
         iconNode={<WordToPdfIcon />}
         title="Word to PDF"
-        subtitle="Turn DOCX and DOC files into clean PDFs for contracts, reports, and client-ready sharing."
         badge3="🛡️ No Server Upload"
         openLabel="Open Files"
         onOpen={onOpen}
@@ -314,13 +307,6 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
   const currentToolKey = toolId ?? activeTab;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted(currentToolKey)) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [currentToolKey]);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

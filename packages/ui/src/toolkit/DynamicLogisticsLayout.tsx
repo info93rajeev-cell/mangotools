@@ -3,7 +3,7 @@ import type { ComponentType } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { DynamicToolTour } from './DynamicToolTour.tsx';
 import type { ToolIslandProps } from './ToolIsland.tsx';
-import { isTourCompleted, type TourStep } from './tourStorage.ts';
+import type { TourStep } from './tourStorage.ts';
 
 const CBM_STEPS: TourStep[] = [
   {
@@ -141,9 +141,7 @@ export function DynamicLogisticsLayout(props: ToolIslandProps) {
   }> | null>(null);
   const toolKey = props.toolId || props.preset.id;
   const tour = getLogisticsTour(toolKey);
-  const [isTourOpen, setIsTourOpen] = useState(() =>
-    tour ? !isTourCompleted(tour.toolId) : false,
-  );
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

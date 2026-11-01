@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { UniversalTaxCountryOptionsCard } from './UniversalTaxCountryOptionsCard.tsx';
 import { UniversalTaxFormulaCard } from './UniversalTaxFormulaCard.tsx';
 import { UniversalTaxInputsCard } from './UniversalTaxInputsCard.tsx';
@@ -57,13 +52,7 @@ export interface UniversalTaxStudioLayoutProps {
 function UniversalTaxHeaderBar({ onOpenTour }: { onOpenTour: () => void }) {
   return (
     <div class={styles.topHeaderRow}>
-      <div class={styles.titleGroup}>
-        <h1 class={styles.pageTitle}>Universal Tax Calculator</h1>
-        <p class={styles.pageSubtitle}>
-          Calculate GST, VAT, sales tax, and custom tax slabs for India and other countries — right
-          in your browser.
-        </p>
-      </div>
+      {/* Title and summary come from the page header (single H1). */}
 
       <div class={styles.saveCalloutBanner}>
         <div class={styles.calloutLeft}>
@@ -163,13 +152,6 @@ function UniversalTaxTopNav({ tax }: { tax: UseUniversalTaxReturn }) {
 export function UniversalTaxStudioLayout({ notify }: UniversalTaxStudioLayoutProps) {
   const tax = useUniversalTax(notify);
   const [isTourOpen, setIsTourOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isTourCompleted('gst-calculator')) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

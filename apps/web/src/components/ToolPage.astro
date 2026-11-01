@@ -52,11 +52,7 @@ const isCivil = [
     <div class="page">
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf', 'gst-calculator', 'seller-profitability-calculator', 'amazon-india-seller-fee-profit-estimator', 'markup-calculator'].includes(tool.slug) ? (
-          <h1 class="visually-hidden">{tool.seo.h1 ?? tool.name}</h1>
-        ) : (
-          <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
-        )}
+        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
       </div>
       {isCivil ? (
         <div class="civil-page-wrap">
@@ -100,10 +96,14 @@ const isCivil = [
   .page {
     display: grid;
     gap: var(--space-1);
+    min-width: 0;
+    max-width: 100%;
   }
   .top {
     display: grid;
     gap: var(--space-1);
+    min-width: 0;
+    max-width: 100%;
   }
   @media (max-width: 650px) {
     .page {

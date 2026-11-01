@@ -1,5 +1,5 @@
 import { degrees, PDFDocument } from 'pdf-lib';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { createSamplePdf, SAMPLE_MERGE_FILES } from './samplePdfDocuments.ts';
 
 export interface MergedFileItem {
@@ -174,10 +174,6 @@ export function usePdfMergeStudio(notify?: (msg: string) => void) {
   const [outputFileName, setOutputFileName] = useState('Merged-Document.pdf');
   const [isProcessing, setIsProcessing] = useState(false);
   const [mergedBlobUrl, setMergedBlobUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fileCol.loadSampleFiles();
-  }, []);
 
   async function executeMerge() {
     if (fileCol.files.length === 0) return;

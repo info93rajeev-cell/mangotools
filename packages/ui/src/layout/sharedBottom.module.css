@@ -28,7 +28,10 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  white-space: nowrap;
+  /* Wrap long labels inside narrow cells (e.g. 740px landscape) instead of pushing
+     the "+" past the screen edge. */
+  white-space: normal;
+  min-width: 0;
 }
 .strip summary :global(.icon) {
   width: 23px;
@@ -51,6 +54,7 @@
   font-size: 23px;
 }
 .strip summary b {
+  flex: none;
   margin-left: auto;
   color: #687185;
   font-size: 21px;

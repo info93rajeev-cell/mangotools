@@ -1,4 +1,5 @@
 import type { JSX } from 'preact';
+import { useRef } from 'preact/hooks';
 import styles from './pdfStudio.module.css';
 import type { usePdfToWordStudio } from './usePdfConvertStudio.ts';
 
@@ -50,7 +51,45 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
   );
 }
 
+function PdfToWordLoadedRow({
+  fileName,
+  totalPages,
+  mb,
+  onClear,
+}: {
+  fileName: string;
+  totalPages: number;
+  mb: string;
+  onClear: () => void;
+}) {
+  return (
+    <div
+      class={styles.fileRow}
+      style={{ background: '#ffffff', borderColor: '#bfdbfe', marginTop: '4px' }}
+    >
+      <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
+        PDF
+      </div>
+      <div class={styles.fileDetails}>
+        <span class={styles.fileName}>{fileName}</span>
+        <span class={styles.fileMeta}>
+          {totalPages} pages • {mb} MB
+        </span>
+      </div>
+      <button
+        type="button"
+        class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+        onClick={onClear}
+        title="Clear file"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
 function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     fileName,
     totalPages,
@@ -68,79 +107,87 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
 
   return (
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        style={{ display: 'none' }}
+        onChange={onFileInputChange}
+      />
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
           <span class={styles.stepNum}>1</span> Upload PDF File
         </h2>
-        <button
-          type="button"
-          onClick={loadSamplePdfToWord}
-          style={{
-            fontSize: '11px',
-            padding: '3px 8px',
-            borderRadius: '6px',
-            border: '1px solid #bfdbfe',
-            background: '#eff6ff',
-            color: '#1d4ed8',
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          📄 Sample Contract
-        </button>
-      </div>
-
-      <label class={styles.dropZoneCompact}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
-            📄+
-          </span>
-          <div>
-            <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
-              Drag & drop a PDF file here
-            </p>
-            <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
-              or click to browse • 100% in-browser processing
-            </p>
-          </div>
-        </div>
-        <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
-          Choose PDF File
-        </span>
-        <input
-          type="file"
-          accept="application/pdf"
-          style={{ display: 'none' }}
-          onChange={onFileInputChange}
-        />
-      </label>
-
-      {fileName && (
-        <div
-          class={styles.fileRow}
-          style={{ background: '#ffffff', borderColor: '#bfdbfe', marginTop: '6px' }}
-        >
-          <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
-            PDF
-          </div>
-          <div class={styles.fileDetails}>
-            <span class={styles.fileName}>{fileName}</span>
-            <span class={styles.fileMeta}>
-              {totalPages} pages • {mb} MB
-            </span>
-          </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             type="button"
-            class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-            onClick={clearAll}
-            title="Clear file"
+            onClick={loadSamplePdfToWord}
+            style={{
+              fontSize: '11px',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              border: '1px solid #bfdbfe',
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
           >
-            ✕
+            📄 Sample Contract
+          </button>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              fontSize: '11px',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              border: '1px solid #bfdbfe',
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            {fileName ? 'Change File' : 'Upload PDF'}
           </button>
         </div>
+      </div>
+
+      {!fileName ? (
+        <button
+          type="button"
+          class={styles.dropZoneCompact}
+          onClick={() => fileInputRef.current?.click()}
+          style={{ cursor: 'pointer', textAlign: 'left', width: '100%' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
+              📄+
+            </span>
+            <div>
+              <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+                Drag & drop a PDF file here
+              </p>
+              <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+                or click to browse • 100% in-browser processing
+              </p>
+            </div>
+          </div>
+          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+            Choose PDF File
+          </span>
+        </button>
+      ) : (
+        <PdfToWordLoadedRow
+          fileName={fileName}
+          totalPages={totalPages}
+          mb={mb}
+          onClear={clearAll}
+        />
       )}
 
-      <PdfPreviewStrip totalPages={totalPages} />
+      {fileName && <PdfPreviewStrip totalPages={totalPages} />}
     </div>
   );
 }
