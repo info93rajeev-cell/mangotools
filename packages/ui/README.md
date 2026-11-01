@@ -41,6 +41,10 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Data studios, reference layout:
+  - The info sections (Disclaimer, How to use, Method, FAQ, Related tools…) open from pills in the action row (`DataStudioInfoPills.tsx`). The page's strip below only shows the open section.
+  - Work-area heights follow content (the old 480px floor is removed); the summary column, tree rows and code lines are tightened.
+  - Wide screens scale up only as far as the studio still fits the screen height.
 - JSON Formatter:
   - Search works. Keys and values are highlighted in the tree, collapsed nodes open when they hold a hit, ↑/↓ and Enter / Shift+Enter step through hits, the count shows "n of m" and an invalid regex is reported (`jsonSearch.ts`, unit and e2e tests).
   - Input and output now share the width equally, and the summary column gets about 42% of the output.

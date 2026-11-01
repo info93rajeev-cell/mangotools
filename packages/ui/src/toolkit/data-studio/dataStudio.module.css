@@ -2831,3 +2831,167 @@ button.btnDangerOutline {
 .gutterLine {
   font-size: 12px;
 }
+
+/* Info pills share the action row (reference). The page's own strip below then only shows the
+   section that is open, so nothing is duplicated and the page stays short. */
+.statusBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.infoPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.infoPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 9px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.infoPill .ico {
+  color: #2563eb;
+}
+.infoPill[aria-expanded="true"] {
+  border-color: #1665f5;
+  background: #eef4ff;
+}
+:global(main:has([data-inline-info]))
+  :global(.supporting)
+  :global(details.content-disclosure:not([open])),
+:global(main:has([data-inline-info]))
+  :global(.supporting)
+  :global(details[data-disclaimer]:not([open])) {
+  display: none;
+}
+:global(main:has([data-inline-info])) :global(.supporting:not(:has(details[open]))) {
+  display: none;
+}
+.outputViewArea {
+  max-height: clamp(340px, 46vh, 520px);
+}
+/* Compact summary column (reference row heights) */
+.dataTypesList {
+  gap: 7px;
+}
+.dataTypeRow {
+  align-items: center;
+}
+.dataTypeTrackWrapper {
+  gap: 2px;
+}
+.dataTypePct {
+  font-size: 11px;
+  line-height: 1.1;
+}
+.structureMetric {
+  padding: 7px 10px;
+}
+.structureGrid {
+  gap: 8px;
+}
+.sideCardHeader {
+  margin-bottom: 6px;
+}
+.structureCard,
+.dataTypesCard {
+  padding: 10px 12px;
+}
+.structureMetric {
+  padding: 5px 10px;
+  gap: 8px;
+}
+.metricIco {
+  width: 22px;
+  height: 22px;
+}
+.metricText b {
+  font-size: 16px;
+  line-height: 1.15;
+}
+.metricText small {
+  font-size: 11.5px;
+}
+.dataTypesList {
+  gap: 4px;
+}
+.dataTypeRow {
+  min-height: 28px;
+}
+.structureCard,
+.dataTypesCard {
+  padding: 8px 12px;
+}
+.sideSummaryCol {
+  gap: 8px;
+}
+.outputViewArea {
+  max-height: clamp(280px, 38vh, 430px);
+}
+.treeLeafRow,
+.treeNodeHeader {
+  padding-block: 1px;
+}
+.treeKeyPill,
+.treeObjectKey,
+.treeArrayKey,
+.badgeObject,
+.badgeArray,
+.badgeString,
+.badgeNumber,
+.badgeBoolean,
+.badgeNull,
+.badgeGeneric,
+.treeCountBadge,
+.treeRootBadge {
+  padding-block: 1px;
+}
+/* Heights follow content (the old 480px floor stretched the editor and every summary card) */
+.workTwoPanel {
+  min-height: 0;
+  align-items: start;
+}
+.workTwoPanel > .panelSlot > .panel {
+  height: auto;
+}
+.editorContainer {
+  flex: none;
+  height: clamp(300px, 40vh, 440px);
+}
+.outputSplitBody {
+  flex: none;
+  align-items: start;
+}
+.workTwoPanel {
+  align-items: stretch;
+}
+.codeTextarea,
+.codeHighlight,
+.gutterLine {
+  line-height: 19px;
+}
+.gutterLine {
+  height: 19px;
+}
+.editorContainer {
+  height: clamp(300px, 44vh, 450px);
+}
+.optcard {
+  padding: 10px 14px;
+  gap: 6px;
+}
+.switchList {
+  gap: 6px;
+}

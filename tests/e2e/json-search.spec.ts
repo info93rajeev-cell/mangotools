@@ -25,3 +25,17 @@ test.describe('JSON Formatter search', () => {
     await expect(page.getByRole('button', { name: 'Next match' })).toBeDisabled();
   });
 });
+
+test('info pills in the action row open the matching section below', async ({ page }) => {
+  await page.setViewportSize({ width: 1536, height: 864 });
+  await page.goto('/json-formatter');
+  const supporting = page.locator('section.supporting');
+  await expect(supporting).toBeHidden();
+  const faqPill = page.locator('[data-inline-info]').getByRole('button', { name: 'FAQ' });
+  await faqPill.click();
+  await expect(faqPill).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('details#faq')).toHaveAttribute('open', '');
+  await expect(supporting).toBeVisible();
+  await faqPill.click();
+  await expect(supporting).toBeHidden();
+});

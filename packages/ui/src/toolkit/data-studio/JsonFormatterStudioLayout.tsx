@@ -130,17 +130,23 @@ function JsonFormatterMainWork({
   );
 }
 
-/** The reference layout is drawn for ~1585px laptops. On wider screens scale the whole studio up
- *  in proportion (max 1.3x) so it fills the screen like the reference instead of leaving
- *  empty space inside the panels. Narrower screens keep the normal responsive layout. */
+/** The reference layout is drawn for ~1585px laptops. On larger screens scale the working area up
+ *  in proportion (max 1.3x) so it fills the screen like the reference, but only as far as the
+ *  whole studio still fits the screen height. It never scales below 1x. */
 const REFERENCE_WIDTH = 1585;
 function useReferenceScale() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const apply = () => {
       const el = ref.current;
-      if (!el) return;
-      const scale = Math.min(window.innerWidth / REFERENCE_WIDTH, 1.3);
+      const work = el?.querySelector<HTMLElement>('main');
+      const bar = el?.querySelector<HTMLElement>('[data-inline-info]');
+      if (!el || !work || !bar) return;
+      el.style.setProperty('--ds-scale', '1');
+      const top = work.getBoundingClientRect().top + window.scrollY;
+      const natural = bar.getBoundingClientRect().bottom - work.getBoundingClientRect().top;
+      const fitHeight = (window.innerHeight - top - 12) / natural;
+      const scale = Math.min(window.innerWidth / REFERENCE_WIDTH, fitHeight, 1.3);
       el.style.setProperty('--ds-scale', scale > 1.02 ? scale.toFixed(3) : '1');
     };
     apply();

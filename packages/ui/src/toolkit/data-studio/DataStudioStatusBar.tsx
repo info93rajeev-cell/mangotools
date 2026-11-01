@@ -1,4 +1,5 @@
 import { Icon } from '../../primitives/Icon.tsx';
+import { DataStudioInfoPills } from './DataStudioInfoPills.tsx';
 import styles from './dataStudio.module.css';
 
 export interface DataStudioStatusBarProps {
@@ -21,7 +22,8 @@ export function DataStudioStatusBar({
   downloadLabel = 'Download',
 }: DataStudioStatusBarProps) {
   return (
-    <div class={styles.statusBar}>
+    <div class={styles.statusBar} data-inline-info="">
+      <DataStudioInfoPills />
       <div class={styles.callto}>
         <button type="button" class={styles.btnGold} onClick={onPrimary}>
           <Icon name="settings-2" class={styles.ico} /> {primaryLabel}
