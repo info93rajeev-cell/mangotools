@@ -383,3 +383,9 @@ h1{font-weight:800;color:#102044}
   background: #1265f5 var(--measure-white) center/20px 20px no-repeat !important;
   border-radius: 6px !important;
 }
+/* Phone landscape / small tablets: the results column is ~330px wide, so four KPI tiles broke
+   numbers mid-digit ("1,22 / 6") and cut labels. Use two columns until there is room for four. */
+@media(min-width:701px) and (max-width:1000px){
+ .civil-workspace .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .civil-workspace .kpi strong,.civil-workspace .kpi:first-child strong{overflow-wrap:normal}
+}

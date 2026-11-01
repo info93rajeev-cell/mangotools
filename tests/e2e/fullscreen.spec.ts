@@ -48,6 +48,41 @@ test.describe('full screen mode', () => {
     });
   }
 
+  test('the site header slides away while scrolling down in phone landscape', async ({ page }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await page.goto('/brickwork-calculator');
+    const header = page.locator('.site-header');
+    await page.mouse.wheel(0, 600);
+    await expect(header).toHaveAttribute('data-hidden', '');
+    await expect
+      .poll(() => header.evaluate((el) => el.getBoundingClientRect().bottom))
+      .toBeLessThanOrEqual(1);
+    await page.mouse.wheel(0, -120);
+    await expect(header).not.toHaveAttribute('data-hidden');
+  });
+
+  test('the site header stays sticky in portrait', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await page.goto('/brickwork-calculator');
+    await page.mouse.wheel(0, 600);
+    await page.waitForTimeout(300);
+    await expect(page.locator('.site-header')).not.toHaveAttribute('data-hidden');
+  });
+
+  test('full screen mode leaves the site header out', async ({ page }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await page.goto('/json-formatter');
+    await page.locator('[data-fullscreen-toggle]').click();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.fullscreenElement?.contains(document.querySelector('.site-header')) ?? null,
+        ),
+      )
+      .toBe(false);
+  });
+
   test('the button stays hidden where the Fullscreen API is unavailable', async ({ page }) => {
     await page.addInitScript(() => {
       Object.defineProperty(Document.prototype, 'fullscreenEnabled', { get: () => false });
