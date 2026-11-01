@@ -154,7 +154,7 @@ function SearchNav({ query }: { query: string }) {
         disabled={total === 0}
         aria-label="Previous match"
       >
-        <Icon name="chevron-up" class={styles.ico} />
+        <Icon name="chevron-left" class={styles.ico} />
       </button>
       <button
         type="button"
@@ -163,7 +163,7 @@ function SearchNav({ query }: { query: string }) {
         disabled={total === 0}
         aria-label="Next match"
       >
-        <Icon name="chevron-down" class={styles.ico} />
+        <Icon name="chevron-right" class={styles.ico} />
       </button>
       <span class={styles.matchCountBadge} aria-live="polite">
         {error ?? (query ? label : '0 of 0')}

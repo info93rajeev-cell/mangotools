@@ -75,11 +75,9 @@ function ObjectNode({
         aria-expanded={open}
       >
         <span class={styles.treeChevron}>{open ? '▾' : '▸'}</span>
-        {!isRoot && (
-          <span class={styles.treeNodeIcon}>
-            <Icon name="box" class={styles.ico} />
-          </span>
-        )}
+        <span class={styles.treeNodeIcon} data-kind={isRoot ? 'root' : 'object'}>
+          <Icon name={isRoot ? 'braces' : 'box'} class={styles.ico} />
+        </span>
         <span
           class={isRoot ? styles.treeRootBadge : `${styles.treeKeyName} ${styles.treeObjectKey}`}
         >
@@ -161,7 +159,7 @@ function LeafProperty({ name, value }: { name: string; value: unknown }) {
       </span>
       <TypeBadge type={type} />
       <span class={styles.treeValue} {...hitProps(matcher?.(displayValue(value)))}>
-        {type === 'string' ? `"${String(value)}"` : String(value)}
+        {String(value)}
       </span>
     </div>
   );
