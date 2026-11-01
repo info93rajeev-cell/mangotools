@@ -1,5 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import type { JsonSearchState } from './JsonSearchContext.tsx';
+import { countHits, makeMatcher } from './jsonSearch.ts';
 import {
   analyzeJson,
   computeDetailedJsonStats,
@@ -138,24 +140,6 @@ function extractTableData(
   };
 }
 
-function countSearchMatches(
-  searchQuery: string,
-  outputFormatted: string,
-  matchCase: boolean,
-  useRegex: boolean,
-): number {
-  if (!searchQuery.trim() || !outputFormatted) return 0;
-  try {
-    const flags = matchCase ? 'g' : 'gi';
-    const regex = useRegex
-      ? new RegExp(searchQuery, flags)
-      : new RegExp(searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
-    return (outputFormatted.match(regex) || []).length;
-  } catch {
-    return 0;
-  }
-}
-
 export function useJsonFormatterStudio(
   snapshot: ToolSnapshot,
   store: ToolStore,
@@ -181,10 +165,12 @@ export function useJsonFormatterStudio(
     () => formatJsonOutput(parsedResult, opts.keySorting, opts.action, opts.indent),
     [parsedResult, opts.keySorting, opts.action, opts.indent],
   );
-  const searchMatches = useMemo(
-    () =>
-      countSearchMatches(opts.searchQuery, outputFormatted, opts.searchMatchCase, opts.searchRegex),
-    [opts.searchQuery, outputFormatted, opts.searchMatchCase, opts.searchRegex],
+  const search = useJsonSearchState(
+    parsedResult,
+    opts.searchQuery,
+    opts.searchMatchCase,
+    opts.searchRegex,
+    () => opts.setActiveTab('tree'),
   );
   const tableData = useMemo(() => extractTableData(parsedResult), [parsedResult]);
 
@@ -206,8 +192,34 @@ export function useJsonFormatterStudio(
     setSortKeys: (v: boolean) => opts.setKeySorting(v ? 'asc' : 'original'),
     parsedResult,
     outputFormatted,
-    searchMatches,
+    searchMatches: search.total,
+    searchState: search,
     tableData,
     ...handlers,
   };
+}
+
+function useJsonSearchState(
+  parsedResult: ParseResult,
+  query: string,
+  matchCase: boolean,
+  useRegex: boolean,
+  showTree: () => void,
+): JsonSearchState {
+  const { matcher, error } = useMemo(
+    () => makeMatcher(query, matchCase, useRegex),
+    [query, matchCase, useRegex],
+  );
+  const total = useMemo(
+    () => (parsedResult.valid ? countHits(parsedResult.data, matcher) : 0),
+    [parsedResult, matcher],
+  );
+  const [index, setIndex] = useState(0);
+  useEffect(() => setIndex(0), [matcher, total]);
+  const step = (delta: number) => {
+    if (total === 0) return;
+    showTree();
+    setIndex((i) => (i + delta + total) % total);
+  };
+  return { matcher, index, total, error, next: () => step(1), prev: () => step(-1) };
 }

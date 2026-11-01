@@ -1,5 +1,5 @@
 ---
-/** Centres content with the site gutter. "tool" is wider (1280 px) than "marketing" (1200 px). */
+/** Centres content with the site gutter. "tool" spans the full screen width; "marketing" stays at 1200 px. */
 interface Props {
   width?: 'marketing' | 'tool';
   as?: 'div' | 'section' | 'header' | 'footer';
@@ -20,7 +20,13 @@ const { width = 'marketing', as: Tag = 'div', class: className } = Astro.props;
     margin-inline: auto;
     padding-inline: var(--gutter);
   }
+  /* Tool pages use the whole screen width on every laptop size (no empty side bands). */
   .container[data-width='tool'] {
-    max-width: calc(var(--width-tool) + 2 * var(--gutter));
+    max-width: none;
+  }
+  @media (min-width: 1280px) {
+    .container[data-width='tool'] {
+      padding-inline: 32px;
+    }
   }
 </style>

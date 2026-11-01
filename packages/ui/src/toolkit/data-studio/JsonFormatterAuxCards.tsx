@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 import { SearchInJsonCard, ValidationResultCard } from './JsonSearchAndValidationCards.tsx';
 import type { ParseResult } from './useJsonFormatterStudio.ts';
@@ -127,7 +128,9 @@ function FormattingOptionsCard({
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>⚙️</span>
+        <span class={styles.optIcon}>
+          <Icon name="settings" class={styles.optIco} />
+        </span>
         <b>Formatting Options</b>
       </div>
       <div class={styles.optFieldsRow}>
@@ -215,7 +218,9 @@ function AdvancedOptionsCard({
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>🛠️</span>
+        <span class={styles.optIcon}>
+          <Icon name="wrench" class={styles.optIco} />
+        </span>
         <b>Advanced Options</b>
         <button type="button" class={styles.optLinkBtn} onClick={() => setShowMore(!showMore)}>
           {showMore ? 'Show less ∧' : 'Show more ∨'}

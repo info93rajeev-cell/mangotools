@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 1440px;
+  max-width: none; /* full screen width on every laptop */
   margin: 0 auto;
   box-sizing: border-box;
 }

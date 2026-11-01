@@ -398,3 +398,5 @@ h1{font-weight:800;color:#102044}
 }
 :root[data-theme=dark],:root[data-theme=dark] body{background:var(--color-bg);color:var(--color-text)}
 :root[data-theme=dark] .tool-header h1,:root[data-theme=dark] .site-header summary{color:var(--color-text)}
+/* Full screen width on every laptop size (Rajeev: no empty side bands) */
+main{max-width:none}
