@@ -1,4 +1,5 @@
 import { useRef } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export function Base64AuxCards({
@@ -24,7 +25,10 @@ export function Base64AuxCards({
     <div class={styles.aux}>
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Base64 Variant
+          <span class={styles.optIcon}>
+            <Icon name="settings" class={styles.optIco} />
+          </span>
+          Base64 Variant
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Alphabet</span>
@@ -60,7 +64,10 @@ export function Base64AuxCards({
           tabIndex={-1}
         />
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128196;</span>Text &amp; Files
+          <span class={styles.optIcon}>
+            <Icon name="file-text" class={styles.optIco} />
+          </span>
+          Text &amp; Files
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Character set</span>
@@ -75,14 +82,17 @@ export function Base64AuxCards({
             style={{ border: 'none', cursor: 'pointer', padding: '3px 8px', borderRadius: 5 }}
             onClick={() => fileInputRef.current?.click()}
           >
-            &#128194; Upload file to encode
+            <Icon name="folder-open" class={styles.ico} /> Upload file to encode
           </button>
         </div>
       </section>
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced
+          <span class={styles.optIcon}>
+            <Icon name="zap" class={styles.optIco} />
+          </span>
+          Advanced
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Line wrapping</span>
@@ -100,7 +110,10 @@ export function Base64AuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Safety &amp; Diagnostics
+          <span class={styles.optIcon}>
+            <Icon name="shield-check" class={styles.optIco} />
+          </span>
+          Safety &amp; Diagnostics
         </div>
         <div class={styles.optHelptext}>
           Invalid alphabet, padding and UTF-8 decoding errors are reported distinctly. Large files

@@ -1,6 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { CsvToJsonAuxCards } from './CsvToJsonAuxCards.tsx';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
@@ -48,7 +49,9 @@ function CsvInputPanel({
       />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#8862;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="table-2" class={styles.toolIco} />
+          </span>
           <strong>Input CSV / TSV</strong>
         </div>
         <div class={styles.toolactions}>
@@ -59,7 +62,7 @@ function CsvInputPanel({
             data-try-sample=""
             title="Load sample CSV"
           >
-            ✨ Try sample
+            <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
           <button
             type="button"
@@ -67,7 +70,7 @@ function CsvInputPanel({
             onClick={() => fileInputRef.current?.click()}
             title="Open CSV or TSV file"
           >
-            &#128194; Open CSV
+            <Icon name="folder-open" class={styles.ico} /> Open CSV
           </button>
           <button
             type="button"
@@ -75,7 +78,7 @@ function CsvInputPanel({
             onClick={onPaste}
             title="Paste from clipboard"
           >
-            &#128203; Paste
+            <Icon name="clipboard-paste" class={styles.ico} /> Paste
           </button>
           <button
             type="button"
@@ -205,10 +208,13 @@ function CsvSidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#10003;</span>Import Health
+          <span class={styles.toolIcon}>
+            <Icon name="circle-check" class={styles.toolIco} />
+          </span>
+          Import Health
         </div>
         <div class={styles.badgeOk}>
-          <span>&#10004;</span>
+          <Icon name="check" class={styles.ico} />
           <strong>CSV parsed successfully</strong>
         </div>
         <div class={styles.miniGrid}>
@@ -233,7 +239,10 @@ function CsvSidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#9881;</span>Columns &amp; Types
+          <span class={styles.toolIcon}>
+            <Icon name="settings" class={styles.toolIco} />
+          </span>
+          Columns &amp; Types
         </div>
         <div style={{ overflowY: 'auto', maxHeight: 95 }}>
           {headers.map((h) => (

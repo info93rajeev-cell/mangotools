@@ -1,6 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { Base64AuxCards } from './Base64AuxCards.tsx';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
@@ -62,7 +63,7 @@ function Base64InputPanel({
             data-try-sample=""
             title="Load sample text"
           >
-            ✨ Try sample
+            <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
           <button
             type="button"
@@ -70,7 +71,7 @@ function Base64InputPanel({
             onClick={() => fileInputRef.current?.click()}
             title="Open text or binary file"
           >
-            &#128194; Open File
+            <Icon name="folder-open" class={styles.ico} /> Open File
           </button>
           <button
             type="button"
@@ -78,7 +79,7 @@ function Base64InputPanel({
             onClick={onPaste}
             title="Paste from clipboard"
           >
-            &#128203; Paste
+            <Icon name="clipboard-paste" class={styles.ico} /> Paste
           </button>
           <button
             type="button"
@@ -93,14 +94,16 @@ function Base64InputPanel({
       <div class={styles.rowchips}>
         <button
           type="button"
-          class={`${styles.chip} ${direction === 'encode' ? styles.chipBlue : styles.chipAmber}`}
+          class={`${styles.segChip} ${direction === 'encode' ? styles.segChipActive : ''}`}
+          aria-pressed={direction === 'encode'}
           onClick={() => onDirection('encode')}
         >
           Encode
         </button>
         <button
           type="button"
-          class={`${styles.chip} ${direction === 'decode' ? styles.chipPurple : styles.chipAmber}`}
+          class={`${styles.segChip} ${direction === 'decode' ? styles.segChipActive : ''}`}
+          aria-pressed={direction === 'decode'}
           onClick={() => onDirection('decode')}
         >
           Decode
@@ -164,12 +167,14 @@ function Base64OutputPanel({
     <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128274;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="lock" class={styles.toolIco} />
+          </span>
           <strong>{direction === 'encode' ? 'Base64 Output' : 'Decoded Text'}</strong>
         </div>
         <div class={styles.toolactions}>
           <button type="button" class={styles.btnSecondary} onClick={onSwap} title="Swap fields">
-            Swap &#8644;
+            <Icon name="arrow-left-right" class={styles.ico} /> Swap
           </button>
           <button type="button" class={styles.btnSecondary} onClick={onCopy}>
             Copy
@@ -194,7 +199,7 @@ function Base64OutputPanel({
 
       <div style={{ marginTop: 'auto' }}>
         <div class={error ? styles.badgeErr : styles.badgeOk}>
-          <span>{error ? '⚠' : '✓'}</span>
+          <Icon name={error ? 'triangle-alert' : 'circle-check'} class={styles.ico} />
           <strong>
             {error
               ? error
@@ -227,7 +232,10 @@ function Base64SidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128202;</span>Transfer Summary
+          <span class={styles.toolIcon}>
+            <Icon name="chart-column" class={styles.toolIco} />
+          </span>
+          Transfer Summary
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
@@ -248,7 +256,7 @@ function Base64SidePanel({
           </div>
         </div>
         <div class={styles.callout}>
-          <span>&#9432;</span>
+          <Icon name="info" class={styles.ico} />
           <div>
             Base64 is <b>encoding, not encryption</b>.
           </div>
@@ -257,7 +265,10 @@ function Base64SidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#9881;</span>Binary / Text modes
+          <span class={styles.toolIcon}>
+            <Icon name="settings" class={styles.toolIco} />
+          </span>
+          Binary / Text modes
         </div>
         <div class={styles.kv}>
           <span>Content type</span>

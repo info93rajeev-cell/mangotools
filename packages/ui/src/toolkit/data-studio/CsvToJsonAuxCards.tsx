@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export function CsvToJsonAuxCards({
@@ -19,7 +20,10 @@ export function CsvToJsonAuxCards({
     <div class={styles.aux}>
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Parsing Options
+          <span class={styles.optIcon}>
+            <Icon name="settings" class={styles.optIco} />
+          </span>
+          Parsing Options
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Delimiter</span>
@@ -52,7 +56,10 @@ export function CsvToJsonAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Data Fidelity
+          <span class={styles.optIcon}>
+            <Icon name="shield-check" class={styles.optIco} />
+          </span>
+          Data Fidelity
         </div>
         <div class={styles.rowchips}>
           <span class={styles.chipGreen}>Strings first</span>
@@ -99,7 +106,10 @@ export function CsvToJsonAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced Parsing
+          <span class={styles.optIcon}>
+            <Icon name="zap" class={styles.optIco} />
+          </span>
+          Advanced Parsing
         </div>
         <div class={styles.optHelptext}>
           Quotes &middot; multiline fields &middot; BOM &middot; blank/null policy &middot; ragged

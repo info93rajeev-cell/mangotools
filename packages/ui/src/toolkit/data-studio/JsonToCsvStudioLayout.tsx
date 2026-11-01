@@ -1,6 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { JsonToCsvAuxCards } from './JsonToCsvAuxCards.tsx';
@@ -61,7 +62,7 @@ function JsonToCsvInputPanel({
             data-try-sample=""
             title="Load sample JSON"
           >
-            ✨ Try sample
+            <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
           <button
             type="button"
@@ -69,7 +70,7 @@ function JsonToCsvInputPanel({
             onClick={() => fileInputRef.current?.click()}
             title="Open JSON file"
           >
-            &#128194; Open JSON
+            <Icon name="folder-open" class={styles.ico} /> Open JSON
           </button>
           <button
             type="button"
@@ -77,7 +78,7 @@ function JsonToCsvInputPanel({
             onClick={onPaste}
             title="Paste from clipboard"
           >
-            &#128203; Paste
+            <Icon name="clipboard-paste" class={styles.ico} /> Paste
           </button>
           <button
             type="button"
@@ -122,7 +123,9 @@ function JsonToCsvTablePanel({
     <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#8862;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="table-2" class={styles.toolIco} />
+          </span>
           <strong>CSV Table Preview</strong>
         </div>
         <div class={styles.toolactions}>
@@ -183,7 +186,10 @@ function JsonToCsvSidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128202;</span>Export Summary
+          <span class={styles.toolIcon}>
+            <Icon name="chart-column" class={styles.toolIco} />
+          </span>
+          Export Summary
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
@@ -210,7 +216,10 @@ function JsonToCsvSidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128196;</span>CSV Output
+          <span class={styles.toolIcon}>
+            <Icon name="file-text" class={styles.toolIco} />
+          </span>
+          CSV Output
         </div>
         <div class={styles.rawCsvPreview}>{rawCsv}</div>
         <div class={styles.noteLine} style={{ marginTop: 4 }}>

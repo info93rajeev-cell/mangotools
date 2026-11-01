@@ -3173,3 +3173,153 @@ button.btnDangerOutline {
     height: auto;
   }
 }
+
+/* ---- Visual v2 for the other data studios (Base64, URL, CSV, JSON→CSV, Timestamp) ---- */
+/* Chips are real pills (some were used without the base .chip class and looked like plain text) */
+.chipBlue,
+.chipGreen,
+.chipPurple,
+.chipAmber,
+.chipRed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+  border: 1px solid transparent;
+}
+.chipBlue {
+  background: #e8f0ff;
+  color: #1d4ed8;
+  border-color: #cfe0ff;
+}
+.chipGreen {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf0cf;
+}
+.chipPurple {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border-color: #e6d4fb;
+}
+.chipAmber {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fbe3a0;
+}
+.chipRed {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fbcaca;
+}
+/* Encode / Decode: a segmented choice, active = solid blue */
+.segChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 16px;
+  border: 1px solid #d6e0ee;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.segChipActive {
+  background: var(--ds-blue);
+  border-color: var(--ds-blue);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(22, 101, 245, 0.25);
+}
+/* Summary tiles: white cards, coloured top accent, bold figures (no clipping) */
+.mini {
+  border-left-width: 1px;
+  border-top: 3px solid;
+  background: #fff;
+  padding: 9px 11px;
+  gap: 3px;
+  border-radius: 10px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 6px 14px rgba(30, 64, 125, 0.06);
+  min-height: 64px;
+}
+.miniBlue {
+  border-top-color: #2563eb;
+}
+.miniGreen {
+  border-top-color: #16a34a;
+}
+.miniPurple {
+  border-top-color: #9333ea;
+}
+.miniAmber {
+  border-top-color: #f59e0b;
+}
+.mini small {
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+}
+.mini b {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0b1736;
+  line-height: 1.2;
+}
+.miniGrid {
+  gap: 10px;
+}
+.side,
+.sideTopCard,
+.sideBottomCard {
+  overflow: visible;
+}
+.kv {
+  font-size: 13px;
+}
+.kv span {
+  color: #475569;
+}
+.kv b {
+  color: #0b1736;
+}
+.callout {
+  font-size: 12.5px;
+}
+.toolactions .btnSecondary .ico,
+.toolactions .btnPrimary .ico {
+  color: var(--ds-blue);
+}
+/* Side summary column: wide enough for v2 tiles; cards grow with content (no clipped figures) */
+@media (min-width: 1081px) {
+  .work {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(300px, 0.75fr);
+  }
+}
+.sideTopCard,
+.sideBottomCard {
+  height: auto;
+  min-height: 0;
+  flex: none;
+}
+.mini b {
+  overflow-wrap: anywhere;
+  font-size: 18px;
+}
+.miniSmall b {
+  font-size: 14px;
+}
+.callout {
+  display: block;
+  line-height: 1.55;
+}
+.callout b,
+.callout code {
+  display: inline;
+}
