@@ -1,13 +1,13 @@
 ---
-lastReviewed: 2026-09-30
+lastReviewed: 2026-11-01
 ---
 
 ## How to use
 
-1. Choose **Encode** or **Decode**.
-2. Pick the mode: **Component** for a single value such as a query parameter or path segment, **Full URL** to encode a complete address while keeping its structure, or **Form** for HTML form data.
-3. Type or paste your text. The result updates as you type.
-4. Copy the result, or select **Swap** to move it into the input and reverse the direction.
+1. Choose **Encode** or **Decode**, and the encode type: **URL Encode (RFC 3986)** for a single value such as a query parameter, **Full URL** to keep the address structure, or **Form data** for HTML forms.
+2. Type or paste text in the **Text** tab (each line is encoded on its own), open a text **File**, or build a query string from rows in **Query** (with an optional base URL) or **Form Data**.
+3. Adjust the switches: spaces as `%20` or `+`, encode `! ' ( ) *`, keep existing `%XX` escapes, convert line breaks to CRLF, and encode each line separately.
+4. Copy, download or open the result in a new tab, or use **Swap Input ⇄ Output** to reverse it. The **URL Inspector** shows the scheme, host, path and decoded query parameters.
 
 ## Method
 
@@ -20,6 +20,15 @@ escapes of reserved characters are kept, so the URL's meaning does not change.
 
 **Form mode** works like Component mode, except that a space is written as `+` and `+` decodes to a
 space, as in `application/x-www-form-urlencoded` (WHATWG URL Standard).
+
+**Options.** *Encode spaces as %20* off writes a space as `+`. *Encode special characters* off
+leaves `! ' ( ) *` as they are, like JavaScript's `encodeURIComponent`. *Keep existing encoding*
+leaves valid `%XX` escapes untouched, so text that is already encoded is not encoded twice
+(RFC 3986 §2.4). *Convert line breaks (CRLF)* turns every line break into CR LF first, as HTML forms
+send them. *Encode each line separately* keeps the line breaks and treats every line on its own.
+
+**Query and Form Data rows.** Each key and value is encoded on its own and joined as
+`key=value&key=value`, so an `&` or `=` inside a value can never break the query.
 
 **Decoding** checks every `%XX` escape and the UTF-8 it produces; a malformed escape or invalid UTF-8
 shows a clear error instead of a partly decoded result.

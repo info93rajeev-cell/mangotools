@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: data/url
-version: 0.1.0
+version: 0.2.0
 operation: data.url.transform@1
-params: { direction: encode, mode: component }
+params: { direction: encode, mode: component, space: default, encodeSubDelims: true, keepEscapes: false, crlf: false, perLine: true, source: text }
 userOptions:
   direction:
     control: segmented
@@ -20,6 +20,19 @@ userOptions:
       component: { labelKey: url.mode.component, order: 10 }
       full-url: { labelKey: url.mode.fullUrl, order: 20 }
       form: { labelKey: url.mode.form, order: 30 }
+  space:
+    control: select
+    labelKey: url.option.space
+    order: 30
+    values:
+      default: { labelKey: url.space.default, order: 10 }
+      percent: { labelKey: url.space.percent, order: 20 }
+      plus: { labelKey: url.space.plus, order: 30 }
+  encodeSubDelims: { control: switch, labelKey: url.option.subDelims, order: 40 }
+  keepEscapes: { control: switch, labelKey: url.option.keepEscapes, order: 50, visibleWhen: { direction: [encode] } }
+  crlf: { control: switch, labelKey: url.option.crlf, order: 60, visibleWhen: { direction: [encode] } }
+  perLine: { control: switch, labelKey: url.option.perLine, order: 70 }
+  source: { control: select, labelKey: url.option.source, order: 80, visible: false, values: { text: { labelKey: url.source.text }, pairs: { labelKey: url.source.pairs } } }
 fields:
   text: { labelKey: url.field.text, kind: text, required: true, order: 10, placeholderKey: url.field.placeholder }
 outputs:
@@ -40,3 +53,14 @@ strings:
     url.field.placeholder: Type or paste text or a URL
     url.out.text: Result
     url.sample.query: Query value with spaces and ₹
+    url.option.space: Spaces
+    url.space.default: As the mode writes them
+    url.space.percent: Always %20
+    url.space.plus: Always +
+    url.option.subDelims: Encode special characters (! ' ( ) *)
+    url.option.keepEscapes: Keep existing encoding
+    url.option.crlf: Convert line breaks (CRLF)
+    url.option.perLine: Encode each line separately
+    url.option.source: Input source
+    url.source.text: Text
+    url.source.pairs: Key and value rows

@@ -187,7 +187,7 @@ function useBase64Actions(
     outputText,
     async copy() {
       if (!outputText) return;
-      notify((await copyText(outputText)) ? 'Copied to clipboard' : 'Copy failed');
+      notify((await copyText(outputText)) ? 'Copied to clipboard.' : 'Copy failed');
     },
     download() {
       if (!result) return;

@@ -44,6 +44,14 @@ timezone rather than only one.
   with = + - @ tab or CR, per OWASP CSV injection guidance; JSON numbers are never changed). New
   outputs: `missingCount`, `formulaCount`, `leadingZeroColumns`, `recordPaths` and `previewRows`
   (the first 100 rows as written cell texts, for a table preview).
+- 0.8.0 — `data.url.transform@1` gains optional, additive params; defaults reproduce the
+  previous output (all 9 fixtures unchanged). `space` (by mode / always `%20` / always `+`; on
+  decode `plus` also reads `+` as a space), `encodeSubDelims` (off leaves `! ' ( ) *` like
+  `encodeURIComponent`), `keepEscapes` (no double encoding of valid `%XX`), `crlf` (line breaks to
+  CRLF before encoding), `perLine` (each line on its own, breaks kept) and `source: pairs` (a JSON
+  array of [key, value] encoded into `k=v&…`; unreadable → `DATA_URL_INVALID_PAIRS`). New output
+  `params`: the query parameters, read from the encoded side when it still shows `?`/`=` (decoded
+  with form rules), otherwise from the first line of the decoded side (max 200).
 - 0.7.0 — `data.base64.transform@1` gains optional, additive params; defaults reproduce the
   previous output (all 15 fixtures unchanged). `charset` (`utf-8` default, or `latin1` = one
   character per byte, which is also how a file's raw bytes are passed in; a character above 255 is
