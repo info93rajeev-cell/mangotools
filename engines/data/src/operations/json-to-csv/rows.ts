@@ -1,11 +1,14 @@
 /**
- * Turns a parsed JSON value into a header list and row objects: an array of objects (or a single
- * object, treated as one row) becomes a table whose headers are the first object's own key order,
- * with any keys discovered later appended in discovery order. A nested object or array value is
- * rejected in v1 rather than flattened.
+ * Turns a parsed JSON value into a header list and flat row objects: an array of objects (or a
+ * single object, treated as one row) becomes a table whose headers are the first object's own key
+ * order, with any keys discovered later appended in discovery order (`keys: union`), or only the
+ * first object's keys (`keys: first`). Nested values follow the `nested` param (see flatten.ts).
  */
+import { toFlatRow } from './flatten.ts';
+import { isPlainObject, type JsonRow } from './records.ts';
+import type { JsonToCsvParams } from './schema.ts';
 
-export type JsonRow = Record<string, unknown>;
+export type { JsonRow } from './records.ts';
 
 export type JsonToCsvFailure =
   | { tag: 'root-invalid' }
@@ -22,20 +25,14 @@ function fail(failure: JsonToCsvFailure): never {
   throw failure;
 }
 
-function isPlainObject(value: unknown): value is JsonRow {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
 function toItemList(value: unknown): unknown[] {
   if (Array.isArray(value)) return value;
   if (isPlainObject(value)) return [value];
   fail({ tag: 'root-invalid' });
 }
 
-function collectHeaders(row: JsonRow, item: number, headers: string[], seen: Set<string>): void {
+function addHeaders(row: JsonRow, headers: string[], seen: Set<string>): void {
   for (const key of Object.keys(row)) {
-    const value = row[key];
-    if (isPlainObject(value) || Array.isArray(value)) fail({ tag: 'nested-value', item, key });
     if (!seen.has(key)) {
       seen.add(key);
       headers.push(key);
@@ -48,8 +45,10 @@ export interface JsonRowTable {
   rows: JsonRow[];
 }
 
-/** Builds a header list (first-object order, later keys appended) and validated row objects. */
-export function buildRowTable(value: unknown): JsonRowTable {
+type TableOptions = Pick<JsonToCsvParams, 'nested' | 'keys'>;
+
+/** Builds a header list and validated, flat row objects from the records value. */
+export function buildRowTable(value: unknown, options: TableOptions): JsonRowTable {
   const items = toItemList(value);
   if (items.length === 0) fail({ tag: 'empty-array' });
   const headers: string[] = [];
@@ -57,8 +56,10 @@ export function buildRowTable(value: unknown): JsonRowTable {
   const rows: JsonRow[] = [];
   items.forEach((item, index) => {
     if (!isPlainObject(item)) fail({ tag: 'item-not-object', item: index + 1 });
-    collectHeaders(item, index + 1, headers, seen);
-    rows.push(item);
+    const flat = toFlatRow(item, options.nested);
+    if ('nestedKey' in flat) fail({ tag: 'nested-value', item: index + 1, key: flat.nestedKey });
+    if (options.keys === 'union' || index === 0) addHeaders(flat.row, headers, seen);
+    rows.push(flat.row);
   });
   if (headers.length === 0) fail({ tag: 'no-columns' });
   return { headers, rows };

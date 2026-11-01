@@ -1,0 +1,13 @@
+id: 011-semicolon-no-header
+operation: data.json.to-csv@1
+source: { type: standard, citation: "RFC 4180 §2 — fields containing the separator, a double quote or a line break are enclosed in double quotes; the separator here is a semicolon" }
+input:
+  text: '[{"name":"Anna","amount":"1.234,50"},{"name":"Luca;M","amount":"980"}]'
+params: { delimiter: semicolon, header: false }
+expected:
+  rowCount: 2
+  columnCount: 2
+  headers: [name, amount]
+  text: |
+    Anna;1.234,50
+    "Luca;M";980
