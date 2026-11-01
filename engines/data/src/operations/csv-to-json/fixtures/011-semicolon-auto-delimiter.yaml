@@ -1,0 +1,19 @@
+id: 011-semicolon-auto-delimiter
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 4180 §2 note — implementations may use other separators; Excel locales with a decimal comma export ';'-separated CSV" }
+input:
+  text: |
+    name;city
+    Raj;"Delhi; IN"
+params: { delimiter: auto }
+expected:
+  rowCount: 1
+  columnCount: 2
+  headers: [name, city]
+  text: |-
+    [
+      {
+        "name": "Raj",
+        "city": "Delhi; IN"
+      }
+    ]

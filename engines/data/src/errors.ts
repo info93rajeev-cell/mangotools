@@ -20,6 +20,7 @@ export const messages: Readonly<Record<string, string>> = {
     'Row at line {line} has {actual} columns, but the header has {expected}.',
   DATA_CSV_UNCLOSED_QUOTE: 'Unclosed quoted field starting at line {line}.',
   DATA_CSV_INVALID_QUOTE: 'Invalid quoted field at line {line}.',
+  DATA_CSV_ROWS_LIMITED: 'Only the first {kept} of {total} rows were converted (maximum rows).',
   DATA_JSON_TO_CSV_EMPTY: 'Paste or type some JSON to convert.',
   DATA_JSON_TO_CSV_INVALID_JSON: 'The input is not valid JSON.',
   DATA_JSON_TO_CSV_ROOT_INVALID: 'The JSON must be an array of objects, or a single object.',

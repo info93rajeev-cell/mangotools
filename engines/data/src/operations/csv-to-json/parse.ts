@@ -19,6 +19,7 @@ export function isCsvSyntaxFailure(value: unknown): value is CsvSyntaxFailure {
 
 interface State {
   text: string;
+  delimiter: string;
   i: number;
   line: number;
   rowLine: number;
@@ -76,7 +77,7 @@ function stepInsideQuotes(st: State): void {
 
 function stepAfterClosedQuote(st: State): void {
   const c = st.text[st.i];
-  if (c === ',') {
+  if (c === st.delimiter) {
     pushField(st);
     st.i++;
     return;
@@ -100,7 +101,7 @@ function stepUnquoted(st: State): void {
     }
     fail('invalid-quote', st.line);
   }
-  if (c === ',') {
+  if (c === st.delimiter) {
     pushField(st);
     st.i++;
     return;
@@ -114,9 +115,10 @@ function stepUnquoted(st: State): void {
 }
 
 /** Tokenizes raw CSV text into rows of raw (already-unescaped) field strings. */
-export function tokenizeCsv(text: string): CsvRow[] {
+export function tokenizeCsv(text: string, delimiter = ','): CsvRow[] {
   const st: State = {
     text,
+    delimiter,
     i: 0,
     line: 1,
     rowLine: 1,

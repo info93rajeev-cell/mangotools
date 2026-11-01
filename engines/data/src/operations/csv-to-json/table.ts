@@ -2,7 +2,13 @@ import type { CsvRow } from './parse.ts';
 
 export interface CsvTable {
   headers: string[];
-  objects: Record<string, string>[];
+  rows: string[][];
+}
+
+export interface CsvTableOptions {
+  header: boolean;
+  trim: boolean;
+  skipEmptyRows: boolean;
 }
 
 export type CsvTableFailure =
@@ -35,27 +41,45 @@ function checkHeaders(headers: string[], line: number): void {
   });
 }
 
-function toObject(headers: string[], row: CsvRow): Record<string, string> {
-  if (row.fields.length !== headers.length) {
+function checkWidth(width: number, row: CsvRow): string[] {
+  if (row.fields.length !== width) {
     fail({
       tag: 'inconsistent-columns',
       line: row.line,
-      expected: headers.length,
+      expected: width,
       actual: row.fields.length,
     });
   }
-  const obj: Record<string, string> = {};
-  headers.forEach((name, index) => {
-    obj[name] = row.fields[index];
-  });
-  return obj;
+  return row.fields;
 }
 
-/** Builds a header + row-object table from tokenized rows, skipping blank lines. */
-export function buildCsvTable(rows: CsvRow[]): CsvTable {
-  const dataRows = rows.filter((row) => !isBlankRow(row));
+const isEmptyRow = (row: CsvRow) => row.fields.every((field) => field === '');
+
+function prepareRows(rows: CsvRow[], options: CsvTableOptions): CsvRow[] {
+  const trimmed = options.trim
+    ? rows.map((row) => ({ line: row.line, fields: row.fields.map((f) => f.trim()) }))
+    : rows;
+  const kept = trimmed.filter((row) => !isBlankRow(row));
+  return options.skipEmptyRows ? kept.filter((row) => !isEmptyRow(row)) : kept;
+}
+
+/**
+ * Builds a header + rows table from tokenized rows, skipping blank lines. With `header` off the
+ * columns are named column_1 … column_n after the first row's width.
+ */
+export function buildCsvTable(
+  rows: CsvRow[],
+  options: CsvTableOptions = { header: true, trim: false, skipEmptyRows: false },
+): CsvTable {
+  const dataRows = prepareRows(rows, options);
   if (dataRows.length === 0) fail({ tag: 'no-header' });
+  if (!options.header) {
+    const width = dataRows[0].fields.length;
+    const headers = Array.from({ length: width }, (_, i) => `column_${i + 1}`);
+    return { headers, rows: dataRows.map((row) => checkWidth(width, row)) };
+  }
   const [headerRow, ...rest] = dataRows;
   checkHeaders(headerRow.fields, headerRow.line);
-  return { headers: headerRow.fields, objects: rest.map((row) => toObject(headerRow.fields, row)) };
+  const width = headerRow.fields.length;
+  return { headers: headerRow.fields, rows: rest.map((row) => checkWidth(width, row)) };
 }
