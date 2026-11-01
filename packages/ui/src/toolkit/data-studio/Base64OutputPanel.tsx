@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
-import { InfoTile } from './Base64InputPanel.tsx';
 import { type Base64Mode, countLines, latin1ToBytes } from './base64Studio.ts';
 import { formatBytes } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
+import { InfoTile, StatusTile } from './studioCards.tsx';
 import parts from './studioParts.module.css';
 import type { Base64Studio } from './useBase64Studio.ts';
 
@@ -152,15 +152,7 @@ export function Base64OutputPanel({
             value={formatBytes(info.size)}
           />
           <InfoTile icon="list" tone={parts.toneBlue} label="Lines" value={String(info.lines)} />
-          <div class={`${parts.sumTile} ${ok ? parts.sumOk : parts.sumBad}`}>
-            <span class={parts.validDot}>
-              <Icon name={ok ? 'check' : 'x'} class={parts.tileIcoSm} />
-            </span>
-            <span class={parts.sumText}>
-              <small>Status</small>
-              <b>{info.status}</b>
-            </span>
-          </div>
+          <StatusTile ok={ok} label="Status" value={info.status} />
         </div>
       </div>
     </section>

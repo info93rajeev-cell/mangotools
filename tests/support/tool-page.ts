@@ -25,9 +25,10 @@ export const SAMPLES = {
     archetype: 'A',
     result: 'SGVsbG8sIEJleW9uZFRoZUFJISDwn5GLCkJhc2U2NCBlbmNvZGluZyBleGFtcGxlIHdpdGggVW5pY29kZS4K',
   },
+  // The studio's Example URLs button loads the reference example shown on first open.
   'url-encode-decode': {
     archetype: 'A',
-    result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
+    result: 'https%3A%2F%2Fbeyandtheai.com%2Fsearch%3Fq%3Ddeveloper%20tools\n%26lang%3Den',
   },
   // The studio's Sample CSV button loads the reference sample shown on first open.
   'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },

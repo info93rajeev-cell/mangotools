@@ -1,30 +1,18 @@
-import { useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
-import { InfoTile } from './Base64InputPanel.tsx';
 import { countLines, EXAMPLE_GROUPS, sizeChange } from './base64Studio.ts';
 import { formatBytes } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
 import { ToggleSwitchRow } from './JsonFormatterAuxCards.tsx';
+import { CardTitle, ExamplesCard, InfoTile, RelatedToolsCard } from './studioCards.tsx';
 import parts from './studioParts.module.css';
 import type { Base64Studio } from './useBase64Studio.ts';
-
-function Title({ icon, tone, text }: { icon: string; tone: string; text: string }) {
-  return (
-    <div class={styles.optTitle}>
-      <span class={`${parts.tile} ${tone}`}>
-        <Icon name={icon} class={parts.tileIco} />
-      </span>
-      <b>{text}</b>
-    </div>
-  );
-}
 
 function OptionsCard({ studio }: { studio: Base64Studio }) {
   const { options, setOption } = studio;
   const dir = options.direction;
   return (
     <section class={`${styles.optcard} ${parts.auxCard} ${parts.areaOptions}`}>
-      <Title icon="settings" tone={parts.toneBlue} text="Options" />
+      <CardTitle icon="settings" tone={parts.toneBlue} text="Options" />
       <div class={parts.b64OptGrid}>
         <div class={parts.optionsCol}>
           <span class={styles.optLabel}>Encoding Mode</span>
@@ -94,7 +82,7 @@ function OptionsCard({ studio }: { studio: Base64Studio }) {
 function QuickActions({ studio }: { studio: Base64Studio }) {
   return (
     <section class={`${styles.optcard} ${parts.auxCard} ${parts.areaQuick}`}>
-      <Title icon="zap" tone={parts.toneBlue} text="Quick Actions" />
+      <CardTitle icon="zap" tone={parts.toneBlue} text="Quick Actions" />
       <div class={parts.quickList}>
         <button type="button" class={parts.quickBlue} onClick={studio.copy}>
           <Icon name="copy" class={styles.ico} /> Copy Output
@@ -113,107 +101,6 @@ function QuickActions({ studio }: { studio: Base64Studio }) {
   );
 }
 
-const RELATED = [
-  {
-    href: '/json-formatter',
-    name: 'JSON Formatter & Validator',
-    note: 'Format and validate JSON data.',
-    icon: 'braces',
-    tone: parts.toneAmber,
-  },
-  {
-    href: '/url-encode-decode',
-    name: 'URL Encode & Decode',
-    note: 'Encode or decode URLs.',
-    icon: 'link',
-    tone: parts.tonePurple,
-  },
-  {
-    href: '/csv-to-json',
-    name: 'CSV to JSON',
-    note: 'Convert CSV to JSON array.',
-    icon: 'file-spreadsheet',
-    tone: parts.toneGreen,
-  },
-  {
-    href: '/json-to-csv',
-    name: 'JSON to CSV',
-    note: 'Convert JSON to CSV.',
-    icon: 'table-2',
-    tone: parts.toneBlue,
-  },
-  {
-    href: '/timestamp-converter',
-    name: 'Timestamp Converter',
-    note: 'Convert timestamps to readable dates.',
-    icon: 'clock',
-    tone: parts.tonePurple,
-  },
-];
-
-function RelatedTools() {
-  return (
-    <section class={`${styles.optcard} ${parts.auxCard} ${parts.areaRelated}`}>
-      <Title icon="link" tone={parts.toneBlue} text="Related Tools" />
-      <ul class={parts.relatedList}>
-        {RELATED.map((r) => (
-          <li key={r.href}>
-            <a class={parts.relatedItem} href={r.href}>
-              <span class={`${parts.tileSm} ${r.tone}`}>
-                <Icon name={r.icon} class={parts.tileIcoSm} />
-              </span>
-              <span class={parts.sumText}>
-                <b>{r.name}</b>
-                <small>{r.note}</small>
-              </span>
-              <Icon name="chevron-right" class={styles.ico} />
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function Examples({ studio }: { studio: Base64Studio }) {
-  const groups = Object.keys(EXAMPLE_GROUPS);
-  const [group, setGroup] = useState(groups[0]);
-  return (
-    <section class={`${styles.optcard} ${parts.auxCard} ${parts.areaExamples}`}>
-      <div class={parts.exHead}>
-        <Title icon="lightbulb" tone={parts.toneAmber} text="Examples" />
-        <div class={parts.exTabs}>
-          {groups.map((g) => (
-            <button
-              key={g}
-              type="button"
-              aria-pressed={group === g}
-              class={`${styles.segChip} ${group === g ? styles.segChipActive : ''}`}
-              onClick={() => setGroup(g)}
-            >
-              {g}
-            </button>
-          ))}
-        </div>
-      </div>
-      <ul class={parts.exList}>
-        {EXAMPLE_GROUPS[group].map((text) => (
-          <li key={text} class={parts.exItem}>
-            <span class={parts.exText}>{text}</span>
-            <button
-              type="button"
-              class={styles.btnSecondary}
-              onClick={() => studio.applyExample(text, group === 'File')}
-            >
-              Use
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 function ResultSummary({ studio }: { studio: Base64Studio }) {
   const r = studio.result;
   const encoding = studio.options.direction === 'encode';
@@ -227,7 +114,7 @@ function ResultSummary({ studio }: { studio: Base64Studio }) {
   const binary = r && !r.isUtf8;
   return (
     <section class={`${styles.optcard} ${parts.auxCard} ${parts.areaSummary}`}>
-      <Title icon="chart-column" tone={parts.tonePurple} text="Result Summary" />
+      <CardTitle icon="chart-column" tone={parts.tonePurple} text="Result Summary" />
       <div class={parts.infoGrid}>
         <InfoTile
           icon="file-text"
@@ -275,8 +162,12 @@ export function Base64AuxCards({ studio }: { studio: Base64Studio }) {
     <div class={`${styles.aux} ${parts.b64Aux}`}>
       <OptionsCard studio={studio} />
       <QuickActions studio={studio} />
-      <RelatedTools />
-      <Examples studio={studio} />
+      <RelatedToolsCard current="/base64-encode-decode" className={parts.areaRelated} />
+      <ExamplesCard
+        groups={EXAMPLE_GROUPS}
+        className={parts.areaExamples}
+        onUse={(text, group) => studio.applyExample(text, group === 'File')}
+      />
       <ResultSummary studio={studio} />
     </div>
   );

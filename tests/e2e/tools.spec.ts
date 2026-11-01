@@ -352,7 +352,7 @@ test.describe('Swap and copy', () => {
     await openTool(page, 'url-encode-decode');
     await inputArea(page, 'url-encode-decode').fill('café & crème');
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('caf%C3%A9%20%26%20cr%C3%A8me');
-    await page.getByRole('button', { name: /Swap input and output/ }).click();
+    await page.getByRole('button', { name: /Swap Input/ }).click();
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('café & crème');
   });
 
