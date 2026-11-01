@@ -1,227 +1,239 @@
-import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { FieldValues, ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { copyText, downloadText } from '../actions.ts';
+import { copyText, downloadBytes, downloadText } from '../actions.ts';
+import { messageFor } from '../presentation.ts';
+import {
+  type Base64Mode,
+  type Base64Source,
+  bufferToLatin1,
+  extensionFor,
+  latin1ToBytes,
+  looksLikeBase64,
+  readBase64Result,
+} from './base64Studio.ts';
 
-export const DEFAULT_TEXT = 'Hello, BeyondTheAI! 🌍\nData stays in your browser.';
+export const FIRST_SAMPLE_ID = 'reference';
 
-export function encodeUtf8Base64(
-  text: string,
-  urlSafe: boolean,
-  padding: boolean,
-  wrap76: boolean,
-): string {
-  const bytes = new TextEncoder().encode(text);
-  let binary = '';
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  let base64 = btoa(binary);
-  if (urlSafe) base64 = base64.replace(/\+/g, '-').replace(/\//g, '_');
-  if (!padding) base64 = base64.replace(/=+$/, '');
-  if (wrap76) base64 = base64.match(/.{1,76}/g)?.join('\n') || base64;
-  return base64;
+export interface LoadedFile {
+  name: string;
+  size: number;
+  type: string;
+  previewUrl?: string;
 }
 
-export function decodeUtf8Base64(
-  base64Input: string,
-  urlSafe: boolean,
-): { text: string; error: string | null } {
-  let cleaned = base64Input.trim().replace(/\s+/g, '');
-  if (urlSafe || cleaned.includes('-') || cleaned.includes('_')) {
-    cleaned = cleaned.replace(/-/g, '+').replace(/_/g, '/');
-  }
-  while (cleaned.length % 4 !== 0) cleaned += '=';
-  try {
-    const binary = atob(cleaned);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    const decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-    return { text: decoded, error: null };
-  } catch (err: unknown) {
-    return {
-      text: '',
-      error: err instanceof Error ? err.message : 'Invalid Base64 or non-UTF-8 sequence',
-    };
-  }
+function reference(preset: ResolvedPreset): string {
+  const text = preset.samples[FIRST_SAMPLE_ID]?.input.text;
+  return typeof text === 'string' ? text : '';
 }
 
-function computeBase64(
-  input: string,
-  direction: 'encode' | 'decode',
-  variant: 'standard' | 'url-safe',
-  padding: boolean,
-  lineWrap: 'none' | '76',
-) {
-  const bytes = new TextEncoder().encode(input);
-  const sLen = bytes.length;
-  if (direction === 'encode') {
-    const enc = encodeUtf8Base64(input, variant === 'url-safe', padding, lineWrap === '76');
-    const ratio = sLen > 0 ? (((enc.length - sLen) / sLen) * 100).toFixed(1) : '0';
-    return {
-      output: enc,
-      error: null,
-      sourceBytes: sLen,
-      outputLength: enc.length,
-      expansionRatio: `+${ratio}%`,
-    };
-  }
-  const { text, error: decErr } = decodeUtf8Base64(input, variant === 'url-safe');
+/** Store values for typed text: text charset, no data URI, current mode. */
+function textValues(text: string, direction: 'encode' | 'decode'): FieldValues {
   return {
-    output: text,
-    error: decErr,
-    sourceBytes: sLen,
-    outputLength: text.length,
-    expansionRatio: '-25.0%',
+    text,
+    direction,
+    charset: 'utf-8',
+    dataUriMime: '',
+    stripDataUri: direction === 'decode',
   };
 }
 
-function createBase64Handlers(
-  state: { output: string; error: string | null; direction: 'encode' | 'decode' },
-  setInput: (v: string) => void,
-  setDirection: (fn: (d: 'encode' | 'decode') => 'encode' | 'decode') => void,
-  store: ToolStore,
-  notify: (msg: string) => void,
-) {
-  const handleCopy = async () => {
-    if (!state.output) return;
-    const ok = await copyText(state.output);
-    notify(ok ? 'Copied to clipboard!' : 'Failed to copy');
-  };
+function useOptions(snapshot: ToolSnapshot) {
+  const v = snapshot.values;
+  return {
+    direction: v.direction === 'decode' ? 'decode' : 'encode',
+    padding: v.padding !== false,
+    oneLine: v.lineLength !== '76',
+    charset: v.charset === 'latin1' ? 'latin1' : 'utf-8',
+  } as const;
+}
 
-  const handleDownload = () => {
-    if (!state.output) return;
-    downloadText(
-      state.output,
-      state.direction === 'encode' ? 'encoded.b64' : 'decoded.txt',
-      'text/plain',
-    );
-    notify('Downloaded file');
-  };
-
-  const handleSwap = () => {
-    if (state.output && !state.error) {
-      setInput(state.output);
-      store.set('text', state.output);
-      setDirection((d) => (d === 'encode' ? 'decode' : 'encode'));
-      notify('Swapped Input and Output');
-    }
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_TEXT);
-    store.set('text', DEFAULT_TEXT);
-    setDirection(() => 'encode');
-    notify('Reset to default sample');
-  };
-
-  const handleClear = () => {
-    setInput('');
-    store.set('text', '');
-    notify('Cleared input');
-  };
-
-  const handlePaste = async () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          setInput(text);
-          store.set('text', text);
-          notify('Pasted from clipboard');
-          return;
-        }
-      } catch {
-        // Fallback or permission denied
-      }
-    }
-    notify('Use Ctrl+V or Cmd+V to paste');
-  };
-
-  const handleOpenFile = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (!file) return;
+function useFileLoader(store: ToolStore, notify: (m: string) => void) {
+  const [file, setFile] = useState<LoadedFile | null>(null);
+  const load = (picked: File, asImage: boolean) => {
     const reader = new FileReader();
     reader.onload = () => {
-      const content = typeof reader.result === 'string' ? reader.result : '';
-      setInput(content);
-      store.set('text', content);
-      notify(`Loaded ${file.name}`);
+      if (file?.previewUrl) URL.revokeObjectURL(file.previewUrl);
+      const isImage = asImage && picked.type.startsWith('image/');
+      store.setMany({
+        text: bufferToLatin1(reader.result as ArrayBuffer),
+        direction: 'encode',
+        charset: 'latin1',
+        dataUriMime: isImage ? picked.type : '',
+        stripDataUri: false,
+      });
+      setFile({
+        name: picked.name,
+        size: picked.size,
+        type: picked.type || 'application/octet-stream',
+        previewUrl: isImage ? URL.createObjectURL(picked) : undefined,
+      });
+      notify(`Loaded ${picked.name}`);
     };
-    reader.readAsText(file);
-    target.value = '';
+    reader.readAsArrayBuffer(picked);
   };
+  return { file, setFile, load };
+}
 
-  return {
-    handleCopy,
-    handleDownload,
-    handleSwap,
-    handleReset,
-    handleClear,
-    handlePaste,
-    handleOpenFile,
-  };
+interface SyncArgs {
+  preset: ResolvedPreset;
+  snapshot: ToolSnapshot;
+  store: ToolStore;
+  mode: Base64Mode;
+  draft: string;
+  setDraft: (text: string) => void;
+  urlSafe: boolean;
+  binaryInput: boolean;
+}
+
+/** Keeps the form in step: first-open sample, Auto Detect direction, alphabet per direction. */
+function useBase64Sync(a: SyncArgs) {
+  const storeText = typeof a.snapshot.values.text === 'string' ? a.snapshot.values.text : '';
+  const direction = a.snapshot.values.direction;
+  useEffect(() => {
+    if (!a.binaryInput && storeText !== a.draft) a.setDraft(storeText);
+  }, [storeText]);
+  useEffect(() => {
+    if (storeText === '') a.store.setMany(textValues(reference(a.preset), 'encode'));
+  }, []);
+  useEffect(() => {
+    if (a.mode !== 'auto' || a.binaryInput) return;
+    const want = looksLikeBase64(a.draft) ? 'decode' : 'encode';
+    if (want !== direction) a.store.setMany({ direction: want, stripDataUri: want === 'decode' });
+  }, [a.mode, a.draft]);
+  // Decoding always accepts both alphabets; the URL-safe switch chooses the encode alphabet.
+  useEffect(() => {
+    const variant = direction === 'decode' ? 'auto' : a.urlSafe ? 'url-safe' : 'standard';
+    if (a.snapshot.values.variant !== variant) a.store.set('variant', variant);
+  }, [direction, a.urlSafe]);
+  return storeText;
 }
 
 export function useBase64Studio(
+  preset: ResolvedPreset,
   snapshot: ToolSnapshot,
   store: ToolStore,
   notify: (msg: string) => void,
 ) {
-  const initialText =
-    typeof snapshot.values.text === 'string' && snapshot.values.text.trim().length > 0
-      ? snapshot.values.text
-      : DEFAULT_TEXT;
-  const [input, setInput] = useState<string>(initialText);
+  const [source, setSource] = useState<Base64Source>('text');
+  const [mode, setModeState] = useState<Base64Mode>('encode');
+  const [draft, setDraft] = useState('');
+  const [urlSafe, setUrlSafe] = useState(false);
+  const options = useOptions(snapshot);
+  const files = useFileLoader(store, notify);
+  const binaryInput = files.file !== null && options.charset === 'latin1';
+  const sync = { preset, snapshot, store, mode, draft, setDraft, urlSafe, binaryInput };
+  const storeText = useBase64Sync(sync);
 
-  useEffect(() => {
-    const val = snapshot.values.text;
-    if (typeof val === 'string' && val.trim().length > 0 && val !== input) {
-      setInput(val);
-    }
-  }, [snapshot.values.text]);
+  const result = useMemo(() => readBase64Result(snapshot.result?.value), [snapshot.result]);
+  const error = snapshot.error && storeText !== '' ? messageFor(preset, snapshot.error) : null;
+  const shown = storeText !== '' && !error ? result : null;
 
-  const [direction, setDirection] = useState<'encode' | 'decode'>('encode');
-  const [variant, setVariant] = useState<'standard' | 'url-safe'>('standard');
-  const [padding, setPadding] = useState<boolean>(true);
-  const [lineWrap, setLineWrap] = useState<'none' | '76'>('none');
-
-  const { output, error, sourceBytes, outputLength, expansionRatio } = useMemo(
-    () => computeBase64(input, direction, variant, padding, lineWrap),
-    [input, direction, variant, padding, lineWrap],
-  );
-
-  const handleInput = (v: string) => {
-    setInput(v);
-    store.set('text', v);
+  /** Puts typed text in the form with a direction, and optionally a new mode. */
+  const put = (text: string, direction: 'encode' | 'decode', nextMode?: Base64Mode) => {
+    files.setFile(null);
+    setDraft(text);
+    if (nextMode) setModeState(nextMode);
+    store.setMany(textValues(text, direction));
   };
-
-  const handlers = createBase64Handlers(
-    { output, error, direction },
-    setInput,
-    setDirection,
-    store,
-    notify,
-  );
+  const guess = (text: string) =>
+    mode === 'auto' ? (looksLikeBase64(text) ? 'decode' : 'encode') : options.direction;
+  const setText = (text: string) => put(text, guess(text));
+  const setMode = (next: Base64Mode) => {
+    setModeState(next);
+    if (next !== 'auto') store.setMany({ direction: next, stripDataUri: next === 'decode' });
+  };
+  const actions = useBase64Actions(store, notify, shown, setText, () => setMode('encode'), preset);
+  const flip = options.direction === 'encode' ? 'decode' : 'encode';
 
   return {
-    input,
-    handleInput,
-    direction,
-    setDirection,
-    variant,
-    setVariant,
-    padding,
-    setPadding,
-    lineWrap,
-    setLineWrap,
-    output,
+    source,
+    setSource,
+    mode,
+    setMode,
+    draft,
+    setText,
+    applyExample(text: string, decode: boolean) {
+      setSource('text');
+      put(text, decode ? 'decode' : guess(text), decode ? 'decode' : undefined);
+    },
+    options: { ...options, urlSafe },
+    setUrlSafe,
+    setOption: (key: string, value: string | boolean) => store.set(key, value),
+    file: binaryInput ? files.file : null,
+    loadFile: files.load,
+    result: shown,
     error,
-    sourceBytes,
-    outputLength,
-    expansionRatio,
-    ...handlers,
+    ...actions,
+    swap() {
+      if (!actions.outputText) return;
+      setSource('text');
+      put(actions.outputText, flip, flip);
+      notify('Input and output swapped');
+    },
   };
 }
+
+function useBase64Actions(
+  store: ToolStore,
+  notify: (msg: string) => void,
+  result: ReturnType<typeof readBase64Result>,
+  setText: (text: string) => void,
+  resetMode: () => void,
+  preset: ResolvedPreset,
+) {
+  const outputText = result?.isUtf8 || !result?.binary ? (result?.text ?? '') : '';
+  return {
+    outputText,
+    async copy() {
+      if (!outputText) return;
+      notify((await copyText(outputText)) ? 'Copied to clipboard' : 'Copy failed');
+    },
+    download() {
+      if (!result) return;
+      if (result.binary && !result.isUtf8) {
+        const name = `decoded.${extensionFor(result.mime)}`;
+        downloadBytes(
+          latin1ToBytes(result.binary),
+          name,
+          result.mime ?? 'application/octet-stream',
+        );
+        notify(`Downloaded ${name}`);
+        return;
+      }
+      downloadText(outputText, 'base64-result.txt', 'text/plain');
+      notify('Downloaded base64-result.txt');
+    },
+    async paste() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setText(text);
+          notify('Pasted from clipboard');
+          return;
+        }
+      } catch {
+        // Clipboard read blocked: fall through to the hint.
+      }
+      notify('Use Ctrl+V or Cmd+V to paste');
+    },
+    loadSample() {
+      resetMode();
+      setText(reference(preset));
+      notify('Sample loaded');
+    },
+    clearAll() {
+      setText('');
+      notify('Cleared');
+    },
+    resetAll() {
+      store.reset();
+      resetMode();
+      setText(reference(preset));
+      notify('Reset to the sample and default options');
+    },
+    convert: () => store.runNow(),
+  };
+}
+
+export type Base64Studio = ReturnType<typeof useBase64Studio>;

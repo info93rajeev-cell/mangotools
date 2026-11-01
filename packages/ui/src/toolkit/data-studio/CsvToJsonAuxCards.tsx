@@ -1,5 +1,4 @@
 import { Icon } from '../../primitives/Icon.tsx';
-import csv from './csvToJson.module.css';
 import {
   type CsvColumnType,
   type CsvShape,
@@ -11,6 +10,7 @@ import {
 } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
 import { ToggleSwitchRow } from './JsonFormatterAuxCards.tsx';
+import csv from './studioParts.module.css';
 import type { CsvStudio } from './useCsvToJsonStudio.ts';
 
 const TYPE_BADGE: Readonly<Record<CsvColumnType, string>> = {

@@ -1,8 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
-import csv from './csvToJson.module.css';
 import styles from './dataStudio.module.css';
+import csv from './studioParts.module.css';
 import type { CsvInputTab, CsvStudio } from './useCsvToJsonStudio.ts';
 
 const INPUT_TABS: { id: CsvInputTab; label: string; icon: string; tone: string }[] = [

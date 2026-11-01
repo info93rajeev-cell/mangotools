@@ -1,9 +1,9 @@
 import { useRef, useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
-import csv from './csvToJson.module.css';
 import { countColumnTypes, previewTable } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
 import { highlightJson } from './jsonSyntaxHighlight.ts';
+import csv from './studioParts.module.css';
 import type { CsvOutputTab, CsvStudio } from './useCsvToJsonStudio.ts';
 
 /** Above this size the output is shown without colour, so typing stays fast. */

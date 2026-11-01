@@ -6,10 +6,10 @@ import { CsvInputPanel } from './CsvInputPanel.tsx';
 import { CsvOutputPanel } from './CsvOutputPanel.tsx';
 import { CsvParsingOptionsCard } from './CsvParsingOptionsCard.tsx';
 import { CsvToJsonAuxCards } from './CsvToJsonAuxCards.tsx';
-import csv from './csvToJson.module.css';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
+import csv from './studioParts.module.css';
 import { type CsvStudio, FIRST_SAMPLE_ID, useCsvToJsonStudio } from './useCsvToJsonStudio.ts';
 import { useReferenceScale } from './useReferenceScale.ts';
 

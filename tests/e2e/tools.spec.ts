@@ -343,7 +343,7 @@ test.describe('Swap and copy', () => {
     await openTool(page, 'base64-encode-decode');
     await inputArea(page, 'base64-encode-decode').fill('Hello, ₹');
     await expect(outputArea(page, 'base64-encode-decode')).toHaveValue('SGVsbG8sIOKCuQ==');
-    await page.getByRole('button', { name: /Swap input and output/ }).click();
+    await page.getByRole('button', { name: /Swap Input/ }).click();
     await expect(inputArea(page, 'base64-encode-decode')).toHaveValue('SGVsbG8sIOKCuQ==');
     await expect(outputArea(page, 'base64-encode-decode')).toHaveValue('Hello, ₹');
   });
