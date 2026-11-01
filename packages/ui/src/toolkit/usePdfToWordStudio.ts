@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { buildDocxFromBlocks, type DocxBlock } from './docxZipPacker.ts';
+import { openUserPdf } from './pdfInput.ts';
 import { type Block, extractPdfText, type PageText, toBlocks } from './pdfTextExtract.ts';
 import { createTextSamplePdf, SAMPLE_PDF_TO_WORD_NAME } from './samplePdfDocuments.ts';
 
@@ -78,6 +79,11 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
   useEffect(() => setDocx(null), [s.extraction, s.keepHeadings, s.pageBreaks]);
 
   const take = async (name: string, bytes: Uint8Array) => {
+    const opened = await openUserPdf(name, bytes, 200);
+    if (!opened.ok) {
+      notify?.(opened.message);
+      return;
+    }
     setIsProcessing(true);
     try {
       const pages = await extractPdfText(bytes);
