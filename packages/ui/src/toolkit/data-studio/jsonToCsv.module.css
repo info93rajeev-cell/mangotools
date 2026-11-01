@@ -1,0 +1,222 @@
+/* JSON to CSV studio: layout and parts the shared data-studio styles do not cover. */
+
+.work {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr) minmax(0, 0.5fr);
+  gap: 12px;
+  min-height: 0;
+}
+
+.topActions {
+  justify-content: flex-end;
+}
+
+.headActions {
+  gap: 6px;
+}
+
+.headBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #cfdcf0;
+  border-radius: 7px;
+  background: #fff;
+  color: #1652c9;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.headBtn:hover {
+  border-color: #9cbcf5;
+  background: #f5f9ff;
+}
+
+.headBtn:focus-visible {
+  outline: 2px solid #1665f5;
+  outline-offset: 2px;
+}
+
+.editor {
+  flex: 1;
+  min-height: 300px;
+  height: auto;
+}
+
+.code {
+  white-space: pre;
+}
+
+.outputEditor {
+  min-height: 120px;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 300px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #dbe6f5;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.notice {
+  flex: 1;
+  min-height: 300px;
+}
+
+.empty {
+  flex: 1;
+  min-height: 300px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  color: #4d6283;
+  font-size: 12.5px;
+  border: 1px dashed #dce7f7;
+  border-radius: 8px;
+}
+
+.side {
+  flex: 1;
+  height: auto;
+}
+
+.summary {
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.output {
+  flex: 1;
+  height: auto;
+}
+
+.output .outputEditor {
+  flex: 1;
+}
+
+.tile {
+  border: 1px solid #e2eaf6;
+  border-left: 3px solid;
+  min-height: 60px;
+}
+
+.tileGreen {
+  border-left-color: #1bad80;
+  background: linear-gradient(135deg, #f1fcf7, #fff);
+}
+
+.tilePurple {
+  border-left-color: #9363ef;
+  background: linear-gradient(135deg, #f8f4ff, #fff);
+}
+
+.tileAmber {
+  border-left-color: #ffb500;
+  background: linear-gradient(135deg, #fff9ec, #fff);
+}
+
+.tilePink {
+  border-left-color: #e8557f;
+  background: linear-gradient(135deg, #fff3f6, #fff);
+}
+
+.aux {
+  min-height: 0;
+}
+
+.optCard {
+  gap: 7px;
+}
+
+.safetyText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4d6283;
+}
+
+@media (max-width: 1080px) {
+  .work {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sideSlot {
+    grid-column: 1 / -1;
+  }
+  .side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .side {
+    display: flex;
+  }
+  .topActions {
+    justify-content: flex-start;
+  }
+  .editor {
+    flex: none;
+    height: 230px;
+    min-height: 0;
+  }
+  .tableWrap,
+  .notice,
+  .empty {
+    flex: none;
+    min-height: 0;
+    max-height: 260px;
+  }
+  :global([data-mobile-view="input"]) .side {
+    display: none;
+  }
+}
+
+:global([data-theme="dark"]) .headBtn {
+  background: #111c33;
+  border-color: #2a3a58;
+  color: #8fb4ff;
+}
+
+:global([data-theme="dark"]) .tableWrap {
+  border-color: #2a3a58;
+}
+
+:global([data-theme="dark"]) .tile {
+  background: #111c33;
+}
+
+:global([data-theme="dark"]) .tableWrap th {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .tableWrap td {
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+/* The cards stay light in the dark theme, like the other data studios; keep their controls readable. */
+.optCard {
+  color-scheme: light;
+}
+
+.optCard label {
+  color: #334155;
+}
+
+:global([data-theme="dark"]) .tile b {
+  color: #e6edf8;
+}
+
+:global([data-theme="dark"]) .tile small {
+  color: #a9b7cc;
+}
