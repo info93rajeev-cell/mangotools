@@ -1,0 +1,13 @@
+id: 017-first-record-keys
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"a":1,"b":2},{"a":3,"c":4}]'
+params: { keys: first }
+expected:
+  headers: [a, b]
+  missingCount: 1
+  text: |
+    a,b
+    1,2
+    3,

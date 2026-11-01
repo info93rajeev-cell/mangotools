@@ -1,0 +1,15 @@
+id: 014-record-path
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '{"meta":{"page":1},"data":{"items":[{"sku":"00124"},{"sku":"04102"}]}}'
+params: { recordPath: data.items }
+expected:
+  rowCount: 2
+  headers: [sku]
+  leadingZeroColumns: [sku]
+  recordPaths: ["", data.items]
+  text: |
+    sku
+    00124
+    04102
