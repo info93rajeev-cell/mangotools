@@ -1,6 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useRef, useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
@@ -53,7 +54,9 @@ function UrlInputPanel({
       />
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128279;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="link" class={styles.toolIco} />
+          </span>
           <strong>Input Text / URL</strong>
         </div>
         <div class={styles.toolactions}>
@@ -64,7 +67,7 @@ function UrlInputPanel({
             data-try-sample=""
             title="Load sample URL"
           >
-            ✨ Try sample
+            <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
           <button
             type="button"
@@ -72,7 +75,7 @@ function UrlInputPanel({
             onClick={() => fileInputRef.current?.click()}
             title="Open file"
           >
-            &#128194; Open File
+            <Icon name="folder-open" class={styles.ico} /> Open File
           </button>
           <button
             type="button"
@@ -80,7 +83,7 @@ function UrlInputPanel({
             onClick={onPaste}
             title="Paste from clipboard"
           >
-            &#128203; Paste
+            <Icon name="clipboard-paste" class={styles.ico} /> Paste
           </button>
           <button
             type="button"
@@ -95,14 +98,16 @@ function UrlInputPanel({
       <div class={styles.rowchips}>
         <button
           type="button"
-          class={`${styles.chip} ${direction === 'encode' ? styles.chipBlue : styles.chipAmber}`}
+          class={`${styles.segChip} ${direction === 'encode' ? styles.segChipActive : ''}`}
+          aria-pressed={direction === 'encode'}
           onClick={() => onDirection('encode')}
         >
           Encode
         </button>
         <button
           type="button"
-          class={`${styles.chip} ${direction === 'decode' ? styles.chipPurple : styles.chipAmber}`}
+          class={`${styles.segChip} ${direction === 'decode' ? styles.segChipActive : ''}`}
+          aria-pressed={direction === 'decode'}
           onClick={() => onDirection('decode')}
         >
           Decode
@@ -133,7 +138,7 @@ function UrlInputPanel({
         />
       </div>
       <div class={styles.callout}>
-        <span>&#9432;</span>
+        <Icon name="info" class={styles.ico} />
         <div>
           {mode === 'component'
             ? 'This example encodes a component; full URL parsing is a separate mode.'
@@ -169,12 +174,14 @@ function UrlOutputPanel({
     <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128187;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="code-xml" class={styles.toolIco} />
+          </span>
           <strong>Encoded Result</strong>
         </div>
         <div class={styles.toolactions}>
           <button type="button" class={styles.btnSecondary} onClick={onSwap} title="Swap fields">
-            Swap &#8644;
+            <Icon name="arrow-left-right" class={styles.ico} /> Swap
           </button>
           <button type="button" class={styles.btnSecondary} onClick={onCopy}>
             Copy
@@ -193,7 +200,7 @@ function UrlOutputPanel({
       </div>
       <div style={{ marginTop: 'auto' }}>
         <div class={error ? styles.badgeErr : styles.badgeOk}>
-          <span>{error ? '⚠' : '✓'}</span>
+          <Icon name={error ? 'triangle-alert' : 'circle-check'} class={styles.ico} />
           <strong>{error ? error : `Valid percent-encoded ${mode}`}</strong>
         </div>
         <div class={styles.noteLine} style={{ marginTop: 6 }}>
@@ -222,7 +229,10 @@ function UrlSidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128202;</span>Encoding Summary
+          <span class={styles.toolIcon}>
+            <Icon name="chart-column" class={styles.toolIco} />
+          </span>
+          Encoding Summary
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
@@ -249,7 +259,10 @@ function UrlSidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128065;</span>Sample URL Inspector
+          <span class={styles.toolIcon}>
+            <Icon name="eye" class={styles.toolIco} />
+          </span>
+          Sample URL Inspector
         </div>
         <div class={styles.kv}>
           <span>Scheme</span>

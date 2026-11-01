@@ -1,6 +1,7 @@
 import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { DataStudioStatusBar } from './DataStudioStatusBar.tsx';
 import styles from './dataStudio.module.css';
 import { MobileViewSwitcher, type StudioMobileView } from './MobileViewSwitcher.tsx';
@@ -40,7 +41,9 @@ function TimestampInputPanel({
     <section class={`${styles.panel} ${styles.inputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128337;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="clock" class={styles.toolIco} />
+          </span>
           <strong>Unix Timestamp &rarr; Date</strong>
         </div>
         <div class={styles.toolactions}>
@@ -51,7 +54,7 @@ function TimestampInputPanel({
             data-try-sample=""
             title="Use current timestamp"
           >
-            ✨ Try sample
+            <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
           <button
             type="button"
@@ -59,7 +62,7 @@ function TimestampInputPanel({
             onClick={onCurrentTime}
             title="Use current system time"
           >
-            &#128337; Use current time
+            <Icon name="clock" class={styles.ico} /> Use current time
           </button>
           <button
             type="button"
@@ -67,7 +70,7 @@ function TimestampInputPanel({
             onClick={onPaste}
             title="Paste from clipboard"
           >
-            &#128203; Paste
+            <Icon name="clipboard-paste" class={styles.ico} /> Paste
           </button>
           <button
             type="button"
@@ -118,12 +121,12 @@ function TimestampInputPanel({
         </div>
       </div>
       <div class={styles.callout}>
-        <span>&#9432;</span>
+        <Icon name="info" class={styles.ico} />
         <div>Unix epoch reference: 1970-01-01 00:00:00 UTC. No automatic unit guessing.</div>
       </div>
       <div style={{ marginTop: 'auto' }}>
         <div class={error ? styles.badgeErr : styles.badgeOk}>
-          <span>{error ? '⚠' : '✓'}</span>
+          <Icon name={error ? 'triangle-alert' : 'circle-check'} class={styles.ico} />
           <strong>{error ? error : `Valid ${input.length}-digit Unix timestamp`}</strong>
         </div>
       </div>
@@ -166,7 +169,9 @@ function TimestampDatePanel({
     <section class={`${styles.panel} ${styles.outputPanel}`}>
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128197;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="calendar" class={styles.toolIco} />
+          </span>
           <strong>Converted Date &amp; Time</strong>
         </div>
         <div class={styles.toolactions}>
@@ -238,7 +243,10 @@ function TimestampSidePanel({
     <div class={`${styles.side} ${styles.sidePanel}`}>
       <section class={`${styles.panel} ${styles.sideTopCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128337;</span>Timestamp Formats
+          <span class={styles.toolIcon}>
+            <Icon name="clock" class={styles.toolIco} />
+          </span>
+          Timestamp Formats
         </div>
         <div class={styles.miniGrid}>
           <div class={`${styles.mini} ${styles.miniBlue}`}>
@@ -262,10 +270,13 @@ function TimestampSidePanel({
 
       <section class={`${styles.panel} ${styles.sideBottomCard}`}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#128197;</span>Calendar Checks
+          <span class={styles.toolIcon}>
+            <Icon name="calendar" class={styles.toolIco} />
+          </span>
+          Calendar Checks
         </div>
         <div class={styles.badgeOk}>
-          <span>&#10004;</span>
+          <Icon name="check" class={styles.ico} />
           <strong>Valid UTC date</strong>
         </div>
         <div class={styles.kv}>

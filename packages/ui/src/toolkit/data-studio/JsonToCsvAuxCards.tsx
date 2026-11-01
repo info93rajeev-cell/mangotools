@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export function JsonToCsvAuxCards({
@@ -23,7 +24,10 @@ export function JsonToCsvAuxCards({
     <div class={styles.aux}>
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Record &amp; Columns
+          <span class={styles.optIcon}>
+            <Icon name="settings" class={styles.optIco} />
+          </span>
+          Record &amp; Columns
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Record path</span>
@@ -40,7 +44,10 @@ export function JsonToCsvAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Nested Data
+          <span class={styles.optIcon}>
+            <Icon name="shield-check" class={styles.optIco} />
+          </span>
+          Nested Data
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Object handling</span>
@@ -55,7 +62,10 @@ export function JsonToCsvAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128229;</span>CSV Export
+          <span class={styles.optIcon}>
+            <Icon name="download" class={styles.optIco} />
+          </span>
+          CSV Export
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Delimiter</span>
@@ -91,7 +101,10 @@ export function JsonToCsvAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Spreadsheet Safety
+          <span class={styles.optIcon}>
+            <Icon name="shield-check" class={styles.optIco} />
+          </span>
+          Spreadsheet Safety
         </div>
         <div class={styles.optCheckboxRow}>
           <label class={styles.optCheckbox}>

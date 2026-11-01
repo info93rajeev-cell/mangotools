@@ -41,6 +41,11 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Visual v2 rolled out to the other data studios (Base64, URL, CSV→JSON, JSON→CSV, Timestamp):
+  - Line icons replace the entity emoji in card titles, option cards and buttons.
+  - Chips are real pills; Encode/Decode is a segmented control (`aria-pressed`).
+  - Summary tiles are white cards with a coloured top accent and bold figures.
+  - The side column is wide enough that figures no longer clip.
 - JSON Formatter look & feel:
   - Reference sizes, weight and depth are restored instead of squeezing the studio into the window: roomy tree rows with bold pills, strings and booleans in soft pills, a yellow root icon, 30px coloured summary icons and 20px figures, roomier data types with thicker bars, heavier icon strokes and deeper card shadows.
   - Search steps with ‹ ›. Wide screens scale by width only (the page may scroll).

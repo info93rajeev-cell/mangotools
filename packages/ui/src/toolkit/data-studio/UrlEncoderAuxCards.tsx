@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export function UrlEncoderAuxCards({
@@ -17,7 +18,10 @@ export function UrlEncoderAuxCards({
     <div class={styles.aux}>
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Encoding Mode
+          <span class={styles.optIcon}>
+            <Icon name="settings" class={styles.optIco} />
+          </span>
+          Encoding Mode
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Operation</span>
@@ -49,7 +53,10 @@ export function UrlEncoderAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9776;</span>Query Parameters ({queryParams.length})
+          <span class={styles.optIcon}>
+            <Icon name="list" class={styles.optIco} />
+          </span>
+          Query Parameters ({queryParams.length})
         </div>
         <div style={{ overflowY: 'auto', maxHeight: 60 }}>
           {queryParams.length > 0 ? (
@@ -70,7 +77,10 @@ export function UrlEncoderAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Character Rules
+          <span class={styles.optIcon}>
+            <Icon name="zap" class={styles.optIco} />
+          </span>
+          Character Rules
         </div>
         <div class={styles.rowchips}>
           <span class={styles.chipBlue}>%20 &bull; space</span>
@@ -85,7 +95,10 @@ export function UrlEncoderAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128737;</span>Error Handling
+          <span class={styles.optIcon}>
+            <Icon name="shield-check" class={styles.optIco} />
+          </span>
+          Error Handling
         </div>
         <div class={styles.optHelptext}>
           Malformed % sequences and invalid UTF-8 show a clear error. No network fetch or silent
