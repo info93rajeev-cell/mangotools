@@ -34,7 +34,7 @@ expectation from `new Date(...).toString()` in the same process, so it passes on
 timezone rather than only one.
 
 ## Changelog
-- 0.8.0 — `data.json.to-csv@1` gains optional, additive params; defaults reproduce the previous
+- 0.9.0 — `data.json.to-csv@1` gains optional, additive params; defaults reproduce the previous
   output (all 10 existing fixtures unchanged). `delimiter` (comma/semicolon/tab/pipe; a value is
   quoted when it contains the chosen delimiter), `header` (off → no header line), `keys` (`union`
   default, or `first` = only the first record's keys), `nested` (`reject` default; `flatten` →
