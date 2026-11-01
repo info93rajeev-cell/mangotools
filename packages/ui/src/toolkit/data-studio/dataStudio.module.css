@@ -2139,3 +2139,859 @@ button.btnPrimarySolid:hover {
   border-color: #334155;
   color: #f8fafc;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   Visual upgrade v2 (matches Rajeev's JSON reference): crisp line icons, bolder titles, larger
+   buttons and colour-coded chips. Declared last so it overrides the compact v1 sizes above.
+   --------------------------------------------------------------------------------------------- */
+.container {
+  --ds-ink: #0f1b3d;
+  --ds-blue: #1665f5;
+  --ds-border: #dfe7f3;
+}
+
+.ico,
+.toolIco,
+.optIco,
+.metricIco {
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 0;
+}
+.ico {
+  width: 16px;
+  height: 16px;
+}
+.ico :global(svg),
+.toolIco :global(svg),
+.optIco :global(svg),
+.metricIco :global(svg) {
+  width: 100%;
+  height: 100%;
+  stroke-width: 2;
+}
+
+/* Card titles with a bare blue icon, like the reference */
+.tooltitle {
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  color: var(--ds-ink);
+  gap: 10px;
+}
+.toolIcon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ds-blue);
+}
+.toolIco {
+  width: 26px;
+  height: 26px;
+}
+
+/* Buttons: taller, clearer, icon + text */
+.btnPrimary,
+.btnSecondary,
+button.btnPrimarySolid,
+button.btnDangerOutline,
+.topActionBtn {
+  min-height: 38px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  gap: 8px;
+}
+button.btnPrimarySolid {
+  background: var(--ds-blue);
+  border-color: var(--ds-blue);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(22, 101, 245, 0.22);
+}
+.topActionBtn {
+  min-height: 42px;
+  padding: 9px 18px;
+  color: var(--ds-blue);
+  border-color: #cfdcf3;
+}
+.btnGold {
+  min-height: 44px;
+  padding: 10px 26px;
+  font-size: 15px;
+  font-weight: 750;
+  border-radius: 9px;
+  gap: 10px;
+}
+.btnGold .ico,
+.statusBar .ico {
+  width: 18px;
+  height: 18px;
+}
+.statusBar .btnSecondary {
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: 15px;
+}
+
+/* Output tabs: active tab is a solid blue pill */
+.tabPill {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 7px;
+  gap: 6px;
+}
+.tabPillActive {
+  background: var(--ds-blue);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(22, 101, 245, 0.25);
+}
+
+/* Option card titles */
+.optTitle {
+  font-size: 16.5px;
+  font-weight: 750;
+  color: var(--ds-ink);
+  gap: 10px;
+}
+.optIcon {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ds-blue);
+}
+.optIco {
+  width: 24px;
+  height: 24px;
+}
+.optcard:nth-child(3) .optIcon {
+  color: #16a34a;
+}
+.optLabel,
+.optCheckbox {
+  font-size: 13px;
+}
+
+/* Side summary: bigger numbers and coloured icons */
+.sideCardHeader {
+  font-size: 16px;
+  font-weight: 750;
+  color: var(--ds-ink);
+}
+.structureMetric {
+  padding: 10px 12px;
+  gap: 10px;
+  border-left-width: 1px;
+  border-radius: 9px;
+  background: #fff;
+}
+.metricIco {
+  width: 26px;
+  height: 26px;
+}
+.metricBlue .metricIcon {
+  color: #2563eb;
+}
+.metricPurple .metricIcon {
+  color: #9333ea;
+}
+.metricAmber .metricIcon {
+  color: #f59e0b;
+}
+.metricGreen .metricIcon {
+  color: #16a34a;
+}
+.metricText small {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.metricText b {
+  font-size: 18px;
+}
+.dataTypeRow {
+  grid-template-columns: 96px 1fr 52px;
+  font-size: 13px;
+  gap: 8px;
+}
+.dataTypeRow:nth-child(1) .dataTypeIcon {
+  color: #16a34a;
+}
+.dataTypeRow:nth-child(2) .dataTypeIcon {
+  color: #2563eb;
+}
+.dataTypeRow:nth-child(3) .dataTypeIcon {
+  color: #ef4444;
+}
+.dataTypeRow:nth-child(4) .dataTypeIcon {
+  color: #64748b;
+}
+.dataTypeRow:nth-child(5) .dataTypeIcon {
+  color: #2563eb;
+}
+.dataTypeRow:nth-child(6) .dataTypeIcon {
+  color: #9333ea;
+}
+
+/* Tree: colour-coded key pills per value type */
+.treeLeafRow,
+.treeNodeHeader {
+  font-size: 13px;
+  gap: 6px;
+  padding-block: 3px;
+}
+.treeKeyPill,
+.treeObjectKey,
+.treeArrayKey,
+.treeValue {
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.treeValue {
+  background: #f3f5f9;
+  color: #1e293b;
+  font-weight: 500;
+}
+.treeLeafRow[data-type="number"] .treeKeyPill {
+  background: #dcfce7;
+  color: #15803d;
+}
+.treeLeafRow[data-type="string"] .treeKeyPill {
+  background: #fce7f3;
+  color: #db2777;
+}
+.treeLeafRow[data-type="boolean"] .treeKeyPill {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.treeLeafRow[data-type="null"] .treeKeyPill {
+  background: #f1f5f9;
+  color: #475569;
+}
+.treeObjectKey {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+.treeArrayKey {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+.treeNodeIcon {
+  display: inline-flex;
+  color: #2563eb;
+}
+.treeNodeIcon[data-kind="array"] {
+  color: #9333ea;
+}
+.badgeObject,
+.badgeArray,
+.badgeString,
+.badgeNumber,
+.badgeBoolean,
+.badgeNull,
+.badgeGeneric,
+.treeCountBadge,
+.treeRootBadge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.treeCountBadge {
+  background: #eef2f7;
+}
+
+.noteLine {
+  font-size: 12.5px;
+}
+.noteLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.noteLeft .ico {
+  color: var(--ds-blue);
+}
+button.btnPrimarySolid,
+button.btnDangerOutline {
+  display: inline-flex;
+  align-items: center;
+}
+.dataTypeMeta {
+  gap: 8px;
+}
+.dataTypeIcon {
+  display: inline-flex;
+  font-size: inherit;
+}
+.optCheckboxRow {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 13px;
+  color: #334155;
+}
+.optCheckboxRow .optCheckbox {
+  white-space: nowrap;
+}
+.treeScrollContainer,
+.treeLeafRow,
+.treeNodeHeader {
+  font-family: inherit;
+}
+.switchList {
+  gap: 10px;
+}
+.switchList label,
+.switchRow {
+  font-size: 13.5px;
+  color: #1e293b;
+  font-weight: 500;
+}
+.switchLabel {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1e293b;
+}
+.tabIcon {
+  display: inline-flex;
+}
+@media (max-width: 650px) {
+  .tooltitle,
+  .inputPanel .tooltitle {
+    justify-content: flex-start;
+    font-size: 16.5px;
+  }
+  .toolIcon {
+    width: 26px;
+    height: 26px;
+  }
+  .toolIco {
+    width: 22px;
+    height: 22px;
+  }
+}
+@media (max-width: 480px) {
+  .tabPillGroup {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .tabPill {
+    padding: 7px 10px;
+  }
+}
+
+/* Editor syntax colours (overlay behind a transparent-text textarea; caret and selection stay native) */
+.codeArea {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.codeArea .codeTextarea {
+  width: 100%;
+}
+.codeHighlight {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 10px 12px;
+  font-family: "Cascadia Code", Consolas, Monaco, monospace;
+  font-size: 12.5px;
+  line-height: 20px;
+  white-space: pre;
+  overflow: hidden;
+  color: #334155;
+  pointer-events: none;
+}
+.codeTextarea {
+  font-size: 12.5px;
+  color: #0f172a;
+}
+.codeTextareaOverlay {
+  position: relative;
+  color: transparent;
+  caret-color: #0f172a;
+  background: transparent;
+}
+.codeTextareaOverlay::selection {
+  background: rgba(22, 101, 245, 0.22);
+}
+.codeHighlight :global(.jk) {
+  color: #c2185b;
+}
+.codeHighlight :global(.js) {
+  color: #1d4ed8;
+}
+.codeHighlight :global(.jd) {
+  color: #2563eb;
+}
+.codeHighlight :global(.jb) {
+  color: #2563eb;
+  font-weight: 600;
+}
+.codeHighlight :global(.jn) {
+  color: #64748b;
+}
+
+/* Compact work area like the reference: editor and tree share one comfortable height */
+.editorContainer {
+  min-height: 0;
+  height: clamp(320px, 46vh, 460px);
+  background: #fff;
+}
+.treeScrollContainer {
+  max-height: clamp(320px, 46vh, 460px);
+}
+.gutterLine {
+  color: #94a3b8;
+}
+
+/* Cards stand off the tinted page */
+.panel,
+.optcard,
+.structureCard,
+.dataTypesCard,
+.topActionBtn,
+.statusBar .btnSecondary {
+  border-color: #dbe4f0;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 6px 16px rgba(30, 64, 125, 0.06);
+}
+.panel,
+.optcard {
+  background: #fff;
+  border-radius: 12px;
+}
+.optLabel {
+  color: #334155;
+  font-weight: 600;
+}
+.panelFullscreen .editorContainer {
+  height: auto;
+  flex: 1;
+}
+.panelFullscreen .treeScrollContainer {
+  max-height: none;
+}
+/* Readable secondary text on white cards (≥4.5:1) */
+.noteLine,
+.optHelptext {
+  color: #4b6283;
+}
+.noteLineGreen {
+  color: #047a48;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Density pass (reference is a compact dashboard at ~1536px laptop width): smaller but heavier
+   type, tighter cards, the page actions on the title line, plain tree values.
+   --------------------------------------------------------------------------------------------- */
+.tooltitle {
+  font-size: 15.5px;
+}
+.toolIco {
+  width: 22px;
+  height: 22px;
+}
+.btnPrimary,
+.btnSecondary,
+button.btnPrimarySolid,
+button.btnDangerOutline {
+  min-height: 32px;
+  padding: 6px 13px;
+  font-size: 12.5px;
+  gap: 6px;
+}
+.topActionBtn {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+}
+.btnGold,
+.statusBar .btnSecondary {
+  min-height: 40px;
+  font-size: 14px;
+  padding: 8px 20px;
+}
+.panel,
+.optcard {
+  padding: 12px 14px;
+  gap: 8px;
+}
+.optTitle {
+  font-size: 14.5px;
+}
+.optIco {
+  width: 20px;
+  height: 20px;
+}
+.editorContainer {
+  height: clamp(260px, 36vh, 420px);
+}
+.treeScrollContainer {
+  max-height: clamp(260px, 36vh, 420px);
+}
+.outputSplitBody {
+  min-height: 0;
+}
+
+/* Tree: keys are coloured pills, values are plain text (calmer, like the reference) */
+.treeValue {
+  background: transparent;
+  padding: 0 2px;
+  color: #0f172a;
+}
+.treeLeafRow,
+.treeNodeHeader {
+  font-size: 12.5px;
+  padding-block: 2px;
+}
+
+/* Output tabs as separate bordered buttons; active one solid blue */
+.tabPillGroup {
+  background: transparent;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+}
+.tabPill {
+  border: 1px solid #d6e0ee;
+  background: #fff;
+  color: #334155;
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+.tabPillActive {
+  border-color: var(--ds-blue);
+}
+
+/* Data types: label · count · percent above a thicker bar */
+.dataTypeRow {
+  grid-template-columns: minmax(88px, 1fr) 26px minmax(90px, 1.3fr);
+  align-items: end;
+  font-size: 12.5px;
+}
+.dataTypeCount {
+  font-weight: 800;
+  color: #0f172a;
+  text-align: right;
+  align-self: center;
+}
+.dataTypeTrackWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.dataTypePct {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+}
+.dataTypeTrack {
+  height: 7px;
+}
+
+/* Validation: big check and bold numbers */
+.badgeOkCircle {
+  width: 40px;
+  height: 40px;
+}
+.badgeOkCircle .ico {
+  width: 22px;
+  height: 22px;
+}
+.badgeOkText strong {
+  font-size: 16px;
+}
+.badgeOkText small {
+  font-size: 12.5px;
+}
+.metricPill b {
+  font-size: 16px;
+  font-weight: 800;
+}
+.metricPill small {
+  font-size: 11.5px;
+}
+
+/* Page actions share the title line on laptops (reference layout) */
+@media (min-width: 1100px) {
+  .topActionsBar {
+    margin-top: -46px;
+    margin-bottom: 4px;
+    justify-content: flex-end;
+    width: auto;
+    margin-left: auto;
+  }
+}
+.tabPill.tabPillActive {
+  background: var(--ds-blue);
+  color: #fff;
+  border-color: var(--ds-blue);
+}
+/* Tree fills its panel height (matches the editor) instead of a fixed cap */
+.treeScrollContainer {
+  max-height: none;
+}
+.outputViewArea {
+  max-height: clamp(300px, 40vh, 460px);
+}
+/* Option cards in reference proportions so Formatting's three checkboxes fit one line */
+@media (min-width: 901px) {
+  .aux {
+    grid-template-columns: 1.3fr 1fr 0.95fr 1fr;
+  }
+}
+.optCheckboxRow {
+  gap: 6px 12px;
+  font-size: 12.5px;
+}
+.metricPill b {
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+/* Search: hits in the tree, current hit, and prev/next controls */
+.searchNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.searchNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d6e0ee;
+  border-radius: 7px;
+  background: #fff;
+  color: #1e40af;
+  cursor: pointer;
+}
+.searchNavBtn:disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+.treeScrollContainer [data-search-hit] {
+  outline: 2px solid #fbbf24;
+  outline-offset: 1px;
+  background-color: #fef3c7;
+}
+.treeScrollContainer [data-search-active] {
+  outline: 2px solid #f59e0b;
+  background-color: #fde68a;
+  color: #0f172a;
+}
+
+/* Reference proportions: input and output share the width equally; inside the output the
+   summary column gets ~42% so its tiles never squeeze. */
+@media (min-width: 1081px) {
+  .workTwoPanel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (min-width: 901px) {
+  .outputSplitBody {
+    grid-template-columns: minmax(0, 1.35fr) minmax(220px, 1fr);
+  }
+}
+.metricText small {
+  white-space: nowrap;
+}
+/* Wide screens: scale the working area (not the page-action row) in reference proportion */
+.workTwoPanel,
+.aux,
+.statusBar {
+  zoom: var(--ds-scale, 1);
+}
+@media (min-width: 1100px) {
+  .topActionsBar {
+    margin-top: -42px;
+  }
+}
+/* Code reads like the reference: larger, slightly heavier monospace */
+.codeTextarea,
+.codeHighlight {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 20px;
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+}
+.codeHighlight :global(.jk),
+.codeHighlight :global(.js) {
+  font-weight: 500;
+}
+.gutterLine {
+  font-size: 12px;
+}
+
+/* Info pills share the action row (reference). The page's own strip below then only shows the
+   section that is open, so nothing is duplicated and the page stays short. */
+.statusBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.infoPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.infoPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 9px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.infoPill .ico {
+  color: #2563eb;
+}
+.infoPill[aria-expanded="true"] {
+  border-color: #1665f5;
+  background: #eef4ff;
+}
+:global(main:has([data-inline-info]))
+  :global(.supporting)
+  :global(details.content-disclosure:not([open])),
+:global(main:has([data-inline-info]))
+  :global(.supporting)
+  :global(details[data-disclaimer]:not([open])) {
+  display: none;
+}
+:global(main:has([data-inline-info])) :global(.supporting:not(:has(details[open]))) {
+  display: none;
+}
+.outputViewArea {
+  max-height: clamp(340px, 46vh, 520px);
+}
+/* Compact summary column (reference row heights) */
+.dataTypesList {
+  gap: 7px;
+}
+.dataTypeRow {
+  align-items: center;
+}
+.dataTypeTrackWrapper {
+  gap: 2px;
+}
+.dataTypePct {
+  font-size: 11px;
+  line-height: 1.1;
+}
+.structureMetric {
+  padding: 7px 10px;
+}
+.structureGrid {
+  gap: 8px;
+}
+.sideCardHeader {
+  margin-bottom: 6px;
+}
+.structureCard,
+.dataTypesCard {
+  padding: 10px 12px;
+}
+.structureMetric {
+  padding: 5px 10px;
+  gap: 8px;
+}
+.metricIco {
+  width: 22px;
+  height: 22px;
+}
+.metricText b {
+  font-size: 16px;
+  line-height: 1.15;
+}
+.metricText small {
+  font-size: 11.5px;
+}
+.dataTypesList {
+  gap: 4px;
+}
+.dataTypeRow {
+  min-height: 28px;
+}
+.structureCard,
+.dataTypesCard {
+  padding: 8px 12px;
+}
+.sideSummaryCol {
+  gap: 8px;
+}
+.outputViewArea {
+  max-height: clamp(280px, 38vh, 430px);
+}
+.treeLeafRow,
+.treeNodeHeader {
+  padding-block: 1px;
+}
+.treeKeyPill,
+.treeObjectKey,
+.treeArrayKey,
+.badgeObject,
+.badgeArray,
+.badgeString,
+.badgeNumber,
+.badgeBoolean,
+.badgeNull,
+.badgeGeneric,
+.treeCountBadge,
+.treeRootBadge {
+  padding-block: 1px;
+}
+/* Heights follow content (the old 480px floor stretched the editor and every summary card) */
+.workTwoPanel {
+  min-height: 0;
+  align-items: start;
+}
+.workTwoPanel > .panelSlot > .panel {
+  height: auto;
+}
+.editorContainer {
+  flex: none;
+  height: clamp(300px, 40vh, 440px);
+}
+.outputSplitBody {
+  flex: none;
+  align-items: start;
+}
+.workTwoPanel {
+  align-items: stretch;
+}
+.codeTextarea,
+.codeHighlight,
+.gutterLine {
+  line-height: 19px;
+}
+.gutterLine {
+  height: 19px;
+}
+.editorContainer {
+  height: clamp(300px, 44vh, 450px);
+}
+.optcard {
+  padding: 10px 14px;
+  gap: 6px;
+}
+.switchList {
+  gap: 6px;
+}

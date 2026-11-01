@@ -383,3 +383,5 @@ h1{font-weight:800;color:#102044}
   background: #1265f5 var(--measure-white) center/20px 20px no-repeat !important;
   border-radius: 6px !important;
 }
+/* Full screen width on every laptop size (Rajeev: no empty side bands) */
+main{max-width:none}

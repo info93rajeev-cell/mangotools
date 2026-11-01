@@ -4,6 +4,7 @@ import { CardGrid, ToolCard } from '../discovery/cards.tsx';
 import type { Currency } from '../format/numbers.ts';
 import type { ToolLink } from '../layout/types.ts';
 import { t } from '../strings/en.ts';
+import { Icon } from '../primitives/Icon.tsx';
 import Faq from './Faq.astro';
 import WorkedExample from './WorkedExample.astro';
 
@@ -28,12 +29,12 @@ const beforeReferences = shortcuts.filter((s) => s.id !== 'references');
 const references = shortcuts.find((s) => s.id === 'references');
 
 const SECTION_ICONS: Record<string, string> = {
-  'how-to-use': '📖',
-  'method': '⚙️',
-  'worked-example': '🧮',
-  'faq': '❓',
-  'references': '📚',
-  'related-tools': '🔗',
+  'how-to-use': 'book-open',
+  'method': 'settings',
+  'worked-example': 'hash',
+  'faq': 'circle-help',
+  'references': 'book-open',
+  'related-tools': 'link',
 };
 ---
 
@@ -47,7 +48,7 @@ const SECTION_ICONS: Record<string, string> = {
         data-tool-content-section=""
       >
         <summary>
-          <span aria-hidden="true" class="summary-icon">{SECTION_ICONS[section.id] ?? '📄'}</span>
+          <span aria-hidden="true" class="summary-icon"><Icon name={SECTION_ICONS[section.id] ?? 'file-text'} /></span>
           <h2 id={`${section.id}-title`}>{section.title}</h2>
         </summary>
         <div class="content-body">
@@ -91,7 +92,7 @@ const SECTION_ICONS: Record<string, string> = {
         data-tool-content-section=""
       >
         <summary>
-          <span aria-hidden="true" class="summary-icon">🔗</span>
+          <span aria-hidden="true" class="summary-icon"><Icon name="link" /></span>
           <h2 id="related-tools-title">{t('related.title')}</h2>
         </summary>
         <div class="content-body">
@@ -115,7 +116,7 @@ const SECTION_ICONS: Record<string, string> = {
         data-tool-content-section=""
       >
         <summary>
-          <span aria-hidden="true" class="summary-icon">📚</span>
+          <span aria-hidden="true" class="summary-icon"><Icon name="book-open" /></span>
           <h2 id={`${references.id}-title`}>{references.title}</h2>
         </summary>
         <div class="content-body">
@@ -164,10 +165,25 @@ const SECTION_ICONS: Record<string, string> = {
   }
   .summary-icon {
     flex: none;
+    display: inline-flex;
     width: 22px;
-    font-size: 1.125rem;
-    line-height: 1;
-    text-align: center;
+    height: 22px;
+    color: #2563eb;
+  }
+  .summary-icon :global(.icon),
+  .summary-icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .summary-icon :global(svg) {
+    stroke-width: 2;
+  }
+  #faq .summary-icon,
+  #references .summary-icon {
+    color: #9333ea;
+  }
+  #related-tools .summary-icon {
+    color: #db2777;
   }
   .content-disclosure[open] summary::after {
     content: '−';
