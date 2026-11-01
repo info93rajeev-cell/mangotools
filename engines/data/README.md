@@ -8,7 +8,7 @@ worker or in Node.
 | `data.json.format@1` | Lossless format / minify / validate (RFC 8259); numbers and escapes kept exactly as written |
 | `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines |
 | `data.url.transform@1` | Percent-encoding as a URL component, a full URL, or form data (RFC 3986, WHATWG form encoding) |
-| `data.csv.to-json@1` | CSV text to a JSON array of objects (RFC 4180 quoting), first row as headers, values kept as strings |
+| `data.csv.to-json@1` | CSV text to JSON (RFC 4180 quoting). Defaults: comma, first row as headers, values kept as strings. Optional params: delimiter (incl. auto), no header row, trim, skip empty rows, lossless type inference, empty/custom tokens as null, max rows, excluded columns, objects/arrays/NDJSON shape, metadata wrapper. Reports each column's JSON type |
 | `data.json.to-csv@1` | A JSON array of objects (or a single object) to CSV text, with RFC 4180 escaping; nested values rejected |
 | `data.timestamp.convert@1` | Unix timestamp ⇄ date/time, seconds or milliseconds, UTC and local browser time |
 
@@ -34,6 +34,16 @@ expectation from `new Date(...).toString()` in the same process, so it passes on
 timezone rather than only one.
 
 ## Changelog
+- 0.6.0 — `data.csv.to-json@1` gains optional, additive params; every default keeps the 0.3.0
+  output byte-for-byte (all existing fixtures unchanged). `delimiter` (comma/semicolon/tab/pipe, or
+  `auto` = most frequent on the first line outside quotes), `header` (off → `column_1…`), `trim`,
+  `skipEmptyRows`, `inferTypes` (off by default; a value becomes a number only when its text is
+  the exact `String(Number(x))` form, so `00124`, `1.50` and integers past 2^53 stay strings;
+  `true`/`false` any case → boolean), `emptyAsNull`, `nullValues` (comma-separated exact tokens),
+  `maxRows` (warning `DATA_CSV_ROWS_LIMITED`), `excludeColumns` (1-based numbers), `shape`
+  (objects/arrays/ndjson) and `metadata`. New outputs: `columns` (name, JSON type, sample,
+  included), resolved `delimiter`, `sourceRowCount`. Row objects use a null prototype so a
+  `__proto__` header stays a plain key.
 - 0.5.0 — `data.timestamp.convert@1` added (TASK-008G). Converts a Unix timestamp (seconds or
   milliseconds, auto-detected by digit count or chosen explicitly) to a date, and a date/time back to
   a Unix timestamp. Date/time parsing uses a constrained ISO-like regex with the numeric `Date`
