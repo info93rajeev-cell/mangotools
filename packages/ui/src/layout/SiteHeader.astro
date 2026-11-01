@@ -56,6 +56,39 @@ const { brand, categories, showSearch = true } = Astro.props;
   </PageContainer>
 </header>
 
+<script>
+  // Phones in landscape have very little height, so the sticky header slides away while the
+  // user scrolls down and comes back on any scroll up. It stays put while its menu or search
+  // is in use. Other screen shapes keep the normal sticky header.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const shortScreen = window.matchMedia('(orientation: landscape) and (max-height: 500px)');
+  let lastY = window.scrollY;
+  let queued = false;
+
+  const inUse = (el: HTMLElement) =>
+    el.contains(document.activeElement) || el.querySelector('details[open]') !== null;
+
+  const update = () => {
+    queued = false;
+    if (!header) return;
+    const y = window.scrollY;
+    if (!shortScreen.matches || y < 80 || inUse(header)) header.removeAttribute('data-hidden');
+    else if (y > lastY + 4) header.setAttribute('data-hidden', '');
+    else if (y < lastY - 4) header.removeAttribute('data-hidden');
+    lastY = y;
+  };
+
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', queue, { passive: true });
+  shortScreen.addEventListener('change', queue);
+  header?.addEventListener('focusin', queue);
+</script>
+
 <style>
   .site-header {
     position: sticky;
@@ -64,6 +97,15 @@ const { brand, categories, showSearch = true } = Astro.props;
     background: color-mix(in srgb, var(--color-bg) 92%, transparent);
     backdrop-filter: saturate(1.4) blur(8px);
     border-bottom: 1px solid var(--color-border);
+    transition: transform 200ms ease;
+  }
+  .site-header[data-hidden] {
+    transform: translateY(-100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-header {
+      transition: none;
+    }
   }
   .site-header :global(.bar) {
     display: flex;

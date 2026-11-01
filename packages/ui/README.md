@@ -41,6 +41,32 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- JSON Formatter look & feel:
+  - Reference sizes, weight and depth are restored instead of squeezing the studio into the window: roomy tree rows with bold pills, strings and booleans in soft pills, a yellow root icon, 30px coloured summary icons and 20px figures, roomier data types with thicker bars, heavier icon strokes and deeper card shadows.
+  - Search steps with ‹ ›. Wide screens scale by width only (the page may scroll).
+- Phone landscape: the sticky site header slides away while scrolling down and returns on scroll up (`SiteHeader.astro`). It stays while its menu or search is in use. Civil result tiles use two columns from 701 to 1000px so numbers no longer break mid-digit.
+- Full screen mode for every tool: `FullscreenToggle.astro` sits next to Guide in `ToolHeader`. It puts the tool page (`[data-fullscreen-root]`) into browser full screen, so the mobile browser bars disappear in landscape. It stays hidden where the Fullscreen API is unavailable (e.g. iPhone Safari). Touch tap targets for Guide and Full screen are 44px. Guard: `tests/e2e/fullscreen.spec.ts`.
+- Data studios, reference layout:
+  - The info sections (Disclaimer, How to use, Method, FAQ, Related tools…) open from pills in the action row (`DataStudioInfoPills.tsx`). The page's strip below only shows the open section.
+  - Work-area heights follow content (the old 480px floor is removed); the summary column, tree rows and code lines are tightened.
+  - Wide screens scale up only as far as the studio still fits the screen height.
+- JSON Formatter:
+  - Search works. Keys and values are highlighted in the tree, collapsed nodes open when they hold a hit, ↑/↓ and Enter / Shift+Enter step through hits, the count shows "n of m" and an invalid regex is reported (`jsonSearch.ts`, unit and e2e tests).
+  - Input and output now share the width equally, and the summary column gets about 42% of the output.
+  - Above about 1585px the working area scales up in proportion (max 1.3×) so it fills wide screens like the reference.
+- Full-width tool pages and density pass:
+  - Tool pages span the whole screen on every laptop size (`PageContainer` tool width has no cap; studio max-widths removed in tax, business, jpg-to-pdf, pallet, volumetric and civil).
+  - JSON studio is tuned to the reference at about 1536px: page actions share the title line, controls are smaller but heavier, tree values are plain, tabs are separate buttons, data-type percentages sit above thicker bars, validation figures are bold and option cards follow reference proportions.
+- Design tokens v2 (light theme):
+  - The palette moves from warm stone to cool navy/slate: page `#f4f7fb`, ink `#0b1736`, muted `#475569`, border `#dbe4f0`. New `--color-primary` and `--shadow-card` tokens; success and accent text are darkened for ≥4.5:1 on the tinted page.
+  - JSON editor: syntax colours via an escaped overlay (`jsonSyntaxHighlight.ts`, unit-tested). The existing "Highlight syntax" option now actually works.
+  - Arrays start collapsed. The editor and tree share one compact height. Cards have shadows on the tinted page.
+- Visual upgrade v2, piloted on JSON Formatter (Rajeev's reference):
+  - Lucide line icons replace emoji in the JSON studio, the shared data-studio action bar and the shared How to use / Method / FAQ / Related strip.
+  - Tool H1 is 40px/800 and card titles 18px/750; buttons are 38–44px with icon and text.
+  - The active output tab is a solid blue pill, and tree keys are colour-coded pills by value type.
+  - Structure summary and data types use coloured icons.
+  - New icons are registered in `icons/icons.ts` (lucide-static is already a dependency).
 - Layout integrity pass (PR #233 review):
   - Data studio option cards no longer use a percentage `min-height`. On phones it made each card as tall as all four together and pushed them over the footer.
   - The PDF studio grows with its content instead of a fixed viewport height. This stops PDF to Word's last card being clipped and the PDF Split options card being covered.

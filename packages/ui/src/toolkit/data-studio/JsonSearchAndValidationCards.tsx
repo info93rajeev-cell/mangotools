@@ -1,4 +1,6 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
+import { useJsonSearch } from './JsonSearchContext.tsx';
 import type { ParseResult } from './useJsonFormatterStudio.ts';
 
 export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResult }) {
@@ -7,12 +9,16 @@ export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResu
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>✓</span>
+        <span class={styles.optIcon}>
+          <Icon name="circle-check" class={styles.optIco} />
+        </span>
         <b>Validation Result</b>
       </div>
       {valid ? (
         <div class={styles.badgeOkCallout}>
-          <span class={styles.badgeOkCircle}>✓</span>
+          <span class={styles.badgeOkCircle}>
+            <Icon name="check" class={styles.ico} />
+          </span>
           <div class={styles.badgeOkText}>
             <strong>Valid JSON</strong>
             <small>No syntax errors found.</small>
@@ -20,7 +26,9 @@ export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResu
         </div>
       ) : (
         <div class={styles.badgeErrCallout}>
-          <span class={styles.badgeErrCircle}>⚠</span>
+          <span class={styles.badgeErrCircle}>
+            <Icon name="triangle-alert" class={styles.ico} />
+          </span>
           <div class={styles.badgeErrText}>
             <strong>Invalid JSON</strong>
             <small>{error || 'Syntax error'}</small>
@@ -52,7 +60,6 @@ export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResu
 export function SearchInJsonCard({
   searchQuery,
   onSearch,
-  searchMatches,
   searchMatchCase,
   onSearchMatchCase,
   searchRegex,
@@ -61,17 +68,21 @@ export function SearchInJsonCard({
 }: {
   searchQuery: string;
   onSearch: (v: string) => void;
-  searchMatches: number;
+  /** Kept for API compatibility; the live count comes from the search context. */
+  searchMatches?: number;
   searchMatchCase: boolean;
   onSearchMatchCase: (v: boolean) => void;
   searchRegex: boolean;
   onSearchRegex: (v: boolean) => void;
   onLoadExample: (key: string) => void;
 }) {
+  const search = useJsonSearch();
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>🔍</span>
+        <span class={styles.optIcon}>
+          <Icon name="search" class={styles.optIco} />
+        </span>
         <b>Search in JSON</b>
       </div>
       <div class={styles.searchInputWrap}>
@@ -82,6 +93,12 @@ export function SearchInJsonCard({
           value={searchQuery}
           aria-label="Search keys or values"
           onInput={(e) => onSearch((e.target as HTMLInputElement).value)}
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            if (e.shiftKey) search.prev();
+            else search.next();
+          }}
         />
       </div>
       <div class={styles.searchOptionsRow}>
@@ -101,12 +118,12 @@ export function SearchInJsonCard({
           />
           Use regex
         </label>
-        <span class={styles.matchCountBadge}>
-          {searchQuery ? `${searchMatches} match${searchMatches === 1 ? '' : 'es'}` : '0 of 0'}
-        </span>
+        <SearchNav query={searchQuery} />
       </div>
       <div class={styles.exampleRow}>
-        <span class={styles.exampleLabel}>⭐ Examples</span>
+        <span class={styles.exampleLabel}>
+          <Icon name="sun" class={styles.ico} /> Examples
+        </span>
         <select
           class={styles.exampleSelect}
           onChange={(e) => {
@@ -122,5 +139,35 @@ export function SearchInJsonCard({
         </select>
       </div>
     </section>
+  );
+}
+
+function SearchNav({ query }: { query: string }) {
+  const { index, total, error, next, prev } = useJsonSearch();
+  const label = total > 0 ? `${index + 1} of ${total}` : '0 of 0';
+  return (
+    <div class={styles.searchNav}>
+      <button
+        type="button"
+        class={styles.searchNavBtn}
+        onClick={prev}
+        disabled={total === 0}
+        aria-label="Previous match"
+      >
+        <Icon name="chevron-left" class={styles.ico} />
+      </button>
+      <button
+        type="button"
+        class={styles.searchNavBtn}
+        onClick={next}
+        disabled={total === 0}
+        aria-label="Next match"
+      >
+        <Icon name="chevron-right" class={styles.ico} />
+      </button>
+      <span class={styles.matchCountBadge} aria-live="polite">
+        {error ?? (query ? label : '0 of 0')}
+      </span>
+    </div>
   );
 }

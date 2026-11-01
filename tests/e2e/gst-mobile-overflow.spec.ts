@@ -37,13 +37,24 @@ async function getClippedElements(page: Page, viewportWidth: number): Promise<st
       return `${tag}${id}${cls} [right=${Math.round(rect.right)} > ${vpWidth}] text="${text}"`;
     };
 
+    // An element inside a scroll/clip box that itself fits the screen (e.g. a long code line in the
+    // editor) is not visible past the viewport, so it is not "clipped" in the sense tested here.
+    const insideFittingClipBox = (el: Element) => {
+      for (let a = el.parentElement; a && a !== main; a = a.parentElement) {
+        const o = window.getComputedStyle(a);
+        const clips = [o.overflowX, o.overflow].some((v) => /hidden|auto|scroll|clip/.test(v));
+        if (clips && a.getBoundingClientRect().right <= vpWidth + 1) return true;
+      }
+      return false;
+    };
+
     const elements = Array.from(main.querySelectorAll('*'));
     const clipped: string[] = [];
     for (const el of elements) {
       if (!isVisible(el)) continue;
       const rect = el.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) continue;
-      if (rect.right > vpWidth + 1) {
+      if (rect.right > vpWidth + 1 && !insideFittingClipBox(el)) {
         clipped.push(describe(el, rect));
       }
     }
