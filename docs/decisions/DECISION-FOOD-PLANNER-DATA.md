@@ -105,21 +105,30 @@ live.
 
 ### 2.5 Engine (proposed, not created here)
 - A pure engine `engines/food` (package `@mangotools/engine-food`, error prefix `FOOD_`), with first
-  operation `food.shopping.consolidate@1`. It scales recipes by guests ÷ servings, adds lines per
-  ingredient in base units, and rounds count items up only after adding.
-- Allowed imports: `zod`, `@mangotools/core` and `@mangotools/engine-numeric` (decimal arithmetic;
-  no JavaScript numbers for quantities or money).
+  operation `food.shopping.consolidate@1`. It scales recipes by guests × servings per guest ×
+  portion factor ÷ servings, adds lines per ingredient in base units, and rounds count items up
+  only after adding.
+- **Allowed imports: `zod` and `@mangotools/core` only.** Amended 2 Nov 2026: scaling divides by
+  recipe servings (e.g. ÷ 3), which `@mangotools/engine-numeric` decimal division cannot hold
+  exactly. The engine therefore keeps quantities as exact BigInt fractions, and writes a value
+  rounded to 3 decimals only when it has no finite decimal, reporting it as rounded. No JavaScript
+  numbers are used for quantities.
 - It must reproduce `reference/food/fixtures/001-three-recipes-50-guests.yaml` unchanged. That file
   is checked today by `tests/unit/food-reference.test.ts` with an exact rational calculator, so it
   is a golden fixture from day one.
+- A diet check may list conflicts or leave whole recipes out. It never removes an ingredient from
+  a recipe that is still listed.
 - Later operations (cost estimate, cooking schedule, menu validation) need their own task contracts.
 
 ## 3. Governance consequences
-- **Separate platform PR.** Before the engine PR: add `food: ['@mangotools/engine-numeric']` to
-  `ENGINE_IMPORTS` in `scripts/validate/rules.ts`, and later, if wanted, make `pnpm gen` validate
-  `reference/food/**`.
-- **Human-only (founder).** Add `food` to the blueprint engine table and `.github/CODEOWNERS`
-  (`engines/food/**/schema.ts`, `fixtures/`, and `reference/food/fixtures/`).
+- **Import whitelist.** With only `zod` and `@mangotools/core`, no `scripts/validate/rules.ts`
+  change is required (an engine missing from `ENGINE_IMPORTS` gets exactly those). An explicit
+  `food: []` entry plus a rules test is proposed for clarity (platform lane, separate PR).
+- **CODEOWNERS.** No change is required. The existing patterns
+  `/engines/*/src/operations/*/schema.ts`, `/engines/*/src/operations/*/fixtures/` and `/reference/`
+  already cover the engine's schema and fixtures and `reference/food/` (including its golden fixture).
+- **Blueprint (human-only, founder).** Add `food | core` to the §2.4 engine-edge table, and `food`
+  to the list of portable engines.
 - **Module page.** A multi-section page conflicts with "`apps/web` contains no tool-specific code";
   it needs its own short decision before any UI task.
 - **Outbound links.** Maps and YouTube links in page HTML need `ALLOWED_HOSTS` approval.
