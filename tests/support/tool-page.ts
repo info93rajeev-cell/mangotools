@@ -25,7 +25,8 @@ export const SAMPLES = {
     archetype: 'A',
     result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
   },
-  'csv-to-json': { archetype: 'A', result: '"name": "Raj"' },
+  // The studio's Sample CSV button loads the reference sample shown on first open.
+  'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },
   'json-to-csv': { archetype: 'A', result: 'Raj,50' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
@@ -179,7 +180,10 @@ export async function openTool(page: Page, id: string): Promise<void> {
 /** Opens the shared related-tools disclosure before interacting with its links. */
 export async function openRelatedTools(page: Page): Promise<void> {
   const related = page.locator('details#related-tools');
-  await related.locator('summary').click();
+  const summary = related.locator('summary');
+  // Data studios show the guide sections as info pills in the action row instead of summaries.
+  if (await summary.isVisible()) await summary.click();
+  else await page.getByRole('button', { name: 'Related tools' }).first().click();
   await expect(related).toHaveAttribute('open');
 }
 
@@ -237,7 +241,8 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     // The CBM and Universal Tax worksheets open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
   } else {
-    await page.getByRole('button', { name: 'Try sample' }).click();
+    // Every sample control carries data-try-sample, whatever its visible label.
+    await island(page, id).locator('[data-try-sample]').first().click();
   }
   await waitForResult(page, id);
 }
