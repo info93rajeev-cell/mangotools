@@ -10,6 +10,7 @@ export const messages: Readonly<Record<string, string>> = {
   DATA_BASE64_INVALID_LENGTH: 'The Base64 text has an invalid length or padding.',
   DATA_BASE64_NOT_UTF8:
     'The decoded data is not UTF-8 text ({byteLength} bytes). A hex preview is shown instead.',
+  DATA_BASE64_NOT_LATIN1: 'This text has characters outside ISO-8859-1. Choose UTF-8 to encode it.',
   DATA_URL_MALFORMED_ESCAPE: 'Malformed percent-escape at position {offset}.',
   DATA_URL_INVALID_UTF8: 'The text does not form valid UTF-8 characters.',
   DATA_CSV_EMPTY: 'Paste or type some CSV to convert.',

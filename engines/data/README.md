@@ -6,7 +6,7 @@ worker or in Node.
 | Operation | Purpose |
 |---|---|
 | `data.json.format@1` | Lossless format / minify / validate (RFC 8259); numbers and escapes kept exactly as written |
-| `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines |
+| `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines; UTF-8 or Latin-1/raw bytes, data URIs, file-type detection on decode |
 | `data.url.transform@1` | Percent-encoding as a URL component, a full URL, or form data (RFC 3986, WHATWG form encoding) |
 | `data.csv.to-json@1` | CSV text to JSON (RFC 4180 quoting). Defaults: comma, first row as headers, values kept as strings. Optional params: delimiter (incl. auto), no header row, trim, skip empty rows, lossless type inference, empty/custom tokens as null, max rows, excluded columns, objects/arrays/NDJSON shape, metadata wrapper. Reports each column's JSON type |
 | `data.json.to-csv@1` | A JSON array of objects (or a single object) to CSV text, with RFC 4180 escaping; nested values rejected |
@@ -34,6 +34,13 @@ expectation from `new Date(...).toString()` in the same process, so it passes on
 timezone rather than only one.
 
 ## Changelog
+- 0.7.0 — `data.base64.transform@1` gains optional, additive params; defaults reproduce the
+  previous output (all 15 fixtures unchanged). `charset` (`utf-8` default, or `latin1` = one
+  character per byte, which is also how a file's raw bytes are passed in; a character above 255 is
+  the typed error `DATA_BASE64_NOT_LATIN1`), `dataUriMime` (encode to `data:<mime>;base64,…`,
+  never line-wrapped) and `stripDataUri` (decode accepts a data URI prefix). New outputs:
+  `inputByteLength`, `binary` (decoded bytes as a latin1 string when they are not UTF-8 or charset
+  is latin1) and `mime` (from a data URI prefix, or PNG/JPEG/GIF/WebP/PDF/ZIP magic numbers).
 - 0.6.0 — `data.csv.to-json@1` gains optional, additive params; every default keeps the 0.3.0
   output byte-for-byte (all existing fixtures unchanged). `delimiter` (comma/semicolon/tab/pipe, or
   `auto` = most frequent on the first line outside quotes), `header` (off → `column_1…`), `trim`,
