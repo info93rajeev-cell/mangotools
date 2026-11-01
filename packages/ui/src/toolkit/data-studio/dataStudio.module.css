@@ -2816,3 +2816,18 @@ button.btnDangerOutline {
     margin-top: -42px;
   }
 }
+/* Code reads like the reference: larger, slightly heavier monospace */
+.codeTextarea,
+.codeHighlight {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 20px;
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+}
+.codeHighlight :global(.jk),
+.codeHighlight :global(.js) {
+  font-weight: 500;
+}
+.gutterLine {
+  font-size: 12px;
+}
