@@ -10,7 +10,9 @@ import {
   jsonToCsvParams,
 } from './schema.ts';
 import { tableStats } from './stats.ts';
-import { buildCsv } from './stringify.ts';
+import { buildCsv, cellOf } from './stringify.ts';
+
+const PREVIEW_ROWS = 100;
 
 const FAILURE_CODE = {
   'root-invalid': 'DATA_JSON_TO_CSV_ROOT_INVALID',
@@ -63,6 +65,9 @@ function convert(root: unknown, params: JsonToCsvParams): Result<JsonToCsvOutput
     headers,
     ...tableStats(table.value),
     recordPaths: findRecordPaths(root),
+    previewRows: rows
+      .slice(0, PREVIEW_ROWS)
+      .map((row) => headers.map((h) => cellOf(row[h], params))),
   });
 }
 

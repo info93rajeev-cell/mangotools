@@ -85,6 +85,14 @@ describe('data.json.to-csv options', () => {
     expect(result.ok).toBe(false);
   });
 
+  it('previews the first 100 rows as written cell texts', async () => {
+    const records = Array.from({ length: 120 }, (_, i) => ({ n: i, f: '=1' }));
+    const result = await run(JSON.stringify(records), { formulaGuard: true });
+    expect(result.ok && result.value.previewRows.length).toBe(100);
+    expect(result.ok && result.value.previewRows[0]).toEqual(['0', "'=1"]);
+    expect(result.ok && result.value.rowCount).toBe(120);
+  });
+
   it('escapes with a given delimiter', () => {
     expect(escapeCsvField('a;b', ';')).toBe('"a;b"');
     expect(escapeCsvField('a;b')).toBe('a;b');

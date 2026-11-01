@@ -42,7 +42,8 @@ export interface CsvWriteOptions {
   formulaGuard: boolean;
 }
 
-function cellOf(value: unknown, options: CsvWriteOptions): string {
+/** The text written for one cell, before CSV quoting. */
+export function cellOf(value: unknown, options: Pick<CsvWriteOptions, 'formulaGuard'>): string {
   const text = toCellText(value);
   return options.formulaGuard && isFormulaLike(value) ? `'${text}` : text;
 }
