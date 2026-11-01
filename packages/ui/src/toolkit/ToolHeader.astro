@@ -1,6 +1,7 @@
 ---
 import type { Processing } from '@mangotools/schemas';
 import { Icon } from '../primitives/Icon.tsx';
+import FullscreenToggle from './FullscreenToggle.astro';
 import { privacyBadge } from './privacyBadge.ts';
 
 interface Props {
@@ -27,6 +28,7 @@ const badge = privacyBadge(processing);
         <span aria-hidden="true">💡</span>
         <span>Guide</span>
       </button>
+      <FullscreenToggle />
       {
         badge ? (
           <p class="privacy" title={badge.detail} data-processing={processing}>
@@ -87,6 +89,12 @@ const badge = privacyBadge(processing);
     background: var(--color-surface-hover, #f8fafc);
     border-color: #f59e0b;
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.15);
+  }
+  @media (pointer: coarse) {
+    .guide-btn {
+      min-height: 44px;
+      padding-inline: 12px;
+    }
   }
   .privacy {
     display: inline-flex;

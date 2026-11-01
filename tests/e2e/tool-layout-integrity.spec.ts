@@ -70,6 +70,16 @@ test.describe('tool layout integrity', () => {
     });
   }
 
+  test('civil result tiles stay readable in phone landscape', async ({ page }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await openIdle(page, '/brickwork-calculator');
+    const widths = await page
+      .locator('.civil-workspace .kpi')
+      .evaluateAll((tiles) => tiles.map((tile) => tile.getBoundingClientRect().width));
+    expect(widths.length).toBeGreaterThan(0);
+    expect(Math.min(...widths)).toBeGreaterThan(120);
+  });
+
   test('photo size reducer starts empty until the user picks a photo or the sample', async ({
     page,
   }) => {
