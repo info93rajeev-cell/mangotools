@@ -32,7 +32,8 @@ export const SAMPLES = {
   },
   // The studio's Sample CSV button loads the reference sample shown on first open.
   'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },
-  'json-to-csv': { archetype: 'A', result: 'Raj,50' },
+  // The studio's Load sample button loads the reference records shown on first open.
+  'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
 

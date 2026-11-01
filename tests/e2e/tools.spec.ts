@@ -262,9 +262,11 @@ test.describe('CSV to JSON', () => {
 test.describe('JSON to CSV', () => {
   test('converts the sample and links to CSV to JSON', async ({ page }) => {
     await openTool(page, 'json-to-csv');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(outputArea(page, 'json-to-csv')).toHaveValue(/name,age\nRaj,50\nAiva,19/);
-    await expect(island(page, 'json-to-csv')).toContainText('Rows');
+    await page.getByRole('button', { name: 'Load sample' }).click();
+    await expect(outputArea(page, 'json-to-csv')).toHaveValue(
+      /name,city,sku,active\nAsha Rao,Delhi,00124,true/,
+    );
+    await expect(island(page, 'json-to-csv')).toContainText('Records');
     await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CSV to JSON' }).first()).toBeVisible();
   });
@@ -276,13 +278,14 @@ test.describe('JSON to CSV', () => {
     await expect(page.getByText('The input is not valid JSON.')).toBeVisible();
   });
 
-  test('rejects a nested object value, naming the key and item', async ({ page }) => {
+  test('rejects a nested object value when asked to, naming the key and item', async ({ page }) => {
     await openTool(page, 'json-to-csv');
+    await island(page, 'json-to-csv').getByLabel('Object handling').selectOption('reject');
     await inputArea(page, 'json-to-csv').fill('[{"a":{"b":1}}]');
     await expect(island(page, 'json-to-csv')).toHaveAttribute('data-phase', 'error');
     await expect(
       page.getByText(
-        'The value for "a" in item 1 is a nested object or array, which is not supported in this version.',
+        'The value for "a" in item 1 is a nested object or array. Flatten it or keep it as JSON text to convert it.',
       ),
     ).toBeVisible();
   });
