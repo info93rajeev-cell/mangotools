@@ -1,7 +1,8 @@
 import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
-import type { useWordToPdfStudio } from './usePdfConvertStudio.ts';
+import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
 type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
 
@@ -22,9 +23,7 @@ function WordToPdfItemRow({
       </div>
       <div class={styles.fileDetails}>
         <span class={styles.fileName}>{file.name}</span>
-        <span class={styles.fileMeta}>
-          {file.pages} pages • {(file.sizeBytes / (1024 * 1024)).toFixed(1)} MB
-        </span>
+        <span class={styles.fileMeta}>{fileMeta(file.pages, file.sizeBytes)}</span>
       </div>
       <button
         type="button"
@@ -53,7 +52,7 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".docx,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         multiple
         style={{ display: 'none' }}
         onChange={onFileInputChange}
@@ -68,7 +67,7 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
           </span>
           <button
             type="button"
-            onClick={loadSampleWordDocs}
+            onClick={() => void loadSampleWordDocs()}
             style={{
               fontSize: '11px',
               padding: '3px 8px',
@@ -180,20 +179,7 @@ function WordToPdfExportModeButtons({
 }
 
 function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
-  const {
-    pageSize,
-    setPageSize,
-    margins,
-    setMargins,
-    exportMode,
-    setExportMode,
-    preserveLinks,
-    setPreserveLinks,
-    includeBookmarks,
-    setIncludeBookmarks,
-    compressOutput,
-    setCompressOutput,
-  } = studio;
+  const { pageSize, setPageSize, margins, setMargins, exportMode, setExportMode } = studio;
 
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
@@ -240,40 +226,11 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
           </div>
         </div>
         <WordToPdfExportModeButtons exportMode={exportMode} setExportMode={setExportMode} />
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '6px 12px',
-            fontSize: '11px',
-            fontWeight: 600,
-          }}
-        >
-          <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={includeBookmarks}
-              onChange={(e) => setIncludeBookmarks(e.currentTarget.checked)}
-            />
-            <span>Include bookmarks</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={preserveLinks}
-              onChange={(e) => setPreserveLinks(e.currentTarget.checked)}
-            />
-            <span>Preserve hyperlinks</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={compressOutput}
-              onChange={(e) => setCompressOutput(e.currentTarget.checked)}
-            />
-            <span>Compress output</span>
-          </label>
-        </div>
+        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+          Text, headings, bold and italic, lists and table rows are laid out with standard PDF
+          fonts. Images, text boxes, headers, footers and exact Word layout are not carried over.
+          Characters outside Western European text (for example Hindi or ₹) show as “?”.
+        </p>
       </div>
     </div>
   );

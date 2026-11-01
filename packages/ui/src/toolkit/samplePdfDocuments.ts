@@ -186,13 +186,77 @@ export async function createCompressSamplePdf(): Promise<Uint8Array> {
   return doc.save();
 }
 
-export const SAMPLE_PDF_TO_WORD_FILE: SampleDocMeta = {
-  name: 'Vendor-Agreement.pdf',
-  pageCount: 42,
-  sizeBytes: 6.4 * 1024 * 1024,
-  themeColor: '#ef4444',
-  summary: 'Vendor contract with tabular pricing and deliverables',
-};
+export const SAMPLE_PDF_TO_WORD_NAME = 'Supply-Agreement-Sample.pdf';
+
+const AGREEMENT: { heading: string; body: string[] }[] = [
+  {
+    heading: '1. Parties',
+    body: [
+      'This sample agreement is between a buyer and a supplier of packaging material.',
+      'It was generated in your browser to show how text, headings and paragraphs convert.',
+    ],
+  },
+  {
+    heading: '2. Delivery',
+    body: [
+      'The supplier delivers each order within ten working days of a written purchase order.',
+      'Late deliveries are reported to the buyer by email on the day the delay is known.',
+    ],
+  },
+  {
+    heading: '3. Payment',
+    body: ['Invoices are paid within thirty days. Prices include packing but exclude freight.'],
+  },
+];
+
+/** Writes words onto a page, wrapping at the given width; returns the y below the last line. */
+function drawWrapped(
+  page: ReturnType<PDFDocument['addPage']>,
+  text: string,
+  opts: {
+    x: number;
+    y: number;
+    width: number;
+    size: number;
+    font: Awaited<ReturnType<PDFDocument['embedFont']>>;
+  },
+): number {
+  let line = '';
+  let y = opts.y;
+  for (const word of text.split(' ')) {
+    const next = line ? `${line} ${word}` : word;
+    if (opts.font.widthOfTextAtSize(next, opts.size) > opts.width && line) {
+      page.drawText(line, { x: opts.x, y, size: opts.size, font: opts.font });
+      y -= opts.size * 1.35;
+      line = word;
+    } else line = next;
+  }
+  if (line) page.drawText(line, { x: opts.x, y, size: opts.size, font: opts.font });
+  return y - opts.size * 1.35;
+}
+
+/** A real two-page text PDF (title, headings, wrapped paragraphs) for trying PDF to Word. */
+export async function createTextSamplePdf(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  let page = doc.addPage([595.28, 841.89]);
+  page.drawText('Supply Agreement (Sample)', { x: 60, y: 770, size: 22, font: bold });
+  let y = 730;
+  AGREEMENT.forEach((section, i) => {
+    if (i === 2) {
+      page = doc.addPage([595.28, 841.89]);
+      y = 770;
+    }
+    page.drawText(section.heading, { x: 60, y, size: 15, font: bold });
+    y -= 26;
+    for (const para of section.body) {
+      y = drawWrapped(page, para, { x: 60, y, width: 300, size: 11, font }) - 8;
+    }
+    y -= 10;
+  });
+  return doc.save();
+}
 
 export const SAMPLE_WORD_FILES: SampleDocMeta[] = [
   {
