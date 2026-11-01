@@ -23,7 +23,8 @@ export const urlParams = z.strictObject({
 export const urlOutput = z.strictObject({
   text: z.string(),
   changedCount: z.int(),
-  /** Query parameters of the encoded side (output for encode, input for decode). */
+  /** Query parameters: from the encoded side when it shows the query structure, otherwise from
+   *  the first line of the decoded side. */
   params: z.array(z.strictObject({ key: z.string(), value: z.string() })),
 });
 

@@ -1,7 +1,7 @@
 import { defineOperation, err, ok } from '@mangotools/core';
 import { MAX_INPUT_CHARS } from '../../errors.ts';
 import { type CodecResult, decodeUrl, encodeUrl } from './codec.ts';
-import { parseQuery, readPairs } from './query.ts';
+import { queryOf, readPairs } from './query.ts';
 import { type UrlParams, urlInput, urlOutput, urlParams } from './schema.ts';
 
 function encodeOne(text: string, params: UrlParams): CodecResult {
@@ -87,11 +87,13 @@ export const urlTransform = defineOperation({
         ...(result.offset !== undefined ? { details: { offset: result.offset } } : {}),
       });
     }
-    const encodedSide = params.direction === 'encode' ? result.text : input.text;
+    const encode = params.direction === 'encode';
+    const encoded = encode ? result.text : input.text;
+    const decoded = encode ? (params.source === 'pairs' ? '' : input.text) : result.text;
     return ok({
       text: result.text,
       changedCount: result.changedCount,
-      params: parseQuery(encodedSide),
+      params: queryOf(encoded, decoded),
     });
   },
 });

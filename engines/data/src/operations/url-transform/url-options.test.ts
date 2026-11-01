@@ -56,6 +56,11 @@ describe('data.url.transform options', () => {
       { key: 'q', value: 'a b' },
       { key: 'lang', value: 'en' },
     ]);
+    const component = await run('https://x.com/s?q=a b&n=1\nmore');
+    expect(component.ok && component.value.params).toEqual([
+      { key: 'q', value: 'a b' },
+      { key: 'n', value: '1' },
+    ]);
     const plain = await run('hello');
     expect(plain.ok && plain.value.params).toEqual([]);
   });
