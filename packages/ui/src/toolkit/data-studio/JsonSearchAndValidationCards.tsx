@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 import type { ParseResult } from './useJsonFormatterStudio.ts';
 
@@ -7,12 +8,16 @@ export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResu
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>✓</span>
+        <span class={styles.optIcon}>
+          <Icon name="circle-check" class={styles.optIco} />
+        </span>
         <b>Validation Result</b>
       </div>
       {valid ? (
         <div class={styles.badgeOkCallout}>
-          <span class={styles.badgeOkCircle}>✓</span>
+          <span class={styles.badgeOkCircle}>
+            <Icon name="check" class={styles.ico} />
+          </span>
           <div class={styles.badgeOkText}>
             <strong>Valid JSON</strong>
             <small>No syntax errors found.</small>
@@ -20,7 +25,9 @@ export function ValidationResultCard({ parsedResult }: { parsedResult: ParseResu
         </div>
       ) : (
         <div class={styles.badgeErrCallout}>
-          <span class={styles.badgeErrCircle}>⚠</span>
+          <span class={styles.badgeErrCircle}>
+            <Icon name="triangle-alert" class={styles.ico} />
+          </span>
           <div class={styles.badgeErrText}>
             <strong>Invalid JSON</strong>
             <small>{error || 'Syntax error'}</small>
@@ -71,7 +78,9 @@ export function SearchInJsonCard({
   return (
     <section class={styles.optcard}>
       <div class={styles.optTitle}>
-        <span class={styles.optIcon}>🔍</span>
+        <span class={styles.optIcon}>
+          <Icon name="search" class={styles.optIco} />
+        </span>
         <b>Search in JSON</b>
       </div>
       <div class={styles.searchInputWrap}>
@@ -106,7 +115,9 @@ export function SearchInJsonCard({
         </span>
       </div>
       <div class={styles.exampleRow}>
-        <span class={styles.exampleLabel}>⭐ Examples</span>
+        <span class={styles.exampleLabel}>
+          <Icon name="sun" class={styles.ico} /> Examples
+        </span>
         <select
           class={styles.exampleSelect}
           onChange={(e) => {

@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 import type { DetailedJsonStats } from './jsonStats.ts';
 
@@ -18,28 +19,36 @@ export function JsonStructureCards({ stats }: JsonStructureCardsProps) {
         </div>
         <div class={styles.structureGrid}>
           <div class={`${styles.structureMetric} ${styles.metricBlue}`}>
-            <span class={styles.metricIcon}>🧊</span>
+            <span class={styles.metricIcon}>
+              <Icon name="box" class={styles.metricIco} />
+            </span>
             <div class={styles.metricText}>
               <small>Objects</small>
               <b>{stats.objects}</b>
             </div>
           </div>
           <div class={`${styles.structureMetric} ${styles.metricPurple}`}>
-            <span class={styles.metricIcon}>🔲</span>
+            <span class={styles.metricIcon}>
+              <Icon name="brackets" class={styles.metricIco} />
+            </span>
             <div class={styles.metricText}>
               <small>Arrays</small>
               <b>{stats.arrays}</b>
             </div>
           </div>
           <div class={`${styles.structureMetric} ${styles.metricAmber}`}>
-            <span class={styles.metricIcon}>📋</span>
+            <span class={styles.metricIcon}>
+              <Icon name="file-text" class={styles.metricIco} />
+            </span>
             <div class={styles.metricText}>
               <small>Total Keys</small>
               <b>{stats.totalKeys}</b>
             </div>
           </div>
           <div class={`${styles.structureMetric} ${styles.metricGreen}`}>
-            <span class={styles.metricIcon}>🌱</span>
+            <span class={styles.metricIcon}>
+              <Icon name="share-2" class={styles.metricIco} />
+            </span>
             <div class={styles.metricText}>
               <small>Total Values</small>
               <b>{stats.totalValues}</b>
@@ -55,42 +64,42 @@ export function JsonStructureCards({ stats }: JsonStructureCardsProps) {
         </div>
         <div class={styles.dataTypesList}>
           <DataTypeRow
-            icon="🌿"
+            icon="share-2"
             label="Strings"
             count={types.strings}
             pct={types.stringsPct}
             colorClass={styles.trackGreen}
           />
           <DataTypeRow
-            icon="🔢"
+            icon="hexagon"
             label="Numbers"
             count={types.numbers}
             pct={types.numbersPct}
             colorClass={styles.trackBlue}
           />
           <DataTypeRow
-            icon="🛡️"
+            icon="shield-check"
             label="Booleans"
             count={types.booleans}
             pct={types.booleansPct}
             colorClass={styles.trackRed}
           />
           <DataTypeRow
-            icon="⚪"
+            icon="clock"
             label="Null"
             count={types.nulls}
             pct={types.nullsPct}
             colorClass={styles.trackGray}
           />
           <DataTypeRow
-            icon="🧊"
+            icon="box"
             label="Objects"
             count={types.objects}
             pct={types.objectsPct}
             colorClass={styles.trackPurple}
           />
           <DataTypeRow
-            icon="🔲"
+            icon="brackets"
             label="Arrays"
             count={types.arrays}
             pct={types.arraysPct}
@@ -118,7 +127,9 @@ function DataTypeRow({
   return (
     <div class={styles.dataTypeRow}>
       <div class={styles.dataTypeMeta}>
-        <span class={styles.dataTypeIcon}>{icon}</span>
+        <span class={styles.dataTypeIcon}>
+          <Icon name={icon} class={styles.ico} />
+        </span>
         <span class={styles.dataTypeLabel}>{label}</span>
       </div>
       <div class={styles.dataTypeTrackWrapper}>

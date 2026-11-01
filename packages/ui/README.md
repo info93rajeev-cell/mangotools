@@ -41,6 +41,12 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Visual upgrade v2, piloted on JSON Formatter (Rajeev's reference):
+  - Lucide line icons replace emoji in the JSON studio, the shared data-studio action bar and the shared How to use / Method / FAQ / Related strip.
+  - Tool H1 is 40px/800 and card titles 18px/750; buttons are 38–44px with icon and text.
+  - The active output tab is a solid blue pill, and tree keys are colour-coded pills by value type.
+  - Structure summary and data types use coloured icons.
+  - New icons are registered in `icons/icons.ts` (lucide-static is already a dependency).
 - Layout integrity pass (PR #233 review):
   - Data studio option cards no longer use a percentage `min-height`. On phones it made each card as tall as all four together and pushed them over the footer.
   - The PDF studio grows with its content instead of a fixed viewport height. This stops PDF to Word's last card being clipped and the PDF Split options card being covered.

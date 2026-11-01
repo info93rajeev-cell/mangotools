@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 import { JsonStructureCards } from './JsonStructureCards.tsx';
 import { JsonTreeView } from './JsonTreeView.tsx';
@@ -27,7 +28,10 @@ export function JsonOutputPanel(props: JsonOutputPanelProps) {
     >
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <strong>{title}</strong>
+          <span class={styles.toolIcon}>
+            <Icon name={title.icon} class={styles.toolIco} />
+          </span>
+          <strong>{title.text}</strong>
         </div>
         <div class={styles.toolactions}>
           <OutputTabPills
@@ -50,10 +54,10 @@ export function JsonOutputPanel(props: JsonOutputPanelProps) {
   );
 }
 
-function getOutputPanelTitle(tab: 'tree' | 'table' | 'raw'): string {
-  if (tab === 'tree') return '🌳 JSON Tree View';
-  if (tab === 'table') return '📊 JSON Table View';
-  return '📄 Formatted JSON';
+function getOutputPanelTitle(tab: 'tree' | 'table' | 'raw'): { icon: string; text: string } {
+  if (tab === 'tree') return { icon: 'network', text: 'JSON Tree View' };
+  if (tab === 'table') return { icon: 'table-2', text: 'JSON Table View' };
+  return { icon: 'code-xml', text: 'Formatted JSON' };
 }
 
 function OutputTabPills({
@@ -76,7 +80,7 @@ function OutputTabPills({
         class={`${styles.tabPill} ${activeTab === 'tree' ? styles.tabPillActive : ''}`}
         onClick={() => onTab('tree')}
       >
-        {'{ }'} Tree
+        <Icon name="braces" class={styles.ico} /> Tree
       </button>
       <button
         type="button"
@@ -84,14 +88,14 @@ function OutputTabPills({
         onClick={() => onTab('table')}
         title={hasTableData ? 'View as tabular grid' : 'Arrays can be viewed as table'}
       >
-        ⊞ Table
+        <Icon name="table-2" class={styles.ico} /> Table
       </button>
       <button
         type="button"
         class={`${styles.tabPill} ${activeTab === 'raw' ? styles.tabPillActive : ''}`}
         onClick={() => onTab('raw')}
       >
-        ⊟ Raw
+        <Icon name="code-xml" class={styles.ico} /> Raw
       </button>
       <button
         type="button"
@@ -99,7 +103,7 @@ function OutputTabPills({
         onClick={onToggleFullscreen}
         title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
       >
-        {isFullscreen ? '✕' : '⤢'}
+        <Icon name={isFullscreen ? 'minimize-2' : 'maximize'} class={styles.ico} />
       </button>
     </div>
   );

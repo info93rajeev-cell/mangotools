@@ -77,7 +77,7 @@ export function JsonFormatterStudioLayout({
         onLoadExample={studio.handleLoadSample}
       />
       <DataStudioStatusBar
-        primaryLabel="⚡ Format & Validate JSON"
+        primaryLabel="Format & Validate JSON"
         onPrimary={handleFormatAndValidate}
         onCopy={studio.handleCopy}
         onDownload={studio.handleDownload}

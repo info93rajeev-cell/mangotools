@@ -2139,3 +2139,347 @@ button.btnPrimarySolid:hover {
   border-color: #334155;
   color: #f8fafc;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   Visual upgrade v2 (matches Rajeev's JSON reference): crisp line icons, bolder titles, larger
+   buttons and colour-coded chips. Declared last so it overrides the compact v1 sizes above.
+   --------------------------------------------------------------------------------------------- */
+.container {
+  --ds-ink: #0f1b3d;
+  --ds-blue: #1665f5;
+  --ds-border: #dfe7f3;
+}
+
+.ico,
+.toolIco,
+.optIco,
+.metricIco {
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 0;
+}
+.ico {
+  width: 16px;
+  height: 16px;
+}
+.ico :global(svg),
+.toolIco :global(svg),
+.optIco :global(svg),
+.metricIco :global(svg) {
+  width: 100%;
+  height: 100%;
+  stroke-width: 2;
+}
+
+/* Card titles with a bare blue icon, like the reference */
+.tooltitle {
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  color: var(--ds-ink);
+  gap: 10px;
+}
+.toolIcon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ds-blue);
+}
+.toolIco {
+  width: 26px;
+  height: 26px;
+}
+
+/* Buttons: taller, clearer, icon + text */
+.btnPrimary,
+.btnSecondary,
+button.btnPrimarySolid,
+button.btnDangerOutline,
+.topActionBtn {
+  min-height: 38px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  gap: 8px;
+}
+button.btnPrimarySolid {
+  background: var(--ds-blue);
+  border-color: var(--ds-blue);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(22, 101, 245, 0.22);
+}
+.topActionBtn {
+  min-height: 42px;
+  padding: 9px 18px;
+  color: var(--ds-blue);
+  border-color: #cfdcf3;
+}
+.btnGold {
+  min-height: 44px;
+  padding: 10px 26px;
+  font-size: 15px;
+  font-weight: 750;
+  border-radius: 9px;
+  gap: 10px;
+}
+.btnGold .ico,
+.statusBar .ico {
+  width: 18px;
+  height: 18px;
+}
+.statusBar .btnSecondary {
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: 15px;
+}
+
+/* Output tabs: active tab is a solid blue pill */
+.tabPill {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 7px;
+  gap: 6px;
+}
+.tabPillActive {
+  background: var(--ds-blue);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(22, 101, 245, 0.25);
+}
+
+/* Option card titles */
+.optTitle {
+  font-size: 16.5px;
+  font-weight: 750;
+  color: var(--ds-ink);
+  gap: 10px;
+}
+.optIcon {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ds-blue);
+}
+.optIco {
+  width: 24px;
+  height: 24px;
+}
+.optcard:nth-child(3) .optIcon {
+  color: #16a34a;
+}
+.optLabel,
+.optCheckbox {
+  font-size: 13px;
+}
+
+/* Side summary: bigger numbers and coloured icons */
+.sideCardHeader {
+  font-size: 16px;
+  font-weight: 750;
+  color: var(--ds-ink);
+}
+.structureMetric {
+  padding: 10px 12px;
+  gap: 10px;
+  border-left-width: 1px;
+  border-radius: 9px;
+  background: #fff;
+}
+.metricIco {
+  width: 26px;
+  height: 26px;
+}
+.metricBlue .metricIcon {
+  color: #2563eb;
+}
+.metricPurple .metricIcon {
+  color: #9333ea;
+}
+.metricAmber .metricIcon {
+  color: #f59e0b;
+}
+.metricGreen .metricIcon {
+  color: #16a34a;
+}
+.metricText small {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.metricText b {
+  font-size: 18px;
+}
+.dataTypeRow {
+  grid-template-columns: 96px 1fr 52px;
+  font-size: 13px;
+  gap: 8px;
+}
+.dataTypeRow:nth-child(1) .dataTypeIcon {
+  color: #16a34a;
+}
+.dataTypeRow:nth-child(2) .dataTypeIcon {
+  color: #2563eb;
+}
+.dataTypeRow:nth-child(3) .dataTypeIcon {
+  color: #ef4444;
+}
+.dataTypeRow:nth-child(4) .dataTypeIcon {
+  color: #64748b;
+}
+.dataTypeRow:nth-child(5) .dataTypeIcon {
+  color: #2563eb;
+}
+.dataTypeRow:nth-child(6) .dataTypeIcon {
+  color: #9333ea;
+}
+
+/* Tree: colour-coded key pills per value type */
+.treeLeafRow,
+.treeNodeHeader {
+  font-size: 13px;
+  gap: 6px;
+  padding-block: 3px;
+}
+.treeKeyPill,
+.treeObjectKey,
+.treeArrayKey,
+.treeValue {
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.treeValue {
+  background: #f3f5f9;
+  color: #1e293b;
+  font-weight: 500;
+}
+.treeLeafRow[data-type="number"] .treeKeyPill {
+  background: #dcfce7;
+  color: #15803d;
+}
+.treeLeafRow[data-type="string"] .treeKeyPill {
+  background: #fce7f3;
+  color: #db2777;
+}
+.treeLeafRow[data-type="boolean"] .treeKeyPill {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.treeLeafRow[data-type="null"] .treeKeyPill {
+  background: #f1f5f9;
+  color: #475569;
+}
+.treeObjectKey {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+.treeArrayKey {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+.treeNodeIcon {
+  display: inline-flex;
+  color: #2563eb;
+}
+.treeNodeIcon[data-kind="array"] {
+  color: #9333ea;
+}
+.badgeObject,
+.badgeArray,
+.badgeString,
+.badgeNumber,
+.badgeBoolean,
+.badgeNull,
+.badgeGeneric,
+.treeCountBadge,
+.treeRootBadge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.treeCountBadge {
+  background: #eef2f7;
+}
+
+.noteLine {
+  font-size: 12.5px;
+}
+.noteLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.noteLeft .ico {
+  color: var(--ds-blue);
+}
+button.btnPrimarySolid,
+button.btnDangerOutline {
+  display: inline-flex;
+  align-items: center;
+}
+.dataTypeMeta {
+  gap: 8px;
+}
+.dataTypeIcon {
+  display: inline-flex;
+  font-size: inherit;
+}
+.optCheckboxRow {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 13px;
+  color: #334155;
+}
+.optCheckboxRow .optCheckbox {
+  white-space: nowrap;
+}
+.treeScrollContainer,
+.treeLeafRow,
+.treeNodeHeader {
+  font-family: inherit;
+}
+.switchList {
+  gap: 10px;
+}
+.switchList label,
+.switchRow {
+  font-size: 13.5px;
+  color: #1e293b;
+  font-weight: 500;
+}
+.switchLabel {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1e293b;
+}
+.tabIcon {
+  display: inline-flex;
+}
+@media (max-width: 650px) {
+  .tooltitle,
+  .inputPanel .tooltitle {
+    justify-content: flex-start;
+    font-size: 16.5px;
+  }
+  .toolIcon {
+    width: 26px;
+    height: 26px;
+  }
+  .toolIco {
+    width: 22px;
+    height: 22px;
+  }
+}
+@media (max-width: 480px) {
+  .tabPillGroup {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .tabPill {
+    padding: 7px 10px;
+  }
+}

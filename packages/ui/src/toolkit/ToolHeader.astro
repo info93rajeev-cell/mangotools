@@ -102,6 +102,12 @@ const badge = privacyBadge(processing);
     font-weight: var(--weight-medium);
     white-space: nowrap;
   }
+  .title-row h1 {
+    font-size: clamp(1.75rem, 1.1rem + 1.6vw, 2.5rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
   .summary {
     color: var(--color-text-muted);
     max-width: 70ch;
@@ -123,9 +129,9 @@ const badge = privacyBadge(processing);
       align-items: center;
     }
     .title-row h1 {
-      font-size: 16px;
+      font-size: 22px;
       line-height: 1.15;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
       margin: 0;
     }
     .guide-btn {

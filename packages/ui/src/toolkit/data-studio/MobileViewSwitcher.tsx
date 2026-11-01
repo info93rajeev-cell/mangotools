@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export type StudioMobileView = 'split' | 'input' | 'output';
@@ -34,7 +35,9 @@ export function MobileViewSwitcher({
         onClick={() => handleChange('split')}
         aria-label="View both input and output on screen"
       >
-        <span class={styles.tabIcon}>⚡</span>
+        <span class={styles.tabIcon}>
+          <Icon name="layout-grid" class={styles.ico} />
+        </span>
         <span>Split (Both)</span>
       </button>
       <button
@@ -43,7 +46,9 @@ export function MobileViewSwitcher({
         onClick={() => handleChange('input')}
         aria-label="View input only"
       >
-        <span class={styles.tabIcon}>📝</span>
+        <span class={styles.tabIcon}>
+          <Icon name="braces" class={styles.ico} />
+        </span>
         <span>{inputTitle}</span>
       </button>
       <button
@@ -52,7 +57,9 @@ export function MobileViewSwitcher({
         onClick={() => handleChange('output')}
         aria-label="View output only"
       >
-        <span class={styles.tabIcon}>📊</span>
+        <span class={styles.tabIcon}>
+          <Icon name="network" class={styles.ico} />
+        </span>
         <span>{outputTitle}</span>
       </button>
     </div>

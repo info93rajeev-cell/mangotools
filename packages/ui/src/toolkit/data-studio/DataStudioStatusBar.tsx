@@ -1,3 +1,4 @@
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 export interface DataStudioStatusBarProps {
@@ -23,16 +24,16 @@ export function DataStudioStatusBar({
     <div class={styles.statusBar}>
       <div class={styles.callto}>
         <button type="button" class={styles.btnGold} onClick={onPrimary}>
-          &#10024; {primaryLabel}
+          <Icon name="settings-2" class={styles.ico} /> {primaryLabel}
         </button>
         <button type="button" class={styles.btnSecondary} onClick={onCopy}>
-          Copy result
+          <Icon name="copy" class={styles.ico} /> Copy result
         </button>
         <button type="button" class={styles.btnSecondary} onClick={onDownload}>
-          {downloadLabel}
+          <Icon name="download" class={styles.ico} /> {downloadLabel}
         </button>
         <button type="button" class={styles.btnSecondary} onClick={onReset}>
-          Reset
+          <Icon name="rotate-ccw" class={styles.ico} /> Reset
         </button>
       </div>
     </div>

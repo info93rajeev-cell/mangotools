@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 interface JsonTreeViewProps {
@@ -49,7 +50,16 @@ function ObjectNode({
         aria-expanded={open}
       >
         <span class={styles.treeChevron}>{open ? '▾' : '▸'}</span>
-        <span class={isRoot ? styles.treeRootBadge : styles.treeKeyName}>{name}</span>
+        {!isRoot && (
+          <span class={styles.treeNodeIcon}>
+            <Icon name="box" class={styles.ico} />
+          </span>
+        )}
+        <span
+          class={isRoot ? styles.treeRootBadge : `${styles.treeKeyName} ${styles.treeObjectKey}`}
+        >
+          {name}
+        </span>
         <span class={styles.badgeObject}>{'{ }'} object</span>
         <span class={styles.treeCountBadge}>{keys.length} keys</span>
       </button>
@@ -77,7 +87,10 @@ function ArrayNode({ name, items, depth }: { name: string; items: unknown[]; dep
         aria-expanded={open}
       >
         <span class={styles.treeChevron}>{open ? '▾' : '▸'}</span>
-        <span class={styles.treeKeyName}>{name}</span>
+        <span class={styles.treeNodeIcon} data-kind="array">
+          <Icon name="brackets" class={styles.ico} />
+        </span>
+        <span class={`${styles.treeKeyName} ${styles.treeArrayKey}`}>{name}</span>
         <span class={styles.badgeArray}>[ ] array</span>
         <span class={styles.treeCountBadge}>{items.length} items</span>
       </button>
@@ -108,8 +121,8 @@ function LeafProperty({ name, value }: { name: string; value: unknown }) {
   const type = value === null ? 'null' : typeof value;
 
   return (
-    <div class={styles.treeLeafRow}>
-      <span class={styles.treeKeyName}>{name}</span>
+    <div class={styles.treeLeafRow} data-type={type}>
+      <span class={`${styles.treeKeyName} ${styles.treeKeyPill}`}>{name}</span>
       <TypeBadge type={type} />
       <span class={styles.treeValue}>
         {type === 'string' ? `"${String(value)}"` : String(value)}

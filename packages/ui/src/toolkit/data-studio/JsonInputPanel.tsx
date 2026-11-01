@@ -1,4 +1,5 @@
 import { useRef, useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 interface JsonInputPanelProps {
@@ -39,7 +40,9 @@ export function JsonInputPanel({
     >
       <div class={styles.toolbar}>
         <div class={styles.tooltitle}>
-          <span class={styles.toolIcon}>&#123;&#125;</span>
+          <span class={styles.toolIcon}>
+            <Icon name="brackets" class={styles.toolIco} />
+          </span>
           <strong>Input JSON</strong>
         </div>
         <div class={styles.toolactions}>
@@ -48,21 +51,21 @@ export function JsonInputPanel({
             class={action === 'format' ? styles.btnPrimarySolid : styles.btnSecondary}
             onClick={() => onAction('format')}
           >
-            ⚡ Format
+            <Icon name="sparkles" class={styles.ico} /> Format
           </button>
           <button
             type="button"
             class={action === 'minify' ? styles.btnPrimarySolid : styles.btnSecondary}
             onClick={() => onAction('minify')}
           >
-            &#123;&#125; Minify
+            <Icon name="braces" class={styles.ico} /> Minify
           </button>
           <button
             type="button"
             class={action === 'validate' ? styles.btnPrimarySolid : styles.btnSecondary}
             onClick={() => onAction('validate')}
           >
-            ✓ Validate
+            <Icon name="circle-check" class={styles.ico} /> Validate
           </button>
           <button
             type="button"
@@ -70,7 +73,7 @@ export function JsonInputPanel({
             onClick={onClear}
             title="Clear input"
           >
-            🗑️ Clear
+            <Icon name="trash-2" class={styles.ico} /> Clear
           </button>
         </div>
       </div>
@@ -102,13 +105,14 @@ export function JsonInputPanel({
           onClick={() => setIsFullscreen(!isFullscreen)}
           title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
         >
-          {isFullscreen ? '✕' : '⤢'}
+          <Icon name={isFullscreen ? 'minimize-2' : 'maximize'} class={styles.ico} />
         </button>
       </div>
 
       <div class={styles.noteLine}>
         <span class={styles.noteLeft}>
-          ℹ Supports large JSON data up to 10 MB. Data stays in your browser and is not uploaded.
+          <Icon name="info" class={styles.ico} /> Supports large JSON data up to 10 MB. Data stays
+          in your browser and is not uploaded.
         </span>
         <span class={styles.noteRight}>
           Characters: <strong>{input.length}</strong> &nbsp; Lines: <strong>{lineCount}</strong>

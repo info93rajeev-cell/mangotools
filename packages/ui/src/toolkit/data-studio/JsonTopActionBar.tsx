@@ -1,4 +1,5 @@
 import { useRef } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 
 interface JsonTopActionBarProps {
@@ -33,7 +34,7 @@ export function JsonTopActionBar({
         data-try-sample=""
         title="Load default sample JSON"
       >
-        <span class={styles.btnIcon}>📄</span> Sample JSON
+        <Icon name="file-braces" class={styles.ico} /> Sample JSON
       </button>
       <button
         type="button"
@@ -41,7 +42,7 @@ export function JsonTopActionBar({
         onClick={() => fileInputRef.current?.click()}
         title="Open JSON file from device"
       >
-        <span class={styles.btnIcon}>📂</span> Open File
+        <Icon name="folder-open" class={styles.ico} /> Open File
       </button>
       <button
         type="button"
@@ -49,7 +50,7 @@ export function JsonTopActionBar({
         onClick={onPaste}
         title="Paste from clipboard"
       >
-        <span class={styles.btnIcon}>📋</span> Paste from Clipboard
+        <Icon name="clipboard-paste" class={styles.ico} /> Paste from Clipboard
       </button>
       <button
         type="button"
@@ -57,7 +58,7 @@ export function JsonTopActionBar({
         onClick={onClearAll}
         title="Clear all content"
       >
-        <span class={styles.btnIcon}>🗑️</span> Clear All
+        <Icon name="trash-2" class={styles.ico} /> Clear All
       </button>
     </div>
   );
