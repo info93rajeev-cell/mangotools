@@ -83,6 +83,52 @@ test.describe('full screen mode', () => {
       .toBe(false);
   });
 
+  test('full screen keeps the page background instead of the black backdrop', async ({ page }) => {
+    await page.setViewportSize({ width: 740, height: 360 });
+    await page.goto('/brickwork-calculator');
+    await page.locator('[data-fullscreen-toggle]').click();
+    await expect.poll(() => page.evaluate(() => document.fullscreenElement !== null)).toBe(true);
+    const bg = await page.evaluate(() => {
+      const root = document.fullscreenElement as HTMLElement;
+      return getComputedStyle(root).backgroundColor;
+    });
+    expect(bg).not.toBe('rgba(0, 0, 0, 0)');
+    expect(bg).not.toBe('rgb(0, 0, 0)');
+  });
+
+  for (const scheme of ['light', 'dark'] as const) {
+    test(`civil page title and summary are readable in ${scheme} mode`, async ({ browser }) => {
+      const context = await browser.newContext({ colorScheme: scheme });
+      const page = await context.newPage();
+      await page.goto('/brickwork-calculator');
+      const ratios = await page.evaluate(() => {
+        const rgb = (c: string) => (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+        const lum = (c: string) => {
+          const [r, g, b] = rgb(c).map((v) => {
+            const x = v / 255;
+            return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        };
+        const bodyBg = getComputedStyle(document.body).backgroundColor;
+        const htmlBg = getComputedStyle(document.documentElement).backgroundColor;
+        const bg = bodyBg === 'rgba(0, 0, 0, 0)' ? htmlBg : bodyBg;
+        const ratio = (el: Element | null) => {
+          if (!el) return 0;
+          const [a, b] = [lum(getComputedStyle(el).color), lum(bg)].sort((x, y) => y - x);
+          return (a + 0.05) / (b + 0.05);
+        };
+        return [
+          ratio(document.querySelector('h1')),
+          ratio(document.querySelector('.tool-header .summary')),
+        ];
+      });
+      expect(ratios[0]).toBeGreaterThan(4.5);
+      expect(ratios[1]).toBeGreaterThan(4.5);
+      await context.close();
+    });
+  }
+
   test('the button stays hidden where the Fullscreen API is unavailable', async ({ page }) => {
     await page.addInitScript(() => {
       Object.defineProperty(Document.prototype, 'fullscreenEnabled', { get: () => false });

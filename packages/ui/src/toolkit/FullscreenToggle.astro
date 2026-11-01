@@ -39,10 +39,24 @@ import { t } from '../strings/en.ts';
     if (label) label.textContent = text;
   };
 
+  // A full screen element is drawn on its own black backdrop, so give it the page's real
+  // background (body, else html); otherwise dark headings vanish on black.
+  const paintLikePage = (root: HTMLElement) => {
+    const transparent = (c: string) => c === 'transparent' || c === 'rgba(0, 0, 0, 0)';
+    const body = getComputedStyle(document.body);
+    const html = getComputedStyle(document.documentElement);
+    const color = transparent(body.backgroundColor) ? html.backgroundColor : body.backgroundColor;
+    root.style.setProperty('--fullscreen-bg', transparent(color) ? '' : color);
+    root.style.setProperty('--fullscreen-bg-image', body.backgroundImage);
+  };
+
   const toggle = async (root: HTMLElement) => {
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
-      else await root.requestFullscreen({ navigationUI: 'hide' });
+      else {
+        paintLikePage(root);
+        await root.requestFullscreen({ navigationUI: 'hide' });
+      }
     } catch {
       // The browser refused (e.g. no user gesture); the button simply stays in its current state.
     }
@@ -104,7 +118,8 @@ import { t } from '../strings/en.ts';
   /* The full screen root scrolls inside itself and respects notches / home indicators. */
   :global([data-fullscreen-root]:fullscreen) {
     overflow-y: auto;
-    background: var(--color-bg, #ffffff);
+    background-color: var(--fullscreen-bg, var(--color-bg, #ffffff));
+    background-image: var(--fullscreen-bg-image, none);
     padding:
       max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
       max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));

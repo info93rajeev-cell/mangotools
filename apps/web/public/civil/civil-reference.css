@@ -389,3 +389,12 @@ h1{font-weight:800;color:#102044}
  .civil-workspace .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
  .civil-workspace .kpi strong,.civil-workspace .kpi:first-child strong{overflow-wrap:normal}
 }
+/* Dark theme: these reference sheets paint html/body light and the H1 navy, while the site header,
+   breadcrumbs and summary follow the dark theme's light text, so that text became invisible.
+   In dark mode the page chrome follows the theme again; the white tool cards keep their own colours. */
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme=light]),:root:not([data-theme=light]) body{background:var(--color-bg);color:var(--color-text)}
+ :root:not([data-theme=light]) .tool-header h1,:root:not([data-theme=light]) .site-header summary{color:var(--color-text)}
+}
+:root[data-theme=dark],:root[data-theme=dark] body{background:var(--color-bg);color:var(--color-text)}
+:root[data-theme=dark] .tool-header h1,:root[data-theme=dark] .site-header summary{color:var(--color-text)}
