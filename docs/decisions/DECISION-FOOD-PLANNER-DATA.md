@@ -133,9 +133,21 @@ live.
 - **Blueprint (human-only, founder).** Add `food | core` to the §2.4 engine-edge table, and `food`
   to the list of portable engines.
 - **Navigation and page.** The only approved new navigation entry is a single **Food & Catering**
-  category; there is no shared "Planners" menu. A multi-section planner page conflicts with
-  "`apps/web` contains no tool-specific code", so it needs its own short decision before any UI
-  task. Existing tools and categories stay unchanged.
+  category; there is no shared "Planners" menu. Existing tools and categories stay unchanged.
+  Approved names: category **Food & Catering**, main tool **Food Planner**. Proposed routes,
+  checked against the current routing and taxonomy rules:
+  - `/food-and-catering`: a new entry in `taxonomy/categories.yaml` (id = slug
+    `food-and-catering`, kebab-case, not reserved, no collision). It appears automatically in
+    the header Tools menu and the footer, like every category, so `SiteHeader.astro` is not
+    edited. It becomes visible only once it has at least one listed tool
+    (`navigation.minToolsPerCategory: 1`), and that PR must update the visible-category list in
+    `scripts/generate/pipeline.test.ts`.
+  - `/food-planner`: a tool slug served by the existing `[slug].astro` route. It must **not** be
+    added to `taxonomy/reserved-slugs.yaml`, because a reserved slug cannot be used by a tool.
+  - Constraint: a tool manifest points at exactly one preset, i.e. one engine operation. A first
+    Food Planner tool can therefore be built on `food.shopping.consolidate@1`. The full
+    five-section planner on one page conflicts with "`apps/web` contains no tool-specific code"
+    and needs its own short decision before that UI task.
 - **Outbound links.** Maps and YouTube links in page HTML need `ALLOWED_HOSTS` approval.
   Saved-plan storage on the device needs privacy-text review. Both are founder decisions, and not
   part of this task.
