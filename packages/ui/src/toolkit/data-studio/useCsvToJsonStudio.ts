@@ -1,205 +1,179 @@
-import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { FieldValue, ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { copyText, downloadText } from '../actions.ts';
+import { messageFor } from '../presentation.ts';
+import { type CsvShape, readCsvResult } from './csvToJsonResult.ts';
 
-export const DEFAULT_CSV = `name,city,sku,active
-Asha Rao,Delhi,00124,true
-Ben Li,Singapore,00085,false
-Mira Shah,Mumbai,00941,true
-Evan Cole,London,04102,true`;
+/** The sample shown on first open; matches the approved reference screen. */
+export const FIRST_SAMPLE_ID = 'employees';
 
-export function parseCsvLine(line: string, delimiter: string): string[] {
-  const values: string[] = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (char === delimiter && !inQuotes) {
-      values.push(current.trim());
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  values.push(current.trim());
-  return values;
-}
+export type CsvInputTab = 'text' | 'file' | 'sheet' | 'sample';
+export type CsvOutputTab = 'formatted' | 'minified' | 'table';
 
-export function detectDelimiter(firstLine: string): string {
-  const c = (firstLine.match(/,/g) || []).length;
-  const t = (firstLine.match(/\t/g) || []).length;
-  const s = (firstLine.match(/;/g) || []).length;
-  const p = (firstLine.match(/\|/g) || []).length;
-  if (t > c && t > s) return '\t';
-  if (s > c) return ';';
-  if (p > c) return '|';
-  return ',';
-}
-
-export function parseCsv(
-  csvText: string,
-  customDelimiter?: string,
-): {
-  headers: string[];
-  rows: string[][];
+export interface CsvOptions {
   delimiter: string;
-} {
-  const lines = csvText
-    .trim()
-    .split(/\r?\n/)
-    .filter((l) => l.trim().length > 0);
-  if (lines.length === 0) return { headers: [], rows: [], delimiter: ',' };
-  const delimiter = customDelimiter || detectDelimiter(lines[0]);
-  const headers = parseCsvLine(lines[0], delimiter);
-  const rows: string[][] = [];
-  for (let i = 1; i < lines.length; i++) {
-    rows.push(parseCsvLine(lines[i], delimiter));
-  }
-  return { headers, rows, delimiter };
+  header: boolean;
+  trim: boolean;
+  skipEmptyRows: boolean;
+  inferTypes: boolean;
+  emptyAsNull: boolean;
+  nullValues: string;
+  maxRows: string;
+  shape: CsvShape;
+  excludeColumns: string;
+  metadata: boolean;
+  pretty: boolean;
 }
 
-function createCsvHandlers(
-  outputJson: string,
-  setInput: (v: string) => void,
+function readOptions(values: ToolSnapshot['values']): CsvOptions {
+  const text = (key: string, fallback: string) =>
+    typeof values[key] === 'string' && values[key] !== '' ? String(values[key]) : fallback;
+  const flag = (key: string, fallback: boolean) =>
+    typeof values[key] === 'boolean' ? (values[key] as boolean) : fallback;
+  return {
+    delimiter: text('delimiter', 'comma'),
+    header: flag('header', true),
+    trim: flag('trim', false),
+    skipEmptyRows: flag('skipEmptyRows', false),
+    inferTypes: flag('inferTypes', false),
+    emptyAsNull: flag('emptyAsNull', false),
+    nullValues: text('nullValues', ''),
+    maxRows: text('maxRows', ''),
+    shape: text('shape', 'objects') as CsvShape,
+    excludeColumns: text('excludeColumns', ''),
+    metadata: flag('metadata', false),
+    pretty: flag('pretty', true),
+  };
+}
+
+function sampleText(preset: ResolvedPreset, id: string): string {
+  const text = preset.samples[id]?.input.text;
+  return typeof text === 'string' ? text : '';
+}
+
+function readFile(file: File, onText: (text: string) => void) {
+  const reader = new FileReader();
+  reader.onload = () => onText(typeof reader.result === 'string' ? reader.result : '');
+  reader.readAsText(file);
+}
+
+function useCsvActions(
+  preset: ResolvedPreset,
   store: ToolStore,
   notify: (msg: string) => void,
+  setText: (text: string) => void,
+  outputText: string,
 ) {
-  const handleCopy = async () => {
-    if (!outputJson) return;
-    const ok = await copyText(outputJson);
-    notify(ok ? 'JSON copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!outputJson) return;
-    downloadText(outputJson, 'converted.json', 'application/json');
-    notify('Downloaded converted.json');
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_CSV);
-    store.set('text', DEFAULT_CSV);
-    notify('Reset to default sample CSV');
-  };
-
-  const handleClear = () => {
-    setInput('');
-    store.set('text', '');
-    notify('Cleared input');
-  };
-
-  const handlePaste = async () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+  const fileName = preset.ui?.outputFileName ?? 'data.json';
+  return {
+    loadSample(id: string) {
+      const sample = preset.samples[id];
+      if (!sample) return;
+      store.setMany({
+        text: sampleText(preset, id),
+        ...(sample.params as Record<string, FieldValue>),
+      });
+      notify('Sample loaded');
+    },
+    loadFile(file: File) {
+      readFile(file, (text) => {
+        setText(text);
+        notify(`Loaded ${file.name}`);
+      });
+    },
+    async paste() {
       try {
         const text = await navigator.clipboard.readText();
         if (text) {
-          setInput(text);
-          store.set('text', text);
+          setText(text);
           notify('Pasted from clipboard');
           return;
         }
       } catch {
-        // Fallback
+        // Clipboard read blocked: fall through to the hint.
       }
-    }
-    notify('Use Ctrl+V or Cmd+V to paste');
-  };
-
-  const handleOpenFile = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = typeof reader.result === 'string' ? reader.result : '';
-      setInput(content);
-      store.set('text', content);
-      notify(`Loaded ${file.name}`);
-    };
-    reader.readAsText(file);
-    target.value = '';
-  };
-
-  return {
-    handleCopy,
-    handleDownload,
-    handleReset,
-    handleClear,
-    handlePaste,
-    handleOpenFile,
+      notify('Use Ctrl+V or Cmd+V to paste');
+    },
+    resetAll() {
+      store.reset();
+      store.set('text', sampleText(preset, FIRST_SAMPLE_ID));
+      notify('Reset to the sample and default options');
+    },
+    clearAll() {
+      store.setMany({ text: '', excludeColumns: '' });
+      notify('Cleared');
+    },
+    async copy() {
+      if (!outputText) return;
+      notify((await copyText(outputText)) ? 'JSON copied to clipboard' : 'Copy failed');
+    },
+    download() {
+      if (!outputText) return;
+      downloadText(outputText, fileName, 'application/json');
+      notify(`Downloaded ${fileName}`);
+    },
+    openInNewTab() {
+      if (!outputText) return;
+      const url = URL.createObjectURL(new Blob([outputText], { type: 'application/json' }));
+      window.open(url, '_blank', 'noopener');
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    },
+    async convert() {
+      await store.runNow();
+      notify('CSV converted to JSON');
+    },
   };
 }
 
 export function useCsvToJsonStudio(
+  preset: ResolvedPreset,
   snapshot: ToolSnapshot,
   store: ToolStore,
   notify: (msg: string) => void,
 ) {
-  const initialText =
-    typeof snapshot.values.text === 'string' && snapshot.values.text.trim().length > 0
-      ? snapshot.values.text
-      : DEFAULT_CSV;
-  const [input, setInput] = useState<string>(initialText);
+  const storeText = typeof snapshot.values.text === 'string' ? snapshot.values.text : '';
+  const [input, setInput] = useState(storeText);
+  const [inputTab, setInputTab] = useState<CsvInputTab>('text');
+  const [tableView, setTableView] = useState(false);
 
   useEffect(() => {
-    const val = snapshot.values.text;
-    if (typeof val === 'string' && val.trim().length > 0 && val !== input) {
-      setInput(val);
-    }
-  }, [snapshot.values.text]);
+    if (storeText !== input) setInput(storeText);
+  }, [storeText]);
 
-  const [delimiterChoice, setDelimiterChoice] = useState<'auto' | ',' | ';' | '\t' | '|'>('auto');
-  const [formatShape, setFormatShape] = useState<'objects' | '2d-array' | 'ndjson'>('objects');
-  const [minified, setMinified] = useState(false);
+  // First open: show the reference sample so every panel has something to explain.
+  useEffect(() => {
+    if (storeText.trim() === '') store.set('text', sampleText(preset, FIRST_SAMPLE_ID));
+  }, []);
 
-  const parsed = useMemo(() => {
-    const delim = delimiterChoice === 'auto' ? undefined : delimiterChoice;
-    return parseCsv(input, delim);
-  }, [input, delimiterChoice]);
-
-  const outputJson = useMemo(() => {
-    if (!input.trim() || parsed.headers.length === 0) return '';
-    const { headers, rows } = parsed;
-    if (formatShape === '2d-array') {
-      const all = [headers, ...rows];
-      return minified ? JSON.stringify(all) : JSON.stringify(all, null, 2);
-    }
-    const objects = rows.map((row) => {
-      const obj: Record<string, string> = {};
-      headers.forEach((h, idx) => {
-        obj[h] = row[idx] ?? '';
-      });
-      return obj;
-    });
-    if (formatShape === 'ndjson') return objects.map((obj) => JSON.stringify(obj)).join('\n');
-    return minified ? JSON.stringify(objects) : JSON.stringify(objects, null, 2);
-  }, [input, parsed, formatShape, minified]);
-
-  const handleInput = (val: string) => {
-    setInput(val);
-    store.set('text', val);
+  const setText = (text: string) => {
+    setInput(text);
+    store.set('text', text);
   };
-
-  const handlers = createCsvHandlers(outputJson, setInput, store, notify);
+  const options = readOptions(snapshot.values);
+  const result = useMemo(() => readCsvResult(snapshot.result?.value), [snapshot.result]);
+  const hasInput = input.trim() !== '';
+  const error = snapshot.error && hasInput ? messageFor(preset, snapshot.error) : null;
+  const shown = hasInput && !error ? result : null;
+  const outputTab: CsvOutputTab = tableView ? 'table' : options.pretty ? 'formatted' : 'minified';
 
   return {
     input,
-    handleInput,
-    delimiterChoice,
-    setDelimiterChoice,
-    formatShape,
-    setFormatShape,
-    minified,
-    setMinified,
-    parsed,
-    outputJson,
-    ...handlers,
+    setText,
+    inputTab,
+    setInputTab,
+    options,
+    setOption: (key: keyof CsvOptions, value: FieldValue) => store.set(key, value),
+    result: shown,
+    error,
+    warnings: shown ? (snapshot.result?.warnings ?? []).map((w) => messageFor(preset, w)) : [],
+    outputTab,
+    setOutputTab(tab: CsvOutputTab) {
+      setTableView(tab === 'table');
+      if (tab !== 'table') store.set('pretty', tab === 'formatted');
+    },
+    ...useCsvActions(preset, store, notify, setText, shown?.text ?? ''),
   };
 }
+
+export type CsvStudio = ReturnType<typeof useCsvToJsonStudio>;

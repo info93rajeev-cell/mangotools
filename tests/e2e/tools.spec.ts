@@ -233,9 +233,9 @@ test.describe('JSON Formatter', () => {
 test.describe('CSV to JSON', () => {
   test('converts the sample and links to JSON Formatter', async ({ page }) => {
     await openTool(page, 'csv-to-json');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(outputArea(page, 'csv-to-json')).toHaveValue(/"name": "Raj"/);
-    await expect(island(page, 'csv-to-json')).toContainText('Rows');
+    await island(page, 'csv-to-json').getByRole('button', { name: 'Sample CSV' }).click();
+    await expect(outputArea(page, 'csv-to-json')).toHaveValue(/"name": "John Doe"/);
+    await expect(island(page, 'csv-to-json')).toContainText('Total Rows');
     await openRelatedTools(page);
     await expect(
       page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),

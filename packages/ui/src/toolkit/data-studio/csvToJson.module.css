@@ -1,0 +1,612 @@
+/* CSV → JSON studio (reference: BeyondTheAI Developer & Data, CSV to JSON).
+   Builds on dataStudio.module.css; only what that file does not already provide lives here. */
+
+.toneGreen {
+  --tone: #16a34a;
+  --tone-bg: #e8f8ee;
+  --tone-border: #bfe8cd;
+}
+.toneBlue {
+  --tone: #1665f5;
+  --tone-bg: #e9f1ff;
+  --tone-border: #c8daff;
+}
+.toneAmber {
+  --tone: #ea8a0c;
+  --tone-bg: #fff4e2;
+  --tone-border: #fbdcae;
+}
+.tonePurple {
+  --tone: #9333ea;
+  --tone-bg: #f4e9ff;
+  --tone-border: #e2c8fb;
+}
+.tonePink {
+  --tone: #e8337f;
+  --tone-bg: #fdeaf3;
+  --tone-border: #f8c4dc;
+}
+
+.card {
+  border-radius: 14px;
+}
+
+/* Coloured icon tiles beside every card title */
+.tile,
+.tileSm {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  background: var(--tone-bg);
+  color: var(--tone);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  box-shadow: inset 0 0 0 1px var(--tone-border);
+}
+.tileSm {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.tileIco {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+.tileIcoSm {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.1;
+}
+
+/* Input source and output view tabs: four equal buttons, active one solid */
+.inputTabs,
+.outputTabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 2px 0 12px;
+}
+.outputTabs {
+  grid-template-columns: 1fr 1fr 1fr 1.1fr;
+}
+.inputTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 1px solid #d9e3f0;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--tone);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.inputTab:hover {
+  background: var(--tone-bg);
+}
+.inputTab:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--tone) 35%, transparent);
+  outline-offset: 2px;
+}
+.inputTabActive,
+.inputTabActive:hover {
+  background: var(--tone);
+  border-color: var(--tone);
+  color: #fff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--tone) 32%, transparent);
+}
+/* White text on the lighter tones needs a deeper fill for contrast */
+.toneGreen.inputTabActive {
+  background: #15803d;
+  border-color: #15803d;
+}
+.tonePink.inputTabActive {
+  background: #db2777;
+  border-color: #db2777;
+}
+.toneAmber.inputTabActive {
+  background: #b45309;
+  border-color: #b45309;
+}
+.toneBlue.inputTab {
+  color: #1557d6;
+}
+.toneAmber.inputTab:not(.inputTabActive) {
+  color: #b45309;
+}
+.toneGreen.inputTab:not(.inputTabActive) {
+  color: #15803d;
+}
+.inputTabIco {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  flex: none;
+}
+
+.counts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0;
+  padding-top: 10px;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.counts span + span::before {
+  content: "|";
+  margin: 0 12px;
+  color: #b6c2d3;
+}
+
+/* File tab */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 260px;
+  border: 2px dashed #c8d6ea;
+  border-radius: 12px;
+  background: #f8fbff;
+  text-align: center;
+  padding: 20px;
+  color: #0b1736;
+}
+.dropzone small {
+  color: #475569;
+}
+.dropzoneOver {
+  border-color: #1665f5;
+  background: #eef4ff;
+}
+
+/* Sample tab */
+.sampleList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  min-height: 260px;
+  align-content: start;
+}
+.sampleItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e1e8f2;
+  border-radius: 10px;
+  background: #fff;
+}
+.sampleName {
+  flex: 1;
+  font-weight: 600;
+  color: #0b1736;
+}
+
+/* Left column: input card, then the options card */
+.leftStack {
+  gap: 12px;
+}
+.optionsCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 0;
+  padding: 14px 16px;
+}
+.optionsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.optionsCol + .optionsCol {
+  border-left: 1px solid #e3e9f2;
+  padding-left: 16px;
+  margin-left: 16px;
+}
+.parsingGrid {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1.3fr);
+  gap: 14px;
+  align-items: start;
+}
+.textInput {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+.textInput:disabled {
+  opacity: 0.55;
+}
+.card .inputEditor {
+  height: clamp(190px, 26vh, 250px);
+}
+.metricPair :global(*) {
+  min-width: 0;
+}
+.metricPair > div {
+  padding: 8px 9px;
+  gap: 8px;
+}
+.metricPair > div > span:first-child {
+  width: 34px;
+  height: 34px;
+}
+.card.outputCard {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+/* Desktop: the output fills the height of the input + options column */
+@media (min-width: 1081px) {
+  .card .outputBody {
+    flex: 1 1 auto;
+    align-items: stretch;
+  }
+  .card .outputView {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: auto;
+    max-height: none;
+  }
+  .card .outputEditor {
+    flex: 1 1 0;
+    height: 0;
+    min-height: 360px;
+  }
+}
+.card .gutter > div {
+  color: #5b6b82;
+}
+.card .sideCol {
+  overflow: visible;
+  max-height: none;
+}
+.inlineField span {
+  white-space: nowrap;
+}
+.inlineField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.numberInput {
+  max-width: 110px;
+}
+
+.metricPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.hint {
+  margin: 8px 0 0;
+  color: #5a6a80;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.warnLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff7e6;
+  color: #92400e;
+  font-size: 13px;
+}
+.previewTable {
+  max-height: clamp(300px, 44vh, 450px);
+  overflow: auto;
+}
+
+/* Bottom row */
+.aux {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.82fr);
+}
+.auxCard {
+  gap: 10px;
+}
+.mapWrap {
+  overflow: auto;
+  max-height: 300px;
+  border: 1px solid #e1e8f2;
+  border-radius: 10px;
+}
+.mapTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.mapTable th {
+  position: sticky;
+  top: 0;
+  background: #f1f6fd;
+  color: #1e3a6e;
+  font-weight: 650;
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid #e1e8f2;
+  white-space: nowrap;
+}
+.mapTable td {
+  padding: 5px 10px;
+  border-bottom: 1px solid #eef2f8;
+  color: #0b1736;
+  vertical-align: middle;
+}
+.mapTable tr:last-child td {
+  border-bottom: none;
+}
+.mapTable .mapExcluded td {
+  color: #8a99ad;
+}
+.mono {
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 5px;
+  border: 1px solid;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badgeString {
+  color: #166534;
+  background: #eaf9ef;
+  border-color: #b9e6c7;
+}
+.badgeNumber {
+  color: #1d4ed8;
+  background: #eaf1ff;
+  border-color: #c3d5fb;
+}
+.badgeBoolean {
+  color: #9a4a06;
+  background: #fff3e0;
+  border-color: #f7d3a1;
+}
+.badgeNull {
+  color: #475569;
+  background: #f1f5f9;
+  border-color: #d5dde8;
+}
+.badgeMixed {
+  color: #7e22ce;
+  background: #f5ecff;
+  border-color: #dfc6f7;
+}
+
+.sumGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.sumTile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border: 1px solid #e1e8f2;
+  border-radius: 10px;
+  background: #fff;
+  min-width: 0;
+}
+.sumText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sumText small {
+  color: #475569;
+  font-size: 12px;
+}
+.sumText b {
+  color: #0b1736;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.validDot {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
+  flex: none;
+}
+.sumOk .validDot {
+  background: #16a34a;
+}
+.sumOk .sumText b {
+  color: #166534;
+}
+.sumBad .validDot {
+  background: #dc2626;
+}
+.sumBad .sumText b {
+  color: #b91c1c;
+}
+
+.quickList {
+  display: grid;
+  gap: 8px;
+}
+.quickGold,
+.quickBlue,
+.quickRed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border-radius: 9px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid;
+}
+.quickGold {
+  background: #fbbf24;
+  border-color: #f2ad0c;
+  color: #1f1300;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.28);
+}
+.quickBlue {
+  background: #fff;
+  border-color: #c8daff;
+  color: #1557d6;
+}
+.quickRed {
+  background: #fff;
+  border-color: #f6c4c4;
+  color: #c81e1e;
+}
+.quickGold:hover {
+  background: #f5b20c;
+}
+.quickBlue:hover {
+  background: #f1f6ff;
+}
+.quickRed:hover {
+  background: #fff3f3;
+}
+
+@media (max-width: 1500px) {
+  .inputTab {
+    font-size: 13px;
+    gap: 5px;
+  }
+  .inputTabIco {
+    width: 16px;
+    height: 16px;
+  }
+}
+@media (max-width: 1280px) {
+  .aux {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+@media (max-width: 1080px) {
+  .optionsCard {
+    grid-template-columns: 1fr;
+  }
+  .optionsCol + .optionsCol {
+    border-left: none;
+    border-top: 1px solid #e3e9f2;
+    padding: 14px 0 0;
+    margin: 14px 0 0;
+  }
+}
+@media (max-width: 650px) {
+  .inputTabs,
+  .outputTabs {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .inputTab {
+    font-size: 13.5px;
+    min-height: 42px;
+  }
+  .parsingGrid {
+    grid-template-columns: 1fr;
+  }
+  .counts {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+  }
+  .sumGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Dark theme */
+:global([data-theme="dark"]) .inputTab,
+:global([data-theme="dark"]) .sampleItem,
+:global([data-theme="dark"]) .sumTile,
+:global([data-theme="dark"]) .quickBlue,
+:global([data-theme="dark"]) .quickRed {
+  background: #111c33;
+  border-color: #2a3a58;
+}
+:global([data-theme="dark"]) .inputTabActive {
+  background: var(--tone);
+  color: #fff;
+}
+:global([data-theme="dark"]) .dropzone {
+  background: #0f1a30;
+  border-color: #2f4266;
+  color: #e6edf8;
+}
+:global([data-theme="dark"]) .sampleName,
+:global([data-theme="dark"]) .mapTable td,
+:global([data-theme="dark"]) .sumText b {
+  color: #e6edf8;
+}
+:global([data-theme="dark"]) .counts,
+:global([data-theme="dark"]) .sumText small,
+:global([data-theme="dark"]) .hint,
+:global([data-theme="dark"]) .dropzone small {
+  color: #a9b7cc;
+}
+:global([data-theme="dark"]) .mapTable th {
+  background: #16243f;
+  color: #c9d7ee;
+  border-color: #2a3a58;
+}
+:global([data-theme="dark"]) .mapWrap,
+:global([data-theme="dark"]) .mapTable td {
+  border-color: #23324e;
+}
+:global([data-theme="dark"]) .optionsCol + .optionsCol {
+  border-color: #2a3a58;
+}
+:global([data-theme="dark"]) .toneBlue.inputTab:not(.inputTabActive),
+:global([data-theme="dark"]) .quickBlue {
+  color: #8db4ff;
+}
+:global([data-theme="dark"]) .toneGreen.inputTab:not(.inputTabActive) {
+  color: #6ee7a0;
+}
+:global([data-theme="dark"]) .toneAmber.inputTab:not(.inputTabActive) {
+  color: #fbbf5a;
+}
+:global([data-theme="dark"]) .tonePurple.inputTab:not(.inputTabActive) {
+  color: #d1a6ff;
+}
+:global([data-theme="dark"]) .tonePink.inputTab:not(.inputTabActive) {
+  color: #f9a8cf;
+}
+:global([data-theme="dark"]) .quickRed {
+  color: #fca5a5;
+}

@@ -253,16 +253,19 @@ function AdvancedOptionsCard({
   );
 }
 
-function ToggleSwitchRow({
+export function ToggleSwitchRow({
   label,
   tooltip,
   checked,
   onChange,
+  disabled = false,
 }: {
   label: string;
   tooltip?: string;
   checked: boolean;
   onChange: (v: boolean) => void;
+  /** A built-in behaviour shown for clarity; it cannot be turned off. */
+  disabled?: boolean;
 }) {
   return (
     <label class={styles.switchRow}>
@@ -279,6 +282,7 @@ function ToggleSwitchRow({
           type="checkbox"
           class={styles.toggleInput}
           checked={checked}
+          disabled={disabled}
           onChange={(e) => onChange((e.target as HTMLInputElement).checked)}
         />
         <span class={styles.toggleSlider} />
