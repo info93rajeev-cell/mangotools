@@ -29,7 +29,7 @@ export const messages: Readonly<Record<string, string>> = {
   DATA_JSON_TO_CSV_EMPTY_ARRAY: 'The JSON array has no rows to convert.',
   DATA_JSON_TO_CSV_ITEM_NOT_OBJECT: 'Item {item} in the array is not an object.',
   DATA_JSON_TO_CSV_NESTED_VALUE:
-    'The value for "{key}" in item {item} is a nested object or array, which is not supported in this version.',
+    'The value for "{key}" in item {item} is a nested object or array. Flatten it or keep it as JSON text to convert it.',
   DATA_JSON_TO_CSV_NO_COLUMNS: 'The JSON objects have no properties to use as columns.',
   DATA_JSON_TO_CSV_RECORD_PATH_NOT_FOUND: 'Nothing was found at the record path "{recordPath}".',
   DATA_TIMESTAMP_EMPTY: 'Paste or type a timestamp or date to convert.',
