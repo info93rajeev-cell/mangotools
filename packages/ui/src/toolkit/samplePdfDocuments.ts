@@ -122,13 +122,69 @@ export const SAMPLE_HEAVY_BOOK_FILE: SampleDocMeta = {
   summary: '1,600-Page Clinical Medicine Textbook (16 Chapters, 100 Pages/Chapter)',
 };
 
-export const SAMPLE_COMPRESS_FILE: SampleDocMeta = {
-  name: 'Client-Submission-Pack.pdf',
-  pageCount: 86,
-  sizeBytes: 24.8 * 1024 * 1024,
-  themeColor: '#8b5cf6',
-  summary: 'High-resolution proposal dossier and technical records',
-};
+export const SAMPLE_COMPRESS_NAME = 'Site-Photo-Report-Sample.pdf';
+
+/** A photo-like JPEG drawn in the browser: gradients, shapes and fine grain, saved at high quality. */
+async function samplePhotoJpeg(seed: number, width: number, height: number): Promise<Uint8Array> {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas is not available');
+  const sky = ctx.createLinearGradient(0, 0, 0, height);
+  sky.addColorStop(0, `hsl(${200 + seed * 25}, 60%, 70%)`);
+  sky.addColorStop(1, `hsl(${30 + seed * 20}, 45%, 45%)`);
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, width, height);
+  let r = 12345 + seed * 999;
+  const next = () => {
+    r = (r * 1103515245 + 12345) % 2147483648;
+    return r / 2147483648;
+  };
+  for (let i = 0; i < 140; i++) {
+    ctx.fillStyle = `hsla(${Math.floor(next() * 360)}, 50%, ${30 + Math.floor(next() * 40)}%, 0.35)`;
+    ctx.beginPath();
+    ctx.arc(next() * width, next() * height, 20 + next() * 160, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const grain = ctx.getImageData(0, 0, width, height);
+  for (let i = 0; i < grain.data.length; i += 4) {
+    const n = (next() - 0.5) * 36;
+    grain.data[i] = (grain.data[i] ?? 0) + n;
+    grain.data[i + 1] = (grain.data[i + 1] ?? 0) + n;
+    grain.data[i + 2] = (grain.data[i + 2] ?? 0) + n;
+  }
+  ctx.putImageData(grain, 0, 0);
+  const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, 'image/jpeg', 0.95));
+  if (!blob) throw new Error('JPEG encoding failed');
+  return new Uint8Array(await blob.arrayBuffer());
+}
+
+/** A real three-page PDF with high-quality photos, so compression has something to save. */
+export async function createCompressSamplePdf(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  for (let i = 0; i < 3; i++) {
+    const page = doc.addPage([595.28, 841.89]);
+    const photo = await doc.embedJpg(await samplePhotoJpeg(i, 2000, 1400));
+    page.drawText(`Site photo report - page ${i + 1} of 3`, {
+      x: 50,
+      y: 790,
+      size: 16,
+      font: bold,
+    });
+    page.drawText('Sample document generated in your browser for trying compression.', {
+      x: 50,
+      y: 768,
+      size: 10,
+      font,
+      color: rgb(0.35, 0.4, 0.45),
+    });
+    page.drawImage(photo, { x: 50, y: 330, width: 495, height: 346.5 });
+  }
+  return doc.save();
+}
 
 export const SAMPLE_PDF_TO_WORD_FILE: SampleDocMeta = {
   name: 'Vendor-Agreement.pdf',

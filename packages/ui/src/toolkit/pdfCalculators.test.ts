@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { buildDocxArchive, buildZipArchive } from './docxZipPacker.ts';
-import { computeCompressEstimate } from './usePdfCompressStudio.ts';
 import { calculateMergeSummary, type MergedFileItem } from './usePdfMergeStudio.ts';
 import { resolveSplitParts, type SplitRange } from './usePdfSplitStudio.ts';
 
@@ -83,22 +82,6 @@ describe('PDF & Documents calculations and packager', () => {
     expect(chunkParts.length).toBe(4); // 10, 10, 10, 5
     expect(chunkParts[0]?.pageCount).toBe(10);
     expect(chunkParts[3]?.pageCount).toBe(5);
-  });
-
-  it('computes compression estimates across presets', () => {
-    const rawBytes = 24.8 * 1024 * 1024;
-
-    const light = computeCompressEstimate(rawBytes, 'light', 85, false, false);
-    expect(light.reductionPercent).toBe(35);
-    expect(light.qualityLevel).toBe('Excellent');
-
-    const balanced = computeCompressEstimate(rawBytes, 'balanced', 70, false, true);
-    expect(balanced.reductionPercent).toBe(71);
-    expect(balanced.qualityLevel).toBe('Good');
-
-    const strong = computeCompressEstimate(rawBytes, 'strong', 50, true, true);
-    expect(strong.reductionPercent).toBe(82);
-    expect(strong.qualityLevel).toBe('Acceptable');
   });
 
   it('builds a valid in-browser ZIP archive with local and central headers', () => {
