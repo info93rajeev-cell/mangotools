@@ -1,7 +1,8 @@
 import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
-import type { usePdfToWordStudio } from './usePdfConvertStudio.ts';
+import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 
@@ -18,11 +19,11 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
           fontWeight: 600,
         }}
       >
-        <span>Preview (first 5 pages)</span>
+        <span>Pages</span>
         <span>{totalPages} pages total</span>
       </div>
       <div class={styles.thumbStrip}>
-        {[1, 2, 3, 4, 5].map((p) => (
+        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map((p) => (
           <div key={p} class={styles.thumbItemBtn} style={{ cursor: 'default' }}>
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
               <div style={{ height: '3px', background: '#94a3b8', borderRadius: '1.5px' }} />
@@ -54,12 +55,12 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
 function PdfToWordLoadedRow({
   fileName,
   totalPages,
-  mb,
+  sizeBytes,
   onClear,
 }: {
   fileName: string;
   totalPages: number;
-  mb: string;
+  sizeBytes: number;
   onClear: () => void;
 }) {
   return (
@@ -72,9 +73,7 @@ function PdfToWordLoadedRow({
       </div>
       <div class={styles.fileDetails}>
         <span class={styles.fileName}>{fileName}</span>
-        <span class={styles.fileMeta}>
-          {totalPages} pages • {mb} MB
-        </span>
+        <span class={styles.fileMeta}>{fileMeta(totalPages, sizeBytes)}</span>
       </div>
       <button
         type="button"
@@ -98,7 +97,6 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
     loadSamplePdfToWord,
     handleAddNativeFile,
   } = studio;
-  const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
     const file = e.currentTarget.files?.[0];
@@ -121,7 +119,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             type="button"
-            onClick={loadSamplePdfToWord}
+            onClick={() => void loadSamplePdfToWord()}
             style={{
               fontSize: '11px',
               padding: '3px 8px',
@@ -133,7 +131,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
               cursor: 'pointer',
             }}
           >
-            📄 Sample Contract
+            📄 Sample PDF
           </button>
           <button
             type="button"
@@ -182,7 +180,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
         <PdfToWordLoadedRow
           fileName={fileName}
           totalPages={totalPages}
-          mb={mb}
+          sizeBytes={fileSizeBytes}
           onClear={clearAll}
         />
       )}
@@ -192,18 +190,20 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
   );
 }
 
-function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
-  const {
-    enableOcr,
-    setEnableOcr,
-    keepHeadings,
-    setKeepHeadings,
-    preserveTables,
-    setPreserveTables,
-    language,
-    setLanguage,
-  } = studio;
+function OptionCheck(props: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+      <input
+        type="checkbox"
+        checked={props.checked}
+        onChange={(e) => props.onChange(e.currentTarget.checked)}
+      />
+      <span>{props.label}</span>
+    </label>
+  );
+}
 
+function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
   return (
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
@@ -212,44 +212,6 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
         </h2>
       </div>
       <div class={styles.settingsGrid}>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="p2w-output-format" style={{ fontSize: '11px' }}>
-            Output format
-          </label>
-          <input
-            id="p2w-output-format"
-            class={styles.textInput}
-            value="DOCX (Word Document)"
-            readOnly
-            style={{ padding: '6px 10px', fontSize: '12px' }}
-          />
-        </div>
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '6px 10px',
-            background: '#f8fafc',
-            border: '1px solid #e2e8f0',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          <div>
-            <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#0f172a' }}>
-              OCR for scanned PDFs
-            </span>
-            <p style={{ margin: 0, fontSize: '10.5px', color: '#64748b' }}>
-              Extract text from scanned PDFs and images
-            </p>
-          </div>
-          <input
-            type="checkbox"
-            checked={enableOcr}
-            onChange={(e) => setEnableOcr(e.currentTarget.checked)}
-          />
-        </label>
         <div
           style={{
             display: 'grid',
@@ -259,39 +221,22 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
             fontWeight: 600,
           }}
         >
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={keepHeadings}
-              onChange={(e) => setKeepHeadings(e.currentTarget.checked)}
-            />
-            <span>Keep original headings</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={preserveTables}
-              onChange={(e) => setPreserveTables(e.currentTarget.checked)}
-            />
-            <span>Preserve tables & layout</span>
-          </label>
+          <OptionCheck
+            label="Keep headings (larger text)"
+            checked={studio.keepHeadings}
+            onChange={studio.setKeepHeadings}
+          />
+          <OptionCheck
+            label="Page break between pages"
+            checked={studio.pageBreaks}
+            onChange={studio.setPageBreaks}
+          />
         </div>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="p2w-lang-select" style={{ fontSize: '11px' }}>
-            Language (OCR)
-          </label>
-          <select
-            id="p2w-lang-select"
-            class={styles.textInput}
-            value={language}
-            onChange={(e) => setLanguage(e.currentTarget.value)}
-            style={{ padding: '6px 10px', fontSize: '12px' }}
-          >
-            <option value="English (Auto-detect)">English (Auto-detect)</option>
-            <option value="Hindi / Bilingual">Hindi / Bilingual</option>
-            <option value="European Languages">European Languages</option>
-          </select>
-        </div>
+        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+          The Word file gets the PDF's text as editable headings and paragraphs. Layout, columns,
+          tables, images and fonts are not carried over. A scanned PDF is a picture of text and has
+          no text to convert; this tool does not do OCR.
+        </p>
       </div>
     </div>
   );

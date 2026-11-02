@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
 import type { CompressionPreset, usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
@@ -8,7 +9,6 @@ type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
 function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { fileName, fileSizeBytes, totalPages, handleAddNativeFile, clearAll } = studio;
-  const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
     const file = e.currentTarget.files?.[0];
@@ -98,9 +98,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
           </div>
           <div class={styles.fileDetails}>
             <span class={styles.fileName}>{fileName}</span>
-            <span class={styles.fileMeta}>
-              {totalPages} pages • {mb} MB
-            </span>
+            <span class={styles.fileMeta}>{fileMeta(totalPages, fileSizeBytes)}</span>
           </div>
           <button
             type="button"
