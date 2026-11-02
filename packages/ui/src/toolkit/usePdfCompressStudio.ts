@@ -1,4 +1,3 @@
-import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'preact/hooks';
 import {
   type CompressionPreset,
@@ -7,6 +6,7 @@ import {
   settingsFor,
   type TargetResult,
 } from './pdfCompressor.ts';
+import { openUserPdf } from './pdfInput.ts';
 import { createCompressSamplePdf, SAMPLE_COMPRESS_NAME } from './samplePdfDocuments.ts';
 
 export type { CompressionPreset } from './pdfCompressor.ts';
@@ -43,17 +43,16 @@ function useCompressFileState(notify?: (msg: string) => void) {
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
 
   const take = async (name: string, bytes: Uint8Array) => {
-    try {
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false });
-      setFileName(name);
-      setFileSizeBytes(bytes.length);
-      setTotalPages(doc.getPageCount());
-      setFileBytes(bytes);
-      return true;
-    } catch {
-      notify?.('This file could not be read as a PDF.');
+    const opened = await openUserPdf(name, bytes, 500);
+    if (!opened.ok) {
+      notify?.(opened.message);
       return false;
     }
+    setFileName(name);
+    setFileSizeBytes(bytes.length);
+    setTotalPages(opened.doc.getPageCount());
+    setFileBytes(bytes);
+    return true;
   };
 
   return {

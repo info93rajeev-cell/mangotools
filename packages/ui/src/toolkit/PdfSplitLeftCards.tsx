@@ -1,11 +1,12 @@
 import type { JSX } from 'preact';
-import { useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import {
   HeavyBookBanner,
   PdfMiniThumbnails,
   PdfSplitDropZone,
   PdfSplitLoadedRow,
 } from './PdfSplitThumbnails.tsx';
+import { parseRangeList, rangesToText } from './pdfSplitPlan.ts';
 import styles from './pdfStudio.module.css';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
@@ -102,51 +103,55 @@ const SPLIT_MODES = [
   ['chunks', '📦 Fixed chunks', 'Split by group size'],
 ] as const;
 
+function InvalidNote({ tokens, total }: { tokens: string[]; total: number }) {
+  if (tokens.length === 0) return null;
+  return (
+    <p role="alert" style={{ margin: '2px 0 0', fontSize: '11px', color: '#b91c1c' }}>
+      Not used: {tokens.join(', ')} (pages run from 1 to {total}).
+    </p>
+  );
+}
+
+function RangeEditor({ studio }: { studio: SplitStudioState }) {
+  const [text, setText] = useState(rangesToText(studio.ranges));
+  const [invalid, setInvalid] = useState<string[]>([]);
+  // Follow ranges set elsewhere (a new file, the sample), but not the user's own typing.
+  useEffect(() => {
+    const typed = rangesToText(parseRangeList(text, studio.totalPages).ranges);
+    if (typed !== rangesToText(studio.ranges)) setText(rangesToText(studio.ranges));
+  }, [studio.ranges]);
+  const covered = studio.parts.reduce((n, p) => n + p.pageCount, 0);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <label class={styles.inputLabel} for="split-ranges">
+        Page ranges, one output file each (e.g. 1-12, 13-42)
+      </label>
+      <input
+        id="split-ranges"
+        class={styles.textInput}
+        value={text}
+        onInput={(e) => {
+          const value = e.currentTarget.value;
+          const parsed = parseRangeList(value, studio.totalPages);
+          setText(value);
+          setInvalid(parsed.invalid);
+          studio.setRanges(parsed.ranges);
+        }}
+        placeholder="e.g. 1-12, 13-42"
+      />
+      <InvalidNote tokens={invalid} total={studio.totalPages} />
+      <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>
+        {studio.parts.length} file{studio.parts.length === 1 ? '' : 's'} • {covered} pages
+      </span>
+    </div>
+  );
+}
+
 function ModeInputs({ studio }: { studio: SplitStudioState }) {
-  const {
-    mode,
-    ranges,
-    extractInput,
-    setExtractInput,
-    chunkSize,
-    setChunkSize,
-    totalPages,
-    addRange,
-    removeRange,
-  } = studio;
+  const { mode, extractInput, setExtractInput, chunkSize, setChunkSize, totalPages } = studio;
 
   if (mode === 'ranges') {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: '11.5px',
-            color: '#475569',
-            fontWeight: 600,
-          }}
-        >
-          <span>Page ranges (e.g. 1-12, 13-42)</span>
-          <span>
-            {ranges.length} ranges • {totalPages} pages selected
-          </span>
-        </div>
-        <div class={styles.rangeChipsRow}>
-          {ranges.map((r) => (
-            <span key={r.id} class={styles.rangeChip}>
-              {r.start} – {r.end}
-              <button type="button" class={styles.chipCloseBtn} onClick={() => removeRange(r.id)}>
-                ✕
-              </button>
-            </span>
-          ))}
-          <button type="button" class={styles.addChipBtn} onClick={addRange}>
-            + Add range
-          </button>
-        </div>
-      </div>
-    );
+    return <RangeEditor studio={studio} />;
   }
   if (mode === 'extract') {
     return (
@@ -161,6 +166,7 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
           onInput={(e) => setExtractInput(e.currentTarget.value)}
           placeholder="e.g. 1, 3, 5-10"
         />
+        <InvalidNote tokens={studio.invalidPages} total={totalPages} />
       </div>
     );
   }
@@ -255,56 +261,10 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
 }
 
 function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
-  const {
-    keepBookmarks,
-    setKeepBookmarks,
-    separateFiles,
-    setSeparateFiles,
-    compressOutput,
-    setCompressOutput,
-    pattern,
-    setPattern,
-    downloadAsZip,
-    setDownloadAsZip,
-  } = studio;
+  const { pattern, setPattern, downloadAsZip, setDownloadAsZip } = studio;
 
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '8px',
-          fontSize: '11.5px',
-          fontWeight: 600,
-        }}
-      >
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={keepBookmarks}
-            onChange={(e) => setKeepBookmarks(e.currentTarget.checked)}
-          />
-          <span>Keep bookmarks</span>
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={separateFiles}
-            onChange={(e) => setSeparateFiles(e.currentTarget.checked)}
-          />
-          <span>Separate files</span>
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={compressOutput}
-            onChange={(e) => setCompressOutput(e.currentTarget.checked)}
-          />
-          <span>Compress output</span>
-        </label>
-      </div>
-
       <div class={styles.inputRow}>
         <label class={styles.inputLabel} for="split-file-pattern" style={{ fontSize: '11px' }}>
           Output file name pattern
@@ -314,7 +274,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
           class={styles.textInput}
           value={pattern}
           onInput={(e) => setPattern(e.currentTarget.value)}
-          placeholder="Audit-Report-2025_Part_{n}"
+          placeholder="Part_{n}"
           style={{ padding: '6px 10px', fontSize: '12px' }}
         />
       </div>
@@ -334,7 +294,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
           checked={downloadAsZip}
           onChange={(e) => setDownloadAsZip(e.currentTarget.checked)}
         />
-        <span>Download all files as a ZIP archive</span>
+        <span>Download several files as one ZIP archive</span>
       </label>
     </div>
   );
