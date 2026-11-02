@@ -249,3 +249,8 @@
   border-color: #334155;
   color: #f8fafc;
 }
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.zoomBtn {
+  white-space: nowrap;
+}

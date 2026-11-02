@@ -73,13 +73,13 @@ export function AdvancedPenWorkflowGuide() {
                 d="M 15 50 Q 30 20 60 25 T 90 45"
                 fill="none"
                 stroke="#2563eb"
-                strokeWidth="2"
-                strokeDasharray="3 2"
+                stroke-width="2"
+                stroke-dasharray="3 2"
               />
-              <circle cx="35" cy="22" r="3" fill="#ffffff" stroke="#2563eb" strokeWidth="1.5" />
-              <circle cx="60" cy="25" r="3" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5" />
-              <line x1="60" y1="25" x2="75" y2="15" stroke="#3b82f6" strokeWidth="1" />
-              <circle cx="75" cy="15" r="2" fill="#ffffff" stroke="#2563eb" strokeWidth="1" />
+              <circle cx="35" cy="22" r="3" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
+              <circle cx="60" cy="25" r="3" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.5" />
+              <line x1="60" y1="25" x2="75" y2="15" stroke="#3b82f6" stroke-width="1" />
+              <circle cx="75" cy="15" r="2" fill="#ffffff" stroke="#2563eb" stroke-width="1" />
             </svg>
           </div>
           <div class={styles.workflowStepCaption}>

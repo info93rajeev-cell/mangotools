@@ -245,8 +245,8 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
                   class={styles.selectionCurve}
                   fill="none"
                   stroke="#2563eb"
-                  strokeWidth="2.5"
-                  strokeDasharray="4 2"
+                  stroke-width="2.5"
+                  stroke-dasharray="4 2"
                 />
                 {path.points.length > 10 && <SvgCalloutBadge anchor={path.points[10]} />}
                 {selectedPt && selectedPointIndex !== null && (

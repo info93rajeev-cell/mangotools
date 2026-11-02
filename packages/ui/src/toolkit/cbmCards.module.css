@@ -75,7 +75,9 @@
   .quickActions[data-placement="phone"],
   .quickActions[data-placement="inline"] {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Every quick action plus the "more" menu fit on one row. */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     gap: 8px;
     margin-bottom: 12px;
   }
