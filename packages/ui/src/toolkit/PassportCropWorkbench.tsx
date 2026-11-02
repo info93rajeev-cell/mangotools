@@ -20,10 +20,10 @@ export function BiometricGuideSvg() {
           x2="80"
           y2="12"
           stroke="rgba(245, 158, 11, 0.9)"
-          strokeWidth="0.8"
-          strokeDasharray="2,2"
+          stroke-width="0.8"
+          stroke-dasharray="2,2"
         />
-        <text x="50" y="10" fill="rgba(245, 158, 11, 0.95)" fontSize="3.2px" textAnchor="middle">
+        <text x="50" y="10" fill="rgba(245, 158, 11, 0.95)" font-size="3.2px" text-anchor="middle">
           Crown (Top of Head)
         </text>
 
@@ -34,10 +34,10 @@ export function BiometricGuideSvg() {
           x2="85"
           y2="45"
           stroke="rgba(59, 130, 246, 0.85)"
-          strokeWidth="0.6"
-          strokeDasharray="1.5,1.5"
+          stroke-width="0.6"
+          stroke-dasharray="1.5,1.5"
         />
-        <text x="50" y="43" fill="rgba(59, 130, 246, 0.9)" fontSize="3px" textAnchor="middle">
+        <text x="50" y="43" fill="rgba(59, 130, 246, 0.9)" font-size="3px" text-anchor="middle">
           Eye Line (40-50%)
         </text>
 
@@ -48,10 +48,10 @@ export function BiometricGuideSvg() {
           x2="75"
           y2="80"
           stroke="rgba(245, 158, 11, 0.9)"
-          strokeWidth="0.8"
-          strokeDasharray="2,2"
+          stroke-width="0.8"
+          stroke-dasharray="2,2"
         />
-        <text x="50" y="85" fill="rgba(245, 158, 11, 0.95)" fontSize="3.2px" textAnchor="middle">
+        <text x="50" y="85" fill="rgba(245, 158, 11, 0.95)" font-size="3.2px" text-anchor="middle">
           Chin Line (Bottom)
         </text>
 
@@ -62,8 +62,8 @@ export function BiometricGuideSvg() {
           x2="50"
           y2="95"
           stroke="rgba(255, 255, 255, 0.45)"
-          strokeWidth="0.5"
-          strokeDasharray="1,2"
+          stroke-width="0.5"
+          stroke-dasharray="1,2"
         />
 
         {/* ICAO Face Oval standard */}
@@ -74,8 +74,8 @@ export function BiometricGuideSvg() {
           ry="34"
           fill="none"
           stroke="rgba(16, 185, 129, 0.9)"
-          strokeWidth="1.2"
-          strokeDasharray="3,2"
+          stroke-width="1.2"
+          stroke-dasharray="3,2"
         />
       </svg>
     </div>

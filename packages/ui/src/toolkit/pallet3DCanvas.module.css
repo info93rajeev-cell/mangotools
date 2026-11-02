@@ -122,3 +122,8 @@
   font-size: 12.5px;
   text-align: center;
 }
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.zoomBtn {
+  white-space: nowrap;
+}

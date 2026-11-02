@@ -647,9 +647,9 @@
 }
 
 .modeTabBtn[data-active="true"] {
-  background: #0f172a;
+  background: #1a66e8;
   color: #ffffff;
-  border-color: #0f172a;
+  border-color: #1a66e8;
 }
 
 .chipsRow {

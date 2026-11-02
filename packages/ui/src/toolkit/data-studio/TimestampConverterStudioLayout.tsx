@@ -198,7 +198,7 @@ function TimestampDatePanel({
         </div>
         <div class={`${styles.mini} ${styles.miniGreen}`}>
           <small>{timezone.split('/')[1] || timezone}</small>
-          <b>{selectedTzTime.split(',')[1]?.trim() || selectedTzTime}</b>
+          <b>{selectedTzTime.split(',').pop()?.trim() || selectedTzTime}</b>
         </div>
         <div class={`${styles.mini} ${styles.miniPurple}`}>
           <small>ISO 8601</small>
