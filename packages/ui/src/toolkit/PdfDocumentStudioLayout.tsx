@@ -328,7 +328,16 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
   };
 
   return (
-    <div class={styles.studioContainer}>
+    // biome-ignore lint/a11y/noStaticElementInteractions: drop target for files; the Open buttons give keyboard access.
+    <div
+      class={styles.studioContainer}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const list = e.dataTransfer?.files;
+        if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);
+      }}
+    >
       <input
         ref={fileInputRef}
         type="file"
