@@ -11,7 +11,6 @@ import { ContainerFreightResult, ContainerLoadingResults } from './ContainerLoad
 import { ContainerPackageWorksheet } from './ContainerPackageWorksheet.tsx';
 import { ContainerPlacementView } from './ContainerPlacementView.tsx';
 import { ContainerSupportingPanels } from './ContainerSupportingPanels.tsx';
-import { ContainerToolBottom } from './ContainerToolBottom.tsx';
 import controls from './containerControls.module.css';
 import stack from './containerCostStack.module.css';
 import output from './containerOutput.module.css';
@@ -97,7 +96,6 @@ export function ContainerLoadingLayout({
         ) : null}
       </div>
       <ContainerSupportingPanels state={state} />
-      <ContainerToolBottom state={state} />
       <div class={output.printReport}>
         <h2>{t.title}</h2>
         <pre>{summary}</pre>

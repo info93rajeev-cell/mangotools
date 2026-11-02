@@ -12,7 +12,9 @@ import {
   convertFromCm,
   convertToCm,
   DEFAULT_PALLET_INPUT,
+  layerPattern,
   PALLET_PRESETS,
+  PALLET_TARE_KG,
   type PalletLoadingInput,
   type PalletUnit,
 } from './palletLoadingModel.ts';
@@ -77,12 +79,12 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
       `Pallet Type: ${PALLET_PRESETS.find((p) => p.id === input.palletTypeId)?.name || 'Custom'}`,
       `Pallet Dims: ${input.palletLength} × ${input.palletWidth} × ${input.palletHeightLimit} ${input.unit}`,
       `Box Dims: ${input.boxLength} × ${input.boxWidth} × ${input.boxHeight} ${input.unit}`,
-      `Boxes per Layer: ${result.boxesPerLayer} (${result.alongLength} × ${result.alongWidth})`,
+      `Boxes per Layer: ${result.boxesPerLayer} ${layerPattern(result)}`,
       `Total Layers: ${result.totalLayers}`,
       `Total Boxes: ${result.totalBoxes}`,
       `Space Utilization: ${result.spaceUtilizationPercent}%`,
       `Loaded Dimensions: ${result.loadedDimensions.length} × ${result.loadedDimensions.width} × ${result.loadedDimensions.height} cm`,
-      `Total Gross Weight: ${result.weightBreakdown.totalGrossWeightKg} kg (Box: ${input.boxWeight} kg, Pallet: 25 kg)`,
+      `Total Gross Weight: ${result.weightBreakdown.totalGrossWeightKg} kg (Box: ${result.weightBreakdown.boxWeightKg} kg, Pallet: ${PALLET_TARE_KG} kg)`,
     ].join('\n');
 
     try {
@@ -317,28 +319,6 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
                   />
                   <span class={styles.inputSuffix}>kg</span>
                 </div>
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="stackingTypeSelect" class={styles.fieldLabel}>
-                  Stacking type
-                </label>
-                <select
-                  id="stackingTypeSelect"
-                  class={styles.selectInput}
-                  value={input.stackingType}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      stackingType: (e.target as HTMLSelectElement)
-                        .value as PalletLoadingInput['stackingType'],
-                    }))
-                  }
-                >
-                  <option value="standard">Standard (no overhang)</option>
-                  <option value="interlocking">Interlocking (brick pattern)</option>
-                  <option value="column">Column stack</option>
-                </select>
               </div>
 
               <label class={styles.checkboxRow}>

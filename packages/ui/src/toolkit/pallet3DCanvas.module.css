@@ -114,3 +114,11 @@
   background: #f1f5f9;
   color: #0f172a;
 }
+
+.canvasEmpty {
+  margin: auto;
+  padding: 24px 12px;
+  color: #475569;
+  font-size: 12.5px;
+  text-align: center;
+}
