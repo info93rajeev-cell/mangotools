@@ -28,6 +28,7 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: var(--space-2);
     width: 100%;
   }
@@ -688,4 +689,17 @@
 
 .honestText {
   line-height: 1.4;
+}
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.zoomControls {
+  flex: none;
+}
+
+.zoomBtn {
+  white-space: nowrap;
+}
+
+.stageTitleGroup {
+  min-width: 0;
 }

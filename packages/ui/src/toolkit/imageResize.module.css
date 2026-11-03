@@ -28,6 +28,7 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: var(--space-3);
     width: 100%;
   }
@@ -690,4 +691,17 @@
   color: var(--color-text);
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.canvasToolbarControls {
+  flex: none;
+}
+
+.canvasToolBtn {
+  white-space: nowrap;
+}
+
+.canvasToolbarTitle {
+  min-width: 0;
 }

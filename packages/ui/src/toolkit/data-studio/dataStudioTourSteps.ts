@@ -7,7 +7,7 @@ const JSON_FORMATTER_STEPS: TourStep[] = [
     stepNumber: 1,
     title: '1. Paste or Type JSON',
     description:
-      'Enter raw or unformatted JSON here. You can also click "✨ Try sample" to test with realistic mock data.',
+      'Enter raw or unformatted JSON here. You can also click "Try sample" to test with realistic mock data.',
     hint: 'Supports JSON arrays, objects, nested values, and automatically detects syntax errors.',
   },
   {
@@ -97,15 +97,15 @@ const CSV_TO_JSON_STEPS: TourStep[] = [
     stepNumber: 1,
     title: '1. Paste Tabular CSV Data',
     description:
-      'Paste comma-separated rows or TSV data, or click "✨ Try sample" to test immediately.',
+      'Paste CSV or TSV, open a file, paste cells from a spreadsheet, or pick Sample Data.',
   },
   {
     id: 'csv2json-step-options',
-    targetSelector: '[class*="toolactions"], [class*="toolbar"]',
+    targetSelector: '[class*="optionsCard"]',
     stepNumber: 2,
     title: '2. Delimiter & Header Options',
     description:
-      'Configure comma, semicolon, or tab delimiters, first-row headers detection, and auto type parsing.',
+      'Choose the delimiter (or auto detect), the header row, trimming and optional data type detection.',
   },
   {
     id: 'csv2json-step-output',
@@ -113,7 +113,7 @@ const CSV_TO_JSON_STEPS: TourStep[] = [
     stepNumber: 3,
     title: '3. Formatted JSON Array',
     description:
-      'Review the generated JSON records array with preview table, and copy or download the JSON file.',
+      'Switch between formatted, minified and table views, then copy, download or open the JSON.',
   },
 ];
 
@@ -128,11 +128,11 @@ const JSON_TO_CSV_STEPS: TourStep[] = [
   },
   {
     id: 'json2csv-step-options',
-    targetSelector: '[class*="toolactions"], [class*="toolbar"]',
+    targetSelector: '[class*="aux"]',
     stepNumber: 2,
-    title: '2. Column Delimiter & Flattening',
+    title: '2. Records, Nesting & Export',
     description:
-      'Select output delimiter (comma, semicolon, tab) and enable nested dot-notation object flattening.',
+      'Pick the record path, how nested objects are handled, the delimiter and header, and the formula guard.',
   },
   {
     id: 'json2csv-step-output',

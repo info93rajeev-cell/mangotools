@@ -1,149 +1,187 @@
+import { inr, pct } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
-import type { AmazonFeeEstimatorState } from './useAmazonFeeEstimator.ts';
+import type { AmazonFeeEstimatorState, AmazonResult } from './useAmazonFeeEstimator.ts';
+
+const isLoss = (r: AmazonResult | null) => r !== null && r.economicProfit.startsWith('-');
+
+function Metric(props: {
+  ico: string;
+  tone: string;
+  label: string;
+  value: string;
+  color?: string;
+}) {
+  return (
+    <div class={styles.metric}>
+      <span class={`${styles.ico} ${props.tone}`}>{props.ico}</span>
+      <div class={styles.metricTextGroup}>
+        <small>{props.label}</small>
+        <strong style={props.color ? { color: props.color } : undefined}>{props.value}</strong>
+      </div>
+    </div>
+  );
+}
+
+function SummaryMetrics({ r }: { r: AmazonResult }) {
+  return (
+    <div class={styles.metrics}>
+      <Metric
+        ico="％"
+        tone={styles.icoGreen}
+        label="Profit margin"
+        value={pct(r.profitMarginPercent)}
+        color={isLoss(r) ? '#dc2626' : '#059669'}
+      />
+      <Metric
+        ico="₹"
+        tone={styles.icoBlue}
+        label="Bank settlement"
+        value={inr(r.estimatedSettlement)}
+      />
+      <Metric
+        ico="▣"
+        tone={styles.icoViolet}
+        label="Amazon fees"
+        value={inr(r.marketplaceFeesTotal)}
+      />
+      <Metric
+        ico="⚖"
+        tone={styles.icoAmber}
+        label="Break-even price"
+        value={inr(r.breakEvenSellingPrice)}
+      />
+    </div>
+  );
+}
+
+function SummaryBody({ state }: { state: AmazonFeeEstimatorState }) {
+  const r = state.result;
+  const loss = isLoss(r);
+  return (
+    <>
+      <div
+        class={`${styles.headlineResult} ${loss ? styles.headlineResultLoss : ''}`}
+        data-primary-result=""
+      >
+        <small>{loss ? 'Estimated loss per sale' : 'Estimated profit per sale'}</small>
+        <strong>
+          <output>{r ? inr(r.economicProfit) : '…'}</output>
+        </strong>
+      </div>
+      {r ? <SummaryMetrics r={r} /> : null}
+      {r && state.monthlyProfit !== null ? (
+        <div class={styles.strip} style={{ marginTop: '8px' }}>
+          <span>
+            {loss ? 'Loss' : 'Profit'} on {state.monthlyQty} sales / month
+          </span>
+          <b>{inr(state.monthlyProfit)}</b>
+        </div>
+      ) : null}
+    </>
+  );
+}
 
 export function AmazonFeeResultsSummaryCard({ state }: { state: AmazonFeeEstimatorState }) {
-  const { sellingPrice, calculation } = state;
-  const isProfit = calculation.netProfit >= 0;
-
   return (
-    <section class={styles.card} aria-label="Profit and Settlement Estimate">
+    <section class={styles.card} aria-label="Profit and Settlement Estimate" aria-live="polite">
       <div class={styles.heading}>
         <span class={`${styles.ico} ${styles.icoGreen}`}>✓</span>
         <span>Profit & Settlement Estimate</span>
       </div>
-
-      <div class={`${styles.headlineResult} ${!isProfit ? styles.headlineResultLoss : ''}`}>
-        <small>{isProfit ? 'Estimated Profit per Sale' : 'Estimated Loss per Sale'}</small>
-        <strong>
-          ₹{' '}
-          {calculation.netProfit.toLocaleString('en-IN', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </strong>
-      </div>
-
-      <div class={styles.metrics}>
-        <div class={styles.metric}>
-          <span class={`${styles.ico} ${styles.icoGreen}`}>％</span>
-          <div class={styles.metricTextGroup}>
-            <small>Profit Margin</small>
-            <strong style={{ color: isProfit ? '#059669' : '#dc2626' }}>
-              {calculation.netMargin}%
-            </strong>
-          </div>
+      {state.error ? (
+        <div class={styles.note} role="alert">
+          {state.error}
         </div>
-
-        <div class={styles.metric}>
-          <span class={`${styles.ico} ${styles.icoBlue}`}>₹</span>
-          <div class={styles.metricTextGroup}>
-            <small>Sales price</small>
-            <strong>₹{sellingPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</strong>
-          </div>
-        </div>
-
-        <div class={styles.metric}>
-          <span class={`${styles.ico} ${styles.icoViolet}`}>▣</span>
-          <div class={styles.metricTextGroup}>
-            <small>Amazon fees + fee GST</small>
-            <strong>
-              ₹{calculation.amazonFeesWithGst.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-            </strong>
-          </div>
-        </div>
-
-        <div class={styles.metric}>
-          <span class={`${styles.ico} ${styles.icoAmber}`}>↘</span>
-          <div class={styles.metricTextGroup}>
-            <small>Costs excluding fees</small>
-            <strong>
-              ₹
-              {calculation.costsExcludingFees.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-            </strong>
-          </div>
-        </div>
-      </div>
+      ) : (
+        <SummaryBody state={state} />
+      )}
     </section>
   );
 }
 
-export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorState }) {
-  const { sellingPrice, productPackagingCost, feeGst, adsReturns, calculation } = state;
+function Row(props: { label: string; value: string; sign?: '−' | ''; muted?: boolean }) {
+  return (
+    <tr>
+      <td>{props.label}</td>
+      <td style={props.muted ? { color: '#64748b' } : undefined}>
+        {props.sign ?? ''}
+        {inr(props.value)}
+      </td>
+    </tr>
+  );
+}
 
+/** Profit lines, then the cash settlement lines, all from the engine. */
+export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorState }) {
+  const r = state.result;
+  if (!r) return null;
+  const recoverable = r.recoverableMarketplaceFeeGst !== '0.00';
   return (
     <section class={styles.card} aria-label="Itemized Profit Statement">
       <div class={styles.heading}>
         <span class={`${styles.ico} ${styles.icoViolet}`}>▥</span>
         <span>Itemized Profit Statement</span>
       </div>
-
       <table class={styles.smallTable} aria-label="Statement Table">
         <thead>
           <tr>
-            <th>Component</th>
+            <th>Profit per sale</th>
             <th>Amount</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Selling price</td>
-            <td>
-              ₹
-              {sellingPrice.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Product + packaging</td>
-            <td style={{ color: '#64748b' }}>
-              −₹
-              {productPackagingCost.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Referral + closing + handling</td>
-            <td style={{ color: '#64748b' }}>
-              −₹
-              {calculation.totalAmazonFees.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Fee GST</td>
-            <td style={{ color: '#64748b' }}>
-              −₹
-              {feeGst.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Advertising + expected returns</td>
-            <td style={{ color: '#64748b' }}>
-              −₹
-              {adsReturns.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
+          <Row label="Selling price" value={r.grossCustomerValue} />
+          {r.orderProductGstAmount !== '0.00' ? (
+            <Row
+              label="GST inside the price (paid to govt)"
+              value={r.orderProductGstAmount}
+              sign="−"
+              muted
+            />
+          ) : null}
+          <Row label="Product cost" value={r.productCostRecognised} sign="−" muted />
+          <Row
+            label="Packaging, ads and returns"
+            value={r.sellerControlledCostsTotal}
+            sign="−"
+            muted
+          />
+          <Row label="Amazon fees" value={r.marketplaceFeesTotal} sign="−" muted />
+          {r.nonRecoverableMarketplaceFeeGst !== '0.00' ? (
+            <Row
+              label="GST on fees (not claimed)"
+              value={r.nonRecoverableMarketplaceFeeGst}
+              sign="−"
+              muted
+            />
+          ) : null}
           <tr style={{ fontWeight: 850, background: '#f0fdf4' }}>
             <td>Net profit</td>
-            <td style={{ color: '#059669' }}>
-              ₹
-              {calculation.netProfit.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
+            <td style={{ color: isLoss(r) ? '#dc2626' : '#059669' }}>{inr(r.economicProfit)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class={styles.smallTable} aria-label="Settlement Table" style={{ marginTop: '10px' }}>
+        <thead>
+          <tr>
+            <th>Bank settlement</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <Row label="Selling price" value={r.grossCustomerValue} />
+          <Row label="Amazon fees" value={r.marketplaceFeesTotal} sign="−" muted />
+          <Row
+            label={recoverable ? 'GST on fees (claim back as ITC)' : 'GST on fees'}
+            value={r.marketplaceFeeGstTotal}
+            sign="−"
+            muted
+          />
+          <Row label="TCS 0.5% (GST)" value={r.tcsAmount} sign="−" muted />
+          <Row label="TDS 0.1% (income tax)" value={r.tdsAmount} sign="−" muted />
+          <tr style={{ fontWeight: 850 }}>
+            <td>Estimated settlement</td>
+            <td>{inr(r.estimatedSettlement)}</td>
           </tr>
         </tbody>
       </table>
@@ -151,29 +189,40 @@ export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorSta
   );
 }
 
+/** Bar widths only: each engine amount as a share of the selling price. */
 export function AmazonFeeVisualCard({ state }: { state: AmazonFeeEstimatorState }) {
-  const { calculation } = state;
-  const { costPct, feePct, otherPct, profitPct } = calculation;
-
+  const r = state.result;
+  if (!r) return null;
+  const price = Number(r.grossCustomerValue) || 1;
+  const parts = [
+    ['Product', r.productCostRecognised, '#3081ee'],
+    ['Amazon fees', r.marketplaceFeesTotal, '#ae62e5'],
+    ['Other costs', r.sellerControlledCostsTotal, '#f9b52c'],
+    ['GST', r.orderProductGstAmount, '#94a3b8'],
+    ['Profit', r.economicProfit, '#18b86a'],
+  ].map(([label, v, color]) => ({
+    label,
+    color,
+    share: Math.max(0, (Number(v) / price) * 100),
+  }));
   return (
     <section class={styles.card} aria-label="Revenue Allocation">
       <div class={styles.heading}>
         <span class={`${styles.ico} ${styles.icoPink}`}>◔</span>
-        <span>Revenue Allocation</span>
+        <span>Where the selling price goes</span>
       </div>
-
       <div class={styles.bar}>
-        <span style={{ width: `${costPct}%`, background: '#3081ee' }} />
-        <span style={{ width: `${feePct}%`, background: '#ae62e5' }} />
-        <span style={{ width: `${otherPct}%`, background: '#f9b52c' }} />
-        <span style={{ width: `${profitPct}%`, background: '#18b86a' }} />
+        {parts.map((p) => (
+          <span key={p.label} style={{ width: `${p.share}%`, background: p.color }} />
+        ))}
       </div>
-
       <div class={styles.legend}>
-        <span>Cost {costPct}%</span>
-        <span>Amazon fees {feePct}%</span>
-        <span>Other {otherPct}%</span>
-        <span>Profit {profitPct}%</span>
+        {parts.map((p) => (
+          <span key={p.label}>
+            <i class={styles.dot} style={{ background: p.color }} />
+            {p.label} {p.share.toFixed(1)}%
+          </span>
+        ))}
       </div>
     </section>
   );

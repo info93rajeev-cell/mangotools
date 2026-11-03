@@ -1,0 +1,5 @@
+id: 007-zero-price
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "A selling price of zero has no economics" }
+input: { sellingPrice: "0", productCost: "10" }
+expectedError: { code: ESTIMATE_PRICE_ZERO, path: sellingPrice }

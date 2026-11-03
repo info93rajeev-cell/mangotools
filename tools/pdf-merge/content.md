@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-09-30
+lastReviewed: 2026-11-02
 ---
 
 ## How to use
@@ -9,13 +9,13 @@ lastReviewed: 2026-09-30
 3. **Set an output name**, or leave it blank for the default, `merged.pdf`. An unsafe or empty name is cleaned up automatically rather than rejected.
 4. Select **Download merged PDF**. The files are combined in your browser and the result downloads immediately — nothing is uploaded anywhere.
 
-**What PDF Merge does:** it combines the PDF files you select into a single PDF, in the order you choose. It does not edit page content, compress the result, or attempt OCR — it only combines whole pages from each file into one document.
+**What PDF Merge does:** it combines the PDF files you select into a single PDF, in the order you choose — one file after another, or interleaved one page from each file in turn. With **Add bookmarks for each file** on, the merged PDF gets one bookmark per file, opening at that file's first page. It does not edit page content, compress the result, or attempt OCR.
 
 ## Method
 
 **Files are processed locally in your browser.** No file upload is required for this tool — every PDF you add is read and combined on your own device, and the merged file is generated and downloaded without ever leaving it.
 
-**What may not be preserved.** Bookmarks, forms, annotations, signatures, attachments, layers, and some other advanced PDF features from the original files may not carry over into the merged document. Verify the merged PDF before sending, printing, filing, or publishing it.
+**What may not be preserved.** The original files' own bookmarks, forms, annotations, signatures, attachments, layers, and some other advanced PDF features from the original files may not carry over into the merged document. Verify the merged PDF before sending, printing, filing, or publishing it.
 
 **File size and browser limits.** Each PDF can be up to 25 MB, the combined total up to 75 MB, and up to 20 files can be merged at once. Very large, encrypted, password-protected, or corrupted PDFs may fail in the browser — these are honest, stated limits for a tool that runs entirely on your device, not a server.
 

@@ -1,13 +1,15 @@
 ---
-lastReviewed: 2026-09-30
+lastReviewed: 2026-11-02
 ---
 
 ## How to use
 
-1. Paste your JSON into the input box, or select **Try sample**.
-2. The JSON must be an array of objects, or a single object (treated as one row).
-3. The result updates as you type: CSV text with one header row and one row per object.
-4. Copy or download the `.csv` result to open in Excel or Google Sheets.
+1. Paste your JSON into the input box, open a `.json` file, or select **Load sample**.
+2. The JSON can be an array of objects, a single object (treated as one row), or an object that
+   holds the records — pick where they are under **Record path**.
+3. The table preview, export summary and CSV output update as you type.
+4. Choose how nested objects are handled, the delimiter, the header line, a UTF-8 BOM for Excel and
+   the formula guard, then copy or download the `.csv` file.
 
 **What JSON to CSV does:** it is a free JSON to CSV converter that turns a JSON array to CSV, or a
 single JSON object to CSV, entirely in your browser. It is built for the common case: paste JSON
@@ -19,26 +21,42 @@ from an API or export, get a spreadsheet-ready CSV out.
 `[{"name": "Raj", "age": "50"}, {"name": "Aiva", "age": "19"}]`. A single JSON object on its own,
 such as `{"name": "Raj", "age": "50"}`, is also accepted and becomes one CSV row.
 
+**Record path.** When the records sit inside a larger document, such as
+`{"data": {"items": [...]}}`, choose `$.data.items[*]` under **Record path**. The list offers every
+array of objects found up to three levels deep.
+
 **Header and column order.** Column headers come from the first object's own key order. If a later
 object introduces a key the first object didn't have, that key is appended as a new column, in the
 order it is first seen. A row missing a key that other rows have simply gets an empty cell for that
-column — objects do not need identical keys.
+column — objects do not need identical keys. The **Missing** figure counts those empty cells. Turn
+off **Union all keys** to keep only the first object's keys.
+
+**Nested objects and arrays.** By default a nested object is flattened into dot-path columns, so
+`{"profile": {"city": "Pune"}}` becomes a `profile.city` column, and an array is written as JSON
+text such as `["a","b"]`. Choose **Keep as JSON text** to write every nested object or array as
+JSON text in its own column, or **Stop with an error** to reject nested values.
 
 **How values are escaped.** CSV fields are built with proper escaping, never plain text joining. A
 value is wrapped in double quotes if it contains a comma, a double quote, a line break, or leading
 or trailing spaces; a double quote inside such a value is written as two double quotes (`""`), the
-standard CSV escape. Numbers and booleans are written as plain text (`50`, `true`), not quoted.
+standard CSV escape. With a semicolon, tab or pipe delimiter, a value is quoted when it contains
+that delimiter instead. Numbers and booleans are written as plain text (`50`, `true`), not quoted.
 Numbers are read as standard JavaScript numbers, so `499.00` is written as `499`, and whole numbers
 longer than 15 digits can be rounded — put long IDs in quotes in the JSON to keep them exactly.
-`null` and a missing key both become an empty cell.
+`null` and a missing key both become an empty cell. Text such as `00124` stays text in the CSV;
+the summary names those columns because a spreadsheet would drop the leading zeros when it opens
+the file.
+
+**Spreadsheet safety.** A text cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return can
+run as a formula when the CSV is opened in spreadsheet software. Such cells are counted, and the
+**Formula guard** prefixes them with `'` so they open as text, following OWASP's CSV injection
+guidance. JSON numbers such as `-5` are never changed.
 
 **Browser-based processing.** No upload is required. The JSON you paste is parsed on your own
 device, in a background worker, and never sent to a server.
 
 **What this tool does not do.** This is a JSON to CSV converter only, not a JSON CSV converter that
-also reads Excel or `.xlsx` files. Nested objects and arrays inside a value are rejected with a
-clear error, rather than being silently flattened into extra columns — flatten your
-data to a simple, flat shape (or pick the fields you need) before converting. It does not import
+also reads Excel or `.xlsx` files. It does not import
 data into a database, infer a schema beyond collecting column names, or use AI to clean up messy
 data.
 
@@ -70,8 +88,9 @@ empty cell for that column, so objects with different (or missing) keys don't ca
 
 ### Can it handle nested objects?
 
-No. A value that is itself an object or array is rejected with a clear error naming
-the key and the item, rather than being flattened or stringified in a way that might surprise you.
+Yes. Nested objects are flattened into dot-path columns such as `profile.city`, and arrays are
+written as JSON text. You can instead keep every nested value as JSON text, or stop with an error
+that names the key and the item.
 
 ### Are commas and quotes escaped correctly?
 
@@ -89,9 +108,9 @@ Yes — see [CSV to JSON](tool:csv-to-json) for the reverse conversion.
 
 ### Can I open the CSV in Excel or Google Sheets?
 
-Yes. The output is standard, properly escaped CSV text (UTF-8, without a byte order mark). Google Sheets
-reads it directly. If Excel shows characters such as ₹ incorrectly when you double-click the file, import
-it with **Data → From Text/CSV** and choose UTF-8.
+Yes. The output is standard, properly escaped UTF-8 CSV text, which Google Sheets reads directly. If
+Excel shows characters such as ₹ incorrectly when you double-click the file, tick **UTF-8 BOM** before
+downloading, or import it with **Data → From Text/CSV** and choose UTF-8.
 
 ### Do I need to sign up?
 
@@ -100,3 +119,4 @@ No. This tool works without an account, sign-up, or login — free JSON to CSV, 
 ## References
 
 - RFC 4180 — Common Format and MIME Type for Comma-Separated Values (CSV) Files (rfc-editor.org)
+- OWASP — CSV Injection (owasp.org)

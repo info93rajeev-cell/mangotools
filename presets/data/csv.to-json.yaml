@@ -1,14 +1,45 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: data/csv.to-json
-version: 0.1.0
+version: 0.2.0
 operation: data.csv.to-json@1
-params: { pretty: true }
+params:
+  pretty: true
+  delimiter: comma
+  header: true
+  trim: false
+  skipEmptyRows: false
+  inferTypes: false
+  emptyAsNull: false
+  nullValues: ''
+  maxRows: ''
+  shape: objects
+  excludeColumns: ''
+  metadata: false
 userOptions:
   pretty:
     control: switch
     labelKey: csv.option.pretty
     order: 10
+  delimiter:
+    control: select
+    labelKey: csv.option.delimiter
+    order: 20
+    values: { comma: { labelKey: csv.delimiter.comma }, semicolon: { labelKey: csv.delimiter.semicolon }, tab: { labelKey: csv.delimiter.tab }, pipe: { labelKey: csv.delimiter.pipe }, auto: { labelKey: csv.delimiter.auto } }
+  header: { control: switch, labelKey: csv.option.header, order: 30 }
+  trim: { control: switch, labelKey: csv.option.trim, order: 40 }
+  skipEmptyRows: { control: switch, labelKey: csv.option.skipEmptyRows, order: 50 }
+  inferTypes: { control: switch, labelKey: csv.option.inferTypes, order: 60 }
+  emptyAsNull: { control: switch, labelKey: csv.option.emptyAsNull, order: 70 }
+  shape:
+    control: select
+    labelKey: csv.option.shape
+    order: 80
+    values: { objects: { labelKey: csv.shape.objects }, arrays: { labelKey: csv.shape.arrays }, ndjson: { labelKey: csv.shape.ndjson } }
+  metadata: { control: switch, labelKey: csv.option.metadata, order: 90 }
+  nullValues: { control: select, labelKey: csv.option.nullValues, order: 100, visible: false }
+  maxRows: { control: select, labelKey: csv.option.maxRows, order: 110, visible: false }
+  excludeColumns: { control: select, labelKey: csv.option.excludeColumns, order: 120, visible: false }
 fields:
   text: { labelKey: csv.field.text, kind: text, required: true, order: 10, placeholderKey: csv.field.placeholder }
 outputs:
@@ -21,10 +52,42 @@ samples:
     titleKey: csv.sample.nameAge
     input:
       text: "name,age\nRaj,50\nAiva,19\n"
+  employees:
+    titleKey: csv.sample.employees
+    input:
+      text: "name,age,city,salary,active\nJohn Doe,30,New York,75000,true\nJane Smith,25,London,65000,false\nRaj Patel,28,Mumbai,72000,true\nMira Shah,32,Delhi,58000,false"
+  sku-codes:
+    titleKey: csv.sample.skuCodes
+    input:
+      text: "sku,product,qty\n00124,Steel bolt M8,40\n00085,Flat washer,120\n04102,Hex nut,75\n"
+  semicolon:
+    titleKey: csv.sample.semicolon
+    input:
+      text: "name;city;amount\nAnna;Berlin;1.234,50\nLuca;Milano;980,00\n"
+    params: { delimiter: auto }
 ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: data.json, outputMime: application/json }
 strings:
   en:
     csv.option.pretty: Pretty print
+    csv.option.delimiter: Delimiter
+    csv.delimiter.comma: Comma (,)
+    csv.delimiter.semicolon: Semicolon (;)
+    csv.delimiter.tab: Tab
+    csv.delimiter.pipe: Pipe (|)
+    csv.delimiter.auto: Auto detect
+    csv.option.header: First row as header
+    csv.option.trim: Trim spaces
+    csv.option.skipEmptyRows: Skip empty rows
+    csv.option.inferTypes: Auto detect data types
+    csv.option.emptyAsNull: Convert empty values to null
+    csv.option.shape: JSON format
+    csv.shape.objects: Array of objects
+    csv.shape.arrays: Array of arrays
+    csv.shape.ndjson: JSON Lines (NDJSON)
+    csv.option.metadata: Add metadata (rows, columns)
+    csv.option.nullValues: Custom null values
+    csv.option.maxRows: Maximum rows
+    csv.option.excludeColumns: Excluded columns
     csv.field.text: CSV input
     csv.field.placeholder: 'Paste CSV here, e.g. name,age\nRaj,50'
     csv.out.text: Result
@@ -32,3 +95,6 @@ strings:
     csv.out.columnCount: Columns
     csv.out.headers: Headers
     csv.sample.nameAge: Two rows with headers
+    csv.sample.employees: Employees (5 columns)
+    csv.sample.skuCodes: Product codes with leading zeros
+    csv.sample.semicolon: Semicolon-separated (European)

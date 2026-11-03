@@ -61,6 +61,7 @@
     min-width: 0;
     max-width: 100%;
     overflow-x: hidden;
+    align-items: stretch;
   }
 }
 
@@ -484,4 +485,15 @@
     max-width: 100%;
     box-sizing: border-box;
   }
+}
+
+.issue {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 12px;
+  font-weight: 600;
 }

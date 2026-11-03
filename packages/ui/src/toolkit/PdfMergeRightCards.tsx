@@ -136,7 +136,7 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
           <button
             type="button"
             class={styles.actionBtnPrimaryBlue}
-            onClick={downloadMerged}
+            onClick={() => void downloadMerged()}
             disabled={files.length === 0}
           >
             📥 Download Merged PDF

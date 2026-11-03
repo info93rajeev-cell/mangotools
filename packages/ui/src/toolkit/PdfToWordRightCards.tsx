@@ -1,9 +1,30 @@
 import styles from './pdfStudio.module.css';
-import type { usePdfToWordStudio } from './usePdfConvertStudio.ts';
+import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 
-function PdfToWordSummaryCard({ totalPages }: { totalPages: number }) {
+function Tile(props: { tone: string; icon: string; value: string; label: string; sub: string }) {
+  return (
+    <div class={`${styles.statTile} ${props.tone}`}>
+      <span style={{ fontSize: '12px' }}>{props.icon}</span>
+      <span class={styles.statVal}>{props.value}</span>
+      <span class={styles.statLabel}>{props.label}</span>
+      <span class={styles.statSub}>{props.sub}</span>
+    </div>
+  );
+}
+
+function status(studio: PdfToWordState): string {
+  const ex = studio.extraction;
+  if (studio.isProcessing) return 'Reading…';
+  if (!ex) return 'Add a PDF';
+  if (ex.words === 0) return 'No text found';
+  return studio.docx ? '✓ Converted' : 'Ready to convert';
+}
+
+function PdfToWordSummaryCard({ studio }: { studio: PdfToWordState }) {
+  const ex = studio.extraction;
+  const docxKb = studio.docx ? `${Math.max(1, Math.round(studio.docx.length / 1024))} KB` : '—';
   return (
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
@@ -14,114 +35,116 @@ function PdfToWordSummaryCard({ totalPages }: { totalPages: number }) {
           class={styles.badgePill}
           style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
         >
-          ✓ Ready to convert
+          {status(studio)}
         </span>
       </div>
       <div class={styles.statTilesGrid}>
-        <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
-          <span class={styles.statVal}>{totalPages}</span>
-          <span class={styles.statLabel}>Input pages</span>
-          <span class={styles.statSub}>From PDF file</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
-          <span class={styles.statVal}>~1.8 MB</span>
-          <span class={styles.statLabel}>Estimated DOCX</span>
-          <span class={styles.statSub}>After conversion</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>⭐</span>
-          <span class={styles.statVal}>High</span>
-          <span class={styles.statLabel}>Detected text</span>
-          <span class={styles.statSub}>Text-based PDF</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>✓</span>
-          <span class={styles.statVal}>Ready</span>
-          <span class={styles.statLabel}>Conversion</span>
-          <span class={styles.statSub}>All set</span>
-        </div>
+        <Tile
+          tone={styles.statTilePurple}
+          icon="📑"
+          value={String(ex?.pages.length ?? 0)}
+          label="Input pages"
+          sub={`${ex?.pagesWithText ?? 0} with text`}
+        />
+        <Tile
+          tone={styles.statTileGreen}
+          icon="🔤"
+          value={String(ex?.words ?? 0)}
+          label="Words found"
+          sub="Selectable text"
+        />
+        <Tile
+          tone={styles.statTileAmber}
+          icon="🔖"
+          value={String(ex?.headings ?? 0)}
+          label="Headings"
+          sub="From larger text"
+        />
+        <Tile
+          tone={styles.statTileBlue}
+          icon="📄"
+          value={docxKb}
+          label="DOCX size"
+          sub="After conversion"
+        />
       </div>
     </div>
   );
 }
 
-function PdfToWordPreviewCard({ studio }: { studio: PdfToWordState }) {
-  const { previewTab, setPreviewTab, fileName } = studio;
-  const docTitle = fileName ? fileName.replace(/\.[^/.]+$/, '') : 'Vendor Agreement';
+function PreviewBody({ studio }: { studio: PdfToWordState }) {
+  const ex = studio.extraction;
+  if (!ex)
+    return (
+      <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>
+        Add a PDF to see its text here.
+      </p>
+    );
+  if (ex.words === 0) {
+    return (
+      <p style={{ fontSize: '11px', color: '#b45309', margin: 0 }}>
+        No selectable text was found. This is usually a scanned PDF (a picture of text), which needs
+        OCR; this tool does not do OCR.
+      </p>
+    );
+  }
+  const blocks = ex.blocks.flatMap((b) => (b.kind === 'page' ? [] : [b]));
+  const shown =
+    studio.previewTab === 'outline'
+      ? blocks.filter((b) => b.kind === 'h1' || b.kind === 'h2')
+      : blocks;
+  return (
+    <div
+      style={{
+        maxHeight: '190px',
+        overflow: 'auto',
+        fontSize: '11.5px',
+        lineHeight: 1.5,
+        color: '#0f172a',
+      }}
+    >
+      {shown.slice(0, 60).map((b, i) => (
+        <p
+          key={String(i)}
+          style={{
+            margin: '0 0 6px',
+            fontWeight: b.kind === 'p' ? 400 : 700,
+            paddingLeft: studio.previewTab === 'outline' && b.kind === 'h2' ? '12px' : 0,
+          }}
+        >
+          {b.text}
+        </p>
+      ))}
+      {shown.length === 0 ? (
+        <p style={{ margin: 0, color: '#475569' }}>No headings found.</p>
+      ) : null}
+    </div>
+  );
+}
 
+function PdfToWordPreviewCard({ studio }: { studio: PdfToWordState }) {
+  const tab = (id: 'text' | 'outline', label: string) => (
+    <button
+      type="button"
+      aria-pressed={studio.previewTab === id}
+      class={`${styles.previewTabBtn} ${studio.previewTab === id ? styles.previewTabBtnActive : ''}`}
+      onClick={() => studio.setPreviewTab(id)}
+    >
+      {label}
+    </button>
+  );
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📝</span> Editable Output Preview
+          <span style={{ color: '#2563eb' }}>📝</span> Text Preview
         </h2>
         <div class={styles.previewTabs}>
-          <button
-            type="button"
-            class={`${styles.previewTabBtn} ${previewTab === 'visual' ? styles.previewTabBtnActive : ''}`}
-            onClick={() => setPreviewTab('visual')}
-          >
-            Visual Preview
-          </button>
-          <button
-            type="button"
-            class={`${styles.previewTabBtn} ${previewTab === 'text' ? styles.previewTabBtnActive : ''}`}
-            onClick={() => setPreviewTab('text')}
-          >
-            Text View
-          </button>
-          <button
-            type="button"
-            class={`${styles.previewTabBtn} ${previewTab === 'outline' ? styles.previewTabBtnActive : ''}`}
-            onClick={() => setPreviewTab('outline')}
-          >
-            Outline
-          </button>
+          {tab('text', 'Text')}
+          {tab('outline', 'Outline')}
         </div>
       </div>
-
-      <div class={styles.sideBySidePreview}>
-        <div class={styles.docPreviewMock}>
-          <div class={styles.docPreviewMockTitle}>
-            <span style={{ color: '#ef4444' }}>📄</span>
-            <span>[PDF] {docTitle}</span>
-          </div>
-          <div
-            style={{ height: '3px', background: '#cbd5e1', borderRadius: '1.5px', width: '90%' }}
-          />
-          <div
-            style={{ height: '3px', background: '#e2e8f0', borderRadius: '1.5px', width: '70%' }}
-          />
-          <div
-            style={{ height: '3px', background: '#e2e8f0', borderRadius: '1.5px', width: '85%' }}
-          />
-          <span style={{ fontSize: '10px', color: '#64748b' }}>Original layout & tables</span>
-        </div>
-        <span class={styles.sideArrow}>→</span>
-        <div
-          class={styles.docPreviewMock}
-          style={{ borderColor: '#93c5fd', background: '#f8fafc' }}
-        >
-          <div class={styles.docPreviewMockTitle}>
-            <span style={{ color: '#2563eb' }}>📝</span>
-            <span style={{ color: '#1d4ed8' }}>[Word] {docTitle}</span>
-          </div>
-          <div
-            style={{ height: '3px', background: '#93c5fd', borderRadius: '1.5px', width: '90%' }}
-          />
-          <div
-            style={{ height: '3px', background: '#bfdbfe', borderRadius: '1.5px', width: '70%' }}
-          />
-          <div
-            style={{ height: '3px', background: '#bfdbfe', borderRadius: '1.5px', width: '85%' }}
-          />
-          <span style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>
-            Editable paragraphs & styles
-          </span>
-        </div>
-      </div>
+      <PreviewBody studio={studio} />
     </div>
   );
 }
@@ -132,7 +155,7 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
 
   return (
     <div class={styles.leftMergeCol}>
-      <PdfToWordSummaryCard totalPages={totalPages} />
+      <PdfToWordSummaryCard studio={studio} />
       <PdfToWordPreviewCard studio={studio} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
         <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
@@ -144,7 +167,7 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
         <button
           type="button"
           class={styles.primaryCtaBtn}
-          disabled={isProcessing || totalPages === 0}
+          disabled={isProcessing || totalPages === 0 || studio.extraction?.words === 0}
           onClick={() => void executeConvertToWord()}
         >
           {isProcessing ? '⏳ Converting to Word...' : '📄 Convert to Word →'}
@@ -154,7 +177,7 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
             type="button"
             class={styles.actionBtnPrimaryBlue}
             onClick={downloadDocx}
-            disabled={totalPages === 0}
+            disabled={totalPages === 0 || studio.extraction?.words === 0}
           >
             📥 Download DOCX
           </button>

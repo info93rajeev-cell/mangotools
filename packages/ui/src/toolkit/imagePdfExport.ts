@@ -1,5 +1,14 @@
 import { err, ok, type Result } from '@mangotools/core';
-import type { PDFDocument, PDFImage } from 'pdf-lib';
+import type { PDFDocument, PDFFont, PDFImage, PDFPage } from 'pdf-lib';
+import {
+  DEFAULT_PAGE_EXTRAS,
+  exifRotation,
+  OFFWHITE_RGB,
+  type PageExtras,
+  pageNumberLabel,
+  reencodeForQuality,
+  rotatedPlacement,
+} from './imagePdfPageOptions.ts';
 
 async function rasterizeToPng(bytes: Uint8Array): Promise<Uint8Array | null> {
   if (typeof document === 'undefined') return null;
@@ -44,6 +53,8 @@ export interface CompilePdfImageInput {
   bytes: Uint8Array;
   width?: number;
   height?: number;
+  /** The user's clockwise turns in degrees (0/90/180/270). */
+  rotation?: number;
 }
 
 export interface CompileImagesToPdfOptions {
@@ -52,6 +63,7 @@ export interface CompileImagesToPdfOptions {
   orientation?: 'portrait' | 'landscape' | 'auto';
   margins?: 'normal' | 'small' | 'none';
   fitMode?: 'fit' | 'fill' | 'original';
+  extras?: PageExtras;
 }
 
 async function embedImage(doc: PDFDocument, bytes: Uint8Array): Promise<PDFImage | null> {
@@ -124,26 +136,83 @@ function computeImageDrawRect(
   return { x, y, width, height };
 }
 
+type PdfLib = typeof import('pdf-lib');
+
+interface PageLayout {
+  sizeSetting: 'a4' | 'letter' | 'fit';
+  orient: 'portrait' | 'landscape' | 'auto';
+  margins: 'normal' | 'small' | 'none';
+  fitMode: 'fit' | 'fill' | 'original';
+}
+
+/** The bytes to embed and the rotation still to apply (quality re-encoding bakes EXIF in). */
+async function prepareImage(
+  item: CompilePdfImageInput,
+  extras: PageExtras,
+): Promise<{ bytes: Uint8Array; rotation: number }> {
+  const user = item.rotation ?? 0;
+  if (extras.quality !== 'high') {
+    const smaller = await reencodeForQuality(item.bytes, extras.quality);
+    if (smaller) return { bytes: smaller, rotation: user };
+  }
+  return { bytes: item.bytes, rotation: user + exifRotation(item.bytes) };
+}
+
+function paintBackground(lib: PdfLib, page: PDFPage, extras: PageExtras): void {
+  if (extras.background !== 'offwhite') return;
+  const [r, g, b] = OFFWHITE_RGB;
+  const { width, height } = page.getSize();
+  page.drawRectangle({ x: 0, y: 0, width, height, color: lib.rgb(r, g, b) });
+}
+
 async function addSingleImagePage(
+  lib: PdfLib,
   doc: PDFDocument,
   item: CompilePdfImageInput,
-  sizeSetting: 'a4' | 'letter' | 'fit',
-  orient: 'portrait' | 'landscape' | 'auto',
-  margins: 'normal' | 'small' | 'none',
-  fitMode: 'fit' | 'fill' | 'original',
-): Promise<boolean> {
-  const pdfImg = await embedImage(doc, item.bytes);
-  if (!pdfImg) return false;
+  layout: PageLayout,
+  extras: PageExtras,
+): Promise<PDFPage | null> {
+  const prepared = await prepareImage(item, extras);
+  const pdfImg = await embedImage(doc, prepared.bytes);
+  if (!pdfImg) return null;
+  const turned = ((prepared.rotation % 360) + 360) % 180 === 90;
+  const shownW = turned ? pdfImg.height : pdfImg.width;
+  const shownH = turned ? pdfImg.width : pdfImg.height;
 
-  const { pageW, pageH } = computePageSize(pdfImg.width, pdfImg.height, sizeSetting, orient);
+  const { pageW, pageH } = computePageSize(shownW, shownH, layout.sizeSetting, layout.orient);
+  const marginSetting = layout.margins;
   let marginPt =
-    sizeSetting === 'fit' ? 0 : margins === 'normal' ? 72 : margins === 'small' ? 36 : 0;
+    layout.sizeSetting === 'fit'
+      ? 0
+      : marginSetting === 'normal'
+        ? 72
+        : marginSetting === 'small'
+          ? 36
+          : 0;
   if (marginPt * 2 >= pageW || marginPt * 2 >= pageH) marginPt = 0;
 
-  const rect = computeImageDrawRect(pdfImg.width, pdfImg.height, pageW, pageH, marginPt, fitMode);
+  const box = computeImageDrawRect(shownW, shownH, pageW, pageH, marginPt, layout.fitMode);
   const page = doc.addPage([pageW, pageH]);
-  page.drawImage(pdfImg, rect);
-  return true;
+  paintBackground(lib, page, extras);
+  const place = rotatedPlacement(box, prepared.rotation);
+  page.drawImage(pdfImg, {
+    x: place.x,
+    y: place.y,
+    width: place.width,
+    height: place.height,
+    rotate: lib.degrees(place.degrees),
+  });
+  return page;
+}
+
+function numberPages(pages: PDFPage[], font: PDFFont, numbering: PageExtras['numbering']): void {
+  const size = 10;
+  pages.forEach((page, index) => {
+    const label = pageNumberLabel(index, pages.length, numbering, page.getWidth(), (text) =>
+      font.widthOfTextAtSize(text, size),
+    );
+    if (label) page.drawText(label.text, { x: label.x, y: 18, size, font });
+  });
 }
 
 export async function compileImagesToPdf(
@@ -160,14 +229,23 @@ export async function compileImagesToPdf(
     doc.setCreationDate(new Date(0));
     doc.setModificationDate(new Date(0));
 
-    const sizeSetting = options.pageSize || 'a4';
-    const orient = options.orientation || 'portrait';
-    const margins = options.margins || 'normal';
-    const fitMode = options.fitMode || 'fit';
+    const lib = await import('pdf-lib');
+    const layout: PageLayout = {
+      sizeSetting: options.pageSize || 'a4',
+      orient: options.orientation || 'portrait',
+      margins: options.margins || 'normal',
+      fitMode: options.fitMode || 'fit',
+    };
+    const extras = options.extras ?? DEFAULT_PAGE_EXTRAS;
 
+    const pages: PDFPage[] = [];
     for (const item of options.images) {
-      const okAdded = await addSingleImagePage(doc, item, sizeSetting, orient, margins, fitMode);
-      if (!okAdded) return err(fallbackErrorCode);
+      const page = await addSingleImagePage(lib, doc, item, layout, extras);
+      if (!page) return err(fallbackErrorCode);
+      pages.push(page);
+    }
+    if (extras.numbering !== 'none') {
+      numberPages(pages, await doc.embedFont(lib.StandardFonts.Helvetica), extras.numbering);
     }
 
     const pdfBytes = await doc.save();

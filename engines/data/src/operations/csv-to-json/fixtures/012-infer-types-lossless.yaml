@@ -1,0 +1,21 @@
+id: 012-infer-types-lossless
+operation: data.csv.to-json@1
+source: { type: standard, citation: "RFC 8259 §6 — JSON numbers; a value is converted only when its text is the exact ECMAScript Number::toString form (ECMA-262 §6.1.6.1.20), so leading zeros and trailing decimal zeros stay strings" }
+input:
+  text: |
+    sku,qty,price,active
+    00124,30,1.50,true
+params: { inferTypes: true }
+expected:
+  rowCount: 1
+  columnCount: 4
+  headers: [sku, qty, price, active]
+  text: |-
+    [
+      {
+        "sku": "00124",
+        "qty": 30,
+        "price": "1.50",
+        "active": true
+      }
+    ]

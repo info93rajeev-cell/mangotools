@@ -1161,6 +1161,7 @@
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    align-items: stretch;
   }
 
   .studioColumn {
@@ -1559,4 +1560,25 @@
 
 :global([data-theme="dark"]) .categoryDescText {
   color: #94a3b8;
+}
+
+/* Phones: the slab table scrolls sideways instead of breaking words like "Standa-rd". */
+@media (max-width: 600px) {
+  /* Width 0 + min-width 100%: the wrapper never widens the page, only scrolls. */
+  .slabsTableWrapper {
+    width: 0;
+    min-width: 100%;
+  }
+
+  .slabsTable {
+    min-width: 460px;
+    max-width: none;
+    font-size: 11px;
+  }
+
+  .slabsTable th,
+  .slabsTable td {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
 }

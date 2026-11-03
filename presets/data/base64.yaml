@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: data/base64
-version: 0.1.0
+version: 0.2.0
 operation: data.base64.transform@1
-params: { direction: encode, variant: standard, padding: true, lineLength: "0" }
+params: { direction: encode, variant: standard, padding: true, lineLength: "0", charset: utf-8, dataUriMime: "", stripDataUri: false }
 userOptions:
   direction:
     control: segmented
@@ -33,6 +33,15 @@ userOptions:
     values:
       "0": { labelKey: b64.lineLength.none, order: 10 }
       "76": { labelKey: b64.lineLength.mime, order: 20 }
+  charset:
+    control: select
+    labelKey: b64.option.charset
+    order: 50
+    values:
+      utf-8: { labelKey: b64.charset.utf8, order: 10 }
+      latin1: { labelKey: b64.charset.latin1, order: 20 }
+  dataUriMime: { control: select, labelKey: b64.option.dataUri, order: 60, visible: false }
+  stripDataUri: { control: switch, labelKey: b64.option.stripDataUri, order: 70, visibleWhen: { direction: [decode] } }
 fields:
   text: { labelKey: b64.field.text, kind: text, required: true, order: 10, placeholderKey: b64.field.placeholder }
 outputs:
@@ -40,6 +49,7 @@ outputs:
   hexPreview: { labelKey: b64.out.hex, format: code, order: 20, visibleWhen: { direction: [decode] } }
 samples:
   hello-rupee: { titleKey: b64.sample.hello, input: { text: "Hello, ₹ world" } }
+  reference: { titleKey: b64.sample.reference, input: { text: "Hello, BeyondTheAI! 👋\nBase64 encoding example with Unicode.\nसबको सुविधा 🚀" } }
 ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: base64.txt, outputMime: text/plain }
 strings:
   en:
@@ -59,3 +69,9 @@ strings:
     b64.out.text: Result
     b64.out.hex: Bytes (hex preview)
     b64.sample.hello: Text with the rupee sign
+    b64.sample.reference: Unicode text with emoji
+    b64.option.charset: Character encoding
+    b64.charset.utf8: UTF-8 (Unicode)
+    b64.charset.latin1: ISO-8859-1 (Latin-1)
+    b64.option.dataUri: Data URI type
+    b64.option.stripDataUri: Accept data URI prefix

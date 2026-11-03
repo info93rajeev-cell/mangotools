@@ -4,14 +4,15 @@ id: base64-encode-decode
 slug: base64-encode-decode
 status: beta
 tier: T3
-version: 0.1.2
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-11-01, type: added, summary: "New studio: text, file and image input, auto detect, data URIs, image preview, Latin-1, examples and result summary." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Add a Method section explaining how the tool works." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with standard and URL-safe alphabets, padding and MIME line breaks." }
 name: Base64 Encode & Decode
 shortName: Base64
-summary: Encode text to Base64 or decode it back, with URL-safe and MIME options and correct UTF-8.
+summary: Encode text, files or images to Base64 or decode it back, with URL-safe, MIME and data URI options.
 archetype: A
 preset: data/base64
 sample: hello-rupee

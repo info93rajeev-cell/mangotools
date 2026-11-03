@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import styles from './dataStudio.module.css';
 import { COMMON_TIMEZONES } from './useTimestampStudio.ts';
 
@@ -23,7 +24,10 @@ export function TimestampAuxCards({
     <div class={styles.aux}>
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#128197;</span>Date &rarr; Timestamp
+          <span class={styles.optIcon}>
+            <Icon name="calendar" class={styles.optIco} />
+          </span>
+          Date &rarr; Timestamp
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Date</span>
@@ -41,7 +45,10 @@ export function TimestampAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#127758;</span>Time Zone
+          <span class={styles.optIcon}>
+            <Icon name="globe" class={styles.optIco} />
+          </span>
+          Time Zone
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Display zone</span>
@@ -62,7 +69,10 @@ export function TimestampAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9881;</span>Precision
+          <span class={styles.optIcon}>
+            <Icon name="settings" class={styles.optIco} />
+          </span>
+          Precision
         </div>
         <label class={styles.optField}>
           <span class={styles.optLabel}>Input unit</span>
@@ -90,7 +100,10 @@ export function TimestampAuxCards({
 
       <section class={styles.optcard}>
         <div class={styles.optTitle}>
-          <span class={styles.optIcon}>&#9889;</span>Advanced
+          <span class={styles.optIcon}>
+            <Icon name="zap" class={styles.optIco} />
+          </span>
+          Advanced
         </div>
         <button
           type="button"
@@ -104,7 +117,7 @@ export function TimestampAuxCards({
         <div class={styles.optHelptext} style={{ marginTop: 2 }}>
           {batchOpen
             ? 'Paste comma or line-separated timestamps in the input panel to convert in bulk.'
-            : 'Negative epochs &middot; DST warnings &middot; custom formats'}
+            : 'Negative epochs · DST warnings · custom formats'}
         </div>
       </section>
     </div>

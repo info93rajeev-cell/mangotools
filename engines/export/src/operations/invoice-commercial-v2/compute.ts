@@ -1,5 +1,5 @@
-import { ok, type Result } from '@mangotools/core';
-import { add, mul } from '@mangotools/engine-numeric';
+import { err, ok, type Result } from '@mangotools/core';
+import { add, compare, mul } from '@mangotools/engine-numeric';
 import type { Computed, Measured } from './types.ts';
 
 /**
@@ -9,6 +9,11 @@ import type { Computed, Measured } from './types.ts';
  * `EXPORT_INVOICE_SCOPE_LIMIT`, unchanged from v1.
  */
 export function computeInvoice(m: Measured): Result<Computed> {
+  // Same data-integrity rule as the packing list: when both are given, a packed shipment cannot
+  // weigh less than the goods inside it.
+  if (m.grossWeight && m.netWeight && compare(m.grossWeight, m.netWeight) < 0) {
+    return err('EXPORT_GROSS_WEIGHT_BELOW_NET', { path: 'grossWeight' });
+  }
   const items = m.items.map((item) => ({ lineAmount: mul(item.quantity, item.unitPrice) }));
   const invoiceSubtotal = items.reduce((sum, item) => add(sum, item.lineAmount), '0');
   const invoiceTotal = invoiceSubtotal;

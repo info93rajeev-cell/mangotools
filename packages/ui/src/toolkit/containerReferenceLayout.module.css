@@ -2,13 +2,13 @@
   position: relative;
 }
 .utilities {
-  position: absolute;
-  right: 0;
-  top: -82px;
+  /* In the flow above the workspace: absolutely positioned it covered the page header buttons. */
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
   max-width: 100%;
+  margin-bottom: 8px;
 }
 .utilities a,
 .utilities button {

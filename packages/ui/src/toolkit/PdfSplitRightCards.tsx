@@ -1,3 +1,4 @@
+import { pagesLabel } from './pdfSplitPlan.ts';
 import styles from './pdfStudio.module.css';
 import type { SplitPartInfo, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
@@ -28,7 +29,7 @@ function PdfSplitSummaryCard({
           class={styles.badgePill}
           style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
         >
-          ✓ Ready to split
+          {partCount === 0 ? 'Nothing to split' : '✓ Ready to split'}
         </span>
       </div>
       <div class={styles.statTilesGrid}>
@@ -48,13 +49,15 @@ function PdfSplitSummaryCard({
           <span style={{ fontSize: '12px' }}>📊</span>
           <span class={styles.statVal}>~{totalMb} MB</span>
           <span class={styles.statLabel}>Est. output size</span>
-          <span class={styles.statSub}>After split</span>
+          <span class={styles.statSub}>Pages × average size</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
           <span style={{ fontSize: '12px' }}>📦</span>
-          <span class={styles.statVal}>{downloadAsZip ? 'ZIP Ready' : 'Separate'}</span>
+          <span class={styles.statVal}>{partCount > 1 && downloadAsZip ? 'ZIP' : 'PDF'}</span>
           <span class={styles.statLabel}>Download format</span>
-          <span class={styles.statSub}>{downloadAsZip ? 'All in one' : 'Individual'}</span>
+          <span class={styles.statSub}>
+            {partCount > 1 ? (downloadAsZip ? 'All in one ZIP' : 'Separate PDFs') : 'One PDF'}
+          </span>
         </div>
       </div>
     </div>
@@ -107,7 +110,7 @@ function PdfSplitPreviewGrid({
                   color: PART_TEXT[idx % PART_TEXT.length],
                 }}
               >
-                Pages {part.startPage}–{part.endPage}
+                Pages {pagesLabel(part.pages)}
               </span>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
                 {part.pageCount} {part.pageCount === 1 ? 'page' : 'pages'}
@@ -165,7 +168,14 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
     copySummary,
     clearAll,
   } = studio;
-  const totalMb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
+  const estimate = parts.reduce((n, p) => n + p.sizeBytes, 0) || fileSizeBytes;
+  const totalMb = (estimate / (1024 * 1024)).toFixed(1);
+  const downloadLabel =
+    parts.length <= 1
+      ? 'Download PDF'
+      : downloadAsZip
+        ? 'Download ZIP'
+        : `Download ${parts.length} PDFs`;
 
   return (
     <div class={styles.leftMergeCol}>
@@ -186,7 +196,7 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
         <button
           type="button"
           class={styles.primaryCtaBtn}
-          disabled={isProcessing || totalPages === 0}
+          disabled={isProcessing || totalPages === 0 || parts.length === 0}
           onClick={() => void executeSplit()}
         >
           {isProcessing ? '⏳ Splitting PDF...' : '✂️ Split PDF →'}
@@ -195,10 +205,10 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
           <button
             type="button"
             class={styles.actionBtnPrimaryBlue}
-            onClick={downloadResult}
-            disabled={totalPages === 0}
+            onClick={() => void downloadResult()}
+            disabled={totalPages === 0 || parts.length === 0 || isProcessing}
           >
-            📥 {downloadAsZip ? 'Download ZIP' : 'Download Part 1'}
+            📥 {downloadLabel}
           </button>
           <button type="button" class={styles.actionBtnNeutral} onClick={copySummary}>
             📋 Copy Summary

@@ -1,0 +1,6 @@
+id: 017-data-uri-decode
+operation: data.base64.transform@1
+source: { type: standard, citation: "RFC 2397 §3 — data:[<mediatype>][;base64],<data>; RFC 4648 §10 test vector Zm9v = foo" }
+params: { direction: decode, stripDataUri: true }
+input: { text: "data:text/plain;base64,Zm9v" }
+expected: { text: "foo", byteLength: 3, isUtf8: true, mime: text/plain }

@@ -3,9 +3,10 @@ import { expect, type Page } from '@playwright/test';
 
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
 export const SAMPLES = {
-  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹600.00' },
+  // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
+  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
-  'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
+  'profit-margin-calculator': { archetype: 'B', result: '₹81.36' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
   'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },
@@ -20,13 +21,20 @@ export const SAMPLES = {
   'container-loading-calculator': { archetype: 'B', result: '500' },
   'pallet-loading-calculator': { archetype: 'B', result: '56' },
   'json-formatter': { archetype: 'A', result: '"id": 12345678901234567890' },
-  'base64-encode-decode': { archetype: 'A', result: 'SGVsbG8sIOKCuSB3b3JsZA==' },
+  // The studio's Sample Text button loads the reference sample shown on first open.
+  'base64-encode-decode': {
+    archetype: 'A',
+    result: 'SGVsbG8sIEJleW9uZFRoZUFJISDwn5GLCkJhc2U2NCBlbmNvZGluZyBleGFtcGxlIHdpdGggVW5pY29kZS4K',
+  },
+  // The studio's Example URLs button loads the reference example shown on first open.
   'url-encode-decode': {
     archetype: 'A',
-    result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
+    result: 'https%3A%2F%2Fbeyandtheai.com%2Fsearch%3Fq%3Ddeveloper%20tools\n%26lang%3Den',
   },
-  'csv-to-json': { archetype: 'A', result: '"name": "Raj"' },
-  'json-to-csv': { archetype: 'A', result: 'Raj,50' },
+  // The studio's Sample CSV button loads the reference sample shown on first open.
+  'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },
+  // The studio's Load sample button loads the reference records shown on first open.
+  'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
 
@@ -179,7 +187,10 @@ export async function openTool(page: Page, id: string): Promise<void> {
 /** Opens the shared related-tools disclosure before interacting with its links. */
 export async function openRelatedTools(page: Page): Promise<void> {
   const related = page.locator('details#related-tools');
-  await related.locator('summary').click();
+  const summary = related.locator('summary');
+  // Data studios show the guide sections as info pills in the action row instead of summaries.
+  if (await summary.isVisible()) await summary.click();
+  else await page.getByRole('button', { name: 'Related tools' }).first().click();
   await expect(related).toHaveAttribute('open');
 }
 
@@ -190,6 +201,11 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
   }
   if (id === 'gst-calculator') {
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
+    return;
+  }
+  if (id === 'markup-calculator' || id === 'amazon-india-seller-fee-profit-estimator') {
+    // The studio runs its engine in the worker and shows "…" until the answer arrives.
+    await expect(primaryResult(page)).not.toHaveText('…');
     return;
   }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
@@ -237,7 +253,8 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     // The CBM and Universal Tax worksheets open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
   } else {
-    await page.getByRole('button', { name: 'Try sample' }).click();
+    // Every sample control carries data-try-sample, whatever its visible label.
+    await island(page, id).locator('[data-try-sample]').first().click();
   }
   await waitForResult(page, id);
 }

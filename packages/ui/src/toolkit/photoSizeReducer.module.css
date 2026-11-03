@@ -1075,3 +1075,16 @@
     min-height: 240px;
   }
 }
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.canvasToolbarControls {
+  flex: none;
+}
+
+.canvasToolBtn {
+  white-space: nowrap;
+}
+
+.canvasToolbarTitle {
+  min-width: 0;
+}

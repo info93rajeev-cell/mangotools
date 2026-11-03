@@ -1,222 +1,138 @@
-import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { FieldValues, ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { copyText, downloadText } from '../actions.ts';
+import { messageFor } from '../presentation.ts';
+import {
+  type JsonToCsvDelimiter,
+  type JsonToCsvNested,
+  readJsonToCsvResult,
+  rootKind,
+  UTF8_BOM,
+} from './jsonToCsvStudio.ts';
 
-export const DEFAULT_JSON = `[
-  { "name": "Asha Rao", "city": "Delhi", "sku": "00124", "active": "true" },
-  { "name": "Ben Li", "city": "Singapore", "sku": "00085", "active": "false" },
-  { "name": "Mira Shah", "city": "Mumbai", "sku": "00941", "active": "true" },
-  { "name": "Evan Cole", "city": "London", "sku": "04102", "active": "true" }
-]`;
+export const FIRST_SAMPLE_ID = 'team-records';
 
-export function escapeCsvField(val: unknown, delimiter: string, formulaSafe: boolean): string {
-  if (val === null || val === undefined) return '';
-  let str = typeof val === 'object' ? JSON.stringify(val) : String(val);
-  if (formulaSafe && /^[=+\-@]/.test(str)) str = `'${str}`;
-  if (str.includes(delimiter) || str.includes('"') || str.includes('\n') || str.includes('\r')) {
-    str = `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
+function sampleValues(preset: ResolvedPreset, id: string): FieldValues {
+  const sample = preset.samples[id];
+  const text = typeof sample?.input.text === 'string' ? sample.input.text : '';
+  return { recordPath: '', ...(sample?.params ?? {}), text };
 }
 
-function extractRecordRow(item: unknown, allKeys: string[]): string[] {
-  const rowVals: string[] = [];
-  const isObj = typeof item === 'object' && item !== null;
-  for (const key of allKeys) {
-    const val = isObj ? (item as Record<string, unknown>)[key] : item;
-    const display =
-      val === null || val === undefined
-        ? ''
-        : typeof val === 'object'
-          ? JSON.stringify(val)
-          : String(val);
-    rowVals.push(display);
-  }
-  return rowVals;
-}
-
-export function processJsonToCsv(
-  input: string,
-  delimiter: ',' | ';' | '\t',
-  includeHeaders: boolean,
-  formulaSafety: boolean,
-): {
-  parsedData: unknown[] | null;
-  error: string | null;
-  headers: string[];
-  rows: string[][];
-  rawCsv: string;
-} {
-  if (!input.trim())
-    return { parsedData: null, error: 'Empty JSON input', headers: [], rows: [], rawCsv: '' };
-  try {
-    const data = JSON.parse(input);
-    const array = Array.isArray(data) ? data : [data];
-    if (array.length === 0)
-      return { parsedData: [], error: null, headers: [], rows: [], rawCsv: '' };
-    const allKeys = Array.from(
-      new Set(
-        array.flatMap((item) =>
-          typeof item === 'object' && item !== null ? Object.keys(item) : ['value'],
-        ),
-      ),
-    );
-    const tableRows: string[][] = [];
-    const csvLines: string[] = [];
-
-    if (includeHeaders) {
-      csvLines.push(allKeys.map((k) => escapeCsvField(k, delimiter, false)).join(delimiter));
-    }
-    for (const item of array) {
-      const rowVals = extractRecordRow(item, allKeys);
-      tableRows.push(rowVals);
-      csvLines.push(
-        rowVals.map((v) => escapeCsvField(v, delimiter, formulaSafety)).join(delimiter),
-      );
-    }
-    return {
-      parsedData: array,
-      error: null,
-      headers: allKeys,
-      rows: tableRows,
-      rawCsv: csvLines.join('\n'),
-    };
-  } catch (err: unknown) {
-    return {
-      parsedData: null,
-      error: err instanceof Error ? err.message : 'Invalid JSON format',
-      headers: [],
-      rows: [],
-      rawCsv: '',
-    };
-  }
-}
-
-function createJsonToCsvHandlers(
-  rawCsv: string,
-  useBom: boolean,
-  setInput: (v: string) => void,
-  store: ToolStore,
-  notify: (msg: string) => void,
-) {
-  const handleCopy = async () => {
-    if (!rawCsv) return;
-    const ok = await copyText(rawCsv);
-    notify(ok ? 'CSV copied to clipboard!' : 'Failed to copy');
-  };
-
-  const handleDownload = () => {
-    if (!rawCsv) return;
-    const content = useBom ? `\uFEFF${rawCsv}` : rawCsv;
-    downloadText(content, 'exported.csv', 'text/csv');
-    notify('Downloaded exported.csv');
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_JSON);
-    store.set('text', DEFAULT_JSON);
-    notify('Reset to default sample JSON');
-  };
-
-  const handleClear = () => {
-    setInput('');
-    store.set('text', '');
-    notify('Cleared input');
-  };
-
-  const handlePaste = async () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          setInput(text);
-          store.set('text', text);
-          notify('Pasted from clipboard');
-          return;
-        }
-      } catch {
-        // Fallback
-      }
-    }
-    notify('Use Ctrl+V or Cmd+V to paste');
-  };
-
-  const handleOpenFile = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = typeof reader.result === 'string' ? reader.result : '';
-      setInput(content);
-      store.set('text', content);
-      notify(`Loaded ${file.name}`);
-    };
-    reader.readAsText(file);
-    target.value = '';
-  };
-
+function readOptions(v: ToolSnapshot['values']) {
   return {
-    handleCopy,
-    handleDownload,
-    handleReset,
-    handleClear,
-    handlePaste,
-    handleOpenFile,
+    delimiter: (typeof v.delimiter === 'string' ? v.delimiter : 'comma') as JsonToCsvDelimiter,
+    header: v.header !== false,
+    unionKeys: v.keys !== 'first',
+    nested: (typeof v.nested === 'string' ? v.nested : 'flatten') as JsonToCsvNested,
+    recordPath: typeof v.recordPath === 'string' ? v.recordPath : '',
+    formulaGuard: v.formulaGuard === true,
   };
 }
 
 export function useJsonToCsvStudio(
+  preset: ResolvedPreset,
   snapshot: ToolSnapshot,
   store: ToolStore,
   notify: (msg: string) => void,
 ) {
-  const initialText =
-    typeof snapshot.values.text === 'string' && snapshot.values.text.trim().length > 0
-      ? snapshot.values.text
-      : DEFAULT_JSON;
-  const [input, setInput] = useState<string>(initialText);
+  const storeText = typeof snapshot.values.text === 'string' ? snapshot.values.text : '';
+  const [draft, setDraft] = useState(storeText);
+  const [bom, setBom] = useState(false);
+  const options = readOptions(snapshot.values);
 
   useEffect(() => {
-    const val = snapshot.values.text;
-    if (typeof val === 'string' && val.trim().length > 0 && val !== input) {
-      setInput(val);
-    }
-  }, [snapshot.values.text]);
+    if (storeText !== draft) setDraft(storeText);
+  }, [storeText]);
+  useEffect(() => {
+    if (storeText === '') store.setMany(sampleValues(preset, FIRST_SAMPLE_ID));
+  }, []);
 
-  const [delimiter, setDelimiter] = useState<',' | ';' | '\t'>(',');
-  const [includeHeaders, setIncludeHeaders] = useState(true);
-  const [useBom, setUseBom] = useState(false);
-  const [formulaSafety, setFormulaSafety] = useState(true);
+  const result = useMemo(() => readJsonToCsvResult(snapshot.result?.value), [snapshot.result]);
+  const error = snapshot.error && storeText !== '' ? messageFor(preset, snapshot.error) : null;
+  const shown = storeText !== '' && !error ? result : null;
 
-  const { parsedData, error, headers, rows, rawCsv } = useMemo(
-    () => processJsonToCsv(input, delimiter, includeHeaders, formulaSafety),
-    [input, delimiter, includeHeaders, formulaSafety],
-  );
-
-  const handleInput = (val: string) => {
-    setInput(val);
-    store.set('text', val);
+  const setText = (text: string) => {
+    setDraft(text);
+    store.set('text', text);
   };
-
-  const handlers = createJsonToCsvHandlers(rawCsv, useBom, setInput, store, notify);
 
   return {
-    input,
-    handleInput,
-    delimiter,
-    setDelimiter,
-    includeHeaders,
-    setIncludeHeaders,
-    useBom,
-    setUseBom,
-    formulaSafety,
-    setFormulaSafety,
-    parsedData,
+    draft,
+    setText,
+    kind: rootKind(draft),
+    options,
+    setOption: (key: string, value: string | boolean) => store.set(key, value),
+    bom,
+    setBom,
+    result: shown,
     error,
-    headers,
-    rows,
-    rawCsv,
-    ...handlers,
+    csv: shown?.text ?? '',
+    ...useJsonToCsvActions({ preset, store, notify, csv: shown?.text ?? '', bom, setText }),
   };
 }
+
+interface ActionArgs {
+  preset: ResolvedPreset;
+  store: ToolStore;
+  notify: (msg: string) => void;
+  csv: string;
+  bom: boolean;
+  setText: (text: string) => void;
+}
+
+function readClipboard(a: ActionArgs) {
+  return async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        a.setText(text);
+        a.notify('Pasted from clipboard');
+        return;
+      }
+    } catch {
+      // Clipboard read is blocked; fall through to the hint.
+    }
+    a.notify('Use Ctrl+V or Cmd+V to paste');
+  };
+}
+
+function useJsonToCsvActions(a: ActionArgs) {
+  const fileName = a.preset.ui.outputFileName ?? 'data.csv';
+  return {
+    async copy() {
+      if (!a.csv) return;
+      a.notify((await copyText(a.csv)) ? 'CSV copied to clipboard.' : 'Copy failed');
+    },
+    download() {
+      if (!a.csv) return;
+      downloadText(a.bom ? `${UTF8_BOM}${a.csv}` : a.csv, fileName, 'text/csv');
+      a.notify(`Downloaded ${fileName}`);
+    },
+    paste: readClipboard(a),
+    loadFile(file: File) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        a.setText(typeof reader.result === 'string' ? reader.result : '');
+        a.notify(`Loaded ${file.name}`);
+      };
+      reader.readAsText(file);
+    },
+    loadSample(id: string = FIRST_SAMPLE_ID) {
+      a.store.setMany(sampleValues(a.preset, id));
+      a.notify('Sample JSON loaded');
+    },
+    clearAll() {
+      a.setText('');
+      a.notify('Cleared');
+    },
+    resetAll() {
+      a.store.reset();
+      a.store.setMany(sampleValues(a.preset, FIRST_SAMPLE_ID));
+      a.notify('Reset to the sample and default options');
+    },
+    convert: () => a.store.runNow(),
+  };
+}
+
+export type JsonToCsvStudio = ReturnType<typeof useJsonToCsvStudio>;

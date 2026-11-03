@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
 import type { CompressionPreset, usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
@@ -8,7 +9,6 @@ type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
 function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { fileName, fileSizeBytes, totalPages, handleAddNativeFile, clearAll } = studio;
-  const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
 
   function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
     const file = e.currentTarget.files?.[0];
@@ -43,7 +43,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
               cursor: 'pointer',
             }}
           >
-            📄 Sample Dossier
+            📄 Sample PDF
           </button>
           <button
             type="button"
@@ -98,9 +98,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
           </div>
           <div class={styles.fileDetails}>
             <span class={styles.fileName}>{fileName}</span>
-            <span class={styles.fileMeta}>
-              {totalPages} pages • {mb} MB
-            </span>
+            <span class={styles.fileMeta}>{fileMeta(totalPages, fileSizeBytes)}</span>
           </div>
           <button
             type="button"
@@ -117,24 +115,26 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
 }
 
 const PRESET_OPTIONS = [
-  ['light', '🌱 Light Compression', 'Minimal quality loss', '~20–40% smaller'],
-  ['balanced', '⚖️ Balanced (Recommended)', 'Best size and clarity', '~40–70% smaller'],
-  ['strong', '📊 Strong Compression', 'Maximum size reduction', '~70–90% smaller'],
-  ['custom', '⚙️ Custom', 'Fine-tune settings manually', 'Your own specs'],
+  ['light', '🌱 Light Compression', 'Minimal quality loss', 'JPEG 82%, up to 3000 px'],
+  ['balanced', '⚖️ Balanced (Recommended)', 'Best size and clarity', 'JPEG 70%, up to 2000 px'],
+  ['strong', '📊 Strong Compression', 'Maximum size reduction', 'JPEG 50%, up to 1400 px'],
+  ['custom', '⚙️ Custom', 'Choose the image quality', 'Your quality, up to 2000 px'],
 ] as const;
 
-function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }) {
-  const {
-    convertToGrayscale,
-    setConvertToGrayscale,
-    removeThumbnails,
-    setRemoveThumbnails,
-    linearize,
-    setLinearize,
-    preserveSearchableText,
-    setPreserveSearchableText,
-  } = studio;
+function OptionCheck(props: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+      <input
+        type="checkbox"
+        checked={props.checked}
+        onChange={(e) => props.onChange(e.currentTarget.checked)}
+      />
+      <span>{props.label}</span>
+    </label>
+  );
+}
 
+function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }) {
   return (
     <div
       style={{
@@ -145,38 +145,21 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
         fontWeight: 600,
       }}
     >
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-        <input
-          type="checkbox"
-          checked={convertToGrayscale}
-          onChange={(e) => setConvertToGrayscale(e.currentTarget.checked)}
-        />
-        <span>Convert to grayscale</span>
-      </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-        <input
-          type="checkbox"
-          checked={removeThumbnails}
-          onChange={(e) => setRemoveThumbnails(e.currentTarget.checked)}
-        />
-        <span>Remove thumbnails</span>
-      </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-        <input
-          type="checkbox"
-          checked={linearize}
-          onChange={(e) => setLinearize(e.currentTarget.checked)}
-        />
-        <span>Fast web view</span>
-      </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-        <input
-          type="checkbox"
-          checked={preserveSearchableText}
-          onChange={(e) => setPreserveSearchableText(e.currentTarget.checked)}
-        />
-        <span>Preserve text (OCR)</span>
-      </label>
+      <OptionCheck
+        label="Convert images to grayscale"
+        checked={studio.convertToGrayscale}
+        onChange={studio.setConvertToGrayscale}
+      />
+      <OptionCheck
+        label="Remove page thumbnails"
+        checked={studio.removeThumbnails}
+        onChange={studio.setRemoveThumbnails}
+      />
+      <OptionCheck
+        label="Aim for a maximum size"
+        checked={studio.useSizeTarget}
+        onChange={studio.setUseSizeTarget}
+      />
     </div>
   );
 }
@@ -199,7 +182,7 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
       </summary>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
         <label class={styles.inputLabel} for="compress-image-quality" style={{ fontSize: '11px' }}>
-          Image quality: {imageQuality}%
+          Image quality (Custom): {imageQuality}%
         </label>
         <input
           id="compress-image-quality"
@@ -207,13 +190,20 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
           min={10}
           max={100}
           value={imageQuality}
-          onInput={(e) => setImageQuality(Number(e.currentTarget.value))}
+          onInput={(e) => {
+            setImageQuality(Number(e.currentTarget.value));
+            studio.setPreset('custom');
+          }}
           style={{ width: '100%', accentColor: '#2563eb' }}
         />
         <PdfCompressOptionCheckboxes studio={studio} />
+        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+          JPEG images are re-encoded in your browser; text, fonts and vector graphics are never
+          changed, so text stays searchable. Other image types are kept as they are.
+        </p>
         <div class={styles.inputRow}>
           <label class={styles.inputLabel} for="compress-max-size" style={{ fontSize: '11px' }}>
-            Maximum output target (MB)
+            Maximum size (MB)
           </label>
           <input
             id="compress-max-size"
@@ -221,7 +211,9 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
             class={styles.textInput}
             value={maxOutputSizeMb}
             onInput={(e) => setMaxOutputSizeMb(Number(e.currentTarget.value) || 1)}
-            min={1}
+            disabled={!studio.useSizeTarget}
+            min={0.1}
+            step={0.1}
             max={100}
             style={{ padding: '5px 8px', fontSize: '12px' }}
           />

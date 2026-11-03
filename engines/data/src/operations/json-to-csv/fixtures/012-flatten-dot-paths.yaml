@@ -1,0 +1,15 @@
+id: 012-flatten-dot-paths
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"id":1,"profile":{"city":"Delhi","pin":{"code":"110001"}},"tags":["a","b"]},{"id":2,"profile":{"city":"Pune"}}]'
+params: { nested: flatten }
+expected:
+  rowCount: 2
+  columnCount: 4
+  headers: [id, profile.city, profile.pin.code, tags]
+  missingCount: 2
+  text: |
+    id,profile.city,profile.pin.code,tags
+    1,Delhi,110001,"[""a"",""b""]"
+    2,Pune,,
