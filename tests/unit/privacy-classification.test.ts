@@ -38,6 +38,7 @@ describe('privacy.dataClass classification', () => {
       'csv-to-json',
       'export-commercial-invoice-generator',
       'export-packing-list-generator',
+      'food-planner',
       'image-background-remover',
       'image-compress',
       'image-crop',

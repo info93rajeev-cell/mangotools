@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: food/planner
+version: 0.1.0
+operation: food.shopping.consolidate@1
+params: { diet: none, dietPolicy: flag }
+fields:
+  guests:
+    labelKey: food.field.guests
+    kind: number
+    required: true
+    default: 50
+    order: 10
+    helpKey: food.help.guests
+  servingsPerGuest:
+    labelKey: food.field.servingsPerGuest
+    kind: text
+    required: true
+    default: "1"
+    order: 20
+    helpKey: food.help.servingsPerGuest
+  selection:
+    labelKey: food.field.selection
+    kind: text
+    required: false
+    order: 30
+    helpKey: food.help.selection
+  recipes:
+    labelKey: food.field.recipes
+    kind: text
+    required: false
+    order: 40
+    helpKey: food.help.recipes
+  ingredients:
+    labelKey: food.field.ingredients
+    kind: text
+    required: false
+    order: 50
+    helpKey: food.help.ingredients
+outputs:
+  lines:
+    labelKey: food.out.lines
+    format: text
+    order: 10
+    primary: true
+  diet:
+    labelKey: food.out.diet
+    format: text
+    order: 20
+  allergens:
+    labelKey: food.out.allergens
+    format: text
+    order: 30
+samples:
+  diwali-feast-50:
+    titleKey: food.sample.diwaliFeast
+    input:
+      guests: 50
+      servingsPerGuest: "1"
+      ingredients:
+        - { id: basmati-rice, dimension: mass, allergens: [], notFor: [] }
+        - { id: yellow-moong-dal, dimension: mass, allergens: [], notFor: [] }
+        - { id: ghee, dimension: volume, allergens: [dairy], notFor: [vegan] }
+        - { id: cumin-seeds, dimension: mass, allergens: [], notFor: [] }
+      recipes:
+        - id: jeera-rice
+          version: "0.1.0"
+          servings: 4
+          diet: vegetarian
+          ingredients:
+            - { ingredient: basmati-rice, quantity: "200", unit: g }
+            - { ingredient: cumin-seeds, quantity: "5", unit: g }
+            - { ingredient: ghee, quantity: "15", unit: ml }
+      selection:
+        - { recipe: jeera-rice, recipeVersion: "0.1.0", portionFactor: "1" }
+ui:
+  archetypes: [B]
+  density: comfortable
+  compute: live
+strings:
+  en:
+    food.field.guests: "Guests"
+    food.help.guests: "Number of guests to plan and scale for."
+    food.field.servingsPerGuest: "Servings per guest"
+    food.help.servingsPerGuest: "Number of portions each guest is expected to consume."
+    food.field.selection: "Selected recipes"
+    food.help.selection: "Selected menu recipes to consolidate."
+    food.field.recipes: "Recipe database"
+    food.help.recipes: "Catalog of recipes."
+    food.field.ingredients: "Ingredient catalog"
+    food.help.ingredients: "Catalog of ingredients."
+    food.out.lines: "Shopping lines"
+    food.out.diet: "Menu diet suitability"
+    food.out.allergens: "Allergen alerts"
+    food.sample.diwaliFeast: "Diwali Feast (50 guests)"

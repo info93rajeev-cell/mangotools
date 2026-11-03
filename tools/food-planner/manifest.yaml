@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: food-planner
+slug: food-planner
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-11-03, type: added, summary: "Initial beta of Food Planner with 5 connected sections: Recipes, Ingredients, Shopping, Cost Estimation, and Cooking Schedule." }
+name: Food Planner
+shortName: Food Planner
+summary: Plan recipes, calculate scaled quantities, create consolidated shopping lists, estimate costs and schedule cooking.
+archetype: B
+preset: food/planner
+sample: diwali-feast-50
+taxonomy:
+  category: food-and-catering
+  professions: [small-businesses]
+  tags: [food, catering, recipes]
+  synonyms: [food planner, catering planner, meal planner, event menu planner, recipe scaler, party food calculator, indian catering calculator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: Food Planner – Recipe Scaling, Shopping, Cost & Schedule
+  description: Free Food Planner for Indian events, parties and catering. Scale recipe ingredients, consolidate shopping lists, estimate costs and schedule preparation.
+  primaryKeyword: food planner
+  secondaryKeywords: [catering food calculator, recipe scaler, party menu planner, food cost estimator]
+quality:
+  verifiedAgainst:
+    - { citation: "BeyondTheAI Food & Catering Foundation — FP-001, FP-002, FP-003, FP-004 specifications and verified recipe fixtures", locator: "docs/decisions/DECISION-FOOD-PLANNER-DATA.md" }
+    - { citation: "Exact rational arithmetic for ingredient scaling, unit conversion and cost consolidation", locator: "engines/food/src/exact-quantity.ts" }
+  lastVerified: 2026-11-03

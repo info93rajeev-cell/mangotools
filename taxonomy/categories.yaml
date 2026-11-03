@@ -98,6 +98,25 @@ categories:
         a: Money is rounded to two decimal places using commercial rounding, where halves round away from zero. Each tool explains its exact rounding rule on its page.
       - q: Is this tax or accounting advice?
         a: No. The tools help you calculate and check figures. Confirm tax treatment with the official rules or your accountant.
+  - id: food-and-catering
+    slug: food-and-catering
+    name: Food & Catering
+    icon: utensils
+    order: 55
+    summary: Recipe planning, ingredient scaling, consolidated shopping, cost estimation and cooking schedules.
+    seo:
+      title: Food & Catering Tools – Recipe Scaling & Meal Planning
+      description: Free Food & Catering planning tools for Indian events and parties. Scale recipe ingredients, consolidate shopping lists, estimate costs and schedule prep.
+    about:
+      - The Food & Catering planning tools help home cooks, event hosts, caterers and cloud kitchens plan menus with precision. Scale recipe ingredients for any guest count, consolidate shared items into an aisle-grouped shopping list, estimate grocery and event costs against retail and wholesale benchmarks, and generate backward-scheduled cooking timelines.
+      - All ingredient arithmetic and unit conversions use exact decimal math. Recipe scalings preserve verified kitchen ratios, and your custom menus and event budgets remain completely private on your device.
+    faq:
+      - q: Are these food and catering planning tools free?
+        a: Yes. All tools are free to use with no sign-up, no subscriptions and no ads.
+      - q: Can I plan events for large guest counts?
+        a: Yes. The engine scales seamlessly from intimate family dinners of 5-10 guests to large community feasts and catering events of 100+ guests.
+      - q: Is my menu or pricing data uploaded to any server?
+        a: No. All calculations run client-side in your browser. Nothing is sent to any server.
   - id: developer
     slug: developer
     name: Developer & Data
