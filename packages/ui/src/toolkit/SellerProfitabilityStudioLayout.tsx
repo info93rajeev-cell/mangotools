@@ -1,3 +1,5 @@
+import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import { SellerProfitabilityCenterCards } from './SellerProfitabilityCenterCards.tsx';
@@ -40,11 +42,19 @@ const PROFIT_MARGIN_TOUR_STEPS: TourStep[] = [
 ];
 
 export interface SellerProfitabilityStudioLayoutProps {
+  preset: ResolvedPreset;
+  snapshot: ToolSnapshot;
+  store: ToolStore;
   notify?: (msg: string) => void;
 }
 
-export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityStudioLayoutProps) {
-  const state = useSellerProfitability(notify);
+export function SellerProfitabilityStudioLayout({
+  preset,
+  snapshot,
+  store,
+  notify,
+}: SellerProfitabilityStudioLayoutProps) {
+  const state = useSellerProfitability(preset, snapshot, store, notify);
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
@@ -52,22 +62,6 @@ export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityS
     window.addEventListener('mangotools:open-tour', handleOpen);
     return () => window.removeEventListener('mangotools:open-tour', handleOpen);
   }, []);
-
-  const handleSample = () => {
-    state.setSellingPrice(1000);
-    state.setProductCost(400);
-    state.setPackagingCost(30);
-    state.setShippingCost(70);
-    state.setCommissionPercent(10);
-    state.setAdCost(50);
-    state.setOtherCharges(20);
-    state.setMonthlyQty(100);
-    notify?.('Sample ecommerce product loaded (₹1,000 SP)');
-  };
-
-  const handleReset = () => {
-    state.resetToDefaults();
-  };
 
   return (
     <div
@@ -82,18 +76,28 @@ export function SellerProfitabilityStudioLayout({ notify }: SellerProfitabilityS
         </div>
 
         <div class={styles.topActions}>
-          <button type="button" class={styles.pill} onClick={handleSample}>
+          <button type="button" class={styles.pill} onClick={state.loadSample}>
             <span>☼ Try Sample</span>
           </button>
           <button type="button" class={styles.pill} onClick={state.copySummary}>
             <span>▤ Copy</span>
           </button>
-          <button type="button" class={`${styles.pill} ${styles.pillDanger}`} onClick={handleReset}>
+          <button
+            type="button"
+            class={`${styles.pill} ${styles.pillDanger}`}
+            onClick={state.resetToDefaults}
+          >
             <span>↺ Reset</span>
           </button>
           <TourLauncherButton onClick={() => setIsTourOpen(true)} />
         </div>
       </div>
+
+      {state.error ? (
+        <p class={styles.note} role="alert" data-seller-error="">
+          {state.error}
+        </p>
+      ) : null}
 
       <div class={styles.columns}>
         <div data-tour="profit-inputs">

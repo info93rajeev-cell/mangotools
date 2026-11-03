@@ -1,0 +1,5 @@
+id: 010-target-margin-100
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "A 100% margin leaves nothing for cost, so no price reaches it" }
+input: { sellingPrice: "100", productCost: "10", targetMarginPercent: "100" }
+expectedError: { code: ESTIMATE_MARGIN_OUT_OF_RANGE, path: targetMarginPercent }
