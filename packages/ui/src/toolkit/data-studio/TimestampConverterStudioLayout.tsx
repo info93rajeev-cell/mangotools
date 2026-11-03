@@ -184,9 +184,12 @@ function TimestampDatePanel({
         </div>
       </div>
 
-      <div class={styles.bigoutput} style={{ minHeight: 76, padding: '10px 12px' }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#12264e' }}>{dateFormatted}</div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
+      <div
+        class={styles.bigoutput}
+        style={{ minHeight: 76, padding: '10px 12px', fontFamily: 'inherit' }}
+      >
+        <div style={{ fontSize: 20, fontWeight: 500, color: '#12264e' }}>{dateFormatted}</div>
+        <div style={{ fontSize: 20, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
           {timeFormatted}
         </div>
       </div>
