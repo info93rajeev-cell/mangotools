@@ -158,7 +158,7 @@ function AisleAccordionCard({
           <table class={styles.table}>
             <thead>
               <tr>
-                <th style={{ width: '36px' }}></th>
+                <th style={{ width: '36px' }} aria-label="Status checkbox"></th>
                 <th>Ingredient</th>
                 <th>Buy Qty</th>
                 <th>Est. Price</th>
@@ -168,10 +168,11 @@ function AisleAccordionCard({
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id} style={{ opacity: item.isBought ? 0.6 : 1 }}>
+                <tr key={item.id} style={{ background: item.isBought ? '#f8fafc' : 'transparent' }}>
                   <td>
                     <input
                       type="checkbox"
+                      aria-label={`Mark ${item.name} as in stock`}
                       checked={item.isBought}
                       onChange={() => onToggleBought(item.id)}
                       style={{ width: '16px', height: '16px', cursor: 'pointer' }}

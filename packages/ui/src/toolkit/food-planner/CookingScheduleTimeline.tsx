@@ -53,11 +53,12 @@ export function PhaseGroupCard({
             <div
               key={task.id}
               class={styles.taskRow}
-              style={{ opacity: task.isCompleted ? 0.6 : 1 }}
+              style={{ background: task.isCompleted ? '#f8fafc' : '#ffffff' }}
             >
               <div class={styles.taskInfo}>
                 <input
                   type="checkbox"
+                  aria-label={`Mark task completed: ${task.name}`}
                   checked={task.isCompleted}
                   onChange={() => onToggleTask(task.id)}
                   style={{ width: '16px', height: '16px', cursor: 'pointer' }}
@@ -73,7 +74,7 @@ export function PhaseGroupCard({
                   >
                     {task.name}
                   </span>
-                  <span style={{ fontSize: '11.5px', color: '#64748b' }}>{task.recipeName}</span>
+                  <span style={{ fontSize: '11.5px', color: '#475569' }}>{task.recipeName}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

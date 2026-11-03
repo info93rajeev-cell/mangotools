@@ -59,6 +59,7 @@ export function IngredientsSection({ planner }: IngredientsSectionProps) {
             type="text"
             class={styles.textInput}
             style={{ maxWidth: '240px' }}
+            aria-label="Search ingredient"
             placeholder="Search ingredient..."
             value={filterText}
             onInput={(e) => setFilterText((e.target as HTMLInputElement).value)}

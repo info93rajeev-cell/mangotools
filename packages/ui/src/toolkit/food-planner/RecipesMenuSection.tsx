@@ -53,6 +53,7 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
             type="text"
             class={styles.textInput}
             style={{ maxWidth: '240px' }}
+            aria-label="Search recipes"
             placeholder="Search recipes (e.g., Dal, Rice...)"
             value={searchQuery}
             onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
@@ -220,6 +221,7 @@ function SelectedMenuTable({
                   <button
                     type="button"
                     class={styles.stepperBtn}
+                    aria-label={`Decrease portion for ${recipe.name}`}
                     onClick={() => onSetPortion(recipe.id, (portionFactors[recipe.id] ?? 1) - 0.25)}
                   >
                     -
@@ -228,6 +230,7 @@ function SelectedMenuTable({
                   <button
                     type="button"
                     class={styles.stepperBtn}
+                    aria-label={`Increase portion for ${recipe.name}`}
                     onClick={() => onSetPortion(recipe.id, (portionFactors[recipe.id] ?? 1) + 0.25)}
                   >
                     +
@@ -244,6 +247,7 @@ function SelectedMenuTable({
                     color: '#ef4444',
                   }}
                   title="Remove dish"
+                  aria-label={`Remove ${recipe.name} from menu`}
                   onClick={() => onRemove(recipe.id)}
                 >
                   <Icon name="trash-2" />

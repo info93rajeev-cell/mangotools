@@ -71,6 +71,7 @@ export function OtherCostsCard({
               <span style={{ fontSize: '12px', color: '#64748b' }}>₹</span>
               <input
                 type="number"
+                aria-label={`${item.label} cost in rupees`}
                 style={{
                   width: '70px',
                   height: '28px',
