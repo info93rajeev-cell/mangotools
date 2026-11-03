@@ -2,7 +2,7 @@ import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
 export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorState }) {
-  const { markupPercent, quantity, calculation } = state;
+  const { quantity, calculation } = state;
 
   return (
     <section class={styles.card} aria-label="Pricing Result">
@@ -27,7 +27,7 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
           <span class={`${styles.ico} ${styles.icoViolet}`}>↗</span>
           <div class={styles.metricTextGroup}>
             <small>Markup</small>
-            <strong>{markupPercent.toFixed(1)}%</strong>
+            <strong>{calculation.markupPercent.toFixed(1)}%</strong>
           </div>
         </div>
 
@@ -64,8 +64,8 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
 }
 
 export function MarkupFormulaWorkingCard({ state }: { state: MarkupCalculatorState }) {
-  const { costPrice, markupPercent, calculation } = state;
-  const factor = (1 + markupPercent / 100).toFixed(2);
+  const { costPrice, calculation } = state;
+  const factor = (1 + calculation.markupPercent / 100).toFixed(2);
 
   return (
     <section class={styles.card} aria-label="Formula and Working">

@@ -25,6 +25,8 @@ describe('Business Calculators Engines', () => {
         commissionPercent: 10,
         adCost: 50,
         otherCharges: 20,
+        // The reference sample's ₹1,000 is the GST-exclusive price (no GST inside it).
+        isGstInclusive: false,
       });
 
       expect(calc.totalExpenses).toBe(670);

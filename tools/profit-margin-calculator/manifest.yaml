@@ -4,8 +4,9 @@ id: profit-margin-calculator
 slug: profit-margin-calculator
 status: beta
 tier: T2
-version: 0.3.0
+version: 0.3.1
 changelog:
+  - { version: 0.3.1, date: 2026-11-03, type: fixed, summary: "Profit excludes GST inside the price; true break-even; 0.6% TCS/TDS (was 2%); cost table adds up." }
   - { version: 0.3.0, date: 2026-10-09, type: changed, summary: "Upgrade to seller profitability with optional costs, payout and settlement deductions." }
   - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Add an FAQ on pricing/accounting advice." }
   - { version: 0.2.0, date: 2026-09-25, type: changed, summary: "Money shown in ₹ with Indian digit grouping." }

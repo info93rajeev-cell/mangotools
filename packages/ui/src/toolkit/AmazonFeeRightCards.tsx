@@ -17,6 +17,8 @@ export function AmazonFeeVerificationCard() {
   );
 }
 
+const MODE_NAMES = { fba: 'FBA', easy_ship: 'Easy Ship', self_ship: 'Self Ship' } as const;
+
 export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstimatorState }) {
   const { calculation } = state;
   const [tab, setTab] = useState<'current' | 'compare'>('current');
@@ -45,46 +47,33 @@ export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstima
         </button>
       </div>
 
-      <table class={styles.smallTable} aria-label="Scenario Comparison Table">
-        <thead>
-          <tr>
-            <th>Mode</th>
-            <th>Net profit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>FBA sample</td>
-            <td style={{ color: '#059669' }}>
-              ₹
-              {calculation.fbaProfit.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Easy Ship</td>
-            <td>
-              ₹
-              {calculation.easyShipProfit.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-          <tr>
-            <td>Self Ship</td>
-            <td>
-              ₹
-              {calculation.selfShipProfit.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      {tab === 'current' ? (
+        <table class={styles.smallTable} aria-label="Scenario Comparison Table">
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Net profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{MODE_NAMES[state.fulfilmentMode]} · your fees</td>
+              <td style={{ color: calculation.netProfit < 0 ? '#b91c1c' : '#047857' }}>
+                ₹
+                {calculation.netProfit.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      ) : (
+        <p class={styles.muted}>
+          Fees differ by mode. To compare, switch the mode above and enter that mode's closing and
+          weight-handling fees from Seller Central; the profit updates for each.
+        </p>
+      )}
     </section>
   );
 }

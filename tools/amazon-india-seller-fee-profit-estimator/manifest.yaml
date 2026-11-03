@@ -4,8 +4,9 @@ id: amazon-india-seller-fee-profit-estimator
 slug: amazon-india-seller-fee-profit-estimator
 status: beta
 tier: T2
-version: 0.1.0
+version: 0.1.1
 changelog:
+  - { version: 0.1.1, date: 2026-11-03, type: fixed, summary: "Fee GST follows the fees; separate closing/weight fees; 0.6% TCS/TDS; no invented mode profits." }
   - { version: 0.1.0, date: 2026-10-14, type: added, summary: "Manual Amazon India profit, settlement, fee, tax and scenario estimates with local saved presets." }
 name: Amazon India Seller Fee & Profit Estimator
 shortName: Amazon Seller Estimate

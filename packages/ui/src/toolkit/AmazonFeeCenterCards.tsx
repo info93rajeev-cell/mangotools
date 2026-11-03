@@ -95,6 +95,18 @@ export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorSta
               })}
             </td>
           </tr>
+          {calculation.productGst > 0 ? (
+            <tr>
+              <td>GST inside the price (paid to govt)</td>
+              <td style={{ color: '#64748b' }}>
+                −₹
+                {calculation.productGst.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </td>
+            </tr>
+          ) : null}
           <tr>
             <td>Product + packaging</td>
             <td style={{ color: '#64748b' }}>
@@ -154,6 +166,10 @@ export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorSta
 export function AmazonFeeVisualCard({ state }: { state: AmazonFeeEstimatorState }) {
   const { calculation } = state;
   const { costPct, feePct, otherPct, profitPct } = calculation;
+  const gstPct =
+    state.sellingPrice > 0
+      ? Math.round((calculation.productGst / state.sellingPrice) * 1000) / 10
+      : 0;
 
   return (
     <section class={styles.card} aria-label="Revenue Allocation">
@@ -166,6 +182,7 @@ export function AmazonFeeVisualCard({ state }: { state: AmazonFeeEstimatorState 
         <span style={{ width: `${costPct}%`, background: '#3081ee' }} />
         <span style={{ width: `${feePct}%`, background: '#ae62e5' }} />
         <span style={{ width: `${otherPct}%`, background: '#f9b52c' }} />
+        {gstPct > 0 ? <span style={{ width: `${gstPct}%`, background: '#94a3b8' }} /> : null}
         <span style={{ width: `${profitPct}%`, background: '#18b86a' }} />
       </div>
 
@@ -173,6 +190,7 @@ export function AmazonFeeVisualCard({ state }: { state: AmazonFeeEstimatorState 
         <span>Cost {costPct}%</span>
         <span>Amazon fees {feePct}%</span>
         <span>Other {otherPct}%</span>
+        {gstPct > 0 ? <span>GST {gstPct}%</span> : null}
         <span>Profit {profitPct}%</span>
       </div>
     </section>

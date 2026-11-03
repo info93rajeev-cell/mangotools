@@ -179,7 +179,7 @@ export function SellerMarketplaceFeesCard({ state }: { state: SellerProfitabilit
         </div>
         <div class={styles.field}>
           <label class={styles.label} for="seller-fee-gst">
-            Fee GST (optional)
+            GST in your price
           </label>
           <select
             id="seller-fee-gst"
@@ -187,16 +187,18 @@ export function SellerMarketplaceFeesCard({ state }: { state: SellerProfitabilit
             value={gstRate}
             onChange={(e) => setGstRate(Number((e.target as HTMLSelectElement).value))}
           >
-            <option value={18}>18% (Standard GST)</option>
-            <option value={0}>0% (Exempt)</option>
+            <option value={18}>18% (standard)</option>
             <option value={5}>5%</option>
-            <option value={12}>12%</option>
+            <option value={40}>40%</option>
+            <option value={3}>3% (gold, silver)</option>
+            <option value={0}>0% / not registered</option>
           </select>
         </div>
       </div>
 
       <div class={styles.note} style={{ marginTop: '9px' }}>
-        Use actual fee values. Do not treat sample values as marketplace tariffs.
+        GST inside your price goes to the government and is taken out of profit. Marketplace fees
+        carry 18% GST. Use actual fee values; samples are not marketplace tariffs.
       </div>
     </section>
   );

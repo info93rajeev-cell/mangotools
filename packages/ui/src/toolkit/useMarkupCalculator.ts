@@ -5,6 +5,8 @@ export type MarkupStudioTab = 'markup' | 'stacked_discount' | 'bogo_deals' | 'fa
 
 export interface MarkupCalculation {
   baseCost: number;
+  /** Markup actually achieved: (price − cost) ÷ cost, in every mode. */
+  markupPercent: number;
   markupAdded: number;
   sellingPrice: number;
   grossMargin: number;
@@ -70,8 +72,10 @@ export function calculateMarkup(params: {
     sellingPrice = safeMargin < 100 ? baseCost / (1 - safeMargin / 100) : baseCost;
   }
 
-  const profitPerUnit = Math.max(0, sellingPrice - baseCost);
+  // A price below cost is a loss and is shown as one (negative), never as zero profit.
+  const profitPerUnit = sellingPrice - baseCost;
   const grossMargin = sellingPrice > 0 ? (profitPerUnit / sellingPrice) * 100 : 0;
+  const markupPercentResult = baseCost > 0 ? (profitPerUnit / baseCost) * 100 : 0;
   const profitOnQuantity = profitPerUnit * Math.max(1, quantity);
 
   const safeSale = sellingPrice > 0 ? sellingPrice : 1;
@@ -80,6 +84,7 @@ export function calculateMarkup(params: {
 
   return {
     baseCost: Math.round(baseCost * 100) / 100,
+    markupPercent: Math.round(markupPercentResult * 100) / 100,
     markupAdded: Math.round(profitPerUnit * 100) / 100,
     sellingPrice: Math.round(sellingPrice * 100) / 100,
     grossMargin: Math.round(grossMargin * 100) / 100,

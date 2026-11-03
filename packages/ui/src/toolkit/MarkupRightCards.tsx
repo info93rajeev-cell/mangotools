@@ -3,7 +3,7 @@ import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
 export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) {
-  const { markupPercent, calculation } = state;
+  const { calculation } = state;
 
   return (
     <section class={styles.card} aria-label="Markup vs Margin">
@@ -13,7 +13,7 @@ export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) 
       </div>
 
       <div class={styles.strip}>
-        <span>{markupPercent.toFixed(1)}% markup</span>
+        <span>{calculation.markupPercent.toFixed(1)}% markup</span>
         <b>{calculation.grossMargin.toFixed(2)}% margin</b>
       </div>
       <p class={styles.muted}>

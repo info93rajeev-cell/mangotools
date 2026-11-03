@@ -66,10 +66,30 @@ export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfita
   );
 }
 
+const rupees = (v: number) => `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+
+/** Every line that makes up total expenses, so the table adds up to the total it shows. */
+function breakdownRows(state: SellerProfitabilityState): [string, number][] {
+  const { sellingPrice, productCost, packagingCost, shippingCost, adCost, otherCharges } = state;
+  const c = state.calculation;
+  const rows: [string, number][] = [['Selling price', sellingPrice]];
+  if (c.outputGst > 0 && c.netBaseRevenue < sellingPrice) {
+    rows.push(['GST inside the price (paid to govt)', -c.outputGst]);
+  }
+  rows.push(['Product cost', -productCost]);
+  rows.push(['Packaging + shipping', -(packagingCost + shippingCost)]);
+  const backOffice = c.directFulfillment - packagingCost - shippingCost;
+  if (backOffice > 0) rows.push(['Warehousing, labour, overhead', -backOffice]);
+  rows.push(['Commission + closing fee', -c.totalMarketplaceFees]);
+  if (c.marketplaceFeeGst > 0) rows.push(['GST on marketplace fees', -c.marketplaceFeeGst]);
+  rows.push(['Ads + other', -(adCost + otherCharges)]);
+  if (c.rtoLossPerUnit > 0) rows.push(['Returns (per sale, averaged)', -c.rtoLossPerUnit]);
+  return rows;
+}
+
 export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfitabilityState }) {
-  const { productCost, packagingCost, shippingCost, adCost, otherCharges, calculation } = state;
-  const packAndShip = packagingCost + shippingCost;
-  const adsAndOther = adCost + otherCharges;
+  const { calculation } = state;
+  const loss = calculation.netProfit < 0;
 
   return (
     <section class={styles.card} aria-label="Revenue and Cost Breakdown">
@@ -86,34 +106,16 @@ export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfita
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Product cost</td>
-            <td>₹{productCost.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-          </tr>
-          <tr>
-            <td>Packaging + shipping</td>
-            <td>₹{packAndShip.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-          </tr>
-          <tr>
-            <td>Commission</td>
-            <td>
-              ₹{calculation.commissionAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-            </td>
-          </tr>
-          <tr>
-            <td>Ads + other</td>
-            <td>₹{adsAndOther.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-          </tr>
-          <tr style={{ fontWeight: 800 }}>
-            <td>Total expenses</td>
-            <td style={{ color: '#dc2626' }}>
-              ₹{calculation.totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-            </td>
-          </tr>
-          <tr style={{ fontWeight: 850, background: '#f0fdf4' }}>
-            <td>Net profit</td>
-            <td style={{ color: '#059669' }}>
-              ₹{calculation.netProfit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          {breakdownRows(state).map(([label, value]) => (
+            <tr key={label}>
+              <td>{label}</td>
+              <td>{value < 0 ? `−${rupees(-value)}` : rupees(value)}</td>
+            </tr>
+          ))}
+          <tr style={{ fontWeight: 850, background: loss ? '#fef2f2' : '#f0fdf4' }}>
+            <td>{loss ? 'Net loss' : 'Net profit'}</td>
+            <td style={{ color: loss ? '#b91c1c' : '#047857' }}>
+              {loss ? `−${rupees(-calculation.netProfit)}` : rupees(calculation.netProfit)}
             </td>
           </tr>
         </tbody>
@@ -123,26 +125,16 @@ export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfita
 }
 
 export function SellerWhereMoneyGoesCard({ state }: { state: SellerProfitabilityState }) {
-  const {
-    sellingPrice,
-    productCost,
-    packagingCost,
-    shippingCost,
-    adCost,
-    otherCharges,
-    calculation,
-  } = state;
+  const { sellingPrice, productCost, calculation: c } = state;
   const sp = Math.max(1, sellingPrice);
-  const prodPct = Math.min(100, Math.round((productCost / sp) * 100));
-  const otherPct = Math.min(
-    100,
-    Math.round(((packagingCost + shippingCost + adCost + otherCharges) / sp) * 100),
-  );
-  const feePct = Math.min(
-    100,
-    Math.round(((calculation.totalMarketplaceFees + calculation.marketplaceFeeGst) / sp) * 100),
-  );
-  const profitPct = Math.max(0, Math.round((calculation.netProfit / sp) * 100));
+  const pct = (v: number) => Math.min(100, Math.max(0, Math.round((v / sp) * 100)));
+  const gst = c.netBaseRevenue < sellingPrice ? c.outputGst : 0;
+  const fees = c.totalMarketplaceFees + c.marketplaceFeeGst;
+  const prodPct = pct(productCost);
+  const feePct = pct(fees);
+  const gstPct = pct(gst);
+  const otherPct = pct(c.totalExpenses - productCost - fees);
+  const profitPct = pct(c.netProfit);
 
   return (
     <section class={styles.card} aria-label="Where the Money Goes">
@@ -155,6 +147,7 @@ export function SellerWhereMoneyGoesCard({ state }: { state: SellerProfitability
         <span style={{ width: `${prodPct}%`, background: '#2581ef' }} />
         <span style={{ width: `${otherPct}%`, background: '#f6ae27' }} />
         <span style={{ width: `${feePct}%`, background: '#aa69ea' }} />
+        {gstPct > 0 ? <span style={{ width: `${gstPct}%`, background: '#94a3b8' }} /> : null}
         <span style={{ width: `${profitPct}%`, background: '#18b86b' }} />
       </div>
 
@@ -162,6 +155,7 @@ export function SellerWhereMoneyGoesCard({ state }: { state: SellerProfitability
         <span>🔵 Product {prodPct}%</span>
         <span>🟠 Other {otherPct}%</span>
         <span>🟣 Fees {feePct}%</span>
+        {gstPct > 0 ? <span>⚪ GST {gstPct}%</span> : null}
         <span>🟢 Profit {profitPct}%</span>
       </div>
     </section>

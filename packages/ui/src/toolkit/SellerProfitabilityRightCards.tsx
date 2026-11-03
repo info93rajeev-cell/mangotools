@@ -40,9 +40,15 @@ export function SellerTargetBreakevenCard({ state }: { state: SellerProfitabilit
 
       <div class={styles.strip} style={{ marginTop: '10px' }}>
         <span>Break-even price*</span>
-        <b>₹{calculation.breakEvenPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</b>
+        <b>
+          {Number.isFinite(calculation.breakEvenPrice)
+            ? `₹${calculation.breakEvenPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
+            : 'Not reachable'}
+        </b>
       </div>
-      <p class={styles.muted}>*Depends on variable fee model and return assumptions.</p>
+      <p class={styles.muted}>
+        *The price where profit is zero, with the same fees, GST and returns.
+      </p>
     </section>
   );
 }

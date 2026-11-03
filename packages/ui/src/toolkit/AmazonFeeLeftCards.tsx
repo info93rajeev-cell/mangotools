@@ -7,8 +7,10 @@ import {
 
 function AmazonListingGrid({ state }: { state: AmazonFeeEstimatorState }) {
   const {
-    productPackagingCost,
-    setProductPackagingCost,
+    productCost,
+    setProductCost,
+    packagingCost,
+    setPackagingCost,
     packedWeight,
     setPackedWeight,
     monthlyQty,
@@ -25,17 +27,21 @@ function AmazonListingGrid({ state }: { state: AmazonFeeEstimatorState }) {
           id="amz-cost"
           type="number"
           class={styles.fieldInput}
-          value={productPackagingCost}
-          onInput={(e) =>
-            setProductPackagingCost(Number((e.target as HTMLInputElement).value) || 0)
-          }
+          value={productCost}
+          onInput={(e) => setProductCost(Number((e.target as HTMLInputElement).value) || 0)}
         />
       </div>
       <div class={styles.field}>
         <label class={styles.label} for="amz-packaging">
           Packaging (₹)
         </label>
-        <input id="amz-packaging" type="number" class={styles.fieldInput} value={35} readOnly />
+        <input
+          id="amz-packaging"
+          type="number"
+          class={styles.fieldInput}
+          value={packagingCost}
+          onInput={(e) => setPackagingCost(Number((e.target as HTMLInputElement).value) || 0)}
+        />
       </div>
       <div class={styles.field}>
         <label class={styles.label} for="amz-weight">
@@ -139,14 +145,38 @@ export function AmazonListingFulfilmentCard({ state }: { state: AmazonFeeEstimat
           ))}
         </select>
       </div>
+
+      <div class={styles.field} style={{ marginTop: '8px' }}>
+        <label class={styles.label} for="amz-product-gst">
+          GST in your price
+        </label>
+        <select
+          id="amz-product-gst"
+          class={styles.fieldInput}
+          value={state.productGstRate}
+          onChange={(e) => state.setProductGstRate(Number((e.target as HTMLSelectElement).value))}
+        >
+          <option value={18}>18% (standard)</option>
+          <option value={5}>5%</option>
+          <option value={40}>40%</option>
+          <option value={3}>3% (gold, silver)</option>
+          <option value={0}>0% / not registered</option>
+        </select>
+      </div>
     </section>
   );
 }
 
 export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState }) {
-  const { referralFee, setReferralFee, closingHandling, setClosingHandling, feeGst, setFeeGst } =
-    state;
-  const weightHandling = Math.max(0, closingHandling - 25);
+  const {
+    referralFee,
+    setReferralFee,
+    closingFee,
+    setClosingFee,
+    weightHandling,
+    setWeightHandling,
+    feeGst,
+  } = state;
 
   return (
     <section class={styles.card} aria-label="Manual Amazon Fee Inputs">
@@ -176,11 +206,8 @@ export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState 
             id="amz-closing-fee"
             type="number"
             class={styles.fieldInput}
-            value={25}
-            onInput={(e) => {
-              const val = Number((e.target as HTMLInputElement).value) || 0;
-              setClosingHandling(val + weightHandling);
-            }}
+            value={closingFee}
+            onInput={(e) => setClosingFee(Number((e.target as HTMLInputElement).value) || 0)}
           />
         </div>
         <div class={styles.field}>
@@ -191,16 +218,13 @@ export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState 
             id="amz-weight-handling"
             type="number"
             class={styles.fieldInput}
-            value={weightHandling || 100}
-            onInput={(e) => {
-              const val = Number((e.target as HTMLInputElement).value) || 0;
-              setClosingHandling(25 + val);
-            }}
+            value={weightHandling}
+            onInput={(e) => setWeightHandling(Number((e.target as HTMLInputElement).value) || 0)}
           />
         </div>
         <div class={styles.field}>
           <label class={styles.label} for="amz-fee-gst">
-            GST on fees (₹)
+            GST on fees (₹) · 18%, automatic
           </label>
           <input
             id="amz-fee-gst"
@@ -208,7 +232,7 @@ export function AmazonFeeInputsCard({ state }: { state: AmazonFeeEstimatorState 
             class={styles.fieldInput}
             value={feeGst}
             step="0.01"
-            onInput={(e) => setFeeGst(Number((e.target as HTMLInputElement).value) || 0)}
+            readOnly
           />
         </div>
       </div>
