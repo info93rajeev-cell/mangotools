@@ -1,0 +1,62 @@
+id: 003-single-recipe
+operation: food.schedule.generate@1
+source:
+  type: synthetic
+  citation: >-
+    Single dish schedule: 10 min prep + 20 min cook + 10 min rest = 40 min total span.
+    Serving at 19:30. Finish cook at 19:20. Start cook at 19:00. Start prep at 18:50.
+input:
+  mealTime: "19:30"
+  burnersAvailable: 2
+  prepStations: 1
+  guests: 4
+  recipes:
+    - id: jeera-rice
+      version: 0.1.0
+      name: Jeera Rice
+      servings: 4
+      prepMinutes: 10
+      cookMinutes: 20
+      steps:
+        - Cook rice.
+  selection:
+    - { recipe: jeera-rice, recipeVersion: 0.1.0 }
+params:
+  restMinutes: 10
+  prepScaleFactor: none
+expected:
+  totalSpanMinutes: 40
+  earliestStartTime: "18:50"
+  mealTime: "19:30"
+  criticalPath:
+    - jeera-rice-prep
+    - jeera-rice-cook
+  capacityBottlenecks: 0
+  timeline:
+    - id: jeera-rice-prep
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Jeera Rice
+      durationMinutes: 10
+      startOffsetMinutes: -40
+      endOffsetMinutes: -30
+      startTime: "18:50"
+      endTime: "19:00"
+      station: prep-1
+      dependsOn: []
+    - id: jeera-rice-cook
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: active-cooking
+      description: Cook and temper Jeera Rice per recipe steps
+      durationMinutes: 20
+      startOffsetMinutes: -30
+      endOffsetMinutes: -10
+      startTime: "19:00"
+      endTime: "19:20"
+      station: burner-1
+      dependsOn:
+        - jeera-rice-prep
+expectedWarnings:
+  - FOOD_SCHEDULE_ESTIMATE

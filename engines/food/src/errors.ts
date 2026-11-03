@@ -25,4 +25,9 @@ export const messages: Readonly<Record<string, string>> = {
   FOOD_MISSING_PRICE: 'No price reference or user price found for "{ingredient}".',
   FOOD_BUDGET_EXCEEDED:
     'Total estimated cost (Rs. {total}) exceeds the budget (Rs. {budget}) by Rs. {difference}.',
+  FOOD_INVALID_MEAL_TIME: 'Meal time "{value}" is not a valid HH:MM time or ISO datetime.',
+  FOOD_CAPACITY_BOTTLENECK:
+    '{count} cooking task(s) had to be rescheduled earlier due to burner limits.',
+  FOOD_SCHEDULE_ESTIMATE:
+    'Schedule timings are deterministic model estimates based on recipe steps, not kitchen-measured guarantees.',
 };
