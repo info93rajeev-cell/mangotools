@@ -2,6 +2,7 @@
  * One record as flat cells. Scalars stay as they are. A nested object or array is rejected,
  * written as JSON text, or (for objects) flattened into dot-path keys, depending on `nested`.
  */
+import { stringifyLossless } from './lossless.ts';
 import { isPlainObject, type JsonRow } from './records.ts';
 import type { JsonToCsvNested } from './schema.ts';
 
@@ -23,7 +24,8 @@ function flattenInto(out: JsonRow, value: JsonRow, prefix: string, depth: number
       isPlainObject(child) && Object.keys(child).length > 0 && depth < MAX_FLATTEN_DEPTH;
     if (canDescend) flattenInto(out, child, path, depth + 1);
     // A literal key "a.b" and a flattened path a → b share one column; the first value wins.
-    else if (!Object.hasOwn(out, path)) out[path] = isNested(child) ? JSON.stringify(child) : child;
+    else if (!Object.hasOwn(out, path))
+      out[path] = isNested(child) ? stringifyLossless(child) : child;
   }
 }
 
@@ -37,7 +39,7 @@ export function toFlatRow(row: JsonRow, nested: JsonToCsvNested): FlatRowResult 
   for (const key of Object.keys(row)) {
     const value = row[key];
     if (!isNested(value)) out[key] = value;
-    else if (nested === 'json') out[key] = JSON.stringify(value);
+    else if (nested === 'json') out[key] = stringifyLossless(value);
     else return { nestedKey: key };
   }
   return { row: out };
