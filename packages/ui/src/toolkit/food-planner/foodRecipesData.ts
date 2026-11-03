@@ -33,6 +33,42 @@ export interface ExtendedFoodRecipe {
   thumbnailUrl?: string;
 }
 
+export interface RecipeVerificationInfo {
+  label: string;
+  badgeClass: 'badgeVerified' | 'badgePrototype';
+  title: string;
+}
+
+export function getRecipeVerificationInfo(recipe: ExtendedFoodRecipe): RecipeVerificationInfo {
+  const status = recipe.verification?.status;
+  if (status === 'approved') {
+    return {
+      label: '✓ Approved',
+      badgeClass: 'badgeVerified',
+      title: 'Founder approved recipe',
+    };
+  }
+  if (status === 'kitchen-tested') {
+    return {
+      label: '✓ Kitchen Tested',
+      badgeClass: 'badgeVerified',
+      title: 'Validated by documented actual cooking trial',
+    };
+  }
+  if (status === 'source-checked' || recipe.verified) {
+    return {
+      label: '✓ Source Checked',
+      badgeClass: 'badgeVerified',
+      title: 'Compared against published recipe references',
+    };
+  }
+  return {
+    label: 'Prototype',
+    badgeClass: 'badgePrototype',
+    title: 'Illustrative recipe not yet validated through kitchen trials',
+  };
+}
+
 export const RECIPES: ExtendedFoodRecipe[] = [
   {
     id: 'jeera-rice',

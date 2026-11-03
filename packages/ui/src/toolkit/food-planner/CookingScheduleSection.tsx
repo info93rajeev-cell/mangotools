@@ -20,12 +20,15 @@ export function CookingScheduleSection({ planner }: CookingScheduleSectionProps)
     setup,
     selectedRecipes,
     engineSchedule,
+    isLoadingSchedule,
+    scheduleError,
     mealTime,
     setMealTime,
     burners,
     setBurners,
     completedTasks,
     toggleTaskCompleted,
+    setActiveSection,
   } = planner;
 
   const [expandedPhases, setExpandedPhases] = useState<Record<string, boolean>>({
@@ -49,8 +52,13 @@ export function CookingScheduleSection({ planner }: CookingScheduleSectionProps)
   const totalPrepTimeMinutes = tasks.reduce((sum, t) => sum + t.durationMinutes, 0);
   const timeSpanStr = formatTimeSpan(totalPrepTimeMinutes);
 
+  if (selectedRecipes.length === 0) {
+    return <ScheduleEmptyState onBrowse={() => setActiveSection('recipes')} />;
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <ScheduleAlerts error={scheduleError} isLoading={isLoadingSchedule} />
       <div class={styles.layoutGrid}>
         <div class={styles.card}>
           <ScheduleHeader
@@ -86,6 +94,56 @@ export function CookingScheduleSection({ planner }: CookingScheduleSectionProps)
         mealTime={mealTime}
       />
     </div>
+  );
+}
+
+function ScheduleEmptyState({ onBrowse }: { onBrowse: () => void }) {
+  return (
+    <div
+      class={styles.card}
+      style={{ textAlign: 'center', padding: '48px 16px', color: '#475569' }}
+    >
+      <p style={{ fontSize: '15px', fontWeight: 600, color: '#0f172a' }}>
+        No recipes selected for cooking schedule
+      </p>
+      <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+        Pick dishes in Recipes &amp; Menu to generate your preparation timeline and burner schedule.
+      </p>
+      <button
+        type="button"
+        class={styles.actionBtn}
+        style={{ marginTop: '16px' }}
+        onClick={onBrowse}
+      >
+        <Icon name="utensils" /> Browse Recipes &amp; Menu
+      </button>
+    </div>
+  );
+}
+
+function ScheduleAlerts({ error, isLoading }: { error: string | null; isLoading: boolean }) {
+  return (
+    <>
+      {error && (
+        <div
+          style={{
+            padding: '12px 16px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#991b1b',
+            fontSize: '13px',
+          }}
+        >
+          <strong>⚠️ Schedule Note:</strong> {error}. Displaying default preparation phases.
+        </div>
+      )}
+      {isLoading && (
+        <div style={{ fontSize: '12px', color: '#64748b', padding: '4px 0' }}>
+          Updating cooking schedule timeline...
+        </div>
+      )}
+    </>
   );
 }
 

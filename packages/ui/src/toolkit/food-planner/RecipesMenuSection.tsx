@@ -1,7 +1,11 @@
 import { useMemo } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
-import { type ExtendedFoodRecipe, RECIPES } from './foodReferenceData.ts';
+import {
+  type ExtendedFoodRecipe,
+  getRecipeVerificationInfo,
+  RECIPES,
+} from './foodReferenceData.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 interface RecipesMenuSectionProps {
@@ -199,21 +203,13 @@ function SelectedMenuTable({
               <td>{idx + 1}</td>
               <td>
                 <strong>{recipe.name}</strong>
-                {recipe.verified ? (
-                  <span
-                    class={`${styles.badge} ${styles.badgeVerified}`}
-                    style={{ marginLeft: '6px' }}
-                  >
-                    ✓ Verified
-                  </span>
-                ) : (
-                  <span
-                    class={`${styles.badge} ${styles.badgePrototype}`}
-                    style={{ marginLeft: '6px' }}
-                  >
-                    Prototype
-                  </span>
-                )}
+                <span
+                  class={`${styles.badge} ${styles[getRecipeVerificationInfo(recipe).badgeClass]}`}
+                  style={{ marginLeft: '6px' }}
+                  title={getRecipeVerificationInfo(recipe).title}
+                >
+                  {getRecipeVerificationInfo(recipe).label}
+                </span>
               </td>
               <td>{guests}</td>
               <td>
@@ -326,13 +322,29 @@ function RecipeGalleryCard({
         </button>
       </div>
       <div class={styles.recipeMeta}>
-        <h3 class={styles.recipeName}>{recipe.name}</h3>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '4px',
+          }}
+        >
+          <h3 class={styles.recipeName}>{recipe.name}</h3>
+          <span
+            class={`${styles.badge} ${styles[getRecipeVerificationInfo(recipe).badgeClass]}`}
+            style={{ fontSize: '10px', padding: '1px 6px' }}
+            title={getRecipeVerificationInfo(recipe).title}
+          >
+            {getRecipeVerificationInfo(recipe).label}
+          </span>
+        </div>
         <div class={styles.recipeInfoRow}>
           <span>
             <Icon name="clock" /> {recipe.prepMinutes + recipe.cookMinutes}m
           </span>
           <span>•</span>
-          <span>{recipe.course}</span>
+          <span style={{ textTransform: 'capitalize' }}>{recipe.course}</span>
         </div>
       </div>
       <button

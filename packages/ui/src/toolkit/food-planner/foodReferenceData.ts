@@ -1,5 +1,9 @@
 export { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
-export { type ExtendedFoodRecipe, RECIPES } from './foodRecipesData.ts';
+export {
+  type ExtendedFoodRecipe,
+  getRecipeVerificationInfo,
+  RECIPES,
+} from './foodRecipesData.ts';
 
 export interface FoodPriceItem {
   ingredient: string;

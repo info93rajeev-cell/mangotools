@@ -22,97 +22,123 @@ interface TestResult {
   details?: string;
 }
 
-async function runDesktopQa(browser: Browser, results: TestResult[], errors: string[]) {
+interface SectionMetrics {
+  recipesCount: number;
+  ingredientsRowCount: number;
+  shoppingItemsCount: number;
+  scheduleTasksCount: number;
+}
+
+async function runDesktopQa(
+  browser: Browser,
+  results: TestResult[],
+  errors: string[],
+): Promise<SectionMetrics> {
   console.log('\n>>> [1/2] RUNNING DESKTOP TESTING (1440px)...');
   const desktopContext = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     deviceScaleFactor: 1,
   });
-  const desktopPage = await desktopContext.newPage();
-  desktopPage.on('pageerror', (err) => errors.push(`Desktop Page Error: ${err.message}`));
+  const page = await desktopContext.newPage();
+  page.on('pageerror', (err) => errors.push(`Desktop Page Error: ${err.message}`));
 
-  await desktopPage.goto(`${BASE_URL}/food-planner`);
-  await desktopPage.waitForFunction(
-    () => document.querySelectorAll('astro-island[ssr]').length === 0,
-    { timeout: 15000 },
-  );
-  await desktopPage.waitForSelector('[data-tool-island="food-planner"]', { timeout: 15000 });
+  await page.goto(`${BASE_URL}/food-planner`);
+  await page.waitForFunction(() => document.querySelectorAll('astro-island[ssr]').length === 0, {
+    timeout: 15000,
+  });
+  await page.waitForSelector('[data-tool-island="food-planner"]', { timeout: 15000 });
   console.log('✓ Page loaded & Island hydrated');
 
-  const breadcrumbCount = await desktopPage.locator('nav[aria-label="Breadcrumb"]').count();
-  results.push({ name: 'Desktop Breadcrumb exists', passed: breadcrumbCount > 0 });
+  const breadcrumbs = await page.locator('nav[aria-label="Breadcrumb"]').count();
+  results.push({ name: 'Desktop Breadcrumb exists', passed: breadcrumbs > 0 });
 
   // 1. Recipes & Menu
-  saveScreenshot('desktop-01-recipes-menu.png', await desktopPage.screenshot({ fullPage: true }));
+  saveScreenshot('desktop-01-recipes-menu.png', await page.screenshot({ fullPage: true }));
   console.log('✓ Captured desktop-01-recipes-menu.png');
 
-  // Toggle Mathri
-  const mathriCard = desktopPage.locator('text=Mathri').locator('..').locator('..');
+  const recipesCount = await page.locator('table tbody tr').count();
+  const sourceCheckedCount = await page.locator('text=Source Checked').count();
+  const prototypeCount = await page.locator('text=Prototype').count();
+  results.push({
+    name: 'Recipe verification badges use approved taxonomy (Source Checked / Prototype)',
+    passed: sourceCheckedCount > 0 && prototypeCount > 0,
+    details: `${sourceCheckedCount} Source Checked, ${prototypeCount} Prototype`,
+  });
+
+  // Test Recipe Toggle (remove & re-add so plan remains consistently at 6 recipes across all sections)
+  const mathriCard = page.locator('text=Mathri').locator('..').locator('..');
   const addBtn = mathriCard.locator('button', { hasText: /Add|Added/ }).first();
   if (await addBtn.isVisible()) {
-    await addBtn.click();
-    await desktopPage.waitForTimeout(400);
-    results.push({ name: 'Dynamic Recipe Toggle works', passed: true });
+    await addBtn.click(); // remove Mathri -> 5 dishes
+    await page.waitForTimeout(300);
+    await addBtn.click(); // re-add Mathri -> back to 6 dishes
+    await page.waitForTimeout(300);
+    results.push({ name: 'Dynamic Recipe Toggle works (remove & re-add)', passed: true });
   }
 
   // 2. Ingredients
-  await desktopPage.getByRole('tab', { name: /Ingredients/i }).click();
-  await desktopPage.waitForTimeout(400);
-  saveScreenshot('desktop-02-ingredients.png', await desktopPage.screenshot({ fullPage: true }));
-  const tableRows = await desktopPage.locator('table tbody tr').count();
+  await page.getByRole('tab', { name: /Ingredients/i }).click();
+  await page.waitForTimeout(500);
+  saveScreenshot('desktop-02-ingredients.png', await page.screenshot({ fullPage: true }));
+  const ingredientsRowCount = await page.locator('table tbody tr').count();
   results.push({
     name: 'Ingredients Table rendered with scaled lines',
-    passed: tableRows > 0,
-    details: `${tableRows} rows`,
+    passed: ingredientsRowCount > 0,
+    details: `${ingredientsRowCount} rows`,
   });
 
   // 3. Shopping List
-  await desktopPage.getByRole('tab', { name: /Shopping List/i }).click();
-  await desktopPage.waitForTimeout(400);
-  const mapsLink = desktopPage.locator('a[href*="google.com/maps"]').first();
+  await page.getByRole('tab', { name: /Shopping List/i }).click();
+  await page.waitForTimeout(500);
+  const mapsLink = page.locator('a[href*="google.com/maps"]').first();
   const mapsHref = await mapsLink.getAttribute('href');
   results.push({
     name: 'Google Maps grocery discovery link is valid',
     passed: Boolean(mapsHref?.includes('google.com/maps/search/grocery')),
   });
-  saveScreenshot('desktop-03-shopping-list.png', await desktopPage.screenshot({ fullPage: true }));
+  const shoppingItemsCount = await page
+    .locator('input[type="checkbox"][aria-label*="Mark"]')
+    .count();
+  results.push({
+    name: 'Shopping List populates items reliably',
+    passed: shoppingItemsCount > 0,
+    details: `${shoppingItemsCount} shopping items`,
+  });
+  saveScreenshot('desktop-03-shopping-list.png', await page.screenshot({ fullPage: true }));
 
   // 4. Cost Estimation
-  await desktopPage.getByRole('tab', { name: /Cost Estimation/i }).click();
-  await desktopPage.waitForTimeout(400);
-  const wholesaleBtn = desktopPage.getByRole('button', { name: /Wholesale/i });
+  await page.getByRole('tab', { name: /Cost Estimation/i }).click();
+  await page.waitForTimeout(500);
+  const wholesaleBtn = page.getByRole('button', { name: /Wholesale/i });
   if (await wholesaleBtn.isVisible()) {
     await wholesaleBtn.click();
     results.push({ name: 'Retail vs Wholesale Pricing Switcher works', passed: true });
   }
-  saveScreenshot(
-    'desktop-04-cost-estimation.png',
-    await desktopPage.screenshot({ fullPage: true }),
-  );
+  saveScreenshot('desktop-04-cost-estimation.png', await page.screenshot({ fullPage: true }));
 
   // 5. Cooking Schedule
-  await desktopPage.getByRole('tab', { name: /Cooking Schedule/i }).click();
-  await desktopPage.waitForTimeout(400);
-  const burnerSelect = desktopPage.locator('select#schedule-burners');
+  await page.getByRole('tab', { name: /Cooking Schedule/i }).click();
+  await page.waitForTimeout(500);
+  const burnerSelect = page.locator('select#schedule-burners');
   if (await burnerSelect.isVisible()) {
     await burnerSelect.selectOption('4');
     results.push({ name: 'Burner Capacity Selector works', passed: true });
   }
-  const scheduleCheckbox = desktopPage
+  const scheduleCheckbox = page
     .locator('input[type="checkbox"][aria-label*="Mark task completed"]')
     .first();
   if (await scheduleCheckbox.isVisible()) {
     await scheduleCheckbox.check();
     results.push({ name: 'Cooking Schedule Task completion works', passed: true });
   }
-  saveScreenshot(
-    'desktop-05-cooking-schedule.png',
-    await desktopPage.screenshot({ fullPage: true }),
-  );
+  const scheduleTasksCount = await page
+    .locator('input[type="checkbox"][aria-label*="Mark task completed"]')
+    .count();
+  saveScreenshot('desktop-05-cooking-schedule.png', await page.screenshot({ fullPage: true }));
 
   // Axe Accessibility Check
   console.log('\nChecking WCAG 2.1 AA Accessibility with Axe...');
-  const axeResults = await new AxeBuilder({ page: desktopPage })
+  const axeResults = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze();
   const seriousViolations = axeResults.violations.filter(
@@ -125,9 +151,20 @@ async function runDesktopQa(browser: Browser, results: TestResult[], errors: str
   });
 
   await desktopContext.close();
+
+  return {
+    recipesCount,
+    ingredientsRowCount,
+    shoppingItemsCount,
+    scheduleTasksCount,
+  };
 }
 
-async function runMobileQa(browser: Browser, results: TestResult[], errors: string[]) {
+async function runMobileQa(
+  browser: Browser,
+  results: TestResult[],
+  errors: string[],
+): Promise<SectionMetrics> {
   console.log('\n>>> [2/2] RUNNING MOBILE TESTING (390px - iPhone 12/13/14)...');
   const mobileContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -135,37 +172,51 @@ async function runMobileQa(browser: Browser, results: TestResult[], errors: stri
     isMobile: true,
     hasTouch: true,
   });
-  const mobilePage = await mobileContext.newPage();
-  mobilePage.on('pageerror', (err) => errors.push(`Mobile Page Error: ${err.message}`));
+  const page = await mobileContext.newPage();
+  page.on('pageerror', (err) => errors.push(`Mobile Page Error: ${err.message}`));
 
-  await mobilePage.goto(`${BASE_URL}/food-planner`);
-  await mobilePage.waitForFunction(
-    () => document.querySelectorAll('astro-island[ssr]').length === 0,
-    { timeout: 15000 },
-  );
-  await mobilePage.waitForSelector('[data-tool-island="food-planner"]', { timeout: 15000 });
+  await page.goto(`${BASE_URL}/food-planner`);
+  await page.waitForFunction(() => document.querySelectorAll('astro-island[ssr]').length === 0, {
+    timeout: 15000,
+  });
+  await page.waitForSelector('[data-tool-island="food-planner"]', { timeout: 15000 });
 
-  saveScreenshot('mobile-01-recipes-menu.png', await mobilePage.screenshot({ fullPage: true }));
+  saveScreenshot('mobile-01-recipes-menu.png', await page.screenshot({ fullPage: true }));
   console.log('✓ Captured mobile-01-recipes-menu.png');
+  const recipesCount = await page.locator('table tbody tr').count();
 
-  await mobilePage.getByRole('tab', { name: /Ingredients/i }).click({ force: true });
-  await mobilePage.waitForTimeout(400);
-  saveScreenshot('mobile-02-ingredients.png', await mobilePage.screenshot({ fullPage: true }));
+  await page.getByRole('tab', { name: /Ingredients/i }).click({ force: true });
+  await page.waitForTimeout(500);
+  saveScreenshot('mobile-02-ingredients.png', await page.screenshot({ fullPage: true }));
+  const ingredientsRowCount = await page.locator('table tbody tr').count();
 
-  await mobilePage.getByRole('tab', { name: /Shopping List/i }).click({ force: true });
-  await mobilePage.waitForTimeout(400);
-  saveScreenshot('mobile-03-shopping-list.png', await mobilePage.screenshot({ fullPage: true }));
+  await page.getByRole('tab', { name: /Shopping List/i }).click({ force: true });
+  await page.waitForTimeout(500);
+  saveScreenshot('mobile-03-shopping-list.png', await page.screenshot({ fullPage: true }));
+  const shoppingItemsCount = await page
+    .locator('input[type="checkbox"][aria-label*="Mark"]')
+    .count();
 
-  await mobilePage.getByRole('tab', { name: /Cost Estimation/i }).click({ force: true });
-  await mobilePage.waitForTimeout(400);
-  saveScreenshot('mobile-04-cost-estimation.png', await mobilePage.screenshot({ fullPage: true }));
+  await page.getByRole('tab', { name: /Cost Estimation/i }).click({ force: true });
+  await page.waitForTimeout(500);
+  saveScreenshot('mobile-04-cost-estimation.png', await page.screenshot({ fullPage: true }));
 
-  await mobilePage.getByRole('tab', { name: /Cooking Schedule/i }).click({ force: true });
-  await mobilePage.waitForTimeout(400);
-  saveScreenshot('mobile-05-cooking-schedule.png', await mobilePage.screenshot({ fullPage: true }));
+  await page.getByRole('tab', { name: /Cooking Schedule/i }).click({ force: true });
+  await page.waitForTimeout(500);
+  saveScreenshot('mobile-05-cooking-schedule.png', await page.screenshot({ fullPage: true }));
+  const scheduleTasksCount = await page
+    .locator('input[type="checkbox"][aria-label*="Mark task completed"]')
+    .count();
 
   results.push({ name: 'Mobile 5-section navigation and rendering', passed: true });
   await mobileContext.close();
+
+  return {
+    recipesCount,
+    ingredientsRowCount,
+    shoppingItemsCount,
+    scheduleTasksCount,
+  };
 }
 
 async function main() {
@@ -177,9 +228,35 @@ async function main() {
   const errors: string[] = [];
   const results: TestResult[] = [];
 
-  await runDesktopQa(browser, results, errors);
-  await runMobileQa(browser, results, errors);
+  const desktopMetrics = await runDesktopQa(browser, results, errors);
+  const mobileMetrics = await runMobileQa(browser, results, errors);
   await browser.close();
+
+  console.log('\n=====================================================');
+  console.log('         DESKTOP vs MOBILE CONSISTENCY CHECK');
+  console.log('=====================================================');
+  console.log('Metric                  | Desktop | Mobile  | Match');
+  console.log('-----------------------------------------------------');
+  const checkMatch = (name: string, d: number, m: number) => {
+    const match = d === m;
+    console.log(
+      `${name.padEnd(23)} | ${String(d).padStart(7)} | ${String(m).padStart(7)} | ${match ? '✓ IDENTICAL' : '✗ MISMATCH'}`,
+    );
+    results.push({
+      name: `Consistency: ${name}`,
+      passed: match,
+      details: `Desktop=${d}, Mobile=${m}`,
+    });
+  };
+
+  checkMatch('Selected Recipes', desktopMetrics.recipesCount, mobileMetrics.recipesCount);
+  checkMatch(
+    'Ingredient Rows',
+    desktopMetrics.ingredientsRowCount,
+    mobileMetrics.ingredientsRowCount,
+  );
+  checkMatch('Shopping Items', desktopMetrics.shoppingItemsCount, mobileMetrics.shoppingItemsCount);
+  checkMatch('Cooking Tasks', desktopMetrics.scheduleTasksCount, mobileMetrics.scheduleTasksCount);
 
   console.log('\n=====================================================');
   console.log('               FP-005 QA SUMMARY REPORT');

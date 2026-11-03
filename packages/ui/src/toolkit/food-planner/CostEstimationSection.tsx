@@ -19,6 +19,8 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
     setup,
     selectedRecipes,
     engineCost,
+    isLoadingCost,
+    costError,
     otherCosts,
     updateOtherCost,
     totalOtherCost,
@@ -44,9 +46,14 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
     return [...recipeCosts].sort((a, b) => b.totalDish - a.totalDish)[0];
   }, [recipeCosts]);
 
+  if (selectedRecipes.length === 0) {
+    return <CostEmptyState onBrowse={() => setActiveSection('recipes')} />;
+  }
+
   return (
     <div class={styles.layoutGrid}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <CostAlerts error={costError} isLoading={isLoadingCost} />
         <MenuCostTable
           recipeCosts={recipeCosts}
           priceMode={priceMode}
@@ -103,6 +110,56 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
   );
 }
 
+function CostEmptyState({ onBrowse }: { onBrowse: () => void }) {
+  return (
+    <div
+      class={styles.card}
+      style={{ textAlign: 'center', padding: '48px 16px', color: '#475569' }}
+    >
+      <p style={{ fontSize: '15px', fontWeight: 600, color: '#0f172a' }}>
+        No dishes selected in your catering menu
+      </p>
+      <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+        Pick dishes in Recipes &amp; Menu to calculate ingredient costs and event budget breakdown.
+      </p>
+      <button
+        type="button"
+        class={styles.actionBtn}
+        style={{ marginTop: '16px' }}
+        onClick={onBrowse}
+      >
+        <Icon name="utensils" /> Browse Recipes &amp; Menu
+      </button>
+    </div>
+  );
+}
+
+function CostAlerts({ error, isLoading }: { error: string | null; isLoading: boolean }) {
+  return (
+    <>
+      {error && (
+        <div
+          style={{
+            padding: '12px 16px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#991b1b',
+            fontSize: '13px',
+          }}
+        >
+          <strong>⚠️ Cost Calculation Note:</strong> {error}. Displaying reference estimates.
+        </div>
+      )}
+      {isLoading && (
+        <div style={{ fontSize: '12px', color: '#64748b', padding: '4px 0' }}>
+          Updating cost calculations...
+        </div>
+      )}
+    </>
+  );
+}
+
 function MenuCostTable({
   recipeCosts,
   priceMode,
@@ -153,7 +210,7 @@ function MenuCostTable({
         </div>
       </div>
 
-      <div style={{ overflowX: 'auto' }}>
+      <div class={styles.tableWrapper}>
         <table class={styles.table}>
           <thead>
             <tr>

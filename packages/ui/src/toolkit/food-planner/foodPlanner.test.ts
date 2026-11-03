@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
-import { RECIPES } from './foodRecipesData.ts';
+import { getRecipeVerificationInfo, RECIPES } from './foodRecipesData.ts';
 import {
   AISLE_DISPLAY_MAP,
   DEFAULT_SCHEDULE_TASKS,
@@ -32,6 +32,18 @@ describe('Food Planner Toolkit Reference Data', () => {
     expect(RECIPES.length).toBeGreaterThanOrEqual(8);
     const verified = RECIPES.filter((r) => r.verified);
     expect(verified.map((r) => r.id)).toEqual(['jeera-rice', 'dal-tadka', 'aloo-gobi']);
+
+    // Check verification status label mapping
+    const jeera = RECIPES.find((r) => r.id === 'jeera-rice');
+    expect(jeera).toBeDefined();
+    if (jeera) {
+      expect(getRecipeVerificationInfo(jeera).label).toBe('✓ Source Checked');
+    }
+    const ladoo = RECIPES.find((r) => r.id === 'besan-ladoo');
+    expect(ladoo).toBeDefined();
+    if (ladoo) {
+      expect(getRecipeVerificationInfo(ladoo).label).toBe('Prototype');
+    }
 
     for (const recipe of RECIPES) {
       expect(recipe.id).toBeTruthy();

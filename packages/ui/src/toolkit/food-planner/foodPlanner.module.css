@@ -744,9 +744,22 @@
     justify-content: center;
   }
   .navPill {
-    min-width: 110px;
-    padding: 8px 12px;
+    min-width: 105px;
+    padding: 8px 10px;
     font-size: 12.5px;
+    gap: 6px;
+  }
+  .tableWrapper {
+    -webkit-overflow-scrolling: touch;
+    border-radius: 6px;
+  }
+  .table {
+    min-width: 520px;
+  }
+  .table th,
+  .table td {
+    padding: 8px 10px;
+    font-size: 12px;
   }
   .recipeGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -762,5 +775,8 @@
   }
   .recipeGrid {
     grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 10px;
   }
 }

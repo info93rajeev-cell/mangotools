@@ -1,30 +1,27 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
-import { AISLE_DISPLAY_MAP, CATALOG_INGREDIENTS, REFERENCE_PRICES } from './foodReferenceData.ts';
+import { AISLE_DISPLAY_MAP } from './foodReferenceData.ts';
+import {
+  AisleAccordionCard,
+  GroceryDiscoveryCard,
+  PurchaseSummaryStats,
+} from './ShoppingListComponents.tsx';
+import { type ShoppingLineItem, useGroupedShoppingItems } from './shoppingListUtils.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 interface ShoppingListSectionProps {
   planner: UseFoodPlannerReturn;
 }
 
-interface ShoppingLineItem {
-  id: string;
-  name: string;
-  aisle: string;
-  buyQuantity: string;
-  unit: string;
-  priceLabel: string;
-  estCost: number;
-  storeType: string;
-  isBought: boolean;
-}
-
 export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
   const {
     setup,
     selectedRecipes,
+    portionFactors,
     engineConsolidated,
+    isLoadingConsolidated,
+    consolidateError,
     boughtItems,
     toggleBoughtItem,
     setActiveSection,
@@ -43,326 +40,223 @@ export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
     setExpandedAisles((prev) => ({ ...prev, [aisle]: !prev[aisle] }));
   };
 
-  const shoppingItems = useMemo(
-    () => buildShoppingItems(engineConsolidated, boughtItems),
-    [engineConsolidated, boughtItems],
+  const { groupedItems, totalItems, inListCount, toBuyCount } = useGroupedShoppingItems(
+    engineConsolidated,
+    selectedRecipes,
+    portionFactors,
+    setup.guests,
+    setup.servingsPerGuest,
+    boughtItems,
   );
-
-  const groupedItems = useMemo(() => {
-    const groups: Record<string, ShoppingLineItem[]> = {};
-    for (const item of shoppingItems) {
-      if (!groups[item.aisle]) groups[item.aisle] = [];
-      groups[item.aisle].push(item);
-    }
-    return groups;
-  }, [shoppingItems]);
-
-  const totalItems = shoppingItems.length;
-  const inListCount = shoppingItems.filter((i) => i.isBought).length;
-  const toBuyCount = totalItems - inListCount;
-  const totalEstCost = shoppingItems.reduce((sum, i) => sum + i.estCost, 0);
 
   return (
     <div class={styles.layoutGrid}>
-      <div class={styles.card}>
-        <div class={styles.cardHeader}>
-          <div class={styles.cardTitleGroup}>
-            <h2 class={styles.cardTitle}>
-              <Icon name="shopping-cart" /> Shopping List ({totalItems} items)
-            </h2>
-            <p class={styles.cardSubtitle}>
-              Consolidated purchase list with rounded buy units for {selectedRecipes.length}{' '}
-              recipes.
-            </p>
-          </div>
-          <button type="button" class={styles.actionBtn} onClick={() => window.print()}>
-            <Icon name="printer" /> Print List
-          </button>
-        </div>
+      <ShoppingListMainCard
+        totalItems={totalItems}
+        recipesCount={selectedRecipes.length}
+        error={consolidateError}
+        isLoading={isLoadingConsolidated}
+        groupedItems={groupedItems}
+        expandedAisles={expandedAisles}
+        onToggleAisle={toggleAisle}
+        onToggleBought={toggleBoughtItem}
+        onBrowse={() => setActiveSection('recipes')}
+      />
 
-        {Object.keys(groupedItems).length === 0 ? (
-          <p style={{ color: '#64748b', fontSize: '13px', textAlign: 'center', padding: '24px 0' }}>
-            No shopping items yet. Select dishes in Recipes &amp; Menu to generate your shopping
-            list.
-          </p>
-        ) : (
-          Object.entries(groupedItems).map(([aisle, items]) => (
-            <AisleAccordionCard
-              key={aisle}
-              aisle={aisle}
-              items={items}
-              isExpanded={expandedAisles[aisle] !== false}
-              onToggle={() => toggleAisle(aisle)}
-              onToggleBought={toggleBoughtItem}
-            />
-          ))
-        )}
-      </div>
-
-      <div class={styles.card}>
-        <div class={styles.cardHeader}>
-          <h2 class={styles.cardTitle}>
-            <Icon name="package" /> Purchase Summary
-          </h2>
-        </div>
-
-        <PurchaseSummaryStats total={totalItems} toBuy={toBuyCount} inStock={inListCount} />
-
-        <div class={styles.totalCostHighlight}>
-          <span>Total Estimated Cost</span>
-          <span class={styles.totalCostValue}>₹{totalEstCost.toLocaleString('en-IN')}</span>
-        </div>
-
-        <GroceryDiscoveryCard location={groceryQuery} onChangeLocation={setGroceryQuery} />
-
-        <button type="button" class={styles.ctaBtn} onClick={() => setActiveSection('cost')}>
-          <Icon name="coins" /> Continue to Cost Estimation <Icon name="arrow-right" />
-        </button>
-      </div>
+      <ShoppingSidebar
+        totalItems={totalItems}
+        toBuyCount={toBuyCount}
+        inListCount={inListCount}
+        groupedItems={groupedItems}
+        groceryQuery={groceryQuery}
+        onChangeLocation={setGroceryQuery}
+        onContinue={() => setActiveSection('cost')}
+      />
     </div>
   );
 }
 
-function AisleAccordionCard({
-  aisle,
-  items,
-  isExpanded,
-  onToggle,
+function ShoppingListMainCard({
+  totalItems,
+  recipesCount,
+  error,
+  isLoading,
+  groupedItems,
+  expandedAisles,
+  onToggleAisle,
   onToggleBought,
+  onBrowse,
 }: {
-  aisle: string;
-  items: ShoppingLineItem[];
-  isExpanded: boolean;
-  onToggle: () => void;
+  totalItems: number;
+  recipesCount: number;
+  error: string | null;
+  isLoading: boolean;
+  groupedItems: Record<string, ShoppingLineItem[]>;
+  expandedAisles: Record<string, boolean>;
+  onToggleAisle: (a: string) => void;
   onToggleBought: (id: string) => void;
+  onBrowse: () => void;
 }) {
-  const aisleCost = items.reduce((sum, i) => sum + i.estCost, 0);
-
   return (
-    <div style={{ marginBottom: '12px' }}>
-      <button
-        type="button"
-        class={styles.phaseHeader}
-        style={{ width: '100%', textAlign: 'left', border: 'none' }}
-        onClick={onToggle}
-      >
-        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Icon name={isExpanded ? 'chevron-up' : 'chevron-down'} />
-          {AISLE_DISPLAY_MAP[aisle] ?? aisle} ({items.length})
-        </span>
-        <span class={styles.phaseTag}>Est. Cost: ₹{aisleCost}</span>
-      </button>
-
-      {isExpanded && (
-        <div class={styles.tableWrapper} style={{ borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
-          <table class={styles.table}>
-            <thead>
-              <tr>
-                <th style={{ width: '36px' }} aria-label="Status checkbox"></th>
-                <th>Ingredient</th>
-                <th>Buy Qty</th>
-                <th>Est. Price</th>
-                <th>Est. Cost</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr key={item.id} style={{ background: item.isBought ? '#f8fafc' : 'transparent' }}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      aria-label={`Mark ${item.name} as in stock`}
-                      checked={item.isBought}
-                      onChange={() => onToggleBought(item.id)}
-                      style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                    />
-                  </td>
-                  <td>
-                    <strong>{item.name}</strong>
-                    <span style={{ display: 'block', fontSize: '11px', color: '#64748b' }}>
-                      Buy at: {item.storeType}
-                    </span>
-                  </td>
-                  <td>
-                    <strong>{item.buyQuantity}</strong> {item.unit}
-                  </td>
-                  <td>{item.priceLabel}</td>
-                  <td>{item.estCost > 0 ? `₹${item.estCost}` : '—'}</td>
-                  <td>
-                    {item.isBought ? (
-                      <span class={`${styles.badge} ${styles.badgeVerified}`}>✓ In Stock</span>
-                    ) : (
-                      <span class={`${styles.badge} ${styles.badgePrototype}`}>○ To Buy</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div class={styles.card}>
+      <div class={styles.cardHeader}>
+        <div class={styles.cardTitleGroup}>
+          <h2 class={styles.cardTitle}>
+            <Icon name="shopping-cart" /> Shopping List ({totalItems} items)
+          </h2>
+          <p class={styles.cardSubtitle}>
+            Consolidated purchase list with rounded buy units for {recipesCount} recipes.
+          </p>
         </div>
+        <button type="button" class={styles.actionBtn} onClick={() => window.print()}>
+          <Icon name="printer" /> Print List
+        </button>
+      </div>
+
+      {recipesCount === 0 ? (
+        <ShoppingEmptyState onBrowse={onBrowse} />
+      ) : (
+        <>
+          <ShoppingListAlerts error={error} isLoading={isLoading} />
+          {Object.keys(groupedItems).length === 0 ? (
+            <p
+              style={{ color: '#64748b', fontSize: '13px', textAlign: 'center', padding: '24px 0' }}
+            >
+              No shopping items required for the selected recipes.
+            </p>
+          ) : (
+            Object.entries(groupedItems).map(([aisle, items]) => (
+              <AisleAccordionCard
+                key={aisle}
+                aisle={aisle}
+                items={items}
+                isExpanded={expandedAisles[aisle] !== false}
+                onToggle={() => onToggleAisle(aisle)}
+                onToggleBought={onToggleBought}
+              />
+            ))
+          )}
+        </>
       )}
     </div>
   );
 }
 
-function PurchaseSummaryStats({
-  total,
-  toBuy,
-  inStock,
-}: {
-  total: number;
-  toBuy: number;
-  inStock: number;
-}) {
+function ShoppingListAlerts({ error, isLoading }: { error: string | null; isLoading: boolean }) {
   return (
-    <div class={styles.summaryStats} style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-      <div
-        class={styles.statItem}
-        style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px' }}
-      >
-        <span class={styles.statLabel}>Total</span>
-        <span class={styles.statValue}>{total}</span>
-      </div>
-      <div
-        class={styles.statItem}
-        style={{ background: '#fef2f2', padding: '10px', borderRadius: '8px' }}
-      >
-        <span class={styles.statLabel} style={{ color: '#991b1b' }}>
-          To Buy
-        </span>
-        <span class={styles.statValue} style={{ color: '#b91c1c' }}>
-          {toBuy}
-        </span>
-      </div>
-      <div
-        class={styles.statItem}
-        style={{ background: '#f0fdf4', padding: '10px', borderRadius: '8px' }}
-      >
-        <span class={styles.statLabel} style={{ color: '#166534' }}>
-          In Stock
-        </span>
-        <span class={styles.statValue} style={{ color: '#15803d' }}>
-          {inStock}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function GroceryDiscoveryCard({
-  location,
-  onChangeLocation,
-}: {
-  location: string;
-  onChangeLocation: (s: string) => void;
-}) {
-  const googleMapsUrl = `https://www.google.com/maps/search/grocery+stores+near+${encodeURIComponent(location)}`;
-
-  return (
-    <div class={styles.discoveryCard}>
-      <div class={styles.discoveryTitle}>
-        <Icon name="map-pin" /> Nearby Grocery Discovery
-      </div>
-      <p class={styles.discoveryDesc}>
-        Find nearby supermarket, kirana and spice stores with live driving directions on Google
-        Maps. Free and zero tracking.
-      </p>
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <input
-          type="text"
-          class={styles.textInput}
-          style={{ height: '34px', fontSize: '12.5px' }}
-          value={location}
-          placeholder="Enter locality or area..."
-          onInput={(e) => onChangeLocation((e.target as HTMLInputElement).value)}
-        />
-        <a
-          href={googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class={styles.discoveryBtn}
-          style={{ whiteSpace: 'nowrap' }}
+    <>
+      {error && (
+        <div
+          style={{
+            padding: '12px 16px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#991b1b',
+            fontSize: '13px',
+            marginBottom: '12px',
+          }}
         >
-          Find Stores <Icon name="external-link" />
-        </a>
-      </div>
+          <strong>⚠️ Calculation Note:</strong> {error}. Displaying preliminary item estimates.
+        </div>
+      )}
+      {isLoading && (
+        <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
+          Updating exact consolidation...
+        </div>
+      )}
+    </>
+  );
+}
+
+function ShoppingEmptyState({ onBrowse }: { onBrowse: () => void }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '36px 16px', color: '#475569' }}>
+      <p style={{ fontSize: '15px', fontWeight: 600, color: '#0f172a' }}>
+        No dishes in your menu yet
+      </p>
+      <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+        Add recipes in Recipes &amp; Menu to generate your consolidated shopping list.
+      </p>
+      <button
+        type="button"
+        class={styles.actionBtn}
+        style={{ marginTop: '14px' }}
+        onClick={onBrowse}
+      >
+        <Icon name="utensils" /> Browse Recipes &amp; Menu
+      </button>
     </div>
   );
 }
 
-function buildShoppingItems(
-  engineConsolidated: unknown,
-  boughtItems: Record<string, boolean>,
-): ShoppingLineItem[] {
-  const cons = engineConsolidated as {
-    lines?: Array<{ ingredient: string; buy: string; unit: string }>;
-  } | null;
+function ShoppingSidebar({
+  totalItems,
+  toBuyCount,
+  inListCount,
+  groupedItems,
+  groceryQuery,
+  onChangeLocation,
+  onContinue,
+}: {
+  totalItems: number;
+  toBuyCount: number;
+  inListCount: number;
+  groupedItems: Record<string, ShoppingLineItem[]>;
+  groceryQuery: string;
+  onChangeLocation: (loc: string) => void;
+  onContinue: () => void;
+}) {
+  return (
+    <div class={styles.card}>
+      <div class={styles.cardHeader}>
+        <h2 class={styles.cardTitle}>
+          <Icon name="package" /> Purchase Summary
+        </h2>
+      </div>
 
-  if (!cons?.lines) return [];
+      <PurchaseSummaryStats total={totalItems} toBuy={toBuyCount} inStock={inListCount} />
 
-  const catalogMap = new Map(CATALOG_INGREDIENTS.map((i) => [i.id, i]));
-  const priceMap = new Map(
-    REFERENCE_PRICES.filter((p) => p.kind === 'retail-reference').map((p) => [p.ingredient, p]),
+      <div style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+        <h3
+          style={{
+            fontSize: '13.5px',
+            fontWeight: 700,
+            color: '#0f172a',
+            marginBottom: '8px',
+          }}
+        >
+          Aisle Breakdown
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {Object.entries(groupedItems).map(([aisle, items]) => {
+            const aisleCost = items.reduce((sum, i) => sum + i.estCost, 0);
+            return (
+              <div
+                key={aisle}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  fontSize: '12.5px',
+                  padding: '4px 0',
+                }}
+              >
+                <span style={{ color: '#475569' }}>
+                  {AISLE_DISPLAY_MAP[aisle] ?? aisle} ({items.length})
+                </span>
+                <strong>₹{aisleCost.toLocaleString('en-IN')}</strong>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <GroceryDiscoveryCard location={groceryQuery} onChangeLocation={onChangeLocation} />
+
+      <button type="button" class={styles.ctaBtn} onClick={onContinue}>
+        <Icon name="coins" /> Continue to Cost Estimation <Icon name="arrow-right" />
+      </button>
+    </div>
   );
-
-  return cons.lines.map((l) => {
-    const cat = catalogMap.get(l.ingredient);
-    const pr = priceMap.get(l.ingredient);
-    const buyNum = Number.parseFloat(l.buy);
-    const estCost = computeLineCost(buyNum, l.unit, pr?.priceInr, pr?.per, pr?.unit);
-    const priceLabel = pr ? `₹${pr.priceInr} / ${pr.unit}` : '—';
-
-    return {
-      id: l.ingredient,
-      name: cat?.name ?? l.ingredient,
-      aisle: cat?.aisle ?? 'other',
-      buyQuantity: formatDisplayBuy(buyNum, l.unit),
-      unit: formatDisplayBuyUnit(buyNum, l.unit),
-      priceLabel,
-      estCost: Math.round(estCost),
-      storeType: getStoreTypeForAisle(cat?.aisle ?? 'other'),
-      isBought: !!boughtItems[l.ingredient],
-    };
-  });
-}
-
-function computeLineCost(
-  buyNum: number,
-  lineUnit: string,
-  priceInr?: string,
-  per?: string,
-  priceUnit?: string,
-): number {
-  if (!priceInr || !per || !priceUnit) return 0;
-  const rate = Number.parseFloat(priceInr);
-  const p = Number.parseFloat(per);
-
-  if (lineUnit === 'g' && priceUnit === 'kg') {
-    return (buyNum / 1000) * (rate / p);
-  }
-  if (lineUnit === 'ml' && (priceUnit === 'l' || priceUnit === '1000')) {
-    return (buyNum / 1000) * (rate / p);
-  }
-  return (buyNum / p) * rate;
-}
-
-function formatDisplayBuy(num: number, unit: string): string {
-  if (unit === 'g' && num >= 1000) return (num / 1000).toFixed(2);
-  if (unit === 'ml' && num >= 1000) return (num / 1000).toFixed(2);
-  return Number.isInteger(num) ? String(num) : num.toFixed(1);
-}
-
-function formatDisplayBuyUnit(num: number, unit: string): string {
-  if (unit === 'g' && num >= 1000) return 'kg';
-  if (unit === 'ml' && num >= 1000) return 'L';
-  return unit;
-}
-
-function getStoreTypeForAisle(aisle: string): string {
-  if (aisle === 'vegetables' || aisle === 'herbs') return 'Sabzi Mandi / Veg Vendor';
-  if (aisle === 'dairy') return 'Dairy / Milk Booth';
-  if (aisle === 'spices') return 'Spice Merchant / Kirana';
-  if (aisle === 'grains' || aisle === 'pulses') return 'Grocery Wholesale / Retail';
-  return 'General Store';
 }
