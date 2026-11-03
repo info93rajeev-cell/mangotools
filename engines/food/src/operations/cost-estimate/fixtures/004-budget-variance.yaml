@@ -1,0 +1,53 @@
+id: 004-budget-variance
+operation: food.cost.estimate@1
+source:
+  type: synthetic
+  citation: Budget variance and status calculation.
+input:
+  guests: 20
+  budgetInr: "1000"
+  lines:
+    - { ingredient: basmati-rice, buy: "1000", unit: g }
+    - { ingredient: toor-dal, buy: "1000", unit: g }
+  prices:
+    - ingredient: basmati-rice
+      kind: retail-reference
+      priceInr: "120"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+    - ingredient: toor-dal
+      kind: retail-reference
+      priceInr: "160"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+expected:
+  totalCostInr: "280.00"
+  exactTotalCost: "280"
+  costPerGuestInr: "14.00"
+  budgetInr: "1000.00"
+  budgetVarianceInr: "720.00"
+  budgetStatus: under-budget
+  pricedCount: 2
+  unpricedCount: 0
+  unpricedIngredients: []
+  items:
+    - ingredient: basmati-rice
+      quantity: "1000"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.12"
+      costInr: "120.00"
+      exactCost: "120"
+      observedOn: "2026-11-01"
+    - ingredient: toor-dal
+      quantity: "1000"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.16"
+      costInr: "160.00"
+      exactCost: "160"
+      observedOn: "2026-11-01"
