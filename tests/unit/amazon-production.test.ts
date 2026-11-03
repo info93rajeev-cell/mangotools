@@ -57,7 +57,7 @@ describe('TASK-008L production tool', () => {
       category: 'business',
       tier: 'T2',
       archetype: 'B',
-      version: '0.1.0',
+      version: '0.1.1',
       listed: true,
       processing: 'device',
       privacy: { dataClass: 'personal', network: 'none' },

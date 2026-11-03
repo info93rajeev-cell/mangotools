@@ -1,186 +1,13 @@
 import { useMemo, useState } from 'preact/hooks';
 
-export type SellerPricingMode = 'single' | 'compare' | 'targets';
-export type SellerInputTab = 'pricing' | 'fulfillment' | 'marketplace_gst' | 'returns';
+export * from './sellerProfitabilityModel.ts';
 
-export interface SellerProfitabilityParams {
-  sellingPrice: number;
-  productCost: number;
-  packagingCost?: number;
-  shippingCost?: number;
-  warehousingCost?: number;
-  labourCost?: number;
-  overheadCost?: number;
-  commissionPercent?: number;
-  closingFee?: number;
-  adCost?: number;
-  otherCharges?: number;
-  gstRate?: number;
-  isGstInclusive?: boolean;
-  marketplaceFeeGstRate?: number;
-  returnRate?: number;
-  reverseShipping?: number;
-  damagedLossPercent?: number;
-  monthlyQty?: number;
-}
-
-export interface SellerProfitabilityCalculation {
-  directFulfillment: number;
-  commissionAmount: number;
-  totalMarketplaceFees: number;
-  marketplaceFeeGst: number;
-  outputGst: number;
-  netBaseRevenue: number;
-  rtoLossPerUnit: number;
-  totalExpenses: number;
-  netProfit: number;
-  netMargin: number;
-  markupOnCost: number;
-  cashSettlementPayout: number;
-  monthlyProfit: number;
-  monthlyRevenue: number;
-  breakEvenPrice: number;
-  costPct: number;
-  fulfillmentPct: number;
-  feesPct: number;
-  profitPct: number;
-}
-
-interface CostBreakdown {
-  directFulfillment: number;
-  commissionAmount: number;
-  totalMarketplaceFees: number;
-  marketplaceFeeGst: number;
-  outputGst: number;
-  netBaseRevenue: number;
-  rtoLossPerUnit: number;
-  totalExpenses: number;
-}
-
-function resolveSellerParams(p: SellerProfitabilityParams) {
-  const {
-    sellingPrice = 0,
-    productCost = 0,
-    packagingCost = 0,
-    shippingCost = 0,
-    warehousingCost = 0,
-    labourCost = 0,
-    overheadCost = 0,
-    commissionPercent = 0,
-    closingFee = 0,
-    adCost = 0,
-    otherCharges = 0,
-    gstRate = 18,
-    isGstInclusive = true,
-    marketplaceFeeGstRate = 0,
-    returnRate = 0,
-    reverseShipping = 0,
-    damagedLossPercent = 0,
-  } = p;
-  return {
-    sp: sellingPrice,
-    cost: productCost,
-    pack: packagingCost,
-    ship: shippingCost,
-    wh: warehousingCost,
-    lab: labourCost,
-    ovh: overheadCost,
-    commPct: commissionPercent,
-    closing: closingFee,
-    ad: adCost,
-    other: otherCharges,
-    gstRate,
-    isInc: isGstInclusive,
-    feeGstRate: marketplaceFeeGstRate,
-    retRate: returnRate,
-    revShip: reverseShipping,
-    dmgPct: damagedLossPercent,
-  };
-}
-
-function computeSellerCosts(params: SellerProfitabilityParams): CostBreakdown {
-  const p = resolveSellerParams(params);
-
-  const directFulfillment = p.pack + p.ship + p.wh + p.lab + p.ovh;
-  const commissionAmount = (p.sp * p.commPct) / 100;
-  const totalMarketplaceFees = commissionAmount + p.closing;
-  const marketplaceFeeGst = (totalMarketplaceFees * p.feeGstRate) / 100;
-  const outputGst = p.isInc ? (p.sp * p.gstRate) / (100 + p.gstRate) : (p.sp * p.gstRate) / 100;
-  const netBaseRevenue = p.isInc ? p.sp - outputGst : p.sp;
-  const rtoLossPerUnit = (p.retRate / 100) * (p.revShip + p.cost * (p.dmgPct / 100));
-  const totalExpenses =
-    p.cost +
-    directFulfillment +
-    totalMarketplaceFees +
-    marketplaceFeeGst +
-    p.ad +
-    p.other +
-    rtoLossPerUnit;
-
-  return {
-    directFulfillment,
-    commissionAmount,
-    totalMarketplaceFees,
-    marketplaceFeeGst,
-    outputGst,
-    netBaseRevenue,
-    rtoLossPerUnit,
-    totalExpenses,
-  };
-}
-
-export function calculateSellerProfitability(
-  params: SellerProfitabilityParams,
-): SellerProfitabilityCalculation {
-  const sp = params.sellingPrice || 0;
-  const cost = params.productCost || 0;
-  const qty = params.monthlyQty || 1;
-  const commPct = params.commissionPercent || 0;
-  const ship = params.shippingCost || 0;
-  const costs = computeSellerCosts(params);
-
-  const netProfit = sp - costs.totalExpenses;
-  const netMargin = sp > 0 ? (netProfit / sp) * 100 : 0;
-  const markupOnCost = cost > 0 ? (netProfit / cost) * 100 : 0;
-  const tcsTds = (costs.netBaseRevenue * 2) / 100;
-  const cashPayout = Math.max(
-    0,
-    sp - costs.totalMarketplaceFees - costs.marketplaceFeeGst - tcsTds - ship,
-  );
-
-  const commRate = Math.min(0.95, commPct / 100);
-  const fixedCosts = costs.totalExpenses - costs.commissionAmount;
-  const breakEvenPrice = fixedCosts / (1 - commRate);
-
-  const safeSale = sp > 0 ? sp : 1;
-  const costPct = Math.max(0, Math.round((cost / safeSale) * 100));
-  const fulfillmentPct = Math.max(0, Math.round((costs.directFulfillment / safeSale) * 100));
-  const otherFees = costs.totalExpenses - cost - costs.directFulfillment;
-  const feesPct = Math.max(0, Math.round((otherFees / safeSale) * 100));
-  const profitPct = Math.max(0, 100 - costPct - fulfillmentPct - feesPct);
-
-  return {
-    directFulfillment: Math.round(costs.directFulfillment * 100) / 100,
-    commissionAmount: Math.round(costs.commissionAmount * 100) / 100,
-    totalMarketplaceFees: Math.round(costs.totalMarketplaceFees * 100) / 100,
-    marketplaceFeeGst: Math.round(costs.marketplaceFeeGst * 100) / 100,
-    outputGst: Math.round(costs.outputGst * 100) / 100,
-    netBaseRevenue: Math.round(costs.netBaseRevenue * 100) / 100,
-    rtoLossPerUnit: Math.round(costs.rtoLossPerUnit * 100) / 100,
-    totalExpenses: Math.round(costs.totalExpenses * 100) / 100,
-    netProfit: Math.round(netProfit * 100) / 100,
-    netMargin: Math.round(netMargin * 10) / 10,
-    markupOnCost: Math.round(markupOnCost * 10) / 10,
-    cashSettlementPayout: Math.round(cashPayout * 100) / 100,
-    monthlyProfit: Math.round(netProfit * qty),
-    monthlyRevenue: Math.round(sp * qty),
-    breakEvenPrice: Math.round(breakEvenPrice * 100) / 100,
-    costPct,
-    fulfillmentPct,
-    feesPct,
-    profitPct,
-  };
-}
+import {
+  calculateSellerProfitability,
+  type SellerInputTab,
+  type SellerPricingMode,
+  type SellerProfitabilityCalculation,
+} from './sellerProfitabilityModel.ts';
 
 export interface SellerProfitabilityState {
   mode: SellerPricingMode;
@@ -325,6 +152,7 @@ function createSellerSummaryText(
 ): string {
   return `Seller Profitability Summary:
 Selling Price: ₹${sp.toFixed(2)}
+GST inside price (paid to govt): ₹${(sp - calc.netBaseRevenue).toFixed(2)}
 Product Cost: ₹${cost.toFixed(2)}
 Fulfillment (Pack, Ship, Warehouse, Labour): ₹${calc.directFulfillment.toFixed(2)}
 Fees & GST: ₹${(calc.totalMarketplaceFees + calc.marketplaceFeeGst).toFixed(2)}
@@ -333,7 +161,7 @@ Total Expenses: ₹${calc.totalExpenses.toFixed(2)}
 --------------------------------------
 Net Profit: ₹${calc.netProfit.toFixed(2)} (${calc.netMargin}%)
 Markup on Cost: ${calc.markupOnCost}%
-Bank Settlement: ₹${calc.cashSettlementPayout.toFixed(2)}
+Bank Settlement (after 0.6% TCS/TDS): ₹${calc.cashSettlementPayout.toFixed(2)}
 Monthly Profit (${qty} units): ₹${calc.monthlyProfit.toLocaleString()}`;
 }
 
@@ -364,7 +192,7 @@ export function useSellerProfitability(notify?: (msg: string) => void): SellerPr
     const csvContent =
       'data:text/csv;charset=utf-8,' +
       encodeURIComponent(
-        `Metric,Amount (INR)\nSelling Price,${inputs.sellingPrice}\nProduct Cost,${inputs.productCost}\nDirect Fulfillment,${calculation.directFulfillment}\nMarketplace Fees,${calculation.totalMarketplaceFees}\nMarketplace Fee GST (18%),${calculation.marketplaceFeeGst}\nReturn Loss Allocation,${calculation.rtoLossPerUnit}\nTotal Expenses,${calculation.totalExpenses}\nNet Profit,${calculation.netProfit}\nNet Margin (%),${calculation.netMargin}\nMarkup on Cost (%),${calculation.markupOnCost}\nCash Payout,${calculation.cashSettlementPayout}\nMonthly Profit (${inputs.monthlyQty} units),${calculation.monthlyProfit}`,
+        `Metric,Amount (INR)\nSelling Price,${inputs.sellingPrice}\nGST inside price,${(inputs.sellingPrice - calculation.netBaseRevenue).toFixed(2)}\nProduct Cost,${inputs.productCost}\nDirect Fulfillment,${calculation.directFulfillment}\nMarketplace Fees,${calculation.totalMarketplaceFees}\nMarketplace Fee GST (18%),${calculation.marketplaceFeeGst}\nReturn Loss Allocation,${calculation.rtoLossPerUnit}\nTotal Expenses,${calculation.totalExpenses}\nNet Profit,${calculation.netProfit}\nNet Margin (%),${calculation.netMargin}\nMarkup on Cost (%),${calculation.markupOnCost}\nCash Payout,${calculation.cashSettlementPayout}\nMonthly Profit (${inputs.monthlyQty} units),${calculation.monthlyProfit}`,
       );
     const link = document.createElement('a');
     link.setAttribute('href', csvContent);

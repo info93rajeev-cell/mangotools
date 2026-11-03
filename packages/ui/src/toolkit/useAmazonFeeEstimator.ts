@@ -10,6 +10,9 @@ export interface AmazonCategoryPreset {
   rate: number;
 }
 
+export const AMAZON_FEE_GST_PERCENT = 18;
+export const AMAZON_WITHHOLDING_PERCENT = 0.6;
+
 export const AMAZON_CATEGORY_PRESETS: AmazonCategoryPreset[] = [
   { id: 'electronics', name: 'Electronics & Mobiles (8.5%)', rate: 8.5 },
   { id: 'apparel', name: 'Apparel & Fashion (13.0%)', rate: 13.0 },
@@ -22,6 +25,8 @@ export const AMAZON_CATEGORY_PRESETS: AmazonCategoryPreset[] = [
 
 export interface AmazonFeeParams {
   sellingPrice: number;
+  /** GST contained in the (GST-inclusive) selling price, %. 0 for a seller not registered. */
+  productGstRate?: number;
   productPackagingCost?: number;
   referralFee?: number;
   closingHandling?: number;
@@ -46,13 +51,11 @@ export interface AmazonFeeCalculation {
   costsExcludingFees: number;
   rtoLossPerUnit: number;
   totalExpenses: number;
+  productGst: number;
   bankPayout: number;
   netProfit: number;
   netMargin: number;
   monthlyProfit: number;
-  fbaProfit: number;
-  easyShipProfit: number;
-  selfShipProfit: number;
   costPct: number;
   feePct: number;
   otherPct: number;
@@ -106,18 +109,23 @@ export function calculateAmazonFees(params: AmazonFeeParams): AmazonFeeCalculati
   const adsReturns = params.adsReturns || 0;
   const costsExcludingFees = productPackagingCost + adsReturns;
   const totalExpenses = amazonFeesWithGst + costsExcludingFees;
-  const netProfit = sellingPrice - totalExpenses;
-  const netMargin = sellingPrice > 0 ? (netProfit / sellingPrice) * 100 : 0;
+  // The GST inside the price is collected for the government, so it is not revenue.
+  const gstRate = Math.max(0, params.productGstRate || 0);
+  const netRevenue = sellingPrice / (1 + gstRate / 100);
+  const productGst = sellingPrice - netRevenue;
+  const netProfit = netRevenue - totalExpenses;
+  const netMargin = netRevenue > 0 ? (netProfit / netRevenue) * 100 : 0;
   const monthlyProfit = netProfit * monthlyQty;
 
-  const tcsTds = (sellingPrice * 2) / 100;
+  // GST TCS 0.5% (s.52) + TDS 0.1% (s.194-O), both on the GST-exclusive value of the sale.
+  const tcsTds = (netRevenue * AMAZON_WITHHOLDING_PERCENT) / 100;
   const bankPayout = Math.max(0, sellingPrice - amazonFeesWithGst - tcsTds);
 
   const safeSale = sellingPrice > 0 ? sellingPrice : 1;
   const costPct = Math.max(0, Math.round((productPackagingCost / safeSale) * 1000) / 10);
   const feePct = Math.max(0, Math.round((amazonFeesWithGst / safeSale) * 1000) / 10);
   const otherPct = Math.max(0, Math.round((adsReturns / safeSale) * 1000) / 10);
-  const profitPct = Math.max(0, Math.round((100 - costPct - feePct - otherPct) * 10) / 10);
+  const profitPct = Math.max(0, Math.round((netProfit / safeSale) * 1000) / 10);
 
   return {
     referralFee: Math.round(referralFee * 100) / 100,
@@ -128,13 +136,11 @@ export function calculateAmazonFees(params: AmazonFeeParams): AmazonFeeCalculati
     costsExcludingFees: Math.round(costsExcludingFees * 100) / 100,
     rtoLossPerUnit: Math.round(adsReturns * 0.4 * 100) / 100,
     totalExpenses: Math.round(totalExpenses * 100) / 100,
+    productGst: Math.round(productGst * 100) / 100,
     bankPayout: Math.round(bankPayout * 100) / 100,
     netProfit: Math.round(netProfit * 100) / 100,
     netMargin: Math.round(netMargin * 10) / 10,
     monthlyProfit: Math.round(monthlyProfit),
-    fbaProfit: Math.round(netProfit * 100) / 100,
-    easyShipProfit: Math.round((netProfit - 18) * 100) / 100,
-    selfShipProfit: Math.round((netProfit - 5) * 100) / 100,
     costPct,
     feePct,
     otherPct,
@@ -151,6 +157,12 @@ export interface AmazonFeeEstimatorState {
   setSellingPrice: (v: number) => void;
   productPackagingCost: number;
   setProductPackagingCost: (v: number) => void;
+  productCost: number;
+  setProductCost: (v: number) => void;
+  packagingCost: number;
+  setPackagingCost: (v: number) => void;
+  productGstRate: number;
+  setProductGstRate: (v: number) => void;
   category: string;
   setCategory: (v: string) => void;
   referralRate: number;
@@ -159,6 +171,10 @@ export interface AmazonFeeEstimatorState {
   setReferralFee: (v: number) => void;
   closingHandling: number;
   setClosingHandling: (v: number) => void;
+  closingFee: number;
+  setClosingFee: (v: number) => void;
+  weightHandling: number;
+  setWeightHandling: (v: number) => void;
   feeGst: number;
   setFeeGst: (v: number) => void;
   adsReturns: number;
@@ -175,40 +191,77 @@ export interface AmazonFeeEstimatorState {
   resetToDefaults: () => void;
 }
 
+/** Product cost, packaging and the GST inside the price. */
+function useAmazonCostInputs() {
+  const [productCost, setProductCost] = useState(600);
+  const [packagingCost, setPackagingCost] = useState(35);
+  const [productGstRate, setProductGstRate] = useState(18);
+  const setProductPackagingCost = (total: number) => {
+    setPackagingCost(35);
+    setProductCost(Math.max(0, total - 35));
+  };
+  return {
+    productPackagingCost: productCost + packagingCost,
+    setProductPackagingCost,
+    productCost,
+    setProductCost,
+    packagingCost,
+    setPackagingCost,
+    productGstRate,
+    setProductGstRate,
+  };
+}
+
+/** Amazon's fees: referral, closing and weight handling, with 18% GST that follows them. */
+function useAmazonFeeAmounts() {
+  const [referralFee, setReferralFee] = useState(120);
+  const [closingFee, setClosingFee] = useState(25);
+  const [weightHandling, setWeightHandling] = useState(100);
+  const closingHandling = closingFee + weightHandling;
+  const setClosingHandling = (total: number) => {
+    setClosingFee(25);
+    setWeightHandling(Math.max(0, total - 25));
+  };
+  const feeGst =
+    Math.round((((referralFee + closingHandling) * AMAZON_FEE_GST_PERCENT) / 100) * 100) / 100;
+  return {
+    referralFee,
+    setReferralFee,
+    closingHandling,
+    setClosingHandling,
+    closingFee,
+    setClosingFee,
+    weightHandling,
+    setWeightHandling,
+    feeGst,
+    setFeeGst: (_value: number) => undefined,
+  };
+}
+
 function useAmazonFeeInputs() {
   const [fulfilmentMode, setFulfilmentMode] = useState<FulfilmentMode>('fba');
   const [activeTab, setActiveTab] = useState<AmazonInputTab>('listing');
   const [sellingPrice, setSellingPrice] = useState(1500);
-  const [productPackagingCost, setProductPackagingCost] = useState(635);
   const [category, setCategory] = useState('electronics');
   const [referralRate, setReferralRate] = useState(8.5);
-  const [referralFee, setReferralFee] = useState(120);
-  const [closingHandling, setClosingHandling] = useState(125);
-  const [feeGst, setFeeGst] = useState(44.1);
   const [adsReturns, setAdsReturns] = useState(100);
   const [shippingZone, setShippingZone] = useState<AmazonShippingZone>('national');
   const [packedWeight, setPackedWeight] = useState(500);
   const [monthlyQty, setMonthlyQty] = useState(100);
 
   return {
+    ...useAmazonCostInputs(),
+    ...useAmazonFeeAmounts(),
     fulfilmentMode,
     setFulfilmentMode,
     activeTab,
     setActiveTab,
     sellingPrice,
     setSellingPrice,
-    productPackagingCost,
-    setProductPackagingCost,
     category,
     setCategory,
     referralRate,
     setReferralRate,
-    referralFee,
-    setReferralFee,
-    closingHandling,
-    setClosingHandling,
-    feeGst,
-    setFeeGst,
     adsReturns,
     setAdsReturns,
     shippingZone,
@@ -254,6 +307,7 @@ export function useAmazonFeeEstimator(notify?: (msg: string) => void): AmazonFee
       calculateAmazonFees({
         sellingPrice: inputs.sellingPrice,
         productPackagingCost: inputs.productPackagingCost,
+        productGstRate: inputs.productGstRate,
         referralFee: inputs.referralFee,
         closingHandling: inputs.closingHandling,
         feeGst: inputs.feeGst,
