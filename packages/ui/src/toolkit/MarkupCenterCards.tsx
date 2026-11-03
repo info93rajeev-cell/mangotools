@@ -1,19 +1,8 @@
 import { renderTemplate } from '../format/template.ts';
+import { inr, pct } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
 import { presetCurrency } from './presentation.ts';
 import type { MarginResult, MarkupCalculatorState } from './useMarkupCalculator.ts';
-
-/** Display only: engine decimal strings formatted for India. Values are never recalculated. */
-export const inr = (v: string | null, digits = 2) => {
-  if (v === null) return '—';
-  const n = Number(v);
-  const text = Math.abs(n).toLocaleString('en-IN', {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  });
-  return `${n < 0 ? '−' : ''}₹${text}`;
-};
-export const pct = (v: string | null) => (v === null ? '—' : `${v}%`);
 
 function Metric(props: {
   ico: string;

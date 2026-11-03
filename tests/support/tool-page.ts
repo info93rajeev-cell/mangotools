@@ -3,7 +3,8 @@ import { expect, type Page } from '@playwright/test';
 
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
 export const SAMPLES = {
-  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹600.00' },
+  // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
+  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
   'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
@@ -202,7 +203,7 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
     return;
   }
-  if (id === 'markup-calculator') {
+  if (id === 'markup-calculator' || id === 'amazon-india-seller-fee-profit-estimator') {
     // The studio runs its engine in the worker and shows "…" until the answer arrives.
     await expect(primaryResult(page)).not.toHaveText('…');
     return;

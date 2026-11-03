@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { inr } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
 import type { AmazonFeeEstimatorState } from './useAmazonFeeEstimator.ts';
 
@@ -20,7 +21,7 @@ export function AmazonFeeVerificationCard() {
 const MODE_NAMES = { fba: 'FBA', easy_ship: 'Easy Ship', self_ship: 'Self Ship' } as const;
 
 export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstimatorState }) {
-  const { calculation } = state;
+  const r = state.result;
   const [tab, setTab] = useState<'current' | 'compare'>('current');
 
   return (
@@ -58,12 +59,8 @@ export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstima
           <tbody>
             <tr>
               <td>{MODE_NAMES[state.fulfilmentMode]} · your fees</td>
-              <td style={{ color: calculation.netProfit < 0 ? '#b91c1c' : '#047857' }}>
-                ₹
-                {calculation.netProfit.toLocaleString('en-IN', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+              <td style={{ color: r?.economicProfit.startsWith('-') ? '#b91c1c' : '#047857' }}>
+                {inr(r?.economicProfit ?? null)}
               </td>
             </tr>
           </tbody>

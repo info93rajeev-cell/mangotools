@@ -1,5 +1,5 @@
+import { inr, pct } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
-import { inr, pct } from './MarkupCenterCards.tsx';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
 export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) {
