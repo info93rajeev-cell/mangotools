@@ -7,13 +7,36 @@ import {
   SAMPLE_ROWS,
   SAMPLE_START_RL,
 } from './surveyLevelingModel.ts';
+import { surveyStrings } from './surveyLevelingStrings.ts';
 import type {
   SurveyCalculationOutput,
   SurveyLevelingRow,
   SurveyLevelingState,
 } from './surveyLevelingTypes.ts';
 
-const workerRun: RunFn = (...args) => getWorkerHost().run(...args);
+const defaultRun: RunFn = (...args) => {
+  if (typeof window !== 'undefined' && (window as unknown as { __customRun?: RunFn }).__customRun) {
+    return (window as unknown as { __customRun: RunFn }).__customRun(...args);
+  }
+  return getWorkerHost().run(...args);
+};
+
+function resolveErrorMessage(code: string): string {
+  const errMap = surveyStrings.errors as Record<string, string>;
+  return errMap[code] ?? errMap.CALCULATION_ERROR;
+}
+
+function resolveTargetInputId(path: string): string | null {
+  if (path === 'startRL') return 'survey-startRL';
+  if (path === 'closingRL') return 'survey-closeRL';
+  const obsMatch = /^observations\.(\d+)(?:\.(bs|is|fs))?$/.exec(path);
+  if (obsMatch) {
+    const idx = obsMatch[1];
+    const key = obsMatch[2] ?? 'bs';
+    return `survey-obs-${idx}-${key}`;
+  }
+  return null;
+}
 
 async function executeLeveling(
   runFn: RunFn,
@@ -39,16 +62,24 @@ async function executeLeveling(
         cellErrors: {},
       };
     }
-    const code = outcome.error?.code ?? 'INVALID_INPUT';
+    const code = outcome.error?.code ?? 'CALCULATION_ERROR';
     const path = outcome.error?.path ?? '';
+    const message = resolveErrorMessage(code);
+    const targetId = resolveTargetInputId(path);
+    if (targetId) setTimeout(() => document.getElementById(targetId)?.focus(), 10);
     return {
       result: null,
       phase: 'error',
-      errors: [path ? `${code}: ${path}` : code],
-      cellErrors: path ? { [path]: code } : {},
+      errors: [message],
+      cellErrors: path ? { [path]: message } : {},
     };
   } catch {
-    return { result: null, phase: 'error', errors: ['Calculation error'], cellErrors: {} };
+    return {
+      result: null,
+      phase: 'error',
+      errors: [surveyStrings.errors.CALCULATION_ERROR],
+      cellErrors: {},
+    };
   }
 }
 
@@ -78,12 +109,31 @@ function appendNewRow(prev: SurveyLevelingRow[]): SurveyLevelingRow[] {
   ];
 }
 
-export function useSurveyLeveling(customRun?: RunFn) {
-  const runFn = customRun ?? workerRun;
-  const [startRL, setStartRL] = useState(SAMPLE_START_RL);
-  const [closingRL, setClosingRL] = useState(SAMPLE_CLOSING_RL);
+function useSurveyRows(onInvalidate: () => void) {
   const [rows, setRows] = useState<SurveyLevelingRow[]>(() => SAMPLE_ROWS);
-  const [state, setState] = useState<{
+  return {
+    rows,
+    setRows,
+    handleCellChange: (idx: number, f: keyof SurveyLevelingRow, v: string) => {
+      setRows((p) => updateRowAt(p, idx, f, v));
+      onInvalidate();
+    },
+    handleAddRow: () => {
+      setRows(appendNewRow);
+      onInvalidate();
+    },
+    handleRemoveRow: (idx: number) => {
+      setRows((p) => (p.length > 2 ? p.filter((_, i) => i !== idx) : p));
+      onInvalidate();
+    },
+  };
+}
+
+export function useSurveyLeveling(customRun?: RunFn) {
+  const runFn = customRun ?? defaultRun;
+  const [startRL, setStartRLState] = useState(SAMPLE_START_RL);
+  const [closingRL, setClosingRLState] = useState(SAMPLE_CLOSING_RL);
+  const [calcState, setCalcState] = useState<{
     result: SurveyCalculationOutput | null;
     phase: SurveyLevelingState['phase'];
     errors: string[];
@@ -92,38 +142,40 @@ export function useSurveyLeveling(customRun?: RunFn) {
 
   const abortRef = useRef<AbortController | null>(null);
 
-  const calculate = async (
-    overrideStart = startRL,
-    overrideClose = closingRL,
-    overrideRows = rows,
-  ) => {
+  const invalidate = () => {
+    setCalcState((prev) => ({
+      ...prev,
+      result: null,
+      phase: prev.phase === 'result' ? 'stale' : prev.phase,
+      errors: [],
+      cellErrors: {},
+    }));
+  };
+
+  const rowOps = useSurveyRows(invalidate);
+
+  const calculate = async (s = startRL, c = closingRL, r = rowOps.rows) => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    setState((prev) => ({ ...prev, phase: 'calculating' }));
-    const outcome = await executeLeveling(
-      runFn,
-      overrideStart,
-      overrideClose,
-      overrideRows,
-      ctrl.signal,
-    );
-    if (!ctrl.signal.aborted) setState(outcome);
+    setCalcState((prev) => ({ ...prev, phase: 'calculating' }));
+    const outcome = await executeLeveling(runFn, s, c, r, ctrl.signal);
+    if (!ctrl.signal.aborted) setCalcState(outcome);
   };
 
   const loadSample = () => {
-    setStartRL(SAMPLE_START_RL);
-    setClosingRL(SAMPLE_CLOSING_RL);
-    setRows(SAMPLE_ROWS);
+    setStartRLState(SAMPLE_START_RL);
+    setClosingRLState(SAMPLE_CLOSING_RL);
+    rowOps.setRows(SAMPLE_ROWS);
     void calculate(SAMPLE_START_RL, SAMPLE_CLOSING_RL, SAMPLE_ROWS);
   };
 
   const reset = () => {
     abortRef.current?.abort();
-    setStartRL('');
-    setClosingRL('');
-    setRows(createInitialRows());
-    setState({ result: null, phase: 'idle', errors: [], cellErrors: {} });
+    setStartRLState('');
+    setClosingRLState('');
+    rowOps.setRows(createInitialRows());
+    setCalcState({ result: null, phase: 'idle', errors: [], cellErrors: {} });
   };
 
   useEffect(() => {
@@ -133,20 +185,25 @@ export function useSurveyLeveling(customRun?: RunFn) {
 
   return {
     startRL,
-    setStartRL,
+    setStartRL: (val: string) => {
+      setStartRLState(val);
+      invalidate();
+    },
     closingRL,
-    setClosingRL,
-    rows,
-    result: state.result,
-    phase: state.phase,
-    errors: state.errors,
-    cellErrors: state.cellErrors,
-    handleCellChange: (idx: number, f: keyof SurveyLevelingRow, v: string) =>
-      setRows((p) => updateRowAt(p, idx, f, v)),
-    handleAddRow: () => setRows(appendNewRow),
-    handleRemoveRow: (idx: number) =>
-      setRows((p) => (p.length > 2 ? p.filter((_, i) => i !== idx) : p)),
-    calculate: () => calculate(startRL, closingRL, rows),
+    setClosingRL: (val: string) => {
+      setClosingRLState(val);
+      invalidate();
+    },
+    rows: rowOps.rows,
+    result: calcState.result,
+    phase: calcState.phase,
+    isStale: calcState.phase === 'stale',
+    errors: calcState.errors,
+    cellErrors: calcState.cellErrors,
+    handleCellChange: rowOps.handleCellChange,
+    handleAddRow: rowOps.handleAddRow,
+    handleRemoveRow: rowOps.handleRemoveRow,
+    calculate: () => calculate(startRL, closingRL, rowOps.rows),
     loadSample,
     reset,
   };

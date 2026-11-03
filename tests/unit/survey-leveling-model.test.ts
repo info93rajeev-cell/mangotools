@@ -73,9 +73,12 @@ describe('Survey Leveling Model', () => {
     expect(formatReading('')).toBe('—');
     expect(formatReading(null)).toBe('—');
     expect(formatReading('100')).toBe('100.000');
+    expect(formatReading('0')).toBe('0.000');
+    expect(formatReading('0.0001')).toBe('0.0001');
     expect(formatSigned('0.2')).toBe('+0.200');
     expect(formatSigned('-0.2')).toBe('−0.200');
     expect(formatSigned('0')).toBe('0.000');
+    expect(formatSigned('0.0001')).toBe('+0.0001');
   });
 
   it('builds canonical engine request preserving blanks and exact decimals', () => {

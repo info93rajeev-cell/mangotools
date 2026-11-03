@@ -1,79 +1,70 @@
-import s from './surveyLeveling.module.css';
-import { formatReading, formatSigned } from './surveyLevelingModel.ts';
+import { formatSigned } from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyCalculationOutput } from './surveyLevelingTypes.ts';
+import s from './surveyResults.module.css';
 
 export interface SurveyArithmeticChecksProps {
   result: SurveyCalculationOutput | null;
 }
 
 export function SurveyArithmeticChecks({ result }: SurveyArithmeticChecksProps) {
-  if (!result) {
-    return (
-      <div>
-        <div style={{ fontWeight: 700, fontSize: '13px', margin: '14px 0 6px' }}>
-          {surveyStrings.checksTitle}
-        </div>
-        <div class={s.gradientBar} />
-        <p style={{ fontSize: '12px', color: '#64748b' }}>Press Calculate to run the checks.</p>
-      </div>
-    );
-  }
+  if (!result) return null;
 
-  const rfCheck = result.checks.find((c) => c.id === 'arithmetic-rise-fall');
-  const flCheck = result.checks.find((c) => c.id === 'arithmetic-first-last');
-  const rfPass = rfCheck?.status === 'pass';
-  const flPass = flCheck?.status === 'pass';
+  const bsFsCheck = result.checks.find((c) => c.id === 'arithmetic-first-last');
+  const riseFallCheck = result.checks.find((c) => c.id === 'arithmetic-rise-fall');
+
+  const deltaBSFS = formatSigned(result.bsFsDelta);
+  const deltaRiseFall = formatSigned(result.riseFallDelta);
+  const deltaRL = formatSigned(result.rlDelta);
+
+  const check1Pass = bsFsCheck?.status === 'pass';
+  const check2Pass = riseFallCheck?.status === 'pass';
 
   return (
     <div data-arithmetic-checks="">
-      <div style={{ fontWeight: 700, fontSize: '13px', margin: '14px 0 4px' }}>
-        {surveyStrings.checksTitle}
-      </div>
-      <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '6px' }}>
+      <div class={s.gradientBar} />
+      <div style={{ fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>
         {surveyStrings.checksSubtitle}
       </div>
-      <div class={s.gradientBar} />
+
       <ul class={s.checksList}>
         <li class={s.checkItem}>
-          <span class={`${s.checkDot} ${s.checkDotPass}`}>✓</span>
+          <span class={`${s.checkDot} ${check1Pass ? s.checkDotPass : s.checkDotFail}`}>
+            {check1Pass ? '✓' : '✕'}
+          </span>
           <span>
             {surveyStrings.checkBsFs
-              .replace('{bs}', formatReading(result.sumBS))
-              .replace('{fs}', formatReading(result.sumFS))
-              .replace('{delta}', formatSigned(result.bsFsDelta))}
+              .replace('{bs}', result.sumBS)
+              .replace('{fs}', result.sumFS)
+              .replace('{delta}', deltaBSFS)}
           </span>
-          <span class={s.checkValue} style={{ color: '#16a34a' }}>
-            {formatSigned(result.bsFsDelta)} m
-          </span>
+          <span class={s.checkValue}>{deltaBSFS} m</span>
         </li>
+
         <li class={s.checkItem}>
-          <span class={`${s.checkDot} ${rfPass ? s.checkDotPass : s.checkDotFail}`}>
-            {rfPass ? '✓' : '✕'}
+          <span class={`${s.checkDot} ${check1Pass ? s.checkDotPass : s.checkDotFail}`}>
+            {check1Pass ? '✓' : '✕'}
           </span>
           <span>
             {surveyStrings.checkRiseFall
-              .replace('{rise}', formatReading(result.sumRise))
-              .replace('{fall}', formatReading(result.sumFall))
-              .replace('{delta}', formatSigned(result.riseFallDelta))}
+              .replace('{rise}', result.sumRise)
+              .replace('{fall}', result.sumFall)
+              .replace('{delta}', deltaRiseFall)}
           </span>
-          <span class={s.checkValue} style={{ color: rfPass ? '#16a34a' : '#dc2626' }}>
-            {formatSigned(result.riseFallDelta)} m
-          </span>
+          <span class={s.checkValue}>{deltaRiseFall} m</span>
         </li>
+
         <li class={s.checkItem}>
-          <span class={`${s.checkDot} ${flPass ? s.checkDotPass : s.checkDotFail}`}>
-            {flPass ? '✓' : '✕'}
+          <span class={`${s.checkDot} ${check2Pass ? s.checkDotPass : s.checkDotFail}`}>
+            {check2Pass ? '✓' : '✕'}
           </span>
           <span>
             {surveyStrings.checkFirstLast
-              .replace('{last}', formatReading(result.endingRL))
-              .replace('{first}', formatReading(result.startingRL))
-              .replace('{delta}', formatSigned(result.rlDelta))}
+              .replace('{last}', result.endingRL)
+              .replace('{first}', result.startingRL)
+              .replace('{delta}', deltaRL)}
           </span>
-          <span class={s.checkValue} style={{ color: flPass ? '#16a34a' : '#dc2626' }}>
-            {formatSigned(result.rlDelta)} m
-          </span>
+          <span class={s.checkValue}>{deltaRL} m</span>
         </li>
       </ul>
     </div>

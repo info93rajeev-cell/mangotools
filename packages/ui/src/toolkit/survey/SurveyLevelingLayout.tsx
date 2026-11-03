@@ -4,12 +4,13 @@ import { Toast, useToast } from '../../primitives/feedback.tsx';
 import { SurveyBenchmarkCard } from './SurveyBenchmarkCard.tsx';
 import { SurveyProfilePlaceholder } from './SurveyProfilePlaceholder.tsx';
 import { SurveyResultsCard } from './SurveyResultsCard.tsx';
-import s from './surveyLeveling.module.css';
+import s from './surveyLevelingLayout.module.css';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import { useSurveyLeveling } from './useSurveyLeveling.ts';
 
 export interface SurveyLevelingLayoutProps {
   customRun?: RunFn;
+  showHeader?: boolean;
 }
 
 function AccordionCard({ title, children }: { title: string; children: preact.ComponentChildren }) {
@@ -25,12 +26,12 @@ function AccordionCard({ title, children }: { title: string; children: preact.Co
   );
 }
 
-export function SurveyLevelingLayout({ customRun }: SurveyLevelingLayoutProps) {
+export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLevelingLayoutProps) {
   const survey = useSurveyLeveling(customRun);
   const [message, notify] = useToast();
 
   const handleCopyBook = () => {
-    if (!survey.result) return;
+    if (!survey.result || survey.isStale) return;
     const header = ['Station', 'BS', 'IS', 'FS', 'Rise', 'Fall', 'RL'].join('\t');
     const lines = survey.result.rows.map((r) =>
       [r.station ?? '', r.bs ?? '', r.is ?? '', r.fs ?? '', r.rise ?? '', r.fall ?? '', r.rl].join(
@@ -43,17 +44,19 @@ export function SurveyLevelingLayout({ customRun }: SurveyLevelingLayoutProps) {
 
   return (
     <div class={s.root} data-survey-workbench="">
-      <div class={s.titleBar}>
-        <div>
-          <h1 class={s.title}>{surveyStrings.title}</h1>
-          <p class={s.subtitle}>{surveyStrings.subtitle}</p>
+      {showHeader && (
+        <div class={s.titleBar}>
+          <div>
+            <h2 class={s.title}>{surveyStrings.title}</h2>
+            <p class={s.subtitle}>{surveyStrings.subtitle}</p>
+          </div>
+          <div class={s.pills}>
+            <span class={s.pill}>💡 {surveyStrings.guide}</span>
+            <span class={s.pill}>⛶ {surveyStrings.fullScreen}</span>
+            <span class={`${s.pill} ${s.pillSuccess}`}>🔒 {surveyStrings.privacyBadge}</span>
+          </div>
         </div>
-        <div class={s.pills}>
-          <span class={s.pill}>💡 {surveyStrings.guide}</span>
-          <span class={s.pill}>⛶ {surveyStrings.fullScreen}</span>
-          <span class={`${s.pill} ${s.pillSuccess}`}>🔒 {surveyStrings.privacyBadge}</span>
-        </div>
-      </div>
+      )}
 
       <div class={s.grid}>
         <div>
@@ -63,6 +66,7 @@ export function SurveyLevelingLayout({ customRun }: SurveyLevelingLayoutProps) {
             closingRL={survey.closingRL}
             setClosingRL={survey.setClosingRL}
             rows={survey.rows}
+            errors={survey.errors}
             cellErrors={survey.cellErrors}
             handleCellChange={survey.handleCellChange}
             handleAddRow={survey.handleAddRow}
@@ -84,7 +88,8 @@ export function SurveyLevelingLayout({ customRun }: SurveyLevelingLayoutProps) {
           <SurveyResultsCard
             phase={survey.phase}
             result={survey.result}
-            closingRL={survey.closingRL}
+            isStale={survey.isStale}
+            closingRLInput={survey.closingRL}
             onCopyBook={handleCopyBook}
           />
         </div>

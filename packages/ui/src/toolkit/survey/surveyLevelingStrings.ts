@@ -6,7 +6,7 @@ export const surveyStrings = {
   category: 'Surveying',
   title: 'Rise & Fall Leveling Calculator',
   subtitle:
-    'Reduce BS, IS and FS readings from a level book into RLs, with all three arithmetic checks, closing misclosure and adjusted RLs.',
+    'Reduce BS, IS and FS readings from a level book into reduced levels with arithmetic equality checks and closing misclosure.',
   privacyBadge: 'Runs on your device',
   fullScreen: 'Full screen',
   guide: 'Guide',
@@ -16,7 +16,7 @@ export const surveyStrings = {
   readingUnit: 'Reading unit',
   unitMetres: 'm',
   unitMillimetres: 'mm (Preview)',
-  tabRiseFall: 'Rise & Fall · 3 checks',
+  tabRiseFall: 'Rise & Fall',
   tabHI: 'Height of Instrument · HI method (Preview — PR 4)',
   startRL: 'Starting BM RL',
   closingRL: 'Closing BM RL (known)',
@@ -48,6 +48,25 @@ export const surveyStrings = {
     'Enter = next cell · A row with both FS and BS is a change point (CP) · Distance is from the previous station.',
   calculate: '▦ Calculate levels',
   reset: 'Reset',
+  staleNotice: 'Input values changed — click Calculate levels to update results.',
+
+  // Error Messages
+  errors: {
+    SURVEY_LEVELING_MISSING_START_RL: 'Starting benchmark RL is required.',
+    SURVEY_LEVELING_INVALID_DECIMAL: 'Please enter a valid decimal number (e.g. 1.250).',
+    SURVEY_LEVELING_TOO_MANY_DECIMALS: 'Maximum 6 decimal places allowed.',
+    SURVEY_LEVELING_NEGATIVE_READING: 'Staff reading cannot be negative.',
+    SURVEY_LEVELING_INVALID_READING_COMBINATION:
+      'A station can only have BS, IS, FS, or a Change Point (BS + FS).',
+    SURVEY_LEVELING_INVALID_SEQUENCE:
+      'The first station requires a Backsight (BS); the final station requires a Foresight (FS).',
+    SURVEY_LEVELING_CHANGE_POINT_INCONSISTENT:
+      'Intermediate stations must have an IS or a Change Point (BS + FS).',
+    SURVEY_LEVELING_TOO_FEW_OBSERVATIONS: 'At least 2 stations are required to reduce levels.',
+    SURVEY_LEVELING_TOO_MANY_OBSERVATIONS: 'Maximum 50 stations allowed per level run.',
+    SURVEY_LEVELING_UNKNOWN_INPUT: 'Unexpected input structure provided.',
+    CALCULATION_ERROR: 'Calculation could not be completed with the current inputs.',
+  },
 
   // Profile Card
   profileTitle: 'Level profile · RL along the line',

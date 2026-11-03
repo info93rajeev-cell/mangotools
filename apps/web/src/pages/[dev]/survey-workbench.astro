@@ -1,0 +1,43 @@
+---
+import { SurveyLevelingLayout } from '@mangotools/ui';
+import Breadcrumbs from '@mangotools/ui/layout/Breadcrumbs.astro';
+import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
+import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { brand, isDevelopment } from '../../lib/site.ts';
+
+// Development-only harness for the Survey Rise & Fall Workbench.
+// Renders inside the real site shell (Inter font, shared header, footer, tokens)
+// without publishing to dist-prod or exposing in public sitemap/routes.
+export function getStaticPaths() {
+  return isDevelopment ? [{ params: { dev: '_dev' } }] : [];
+}
+
+const title = `Rise & Fall Leveling Calculator | ${brand.name}`;
+const description =
+  'Compute reduced levels by the rise-and-fall method with arithmetic checks and allowable-error verification.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/_dev/survey-workbench"
+  template="tool"
+  noindex
+>
+  <PageContainer width="tool">
+    <Breadcrumbs
+      items={[
+        { name: 'Home', url: '/' },
+        { name: 'Surveying', url: '/surveying' },
+        { name: 'Rise & Fall Leveling Calculator' },
+      ]}
+    />
+    <ToolHeader
+      name="Rise & Fall Leveling Calculator"
+      summary={description}
+      processing="device"
+    />
+    <SurveyLevelingLayout client:load />
+  </PageContainer>
+</BaseLayout>

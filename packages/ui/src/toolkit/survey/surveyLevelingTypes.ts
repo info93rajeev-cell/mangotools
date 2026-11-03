@@ -53,7 +53,7 @@ export interface SurveyLevelingState {
   closingRL: string;
   rows: SurveyLevelingRow[];
   result: SurveyCalculationOutput | null;
-  phase: 'idle' | 'calculating' | 'result' | 'error';
+  phase: 'idle' | 'calculating' | 'result' | 'error' | 'stale';
   errors: string[];
   cellErrors: Record<string, string>;
 }

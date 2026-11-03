@@ -1,4 +1,4 @@
-import s from './surveyLeveling.module.css';
+import s from './surveyLevelBook.module.css';
 import { detectRowTag, isChangePointRow } from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
@@ -14,34 +14,29 @@ export interface SurveyLevelBookTableProps {
 function handleKeyDown(e: KeyboardEvent, onAddRow: () => void) {
   if (e.key !== 'Enter') return;
   e.preventDefault();
-  const target = e.target as HTMLInputElement;
-  const table = target.closest('table');
-  if (!table) return;
-  const inputs = Array.from(table.querySelectorAll<HTMLInputElement>('input:not([disabled])'));
-  const pos = inputs.indexOf(target);
-  if (pos === inputs.length - 1) {
+  const current = e.target as HTMLElement;
+  const container = current.closest('[data-level-book-table]');
+  if (!container) return;
+  const inputs = Array.from(container.querySelectorAll<HTMLInputElement>('input:not([disabled])'));
+  const index = inputs.indexOf(current as HTMLInputElement);
+  if (index >= 0 && index < inputs.length - 1) {
+    inputs[index + 1]?.focus();
+  } else if (index === inputs.length - 1) {
     onAddRow();
     setTimeout(() => {
-      const updated = Array.from(table.querySelectorAll<HTMLInputElement>('input:not([disabled])'));
-      updated[pos + 1]?.focus();
-    }, 10);
-  } else if (pos >= 0 && pos < inputs.length - 1) {
-    inputs[pos + 1]?.focus();
+      const nextInputs = container.querySelectorAll<HTMLInputElement>('input:not([disabled])');
+      nextInputs[index + 1]?.focus();
+    }, 50);
   }
 }
 
 function renderTag(tag: string) {
-  const cls =
-    tag === 'BM'
-      ? s.tagBM
-      : tag === 'CP'
-        ? s.tag
-        : tag === 'IS'
-          ? s.tagIS
-          : tag === 'FS'
-            ? s.tagFS
-            : s.tagIS;
-  return <span class={`${s.tag} ${cls}`}>{tag}</span>;
+  let tagCls = s.tag;
+  if (tag === 'BM') tagCls = `${s.tag} ${s.tagBM}`;
+  else if (tag === 'IS') tagCls = `${s.tag} ${s.tagIS}`;
+  else if (tag === 'CP') tagCls = `${s.tag} ${s.tagCP}`;
+  else if (tag === 'FS') tagCls = `${s.tag} ${s.tagFS}`;
+  return <span class={tagCls}>{tag}</span>;
 }
 
 function NumericCell({
@@ -68,19 +63,27 @@ function NumericCell({
         ? surveyStrings.colIS
         : surveyStrings.colFS;
   const label = `${surveyStrings.colStation} ${station || idx + 1} ${fieldName}`;
+  const inputId = `survey-obs-${idx}-${field}`;
   return (
     <td class={s.inputNumber}>
       <input
         type="text"
         inputMode="decimal"
         value={value}
-        id={`survey-obs-${idx}-${field}`}
+        id={inputId}
+        class={error ? s.inputError : undefined}
         data-cell={`${field}-${idx}`}
         aria-label={label}
         aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? `${inputId}-err` : undefined}
         onInput={(e) => onChange((e.target as HTMLInputElement).value)}
         onKeyDown={(e) => handleKeyDown(e, onAddRow)}
       />
+      {error ? (
+        <span id={`${inputId}-err`} class={s.fieldErrorMessage} role="alert">
+          {error}
+        </span>
+      ) : null}
     </td>
   );
 }
@@ -132,6 +135,7 @@ function LevelBookRow({
 }) {
   const tag = detectRowTag(row, idx, total);
   const isCP = isChangePointRow(row);
+  const rowError = cellErrors[`observations.${idx}`];
   return (
     <tr key={row.id} class={isCP ? s.cpRow : undefined} data-row-index={idx}>
       <td class={s.idxCol} style={{ textAlign: 'center' }}>
@@ -144,8 +148,9 @@ function LevelBookRow({
           value={row.station}
           id={`survey-obs-${idx}-station`}
           data-cell={`station-${idx}`}
+          class={rowError ? s.inputError : undefined}
           aria-label={`${surveyStrings.colStation} ${idx + 1}`}
-          aria-invalid={cellErrors[`obs.${idx}.station`] ? 'true' : undefined}
+          aria-invalid={rowError ? 'true' : undefined}
           onInput={(e) => onCellChange(idx, 'station', (e.target as HTMLInputElement).value)}
           onKeyDown={(e) => handleKeyDown(e, onAddRow)}
         />
@@ -155,7 +160,7 @@ function LevelBookRow({
         value={row.bs}
         idx={idx}
         station={row.station}
-        error={cellErrors[`obs.${idx}.bs`]}
+        error={cellErrors[`observations.${idx}.bs`]}
         onChange={(v) => onCellChange(idx, 'bs', v)}
         onAddRow={onAddRow}
       />
@@ -164,7 +169,7 @@ function LevelBookRow({
         value={row.is}
         idx={idx}
         station={row.station}
-        error={cellErrors[`obs.${idx}.is`]}
+        error={cellErrors[`observations.${idx}.is`]}
         onChange={(v) => onCellChange(idx, 'is', v)}
         onAddRow={onAddRow}
       />
@@ -173,7 +178,7 @@ function LevelBookRow({
         value={row.fs}
         idx={idx}
         station={row.station}
-        error={cellErrors[`obs.${idx}.fs`]}
+        error={cellErrors[`observations.${idx}.fs`]}
         onChange={(v) => onCellChange(idx, 'fs', v)}
         onAddRow={onAddRow}
       />

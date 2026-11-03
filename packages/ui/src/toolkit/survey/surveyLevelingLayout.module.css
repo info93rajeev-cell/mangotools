@@ -1,0 +1,159 @@
+.root {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  font-family: inherit;
+  color: var(--color-text, #0f172a);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.titleBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin: 0 0 6px;
+  color: var(--color-heading, #0b1b3f);
+}
+
+.subtitle {
+  color: var(--color-text-muted, #334155);
+  font-size: 13.5px;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 860px;
+}
+
+.pills {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.pill {
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  background: var(--color-surface, #fff);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #334155;
+}
+
+.pillSuccess {
+  border-color: #86d3a2;
+  background: #e9f8ef;
+  color: #15803d;
+}
+
+/* 2-Column Grid */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Accordions */
+.accCard {
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  background: var(--color-surface, #fff);
+  margin-bottom: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.accHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  color: var(--color-heading, #0b1b3f);
+}
+
+.accHead:focus-visible {
+  outline: 2px solid #1a6ef5;
+}
+
+.accPlus {
+  margin-left: auto;
+  font-size: 15px;
+  color: #475569;
+}
+
+.accBody {
+  padding: 0 14px 12px 34px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--color-text-muted, #334155);
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 24px;
+  min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bottomGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .title {
+    font-size: 24px;
+  }
+  .pills {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .root {
+    padding: 0 8px;
+  }
+  .titleBar {
+    flex-direction: column;
+  }
+  .bottomGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media print {
+  .titleBar,
+  .pills,
+  .accCard,
+  .bottomGrid {
+    display: none;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

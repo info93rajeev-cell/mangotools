@@ -1,5 +1,6 @@
 import { SurveyLevelBookTable } from './SurveyLevelBookTable.tsx';
-import s from './surveyLeveling.module.css';
+import sb from './surveyBenchmark.module.css';
+import sl from './surveyLevelBook.module.css';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 
@@ -9,6 +10,7 @@ export interface SurveyBenchmarkCardProps {
   closingRL: string;
   setClosingRL: (val: string) => void;
   rows: SurveyLevelingRow[];
+  errors: string[];
   cellErrors: Record<string, string>;
   handleCellChange: (index: number, field: keyof SurveyLevelingRow, value: string) => void;
   handleAddRow: () => void;
@@ -18,12 +20,138 @@ export interface SurveyBenchmarkCardProps {
   reset: () => void;
 }
 
+function BenchmarkMethodTabs() {
+  return (
+    <div class={sb.tabs}>
+      <button type="button" class={`${sb.tab} ${sb.tabActive}`}>
+        ▤ {surveyStrings.tabRiseFall}
+      </button>
+      <button
+        type="button"
+        class={`${sb.tab} ${sb.tabDisabled}`}
+        disabled
+        title="HI method contract arrives in PR 4"
+      >
+        ⌖ {surveyStrings.tabHI}
+      </button>
+    </div>
+  );
+}
+
+interface BenchmarkFieldsGridProps {
+  startRL: string;
+  setStartRL: (val: string) => void;
+  closingRL: string;
+  setClosingRL: (val: string) => void;
+  startRLError?: string;
+  closeRLError?: string;
+}
+
+function BenchmarkFieldsGrid({
+  startRL,
+  setStartRL,
+  closingRL,
+  setClosingRL,
+  startRLError,
+  closeRLError,
+}: BenchmarkFieldsGridProps) {
+  return (
+    <div class={sb.fieldsGrid}>
+      <div class={sb.field}>
+        <label class={sb.fieldLabel} for="survey-startRL">
+          {surveyStrings.startRL}
+        </label>
+        <div class={sb.inputWrap}>
+          <input
+            id="survey-startRL"
+            type="text"
+            inputMode="decimal"
+            value={startRL}
+            class={startRLError ? sb.inputError : undefined}
+            aria-invalid={startRLError ? 'true' : undefined}
+            aria-describedby={startRLError ? 'survey-startRL-error' : undefined}
+            data-input-start-rl=""
+            onInput={(e) => setStartRL((e.target as HTMLInputElement).value)}
+          />
+          <em class={sb.unitSuffix}>m</em>
+        </div>
+        {startRLError ? (
+          <span id="survey-startRL-error" class={sb.fieldErrorMessage} role="alert">
+            {startRLError}
+          </span>
+        ) : null}
+      </div>
+
+      <div class={sb.field}>
+        <label class={sb.fieldLabel} for="survey-closeRL">
+          {surveyStrings.closingRL}
+        </label>
+        <div class={sb.inputWrap}>
+          <input
+            id="survey-closeRL"
+            type="text"
+            inputMode="decimal"
+            placeholder={surveyStrings.closingRLPlaceholder}
+            value={closingRL}
+            class={closeRLError ? sb.inputError : undefined}
+            aria-invalid={closeRLError ? 'true' : undefined}
+            aria-describedby={closeRLError ? 'survey-closeRL-error' : undefined}
+            data-input-close-rl=""
+            onInput={(e) => setClosingRL((e.target as HTMLInputElement).value)}
+          />
+          <em class={sb.unitSuffix}>m</em>
+        </div>
+        {closeRLError ? (
+          <span id="survey-closeRL-error" class={sb.fieldErrorMessage} role="alert">
+            {closeRLError}
+          </span>
+        ) : null}
+      </div>
+
+      <div class={sb.field}>
+        <label class={sb.fieldLabel} for="survey-allowable-const">
+          {surveyStrings.allowableConstant}
+        </label>
+        <div class={sb.inputWrap}>
+          <input
+            id="survey-allowable-const"
+            type="text"
+            value="24"
+            disabled
+            title="Requires PR 2 allowable error contract"
+          />
+          <em class={sb.unitSuffix}>mm·√K</em>
+        </div>
+      </div>
+
+      <div class={sb.field}>
+        <label class={sb.fieldLabel} for="survey-adjust-by">
+          {surveyStrings.adjustBy}
+        </label>
+        <div class={sb.inputWrap}>
+          <select
+            id="survey-adjust-by"
+            value="none"
+            disabled
+            title="Requires PR 2 adjustment contract"
+          >
+            <option value="none">{surveyStrings.adjustNone}</option>
+            <option value="dist">{surveyStrings.adjustDistance}</option>
+            <option value="setup">{surveyStrings.adjustSetups}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SurveyBenchmarkCard({
   startRL,
   setStartRL,
   closingRL,
   setClosingRL,
   rows,
+  errors,
   cellErrors,
   handleCellChange,
   handleAddRow,
@@ -32,18 +160,22 @@ export function SurveyBenchmarkCard({
   loadSample,
   reset,
 }: SurveyBenchmarkCardProps) {
+  const startRLError = cellErrors.startRL;
+  const closeRLError = cellErrors.closingRL;
+  const generalRowError = errors.length > 0 && !startRLError && !closeRLError ? errors[0] : null;
+
   return (
-    <div class={s.card}>
-      <div class={s.cardHead}>
-        <div class={s.iconWrap}>
+    <div class={sb.card}>
+      <div class={sb.cardHead}>
+        <div class={sb.iconWrap}>
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M3 20h18M6 20V9l6-5 6 5v11" />
             <path d="M10 20v-5h4v5" />
           </svg>
         </div>
-        <h2 class={s.cardTitle}>{surveyStrings.levelBookTitle}</h2>
-        <div class={s.cardHeadRight}>
-          <label for="survey-reading-unit" class={s.readingUnitLabel}>
+        <h2 class={sb.cardTitle}>{surveyStrings.levelBookTitle}</h2>
+        <div class={sb.cardHeadRight}>
+          <label for="survey-reading-unit" class={sb.readingUnitLabel}>
             {surveyStrings.readingUnit}
           </label>
           <select
@@ -59,108 +191,58 @@ export function SurveyBenchmarkCard({
         </div>
       </div>
 
-      <div class={s.cardBody}>
-        <div class={s.tabs}>
-          <button type="button" class={`${s.tab} ${s.tabActive}`}>
-            ▤ {surveyStrings.tabRiseFall}
-          </button>
-          <button
-            type="button"
-            class={`${s.tab} ${s.tabDisabled}`}
-            disabled
-            title="HI method contract arrives in PR 4"
-          >
-            ⌖ {surveyStrings.tabHI}
-          </button>
-        </div>
+      <div class={sb.cardBody}>
+        <BenchmarkMethodTabs />
 
-        <div class={s.fieldsGrid}>
-          <div class={s.field}>
-            <label class={s.fieldLabel} for="survey-startRL">
-              {surveyStrings.startRL}
-            </label>
-            <div class={s.inputWrap}>
-              <input
-                id="survey-startRL"
-                type="text"
-                inputMode="decimal"
-                value={startRL}
-                data-input-start-rl=""
-                onInput={(e) => setStartRL((e.target as HTMLInputElement).value)}
-              />
-              <em class={s.unitSuffix}>m</em>
-            </div>
-          </div>
+        <BenchmarkFieldsGrid
+          startRL={startRL}
+          setStartRL={setStartRL}
+          closingRL={closingRL}
+          setClosingRL={setClosingRL}
+          startRLError={startRLError}
+          closeRLError={closeRLError}
+        />
 
-          <div class={s.field}>
-            <label class={s.fieldLabel} for="survey-closeRL">
-              {surveyStrings.closingRL}
-            </label>
-            <div class={s.inputWrap}>
-              <input
-                id="survey-closeRL"
-                type="text"
-                inputMode="decimal"
-                placeholder={surveyStrings.closingRLPlaceholder}
-                value={closingRL}
-                data-input-close-rl=""
-                onInput={(e) => setClosingRL((e.target as HTMLInputElement).value)}
-              />
-              <em class={s.unitSuffix}>m</em>
-            </div>
-          </div>
-
-          <div class={s.field}>
-            <label class={s.fieldLabel} for="survey-allowable-const">
-              {surveyStrings.allowableConstant}
-            </label>
-            <div class={s.inputWrap}>
-              <input
-                id="survey-allowable-const"
-                type="text"
-                value="24"
-                disabled
-                title="Requires PR 2 allowable error contract"
-              />
-              <em class={s.unitSuffix}>mm·√K</em>
-            </div>
-          </div>
-
-          <div class={s.field}>
-            <label class={s.fieldLabel} for="survey-adjust-by">
-              {surveyStrings.adjustBy}
-            </label>
-            <div class={s.inputWrap}>
-              <select
-                id="survey-adjust-by"
-                value="none"
-                disabled
-                title="Requires PR 2 adjustment contract"
-              >
-                <option value="none">{surveyStrings.adjustNone}</option>
-                <option value="dist">{surveyStrings.adjustDistance}</option>
-                <option value="setup">{surveyStrings.adjustSetups}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class={s.secHead}>
+        <div class={sl.secHead}>
           <span>{surveyStrings.fieldReadings}</span>
-          <div class={s.secButtons}>
+          <div class={sl.secButtons}>
             <button
               type="button"
-              class={`${s.miniBtn} ${s.miniBtnHighlight}`}
+              class={`${sl.miniBtn} ${sl.miniBtnHighlight}`}
               onClick={loadSample}
               data-try-sample=""
             >
               ✨ {surveyStrings.trySample}
             </button>
-            <button type="button" class={s.miniBtn} disabled title="Excel paste arrives in PR 5">
+            <button
+              type="button"
+              class={sl.miniBtn}
+              disabled
+              title="Clipboard paste arrives in PR 5"
+            >
               📋 {surveyStrings.pasteExcel}
             </button>
           </div>
         </div>
+
+        {generalRowError ? (
+          <div
+            style={{
+              padding: '8px 12px',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '6px',
+              color: '#b91c1c',
+              fontSize: '12px',
+              fontWeight: 600,
+              marginBottom: '10px',
+            }}
+            role="alert"
+            data-survey-error=""
+          >
+            {generalRowError}
+          </div>
+        ) : null}
 
         <SurveyLevelBookTable
           rows={rows}
@@ -170,11 +252,11 @@ export function SurveyBenchmarkCard({
           onRemoveRow={handleRemoveRow}
         />
 
-        <div class={s.actionRow}>
-          <button type="button" class={s.calcBtn} onClick={calculate} data-calculate-btn="">
+        <div class={sb.actionRow}>
+          <button type="button" class={sb.calcBtn} onClick={calculate} data-calculate-btn="">
             {surveyStrings.calculate}
           </button>
-          <button type="button" class={s.resetBtn} onClick={reset} data-reset-btn="">
+          <button type="button" class={sb.resetBtn} onClick={reset} data-reset-btn="">
             {surveyStrings.reset}
           </button>
         </div>

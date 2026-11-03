@@ -50,19 +50,54 @@ export function detectRowTag(row: SurveyLevelingRow, index: number, total: numbe
   return String(index + 1);
 }
 
-export function formatReading(value: string | null | undefined): string {
+export function formatLevelReading(value: string | null | undefined): string {
   if (value === null || value === undefined || value.trim() === '') return '—';
-  const num = Number(value);
-  if (Number.isNaN(num)) return value;
-  return num.toFixed(3);
+  const trimmed = value.trim();
+  const num = Number(trimmed);
+  if (Number.isNaN(num)) return trimmed;
+  if (num === 0) return '0.000';
+  const fixed = num.toFixed(3);
+  if (fixed === '0.000') {
+    // Nonzero value smaller than 0.0005 m — preserve decimal precision
+    return trimmed;
+  }
+  return fixed;
 }
+
+export const formatReading = formatLevelReading;
 
 export function formatSigned(value: string | null | undefined): string {
   if (value === null || value === undefined || value.trim() === '') return '—';
-  const num = Number(value);
-  if (Number.isNaN(num)) return value;
-  const sign = num > 0 ? '+' : num < 0 ? '−' : '';
-  return `${sign}${Math.abs(num).toFixed(3)}`;
+  const trimmed = value.trim();
+  const num = Number(trimmed);
+  if (Number.isNaN(num)) return trimmed;
+  if (num === 0) return '0.000';
+  const sign = num > 0 ? '+' : '−';
+  const abs = Math.abs(num);
+  const fixed = abs.toFixed(3);
+  if (fixed === '0.000') {
+    return `${sign}${abs}`;
+  }
+  return `${sign}${fixed}`;
+}
+
+export function formatMisclosure(misclosure: string | null | undefined): {
+  val: string;
+  subKey: 'tileMisclosureSub' | 'tileMisclosureAddBM';
+} {
+  if (misclosure === null || misclosure === undefined || misclosure.trim() === '') {
+    return { val: '—', subKey: 'tileMisclosureAddBM' };
+  }
+  const m = Number(misclosure);
+  if (Number.isNaN(m)) return { val: misclosure, subKey: 'tileMisclosureSub' };
+  const mm = m * 1000;
+  if (mm === 0) return { val: '0 mm', subKey: 'tileMisclosureSub' };
+  const sign = mm > 0 ? '+' : '−';
+  const absMm = Math.abs(mm);
+  if (absMm < 0.5) {
+    return { val: `${sign}${absMm.toFixed(2)} mm`, subKey: 'tileMisclosureSub' };
+  }
+  return { val: `${sign}${Math.round(absMm)} mm`, subKey: 'tileMisclosureSub' };
 }
 
 export function buildLevelingRequest(
