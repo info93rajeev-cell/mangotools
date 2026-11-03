@@ -6,7 +6,7 @@ export const SAMPLES = {
   // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
   'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
-  'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
+  'profit-margin-calculator': { archetype: 'B', result: '₹81.36' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
   'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },

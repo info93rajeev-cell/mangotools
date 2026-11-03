@@ -76,7 +76,7 @@ export function SellerProfitabilityStudioLayout({
         </div>
 
         <div class={styles.topActions}>
-          <button type="button" class={styles.pill} onClick={state.loadSample}>
+          <button type="button" class={styles.pill} onClick={state.loadSample} data-try-sample="">
             <span>☼ Try Sample</span>
           </button>
           <button type="button" class={styles.pill} onClick={state.copySummary}>
@@ -98,6 +98,11 @@ export function SellerProfitabilityStudioLayout({
           {state.error}
         </p>
       ) : null}
+
+      <p class={styles.warn} data-demo-note="">
+        Demo numbers: the costs and fees filled in are our own example, not any marketplace's rates.
+        Treat the result as an estimate and replace every field with your own figures.
+      </p>
 
       <div class={styles.columns}>
         <div data-tour="profit-inputs">

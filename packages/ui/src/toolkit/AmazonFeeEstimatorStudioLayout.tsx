@@ -90,6 +90,12 @@ export function AmazonFeeEstimatorStudioLayout({
         </div>
       </div>
 
+      <p class={styles.warn} data-demo-note="">
+        Demo numbers: the fees and costs filled in are our own example, not Amazon's rates. Amazon
+        may charge differently for your product, so treat the result as an estimate and replace
+        every field with the figures from your Seller Central.
+      </p>
+
       <div class={styles.columns}>
         <div data-tour="amazon-inputs">
           <AmazonFeeLeftCards state={state} />

@@ -12,14 +12,19 @@ export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfita
         <span>Profitability Summary</span>
       </div>
 
-      <div class={`${styles.headlineResult} ${!isProfit ? styles.headlineResultLoss : ''}`}>
+      <div
+        class={`${styles.headlineResult} ${!isProfit ? styles.headlineResultLoss : ''}`}
+        data-primary-result=""
+      >
         <small>{isProfit ? 'Net Profit per Order' : 'Net Loss per Order'}</small>
         <strong>
-          ₹{' '}
-          {calculation.netProfit.toLocaleString('en-IN', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          <output>
+            {isProfit ? '' : '−'}₹
+            {Math.abs(calculation.netProfit).toLocaleString('en-IN', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </output>
         </strong>
       </div>
 
