@@ -81,6 +81,12 @@ export function AmazonListingFulfilmentCard({ state }: { state: AmazonFeeEstimat
           </button>
         ))}
       </div>
+      <p class={styles.muted} data-fulfilment-hint="">
+        Amazon's fees differ by method and packed weight. The method and weight here are for your
+        own fee lookup: enter the closing and weight-handling fees for{' '}
+        {MODES.find(([m]) => m === state.fulfilmentMode)?.[1] ?? 'your method'} from Seller Central
+        below.
+      </p>
       <NumberField state={state} field="sellingPrice" id="amz-sp" label="Selling price (₹)" />
       <div class={styles.grid2} style={{ marginTop: '8px' }}>
         <NumberField state={state} field="productCost" id="amz-cost" label="Product cost (₹)" />
@@ -89,7 +95,7 @@ export function AmazonListingFulfilmentCard({ state }: { state: AmazonFeeEstimat
           state={state}
           field="packedWeight"
           id="amz-weight"
-          label="Packed weight (g)"
+          label="Packed weight (g, for fee lookup)"
           numeric
         />
         <NumberField state={state} field="monthlyQty" id="amz-qty" label="Sales / month" numeric />
