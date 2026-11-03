@@ -1,5 +1,5 @@
 'use strict';
-const cfg=window.__CIVIL_CONFIG__||JSON.parse(document.querySelector('#config')?.textContent||'{}'),form=document.querySelector('form');
+const cfg=window.__CIVIL_CONFIG__||JSON.parse(document.querySelector('#config')?.textContent||'{}'),form=document.getElementById('calculator');
 let mode=cfg.initial||cfg.modes[0],previousUnit=cfg.unit,previousWeight='kg';
 const modeValues={};
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -59,7 +59,7 @@ function openingArea(){const s=q('[data-rows=openings]');if(!s||s.hidden)return 
 function nonnegative(x,message){if(x<0)throw Error(message);return x;}
 function positive(...keys){for(const key of keys)if(val(key)<=0)throw Error('Enter a positive '+document.getElementById(key).closest('label').querySelector('span').textContent+'.');}
 function validate(){
- const fields=qa('form input[type=number]').filter(n=>!n.closest('[hidden]'));
+ const fields=qa('#calculator input[type=number]').filter(n=>!n.closest('[hidden]'));
  for(const n of fields){if(!n.checkValidity()||!Number.isFinite(Number(n.value)))throw Error('Check numeric inputs: '+(n.getAttribute('aria-label')||n.closest('label').querySelector('span').textContent));if(['quantity','faces','coats','wallCount','perBox','spares','layerLimit','primerCoats','plasterFaces'].includes(n.id||n.dataset.key)&&!Number.isInteger(Number(n.value)))throw Error('Counts and coats must be whole numbers.');}
 }
 function brickwork(){
@@ -109,7 +109,7 @@ function paint(){
 function plaster(){
  let area;if(mode==='Custom')area=val('customArea');else if(mode==='Ceiling')area=val('length')*val('width');else if(mode==='Both')area=2*(val('length')+val('width'))*val('height')-openingArea()+val('length')*val('width');else area=(val('length')*val('height')-openingArea())*val('faces');
  if(area<=0)throw Error('Openings must be smaller than the selected surface.');
- area+=val('returns');for(const r of getRows('surfaces'))area+=nonnegative(r.length*r.height-r.deduction,'Surface deduction exceeds face area.')*r.faces;
+ if(mode==='Wall'||mode==='Both')area+=val('returns');for(const r of getRows('surfaces'))area+=nonnegative(r.length*r.height-r.deduction,'Surface deduction exceeds face area.')*r.faces;
  positive('bag','density');const factor=1+val('waste')/100;
  const layers=[[val('layer'),val('sandParts')],[val('secondLayer'),val('secondSand')]].filter(x=>x[0]>0).map(([thickness,sandParts])=>{const wet=area*thickness/1000*factor,dry=wet*val('dryFactor');return{thickness,sandParts,wet,dry,cementKg:dry/(1+sandParts)*val('density'),sand:dry*sandParts/(1+sandParts)};});
  const wet=layers.reduce((a,r)=>a+r.wet,0),dry=layers.reduce((a,r)=>a+r.dry,0),cementKg=layers.reduce((a,r)=>a+r.cementKg,0),sand=layers.reduce((a,r)=>a+r.sand,0),bags=cementKg/val('bag'),cost=ceil(bags)*val('cementRate')+sand*val('sandRate')+area*val('labourRate');

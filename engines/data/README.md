@@ -9,7 +9,7 @@ worker or in Node.
 | `data.base64.transform@1` | UTF-8 text ⇄ Base64 (RFC 4648), standard or URL-safe alphabet, optional padding and 76-char MIME lines; UTF-8 or Latin-1/raw bytes, data URIs, file-type detection on decode |
 | `data.url.transform@1` | Percent-encoding as a URL component, a full URL, or form data (RFC 3986, WHATWG form encoding) |
 | `data.csv.to-json@1` | CSV text to JSON (RFC 4180 quoting). Defaults: comma, first row as headers, values kept as strings. Optional params: delimiter (incl. auto), no header row, trim, skip empty rows, lossless type inference, empty/custom tokens as null, max rows, excluded columns, objects/arrays/NDJSON shape, metadata wrapper. Reports each column's JSON type |
-| `data.json.to-csv@1` | A JSON array of objects (or a single object) to CSV text, with RFC 4180 escaping; nested values rejected |
+| `data.json.to-csv@1` | A JSON array of objects (or a single object) to CSV text, with RFC 4180 escaping. Defaults: comma, header line, union of keys, nested values rejected. Optional params: delimiter, no header line, first-record keys only, nested values flattened to dot paths or written as JSON text, a record path inside the document, and a formula guard. Reports missing cells, formula-like cells, leading-zero columns, candidate record paths and a 100-row preview |
 | `data.timestamp.convert@1` | Unix timestamp ⇄ date/time, seconds or milliseconds, UTC and local browser time |
 
 Error messages for every code are in `src/errors.ts`. Golden fixtures live next to each operation in
@@ -34,6 +34,27 @@ expectation from `new Date(...).toString()` in the same process, so it passes on
 timezone rather than only one.
 
 ## Changelog
+- 0.9.1 — `data.json.to-csv@1` keeps large integers exact: 12345678901234567890 is written as
+  given instead of JSON.parse's 12345678901234567000 (lossless parse, `lossless.ts`). All existing
+  fixtures unchanged.
+- 0.9.0 — `data.json.to-csv@1` gains optional, additive params; defaults reproduce the previous
+  output (all 10 existing fixtures unchanged). `delimiter` (comma/semicolon/tab/pipe; a value is
+  quoted when it contains the chosen delimiter), `header` (off → no header line), `keys` (`union`
+  default, or `first` = only the first record's keys), `nested` (`reject` default; `flatten` →
+  dot-path columns such as `profile.city`, arrays as JSON text; `json` → every object or array as
+  JSON text), `recordPath` (dot path to the records, e.g. `data.items`; missing → typed error
+  `DATA_JSON_TO_CSV_RECORD_PATH_NOT_FOUND`) and `formulaGuard` (prefix `'` to text cells starting
+  with = + - @ tab or CR, per OWASP CSV injection guidance; JSON numbers are never changed). New
+  outputs: `missingCount`, `formulaCount`, `leadingZeroColumns`, `recordPaths` and `previewRows`
+  (the first 100 rows as written cell texts, for a table preview).
+- 0.8.0 — `data.url.transform@1` gains optional, additive params; defaults reproduce the
+  previous output (all 9 fixtures unchanged). `space` (by mode / always `%20` / always `+`; on
+  decode `plus` also reads `+` as a space), `encodeSubDelims` (off leaves `! ' ( ) *` like
+  `encodeURIComponent`), `keepEscapes` (no double encoding of valid `%XX`), `crlf` (line breaks to
+  CRLF before encoding), `perLine` (each line on its own, breaks kept) and `source: pairs` (a JSON
+  array of [key, value] encoded into `k=v&…`; unreadable → `DATA_URL_INVALID_PAIRS`). New output
+  `params`: the query parameters, read from the encoded side when it still shows `?`/`=` (decoded
+  with form rules), otherwise from the first line of the decoded side (max 200).
 - 0.7.0 — `data.base64.transform@1` gains optional, additive params; defaults reproduce the
   previous output (all 15 fixtures unchanged). `charset` (`utf-8` default, or `latin1` = one
   character per byte, which is also how a file's raw bytes are passed in; a character above 255 is

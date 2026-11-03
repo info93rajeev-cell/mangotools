@@ -93,32 +93,32 @@ test.describe('GST Calculator', () => {
 });
 
 test.describe('Markup Calculator', () => {
-  test('solves all three modes with ₹, working and disclaimer', async ({ page }) => {
+  test('every mode comes from the engine, with ₹, working and errors', async ({ page }) => {
     await openTool(page, 'markup-calculator');
-    await page.getByLabel('Cost', { exact: true }).fill('1000000');
-    await page.getByLabel('Markup', { exact: true }).fill('50');
+    const tool = island(page, 'markup-calculator');
+    await page.locator('#markup-cost-price').fill('1000000');
+    await page.locator('#markup-desired-pct').fill('50');
     await expect(primaryResult(page)).toHaveText('₹15,00,000.00');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('₹5,00,000.00');
-    await expect(page.locator('[data-output="marginPercent"] dd')).toHaveText('33.33%');
-    await expect(island(page, 'markup-calculator')).toContainText(
-      'Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00',
-    );
+    await expect(tool).toContainText('Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00');
 
-    await island(page, 'markup-calculator')
-      .getByText('Markup from cost & price', { exact: true })
-      .click();
-    await page.getByLabel('Cost', { exact: true }).fill('100');
-    await page.getByLabel('Selling price', { exact: true }).fill('80');
-    await expect(primaryResult(page)).toHaveText('−20.00%');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
+    await page.locator('#markup-gst-pricing').selectOption('18');
+    await expect(tool).toContainText('Customer price with 18% GST');
+    await expect(tool).toContainText('₹17,70,000.00');
+    await page.locator('#markup-gst-pricing').selectOption('0');
 
-    await island(page, 'markup-calculator')
-      .getByText('Cost from price & markup', { exact: true })
-      .click();
-    await page.getByLabel('Selling price', { exact: true }).fill('250');
-    await page.getByLabel('Markup', { exact: true }).fill('25');
-    await expect(primaryResult(page)).toHaveText('₹200.00');
-    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+    await tool.getByRole('tab', { name: 'Find markup %' }).click();
+    await page.locator('#markup-cost-price').fill('100');
+    await page.locator('#markup-mode-price').fill('80');
+    await expect(primaryResult(page)).toHaveText('₹80.00');
+    await expect(tool).toContainText('-20.00%');
+    await expect(tool).toContainText('−₹20.00');
+
+    await tool.getByRole('tab', { name: 'Target margin' }).click();
+    await page.locator('#markup-cost-price').fill('500');
+    await page.locator('#markup-mode-margin').fill('30');
+    await expect(primaryResult(page)).toHaveText('₹714.29');
+    await page.locator('#markup-mode-margin').fill('100');
+    await expect(tool).toContainText('The margin must be less than 100%.');
   });
 });
 
@@ -262,9 +262,11 @@ test.describe('CSV to JSON', () => {
 test.describe('JSON to CSV', () => {
   test('converts the sample and links to CSV to JSON', async ({ page }) => {
     await openTool(page, 'json-to-csv');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(outputArea(page, 'json-to-csv')).toHaveValue(/name,age\nRaj,50\nAiva,19/);
-    await expect(island(page, 'json-to-csv')).toContainText('Rows');
+    await page.getByRole('button', { name: 'Load sample' }).click();
+    await expect(outputArea(page, 'json-to-csv')).toHaveValue(
+      /name,city,sku,active\nAsha Rao,Delhi,00124,true/,
+    );
+    await expect(island(page, 'json-to-csv')).toContainText('Records');
     await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CSV to JSON' }).first()).toBeVisible();
   });
@@ -276,13 +278,14 @@ test.describe('JSON to CSV', () => {
     await expect(page.getByText('The input is not valid JSON.')).toBeVisible();
   });
 
-  test('rejects a nested object value, naming the key and item', async ({ page }) => {
+  test('rejects a nested object value when asked to, naming the key and item', async ({ page }) => {
     await openTool(page, 'json-to-csv');
+    await island(page, 'json-to-csv').getByLabel('Object handling').selectOption('reject');
     await inputArea(page, 'json-to-csv').fill('[{"a":{"b":1}}]');
     await expect(island(page, 'json-to-csv')).toHaveAttribute('data-phase', 'error');
     await expect(
       page.getByText(
-        'The value for "a" in item 1 is a nested object or array, which is not supported in this version.',
+        'The value for "a" in item 1 is a nested object or array. Flatten it or keep it as JSON text to convert it.',
       ),
     ).toBeVisible();
   });
@@ -352,7 +355,7 @@ test.describe('Swap and copy', () => {
     await openTool(page, 'url-encode-decode');
     await inputArea(page, 'url-encode-decode').fill('café & crème');
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('caf%C3%A9%20%26%20cr%C3%A8me');
-    await page.getByRole('button', { name: /Swap input and output/ }).click();
+    await page.getByRole('button', { name: /Swap Input/ }).click();
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('café & crème');
   });
 

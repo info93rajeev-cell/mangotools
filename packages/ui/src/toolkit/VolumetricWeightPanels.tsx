@@ -84,6 +84,13 @@ export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
         </span>
       </div>
 
+      {result.skippedRowIds.length > 0 ? (
+        <p role="alert" class={styles.skipped}>
+          {result.skippedRowIds.length} row{result.skippedRowIds.length === 1 ? ' is' : 's are'} not
+          counted: every size must be above zero, weight not negative, and quantity a whole number
+          of at least 1.
+        </p>
+      ) : null}
       <div class={styles.kpis}>
         <div class={styles.kpi} style={{ '--tone': '#0eb779' }}>
           <Icon name="box" />

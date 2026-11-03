@@ -1,17 +1,35 @@
 import styles from './pdfStudio.module.css';
-import type { useWordToPdfStudio } from './usePdfConvertStudio.ts';
+import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
 type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
 
-function WordToPdfSummaryCard({
-  totalPages,
-  totalMb,
-  pageSize,
-}: {
-  totalPages: number;
-  totalMb: string;
-  pageSize: string;
-}) {
+function Tile(props: { tone: string; icon: string; value: string; label: string; sub: string }) {
+  return (
+    <div class={`${styles.statTile} ${props.tone}`}>
+      <span style={{ fontSize: '12px' }}>{props.icon}</span>
+      <span class={styles.statVal}>{props.value}</span>
+      <span class={styles.statLabel}>{props.label}</span>
+      <span class={styles.statSub}>{props.sub}</span>
+    </div>
+  );
+}
+
+function WordToPdfSummaryCard({ studio }: { studio: WordToPdfState }) {
+  const { files, output, pageSize, isProcessing } = studio;
+  const words = files.reduce((n, f) => n + f.words, 0);
+  const pages = output
+    ? output.reduce((n, o) => n + o.pages, 0)
+    : files.reduce((n, f) => n + f.pages, 0);
+  const size = output
+    ? `${Math.max(1, Math.round(output.reduce((n, o) => n + o.bytes.length, 0) / 1024))} KB`
+    : '—';
+  const label = isProcessing
+    ? 'Creating…'
+    : output
+      ? '✓ PDF created'
+      : files.length > 0
+        ? 'Ready to convert'
+        : 'Add a .docx';
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
@@ -22,85 +40,79 @@ function WordToPdfSummaryCard({
           class={styles.badgePill}
           style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
         >
-          ✓ Ready to convert
+          {label}
         </span>
       </div>
       <div class={styles.statTilesGrid}>
-        <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
-          <span class={styles.statVal}>{totalPages}</span>
-          <span class={styles.statLabel}>Total pages</span>
-          <span class={styles.statSub}>DOCX source</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
-          <span class={styles.statVal}>~{totalMb} MB</span>
-          <span class={styles.statLabel}>Estimated size</span>
-          <span class={styles.statSub}>After conversion</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
-          <span class={styles.statVal}>{pageSize}</span>
-          <span class={styles.statLabel}>Page size</span>
-          <span class={styles.statSub}>Standard format</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>⭐</span>
-          <span class={styles.statVal}>Ready</span>
-          <span class={styles.statLabel}>Settings</span>
-          <span class={styles.statSub}>Configured</span>
-        </div>
+        <Tile
+          tone={styles.statTilePurple}
+          icon="📑"
+          value={String(pages)}
+          label="PDF pages"
+          sub={`${pageSize} layout`}
+        />
+        <Tile
+          tone={styles.statTileGreen}
+          icon="🔤"
+          value={String(words)}
+          label="Words"
+          sub="From the .docx text"
+        />
+        <Tile
+          tone={styles.statTileBlue}
+          icon="📄"
+          value={size}
+          label="PDF size"
+          sub="After creating"
+        />
+        <Tile
+          tone={styles.statTileAmber}
+          icon="📚"
+          value={String(files.length)}
+          label="Documents"
+          sub={studio.exportMode === 'single' ? 'One combined PDF' : 'One PDF each'}
+        />
       </div>
     </div>
   );
 }
 
-function WordToPdfPreviewCard({ studio }: { studio: WordToPdfState }) {
-  const { files, pageSize, margins } = studio;
-  const firstTitle = files[0]?.name.replace(/\.[^/.]+$/, '') || 'Document';
-
+function WordToPdfNotesCard({ studio }: { studio: WordToPdfState }) {
+  const images = studio.files.reduce((n, f) => n + f.content.images, 0);
+  const tables = studio.files.reduce((n, f) => n + f.content.tables, 0);
+  const replaced = studio.output?.reduce((n, o) => n + o.replacedChars, 0) ?? 0;
+  const notes: string[] = [];
+  if (images > 0) notes.push(`${images} image${images === 1 ? ' is' : 's are'} not included.`);
+  if (tables > 0)
+    notes.push(
+      `${tables} table${tables === 1 ? '' : 's'}: each row is written as one line, cells separated by “|”.`,
+    );
+  if (replaced > 0)
+    notes.push(
+      `${replaced} character${replaced === 1 ? '' : 's'} outside Western European text show as “?”.`,
+    );
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> Result Preview (Sample)
+          <span style={{ color: '#2563eb' }}>ℹ️</span> What carries over
         </h2>
-        <span class={styles.headerCounter}>PDF Layout Quality</span>
       </div>
-      <div class={styles.pdfInfoGrid}>
-        <div class={styles.pdfInfoItem}>
-          <span class={styles.pdfInfoLabel}>Output Document:</span>
-          <span class={styles.pdfInfoValue}>{firstTitle}.pdf</span>
-        </div>
-        <div class={styles.pdfInfoItem}>
-          <span class={styles.pdfInfoLabel}>Format Standard:</span>
-          <span class={styles.pdfInfoValue}>PDF 1.7 / ISO 32000</span>
-        </div>
-        <div class={styles.pdfInfoItem}>
-          <span class={styles.pdfInfoLabel}>Page & Margins:</span>
-          <span class={styles.pdfInfoValue}>
-            {pageSize} • {margins} Margins
-          </span>
-        </div>
-        <div class={styles.pdfInfoItem}>
-          <span class={styles.pdfInfoLabel}>Font & Assets:</span>
-          <span class={styles.pdfInfoValue}>Embedded Vector Fonts</span>
-        </div>
-      </div>
+      <p style={{ margin: 0, fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
+        Text, headings, bold and italic, list bullets and line breaks.
+        {notes.length > 0 ? ` ${notes.join(' ')}` : ''}
+      </p>
     </div>
   );
 }
 
 export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
-  const { files, pageSize, isProcessing, executeWordToPdf, downloadPdf, copySummary, clearAll } =
-    studio;
-  const totalPages = files.reduce((acc, f) => acc + f.pages, 0);
-  const totalMb = (files.reduce((acc, f) => acc + f.sizeBytes, 0) / (1024 * 1024)).toFixed(1);
+  const { files, isProcessing, executeWordToPdf, downloadPdf, copySummary, clearAll } = studio;
 
   return (
     <div class={styles.leftMergeCol}>
-      <WordToPdfSummaryCard totalPages={totalPages} totalMb={totalMb} pageSize={pageSize} />
-      <WordToPdfPreviewCard studio={studio} />
+      <WordToPdfSummaryCard studio={studio} />
+      <WordToPdfNotesCard studio={studio} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
         <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
           <span style={{ fontSize: '14px' }}>🔒</span>
@@ -121,8 +133,8 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
           <button
             type="button"
             class={styles.actionBtnPrimaryBlue}
-            onClick={downloadPdf}
-            disabled={files.length === 0}
+            onClick={() => void downloadPdf()}
+            disabled={files.length === 0 || isProcessing}
           >
             📥 Download PDF
           </button>

@@ -1,0 +1,5 @@
+id: 016-loss-on-quantity
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "Price 400 below cost 500: profit −100.00 × 3 = −300.00; markup −100 ÷ 500 = −20%" }
+input: { solve: from-cost-and-price, cost: "500", price: "400", quantity: "3" }
+expected: { profit: "-100.00", markupPercent: "-20.00", marginPercent: "-25.00", profitTotal: "-300.00" }

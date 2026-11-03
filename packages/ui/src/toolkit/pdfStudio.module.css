@@ -1092,6 +1092,7 @@
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    align-items: stretch;
   }
   .leftMergeCol,
   .scrollCol {
@@ -1490,4 +1491,17 @@
 :global([data-theme="dark"]) .thumbStrip {
   background: #0f172a;
   border-color: #334155;
+}
+
+/* Phones: a card title keeps its own line; header buttons wrap under it. */
+@media (max-width: 600px) {
+  .cardHeader {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .cardTitle {
+    flex: 1 1 auto;
+    min-width: 150px;
+  }
 }

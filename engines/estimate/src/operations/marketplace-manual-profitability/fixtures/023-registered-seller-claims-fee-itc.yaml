@@ -1,0 +1,40 @@
+id: 023-registered-seller-claims-fee-itc
+operation: estimate.marketplace.manual-profitability@1
+source:
+  type: hand-verified
+  citation: >-
+    Amazon studio sample. 1500 ÷ 1.18 = 1271.19 revenue (GST 228.81). Fees 120 + 25 + 100 = 245;
+    their 18% GST 44.10 is claimed as ITC, so it is not a cost. Costs 600 + 35 + 60 + 40 + 245 =
+    980; profit 291.19; margin 291.19 ÷ 1271.19 = 22.91%. TCS 0.5% × 1271.19 = 6.36; TDS 0.1% =
+    1.27; settlement 1500 − 245 − 44.10 − 6.36 − 1.27 = 1203.27. Break-even 980 × 1.18 = 1156.40.
+input:
+  sellingPricePerUnit: '1500'
+  quantity: '1'
+  productCostPerUnit: '600'
+  productGstRatePercent: '18'
+  sellingPriceTaxMode: gst-inclusive
+  marketplaceFeeGstRatePercent: '18'
+  feeLines:
+  - { id: referral, enabled: true, mode: fixed, amount: '120', quantityScope: per-unit, gstTreatment: recoverable }
+  - { id: closing, enabled: true, mode: fixed, amount: '25', quantityScope: per-unit, gstTreatment: recoverable }
+  - { id: weight-handling, enabled: true, mode: fixed, amount: '100', quantityScope: per-unit, gstTreatment: recoverable }
+  packagingCost: { amount: '35' }
+  advertisingCost: { amount: '60' }
+  otherTransactionCost: { amount: '40' }
+  tcs: { mode: percent, value: '0.5', percentageBase: tax-exclusive-revenue }
+  tds: { mode: percent, value: '0.1', percentageBase: tax-exclusive-revenue }
+expected:
+  taxExclusiveRevenue: '1271.19'
+  orderProductGstAmount: '228.81'
+  marketplaceFeesTotal: '245.00'
+  marketplaceFeeGstTotal: '44.10'
+  recoverableMarketplaceFeeGst: '44.10'
+  nonRecoverableMarketplaceFeeGst: '0.00'
+  sellerControlledCostsTotal: '135.00'
+  tcsAmount: '6.36'
+  tdsAmount: '1.27'
+  estimatedSettlement: '1203.27'
+  totalEconomicInvestment: '980.00'
+  economicProfit: '291.19'
+  profitMarginPercent: '22.91'
+  breakEvenSellingPrice: '1156.40'

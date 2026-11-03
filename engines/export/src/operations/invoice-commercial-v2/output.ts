@@ -1,4 +1,5 @@
 import type { WorkingStep } from '@mangotools/core';
+import { compare } from '@mangotools/engine-numeric';
 import type { Computed, Item, Measured } from './types.ts';
 
 const step = (
@@ -59,7 +60,10 @@ function buildItemOutput(
     hsn: item.hsn,
     quantity: item.quantity,
     unit: item.unit,
-    unitPrice: shown(item.unitPrice),
+    // A unit price entered with more decimals than the money format (up to 4) is shown as entered,
+    // so quantity × the shown price still equals the shown line amount.
+    unitPrice:
+      compare(shown(item.unitPrice), item.unitPrice) === 0 ? shown(item.unitPrice) : item.unitPrice,
     countryOfOrigin: item.countryOfOrigin,
     netWeight: item.netWeight,
     lineAmount: shown(computed.lineAmount),

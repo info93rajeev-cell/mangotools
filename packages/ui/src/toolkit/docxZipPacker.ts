@@ -145,7 +145,7 @@ export function buildDocxArchive(
   for (const sec of sections) {
     bodyXml += `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="32"/><w:color w:val="1E40AF"/></w:rPr><w:t>${escapeXml(sec.heading)}</w:t></w:r></w:p>`;
     for (const p of sec.paragraphs) {
-      bodyXml += `<w:p><w:r><w:sz w:val="24"/><w:t>${escapeXml(p)}</w:t></w:r></w:p>`;
+      bodyXml += `<w:p><w:r><w:rPr><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">${escapeXml(p)}</w:t></w:r></w:p>`;
     }
   }
 
@@ -163,11 +163,77 @@ export function buildDocxArchive(
   return buildZipArchive(entries);
 }
 
-function escapeXml(str: string): string {
+/** Characters XML 1.0 does not allow (control codes other than tab, LF and CR). */
+function isXmlChar(code: number): boolean {
+  return (
+    code === 0x09 ||
+    code === 0x0a ||
+    code === 0x0d ||
+    (code >= 0x20 && code !== 0xfffe && code !== 0xffff)
+  );
+}
+
+function escapeXml(raw: string): string {
+  const str = Array.from(raw)
+    .filter((ch) => isXmlChar(ch.codePointAt(0) ?? 0))
+    .join('');
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+export type DocxBlock = { kind: 'h1' | 'h2' | 'p'; text: string } | { kind: 'page' };
+
+const STYLES_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault>
+  <w:pPrDefault><w:pPr><w:spacing w:after="160" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/>
+    <w:pPr><w:keepNext/><w:spacing w:before="240" w:after="120"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:sz w:val="36"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/>
+    <w:pPr><w:keepNext/><w:spacing w:before="200" w:after="80"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:b/><w:sz w:val="28"/></w:rPr></w:style>
+</w:styles>`;
+
+function blockXml(block: DocxBlock): string {
+  if (block.kind === 'page') return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+  const style =
+    block.kind === 'p'
+      ? ''
+      : `<w:pPr><w:pStyle w:val="${block.kind === 'h1' ? 'Heading1' : 'Heading2'}"/></w:pPr>`;
+  return `<w:p>${style}<w:r><w:t xml:space="preserve">${escapeXml(block.text)}</w:t></w:r></w:p>`;
+}
+
+/** A DOCX with real heading styles (they show in Word's navigation pane), paragraphs and page breaks. */
+export function buildDocxFromBlocks(blocks: DocxBlock[]): Uint8Array {
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`;
+  const packageRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+  const documentRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+  const body = blocks.map(blockXml).join('');
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body>
+</w:document>`;
+  return buildZipArchive([
+    { name: '[Content_Types].xml', data: encodeUtf8(contentTypes) },
+    { name: '_rels/.rels', data: encodeUtf8(packageRels) },
+    { name: 'word/_rels/document.xml.rels', data: encodeUtf8(documentRels) },
+    { name: 'word/document.xml', data: encodeUtf8(documentXml) },
+    { name: 'word/styles.xml', data: encodeUtf8(STYLES_XML) },
+  ]);
 }

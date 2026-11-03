@@ -1,30 +1,60 @@
 ---
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-02
 ---
 
 ## How to use
 
-1. **Select or drop your PDF document** into the upload area or click **Load Sample**.
-2. **Choose your compression preset**: Light (minimal loss), Balanced (recommended for emails and portals), Strong (maximum size reduction), or Custom to tweak DPI directly.
-3. **Toggle optional savings**: Remove redundant metadata, strip heavy embedded thumbnails, or enable Grayscale to drastically reduce document weight.
-4. Click **Download Compressed PDF**. The file is generated immediately in your browser without ever sending sensitive data to external servers.
+1. **Open or drop a PDF**, or select **Sample PDF** to try a three-page photo report generated in
+   your browser.
+2. **Choose a preset**: Light (JPEG 82%, images up to 3000 px), Balanced (JPEG 70%, up to 2000 px),
+   Strong (JPEG 50%, up to 1400 px), or Custom to set the image quality yourself.
+3. Optional: convert images to grayscale, remove page thumbnails, or set a maximum size.
+4. Select **Compress PDF**. The summary shows the measured size before and after, the percentage
+   saved and how many images were re-encoded. Then download the compressed file.
 
 ## Method
 
-**100% In-Browser Execution.** Modern WebAssembly and JavaScript streams inspect and optimize PDF font streams, image dictionaries, and metadata structures directly inside your browser memory. 
+**What is compressed.** Most of the size of a large PDF — scans, photos, slide exports — is in its
+JPEG images. Each JPEG image is decoded by your browser, scaled down if it is larger than the
+preset allows, optionally turned grey, and saved again at the preset's JPEG quality. A re-encoded
+image replaces the original only when it is smaller. The file is then saved with compressed object
+streams, and page thumbnails are removed if you chose that.
 
-**Privacy First.** Because the computation runs on your local machine, confidential financial audits, medical books, and legal documents remain strictly private.
+**What is not changed.** Text, fonts and vector graphics are left exactly as they are, so text stays
+selectable and searchable — pages are never turned into pictures. Images stored in other formats
+(Flate, JBIG2, JPEG 2000) are kept as they are.
+
+**Honest results.** The figures are measured on the file actually produced, never estimated. If the
+compressed copy would not be smaller — for example a PDF that is mostly text and already compact —
+your original file is kept and the page says so. With a maximum size set, up to two further passes
+use a lower quality and smaller images; if the target still cannot be reached, the page tells you.
+
+**Browser-based processing.** The PDF is read and written on your own device and never uploaded.
 
 ## FAQ
 
 ### Is Compress PDF free to use?
 
-Yes. It is completely free, with zero sign-up requirements, no watermarks, and no usage quotas.
+Yes. It is free, with no sign-up, no watermark and no usage quota.
 
-### Are my documents uploaded to a remote server?
+### Are my documents uploaded to a server?
 
-No. Everything is processed directly inside your browser using client-side libraries. Nothing is transmitted over the internet.
+No. The PDF is processed in your browser and nothing is sent anywhere.
 
-### What is the maximum document size supported?
+### How much smaller will my PDF get?
 
-You can compress documents up to 500 MB and multi-thousand page textbooks or legal dossiers effortlessly.
+It depends on the file. Scans and photo-heavy PDFs often shrink a lot; text-only PDFs usually
+cannot get much smaller, because their size is mostly text and fonts. The tool shows the real
+result after compressing.
+
+### Will the text still be searchable?
+
+Yes. Only images are re-encoded; text is never rasterised.
+
+### Can it compress password-protected PDFs?
+
+Encrypted PDFs may fail to compress. Remove the password in your PDF reader first.
+
+### What is the largest file it can handle?
+
+The limit is your device's memory. Very large files (hundreds of MB) can be slow or fail on phones.

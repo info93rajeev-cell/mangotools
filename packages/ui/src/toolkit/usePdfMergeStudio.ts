@@ -1,5 +1,7 @@
 import { degrees, PDFDocument } from 'pdf-lib';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import { mergeCapacity, openUserPdf } from './pdfInput.ts';
+import { addOutline } from './pdfOutline.ts';
 import { createSamplePdf, SAMPLE_MERGE_FILES } from './samplePdfDocuments.ts';
 
 export interface MergedFileItem {
@@ -82,16 +84,32 @@ async function copyInterleavePages(merged: PDFDocument, items: LoadedDoc[]) {
   }
 }
 
-async function performPdfMerge(
+/** First page index of each file in the merged order. */
+export function startPages(counts: number[], method: 'concatenate' | 'interleave'): number[] {
+  if (method === 'concatenate') {
+    let at = 0;
+    return counts.map((c) => {
+      const start = at;
+      at += c;
+      return start;
+    });
+  }
+  // Interleaved: page 1 of every file comes first, in file order (files with no pages are skipped).
+  let at = 0;
+  return counts.map((c) => (c > 0 ? at++ : -1));
+}
+
+export async function performPdfMerge(
   files: MergedFileItem[],
   method: 'concatenate' | 'interleave',
+  bookmarks = false,
 ): Promise<Uint8Array> {
   const merged = await PDFDocument.create();
   const loadedDocs: LoadedDoc[] = [];
 
   for (const f of files) {
-    const rawBytes = f.bytes ?? (await createSamplePdf(f.name, f.pageCount));
-    const srcDoc = await PDFDocument.load(rawBytes, { ignoreEncryption: true });
+    if (!f.bytes) throw new Error(`No file data for ${f.name}`);
+    const srcDoc = await PDFDocument.load(f.bytes, { ignoreEncryption: true });
     loadedDocs.push({ doc: srcDoc, rotation: f.rotation, count: srcDoc.getPageCount() });
   }
 
@@ -100,6 +118,16 @@ async function performPdfMerge(
   } else {
     await copyInterleavePages(merged, loadedDocs);
   }
+  if (bookmarks) {
+    const starts = startPages(
+      loadedDocs.map((d) => d.count),
+      method,
+    );
+    addOutline(
+      merged,
+      files.map((f, i) => ({ title: f.name.replace(/\.[^/.]+$/, ''), pageIndex: starts[i] ?? -1 })),
+    );
+  }
 
   return merged.save();
 }
@@ -107,40 +135,48 @@ async function performPdfMerge(
 function useMergeFileCollection(notify?: (msg: string) => void) {
   const [files, setFiles] = useState<MergedFileItem[]>([]);
 
-  function loadSampleFiles() {
-    setFiles(
-      SAMPLE_MERGE_FILES.map((meta, i) => ({
+  async function loadSampleFiles() {
+    const samples: MergedFileItem[] = [];
+    for (const [i, meta] of SAMPLE_MERGE_FILES.entries()) {
+      const bytes = await createSamplePdf(meta.name.replace(/\.pdf$/i, ''), meta.pageCount);
+      samples.push({
         id: `sample-${i}-${meta.name}`,
         name: meta.name,
-        sizeBytes: meta.sizeBytes,
+        sizeBytes: bytes.length,
         pageCount: meta.pageCount,
+        bytes,
         rotation: 0,
         themeColor: meta.themeColor,
-      })),
-    );
+      });
+    }
+    setFiles(samples);
     notify?.('Sample documents loaded.');
   }
 
   async function handleAddNativeFiles(fileList: FileList | File[]) {
+    const list = Array.from(fileList);
+    const room = mergeCapacity(
+      { count: files.length, bytes: files.reduce((n, f) => n + f.sizeBytes, 0) },
+      list,
+    );
+    if (room.message) notify?.(room.message);
     const incoming: MergedFileItem[] = [];
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i];
-      if (!file) continue;
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-        incoming.push({
-          id: `file-${Date.now()}-${i}`,
-          name: file.name,
-          sizeBytes: file.size,
-          pageCount: doc.getPageCount(),
-          bytes,
-          rotation: 0,
-          themeColor: COLOR_PALETTE[(files.length + i) % COLOR_PALETTE.length] || '#ef4444',
-        });
-      } catch {
-        notify?.(`Could not parse ${file.name} as a valid PDF.`);
+    for (const [i, file] of list.slice(0, room.accepted).entries()) {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const opened = await openUserPdf(file.name, bytes);
+      if (!opened.ok) {
+        notify?.(opened.message);
+        continue;
       }
+      incoming.push({
+        id: `file-${files.length + i}-${file.name}`,
+        name: file.name,
+        sizeBytes: file.size,
+        pageCount: opened.doc.getPageCount(),
+        bytes,
+        rotation: 0,
+        themeColor: COLOR_PALETTE[(files.length + i) % COLOR_PALETTE.length] || '#ef4444',
+      });
     }
     if (incoming.length > 0) setFiles((prev) => [...prev, ...incoming]);
   }
@@ -174,17 +210,21 @@ export function usePdfMergeStudio(notify?: (msg: string) => void) {
   const [outputFileName, setOutputFileName] = useState('Merged-Document.pdf');
   const [isProcessing, setIsProcessing] = useState(false);
   const [mergedBlobUrl, setMergedBlobUrl] = useState<string | null>(null);
+  // A merged file belongs to one set of files, order, rotation and settings.
+  useEffect(() => setMergedBlobUrl(null), [fileCol.files, mergeMethod, addBookmarks]);
 
-  async function executeMerge() {
-    if (fileCol.files.length === 0) return;
+  async function executeMerge(): Promise<string | null> {
+    if (fileCol.files.length === 0) return null;
     setIsProcessing(true);
     try {
-      const bytes = await performPdfMerge(fileCol.files, mergeMethod);
+      const bytes = await performPdfMerge(fileCol.files, mergeMethod, addBookmarks);
       const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/pdf' }));
       setMergedBlobUrl(url);
       notify?.('PDFs merged successfully!');
+      return url;
     } catch {
       notify?.('Failed to merge PDFs.');
+      return null;
     } finally {
       setIsProcessing(false);
     }
@@ -202,13 +242,11 @@ export function usePdfMergeStudio(notify?: (msg: string) => void) {
     mergedBlobUrl,
     summary: calculateMergeSummary(fileCol.files, addBookmarks),
     executeMerge,
-    downloadMerged: () => {
-      if (!mergedBlobUrl) {
-        void executeMerge();
-        return;
-      }
+    downloadMerged: async () => {
+      const url = mergedBlobUrl ?? (await executeMerge());
+      if (!url) return;
       const a = document.createElement('a');
-      a.href = mergedBlobUrl;
+      a.href = url;
       a.download = outputFileName || 'Merged-Document.pdf';
       document.body.appendChild(a);
       a.click();

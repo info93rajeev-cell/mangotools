@@ -24,8 +24,8 @@ function BiometricCameraGuide() {
           rx="95"
           ry="130"
           stroke="#facc15"
-          strokeWidth="2.5"
-          strokeDasharray="6 4"
+          stroke-width="2.5"
+          stroke-dasharray="6 4"
         />
         <line
           x1="60"
@@ -33,10 +33,10 @@ function BiometricCameraGuide() {
           x2="240"
           y2="65"
           stroke="#eab308"
-          strokeWidth="1.5"
-          strokeDasharray="4 3"
+          stroke-width="1.5"
+          stroke-dasharray="4 3"
         />
-        <text x="150" y="58" fill="#eab308" fontSize="10" textAnchor="middle" fontWeight="700">
+        <text x="150" y="58" fill="#eab308" font-size="10" text-anchor="middle" font-weight="700">
           CROWN / HAIRLINE
         </text>
 
@@ -46,10 +46,10 @@ function BiometricCameraGuide() {
           x2="255"
           y2="165"
           stroke="#38bdf8"
-          strokeWidth="1.5"
-          strokeDasharray="4 3"
+          stroke-width="1.5"
+          stroke-dasharray="4 3"
         />
-        <text x="150" y="158" fill="#38bdf8" fontSize="10" textAnchor="middle" fontWeight="700">
+        <text x="150" y="158" fill="#38bdf8" font-size="10" text-anchor="middle" font-weight="700">
           EYE LEVEL
         </text>
 
@@ -59,10 +59,10 @@ function BiometricCameraGuide() {
           x2="225"
           y2="310"
           stroke="#f87171"
-          strokeWidth="1.5"
-          strokeDasharray="4 3"
+          stroke-width="1.5"
+          stroke-dasharray="4 3"
         />
-        <text x="150" y="325" fill="#f87171" fontSize="10" textAnchor="middle" fontWeight="700">
+        <text x="150" y="325" fill="#f87171" font-size="10" text-anchor="middle" font-weight="700">
           CHIN BASE
         </text>
       </svg>

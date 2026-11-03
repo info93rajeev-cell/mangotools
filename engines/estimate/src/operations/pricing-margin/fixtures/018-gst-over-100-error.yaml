@@ -1,0 +1,5 @@
+id: 018-gst-over-100-error
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "A GST rate above 100% is not a valid rate" }
+input: { solve: price-from-cost-and-markup, cost: "500", markupPercent: "40", gstPercent: "180" }
+expectedError: { code: ESTIMATE_GST_RATE_OUT_OF_RANGE, path: gstPercent }

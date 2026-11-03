@@ -927,3 +927,211 @@
 :global([data-theme="dark"]) .hex {
   color: #a9b7cc;
 }
+
+/* ---------------------------------------------------------------------------------------------
+   URL studio parts */
+.activeBlue.inputTabActive,
+.activeBlue.inputTabActive:hover {
+  background: #1665f5;
+  border-color: #1665f5;
+  color: #fff;
+}
+.card .urlEditor {
+  height: clamp(130px, 17vh, 170px);
+}
+.urlDrop {
+  min-height: 170px;
+}
+.urlOut,
+.urlNotice {
+  height: clamp(110px, 14vh, 140px);
+  box-sizing: border-box;
+}
+.urlOut .b64Textarea {
+  font-size: 13px;
+  line-height: 19px;
+}
+.monoCounts {
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+  font-size: 12.5px;
+}
+.dirPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  min-width: min(300px, 100%);
+}
+.dirPair .inputTab {
+  min-height: 38px;
+}
+.toneGreen.inputTabActive.inputTab {
+  color: #fff;
+}
+.outActions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.rowsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: clamp(130px, 17vh, 170px);
+  align-items: flex-start;
+}
+.rowsBox > label {
+  width: 100%;
+}
+.rowsList {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  max-height: 200px;
+  overflow: auto;
+}
+.rowLine {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) auto;
+  gap: 6px;
+  align-items: center;
+}
+.inspector {
+  margin-top: 10px;
+  border: 1px solid #e1e8f2;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  font-size: 13px;
+  color: #0b1736;
+}
+.inspector summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 650;
+}
+.inspector[open] summary {
+  margin-bottom: 8px;
+}
+.kvGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin-bottom: 8px;
+}
+.kvGrid span {
+  color: #475569;
+}
+.kvGrid b {
+  overflow-wrap: anywhere;
+}
+.quickGreen,
+.quickPurple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 9px;
+  border: 1px solid;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.quickGreen {
+  border-color: #bfe8cd;
+  color: #15803d;
+}
+.quickPurple {
+  border-color: #e2c8fb;
+  color: #7e22ce;
+}
+.urlAux .quickBlue,
+.urlAux .quickRed {
+  justify-content: flex-start;
+  padding: 0 14px;
+  min-height: 38px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.urlAux {
+  grid-template-columns: minmax(0, 515fr) minmax(0, 108fr) minmax(0, 220fr) minmax(0, 500fr);
+  grid-template-areas:
+    "options quick quick examples"
+    "summary summary related related";
+}
+.urlAreaOptions {
+  grid-area: options;
+}
+.urlAreaQuick {
+  grid-area: quick;
+}
+.urlAreaExamples {
+  grid-area: examples;
+}
+.urlAreaSummary {
+  grid-area: summary;
+}
+.urlAreaRelated {
+  grid-area: related;
+}
+.relatedWide .relatedList {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.relatedWide .relatedItem .sumText b,
+.relatedWide .relatedItem .sumText small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.relatedWide .relatedItem .sumText b {
+  font-size: 13px;
+}
+.urlOptGrid {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr);
+}
+@media (max-width: 650px) {
+  .urlOptGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.exMono {
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", Monaco, monospace;
+  font-size: 13px;
+}
+@media (max-width: 1280px) {
+  .urlAux {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "options options"
+      "quick examples"
+      "summary summary"
+      "related related";
+  }
+}
+@media (max-width: 650px) {
+  .urlAux {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: "options" "quick" "examples" "summary" "related";
+  }
+  .relatedWide .relatedList {
+    grid-template-columns: 1fr;
+  }
+  .dirPair {
+    min-width: 0;
+    width: 100%;
+  }
+}
+:global([data-theme="dark"]) .inspector,
+:global([data-theme="dark"]) .quickGreen,
+:global([data-theme="dark"]) .quickPurple {
+  background: #111c33;
+  border-color: #2a3a58;
+  color: #e6edf8;
+}

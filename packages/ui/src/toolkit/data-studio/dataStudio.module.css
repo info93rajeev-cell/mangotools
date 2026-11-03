@@ -3323,3 +3323,20 @@ button.btnDangerOutline {
 .callout code {
   display: inline;
 }
+
+/* Phones: top actions fill the width as an even two-column grid (reference layout),
+   instead of a right-aligned row that wraps unevenly. */
+@media (max-width: 650px) {
+  .topActionsBar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 6px;
+  }
+
+  .topActionBtn {
+    justify-content: center;
+    width: 100%;
+    min-height: 38px;
+  }
+}

@@ -4,6 +4,11 @@
 }
 
 @media (max-width: 960px) {
+  /* Room under the footer so the fixed bar never covers the last links. */
+  :global(body:has(.mobileBarWrap)) {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
   .mobileBarWrap {
     display: block;
     position: fixed;

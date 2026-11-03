@@ -1,59 +1,25 @@
-import { PDFDocument } from 'pdf-lib';
-import { useState } from 'preact/hooks';
-import { createSamplePdf, SAMPLE_COMPRESS_FILE } from './samplePdfDocuments.ts';
+import { useEffect, useState } from 'preact/hooks';
+import {
+  type CompressionPreset,
+  compressToTarget,
+  reductionPercent,
+  settingsFor,
+  type TargetResult,
+} from './pdfCompressor.ts';
+import { openUserPdf } from './pdfInput.ts';
+import { createCompressSamplePdf, SAMPLE_COMPRESS_NAME } from './samplePdfDocuments.ts';
 
-export type CompressionPreset = 'light' | 'balanced' | 'strong' | 'custom';
+export type { CompressionPreset } from './pdfCompressor.ts';
 
-export interface CompressEstimate {
-  originalBytes: number;
-  compressedBytes: number;
-  reductionPercent: number;
-  qualityLevel: string;
-}
-
-export function computeCompressEstimate(
-  originalBytes: number,
-  preset: CompressionPreset,
-  customQuality: number,
-  grayscale: boolean,
-  removeThumbnails: boolean,
-): CompressEstimate {
-  if (originalBytes <= 0)
-    return { originalBytes: 0, compressedBytes: 0, reductionPercent: 0, qualityLevel: 'Good' };
-  let ratio = 0.29;
-  let qualityLevel = 'Good';
-
-  if (preset === 'light') {
-    ratio = 0.65;
-    qualityLevel = 'Excellent';
-  } else if (preset === 'strong') {
-    ratio = 0.18;
-    qualityLevel = 'Acceptable';
-  } else if (preset === 'custom') {
-    const qFactor = customQuality / 100;
-    const grayFactor = grayscale ? 0.75 : 1.0;
-    const thumbFactor = removeThumbnails ? 0.95 : 1.0;
-    ratio = Math.max(0.12, Math.min(0.9, qFactor * 0.45 * grayFactor * thumbFactor));
-    qualityLevel = customQuality > 75 ? 'Excellent' : customQuality > 45 ? 'Good' : 'Acceptable';
-  }
-
-  return {
-    originalBytes,
-    compressedBytes: Math.round(originalBytes * ratio),
-    reductionPercent: Math.round((1 - ratio) * 100),
-    qualityLevel,
-  };
-}
+const MB = 1024 * 1024;
 
 function useCompressOptions() {
   const [preset, setPreset] = useState<CompressionPreset>('balanced');
   const [imageQuality, setImageQuality] = useState(70);
   const [convertToGrayscale, setConvertToGrayscale] = useState(false);
   const [removeThumbnails, setRemoveThumbnails] = useState(true);
-  const [linearize, setLinearize] = useState(true);
-  const [preserveSearchableText, setPreserveSearchableText] = useState(true);
+  const [useSizeTarget, setUseSizeTarget] = useState(false);
   const [maxOutputSizeMb, setMaxOutputSizeMb] = useState(10);
-
   return {
     preset,
     setPreset,
@@ -63,10 +29,8 @@ function useCompressOptions() {
     setConvertToGrayscale,
     removeThumbnails,
     setRemoveThumbnails,
-    linearize,
-    setLinearize,
-    preserveSearchableText,
-    setPreserveSearchableText,
+    useSizeTarget,
+    setUseSizeTarget,
     maxOutputSizeMb,
     setMaxOutputSizeMb,
   };
@@ -77,6 +41,19 @@ function useCompressFileState(notify?: (msg: string) => void) {
   const [fileSizeBytes, setFileSizeBytes] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
+
+  const take = async (name: string, bytes: Uint8Array) => {
+    const opened = await openUserPdf(name, bytes, 500);
+    if (!opened.ok) {
+      notify?.(opened.message);
+      return false;
+    }
+    setFileName(name);
+    setFileSizeBytes(bytes.length);
+    setTotalPages(opened.doc.getPageCount());
+    setFileBytes(bytes);
+    return true;
+  };
 
   return {
     fileName,
@@ -89,89 +66,106 @@ function useCompressFileState(notify?: (msg: string) => void) {
       setFileSizeBytes(0);
       setFileBytes(null);
     },
-    loadSampleCompress: () => {
-      setFileName(SAMPLE_COMPRESS_FILE.name);
-      setFileSizeBytes(SAMPLE_COMPRESS_FILE.sizeBytes);
-      setTotalPages(SAMPLE_COMPRESS_FILE.pageCount);
+    loadSampleCompress: async () => {
+      if (await take(SAMPLE_COMPRESS_NAME, await createCompressSamplePdf())) {
+        notify?.('Sample PDF with photos loaded');
+      }
     },
-    handleAddNativeFile: async (file: File) => {
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-        setFileName(file.name);
-        setFileSizeBytes(file.size);
-        setTotalPages(doc.getPageCount());
-        setFileBytes(bytes);
-      } catch {
-        notify?.('Could not load PDF.');
+    handleAddNativeFile: async (file: File | undefined) => {
+      if (!file) return;
+      if (await take(file.name, new Uint8Array(await file.arrayBuffer()))) {
+        notify?.(`Loaded ${file.name}`);
       }
     },
   };
+}
+
+function downloadBytes(bytes: Uint8Array, name: string) {
+  const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/pdf' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function outcomeMessage(r: TargetResult): string {
+  if (r.noGain) return 'This PDF is already compact; the original is kept.';
+  const pct = reductionPercent(r.originalBytes, r.compressedBytes);
+  const target = r.targetMet ? '' : ' The size target could not be reached.';
+  return `PDF compressed: ${pct}% smaller.${target}`;
 }
 
 export function usePdfCompressStudio(notify?: (msg: string) => void) {
   const fileState = useCompressFileState(notify);
   const opts = useCompressOptions();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [compressedBlobUrl, setCompressedBlobUrl] = useState<string | null>(null);
+  const [result, setResult] = useState<TargetResult | null>(null);
 
-  async function executeCompress() {
-    if (fileState.fileSizeBytes <= 0) return;
-    setIsProcessing(true);
-    try {
-      const raw =
-        fileState.fileBytes ?? (await createSamplePdf(fileState.fileName, fileState.totalPages));
-      const doc = await PDFDocument.load(raw, { ignoreEncryption: true });
-      if (opts.removeThumbnails) doc.setTitle(fileState.fileName.replace(/\.[^/.]+$/, ''));
-      const savedBytes = await doc.save({ useObjectStreams: true });
-      setCompressedBlobUrl(
-        URL.createObjectURL(new Blob([savedBytes as BlobPart], { type: 'application/pdf' })),
-      );
-      notify?.('PDF successfully compressed!');
-    } catch {
-      notify?.('Compression failed.');
-    } finally {
-      setIsProcessing(false);
-    }
-  }
-
-  return {
-    ...fileState,
-    ...opts,
-    isProcessing,
-    compressedBlobUrl,
-    executeCompress,
-    estimate: computeCompressEstimate(
-      fileState.fileSizeBytes,
+  // A result belongs to one file and one set of settings.
+  useEffect(
+    () => setResult(null),
+    [
+      fileState.fileBytes,
       opts.preset,
       opts.imageQuality,
       opts.convertToGrayscale,
       opts.removeThumbnails,
-    ),
-    downloadCompressed: () => {
-      if (!compressedBlobUrl) {
-        void executeCompress();
-        return;
-      }
-      const a = document.createElement('a');
-      a.href = compressedBlobUrl;
-      a.download = `${fileState.fileName.replace(/\.[^/.]+$/, '')}-compressed.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    },
-    copySummary: () => {
-      const e = computeCompressEstimate(
-        fileState.fileSizeBytes,
+      opts.useSizeTarget,
+      opts.maxOutputSizeMb,
+    ],
+  );
+
+  async function executeCompress(): Promise<TargetResult | null> {
+    if (!fileState.fileBytes) return null;
+    setIsProcessing(true);
+    try {
+      const settings = settingsFor(
         opts.preset,
         opts.imageQuality,
         opts.convertToGrayscale,
         opts.removeThumbnails,
       );
-      void navigator.clipboard.writeText(
-        `BeyondTheAI PDF Compression: ${fileState.fileName}, -${e.reductionPercent}%`,
-      );
-      notify?.('Summary copied!');
+      const target = opts.useSizeTarget ? Math.max(0.1, opts.maxOutputSizeMb) * MB : null;
+      const r = await compressToTarget(fileState.fileBytes, settings, target);
+      setResult(r);
+      notify?.(outcomeMessage(r));
+      return r;
+    } catch {
+      notify?.('Compression failed. The PDF may be damaged or protected.');
+      return null;
+    } finally {
+      setIsProcessing(false);
+    }
+  }
+
+  const outName = `${fileState.fileName.replace(/\.[^/.]+$/, '') || 'document'}-compressed.pdf`;
+
+  return {
+    ...fileState,
+    ...opts,
+    isProcessing,
+    result,
+    executeCompress,
+    downloadCompressed: async () => {
+      const r = result ?? (await executeCompress());
+      if (r) downloadBytes(r.bytes, outName);
+    },
+    copySummary: () => {
+      if (!result) {
+        notify?.('Compress the PDF first.');
+        return;
+      }
+      const pct = reductionPercent(result.originalBytes, result.compressedBytes);
+      const text = `${fileState.fileName}: ${(result.originalBytes / MB).toFixed(2)} MB → ${(
+        result.compressedBytes / MB
+      ).toFixed(2)} MB (${pct}% smaller), ${result.imagesRecompressed} of ${
+        result.imagesFound
+      } images re-encoded.`;
+      void navigator.clipboard?.writeText(text);
+      notify?.('Summary copied');
     },
   };
 }

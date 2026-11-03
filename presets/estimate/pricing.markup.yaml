@@ -67,3 +67,6 @@ strings:
     work.margin.profit: "Profit = {price:money} − {cost:money} = {result:money}"
     work.margin.margin: "Margin = {profit:money} ÷ {price:money} × 100 = {result}%"
     work.margin.markup: "Markup = {profit:money} ÷ {cost:money} × 100 = {result}%"
+    work.margin.extraCost: "Total cost = {cost:money} + {extraCost:money} = {result:money}"
+    work.margin.profitTotal: "Profit on {quantity} units = {profit:money} × {quantity} = {result:money}"
+    work.margin.priceWithGst: "Price with GST = {price:money} × (1 + {percent}%) = {result:money}"

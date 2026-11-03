@@ -26,7 +26,7 @@ function PdfMergeDropCard({
         </h2>
         <button
           type="button"
-          onClick={loadSampleFiles}
+          onClick={() => void loadSampleFiles()}
           style={{
             fontSize: '11px',
             padding: '2px 8px',

@@ -1,317 +1,242 @@
-import { useMemo, useState } from 'preact/hooks';
+import type { ResolvedPreset } from '@mangotools/schemas';
+import { useState } from 'preact/hooks';
+import { copyText, downloadText } from './actions.ts';
+import { messageFor } from './presentation.ts';
+import { useEngineRun } from './useEngineRun.ts';
+import type { WorkingStep } from './WorkingSteps.tsx';
 
 export type FulfilmentMode = 'fba' | 'easy_ship' | 'self_ship';
-export type AmazonShippingZone = 'local' | 'regional' | 'national';
-export type AmazonInputTab = 'listing' | 'costs' | 'returns';
 
 export interface AmazonCategoryPreset {
   id: string;
   name: string;
-  rate: number;
+  /** Referral rate, %; null for "enter the ₹ fee yourself". */
+  rate: number | null;
 }
 
+/** Reference rates only; the user confirms them in Seller Central. */
 export const AMAZON_CATEGORY_PRESETS: AmazonCategoryPreset[] = [
+  { id: 'custom', name: 'Enter referral fee in ₹', rate: null },
   { id: 'electronics', name: 'Electronics & Mobiles (8.5%)', rate: 8.5 },
-  { id: 'apparel', name: 'Apparel & Fashion (13.0%)', rate: 13.0 },
-  { id: 'home', name: 'Home & Kitchen (10.0%)', rate: 10.0 },
-  { id: 'beauty', name: 'Beauty & Personal Care (8.0%)', rate: 8.0 },
-  { id: 'grocery', name: 'Grocery & Gourmet (6.0%)', rate: 6.0 },
-  { id: 'books', name: 'Books & Media (6.0%)', rate: 6.0 },
-  { id: 'custom', name: 'Custom Referral Rate', rate: 10.0 },
+  { id: 'apparel', name: 'Apparel & Fashion (13%)', rate: 13 },
+  { id: 'home', name: 'Home & Kitchen (10%)', rate: 10 },
+  { id: 'beauty', name: 'Beauty & Personal Care (8%)', rate: 8 },
+  { id: 'grocery', name: 'Grocery & Gourmet (6%)', rate: 6 },
+  { id: 'books', name: 'Books & Media (6%)', rate: 6 },
 ];
 
-export interface AmazonFeeParams {
-  sellingPrice: number;
-  productPackagingCost?: number;
-  referralFee?: number;
-  closingHandling?: number;
-  feeGst?: number;
-  adsReturns?: number;
-  monthlyQty?: number;
-  fulfilmentMode?: FulfilmentMode;
-  category?: string;
-  weightGrams?: number;
-  shippingZone?: AmazonShippingZone;
-  adCost?: number;
-  returnRate?: number;
-  reverseShipping?: number;
-}
+/** GST TCS (s.52 CGST Act) and income-tax TDS (s.194-O), both on the tax-exclusive value. */
+export const AMAZON_TCS_PERCENT = '0.5';
+export const AMAZON_TDS_PERCENT = '0.1';
+export const AMAZON_FEE_GST_PERCENT = '18';
 
-export interface AmazonFeeCalculation {
+export interface AmazonInputs {
+  fulfilmentMode: FulfilmentMode;
+  sellingPrice: number;
+  productCost: number;
+  packagingCost: number;
+  packedWeight: number;
+  monthlyQty: number;
+  category: string;
   referralFee: number;
   closingFee: number;
-  weightHandlingFee: number;
-  totalAmazonFees: number;
-  amazonFeesWithGst: number;
-  costsExcludingFees: number;
-  rtoLossPerUnit: number;
-  totalExpenses: number;
-  bankPayout: number;
-  netProfit: number;
-  netMargin: number;
-  monthlyProfit: number;
-  fbaProfit: number;
-  easyShipProfit: number;
-  selfShipProfit: number;
-  costPct: number;
-  feePct: number;
-  otherPct: number;
-  profitPct: number;
+  weightHandling: number;
+  productGstRate: number;
+  /** A GST-registered seller claims the 18% GST on Amazon's fees back as input tax credit. */
+  claimFeeGstCredit: boolean;
+  adsPerOrder: number;
+  returnsPerOrder: number;
 }
 
-function getClosingTierIndex(sp: number): number {
-  if (sp <= 250) return 0;
-  if (sp <= 500) return 1;
-  if (sp <= 1000) return 2;
-  return 3;
-}
-
-const CLOSING_RATES: Record<FulfilmentMode, number[]> = {
-  easy_ship: [5, 9, 30, 61],
-  fba: [12, 12, 18, 42],
-  self_ship: [15, 20, 40, 70],
+export const AMAZON_DEFAULTS: AmazonInputs = {
+  fulfilmentMode: 'fba',
+  sellingPrice: 1500,
+  productCost: 600,
+  packagingCost: 35,
+  packedWeight: 500,
+  monthlyQty: 100,
+  category: 'custom',
+  referralFee: 120,
+  closingFee: 25,
+  weightHandling: 100,
+  productGstRate: 18,
+  claimFeeGstCredit: true,
+  adsPerOrder: 60,
+  returnsPerOrder: 40,
 };
 
-function computeOfficialClosingFee(sp: number, mode: FulfilmentMode): number {
-  const tier = getClosingTierIndex(sp);
-  return CLOSING_RATES[mode]?.[tier] ?? 42;
-}
+const SALE = ['successful-sale'];
+const text = (n: number) => String(n);
 
-function computeOfficialWeightFee(mode: FulfilmentMode, zone: AmazonShippingZone): number {
-  if (mode === 'self_ship') return 0;
-  if (zone === 'local') return 44;
-  if (zone === 'regional') return 55;
-  return 75;
-}
-
-export function calculateAmazonFees(params: AmazonFeeParams): AmazonFeeCalculation {
-  const sellingPrice = params.sellingPrice || 0;
-  const productPackagingCost = params.productPackagingCost || 0;
-  const monthlyQty = params.monthlyQty || 1;
-  const mode = params.fulfilmentMode || 'fba';
-  const zone = params.shippingZone || 'national';
-
-  const referralFee =
-    params.referralFee !== undefined ? params.referralFee : (sellingPrice * 8) / 100;
-  const closingFee =
-    params.closingHandling !== undefined
-      ? params.closingHandling
-      : computeOfficialClosingFee(sellingPrice, mode);
-  const weightHandlingFee = computeOfficialWeightFee(mode, zone);
-
-  const totalAmazonFees = referralFee + closingFee;
-  const feeGst = params.feeGst !== undefined ? params.feeGst : (totalAmazonFees * 18) / 100;
-  const amazonFeesWithGst = totalAmazonFees + feeGst;
-
-  const adsReturns = params.adsReturns || 0;
-  const costsExcludingFees = productPackagingCost + adsReturns;
-  const totalExpenses = amazonFeesWithGst + costsExcludingFees;
-  const netProfit = sellingPrice - totalExpenses;
-  const netMargin = sellingPrice > 0 ? (netProfit / sellingPrice) * 100 : 0;
-  const monthlyProfit = netProfit * monthlyQty;
-
-  const tcsTds = (sellingPrice * 2) / 100;
-  const bankPayout = Math.max(0, sellingPrice - amazonFeesWithGst - tcsTds);
-
-  const safeSale = sellingPrice > 0 ? sellingPrice : 1;
-  const costPct = Math.max(0, Math.round((productPackagingCost / safeSale) * 1000) / 10);
-  const feePct = Math.max(0, Math.round((amazonFeesWithGst / safeSale) * 1000) / 10);
-  const otherPct = Math.max(0, Math.round((adsReturns / safeSale) * 1000) / 10);
-  const profitPct = Math.max(0, Math.round((100 - costPct - feePct - otherPct) * 10) / 10);
-
+/** One fixed ₹ fee per unit, with the GST treatment the seller chose. */
+function fixedFee(id: string, amount: number, gstTreatment: string) {
   return {
-    referralFee: Math.round(referralFee * 100) / 100,
-    closingFee: Math.round(closingFee * 100) / 100,
-    weightHandlingFee: Math.round(weightHandlingFee * 100) / 100,
-    totalAmazonFees: Math.round(totalAmazonFees * 100) / 100,
-    amazonFeesWithGst: Math.round(amazonFeesWithGst * 100) / 100,
-    costsExcludingFees: Math.round(costsExcludingFees * 100) / 100,
-    rtoLossPerUnit: Math.round(adsReturns * 0.4 * 100) / 100,
-    totalExpenses: Math.round(totalExpenses * 100) / 100,
-    bankPayout: Math.round(bankPayout * 100) / 100,
-    netProfit: Math.round(netProfit * 100) / 100,
-    netMargin: Math.round(netMargin * 10) / 10,
-    monthlyProfit: Math.round(monthlyProfit),
-    fbaProfit: Math.round(netProfit * 100) / 100,
-    easyShipProfit: Math.round((netProfit - 18) * 100) / 100,
-    selfShipProfit: Math.round((netProfit - 5) * 100) / 100,
-    costPct,
-    feePct,
-    otherPct,
-    profitPct,
+    id,
+    enabled: true,
+    mode: 'fixed',
+    amount: text(amount),
+    quantityScope: 'per-unit',
+    gstTreatment,
+    scenarios: SALE,
   };
 }
 
-export interface AmazonFeeEstimatorState {
-  fulfilmentMode: FulfilmentMode;
-  setFulfilmentMode: (m: FulfilmentMode) => void;
-  activeTab: AmazonInputTab;
-  setActiveTab: (t: AmazonInputTab) => void;
-  sellingPrice: number;
-  setSellingPrice: (v: number) => void;
-  productPackagingCost: number;
-  setProductPackagingCost: (v: number) => void;
-  category: string;
-  setCategory: (v: string) => void;
-  referralRate: number;
-  setReferralRate: (v: number) => void;
-  referralFee: number;
-  setReferralFee: (v: number) => void;
-  closingHandling: number;
-  setClosingHandling: (v: number) => void;
-  feeGst: number;
-  setFeeGst: (v: number) => void;
-  adsReturns: number;
-  setAdsReturns: (v: number) => void;
-  shippingZone: AmazonShippingZone;
-  setShippingZone: (v: AmazonShippingZone) => void;
-  packedWeight: number;
-  setPackedWeight: (v: number) => void;
-  monthlyQty: number;
-  setMonthlyQty: (v: number) => void;
-  calculation: AmazonFeeCalculation;
+/** The `estimate.marketplace.manual-profitability@1` input for one sale. */
+export function amazonEngineInput(i: AmazonInputs): Record<string, unknown> {
+  const registered = i.productGstRate > 0;
+  const gstTreatment = registered && i.claimFeeGstCredit ? 'recoverable' : 'non-recoverable';
+  const rate = AMAZON_CATEGORY_PRESETS.find((c) => c.id === i.category)?.rate ?? null;
+  const referral =
+    rate === null
+      ? fixedFee('referral', i.referralFee, gstTreatment)
+      : {
+          id: 'referral',
+          enabled: true,
+          mode: 'percent',
+          ratePercent: text(rate),
+          percentageBase: 'realized-customer-value',
+          gstTreatment,
+          scenarios: SALE,
+        };
+  return {
+    sellingPricePerUnit: text(i.sellingPrice),
+    quantity: '1',
+    productCostPerUnit: text(i.productCost),
+    productGstRatePercent: text(i.productGstRate),
+    sellingPriceTaxMode: 'gst-inclusive',
+    marketplaceFeeGstRatePercent: AMAZON_FEE_GST_PERCENT,
+    feeLines: [
+      referral,
+      fixedFee('closing', i.closingFee, gstTreatment),
+      fixedFee('weight-handling', i.weightHandling, gstTreatment),
+    ],
+    packagingCost: { amount: text(i.packagingCost), scenarios: SALE },
+    advertisingCost: { amount: text(i.adsPerOrder), scenarios: SALE },
+    otherTransactionCost: { amount: text(i.returnsPerOrder), scenarios: SALE },
+    ...(registered
+      ? {
+          tcs: {
+            mode: 'percent',
+            value: AMAZON_TCS_PERCENT,
+            percentageBase: 'tax-exclusive-revenue',
+            scenarios: SALE,
+          },
+        }
+      : {}),
+    tds: {
+      mode: 'percent',
+      value: AMAZON_TDS_PERCENT,
+      percentageBase: 'tax-exclusive-revenue',
+      scenarios: SALE,
+    },
+  };
+}
+
+/** The fields of the engine output this studio shows (all decimal strings). */
+export interface AmazonResult {
+  grossCustomerValue: string;
+  orderProductGstAmount: string;
+  taxExclusiveRevenue: string;
+  productCostRecognised: string;
+  marketplaceFees: { id: string; amount: string; gstAmount: string }[];
+  marketplaceFeesTotal: string;
+  marketplaceFeeGstTotal: string;
+  recoverableMarketplaceFeeGst: string;
+  nonRecoverableMarketplaceFeeGst: string;
+  sellerControlledCostsTotal: string;
+  tcsAmount: string;
+  tdsAmount: string;
+  estimatedSettlement: string;
+  totalEconomicInvestment: string;
+  economicProfit: string;
+  profitMarginPercent: string | null;
+  breakEvenSellingPrice: string | null;
+  working: WorkingStep[];
+}
+
+/** Profit × monthly units, from the pricing engine (price − cost = this sale's profit). */
+interface MonthlyResult {
+  profitTotal: string | null;
+}
+
+export interface AmazonFeeEstimatorState extends AmazonInputs {
+  set: <K extends keyof AmazonInputs>(key: K, value: AmazonInputs[K]) => void;
+  load: (values: AmazonInputs) => void;
+  result: AmazonResult | null;
+  error: string | null;
+  monthlyProfit: string | null;
   copySummary: () => void;
   downloadCsv: () => void;
   resetToDefaults: () => void;
 }
 
-function useAmazonFeeInputs() {
-  const [fulfilmentMode, setFulfilmentMode] = useState<FulfilmentMode>('fba');
-  const [activeTab, setActiveTab] = useState<AmazonInputTab>('listing');
-  const [sellingPrice, setSellingPrice] = useState(1500);
-  const [productPackagingCost, setProductPackagingCost] = useState(635);
-  const [category, setCategory] = useState('electronics');
-  const [referralRate, setReferralRate] = useState(8.5);
-  const [referralFee, setReferralFee] = useState(120);
-  const [closingHandling, setClosingHandling] = useState(125);
-  const [feeGst, setFeeGst] = useState(44.1);
-  const [adsReturns, setAdsReturns] = useState(100);
-  const [shippingZone, setShippingZone] = useState<AmazonShippingZone>('national');
-  const [packedWeight, setPackedWeight] = useState(500);
-  const [monthlyQty, setMonthlyQty] = useState(100);
-
-  return {
-    fulfilmentMode,
-    setFulfilmentMode,
-    activeTab,
-    setActiveTab,
-    sellingPrice,
-    setSellingPrice,
-    productPackagingCost,
-    setProductPackagingCost,
-    category,
-    setCategory,
-    referralRate,
-    setReferralRate,
-    referralFee,
-    setReferralFee,
-    closingHandling,
-    setClosingHandling,
-    feeGst,
-    setFeeGst,
-    adsReturns,
-    setAdsReturns,
-    shippingZone,
-    setShippingZone,
-    packedWeight,
-    setPackedWeight,
-    monthlyQty,
-    setMonthlyQty,
-  };
+function summaryRows(i: AmazonInputs, r: AmazonResult, monthly: string | null): [string, string][] {
+  return [
+    ['Selling price', r.grossCustomerValue],
+    ['GST inside the price', r.orderProductGstAmount],
+    ['Product cost', r.productCostRecognised],
+    ['Packaging, ads and returns', r.sellerControlledCostsTotal],
+    ['Amazon fees', r.marketplaceFeesTotal],
+    ['GST on Amazon fees', r.marketplaceFeeGstTotal],
+    ['  of which claimed back as ITC', r.recoverableMarketplaceFeeGst],
+    ['TCS', r.tcsAmount],
+    ['TDS', r.tdsAmount],
+    ['Net profit per sale', r.economicProfit],
+    ['Profit margin (%)', r.profitMarginPercent ?? ''],
+    ['Estimated bank settlement', r.estimatedSettlement],
+    ['Break-even selling price', r.breakEvenSellingPrice ?? ''],
+    [`Profit on ${i.monthlyQty} sales`, monthly ?? ''],
+  ];
 }
 
-function createAmazonSummaryText(
-  mode: FulfilmentMode,
-  sp: number,
-  cost: number,
-  ref: number,
-  closing: number,
-  feeGst: number,
-  calc: AmazonFeeCalculation,
-  ads: number,
-  qty: number,
-): string {
-  return `Amazon India Seller Fee & Profit Estimate:
-Fulfilment Mode: ${mode.toUpperCase()}
-Selling Price: ₹${sp.toFixed(2)}
-Product & Packaging Cost: ₹${cost.toFixed(2)}
-Amazon Referral Fee: ₹${ref.toFixed(2)}
-Closing & Weight Fee: ₹${closing.toFixed(2)}
-GST on Amazon Fees (18%): ₹${feeGst.toFixed(2)}
-Total Amazon Deductions: ₹${calc.amazonFeesWithGst.toFixed(2)}
-Advertising & Other: ₹${ads.toFixed(2)}
----------------------------------------------
-Net Seller Profit: ₹${calc.netProfit.toFixed(2)} (${calc.netMargin}%)
-Bank Settlement Payout: ₹${calc.bankPayout.toFixed(2)}
-Monthly Profit (${qty} units): ₹${calc.monthlyProfit.toLocaleString()}`;
-}
-
-export function useAmazonFeeEstimator(notify?: (msg: string) => void): AmazonFeeEstimatorState {
-  const inputs = useAmazonFeeInputs();
-
-  const calculation = useMemo(
-    () =>
-      calculateAmazonFees({
-        sellingPrice: inputs.sellingPrice,
-        productPackagingCost: inputs.productPackagingCost,
-        referralFee: inputs.referralFee,
-        closingHandling: inputs.closingHandling,
-        feeGst: inputs.feeGst,
-        adsReturns: inputs.adsReturns,
-        monthlyQty: inputs.monthlyQty,
-        fulfilmentMode: inputs.fulfilmentMode,
-        shippingZone: inputs.shippingZone,
-      }),
-    [inputs],
+export function useAmazonFeeEstimator(
+  preset: ResolvedPreset,
+  notify?: (msg: string) => void,
+): AmazonFeeEstimatorState {
+  const [inputs, setInputs] = useState<AmazonInputs>(AMAZON_DEFAULTS);
+  const main = useEngineRun<AmazonResult>(
+    preset.operation,
+    amazonEngineInput(inputs),
+    preset.params,
   );
-
-  const copySummary = () => {
-    const text = createAmazonSummaryText(
-      inputs.fulfilmentMode,
-      inputs.sellingPrice,
-      inputs.productPackagingCost,
-      inputs.referralFee,
-      inputs.closingHandling,
-      inputs.feeGst,
-      calculation,
-      inputs.adsReturns,
-      inputs.monthlyQty,
-    );
-    void navigator.clipboard.writeText(text);
-    notify?.('Amazon fee summary copied to clipboard');
-  };
-
-  const downloadCsv = () => {
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      encodeURIComponent(
-        `Metric,Amount (INR)\nFulfilment Mode,${inputs.fulfilmentMode}\nSelling Price,${inputs.sellingPrice}\nProduct Cost,${inputs.productPackagingCost}\nReferral Fee,${inputs.referralFee}\nClosing & Weight Fee,${inputs.closingHandling}\nAmazon Fee GST (18%),${inputs.feeGst}\nTotal Amazon Deductions,${calculation.amazonFeesWithGst}\nBank Payout,${calculation.bankPayout}\nNet Profit,${calculation.netProfit}\nNet Margin (%),${calculation.netMargin}\nMonthly Profit (${inputs.monthlyQty} units),${calculation.monthlyProfit}`,
-      );
-    const link = document.createElement('a');
-    link.setAttribute('href', csvContent);
-    link.setAttribute('download', `amazon_fees_estimate_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    notify?.('Amazon fee breakdown exported to CSV');
-  };
-
-  const resetToDefaults = () => {
-    inputs.setSellingPrice(1500);
-    inputs.setProductPackagingCost(635);
-    inputs.setReferralFee(120);
-    inputs.setClosingHandling(125);
-    inputs.setFeeGst(44.1);
-    inputs.setAdsReturns(100);
-    inputs.setFulfilmentMode('fba');
-    notify?.('Reset to Amazon India benchmarks');
-  };
+  const r = main.value;
+  const monthly = useEngineRun<MonthlyResult>(
+    'estimate.pricing.margin@1',
+    r && Number(r.taxExclusiveRevenue) > 0 && inputs.monthlyQty >= 1
+      ? {
+          solve: 'from-cost-and-price',
+          price: r.taxExclusiveRevenue,
+          cost: r.totalEconomicInvestment,
+          quantity: text(Math.floor(inputs.monthlyQty)),
+        }
+      : null,
+    { rounding: 'half-up' },
+  );
+  const monthlyProfit = monthly.value?.profitTotal ?? null;
+  const rows = r ? summaryRows(inputs, r, monthlyProfit) : [];
 
   return {
     ...inputs,
-    calculation,
-    copySummary,
-    downloadCsv,
-    resetToDefaults,
+    set: (key, value) => setInputs((prev) => ({ ...prev, [key]: value })),
+    load: setInputs,
+    result: r,
+    error: main.error ? messageFor(preset, main.error) : null,
+    monthlyProfit,
+    copySummary: async () => {
+      if (!r) return;
+      const body = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
+      const done = await copyText(`Amazon India profit estimate\n${body}`);
+      notify?.(done ? 'Amazon fee summary copied to clipboard' : 'Copy failed');
+    },
+    downloadCsv: () => {
+      if (!r) return;
+      const csv = `Metric,Amount (INR)\n${rows.map(([k, v]) => `"${k.trim()}",${v}`).join('\n')}\n`;
+      downloadText(csv, 'amazon-profit-estimate.csv', 'text/csv');
+      notify?.('Amazon fee breakdown exported to CSV');
+    },
+    resetToDefaults: () => {
+      setInputs(AMAZON_DEFAULTS);
+      notify?.('Reset to the sample values');
+    },
   };
 }

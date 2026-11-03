@@ -18,9 +18,10 @@ import styles from './pdfStudio.module.css';
 import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
 import { ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
 import { usePdfCompressStudio } from './usePdfCompressStudio.ts';
-import { usePdfToWordStudio, useWordToPdfStudio } from './usePdfConvertStudio.ts';
 import { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 import { usePdfSplitStudio } from './usePdfSplitStudio.ts';
+import { usePdfToWordStudio } from './usePdfToWordStudio.ts';
+import { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 import { WordToPdfLeftCards, WordToPdfRightCards } from './WordToPdfCards.tsx';
 
 export type { PdfToolTab };
@@ -328,12 +329,21 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
   };
 
   return (
-    <div class={styles.studioContainer}>
+    // biome-ignore lint/a11y/noStaticElementInteractions: drop target for files; the Open buttons give keyboard access.
+    <div
+      class={styles.studioContainer}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const list = e.dataTransfer?.files;
+        if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);
+      }}
+    >
       <input
         ref={fileInputRef}
         type="file"
         multiple={activeTab === 'merge' || activeTab === 'wordToPdf'}
-        accept={activeTab === 'wordToPdf' ? '.docx,.doc' : 'application/pdf'}
+        accept={activeTab === 'wordToPdf' ? '.docx' : 'application/pdf'}
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />

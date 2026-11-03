@@ -166,6 +166,8 @@ function JpgToPdfWorkbench({
           fitMode={s.fitMode}
           margins={s.margins}
           outputFileName={s.outputFileName}
+          extras={s.extras}
+          onSetExtras={s.setExtras}
           onSetPageSize={s.setPageSize}
           onSetOrientation={s.setOrientation}
           onSetFitMode={s.setFitMode}

@@ -1,161 +1,80 @@
 import { PDFDocument } from 'pdf-lib';
-import { useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { buildZipArchive, type ZipEntry } from './docxZipPacker.ts';
+import { openUserPdf } from './pdfInput.ts';
+import {
+  defaultRanges,
+  parsePageList,
+  resolveSplitParts,
+  type SplitMode,
+  type SplitPartInfo,
+  type SplitRange,
+} from './pdfSplitPlan.ts';
 import {
   createSamplePdf,
   SAMPLE_HEAVY_BOOK_FILE,
   SAMPLE_SPLIT_FILE,
 } from './samplePdfDocuments.ts';
 
-export interface SplitRange {
-  id: string;
-  start: number;
-  end: number;
-}
+export type { SplitMode, SplitPartInfo, SplitRange } from './pdfSplitPlan.ts';
 
-export interface SplitPartInfo {
-  index: number;
-  name: string;
-  startPage: number;
-  endPage: number;
-  pageCount: number;
-  sizeBytes: number;
-}
-
-export type SplitMode = 'ranges' | 'extract' | 'every' | 'chunks';
-
-function resolveRangeParts(
-  ranges: SplitRange[],
-  totalPages: number,
-  pattern: string,
-  baseFileSize: number,
-): SplitPartInfo[] {
-  const parts: SplitPartInfo[] = [];
-  for (let i = 0; i < ranges.length; i++) {
-    const r = ranges[i];
-    if (!r) continue;
-    const count = Math.max(0, r.end - r.start + 1);
-    const estSize = Math.round((baseFileSize / totalPages) * count);
-    const name = `${(pattern || 'Part_{n}').replace('{n}', String(i + 1))}.pdf`;
-    parts.push({
-      index: i + 1,
-      name,
-      startPage: r.start,
-      endPage: r.end,
-      pageCount: count,
-      sizeBytes: estSize,
-    });
-  }
-  return parts;
-}
-
-function resolveChunkParts(
-  chunkSize: number,
-  totalPages: number,
-  pattern: string,
-  baseFileSize: number,
-): SplitPartInfo[] {
-  const parts: SplitPartInfo[] = [];
-  const size = Math.max(1, chunkSize);
-  let pIdx = 1;
-  for (let s = 1; s <= totalPages; s += size) {
-    const e = Math.min(s + size - 1, totalPages);
-    const count = e - s + 1;
-    const estSize = Math.round((baseFileSize / totalPages) * count);
-    const name = `${(pattern || 'Part_{n}').replace('{n}', String(pIdx))}.pdf`;
-    parts.push({
-      index: pIdx,
-      name,
-      startPage: s,
-      endPage: e,
-      pageCount: count,
-      sizeBytes: estSize,
-    });
-    pIdx++;
-  }
-  return parts;
-}
-
-function resolveEveryParts(
-  totalPages: number,
-  pattern: string,
-  baseFileSize: number,
-): SplitPartInfo[] {
-  const parts: SplitPartInfo[] = [];
-  const limit = Math.min(totalPages, 50);
-  for (let i = 1; i <= limit; i++) {
-    const estSize = Math.round(baseFileSize / totalPages);
-    const name = `${(pattern || 'Page_{n}').replace('{n}', String(i))}.pdf`;
-    parts.push({ index: i, name, startPage: i, endPage: i, pageCount: 1, sizeBytes: estSize });
-  }
-  return parts;
-}
-
-export function resolveSplitParts(
-  mode: SplitMode,
-  totalPages: number,
-  ranges: SplitRange[],
-  _extractInput: string,
-  chunkSize: number,
-  pattern: string,
-  baseFileSize: number,
-): SplitPartInfo[] {
-  if (totalPages <= 0) return [];
-  if (mode === 'ranges') return resolveRangeParts(ranges, totalPages, pattern, baseFileSize);
-  if (mode === 'every') return resolveEveryParts(totalPages, pattern, baseFileSize);
-  if (mode === 'chunks') return resolveChunkParts(chunkSize, totalPages, pattern, baseFileSize);
-  return [
-    {
-      index: 1,
-      name: 'Extracted-Pages.pdf',
-      startPage: 1,
-      endPage: 4,
-      pageCount: 4,
-      sizeBytes: Math.round((baseFileSize / totalPages) * 4),
-    },
-  ];
-}
-
-async function generateSplitZipEntries(
+export async function buildSplitFiles(
+  source: Uint8Array,
   parts: SplitPartInfo[],
-  fileName: string,
-  totalPages: number,
-  fileBytes: Uint8Array | null,
 ): Promise<ZipEntry[]> {
-  const rawBytes = fileBytes ?? (await createSamplePdf(fileName, totalPages));
-  const srcDoc = await PDFDocument.load(rawBytes, { ignoreEncryption: true });
-  const zipEntries: ZipEntry[] = [];
-
+  const src = await PDFDocument.load(source, { ignoreEncryption: true, updateMetadata: false });
+  const out: ZipEntry[] = [];
   for (const part of parts) {
-    const subDoc = await PDFDocument.create();
-    const startIdx = Math.max(0, part.startPage - 1);
-    const endIdx = Math.min(srcDoc.getPageCount() - 1, part.endPage - 1);
-    const indices = Array.from({ length: endIdx - startIdx + 1 }, (_, i) => startIdx + i);
-    const copied = await subDoc.copyPages(srcDoc, indices);
-    for (const p of copied) subDoc.addPage(p);
-    const partBytes = await subDoc.save();
-    zipEntries.push({ name: part.name, data: partBytes });
+    const doc = await PDFDocument.create();
+    const pages = await doc.copyPages(
+      src,
+      part.pages.map((p) => p - 1),
+    );
+    for (const p of pages) doc.addPage(p);
+    out.push({ name: part.name, data: await doc.save() });
   }
+  return out;
+}
 
-  return zipEntries;
+function useSplitFileState(notify?: (msg: string) => void) {
+  const [fileName, setFileName] = useState('');
+  const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
+  const take = async (name: string, bytes: Uint8Array) => {
+    const opened = await openUserPdf(name, bytes);
+    if (!opened.ok) {
+      notify?.(opened.message);
+      return 0;
+    }
+    setFileName(name);
+    setFileSizeBytes(bytes.length);
+    setTotalPages(opened.doc.getPageCount());
+    setFileBytes(bytes);
+    return opened.doc.getPageCount();
+  };
+  return {
+    fileName,
+    fileSizeBytes,
+    totalPages,
+    fileBytes,
+    take,
+    clearAll: () => {
+      setFileName('');
+      setTotalPages(0);
+      setFileSizeBytes(0);
+      setFileBytes(null);
+    },
+  };
 }
 
 function usePdfSplitOptions() {
   const [mode, setMode] = useState<SplitMode>('ranges');
-  const [ranges, setRanges] = useState<SplitRange[]>([
-    { id: 'r1', start: 1, end: 12 },
-    { id: 'r2', start: 13, end: 42 },
-    { id: 'r3', start: 43, end: 78 },
-    { id: 'r4', start: 79, end: 124 },
-  ]);
-  const [extractInput, setExtractInput] = useState('1, 3, 5-12');
+  const [ranges, setRanges] = useState<SplitRange[]>([]);
+  const [extractInput, setExtractInput] = useState('1');
   const [chunkSize, setChunkSize] = useState(10);
-  const [keepBookmarks, setKeepBookmarks] = useState(true);
-  const [separateFiles, setSeparateFiles] = useState(true);
-  const [compressOutput, setCompressOutput] = useState(false);
-  const [pattern, setPattern] = useState('Audit-Report-2025_Part_{n}');
+  const [pattern, setPattern] = useState('Part_{n}');
   const [downloadAsZip, setDownloadAsZip] = useState(true);
-
   return {
     mode,
     setMode,
@@ -165,12 +84,6 @@ function usePdfSplitOptions() {
     setExtractInput,
     chunkSize,
     setChunkSize,
-    keepBookmarks,
-    setKeepBookmarks,
-    separateFiles,
-    setSeparateFiles,
-    compressOutput,
-    setCompressOutput,
     pattern,
     setPattern,
     downloadAsZip,
@@ -178,197 +91,160 @@ function usePdfSplitOptions() {
   };
 }
 
-function useSplitFileState(notify?: (msg: string) => void) {
-  const [fileName, setFileName] = useState('');
-  const [fileSizeBytes, setFileSizeBytes] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
-
-  return {
-    fileName,
-    fileSizeBytes,
-    totalPages,
-    fileBytes,
-    clearAll: () => {
-      setFileName('');
-      setTotalPages(0);
-      setFileSizeBytes(0);
-      setFileBytes(null);
-    },
-    loadSampleSplit: () => {
-      setFileName(SAMPLE_SPLIT_FILE.name);
-      setFileSizeBytes(SAMPLE_SPLIT_FILE.sizeBytes);
-      setTotalPages(SAMPLE_SPLIT_FILE.pageCount);
-      setFileBytes(null);
-    },
-    loadHeavyBookSample: () => {
-      setFileName(SAMPLE_HEAVY_BOOK_FILE.name);
-      setFileSizeBytes(SAMPLE_HEAVY_BOOK_FILE.sizeBytes);
-      setTotalPages(SAMPLE_HEAVY_BOOK_FILE.pageCount);
-      setFileBytes(null);
-    },
-    handleAddNativeFile: async (file: File) => {
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-        setFileName(file.name);
-        setFileSizeBytes(file.size);
-        setTotalPages(doc.getPageCount());
-        setFileBytes(bytes);
-      } catch {
-        notify?.('Failed to read PDF.');
-      }
-    },
-  };
+function saveFile(data: Uint8Array, name: string, type: string) {
+  const url = URL.createObjectURL(new Blob([data as BlobPart], { type }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+type FileState = ReturnType<typeof useSplitFileState>;
+type Options = ReturnType<typeof usePdfSplitOptions>;
+
 function useSplitActions(
-  fileState: ReturnType<typeof useSplitFileState>,
-  opts: ReturnType<typeof usePdfSplitOptions>,
-  notify?: (msg: string) => void,
+  file: FileState,
+  opts: Options,
+  parts: SplitPartInfo[],
+  notify?: (m: string) => void,
 ) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [generatedBlobUrl, setGeneratedBlobUrl] = useState<string | null>(null);
+  const [result, setResult] = useState<ZipEntry[] | null>(null);
+  useEffect(() => setResult(null), [file.fileBytes, parts]);
+  const base = file.fileName.replace(/\.[^/.]+$/, '') || 'document';
 
-  async function executeSplit() {
-    if (fileState.totalPages <= 0) return;
+  async function executeSplit(): Promise<ZipEntry[] | null> {
+    if (!file.fileBytes) return null;
+    if (parts.length === 0) {
+      notify?.('Nothing to split: check the page ranges or page list.');
+      return null;
+    }
     setIsProcessing(true);
     try {
-      const parts = resolveSplitParts(
-        opts.mode,
-        fileState.totalPages,
-        opts.ranges,
-        opts.extractInput,
-        opts.chunkSize,
-        opts.pattern,
-        fileState.fileSizeBytes,
-      );
-      const zipEntries = await generateSplitZipEntries(
-        parts,
-        fileState.fileName,
-        fileState.totalPages,
-        fileState.fileBytes,
-      );
-      const isZip = opts.downloadAsZip || zipEntries.length > 1;
-      const data = isZip ? buildZipArchive(zipEntries) : zipEntries[0]?.data || new Uint8Array();
-      setGeneratedBlobUrl(
-        URL.createObjectURL(
-          new Blob([data as BlobPart], { type: isZip ? 'application/zip' : 'application/pdf' }),
-        ),
-      );
-      notify?.('PDF split completed successfully!');
+      const files = await buildSplitFiles(file.fileBytes, parts);
+      setResult(files);
+      notify?.(`Created ${files.length} PDF file${files.length === 1 ? '' : 's'}.`);
+      return files;
     } catch {
-      notify?.('Split operation failed.');
+      notify?.('Split failed. The PDF may be damaged or protected.');
+      return null;
     } finally {
       setIsProcessing(false);
     }
   }
 
-  function downloadResult() {
-    if (!generatedBlobUrl) {
-      void executeSplit();
-      return;
-    }
-    const a = document.createElement('a');
-    a.href = generatedBlobUrl;
-    a.download = opts.downloadAsZip
-      ? `${fileState.fileName.replace(/\.[^/.]+$/, '')}-split.zip`
-      : 'Split-Part-1.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  async function downloadResult() {
+    const files = result ?? (await executeSplit());
+    if (!files || files.length === 0) return;
+    if (files.length === 1 && files[0]) saveFile(files[0].data, files[0].name, 'application/pdf');
+    else if (opts.downloadAsZip)
+      saveFile(buildZipArchive(files), `${base}-split.zip`, 'application/zip');
+    else for (const f of files) saveFile(f.data, f.name, 'application/pdf');
   }
 
-  return { isProcessing, generatedBlobUrl, executeSplit, downloadResult };
+  return {
+    isProcessing,
+    generatedBlobUrl: result ? 'ready' : null,
+    result,
+    executeSplit,
+    downloadResult,
+  };
 }
 
-function handlePageSelection(
-  pg: number,
-  mode: SplitMode,
-  totalPages: number,
-  setExtractInput: (fn: (prev: string) => string) => void,
-  setRanges: (fn: (prev: SplitRange[]) => SplitRange[]) => void,
-  notify?: (msg: string) => void,
-) {
-  if (mode === 'extract') {
-    setExtractInput((prev) => {
-      const tokens = prev
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const str = String(pg);
-      if (tokens.includes(str)) return tokens.filter((s) => s !== str).join(', ');
-      return tokens.length > 0 ? `${prev}, ${str}` : str;
-    });
-    notify?.(`Selected page ${pg} for extraction`);
-  } else {
-    setRanges((p) => [
-      ...p,
-      { id: `r-${Date.now()}`, start: pg, end: Math.min(pg + 5, totalPages || pg) },
-    ]);
-    notify?.(`Added page ${pg} range`);
-  }
+function rangeActions(opts: Options, totalPages: number) {
+  return {
+    addRange: () => {
+      const last = opts.ranges[opts.ranges.length - 1];
+      const start = Math.min((last?.end ?? 0) + 1, totalPages || 1);
+      const end = Math.min(start + 9, totalPages || start);
+      opts.setRanges((p) => [...p, { id: `r-${p.length + 1}-${start}`, start, end }]);
+    },
+    removeRange: (id: string) => opts.setRanges((p) => p.filter((r) => r.id !== id)),
+  };
+}
+
+function togglePage(prev: string, pg: number): string {
+  const tokens = prev
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const str = String(pg);
+  return tokens.includes(str)
+    ? tokens.filter((s) => s !== str).join(', ')
+    : [...tokens, str].join(', ');
+}
+
+function useSplitParts(file: FileState, opts: Options): SplitPartInfo[] {
+  const { mode, ranges, extractInput, chunkSize, pattern } = opts;
+  const { totalPages, fileSizeBytes, fileName } = file;
+  return useMemo(
+    () =>
+      resolveSplitParts({
+        mode,
+        totalPages,
+        ranges,
+        extractInput,
+        chunkSize,
+        pattern,
+        baseFileSize: fileSizeBytes,
+        baseName: fileName.replace(/\.[^/.]+$/, '') || 'document',
+      }),
+    [mode, totalPages, ranges, extractInput, chunkSize, pattern, fileSizeBytes, fileName],
+  );
 }
 
 export function usePdfSplitStudio(notify?: (msg: string) => void) {
-  const fileState = useSplitFileState(notify);
+  const file = useSplitFileState(notify);
   const opts = usePdfSplitOptions();
-  const actions = useSplitActions(fileState, opts, notify);
   const [selectedPage, setSelectedPage] = useState(1);
+  const parts = useSplitParts(file, opts);
+  const actions = useSplitActions(file, opts, parts, notify);
 
-  const onSelectPage = (pg: number) => {
-    setSelectedPage(pg);
-    handlePageSelection(
-      pg,
-      opts.mode,
-      fileState.totalPages,
-      opts.setExtractInput,
-      opts.setRanges,
-      notify,
-    );
+  const open = async (name: string, bytes: Uint8Array) => {
+    const pages = await file.take(name, bytes);
+    if (pages > 0) {
+      opts.setRanges(defaultRanges(pages));
+      opts.setExtractInput('1');
+      notify?.(`Loaded ${name} (${pages} pages)`);
+    }
+    return pages;
   };
+  const loadSample = async (meta: { name: string; pageCount: number }) =>
+    open(meta.name, await createSamplePdf(meta.name.replace(/\.pdf$/i, ''), meta.pageCount));
 
   return {
-    ...fileState,
+    ...file,
     ...opts,
     ...actions,
+    parts,
+    invalidPages:
+      opts.mode === 'extract' ? parsePageList(opts.extractInput, file.totalPages).invalid : [],
     selectedPage,
     setSelectedPage,
-    onSelectPage,
-    parts: resolveSplitParts(
-      opts.mode,
-      fileState.totalPages,
-      opts.ranges,
-      opts.extractInput,
-      opts.chunkSize,
-      opts.pattern,
-      fileState.fileSizeBytes,
-    ),
-    addRange: () => {
-      const last = opts.ranges[opts.ranges.length - 1];
-      const nextStart = last ? Math.min(last.end + 1, fileState.totalPages) : 1;
-      opts.setRanges((p) => [
-        ...p,
-        {
-          id: `r-${Date.now()}`,
-          start: nextStart,
-          end: Math.min(nextStart + 10, fileState.totalPages),
-        },
-      ]);
+    onSelectPage: (pg: number) => {
+      setSelectedPage(pg);
+      if (opts.mode === 'extract') opts.setExtractInput((p) => togglePage(p, pg));
     },
-    removeRange: (id: string) => opts.setRanges((p) => p.filter((r) => r.id !== id)),
-    splitHeavyBookIntoChapters: () => {
-      fileState.loadHeavyBookSample();
+    loadSampleSplit: () => void loadSample(SAMPLE_SPLIT_FILE),
+    handleAddNativeFile: async (f: File | undefined) => {
+      if (f) await open(f.name, new Uint8Array(await f.arrayBuffer()));
+    },
+    ...rangeActions(opts, file.totalPages),
+    splitHeavyBookIntoChapters: async () => {
+      if ((await loadSample(SAMPLE_HEAVY_BOOK_FILE)) === 0) return;
       opts.setMode('chunks');
       opts.setChunkSize(100);
       opts.setPattern('Textbook_Chapter_{n}');
-      notify?.('Loaded 1,600-page book: 16 chapters of 100 pages each ready to split!');
     },
     copySummary: () => {
-      void navigator.clipboard.writeText(
-        `BeyondTheAI PDF Split: ${fileState.fileName} (${fileState.totalPages} pages), Mode: ${opts.mode}`,
+      const n = parts.length;
+      void navigator.clipboard?.writeText(
+        `${file.fileName} (${file.totalPages} pages): ${n} output file(s).`,
       );
-      notify?.('Split summary copied!');
+      notify?.('Summary copied');
     },
   };
 }

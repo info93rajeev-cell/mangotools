@@ -33,10 +33,42 @@ export type CodecResult =
   | { ok: true; text: string; changedCount: number }
   | { ok: false; code: 'DATA_URL_MALFORMED_ESCAPE' | 'DATA_URL_INVALID_UTF8'; offset?: number };
 
-function keepAsIs(text: string, offset: number, ch: string, mode: UrlMode): boolean {
+export interface EncodeOptions {
+  /** How a space is written: by mode (form → +, else %20), always %20, or always +. */
+  space: 'default' | 'percent' | 'plus';
+  /** Encode the sub-delimiters ! ' ( ) * in component and form modes (RFC 3986 strict). */
+  encodeSubDelims: boolean;
+  /** Leave an existing valid %XX escape as it is instead of encoding its % again. */
+  keepEscapes: boolean;
+}
+
+export const DEFAULT_ENCODE: EncodeOptions = {
+  space: 'default',
+  encodeSubDelims: true,
+  keepEscapes: false,
+};
+
+const SUB_DELIMS = new Set(['!', "'", '(', ')', '*']);
+
+function keepAsIs(
+  text: string,
+  offset: number,
+  ch: string,
+  mode: UrlMode,
+  opts: EncodeOptions,
+): boolean {
   if (UNRESERVED.test(ch)) return true;
-  if (mode !== 'full-url') return false;
-  return RESERVED.has(ch) || (ch === '%' && HEX.test(text.slice(offset + 1, offset + 3)));
+  const validEscape = ch === '%' && HEX.test(text.slice(offset + 1, offset + 3));
+  if (mode !== 'full-url') {
+    return (opts.keepEscapes && validEscape) || (!opts.encodeSubDelims && SUB_DELIMS.has(ch));
+  }
+  return RESERVED.has(ch) || validEscape;
+}
+
+function spaceFor(mode: UrlMode, opts: EncodeOptions): string {
+  if (opts.space === 'plus') return '+';
+  if (opts.space === 'percent') return '%20';
+  return mode === 'form' ? '+' : '%20';
 }
 
 function percentEncode(ch: string, encoder: TextEncoder): string {
@@ -45,7 +77,11 @@ function percentEncode(ch: string, encoder: TextEncoder): string {
   return out;
 }
 
-export function encodeUrl(text: string, mode: UrlMode): CodecResult {
+export function encodeUrl(
+  text: string,
+  mode: UrlMode,
+  opts: EncodeOptions = DEFAULT_ENCODE,
+): CodecResult {
   const encoder = new TextEncoder();
   let out = '';
   let changed = 0;
@@ -53,9 +89,9 @@ export function encodeUrl(text: string, mode: UrlMode): CodecResult {
   for (const ch of text) {
     const cp = ch.codePointAt(0) ?? 0;
     if (cp >= 0xd800 && cp <= 0xdfff) return { ok: false, code: 'DATA_URL_INVALID_UTF8', offset };
-    const kept = keepAsIs(text, offset, ch, mode);
+    const kept = keepAsIs(text, offset, ch, mode, opts);
     if (kept) out += ch;
-    else out += mode === 'form' && ch === ' ' ? '+' : percentEncode(ch, encoder);
+    else out += ch === ' ' ? spaceFor(mode, opts) : percentEncode(ch, encoder);
     if (!kept) changed++;
     offset += ch.length;
   }
@@ -84,13 +120,19 @@ function decodeEscape(
   return { bytes: [byte], length: 3, changed: true };
 }
 
-function decodeLiteral(text: string, i: number, mode: UrlMode, encoder: TextEncoder): DecodeStep {
-  if (mode === 'form' && text[i] === '+') return { bytes: [0x20], length: 1, changed: true };
+function decodeLiteral(
+  text: string,
+  i: number,
+  mode: UrlMode,
+  encoder: TextEncoder,
+  plusIsSpace = mode === 'form',
+): DecodeStep {
+  if (plusIsSpace && text[i] === '+') return { bytes: [0x20], length: 1, changed: true };
   const ch = String.fromCodePoint(text.codePointAt(i) ?? 0);
   return { bytes: [...encoder.encode(ch)], length: ch.length, changed: false };
 }
 
-export function decodeUrl(text: string, mode: UrlMode): CodecResult {
+export function decodeUrl(text: string, mode: UrlMode, plusIsSpace = mode === 'form'): CodecResult {
   const encoder = new TextEncoder();
   const bytes: number[] = [];
   let changed = 0;
@@ -99,7 +141,7 @@ export function decodeUrl(text: string, mode: UrlMode): CodecResult {
     const step =
       text[i] === '%'
         ? decodeEscape(text, i, mode, encoder)
-        : decodeLiteral(text, i, mode, encoder);
+        : decodeLiteral(text, i, mode, encoder, plusIsSpace);
     if (!step) return { ok: false, code: 'DATA_URL_MALFORMED_ESCAPE', offset: i };
     bytes.push(...step.bytes);
     if (step.changed) changed++;

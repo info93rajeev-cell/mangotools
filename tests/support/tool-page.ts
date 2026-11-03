@@ -3,9 +3,10 @@ import { expect, type Page } from '@playwright/test';
 
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
 export const SAMPLES = {
-  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹600.00' },
+  // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
+  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
   'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
-  'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
+  'profit-margin-calculator': { archetype: 'B', result: '₹81.36' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
   'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },
@@ -25,13 +26,15 @@ export const SAMPLES = {
     archetype: 'A',
     result: 'SGVsbG8sIEJleW9uZFRoZUFJISDwn5GLCkJhc2U2NCBlbmNvZGluZyBleGFtcGxlIHdpdGggVW5pY29kZS4K',
   },
+  // The studio's Example URLs button loads the reference example shown on first open.
   'url-encode-decode': {
     archetype: 'A',
-    result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
+    result: 'https%3A%2F%2Fbeyandtheai.com%2Fsearch%3Fq%3Ddeveloper%20tools\n%26lang%3Den',
   },
   // The studio's Sample CSV button loads the reference sample shown on first open.
   'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },
-  'json-to-csv': { archetype: 'A', result: 'Raj,50' },
+  // The studio's Load sample button loads the reference records shown on first open.
+  'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
 
@@ -198,6 +201,11 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
   }
   if (id === 'gst-calculator') {
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
+    return;
+  }
+  if (id === 'markup-calculator' || id === 'amazon-india-seller-fee-profit-estimator') {
+    // The studio runs its engine in the worker and shows "…" until the answer arrives.
+    await expect(primaryResult(page)).not.toHaveText('…');
     return;
   }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
