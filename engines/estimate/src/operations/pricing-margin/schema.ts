@@ -17,6 +17,12 @@ export const marginInput = z.strictObject({
   price: decimal.optional(),
   marginPercent: decimal.optional(),
   markupPercent: decimal.optional(),
+  /** Added to `cost` when cost is an input (packaging, freight-in, labour). */
+  extraCost: decimal.optional(),
+  /** Units sold; gives `profitTotal`. */
+  quantity: decimal.optional(),
+  /** GST rate charged on top of the tax-exclusive selling price; gives `priceWithGst`. */
+  gstPercent: decimal.optional(),
 });
 
 export const marginParams = z.strictObject({
@@ -29,6 +35,10 @@ export const marginOutput = z.strictObject({
   profit: z.string(),
   marginPercent: z.string().nullable(),
   markupPercent: z.string().nullable(),
+  /** profit × quantity, or null when no quantity is given. */
+  profitTotal: z.string().nullable(),
+  /** price × (1 + GST%), or null when no GST rate is given. */
+  priceWithGst: z.string().nullable(),
   working: z.array(workingStep),
 });
 

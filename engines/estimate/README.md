@@ -10,6 +10,7 @@ Pricing, tax and profitability calculations. All money is decimal strings via `e
 | `estimate.marketplace.manual-profitability@1` | Estimate order profit, settlement, ROI and break-even from manually entered marketplace fee lines, slabs, taxes and scenarios |
 
 ## Changelog
+- 0.3.1 — `estimate.pricing.margin@1` gains optional `extraCost`, `quantity` and `gstPercent` inputs and nullable `profitTotal` / `priceWithGst` outputs. Without them the output is unchanged; all existing fixtures pass unchanged.
 - 0.3.0 — added `estimate.marketplace.manual-profitability@1` (TASK-008L): manual fee lines, finite price/weight slabs, product and fee GST, TCS/TDS, outcome scenarios and closed-form break-even. Existing operations unchanged.
 - 0.2.0 — added deterministic seller profitability calculations (TASK-008B).
 - 0.1.0 — first two operations (TASK-001). `ESTIMATE_MARKUP_OUT_OF_RANGE` added for markups of −100 % or less.

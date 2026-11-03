@@ -198,7 +198,7 @@ function renderSpecialCalculators(props: ArchetypeProps) {
     return <DynamicAmazonFeeLayout notify={notify} />;
   }
   if (toolId === 'markup-calculator') {
-    return <DynamicMarkupCalculatorLayout notify={notify} />;
+    return <DynamicMarkupCalculatorLayout preset={preset} notify={notify} />;
   }
   if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
     return (

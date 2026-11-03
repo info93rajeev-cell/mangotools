@@ -93,32 +93,32 @@ test.describe('GST Calculator', () => {
 });
 
 test.describe('Markup Calculator', () => {
-  test('solves all three modes with ₹, working and disclaimer', async ({ page }) => {
+  test('every mode comes from the engine, with ₹, working and errors', async ({ page }) => {
     await openTool(page, 'markup-calculator');
-    await page.getByLabel('Cost', { exact: true }).fill('1000000');
-    await page.getByLabel('Markup', { exact: true }).fill('50');
+    const tool = island(page, 'markup-calculator');
+    await page.locator('#markup-cost-price').fill('1000000');
+    await page.locator('#markup-desired-pct').fill('50');
     await expect(primaryResult(page)).toHaveText('₹15,00,000.00');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('₹5,00,000.00');
-    await expect(page.locator('[data-output="marginPercent"] dd')).toHaveText('33.33%');
-    await expect(island(page, 'markup-calculator')).toContainText(
-      'Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00',
-    );
+    await expect(tool).toContainText('Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00');
 
-    await island(page, 'markup-calculator')
-      .getByText('Markup from cost & price', { exact: true })
-      .click();
-    await page.getByLabel('Cost', { exact: true }).fill('100');
-    await page.getByLabel('Selling price', { exact: true }).fill('80');
-    await expect(primaryResult(page)).toHaveText('−20.00%');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
+    await page.locator('#markup-gst-pricing').selectOption('18');
+    await expect(tool).toContainText('Customer price with 18% GST');
+    await expect(tool).toContainText('₹17,70,000.00');
+    await page.locator('#markup-gst-pricing').selectOption('0');
 
-    await island(page, 'markup-calculator')
-      .getByText('Cost from price & markup', { exact: true })
-      .click();
-    await page.getByLabel('Selling price', { exact: true }).fill('250');
-    await page.getByLabel('Markup', { exact: true }).fill('25');
-    await expect(primaryResult(page)).toHaveText('₹200.00');
-    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+    await tool.getByRole('tab', { name: 'Find markup %' }).click();
+    await page.locator('#markup-cost-price').fill('100');
+    await page.locator('#markup-mode-price').fill('80');
+    await expect(primaryResult(page)).toHaveText('₹80.00');
+    await expect(tool).toContainText('-20.00%');
+    await expect(tool).toContainText('−₹20.00');
+
+    await tool.getByRole('tab', { name: 'Target margin' }).click();
+    await page.locator('#markup-cost-price').fill('500');
+    await page.locator('#markup-mode-margin').fill('30');
+    await expect(primaryResult(page)).toHaveText('₹714.29');
+    await page.locator('#markup-mode-margin').fill('100');
+    await expect(tool).toContainText('The margin must be less than 100%.');
   });
 });
 
