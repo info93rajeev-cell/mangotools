@@ -1,6 +1,24 @@
-import { useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import type { SellerProfitabilityState } from './useSellerProfitability.ts';
+
+/** One labelled number input bound to a studio value. */
+function NumField(props: { id: string; label: string; value: number; set: (v: number) => void }) {
+  return (
+    <div class={styles.field}>
+      <label class={styles.label} for={props.id}>
+        {props.label}
+      </label>
+      <input
+        id={props.id}
+        type="number"
+        inputMode="decimal"
+        class={styles.fieldInput}
+        value={props.value}
+        onInput={(e) => props.set(Number((e.target as HTMLInputElement).value) || 0)}
+      />
+    </div>
+  );
+}
 
 export function SellerPriceAndCostsCard({ state }: { state: SellerProfitabilityState }) {
   const {
@@ -16,30 +34,12 @@ export function SellerPriceAndCostsCard({ state }: { state: SellerProfitabilityS
     setMonthlyQty,
     copySummary,
   } = state;
-  const [productTab, setProductTab] = useState<'single' | 'compare'>('single');
 
   return (
     <section class={styles.card} aria-label="Selling Price and Costs">
       <div class={styles.heading}>
         <span class={`${styles.ico} ${styles.icoViolet}`}>▤</span>
         <span>Selling Price & Costs</span>
-      </div>
-
-      <div class={styles.tabs} role="tablist" aria-label="Product Mode">
-        <button
-          type="button"
-          class={`${styles.tab} ${productTab === 'single' ? styles.tabActive : ''}`}
-          onClick={() => setProductTab('single')}
-        >
-          Single product
-        </button>
-        <button
-          type="button"
-          class={`${styles.tab} ${productTab === 'compare' ? styles.tabActive : ''}`}
-          onClick={() => setProductTab('compare')}
-        >
-          Compare products
-        </button>
       </div>
 
       <div class={styles.grid2}>
@@ -94,6 +94,27 @@ export function SellerPriceAndCostsCard({ state }: { state: SellerProfitabilityS
             onInput={(e) => setShippingCost(Number((e.target as HTMLInputElement).value) || 0)}
           />
         </div>
+      </div>
+
+      <div class={styles.grid3} style={{ marginTop: '8px' }}>
+        <NumField
+          id="seller-warehousing"
+          label="Warehousing (₹)"
+          value={state.warehousingCost}
+          set={state.setWarehousingCost}
+        />
+        <NumField
+          id="seller-labour"
+          label="Labour (₹)"
+          value={state.labourCost}
+          set={state.setLabourCost}
+        />
+        <NumField
+          id="seller-overhead"
+          label="Overhead (₹)"
+          value={state.overheadCost}
+          set={state.setOverheadCost}
+        />
       </div>
 
       <div class={styles.divider} />
@@ -196,9 +217,40 @@ export function SellerMarketplaceFeesCard({ state }: { state: SellerProfitabilit
         </div>
       </div>
 
+      <div class={styles.field} style={{ marginTop: '8px' }}>
+        <label class={styles.label} for="seller-gst-inclusive">
+          Does your price include GST?
+        </label>
+        <select
+          id="seller-gst-inclusive"
+          class={styles.fieldInput}
+          value={state.isGstInclusive ? 'yes' : 'no'}
+          onChange={(e) => state.setIsGstInclusive((e.target as HTMLSelectElement).value === 'yes')}
+        >
+          <option value="yes">Yes, price includes GST</option>
+          <option value="no">No, GST is added on top</option>
+        </select>
+      </div>
+
+      <div class={styles.grid2} style={{ marginTop: '8px' }}>
+        <NumField
+          id="seller-closing-fee"
+          label="Closing fee (₹)"
+          value={state.closingFee}
+          set={state.setClosingFee}
+        />
+        <NumField
+          id="seller-fee-gst-rate"
+          label="GST on fees (%)"
+          value={state.feeGstRate}
+          set={state.setFeeGstRate}
+        />
+      </div>
+
       <div class={styles.note} style={{ marginTop: '9px' }}>
-        GST inside your price goes to the government and is taken out of profit. Marketplace fees
-        carry 18% GST. Use actual fee values; samples are not marketplace tariffs.
+        GST inside your price goes to the government and is taken out of profit. GST on fees is
+        counted as a cost; set it to 0% if you claim input-tax credit. Use your actual fee values;
+        samples are not marketplace tariffs.
       </div>
     </section>
   );

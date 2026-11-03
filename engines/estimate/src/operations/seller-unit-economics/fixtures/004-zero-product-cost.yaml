@@ -1,0 +1,10 @@
+id: 004-zero-product-cost
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "Commission 10% x 500 = 50; profit 450; markup is undefined with zero cost; with no fixed cost every price breaks even (0.00)" }
+input: { sellingPrice: "500", productCost: "0", gstRatePercent: "0", commissionPercent: "10" }
+expected:
+  netProfit: "450.00"
+  netMarginPercent: "90.00"
+  markupPercent: null
+  breakEvenPrice: "0.00"
+expectedWarnings: [ESTIMATE_MARKUP_UNDEFINED]
