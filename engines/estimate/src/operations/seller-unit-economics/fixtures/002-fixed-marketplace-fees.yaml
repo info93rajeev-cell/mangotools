@@ -1,0 +1,28 @@
+id: 002-fixed-marketplace-fees
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "Revenue 1500 x 100/118 = 1271.19; fees 120 + 25 + 100 = 245, GST 18% = 44.10; costs 600 + 35 + 245 + 44.10 + 60 + 40 = 1024.10; profit 247.09; payout 1500 - 245 - 44.10 - 7.63 = 1203.27; break-even 1024.10 / (100/118) = 1208.44" }
+input:
+  sellingPrice: "1500"
+  gstRatePercent: "18"
+  productCost: "600"
+  packagingCost: "35"
+  referralFee: "120"
+  closingFee: "25"
+  handlingFee: "100"
+  feeGstRatePercent: "18"
+  advertisingCost: "60"
+  expectedReturnCost: "40"
+  withholdingPercent: "0.6"
+  quantity: "100"
+expected:
+  netRevenue: "1271.19"
+  marketplaceFees: "245.00"
+  marketplaceFeeGst: "44.10"
+  totalCosts: "1024.10"
+  netProfit: "247.09"
+  withholding: "7.63"
+  cashSettlement: "1203.27"
+  monthlyProfit: "24709.00"
+  breakEvenPrice: "1208.44"
+  priceForTargetProfit: null
+  priceForTargetMargin: null

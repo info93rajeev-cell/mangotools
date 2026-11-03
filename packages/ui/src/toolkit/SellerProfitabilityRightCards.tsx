@@ -1,6 +1,20 @@
 import styles from './businessStudio.module.css';
 import type { SellerProfitabilityState } from './useSellerProfitability.ts';
 
+const priceText = (v: number) =>
+  Number.isFinite(v)
+    ? `₹${v.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : 'Not reachable';
+
+function PriceStrip({ label, value }: { label: string; value: number }) {
+  return (
+    <div class={styles.strip} style={{ marginTop: '8px' }}>
+      <span>{label}</span>
+      <b>{priceText(value)}</b>
+    </div>
+  );
+}
+
 export function SellerTargetBreakevenCard({ state }: { state: SellerProfitabilityState }) {
   const { targetProfit, setTargetProfit, targetMargin, setTargetMargin, calculation } = state;
 
@@ -38,16 +52,12 @@ export function SellerTargetBreakevenCard({ state }: { state: SellerProfitabilit
         </div>
       </div>
 
-      <div class={styles.strip} style={{ marginTop: '10px' }}>
-        <span>Break-even price*</span>
-        <b>
-          {Number.isFinite(calculation.breakEvenPrice)
-            ? `₹${calculation.breakEvenPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
-            : 'Not reachable'}
-        </b>
-      </div>
+      <PriceStrip label="Break-even price*" value={calculation.breakEvenPrice} />
+      <PriceStrip label="Price for target profit" value={calculation.priceForTargetProfit} />
+      <PriceStrip label="Price for desired margin" value={calculation.priceForTargetMargin} />
       <p class={styles.muted}>
-        *The price where profit is zero, with the same fees, GST and returns.
+        *The price where profit is zero, with the same fees, GST and returns. Target prices use the
+        same costs; desired margin is profit ÷ revenue without GST.
       </p>
     </section>
   );
@@ -90,8 +100,25 @@ export function SellerReturnsRtoCard({ state }: { state: SellerProfitabilityStat
         </div>
       </div>
 
+      <div class={styles.field} style={{ marginTop: '8px' }}>
+        <label class={styles.label} for="seller-damaged">
+          Product lost per return (%)
+        </label>
+        <input
+          id="seller-damaged"
+          type="number"
+          inputMode="decimal"
+          class={styles.fieldInput}
+          value={state.damagedLossPercent}
+          onInput={(e) =>
+            state.setDamagedLossPercent(Number((e.target as HTMLInputElement).value) || 0)
+          }
+        />
+      </div>
+
       <div class={styles.warn} style={{ marginTop: '9px' }}>
-        Return-adjusted profit requires a stated probability and recovery assumption.
+        Returns cost = return rate × (reverse shipping + the share of product cost you cannot
+        resell).
       </div>
     </section>
   );
@@ -101,10 +128,10 @@ export function SellerExportCompareCard({ state }: { state: SellerProfitabilityS
   const { copySummary, downloadCsv } = state;
 
   return (
-    <section class={styles.card} aria-label="Export or Compare">
+    <section class={styles.card} aria-label="Export">
       <div class={styles.heading}>
         <span class={`${styles.ico} ${styles.icoCyan}`}>⇩</span>
-        <span>Export / Compare</span>
+        <span>Export</span>
       </div>
 
       <div class={styles.miniList}>
@@ -113,9 +140,6 @@ export function SellerExportCompareCard({ state }: { state: SellerProfitabilityS
         </button>
         <button type="button" class={styles.pill} onClick={downloadCsv}>
           <span>⇩ Download CSV</span>
-        </button>
-        <button type="button" class={styles.pill} onClick={copySummary}>
-          <span>⚖ Compare Scenarios</span>
         </button>
       </div>
     </section>

@@ -38,7 +38,9 @@ export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfita
           <span class={`${styles.ico} ${styles.icoViolet}`}>↗</span>
           <div class={styles.metricTextGroup}>
             <small>Markup on cost</small>
-            <strong>{calculation.markupOnCost}%</strong>
+            <strong>
+              {calculation.markupOnCost === null ? '—' : `${calculation.markupOnCost}%`}
+            </strong>
           </div>
         </div>
 
@@ -66,23 +68,19 @@ export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfita
   );
 }
 
-const rupees = (v: number) => `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+const rupees = (v: number) =>
+  `₹${v.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-/** Every line that makes up total expenses, so the table adds up to the total it shows. */
+/** Every line the engine adds into total costs, so the table adds up to the profit it shows. */
 function breakdownRows(state: SellerProfitabilityState): [string, number][] {
-  const { sellingPrice, productCost, packagingCost, shippingCost, adCost, otherCharges } = state;
   const c = state.calculation;
-  const rows: [string, number][] = [['Selling price', sellingPrice]];
-  if (c.outputGst > 0 && c.netBaseRevenue < sellingPrice) {
-    rows.push(['GST inside the price (paid to govt)', -c.outputGst]);
-  }
-  rows.push(['Product cost', -productCost]);
-  rows.push(['Packaging + shipping', -(packagingCost + shippingCost)]);
-  const backOffice = c.directFulfillment - packagingCost - shippingCost;
-  if (backOffice > 0) rows.push(['Warehousing, labour, overhead', -backOffice]);
+  const rows: [string, number][] = [['Selling price', state.sellingPrice]];
+  if (c.outputGst > 0) rows.push(['GST inside the price (paid to govt)', -c.outputGst]);
+  rows.push(['Product cost', -state.productCost]);
+  rows.push(['Packaging, shipping, warehousing, labour, overhead', -c.directFulfillment]);
   rows.push(['Commission + closing fee', -c.totalMarketplaceFees]);
   if (c.marketplaceFeeGst > 0) rows.push(['GST on marketplace fees', -c.marketplaceFeeGst]);
-  rows.push(['Ads + other', -(adCost + otherCharges)]);
+  rows.push(['Ads + other', -c.otherCosts]);
   if (c.rtoLossPerUnit > 0) rows.push(['Returns (per sale, averaged)', -c.rtoLossPerUnit]);
   return rows;
 }
@@ -109,7 +107,7 @@ export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfita
           {breakdownRows(state).map(([label, value]) => (
             <tr key={label}>
               <td>{label}</td>
-              <td>{value < 0 ? `−${rupees(-value)}` : rupees(value)}</td>
+              <td>{value < 0 ? `−${rupees(-value)}` : rupees(Math.abs(value))}</td>
             </tr>
           ))}
           <tr style={{ fontWeight: 850, background: loss ? '#fef2f2' : '#f0fdf4' }}>
@@ -125,16 +123,14 @@ export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfita
 }
 
 export function SellerWhereMoneyGoesCard({ state }: { state: SellerProfitabilityState }) {
-  const { sellingPrice, productCost, calculation: c } = state;
-  const sp = Math.max(1, sellingPrice);
-  const pct = (v: number) => Math.min(100, Math.max(0, Math.round((v / sp) * 100)));
-  const gst = c.netBaseRevenue < sellingPrice ? c.outputGst : 0;
-  const fees = c.totalMarketplaceFees + c.marketplaceFeeGst;
-  const prodPct = pct(productCost);
-  const feePct = pct(fees);
-  const gstPct = pct(gst);
-  const otherPct = pct(c.totalExpenses - productCost - fees);
-  const profitPct = pct(c.netProfit);
+  const c = state.calculation;
+  // Shares of the selling price come from the engine; a loss shows as 0% profit in the bar.
+  const pct = (v: number) => Math.min(100, Math.max(0, Math.round(v)));
+  const prodPct = pct(c.costPct);
+  const feePct = pct(c.feesPct);
+  const gstPct = pct(c.gstPct);
+  const otherPct = pct(c.fulfillmentPct + c.otherPct);
+  const profitPct = pct(c.profitPct);
 
   return (
     <section class={styles.card} aria-label="Where the Money Goes">
