@@ -404,7 +404,7 @@
 .badgeOk {
   background: #e9faf0;
   border: 1px solid #c9efdc;
-  color: #078f59;
+  color: #067347;
   border-radius: 8px;
   padding: 8px 10px;
   display: flex;
@@ -1645,7 +1645,7 @@ button.btnPrimarySolid:hover {
 }
 
 .treeCountBadge {
-  color: #64748b;
+  color: #526077;
   font-size: 10px;
   flex-shrink: 0;
 }
@@ -1862,7 +1862,7 @@ button.btnPrimarySolid:hover {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   display: grid;
   place-items: center;
@@ -2363,7 +2363,7 @@ button.btnPrimarySolid {
 }
 .treeLeafRow[data-type="string"] .treeKeyPill {
   background: #fce7f3;
-  color: #db2777;
+  color: #be185d;
 }
 .treeLeafRow[data-type="boolean"] .treeKeyPill {
   background: #dbeafe;
@@ -2547,7 +2547,7 @@ button.btnDangerOutline {
   max-height: clamp(320px, 46vh, 460px);
 }
 .gutterLine {
-  color: #94a3b8;
+  color: #526077;
 }
 
 /* Cards stand off the tinted page */
@@ -3339,4 +3339,670 @@ button.btnDangerOutline {
     width: 100%;
     min-height: 38px;
   }
+}
+
+/* Hand-tuned dark fixes after the axe pass. */
+:global([data-theme="dark"]) .gutterLine {
+  color: #94a3b8;
+}
+:global([data-theme="dark"]) .optSelect {
+  color: #e2e8f0;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .panel:hover {
+  border-color: #304564;
+}
+
+:global(:where([data-theme="dark"])) .toolIcon {
+  color: #568ff1;
+  background: #12253f;
+  border: 1px solid #304464;
+}
+
+:global(:where([data-theme="dark"])) .lineNum {
+  border-right: 1px solid #304164;
+}
+
+:global(:where([data-theme="dark"])) .ck {
+  color: #de7687;
+}
+
+:global(:where([data-theme="dark"])) .cn {
+  color: #6d9eee;
+}
+
+:global(:where([data-theme="dark"])) .cb {
+  color: #955de7;
+}
+
+:global(:where([data-theme="dark"])) .cs {
+  color: #abf7d5;
+}
+
+:global(:where([data-theme="dark"])) .noteLine {
+  color: #92a4bd;
+}
+
+:global(:where([data-theme="dark"])) .noteLineGreen {
+  color: #99f7cf;
+}
+
+:global(:where([data-theme="dark"])) .badgeOk {
+  color: #b0f9db;
+  background: #134126;
+  border: 1px solid #30644a;
+}
+
+:global(:where([data-theme="dark"])) .badgeErr {
+  color: #e87688;
+  background: #3d1217;
+  border: 1px solid #643037;
+}
+
+:global(:where([data-theme="dark"])) .mini {
+  background: #151e33;
+  border: 1px solid #304564;
+}
+
+:global(:where([data-theme="dark"])) .miniBlue {
+  background: linear-gradient(135deg, #11233c, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .miniGreen {
+  background: linear-gradient(135deg, #123d2a, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .miniPurple {
+  background: linear-gradient(135deg, #20113b, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .miniAmber {
+  background: linear-gradient(135deg, #3e3012, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .mini small {
+  color: #99a7bc;
+}
+
+:global(:where([data-theme="dark"])) .mini b {
+  color: #cdd8f2;
+}
+
+:global(:where([data-theme="dark"])) .chipBlue {
+  color: #6e9ceb;
+  background: #12223f;
+}
+
+:global(:where([data-theme="dark"])) .chipGreen {
+  color: #a4f8d3;
+  background: #144631;
+}
+
+:global(:where([data-theme="dark"])) .chipPurple {
+  color: #a482d5;
+  background: #21123f;
+}
+
+:global(:where([data-theme="dark"])) .chipAmber {
+  color: #f6ce91;
+  background: #473915;
+}
+
+:global(:where([data-theme="dark"])) .chipRed {
+  color: #d8778a;
+  background: #3f121c;
+}
+
+:global(:where([data-theme="dark"])) .kv {
+  border-bottom: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .kv span {
+  color: #99a8bc;
+}
+
+:global(:where([data-theme="dark"])) .kv b {
+  color: #c2d0e8;
+}
+
+:global(:where([data-theme="dark"])) .callout {
+  color: #a3b5cc;
+  background: #11243c;
+  border: 1px solid #304464;
+}
+
+:global(:where([data-theme="dark"])) .optcard {
+  background: linear-gradient(180deg, #151e33, #183131);
+  border: 1px solid #304864;
+}
+
+:global(:where([data-theme="dark"])) .optTitle {
+  color: #c9d6ee;
+}
+
+:global(:where([data-theme="dark"])) .optIcon {
+  color: #5e92f2;
+  background: #12233e;
+  border: 1px solid #304264;
+}
+
+:global(:where([data-theme="dark"])) .optLabel {
+  color: #9daabc;
+}
+
+:global(:where([data-theme="dark"])) .optSelect {
+  color: #bfcfe9;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .optCheckboxRow {
+  color: #aebdd0;
+}
+
+:global(:where([data-theme="dark"])) .optHelptext {
+  color: #99a7bd;
+}
+
+:global(:where([data-theme="dark"])) .btnPrimary {
+  color: #fff;
+}
+
+:global(:where([data-theme="dark"])) .btnSecondary {
+  color: #6899f1;
+  background: #151e33;
+  border: 1px solid #304564;
+}
+
+:global(:where([data-theme="dark"])) .btnSecondary:hover {
+  background: #11203a;
+  border-color: #304564;
+}
+
+:global(:where([data-theme="dark"])) .btnGold {
+  color: #0e1a33;
+}
+
+:global(:where([data-theme="dark"])) .tablewrap {
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .dataTable th {
+  color: #a6b7d0;
+  background: #12233d;
+  border-bottom: 1px solid #304464;
+}
+
+:global(:where([data-theme="dark"])) .dataTable td {
+  color: #bacae3;
+  border-bottom: 1px solid #304564;
+}
+
+:global(:where([data-theme="dark"])) .dataTable tbody tr:hover {
+  background: #11263b;
+}
+
+:global(:where([data-theme="dark"])) .unitSegmentBtnActive:hover {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) button.btnDangerOutline {
+  color: #e76c6c;
+  background: #151e33;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) button.btnDangerOutline:hover {
+  background: #3c1111;
+}
+
+:global(:where([data-theme="dark"])) button.btnPrimarySolid {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .expandEditorBtn {
+  color: #b8c1cf;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .expandEditorBtn:hover {
+  color: #639bf2;
+  background: #182838;
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .noteLeft {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .noteRight {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .noteRight strong {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .tabPillGroup {
+  background: #182838;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .tabPill {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .tabPillActive {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .invalidNotice,
+:global(:where([data-theme="dark"])) .tableNotice {
+  color: #ed9797;
+  background: #3c1111;
+  border: 1px solid #643030;
+}
+
+:global(:where([data-theme="dark"])) .tableNotice {
+  color: #b8c1cf;
+  background: #172635;
+  border-color: #324761;
+}
+
+:global(:where([data-theme="dark"])) .sideCardHeader {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .metricBlue {
+  background: #111c3a;
+}
+
+:global(:where([data-theme="dark"])) .metricPurple {
+  background: #26113b;
+}
+
+:global(:where([data-theme="dark"])) .metricAmber {
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .metricGreen {
+  background: #123d1f;
+}
+
+:global(:where([data-theme="dark"])) .metricText small {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeTrack {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .dataTypePct {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .treeChevron {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .treeRootBadge {
+  color: #f5bd9b;
+  background: #4b4116;
+}
+
+:global(:where([data-theme="dark"])) .treeCountBadge {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .treeChildren {
+  border-left: 1px dashed #36485e;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow:hover {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .badgeObject {
+  color: #7091ec;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .badgeArray {
+  color: #b377e8;
+  background: #26113b;
+  border: 1px solid #493064;
+}
+
+:global(:where([data-theme="dark"])) .badgeString {
+  color: #ef80ae;
+  background: #3d1229;
+  border: 1px solid #64304d;
+}
+
+:global(:where([data-theme="dark"])) .badgeNumber {
+  color: #a7f1c2;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .badgeBoolean {
+  color: #7091ec;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .badgeNull {
+  color: #b8c1cf;
+  background: #182838;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .badgeGeneric {
+  color: #a3adbd;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .optLinkBtn {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .switchLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .tooltipIcon {
+  color: #b8c1cf;
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .toggleSlider:before {
+  background-color: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .badgeOkCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .badgeErrCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .metricPill small {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .matchCountBadge {
+  color: #a3adbd;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .exampleRow {
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .exampleLabel {
+  color: #f5b889;
+}
+
+:global(:where([data-theme="dark"])) .optcard:nth-child(3) .optIcon {
+  color: #91f0b4;
+}
+
+:global(:where([data-theme="dark"])) .metricBlue .metricIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .metricPurple .metricIcon {
+  color: #a556ee;
+}
+
+:global(:where([data-theme="dark"])) .metricAmber .metricIcon {
+  color: #f2bd63;
+}
+
+:global(:where([data-theme="dark"])) .metricGreen .metricIcon {
+  color: #91f0b4;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeRow:nth-child(1) .dataTypeIcon {
+  color: #91f0b4;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeRow:nth-child(2) .dataTypeIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeRow:nth-child(4) .dataTypeIcon {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeRow:nth-child(5) .dataTypeIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeRow:nth-child(6) .dataTypeIcon {
+  color: #a556ee;
+}
+
+:global(:where([data-theme="dark"])) .treeValue {
+  background: #1a2335;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="number"] .treeKeyPill {
+  color: #a7f1c2;
+  background: #144525;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="string"] .treeKeyPill {
+  color: #ef80ae;
+  background: #41132d;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="boolean"] .treeKeyPill {
+  color: #7091ec;
+  background: #142944;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="null"] .treeKeyPill {
+  color: #b8c1cf;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .treeObjectKey {
+  color: #7091ec;
+  background: #132542;
+}
+
+:global(:where([data-theme="dark"])) .treeArrayKey {
+  color: #a556ee;
+  background: #28123f;
+}
+
+:global(:where([data-theme="dark"])) .treeNodeIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .treeNodeIcon[data-kind="array"] {
+  color: #a556ee;
+}
+
+:global(:where([data-theme="dark"])) .treeCountBadge {
+  background: #1a2838;
+}
+
+:global(:where([data-theme="dark"])) .optCheckboxRow {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .switchList label,
+:global(:where([data-theme="dark"])) .switchRow {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .switchLabel {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight :global(.jk) {
+  color: #ef7eaa;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight :global(.js) {
+  color: #7091ec;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight :global(.jd) {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight :global(.jb) {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .codeHighlight :global(.jn) {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .gutterLine {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .panel,
+:global(:where([data-theme="dark"])) .optcard,
+:global(:where([data-theme="dark"])) .structureCard,
+:global(:where([data-theme="dark"])) .dataTypesCard,
+:global(:where([data-theme="dark"])) .topActionBtn,
+:global(:where([data-theme="dark"])) .statusBar .btnSecondary {
+  border-color: #304664;
+}
+
+:global(:where([data-theme="dark"])) .panel,
+:global(:where([data-theme="dark"])) .optcard {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .optLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .noteLine,
+:global(:where([data-theme="dark"])) .optHelptext {
+  color: #a7b7cd;
+}
+
+:global(:where([data-theme="dark"])) .noteLineGreen {
+  color: #adf8d9;
+}
+
+:global(:where([data-theme="dark"])) .tabPill {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .dataTypeCount {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .dataTypePct {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .searchNavBtn {
+  color: #8aa1eb;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .treeScrollContainer [data-search-hit] {
+  background-color: #4b4116;
+}
+
+:global(:where([data-theme="dark"])) .treeScrollContainer [data-search-active] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .infoPill {
+  color: #d4dce9;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .infoPill .ico {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .infoPill[aria-expanded="true"] {
+  background: #12213d;
+}
+
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="string"] .treeValue,
+:global(:where([data-theme="dark"])) .treeLeafRow[data-type="boolean"] .treeValue {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .treeNodeIcon[data-kind="root"] {
+  color: #f2bd63;
+}
+
+:global(:where([data-theme="dark"])) .chipBlue {
+  color: #7091ec;
+  background: #12223f;
+  border-color: #304264;
+}
+
+:global(:where([data-theme="dark"])) .chipGreen {
+  color: #b8f0cd;
+  background: #144525;
+  border-color: #306444;
+}
+
+:global(:where([data-theme="dark"])) .chipPurple {
+  color: #b377e8;
+  background: #28123f;
+  border-color: #483064;
+}
+
+:global(:where([data-theme="dark"])) .chipAmber {
+  color: #f5bd9b;
+  background: #4b4116;
+  border-color: #645630;
+}
+
+:global(:where([data-theme="dark"])) .chipRed {
+  color: #ec8383;
+  background: #421313;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .segChip {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .mini {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .mini small {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .mini b {
+  color: #d5def6;
+}
+
+:global(:where([data-theme="dark"])) .kv span {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .kv b {
+  color: #d5def6;
 }

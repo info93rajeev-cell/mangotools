@@ -6,7 +6,9 @@ type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
 function Tile(props: { tone: string; icon: string; value: string; label: string; sub: string }) {
   return (
     <div class={`${styles.statTile} ${props.tone}`}>
-      <span style={{ fontSize: '12px' }}>{props.icon}</span>
+      <span class={styles.statIcon} aria-hidden="true">
+        {props.icon}
+      </span>
       <span class={styles.statVal}>{props.value}</span>
       <span class={styles.statLabel}>{props.label}</span>
       <span class={styles.statSub}>{props.sub}</span>
@@ -34,11 +36,15 @@ function WordToPdfSummaryCard({ studio }: { studio: WordToPdfState }) {
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Export Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Export Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           {label}
         </span>
@@ -95,10 +101,10 @@ function WordToPdfNotesCard({ studio }: { studio: WordToPdfState }) {
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>ℹ️</span> What carries over
+          <span style={{ color: 'var(--color-primary)' }}>ℹ️</span> What carries over
         </h2>
       </div>
-      <p style={{ margin: 0, fontSize: '11px', color: '#334155', lineHeight: 1.5 }}>
+      <p style={{ margin: 0, fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
         Text, headings, bold and italic, list bullets and line breaks.
         {notes.length > 0 ? ` ${notes.join(' ')}` : ''}
       </p>

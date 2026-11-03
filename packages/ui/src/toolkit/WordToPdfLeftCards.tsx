@@ -16,7 +16,7 @@ function WordToPdfItemRow({
   return (
     <div
       class={styles.fileRow}
-      style={{ background: '#ffffff', borderColor: '#bfdbfe', padding: '6px 10px' }}
+      style={{ background: 'var(--color-panel)', borderColor: '#bfdbfe', padding: '6px 10px' }}
     >
       <div class={styles.fileIconBadge} style={{ backgroundColor: '#2563eb' }}>
         DOC
@@ -73,8 +73,8 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -89,8 +89,8 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -226,7 +226,14 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
           </div>
         </div>
         <WordToPdfExportModeButtons exportMode={exportMode} setExportMode={setExportMode} />
-        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '10.5px',
+            color: 'var(--color-text-muted)',
+            lineHeight: 1.45,
+          }}
+        >
           Text, headings, bold and italic, lists and table rows are laid out with standard PDF
           fonts. Images, text boxes, headers, footers and exact Word layout are not carried over.
           Characters outside Western European text (for example Hindi or ₹) show as “?”.

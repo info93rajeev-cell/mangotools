@@ -319,7 +319,7 @@ export function UniversalTaxCountryOptionsCard({ tax }: UniversalTaxCountryOptio
           </span>
         </div>
         <span
-          style={{ fontSize: '12px', color: '#64748b', cursor: 'help' }}
+          style={{ fontSize: '12px', color: 'var(--color-text-subtle)', cursor: 'help' }}
           title="Configure jurisdiction-specific tax rules"
           role="img"
           aria-label="Tax options help"

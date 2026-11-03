@@ -43,7 +43,7 @@ function SlabsHeaderControls({
         style={{
           alignSelf: 'flex-end',
           padding: '6px 10px',
-          color: '#7c3aed',
+          color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
         }}
         onClick={() => setIsAddingSlab(!isAddingSlab)}

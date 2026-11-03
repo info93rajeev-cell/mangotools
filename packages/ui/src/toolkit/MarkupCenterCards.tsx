@@ -24,7 +24,7 @@ function Metric(props: {
 
 function ResultMetrics({ r, quantity }: { r: MarginResult; quantity: number }) {
   const loss = Number(r.profit) < 0;
-  const tone = loss ? '#dc2626' : '#059669';
+  const tone = loss ? 'var(--color-danger)' : 'var(--color-success)';
   return (
     <div class={styles.metrics}>
       <Metric ico="↗" tone={styles.icoViolet} label="Markup" value={pct(r.markupPercent)} />

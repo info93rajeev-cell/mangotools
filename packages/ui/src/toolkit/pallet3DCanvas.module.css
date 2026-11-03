@@ -127,3 +127,55 @@
 .zoomBtn {
   white-space: nowrap;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardHead {
+  background: #172635;
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .viewGroup {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .viewBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .viewBtn:hover {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .viewBtnActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .canvasWrap {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .zoomOverlay {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .zoomBtn {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .zoomBtn:hover {
+  color: #dde4f3;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .canvasEmpty {
+  color: #b8c1cf;
+}

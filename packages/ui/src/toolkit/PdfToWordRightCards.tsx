@@ -6,7 +6,9 @@ type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 function Tile(props: { tone: string; icon: string; value: string; label: string; sub: string }) {
   return (
     <div class={`${styles.statTile} ${props.tone}`}>
-      <span style={{ fontSize: '12px' }}>{props.icon}</span>
+      <span class={styles.statIcon} aria-hidden="true">
+        {props.icon}
+      </span>
       <span class={styles.statVal}>{props.value}</span>
       <span class={styles.statLabel}>{props.label}</span>
       <span class={styles.statSub}>{props.sub}</span>
@@ -29,11 +31,15 @@ function PdfToWordSummaryCard({ studio }: { studio: PdfToWordState }) {
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Conversion Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Conversion Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           {status(studio)}
         </span>
@@ -76,7 +82,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
   const ex = studio.extraction;
   if (!ex)
     return (
-      <p style={{ fontSize: '11px', color: '#475569', margin: 0 }}>
+      <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: 0 }}>
         Add a PDF to see its text here.
       </p>
     );
@@ -100,7 +106,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
         overflow: 'auto',
         fontSize: '11.5px',
         lineHeight: 1.5,
-        color: '#0f172a',
+        color: 'var(--color-text)',
       }}
     >
       {shown.slice(0, 60).map((b, i) => (
@@ -116,7 +122,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
         </p>
       ))}
       {shown.length === 0 ? (
-        <p style={{ margin: 0, color: '#475569' }}>No headings found.</p>
+        <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>No headings found.</p>
       ) : null}
     </div>
   );
@@ -137,7 +143,7 @@ function PdfToWordPreviewCard({ studio }: { studio: PdfToWordState }) {
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📝</span> Text Preview
+          <span style={{ color: 'var(--color-primary)' }}>📝</span> Text Preview
         </h2>
         <div class={styles.previewTabs}>
           {tab('text', 'Text')}

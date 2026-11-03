@@ -2,7 +2,7 @@
    Builds on dataStudio.module.css; only what that file does not already provide lives here. */
 
 .toneGreen {
-  --tone: #16a34a;
+  --tone: #15803d;
   --tone-bg: #e8f8ee;
   --tone-border: #bfe8cd;
 }
@@ -12,7 +12,7 @@
   --tone-border: #c8daff;
 }
 .toneAmber {
-  --tone: #ea8a0c;
+  --tone: #b45309;
   --tone-bg: #fff4e2;
   --tone-border: #fbdcae;
 }
@@ -22,7 +22,7 @@
   --tone-border: #e2c8fb;
 }
 .tonePink {
-  --tone: #e8337f;
+  --tone: #c2185b;
   --tone-bg: #fdeaf3;
   --tone-border: #f8c4dc;
 }
@@ -1134,4 +1134,90 @@
   background: #111c33;
   border-color: #2a3a58;
   color: #e6edf8;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .dropzoneOver {
+  background: #12213d;
+}
+
+:global(:where([data-theme="dark"])) .card .gutter > div {
+  color: #a8b3c2;
+}
+
+:global(:where([data-theme="dark"])) .warnLine {
+  color: #f5bd9b;
+  background: #403213;
+}
+
+:global(:where([data-theme="dark"])) .badgeString {
+  color: #b8f0cd;
+  background: #134122;
+  border-color: #306440;
+}
+
+:global(:where([data-theme="dark"])) .badgeNumber {
+  color: #7091ec;
+  background: #12213f;
+  border-color: #304164;
+}
+
+:global(:where([data-theme="dark"])) .badgeBoolean {
+  color: #f7c59a;
+  background: #423013;
+  border-color: #644e30;
+}
+
+:global(:where([data-theme="dark"])) .badgeNull {
+  color: #b8c1cf;
+  background: #182838;
+  border-color: #344760;
+}
+
+:global(:where([data-theme="dark"])) .badgeMixed {
+  color: #b377e8;
+  background: #27123e;
+  border-color: #4a3064;
+}
+
+:global(:where([data-theme="dark"])) .sumOk .sumText b {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .sumBad .sumText b {
+  color: #ec8383;
+}
+
+:global(:where([data-theme="dark"])) .quickGold {
+  color: #1f1300;
+}
+
+:global(:where([data-theme="dark"])) .quickBlue:hover {
+  background: #11213c;
+}
+
+:global(:where([data-theme="dark"])) .quickRed:hover {
+  background: #3c1111;
+}
+
+:global(:where([data-theme="dark"])) .b64Output {
+  background: #152338;
+}
+
+:global(:where([data-theme="dark"])) .b64Textarea:focus {
+  outline: 2px solid #304164;
+}
+
+:global(:where([data-theme="dark"])) .relatedItem:hover {
+  background: #111f3a;
+  border-color: #304164;
+}
+
+:global(:where([data-theme="dark"])) .activeBlue.inputTabActive,
+:global(:where([data-theme="dark"])) .activeBlue.inputTabActive:hover {
+  color: #fff;
+}
+
+:global(:where([data-theme="dark"])) .kvGrid span {
+  color: #b8c1cf;
 }

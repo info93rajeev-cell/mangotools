@@ -1,3 +1,4 @@
+import { inr } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState, MarkupPricingMode } from './useMarkupCalculator.ts';
 
@@ -131,7 +132,7 @@ export function MarkupPricingModeCard({ state }: { state: MarkupCalculatorState 
 }
 
 export function MarkupOptionalAdditionsCard({ state }: { state: MarkupCalculatorState }) {
-  const { additionalCost, setAdditionalCost, gstPercent, setGstPercent } = state;
+  const { additionalCost, setAdditionalCost, gstPercent, setGstPercent, result } = state;
 
   return (
     <section class={styles.card} aria-label="Optional Price Additions">
@@ -171,6 +172,14 @@ export function MarkupOptionalAdditionsCard({ state }: { state: MarkupCalculator
           </select>
         </div>
       </div>
+
+      {/* Shown right next to the GST choice, so the change is visible where it is made. */}
+      {result?.priceWithGst ? (
+        <div class={styles.strip} style={{ marginTop: '9px' }} data-markup-gst-price="">
+          <span>Customer price with {gstPercent}% GST</span>
+          <b>{inr(result.priceWithGst)}</b>
+        </div>
+      ) : null}
 
       <div class={styles.note} style={{ marginTop: '9px' }}>
         Margin and markup are on the tax-exclusive price. GST is added on top for the customer

@@ -289,3 +289,12 @@
 :global([data-theme="dark"]) .fileMeta {
   color: #94a3b8;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .browseLinkText {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .browseLinkText:hover {
+  color: #7091ec;
+}

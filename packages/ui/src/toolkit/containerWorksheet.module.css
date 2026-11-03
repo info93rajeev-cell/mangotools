@@ -294,3 +294,21 @@
 .worksheet .editor select {
   padding-inline: 2px;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .toolbar button {
+  color: #79a6f2;
+}
+@media (max-width: 700px) {
+  :global(:where([data-theme="dark"])) .packageSummary small {
+    color: #79a6f2;
+  }
+
+  :global(:where([data-theme="dark"])) .selectRow span {
+    border: 1px solid #304464;
+  }
+
+  :global(:where([data-theme="dark"])) .selectRow:has(input:checked) span {
+    background: #12253e;
+  }
+}

@@ -415,7 +415,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   font-size: 8px;
   font-weight: 800;
@@ -710,7 +710,7 @@
 }
 
 .applyActionBtn[data-applied="true"] {
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border-color: #059669;
 }
@@ -820,7 +820,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   font-size: 9px;
   font-weight: 800;
@@ -959,4 +959,153 @@
   background: rgba(6, 95, 70, 0.3);
   border-color: #065f46;
   color: #6ee7b7;
+}
+
+/* Phones: small status icons were hard to see. */
+@media (max-width: 700px) {
+  .formatIcon {
+    font-size: 16px;
+  }
+
+  .infoCalloutIcon {
+    font-size: 16px;
+  }
+
+  .warningIcon {
+    font-size: 16px;
+  }
+
+  .badgeCheckCircle {
+    font-size: 16px;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .successBadgeTitle {
+  color: #aef8e3;
+}
+
+:global(:where([data-theme="dark"])) .badgeCheckCircle {
+  color: #9df7db;
+}
+
+:global(:where([data-theme="dark"])) .successBadgeSub {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .compareSection {
+  border-top: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .compareBoxBefore {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .compareBoxAfter {
+  background: #123d1f;
+}
+
+:global(:where([data-theme="dark"])) .studioCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardHeader {
+  border-bottom: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn {
+  background: #151e33;
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .sampleMiniBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardThumbImg {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardThumbPlaceholder {
+  border: 1px dashed var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .statusBoxGreen {
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxSub {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .metaRowItem {
+  border-bottom: 1px dashed var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutBox {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .formatCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .formatCard:hover {
+  border-color: var(--color-border-strong, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .checkBadge {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .standingWarningBox {
+  color: #f5cfa3;
+  background: #403c12;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn[data-applied="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .downloadActionBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .primaryActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .verificationCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .verifBannerIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .reductionBadge {
+  color: #166534;
 }

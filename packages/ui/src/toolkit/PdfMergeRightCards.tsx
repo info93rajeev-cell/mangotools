@@ -18,36 +18,48 @@ function PdfMergeSummaryCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Merge Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Merge Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           ✓ Ready to merge
         </span>
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📄
+          </span>
           <span class={styles.statVal}>{fileCount}</span>
           <span class={styles.statLabel}>PDF files</span>
           <span class={styles.statSub}>Selected</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📑
+          </span>
           <span class={styles.statVal}>{totalPageCount}</span>
           <span class={styles.statLabel}>Total pages</span>
           <span class={styles.statSub}>Across all files</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📊
+          </span>
           <span class={styles.statVal}>{totalMb} MB</span>
           <span class={styles.statLabel}>Estimated size</span>
           <span class={styles.statSub}>After merge</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>🔖</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            🔖
+          </span>
           <span class={styles.statVal}>{hasBookmarks ? 'Yes' : 'No'}</span>
           <span class={styles.statLabel}>Bookmarks</span>
           <span class={styles.statSub}>File names</span>
@@ -75,7 +87,7 @@ function PdfMergePreviewFlowCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> Merged Document Preview
+          <span style={{ color: 'var(--color-primary)' }}>👁️</span> Merged Document Preview
         </h2>
         <span class={styles.headerCounter}>Total pages: {totalPageCount}</span>
       </div>

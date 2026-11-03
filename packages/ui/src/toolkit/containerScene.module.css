@@ -110,3 +110,16 @@
   min-height: 34px;
   font-size: 16px;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .views button[aria-pressed="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .reference figcaption {
+  color: #94a4ca;
+}
+
+:global(:where([data-theme="dark"])) .visual .artMode {
+  color: #72a6f4;
+}

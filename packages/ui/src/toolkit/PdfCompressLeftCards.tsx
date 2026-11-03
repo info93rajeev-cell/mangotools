@@ -37,8 +37,8 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -53,8 +53,8 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -91,7 +91,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
       ) : (
         <div
           class={styles.fileRow}
-          style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '4px' }}
+          style={{ background: 'var(--color-panel)', borderColor: '#cbd5e1', marginTop: '4px' }}
         >
           <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
@@ -170,14 +170,21 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
   return (
     <details
       style={{
-        background: '#f8fafc',
+        background: 'var(--color-panel-subtle)',
         padding: '8px 10px',
         borderRadius: '8px',
         border: '1px solid #e2e8f0',
         marginTop: '6px',
       }}
     >
-      <summary style={{ fontWeight: 700, fontSize: '11.5px', cursor: 'pointer', color: '#0f172a' }}>
+      <summary
+        style={{
+          fontWeight: 700,
+          fontSize: '11.5px',
+          cursor: 'pointer',
+          color: 'var(--color-text)',
+        }}
+      >
         ⚙️ Advanced settings (optional)
       </summary>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
@@ -197,7 +204,14 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
           style={{ width: '100%', accentColor: '#2563eb' }}
         />
         <PdfCompressOptionCheckboxes studio={studio} />
-        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '10.5px',
+            color: 'var(--color-text-muted)',
+            lineHeight: 1.45,
+          }}
+        >
           JPEG images are re-encoded in your browser; text, fonts and vector graphics are never
           changed, so text stays searchable. Other image types are kept as they are.
         </p>
@@ -252,7 +266,9 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
               style={{ textAlign: 'left', padding: '6px 8px' }}
             >
               <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
-                <span style={{ color: isActive ? '#2563eb' : '#94a3b8' }}>
+                <span
+                  style={{ color: isActive ? 'var(--color-primary)' : 'var(--color-text-subtle)' }}
+                >
                   {isActive ? '●' : '○'}
                 </span>
                 {title}
@@ -264,7 +280,7 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
                 style={{
                   fontSize: '10.5px',
                   fontWeight: 700,
-                  color: isActive ? '#1d4ed8' : '#2563eb',
+                  color: 'var(--color-primary)',
                   marginTop: '2px',
                 }}
               >

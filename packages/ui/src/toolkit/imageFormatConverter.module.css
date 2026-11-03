@@ -757,3 +757,29 @@
 .canvasToolbarTitle {
   min-width: 0;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .convertActionBtn {
+  color: #111827;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutBlue {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .goldDownloadBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .resultBannerGreen {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .sizeDiffPill {
+  color: #bcfae8;
+  background: #15492f;
+}

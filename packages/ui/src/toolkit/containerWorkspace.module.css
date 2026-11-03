@@ -367,3 +367,46 @@
     display: none;
   }
 }
+
+/* Dark: the workspace sets its own light palette; switch it with the theme. */
+:global([data-theme="dark"]) .root {
+  --color-bg: #0f172a;
+  --color-text: #e2e8f0;
+  --color-text-muted: #a5b4d0;
+  --color-border: #334155;
+  --color-border-input: #475569;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-focus: #60a5fa;
+  color-scheme: dark;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .reference {
+  background: #12233d;
+}
+
+:global(:where([data-theme="dark"])) .costInputs {
+  background: linear-gradient(115deg, #12253e, #11233a);
+}
+
+:global(:where([data-theme="dark"])) .costInputs h2 :global(.icon) {
+  color: #639cf2;
+}
+
+:global(:where([data-theme="dark"])) .actions button {
+  color: #639cf2;
+  border-color: #304264;
+}
+
+:global(:where([data-theme="dark"])) .actions .print {
+  color: #171300;
+}
+
+:global(:where([data-theme="dark"])) .amountInput:has(span) {
+  background: #151e33;
+}

@@ -146,7 +146,7 @@
 
 .icoViolet {
   background: #f1e4ff;
-  color: #a126ed;
+  color: #8419c6;
 }
 
 .icoCyan {
@@ -217,7 +217,7 @@
 }
 
 .muted {
-  color: #7184a7;
+  color: #55678a;
   font-size: 11px;
   line-height: 1.45;
   margin: 4px 0 0;
@@ -456,7 +456,7 @@
 
 .smallTable th {
   background: #f0f5fd;
-  color: #5d7199;
+  color: #4a5f86;
   padding: 7px 6px;
   font-weight: 750;
   text-align: left;
@@ -547,7 +547,7 @@
 }
 
 .pillDanger {
-  color: #ea3d48;
+  color: #c81e2c;
   border-color: #ffd0d0;
 }
 
@@ -613,9 +613,13 @@
     flex-wrap: wrap;
   }
 
-  .grid2,
+  /* Phones keep two (or three) short inputs per row instead of one long column. */
+  .grid2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .grid3 {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .metrics {
@@ -768,4 +772,143 @@
 
 :global([data-theme="dark"]) .headlineResultLoss strong {
   color: #f87171;
+}
+
+/* Dark: labels, tables, notes, check rows and the donut centre kept their light colours. */
+:global([data-theme="dark"]) .label,
+:global([data-theme="dark"]) .legend,
+:global([data-theme="dark"]) .checkRow {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .smallTable th {
+  background: #0f172a;
+  color: #cbd5e1;
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .smallTable td {
+  color: #e2e8f0;
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .note {
+  background: #0f1e3a;
+  border-color: #1e3a8a;
+  color: #bfdbfe;
+}
+
+:global([data-theme="dark"]) .warn {
+  background: #2a2110;
+  border-color: #78530f;
+  color: #fde68a;
+}
+
+:global([data-theme="dark"]) .strip b {
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .chartcircleInner {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .bar {
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .icoBlue {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+:global([data-theme="dark"]) .icoGreen {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+:global([data-theme="dark"]) .icoPink {
+  background: #701a45;
+  color: #fbcfe8;
+}
+:global([data-theme="dark"]) .icoAmber {
+  background: #713f12;
+  color: #fde68a;
+}
+:global([data-theme="dark"]) .icoViolet {
+  background: #4c1d95;
+  color: #ddd6fe;
+}
+:global([data-theme="dark"]) .icoCyan {
+  background: #164e63;
+  color: #a5f3fc;
+}
+:global([data-theme="dark"]) .icoRed {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+/* Phones: card icons were small and pale; make them larger and stronger. */
+@media (max-width: 900px) {
+  .ico {
+    height: 32px;
+    width: 32px;
+    font-size: 17px;
+  }
+
+  .metric .ico {
+    height: 30px;
+    width: 30px;
+    font-size: 16px;
+  }
+}
+
+.smallTable .tdMuted {
+  color: #64748b;
+}
+.smallTable .totalRow {
+  font-weight: 850;
+  background: #f0fdf4;
+}
+.smallTable .tdLoss {
+  color: #dc2626;
+}
+.smallTable .tdGain {
+  color: #047857;
+}
+:global([data-theme="dark"]) .smallTable .tdMuted {
+  color: #94a3b8;
+}
+:global([data-theme="dark"]) .smallTable .totalRow {
+  background: #052e1c;
+}
+:global([data-theme="dark"]) .smallTable .tdLoss {
+  color: #f87171;
+}
+:global([data-theme="dark"]) .smallTable .tdGain {
+  color: #34d399;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .heroIcon {
+  color: #af63ec;
+  background: #231240;
+}
+
+:global(:where([data-theme="dark"])) .tab:hover {
+  border-color: #304464;
+}
+
+:global(:where([data-theme="dark"])) .btn {
+  color: #131b33;
+}
+
+:global(:where([data-theme="dark"])) .smallTable th {
+  border-bottom: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .smallTable td {
+  border-bottom: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .pillDanger:hover {
+  border-color: #643030;
 }

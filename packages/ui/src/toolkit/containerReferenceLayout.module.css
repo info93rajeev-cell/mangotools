@@ -58,3 +58,11 @@
     display: none;
   }
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .utilities a,
+:global(:where([data-theme="dark"])) .utilities button {
+  color: #72a6f4;
+  background: #151e33;
+  border: 1px solid #304364;
+}

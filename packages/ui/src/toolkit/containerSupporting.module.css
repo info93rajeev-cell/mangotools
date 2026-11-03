@@ -71,3 +71,21 @@
     display: none;
   }
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .panels details {
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .panels summary {
+  color: #cdcff3;
+}
+
+:global(:where([data-theme="dark"])) .panels summary > span:not(:last-child) {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .panels a {
+  color: #72a6f4;
+}

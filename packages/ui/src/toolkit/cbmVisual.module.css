@@ -277,3 +277,12 @@
 :global([data-theme="dark"]) .reference img {
   background: radial-gradient(ellipse at center, #1e293b, #0f172a 72%);
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .reference figcaption {
+  color: #94a4ca;
+}
+
+:global(:where([data-theme="dark"])) .artMode {
+  color: #72a6f4;
+}

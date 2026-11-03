@@ -166,8 +166,8 @@
 
 .quickPresetChip[data-active="true"] {
   background: rgba(37, 99, 235, 0.15);
-  border-color: #2563eb;
-  color: #2563eb;
+  border-color: #1d4ed8;
+  color: #1d4ed8;
 }
 
 /* STATE B: ACTIVE STUDIO SINGLE-SCREEN */
@@ -463,7 +463,7 @@
 
 .downloadGreenBtn {
   flex: 1.5;
-  background: #22c55e;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -530,7 +530,7 @@
 
 .shareWhatsAppBtn {
   width: 100%;
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -838,7 +838,7 @@
 }
 
 .shareWhatsAppBtn {
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -1028,4 +1028,50 @@
   flex-direction: column;
   gap: 2px;
   line-height: 1.4;
+}
+
+:global([data-theme="dark"]) .quickPresetChip[data-active="true"] {
+  color: #bfdbfe;
+  border-color: #60a5fa;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .splitDividerLine {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .applyGoldBtn {
+  color: #854d0e;
+}
+
+:global(:where([data-theme="dark"])) .downloadGreenBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printSheetMiniBtn {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .printDirectBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .shareWhatsAppBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printDirectBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .shareWhatsAppBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .sheetHintNotice {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .guidelinesTitle {
+  color: #f4b976;
 }

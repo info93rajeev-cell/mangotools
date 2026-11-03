@@ -32,8 +32,8 @@ function PdfMergeDropCard({
             padding: '2px 8px',
             borderRadius: '6px',
             border: '1px solid #bfdbfe',
-            background: '#eff6ff',
-            color: '#1d4ed8',
+            background: 'var(--color-tint-blue)',
+            color: 'var(--color-primary)',
             fontWeight: 700,
             cursor: 'pointer',
           }}
@@ -221,7 +221,9 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
               />
               <span>Add bookmarks for each file</span>
             </span>
-            <span style={{ fontSize: '11px', color: '#64748b', paddingLeft: '20px' }}>
+            <span
+              style={{ fontSize: '11px', color: 'var(--color-text-subtle)', paddingLeft: '20px' }}
+            >
               Add file names as bookmarks in the merged PDF
             </span>
           </label>

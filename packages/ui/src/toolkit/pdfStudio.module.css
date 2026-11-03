@@ -259,7 +259,7 @@
 
 .headerCounter {
   font-size: 11.5px;
-  color: #64748b;
+  color: #526077;
   font-weight: 500;
 }
 
@@ -314,7 +314,7 @@
 
 .dropSubText {
   font-size: 11.5px;
-  color: #64748b;
+  color: #526077;
   margin: 0;
 }
 
@@ -499,7 +499,7 @@
 
 .radioDesc {
   font-size: 11.5px;
-  color: #64748b;
+  color: #526077;
 }
 
 .inputRow {
@@ -576,7 +576,7 @@
 
 .statSub {
   font-size: 10px;
-  color: #64748b;
+  color: #526077;
   font-weight: 500;
 }
 
@@ -1504,4 +1504,283 @@
     flex: 1 1 auto;
     min-width: 150px;
   }
+}
+
+.statIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  font-size: 15px;
+  line-height: 1;
+  background: rgb(255 255 255 / 0.85);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.12);
+}
+
+:global([data-theme="dark"]) .statIcon {
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: none;
+}
+
+/* Phones: icons were tiny (12px emoji); make them easy to see. */
+@media (max-width: 700px) {
+  .statIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 19px;
+  }
+
+  .dropIcon {
+    font-size: 30px !important;
+  }
+
+  .toolIconBox {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .topBar {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .badgePill {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .badgePillAmber {
+  color: #f5cfa3;
+  background: #403c12;
+}
+
+:global(:where([data-theme="dark"])) .badgePillBlue {
+  color: #7091ec;
+  background: #12253d;
+  border-color: #304764;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger {
+  color: #e76c6c;
+  background: #151e33;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger:hover {
+  background: #3c1111;
+}
+
+:global(:where([data-theme="dark"])) .mergeListCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .stepNum {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .headerCounter {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .dropIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .chooseBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .fileRow:hover {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .fileIndex {
+  color: #b8c1cf;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .iconBtn {
+  color: #b8c1cf;
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .iconBtn:hover {
+  color: #dde4f3;
+  background: #172635;
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .iconBtnDanger {
+  color: #e76c6c;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .iconBtnDanger:hover {
+  color: #ec8383;
+  background: #3c1111;
+}
+
+:global(:where([data-theme="dark"])) .radioCardActive {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .radioDesc {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .inputLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .statTileBlue {
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .statTilePurple {
+  background: #26113b;
+  border: 1px solid #493064;
+}
+
+:global(:where([data-theme="dark"])) .statTileGreen {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .statTileAmber {
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .statVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .statSub {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .flowCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .flowCardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .flowBadgeRed {
+  color: #e76c6c;
+  background: #421313;
+  border: 1px solid #643030;
+}
+
+:global(:where([data-theme="dark"])) .flowBadgeBlue {
+  color: #82cef5;
+  background: #133042;
+  border: 1px solid #305264;
+}
+
+:global(:where([data-theme="dark"])) .flowBadgeGreen {
+  color: #91f0b4;
+  background: #144525;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .flowBadgePurple {
+  color: #a556ee;
+  background: #28123f;
+  border: 1px solid #493064;
+}
+
+:global(:where([data-theme="dark"])) .flowPlus {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .rangeChip {
+  color: #7091ec;
+  background: #151e33;
+  border: 1.5px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .chipCloseBtn:hover {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .addChipBtn {
+  color: #5b8af0;
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .addChipBtn:hover {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .compareRow {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .barTrack {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .privacyNotice {
+  color: #a7f1c2;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .primaryCtaBtn {
+  color: #1c1917;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnPrimaryBlue {
+  background: #151e33;
+  border: 1.5px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnPrimaryBlue:hover {
+  background: #12253d;
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .previewTabs {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .previewTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .previewTabBtn:hover {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .previewTabBtnActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .sideArrow {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .thumbItemBtn:hover {
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .pdfInfoGrid {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .pdfInfoLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .pdfInfoValue {
+  color: #dde4f3;
 }

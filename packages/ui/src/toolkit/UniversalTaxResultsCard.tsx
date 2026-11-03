@@ -48,7 +48,7 @@ function KpiMetricsGrid({
     <div class={styles.kpiMetricsGrid}>
       <div class={styles.kpiCard}>
         <div class={styles.kpiHeader}>
-          <span style={{ color: '#2563eb' }}>◆</span>
+          <span style={{ color: 'var(--color-primary)' }}>◆</span>
           <span>Taxable</span>
         </div>
         <span class={styles.kpiVal} title={formatCurrencyNumber(taxableAmount, currencySymbol)}>

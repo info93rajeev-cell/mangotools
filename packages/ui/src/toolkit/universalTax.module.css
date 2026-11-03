@@ -1582,3 +1582,179 @@
     overflow-wrap: normal;
   }
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .calloutSparkles {
+  color: #f3d26b;
+}
+
+:global(:where([data-theme="dark"])) .cardHeaderRow {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .discountInputRow {
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .discountTypeSelect {
+  color: #d4dce9;
+  background: #1f2c3c;
+  border-right: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .discountValInput {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .advancedToggleRow {
+  color: #b8c1cf;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .advancedDrawer {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .headlineHeroCard {
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .headlineSub {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .headlineAmount {
+  color: #aef8e3;
+}
+
+:global(:where([data-theme="dark"])) .headlineRateBadge {
+  color: #a7f1c2;
+  background: #144525;
+}
+
+:global(:where([data-theme="dark"])) .effectiveRateSub {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .kpiCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpiHeader {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpiVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .breakdownTitleRow {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .donutBreakdownContainer {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .donutTotalVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .donutTotalSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .breakdownRow {
+  border-bottom: 1px dashed #324761;
+}
+
+:global(:where([data-theme="dark"])) .breakdownLabelGroup {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .breakdownAmount {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .breakdownPercent {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .savingsNoticeText {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .calculateBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .slabsTable th {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .slabsTable td {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabsRow {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabsRow {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn:hover {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .rateSearchInput {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .categoryRatePill {
+  color: #5b8af0;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .categoryApplyBtn {
+  color: #5b8af0;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .categoryApplyBtn:hover {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .itcBadgeHighlight {
+  color: #bcfae8;
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .itcBadgeNotice {
+  color: #f5bd9b;
+  background: #3e3512;
+}

@@ -122,7 +122,7 @@
   font-weight: 600;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #526077;
   padding: 3px 8px;
   border-radius: 4px;
   cursor: pointer;
@@ -496,4 +496,164 @@
   color: #991b1b;
   font-size: 12px;
   font-weight: 600;
+}
+
+/* Phones: three short number inputs per row (length · width · height) instead of one long column. */
+@media (max-width: 700px) {
+  .subCol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+  }
+
+  .subCol > .subColTitle,
+  .subCol > .fieldRow:has(select),
+  .subCol > .checkboxRow {
+    grid-column: 1 / -1;
+  }
+
+  .subCol > .fieldRow {
+    margin-bottom: 0;
+  }
+
+  .subCol .fieldLabel {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .root {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .privacyBadge {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .unitRow {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .unitPillGroup {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .unitPill {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .unitPillActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .selectInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .subColTitle {
+  color: #dde4f3;
+  border-bottom: 1px dashed #324761;
+}
+
+:global(:where([data-theme="dark"])) .inputSuffix {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .checkboxRow {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .kpiCard {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpiLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpiValue {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .kpiSub {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .progressBarWrap {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .guideStep {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .stepNum {
+  color: #82cef5;
+  background: #133042;
+}
+
+:global(:where([data-theme="dark"])) .accordionItem {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .accordionSummary {
+  color: #c4cedc;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .accordionContent {
+  color: #b8c1cf;
+  background: #151e33;
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .primaryCalculateBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .secondaryBtn {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .secondaryBtn:hover {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .issue {
+  color: #ed9797;
+  background: #3c1111;
+  border: 1px solid #643030;
 }
