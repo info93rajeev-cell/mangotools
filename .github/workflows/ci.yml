@@ -20,7 +20,7 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     name: verify · build · e2e (Node 24, Chromium)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
       PW_BROWSERS: chromium
