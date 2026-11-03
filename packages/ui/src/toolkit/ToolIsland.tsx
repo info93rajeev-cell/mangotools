@@ -195,7 +195,7 @@ function renderSpecialCalculators(props: ArchetypeProps) {
     return <DynamicSellerProfitabilityLayout notify={notify} />;
   }
   if (toolId === 'amazon-india-seller-fee-profit-estimator') {
-    return <DynamicAmazonFeeLayout notify={notify} />;
+    return <DynamicAmazonFeeLayout preset={preset} notify={notify} />;
   }
   if (toolId === 'markup-calculator') {
     return <DynamicMarkupCalculatorLayout preset={preset} notify={notify} />;

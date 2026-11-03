@@ -420,6 +420,23 @@
   line-height: 1.45;
 }
 
+.checkRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #334155;
+  cursor: pointer;
+}
+
+.checkRow input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
 .warn {
   background: #fff8e9;
   border: 1px solid #ffe8b6;
