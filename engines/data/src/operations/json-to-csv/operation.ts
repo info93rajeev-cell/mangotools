@@ -1,5 +1,6 @@
 import { defineOperation, err, ok, type Result } from '@mangotools/core';
 import { MAX_INPUT_CHARS } from '../../errors.ts';
+import { parseLossless } from './lossless.ts';
 import { findRecordPaths, valueAtPath } from './records.ts';
 import { buildRowTable, isJsonToCsvFailure, type JsonRowTable } from './rows.ts';
 import {
@@ -20,13 +21,8 @@ const FAILURE_CODE = {
   'no-columns': 'DATA_JSON_TO_CSV_NO_COLUMNS',
 } as const;
 
-function parseJson(text: string): { value: unknown } | null {
-  try {
-    return { value: JSON.parse(text) };
-  } catch {
-    return null;
-  }
-}
+/** Parsed without losing digits of large integers (see lossless.ts). */
+const parseJson = parseLossless;
 
 /** The row table, or the typed error for the records value. */
 function tableOrError(records: unknown, params: JsonToCsvParams): Result<JsonRowTable> {

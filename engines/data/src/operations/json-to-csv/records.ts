@@ -1,3 +1,4 @@
+import { isJsonBigNumber } from './lossless.ts';
 /**
  * Locating the records inside a JSON document: following a dot path of keys from the root, and
  * listing the dot paths (up to three levels deep) that hold an array of objects, so a page can
@@ -10,7 +11,9 @@ const MAX_PATH_DEPTH = 3;
 const MAX_PATHS = 20;
 
 export function isPlainObject(value: unknown): value is JsonRow {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return (
+    typeof value === 'object' && value !== null && !Array.isArray(value) && !isJsonBigNumber(value)
+  );
 }
 
 function isRecordArray(value: unknown): boolean {
