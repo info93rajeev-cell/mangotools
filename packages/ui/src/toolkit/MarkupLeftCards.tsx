@@ -1,18 +1,74 @@
 import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState, MarkupPricingMode } from './useMarkupCalculator.ts';
 
+const MODES: [MarkupPricingMode, string][] = [
+  ['find_price', 'Find selling price'],
+  ['find_markup', 'Find markup %'],
+  ['target_margin', 'Target margin'],
+];
+
+const num = (e: Event) => Number((e.target as HTMLInputElement).value) || 0;
+
+/** The second input changes with the mode: markup %, a selling price, or a target margin %. */
+function ModeValueField({ state }: { state: MarkupCalculatorState }) {
+  if (state.pricingMode === 'find_markup') {
+    return (
+      <div class={styles.field}>
+        <label class={styles.label} for="markup-mode-price">
+          Selling price (₹)
+        </label>
+        <input
+          id="markup-mode-price"
+          type="number"
+          inputMode="decimal"
+          class={styles.fieldInput}
+          value={state.givenSellingPrice}
+          onInput={(e) => state.setGivenSellingPrice(num(e))}
+        />
+      </div>
+    );
+  }
+  if (state.pricingMode === 'target_margin') {
+    return (
+      <div class={styles.field}>
+        <label class={styles.label} for="markup-mode-margin">
+          Target margin (%)
+        </label>
+        <input
+          id="markup-mode-margin"
+          type="number"
+          inputMode="decimal"
+          class={styles.fieldInput}
+          value={state.targetMarginPercent}
+          onInput={(e) => state.setTargetMarginPercent(num(e))}
+        />
+      </div>
+    );
+  }
+  return (
+    <div class={styles.field}>
+      <label class={styles.label} for="markup-desired-pct">
+        Desired markup (%)
+      </label>
+      <input
+        id="markup-desired-pct"
+        type="number"
+        inputMode="decimal"
+        class={styles.fieldInput}
+        value={state.markupPercent}
+        onInput={(e) => state.setMarkupPercent(num(e))}
+      />
+    </div>
+  );
+}
+
+const showResult = () =>
+  document
+    .querySelector('[aria-label="Pricing Result"]')
+    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 export function MarkupPricingModeCard({ state }: { state: MarkupCalculatorState }) {
-  const {
-    pricingMode,
-    setPricingMode,
-    costPrice,
-    setCostPrice,
-    markupPercent,
-    setMarkupPercent,
-    quantity,
-    setQuantity,
-    copySummary,
-  } = state;
+  const { pricingMode, setPricingMode, costPrice, setCostPrice, quantity, setQuantity } = state;
 
   return (
     <section class={styles.card} aria-label="Pricing Mode">
@@ -22,16 +78,12 @@ export function MarkupPricingModeCard({ state }: { state: MarkupCalculatorState 
       </div>
 
       <div class={styles.tabs} role="tablist" aria-label="Pricing Mode Tabs">
-        {(
-          [
-            ['find_price', 'Find selling price'],
-            ['find_markup', 'Find markup %'],
-            ['target_margin', 'Target margin'],
-          ] as [MarkupPricingMode, string][]
-        ).map(([m, label]) => (
+        {MODES.map(([m, label]) => (
           <button
             key={m}
             type="button"
+            role="tab"
+            aria-selected={pricingMode === m}
             class={`${styles.tab} ${pricingMode === m ? styles.tabActive : ''}`}
             onClick={() => setPricingMode(m)}
           >
@@ -47,25 +99,15 @@ export function MarkupPricingModeCard({ state }: { state: MarkupCalculatorState 
         <input
           id="markup-cost-price"
           type="number"
+          inputMode="decimal"
           class={styles.fieldInput}
           value={costPrice}
-          onInput={(e) => setCostPrice(Number((e.target as HTMLInputElement).value) || 0)}
+          onInput={(e) => setCostPrice(num(e))}
         />
       </div>
 
       <div class={styles.grid2} style={{ marginTop: '9px' }}>
-        <div class={styles.field}>
-          <label class={styles.label} for="markup-desired-pct">
-            Desired markup (%)
-          </label>
-          <input
-            id="markup-desired-pct"
-            type="number"
-            class={styles.fieldInput}
-            value={markupPercent}
-            onInput={(e) => setMarkupPercent(Number((e.target as HTMLInputElement).value) || 0)}
-          />
-        </div>
+        <ModeValueField state={state} />
         <div class={styles.field}>
           <label class={styles.label} for="markup-qty">
             Quantity
@@ -73,22 +115,23 @@ export function MarkupPricingModeCard({ state }: { state: MarkupCalculatorState 
           <input
             id="markup-qty"
             type="number"
+            inputMode="numeric"
             class={styles.fieldInput}
             value={quantity}
-            onInput={(e) => setQuantity(Number((e.target as HTMLInputElement).value) || 1)}
+            onInput={(e) => setQuantity(num(e) || 1)}
           />
         </div>
       </div>
 
-      <button type="button" class={styles.btn} style={{ marginTop: '13px' }} onClick={copySummary}>
-        <span>▦ Calculate Selling Price</span>
+      <button type="button" class={styles.btn} style={{ marginTop: '13px' }} onClick={showResult}>
+        <span>▦ {MODES.find(([m]) => m === pricingMode)?.[1] ?? 'Calculate'}</span>
       </button>
     </section>
   );
 }
 
 export function MarkupOptionalAdditionsCard({ state }: { state: MarkupCalculatorState }) {
-  const { additionalCost, setAdditionalCost } = state;
+  const { additionalCost, setAdditionalCost, gstPercent, setGstPercent } = state;
 
   return (
     <section class={styles.card} aria-label="Optional Price Additions">
@@ -106,35 +149,44 @@ export function MarkupOptionalAdditionsCard({ state }: { state: MarkupCalculator
             id="markup-add-cost"
             type="number"
             class={styles.fieldInput}
+            inputMode="decimal"
             value={additionalCost}
-            onInput={(e) => setAdditionalCost(Number((e.target as HTMLInputElement).value) || 0)}
+            onInput={(e) => setAdditionalCost(num(e))}
           />
         </div>
         <div class={styles.field}>
           <label class={styles.label} for="markup-gst-pricing">
             GST after pricing
           </label>
-          <select id="markup-gst-pricing" class={styles.fieldInput} defaultValue="18">
-            <option value="0">Optional / 0%</option>
+          <select
+            id="markup-gst-pricing"
+            class={styles.fieldInput}
+            value={String(gstPercent)}
+            onChange={(e) => setGstPercent(Number((e.target as HTMLSelectElement).value))}
+          >
+            <option value="0">None / 0%</option>
             <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
-            <option value="18">18% Standard</option>
+            <option value="18">18% GST (standard)</option>
+            <option value="40">40% GST</option>
           </select>
         </div>
       </div>
 
       <div class={styles.note} style={{ marginTop: '9px' }}>
-        Margin and markup are calculated on comparable tax-exclusive values.
+        Margin and markup are on the tax-exclusive price. GST is added on top for the customer
+        price.
       </div>
     </section>
   );
 }
 
 export function MarkupReverseCalculatorCard({ state }: { state: MarkupCalculatorState }) {
-  const { givenSellingPrice, setGivenSellingPrice, setCostPrice, setPricingMode } = state;
+  const { givenSellingPrice, setGivenSellingPrice, costPrice, setCostPrice, setPricingMode } =
+    state;
 
   const handleSolve = () => {
     setPricingMode('find_markup');
+    showResult();
   };
 
   return (
@@ -153,8 +205,9 @@ export function MarkupReverseCalculatorCard({ state }: { state: MarkupCalculator
             id="markup-given-sp"
             type="number"
             class={styles.fieldInput}
+            inputMode="decimal"
             value={givenSellingPrice}
-            onInput={(e) => setGivenSellingPrice(Number((e.target as HTMLInputElement).value) || 0)}
+            onInput={(e) => setGivenSellingPrice(num(e))}
           />
         </div>
         <div class={styles.field}>
@@ -165,8 +218,9 @@ export function MarkupReverseCalculatorCard({ state }: { state: MarkupCalculator
             id="markup-given-cost"
             type="number"
             class={styles.fieldInput}
-            defaultValue={500}
-            onInput={(e) => setCostPrice(Number((e.target as HTMLInputElement).value) || 0)}
+            inputMode="decimal"
+            value={costPrice}
+            onInput={(e) => setCostPrice(num(e))}
           />
         </div>
       </div>

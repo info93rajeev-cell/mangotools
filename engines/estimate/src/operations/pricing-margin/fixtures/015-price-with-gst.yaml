@@ -1,0 +1,5 @@
+id: 015-price-with-gst
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "500 × 1.40 = 700.00 before GST; 700 × 1.18 = 826.00 with 18% GST; margin stays on the tax-exclusive 700" }
+input: { solve: price-from-cost-and-markup, cost: "500", markupPercent: "40", gstPercent: "18" }
+expected: { price: "700.00", marginPercent: "28.57", priceWithGst: "826.00" }

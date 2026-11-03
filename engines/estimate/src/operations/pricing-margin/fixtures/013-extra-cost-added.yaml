@@ -1,0 +1,5 @@
+id: 013-extra-cost-added
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "Cost 500 + extra 50 = 550; 550 × 1.40 = 770.00; profit 220.00; margin 220 ÷ 770 = 28.57%" }
+input: { solve: price-from-cost-and-markup, cost: "500", extraCost: "50", markupPercent: "40" }
+expected: { cost: "550.00", price: "770.00", profit: "220.00", marginPercent: "28.57", markupPercent: "40.00", profitTotal: null, priceWithGst: null }

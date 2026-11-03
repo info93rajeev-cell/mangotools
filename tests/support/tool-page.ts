@@ -202,6 +202,11 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
     return;
   }
+  if (id === 'markup-calculator') {
+    // The studio runs its engine in the worker and shows "…" until the answer arrives.
+    await expect(primaryResult(page)).not.toHaveText('…');
+    return;
+  }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
 }
 

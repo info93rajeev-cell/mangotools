@@ -1,9 +1,9 @@
-import { useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
+import { inr, pct } from './MarkupCenterCards.tsx';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
 export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) {
-  const { calculation } = state;
+  const r = state.result;
 
   return (
     <section class={styles.card} aria-label="Markup vs Margin">
@@ -13,8 +13,8 @@ export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) 
       </div>
 
       <div class={styles.strip}>
-        <span>{calculation.markupPercent.toFixed(1)}% markup</span>
-        <b>{calculation.grossMargin.toFixed(2)}% margin</b>
+        <span>{pct(r?.markupPercent ?? null)} markup</span>
+        <b>{pct(r?.marginPercent ?? null)} margin</b>
       </div>
       <p class={styles.muted}>
         Markup measures profit over COST. Margin measures profit over SELLING PRICE.
@@ -55,10 +55,7 @@ export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) 
 }
 
 export function MarkupTargetMarginCard({ state }: { state: MarkupCalculatorState }) {
-  const { costPrice, targetMarginPercent, setTargetMarginPercent } = state;
-  const [localCost, setLocalCost] = useState(costPrice);
-  const safeMargin = Math.min(99, Math.max(0, targetMarginPercent));
-  const requiredPrice = safeMargin < 100 ? localCost / (1 - safeMargin / 100) : localCost;
+  const { targetMarginPercent, setTargetMarginPercent, targetCost, setTargetCost } = state;
 
   return (
     <section class={styles.card} aria-label="Target Margin Mode">
@@ -90,15 +87,16 @@ export function MarkupTargetMarginCard({ state }: { state: MarkupCalculatorState
             id="target-cost-price"
             type="number"
             class={styles.fieldInput}
-            value={localCost}
-            onInput={(e) => setLocalCost(Number((e.target as HTMLInputElement).value) || 0)}
+            inputMode="decimal"
+            value={targetCost}
+            onInput={(e) => setTargetCost(Number((e.target as HTMLInputElement).value) || 0)}
           />
         </div>
       </div>
 
       <div class={styles.strip} style={{ marginTop: '10px' }}>
-        <span>Required price</span>
-        <b>₹{requiredPrice.toFixed(2)}</b>
+        <span>{state.targetError ?? 'Required price'}</span>
+        <b>{state.targetError ? '' : inr(state.targetResult?.price ?? null)}</b>
       </div>
     </section>
   );
