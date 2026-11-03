@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import { compileImagesToPdf } from './imagePdfExport.ts';
+import { DEFAULT_PAGE_EXTRAS, type PageExtras } from './imagePdfPageOptions.ts';
 import { createScenicSampleImages } from './samplePdfImages.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
@@ -62,6 +63,7 @@ async function executePdfDownload(
     orientation: OrientationOption;
     margins: MarginsOption;
     fitMode: FitModeOption;
+    extras: PageExtras;
   },
 ): Promise<Uint8Array | null> {
   const res = await compileImagesToPdf({
@@ -70,11 +72,13 @@ async function executePdfDownload(
       bytes: img.bytes,
       width: img.width,
       height: img.height,
+      rotation: img.rotation ?? 0,
     })),
     pageSize: settings.pageSize,
     orientation: settings.orientation,
     margins: settings.margins,
     fitMode: settings.fitMode,
+    extras: settings.extras,
   });
 
   if (!res.ok) return null;
@@ -184,6 +188,7 @@ function usePdfSettings() {
   const [fitMode, setFitMode] = useState<FitModeOption>('fit');
   const [margins, setMargins] = useState<MarginsOption>('normal');
   const [outputFileName, setOutputFileName] = useState<string>('images.pdf');
+  const [extras, setExtras] = useState<PageExtras>(DEFAULT_PAGE_EXTRAS);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -198,6 +203,8 @@ function usePdfSettings() {
     setMargins,
     outputFileName,
     setOutputFileName,
+    extras,
+    setExtras,
     isDragging,
     setIsDragging,
     fileInputRef,
@@ -222,6 +229,7 @@ export function usePdfStudioState(
         orientation: cfgState.orientation,
         margins: cfgState.margins,
         fitMode: cfgState.fitMode,
+        extras: cfgState.extras,
       });
       if (!pdfBytes) {
         notify?.('Failed to compile PDF.');
