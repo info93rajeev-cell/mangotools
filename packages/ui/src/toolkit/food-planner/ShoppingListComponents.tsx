@@ -35,7 +35,7 @@ export function AisleAccordionCard({
 
       {isExpanded && (
         <div class={styles.tableWrapper} style={{ borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
-          <table class={styles.table}>
+          <table class={styles.table} aria-label={`Shopping List Table for ${aisle}`}>
             <thead>
               <tr>
                 <th style={{ width: '36px' }} aria-label="Status checkbox"></th>

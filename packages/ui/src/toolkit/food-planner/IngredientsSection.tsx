@@ -219,7 +219,7 @@ function IngredientsTable({ lines }: { lines: IngredientLineItem[] }) {
 
   return (
     <div class={styles.tableWrapper}>
-      <table class={styles.table}>
+      <table class={styles.table} aria-label="Aggregated Ingredients Table">
         <thead>
           <tr>
             <th style={{ width: '36px' }}>#</th>

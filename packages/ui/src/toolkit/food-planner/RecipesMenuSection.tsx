@@ -187,7 +187,7 @@ function SelectedMenuTable({
 
   return (
     <div class={styles.tableWrapper}>
-      <table class={styles.table}>
+      <table class={styles.table} aria-label="Selected Dishes Table">
         <thead>
           <tr>
             <th>#</th>

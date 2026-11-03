@@ -26,6 +26,7 @@ interface SectionMetrics {
   recipesCount: number;
   ingredientsRowCount: number;
   shoppingItemsCount: number;
+  totalCostText: string;
   scheduleTasksCount: number;
 }
 
@@ -56,7 +57,9 @@ async function runDesktopQa(
   saveScreenshot('desktop-01-recipes-menu.png', await page.screenshot({ fullPage: true }));
   console.log('✓ Captured desktop-01-recipes-menu.png');
 
-  const recipesCount = await page.locator('table tbody tr').count();
+  const recipesCount = await page
+    .locator('table[aria-label="Selected Dishes Table"] tbody tr')
+    .count();
   const sourceCheckedCount = await page.locator('text=Source Checked').count();
   const prototypeCount = await page.locator('text=Prototype').count();
   results.push({
@@ -80,7 +83,9 @@ async function runDesktopQa(
   await page.getByRole('tab', { name: /Ingredients/i }).click();
   await page.waitForTimeout(500);
   saveScreenshot('desktop-02-ingredients.png', await page.screenshot({ fullPage: true }));
-  const ingredientsRowCount = await page.locator('table tbody tr').count();
+  const ingredientsRowCount = await page
+    .locator('table[aria-label="Aggregated Ingredients Table"] tbody tr')
+    .count();
   results.push({
     name: 'Ingredients Table rendered with scaled lines',
     passed: ingredientsRowCount > 0,
@@ -96,6 +101,22 @@ async function runDesktopQa(
     name: 'Google Maps grocery discovery link is valid',
     passed: Boolean(mapsHref?.includes('google.com/maps/search/grocery')),
   });
+
+  // Test purchasing item toggle to verify "In Stock" vs "To Buy" status distinction
+  const firstCheckbox = page.locator('input[type="checkbox"][aria-label*="Mark"]').first();
+  if (await firstCheckbox.isVisible()) {
+    await firstCheckbox.check();
+    await page.waitForTimeout(200);
+    const inStockBadge = page.locator('text=✓ In Stock').first();
+    const inStockVisible = await inStockBadge.isVisible();
+    results.push({
+      name: 'Shopping List item checking distinguishes In Stock from To Buy',
+      passed: inStockVisible,
+    });
+    await firstCheckbox.uncheck();
+    await page.waitForTimeout(200);
+  }
+
   const shoppingItemsCount = await page
     .locator('input[type="checkbox"][aria-label*="Mark"]')
     .count();
@@ -109,10 +130,17 @@ async function runDesktopQa(
   // 4. Cost Estimation
   await page.getByRole('tab', { name: /Cost Estimation/i }).click();
   await page.waitForTimeout(500);
+  const totalCostEl = page.locator('[class*="totalCostValue"]').first();
+  const totalCostText = (await totalCostEl.innerText()).trim();
+
   const wholesaleBtn = page.getByRole('button', { name: /Wholesale/i });
   if (await wholesaleBtn.isVisible()) {
     await wholesaleBtn.click();
     results.push({ name: 'Retail vs Wholesale Pricing Switcher works', passed: true });
+    // Switch back to retail to keep controlled baseline
+    const retailBtn = page.getByRole('button', { name: /Retail/i });
+    if (await retailBtn.isVisible()) await retailBtn.click();
+    await page.waitForTimeout(300);
   }
   saveScreenshot('desktop-04-cost-estimation.png', await page.screenshot({ fullPage: true }));
 
@@ -156,6 +184,7 @@ async function runDesktopQa(
     recipesCount,
     ingredientsRowCount,
     shoppingItemsCount,
+    totalCostText,
     scheduleTasksCount,
   };
 }
@@ -183,12 +212,16 @@ async function runMobileQa(
 
   saveScreenshot('mobile-01-recipes-menu.png', await page.screenshot({ fullPage: true }));
   console.log('✓ Captured mobile-01-recipes-menu.png');
-  const recipesCount = await page.locator('table tbody tr').count();
+  const recipesCount = await page
+    .locator('table[aria-label="Selected Dishes Table"] tbody tr')
+    .count();
 
   await page.getByRole('tab', { name: /Ingredients/i }).click({ force: true });
   await page.waitForTimeout(500);
   saveScreenshot('mobile-02-ingredients.png', await page.screenshot({ fullPage: true }));
-  const ingredientsRowCount = await page.locator('table tbody tr').count();
+  const ingredientsRowCount = await page
+    .locator('table[aria-label="Aggregated Ingredients Table"] tbody tr')
+    .count();
 
   await page.getByRole('tab', { name: /Shopping List/i }).click({ force: true });
   await page.waitForTimeout(500);
@@ -199,6 +232,8 @@ async function runMobileQa(
 
   await page.getByRole('tab', { name: /Cost Estimation/i }).click({ force: true });
   await page.waitForTimeout(500);
+  const totalCostEl = page.locator('[class*="totalCostValue"]').first();
+  const totalCostText = (await totalCostEl.innerText()).trim();
   saveScreenshot('mobile-04-cost-estimation.png', await page.screenshot({ fullPage: true }));
 
   await page.getByRole('tab', { name: /Cooking Schedule/i }).click({ force: true });
@@ -215,6 +250,7 @@ async function runMobileQa(
     recipesCount,
     ingredientsRowCount,
     shoppingItemsCount,
+    totalCostText,
     scheduleTasksCount,
   };
 }
@@ -237,7 +273,7 @@ async function main() {
   console.log('=====================================================');
   console.log('Metric                  | Desktop | Mobile  | Match');
   console.log('-----------------------------------------------------');
-  const checkMatch = (name: string, d: number, m: number) => {
+  const checkMatch = (name: string, d: string | number, m: string | number) => {
     const match = d === m;
     console.log(
       `${name.padEnd(23)} | ${String(d).padStart(7)} | ${String(m).padStart(7)} | ${match ? '✓ IDENTICAL' : '✗ MISMATCH'}`,
@@ -256,6 +292,7 @@ async function main() {
     mobileMetrics.ingredientsRowCount,
   );
   checkMatch('Shopping Items', desktopMetrics.shoppingItemsCount, mobileMetrics.shoppingItemsCount);
+  checkMatch('Menu Cost Total', desktopMetrics.totalCostText, mobileMetrics.totalCostText);
   checkMatch('Cooking Tasks', desktopMetrics.scheduleTasksCount, mobileMetrics.scheduleTasksCount);
 
   console.log('\n=====================================================');

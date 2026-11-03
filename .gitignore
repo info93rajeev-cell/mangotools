@@ -20,4 +20,3 @@ scripts/*.py
 *.bundle
 .pnpm-store/
 Claude outputs/
-tests/artifacts/
