@@ -114,17 +114,30 @@ export function MarkupOptionalAdditionsCard({ state }: { state: MarkupCalculator
           <label class={styles.label} for="markup-gst-pricing">
             GST after pricing
           </label>
-          <select id="markup-gst-pricing" class={styles.fieldInput} defaultValue="18">
+          <select
+            id="markup-gst-pricing"
+            class={styles.fieldInput}
+            value={String(state.gstRate)}
+            onChange={(e) => state.setGstRate(Number((e.target as HTMLSelectElement).value))}
+          >
             <option value="0">Optional / 0%</option>
             <option value="5">5% GST</option>
-            <option value="12">12% GST</option>
             <option value="18">18% Standard</option>
+            <option value="40">40% GST</option>
           </select>
         </div>
       </div>
 
+      {state.gstRate > 0 ? (
+        <div class={styles.strip} style={{ marginTop: '9px' }}>
+          <span>Price with {state.gstRate}% GST</span>
+          <b>₹{state.calculation.priceWithGst.toFixed(2)}</b>
+        </div>
+      ) : null}
+
       <div class={styles.note} style={{ marginTop: '9px' }}>
-        Margin and markup are calculated on comparable tax-exclusive values.
+        Margin and markup are calculated on tax-exclusive values; GST is added on top of the selling
+        price.
       </div>
     </section>
   );

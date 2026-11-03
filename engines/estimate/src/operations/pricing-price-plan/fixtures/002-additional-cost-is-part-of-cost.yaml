@@ -1,0 +1,5 @@
+id: 002-additional-cost-is-part-of-cost
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "Total cost 480 + 20 = 500; 40% markup -> 700" }
+input: { mode: from-markup, productCost: "480", additionalCost: "20", markupPercent: "40" }
+expected: { totalCost: "500.00", sellingPrice: "700.00", profitPerUnit: "200.00", markupPercent: "40.00" }

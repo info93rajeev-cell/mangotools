@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/pricing.price-plan
+version: 0.1.0
+operation: estimate.pricing.price-plan@1
+params: { rounding: half-up }
+locked: [rounding]
+fields:
+  mode: { labelKey: pricePlan.field.mode, kind: enum, order: 10, width: half, control: select, options: [{ value: from-markup, labelKey: pricePlan.option.fromMarkup }, { value: from-price, labelKey: pricePlan.option.fromPrice }, { value: from-margin, labelKey: pricePlan.option.fromMargin }], default: "from-markup", required: true }
+  productCost: { labelKey: pricePlan.field.productCost, kind: money, order: 20, width: half, currency: INR, default: "500", required: true }
+  additionalCost: { labelKey: pricePlan.field.additionalCost, kind: money, order: 30, width: half, currency: INR, default: "0" }
+  markupPercent: { labelKey: pricePlan.field.markupPercent, kind: percent, order: 40, width: half, unit: "%", default: "40" }
+  sellingPrice: { labelKey: pricePlan.field.sellingPrice, kind: money, order: 50, width: half, currency: INR, default: "700" }
+  targetMarginPercent: { labelKey: pricePlan.field.targetMarginPercent, kind: percent, order: 60, width: half, unit: "%", default: "30" }
+  quantity: { labelKey: pricePlan.field.quantity, kind: number, order: 70, width: half, default: "20", required: true }
+  gstRatePercent: { labelKey: pricePlan.field.gstRatePercent, kind: percent, order: 80, width: half, unit: "%", default: "0" }
+outputs:
+  sellingPrice: { labelKey: pricePlan.out.sellingPrice, format: money, order: 0, primary: true }
+  markupPercent: { labelKey: pricePlan.out.markupPercent, format: percent, order: 10 }
+  marginPercent: { labelKey: pricePlan.out.marginPercent, format: percent, order: 20 }
+  profitPerUnit: { labelKey: pricePlan.out.profitPerUnit, format: money, order: 30 }
+  profitOnQuantity: { labelKey: pricePlan.out.profitOnQuantity, format: money, order: 40 }
+  totalCost: { labelKey: pricePlan.out.totalCost, format: money, order: 50 }
+  gstAmount: { labelKey: pricePlan.out.gstAmount, format: money, order: 60 }
+  priceWithGst: { labelKey: pricePlan.out.priceWithGst, format: money, order: 70 }
+  priceForTargetMargin: { labelKey: pricePlan.out.priceForTargetMargin, format: money, order: 80 }
+  costSharePercent: { labelKey: pricePlan.out.costSharePercent, format: percent, order: 90 }
+  profitSharePercent: { labelKey: pricePlan.out.profitSharePercent, format: percent, order: 100 }
+samples:
+  markup-40:
+    titleKey: pricePlan.sample.markup40
+    input: { mode: from-markup, productCost: "500", additionalCost: "0", markupPercent: "40", sellingPrice: "700", targetMarginPercent: "30", quantity: "20", gstRatePercent: "0" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
+strings:
+  en:
+    pricePlan.field.mode: "Pricing mode"
+    pricePlan.field.productCost: "Product cost"
+    pricePlan.field.additionalCost: "Additional cost"
+    pricePlan.field.markupPercent: "Desired markup"
+    pricePlan.field.sellingPrice: "Given selling price"
+    pricePlan.field.targetMarginPercent: "Target margin"
+    pricePlan.field.quantity: "Quantity"
+    pricePlan.field.gstRatePercent: "GST after pricing"
+    pricePlan.out.sellingPrice: "Selling price"
+    pricePlan.out.markupPercent: "Markup"
+    pricePlan.out.marginPercent: "Gross margin"
+    pricePlan.out.profitPerUnit: "Profit per unit"
+    pricePlan.out.profitOnQuantity: "Profit on quantity"
+    pricePlan.out.totalCost: "Total cost"
+    pricePlan.out.gstAmount: "GST"
+    pricePlan.out.priceWithGst: "Price with GST"
+    pricePlan.out.priceForTargetMargin: "Price for target margin"
+    pricePlan.out.costSharePercent: "Cost share"
+    pricePlan.out.profitSharePercent: "Profit share"
+    pricePlan.option.fromMarkup: "Find selling price"
+    pricePlan.option.fromPrice: "Find markup %"
+    pricePlan.option.fromMargin: "Target margin"
+    pricePlan.sample.markup40: "40% markup on ₹500"
+    work.pricePlan.profit: "Profit = {sellingPrice:money} − {totalCost:money} = {result:money}"
+    work.pricePlan.markup: "Markup = {profit:money} ÷ {totalCost:money} × 100 = {result}%"
+    work.pricePlan.margin: "Margin = {profit:money} ÷ {sellingPrice:money} × 100 = {result}%"

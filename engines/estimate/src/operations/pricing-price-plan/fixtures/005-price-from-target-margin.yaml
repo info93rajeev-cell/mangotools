@@ -1,0 +1,5 @@
+id: 005-price-from-target-margin
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "30% margin on cost 500: 500 / (1 - 0.30) = 714.29; achieved markup 214.29/500 = 42.86%" }
+input: { mode: from-margin, productCost: "500", targetMarginPercent: "30" }
+expected: { sellingPrice: "714.29", profitPerUnit: "214.29", markupPercent: "42.86", marginPercent: "30.00" }

@@ -1,0 +1,5 @@
+id: 009-missing-price
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "From-price mode needs the selling price" }
+input: { mode: from-price, productCost: "500" }
+expectedError: { code: ESTIMATE_MISSING_INPUT, path: sellingPrice }

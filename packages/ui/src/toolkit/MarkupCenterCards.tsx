@@ -27,7 +27,9 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
           <span class={`${styles.ico} ${styles.icoViolet}`}>↗</span>
           <div class={styles.metricTextGroup}>
             <small>Markup</small>
-            <strong>{calculation.markupPercent.toFixed(1)}%</strong>
+            <strong>
+              {calculation.markupPercent === null ? '—' : `${calculation.markupPercent}%`}
+            </strong>
           </div>
         </div>
 
@@ -44,7 +46,11 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
           <div class={styles.metricTextGroup}>
             <small>Profit per unit</small>
             <strong>
-              ₹{calculation.profitPerUnit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+              ₹
+              {calculation.profitPerUnit.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </strong>
           </div>
         </div>
@@ -54,7 +60,11 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
           <div class={styles.metricTextGroup}>
             <small>Profit on {quantity} units</small>
             <strong>
-              ₹{calculation.profitOnQuantity.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+              ₹
+              {calculation.profitOnQuantity.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </strong>
           </div>
         </div>
@@ -64,8 +74,9 @@ export function MarkupPricingResultCard({ state }: { state: MarkupCalculatorStat
 }
 
 export function MarkupFormulaWorkingCard({ state }: { state: MarkupCalculatorState }) {
-  const { costPrice, calculation } = state;
-  const factor = (1 + calculation.markupPercent / 100).toFixed(2);
+  const c = state.calculation;
+  const money = (v: number) => `₹${v.toFixed(2)}`;
+  const profit = money(c.profitPerUnit);
 
   return (
     <section class={styles.card} aria-label="Formula and Working">
@@ -75,14 +86,12 @@ export function MarkupFormulaWorkingCard({ state }: { state: MarkupCalculatorSta
       </div>
 
       <div class={styles.note}>
-        Selling price = Cost × (1 + Markup ÷ 100)
+        Profit = {money(c.sellingPrice)} − {money(c.baseCost)} = <b>{profit}</b>
         <br />
-        <b>
-          ₹{costPrice} × {factor} = ₹{calculation.sellingPrice.toFixed(2)}
-        </b>
+        Markup = {profit} ÷ {money(c.baseCost)} × 100 ={' '}
+        <b>{c.markupPercent === null ? '—' : `${c.markupPercent}%`}</b>
         <br />
-        Margin = (₹{calculation.sellingPrice.toFixed(0)} − ₹{costPrice}) ÷ ₹
-        {calculation.sellingPrice.toFixed(0)} × 100 = {calculation.grossMargin}%
+        Margin = {profit} ÷ {money(c.sellingPrice)} × 100 = <b>{c.grossMargin}%</b>
       </div>
     </section>
   );
@@ -90,7 +99,9 @@ export function MarkupFormulaWorkingCard({ state }: { state: MarkupCalculatorSta
 
 export function MarkupPriceCompositionCard({ state }: { state: MarkupCalculatorState }) {
   const { calculation } = state;
-  const { costPct, profitPct } = calculation;
+  const clamp = (v: number) => Math.min(100, Math.max(0, v));
+  const costPct = clamp(calculation.costPct);
+  const profitPct = clamp(calculation.profitPct);
 
   return (
     <section class={styles.card} aria-label="Price Composition">

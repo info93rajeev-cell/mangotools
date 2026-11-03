@@ -1,28 +1,29 @@
 ---
-lastReviewed: 2026-09-30
-example: 001-price-from-markup
+lastReviewed: 2026-11-03
+example: 005-price-plan-markup-40
 ---
 
 ## How to use
 
-1. Choose what to calculate: the selling price from cost and markup, the markup from cost and selling price, or the cost from selling price and markup.
-2. Enter the two known values. Amounts are in ₹.
-3. Read the result. Profit and margin are shown too, with the working.
-4. Copy or print the result.
+1. Choose what to calculate: the selling price from a markup, the markup from a selling price you already have, or the selling price that gives a target margin.
+2. Enter the product cost, plus any additional cost per unit (packing, freight). Amounts are in ₹.
+3. Enter the markup, selling price or target margin, and the quantity.
+4. Read the selling price, markup, margin and profit per unit and on the quantity. Pick a GST rate to see the price with GST added on top.
 
 ## Method
 
-- Selling price from markup = cost × (1 + markup ÷ 100).
-- Cost from price and markup = selling price ÷ (1 + markup ÷ 100).
-- Profit = selling price − cost.
-- Markup % = profit ÷ cost × 100.
-- Margin % = profit ÷ selling price × 100.
+- Total cost = product cost + additional cost.
+- Selling price from markup = total cost × (1 + markup ÷ 100).
+- Selling price from a target margin = total cost ÷ (1 − margin ÷ 100).
+- Profit = selling price − total cost; a price below cost shows as a loss.
+- Markup % = profit ÷ total cost × 100. Margin % = profit ÷ selling price × 100.
+- Price with GST = selling price + selling price × GST rate.
 
-The rule is **round money first, then percentages**. Cost and selling price are rounded to two decimal places (half-up) first. Profit is calculated from those rounded amounts, and markup and margin are calculated from the rounded profit and amounts, then rounded to two decimal places. The figures you see therefore always reconcile: profit is exactly the selling price minus the cost as displayed.
+The rule is **round money first, then percentages**. Cost and selling price are rounded to two decimal places (half-up) first, and markup and margin are calculated from those rounded amounts, so profit is exactly the selling price minus the cost as displayed.
 
 ## Worked example
 
-A cost of ₹200 with a 25% markup:
+A cost of ₹500 with a 40% markup, for 20 units:
 
 ## FAQ
 

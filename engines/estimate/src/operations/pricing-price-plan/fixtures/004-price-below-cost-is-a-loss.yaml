@@ -1,0 +1,5 @@
+id: 004-price-below-cost-is-a-loss
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "Price 400 on cost 500: profit -100; markup -20%; margin -25%" }
+input: { mode: from-price, productCost: "500", sellingPrice: "400" }
+expected: { profitPerUnit: "-100.00", markupPercent: "-20.00", marginPercent: "-25.00" }

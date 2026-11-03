@@ -1,0 +1,16 @@
+id: 001-price-from-markup
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "500 x 1.40 = 700; profit 200; margin 200/700 = 28.57%; 20 units = 4,000; GST 18% of 700 = 126 -> 826; 30% margin needs 500 / 0.70 = 714.29" }
+input: { mode: from-markup, productCost: "500", markupPercent: "40", quantity: "20", gstRatePercent: "18", targetMarginPercent: "30" }
+expected:
+  totalCost: "500.00"
+  sellingPrice: "700.00"
+  profitPerUnit: "200.00"
+  markupPercent: "40.00"
+  marginPercent: "28.57"
+  profitOnQuantity: "4000.00"
+  gstAmount: "126.00"
+  priceWithGst: "826.00"
+  priceForTargetMargin: "714.29"
+  costSharePercent: "71.43"
+  profitSharePercent: "28.57"

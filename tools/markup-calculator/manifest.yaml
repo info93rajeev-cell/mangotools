@@ -4,17 +4,18 @@ id: markup-calculator
 slug: markup-calculator
 status: beta
 tier: T2
-version: 0.1.2
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-11-03, type: changed, summary: "Calculated by the tested engine in exact decimals; GST after pricing and the target-margin price now work." }
   - { version: 0.1.2, date: 2026-11-03, type: fixed, summary: "Markup % shows the markup actually achieved in every mode; a price below cost shows as a loss, not ₹0." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Add an FAQ on pricing/accounting advice; margin can never exceed 100%." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with price from markup, markup from cost and price, and cost from markup." }
 name: Markup Calculator
 shortName: Markup
-summary: Work out selling price, markup or cost from the other two, in ₹ with every step shown.
+summary: Work out the selling price from a markup or target margin, or the markup from a price, in ₹ with every step shown.
 archetype: B
-preset: estimate/pricing.markup
-sample: cost-200-markup-25
+preset: estimate/pricing.price-plan
+sample: markup-40
 taxonomy:
   category: business
   tags: [pricing, profit]
@@ -32,5 +33,5 @@ graph:
 quality:
   verifiedAgainst:
     - { citation: "Standard definitions: markup = profit ÷ cost; margin = profit ÷ selling price", locator: "Method section" }
-    - { citation: "Hand-verified arithmetic", locator: "Engine fixtures 007 and 010, tool fixtures 001–004" }
-  lastVerified: 2026-09-25
+    - { citation: "Hand-verified arithmetic", locator: "estimate.pricing.price-plan@1 fixtures 001–009, tool fixture 005" }
+  lastVerified: 2026-11-03

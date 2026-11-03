@@ -1,4 +1,3 @@
-import { useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import type { MarkupCalculatorState } from './useMarkupCalculator.ts';
 
@@ -13,7 +12,9 @@ export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) 
       </div>
 
       <div class={styles.strip}>
-        <span>{calculation.markupPercent.toFixed(1)}% markup</span>
+        <span>
+          {calculation.markupPercent === null ? '—' : `${calculation.markupPercent}%`} markup
+        </span>
         <b>{calculation.grossMargin.toFixed(2)}% margin</b>
       </div>
       <p class={styles.muted}>
@@ -55,10 +56,8 @@ export function MarkupVsMarginCard({ state }: { state: MarkupCalculatorState }) 
 }
 
 export function MarkupTargetMarginCard({ state }: { state: MarkupCalculatorState }) {
-  const { costPrice, targetMarginPercent, setTargetMarginPercent } = state;
-  const [localCost, setLocalCost] = useState(costPrice);
-  const safeMargin = Math.min(99, Math.max(0, targetMarginPercent));
-  const requiredPrice = safeMargin < 100 ? localCost / (1 - safeMargin / 100) : localCost;
+  const { targetMarginPercent, setTargetMarginPercent, calculation } = state;
+  const required = calculation.priceForTargetMargin;
 
   return (
     <section class={styles.card} aria-label="Target Margin Mode">
@@ -67,38 +66,24 @@ export function MarkupTargetMarginCard({ state }: { state: MarkupCalculatorState
         <span>Target Margin Mode</span>
       </div>
 
-      <div class={styles.grid2}>
-        <div class={styles.field}>
-          <label class={styles.label} for="target-margin-pct">
-            Target margin (%)
-          </label>
-          <input
-            id="target-margin-pct"
-            type="number"
-            class={styles.fieldInput}
-            value={targetMarginPercent}
-            onInput={(e) =>
-              setTargetMarginPercent(Number((e.target as HTMLInputElement).value) || 0)
-            }
-          />
-        </div>
-        <div class={styles.field}>
-          <label class={styles.label} for="target-cost-price">
-            Cost price (₹)
-          </label>
-          <input
-            id="target-cost-price"
-            type="number"
-            class={styles.fieldInput}
-            value={localCost}
-            onInput={(e) => setLocalCost(Number((e.target as HTMLInputElement).value) || 0)}
-          />
-        </div>
+      <div class={styles.field}>
+        <label class={styles.label} for="target-margin-pct">
+          Target margin (%)
+        </label>
+        <input
+          id="target-margin-pct"
+          type="number"
+          inputMode="decimal"
+          class={styles.fieldInput}
+          value={targetMarginPercent}
+          onInput={(e) => setTargetMarginPercent(Number((e.target as HTMLInputElement).value) || 0)}
+        />
       </div>
+      <p class={styles.muted}>On your total cost of ₹{calculation.baseCost.toFixed(2)}.</p>
 
       <div class={styles.strip} style={{ marginTop: '10px' }}>
         <span>Required price</span>
-        <b>₹{requiredPrice.toFixed(2)}</b>
+        <b>{Number.isFinite(required) ? `₹${required.toFixed(2)}` : '—'}</b>
       </div>
     </section>
   );

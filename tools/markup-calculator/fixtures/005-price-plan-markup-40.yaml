@@ -1,0 +1,5 @@
+id: 005-price-plan-markup-40
+preset: estimate/pricing.price-plan
+source: { type: hand-verified, citation: "500 x 1.40 = 700; profit 200 per unit, 4,000 on 20 units; margin 28.57%; 30% margin needs 714.29" }
+input: { mode: from-markup, productCost: "500", additionalCost: "0", markupPercent: "40", sellingPrice: "700", targetMarginPercent: "30", quantity: "20", gstRatePercent: "0" }
+expected: { sellingPrice: "700.00", profitPerUnit: "200.00", profitOnQuantity: "4000.00", markupPercent: "40.00", marginPercent: "28.57", priceForTargetMargin: "714.29" }

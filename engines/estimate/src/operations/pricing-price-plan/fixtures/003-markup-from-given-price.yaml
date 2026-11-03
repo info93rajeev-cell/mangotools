@@ -1,0 +1,5 @@
+id: 003-markup-from-given-price
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "Price 650 on cost 500: profit 150; markup 150/500 = 30%; margin 150/650 = 23.08%" }
+input: { mode: from-price, productCost: "500", sellingPrice: "650" }
+expected: { sellingPrice: "650.00", profitPerUnit: "150.00", markupPercent: "30.00", marginPercent: "23.08" }

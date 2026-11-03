@@ -1,0 +1,5 @@
+id: 008-markup-minus-100
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "A markup of -100% or less gives a price of zero or below" }
+input: { mode: from-markup, productCost: "500", markupPercent: "-100" }
+expectedError: { code: ESTIMATE_MARKUP_OUT_OF_RANGE, path: markupPercent }

@@ -1,0 +1,6 @@
+id: 006-zero-cost
+operation: estimate.pricing.price-plan@1
+source: { type: hand-verified, citation: "Markup is undefined on a zero cost; margin is 100%" }
+input: { mode: from-price, productCost: "0", sellingPrice: "100" }
+expected: { profitPerUnit: "100.00", markupPercent: null, marginPercent: "100.00" }
+expectedWarnings: [ESTIMATE_MARKUP_UNDEFINED]

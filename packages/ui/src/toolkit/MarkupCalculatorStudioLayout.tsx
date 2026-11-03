@@ -1,3 +1,5 @@
+import type { ToolSnapshot, ToolStore } from '@mangotools/runtime';
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import { MarkupCenterCards } from './MarkupCenterCards.tsx';
@@ -35,11 +37,19 @@ const MARKUP_TOUR_STEPS: TourStep[] = [
 ];
 
 export interface MarkupCalculatorStudioLayoutProps {
+  preset: ResolvedPreset;
+  snapshot: ToolSnapshot;
+  store: ToolStore;
   notify?: (msg: string) => void;
 }
 
-export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioLayoutProps) {
-  const state = useMarkupCalculator(notify);
+export function MarkupCalculatorStudioLayout({
+  preset,
+  snapshot,
+  store,
+  notify,
+}: MarkupCalculatorStudioLayoutProps) {
+  const state = useMarkupCalculator(preset, snapshot, store, notify);
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
@@ -47,18 +57,6 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
     window.addEventListener('mangotools:open-tour', handleOpen);
     return () => window.removeEventListener('mangotools:open-tour', handleOpen);
   }, []);
-
-  const handleSample = () => {
-    state.setCostPrice(500);
-    state.setMarkupPercent(40);
-    state.setQuantity(20);
-    state.setPricingMode('find_price');
-    notify?.('Sample ₹500 product at 40% markup loaded');
-  };
-
-  const handleReset = () => {
-    state.resetToDefaults();
-  };
 
   return (
     <div
@@ -73,18 +71,28 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
         </div>
 
         <div class={styles.topActions}>
-          <button type="button" class={styles.pill} onClick={handleSample}>
+          <button type="button" class={styles.pill} onClick={state.loadSample}>
             <span>☼ Try Sample</span>
           </button>
           <button type="button" class={styles.pill} onClick={state.copySummary}>
             <span>▤ Copy</span>
           </button>
-          <button type="button" class={`${styles.pill} ${styles.pillDanger}`} onClick={handleReset}>
+          <button
+            type="button"
+            class={`${styles.pill} ${styles.pillDanger}`}
+            onClick={state.resetToDefaults}
+          >
             <span>↺ Reset</span>
           </button>
           <TourLauncherButton onClick={() => setIsTourOpen(true)} />
         </div>
       </div>
+
+      {state.error ? (
+        <p class={styles.note} role="alert" data-markup-error="">
+          {state.error}
+        </p>
+      ) : null}
 
       <div class={styles.columns}>
         <div data-tour="markup-inputs">
