@@ -48,7 +48,7 @@ All formulas, field-book conventions, and adjustment models in this contract are
    - **Official Manual:** [Bharat Skills E-Book](https://bharatskills.gov.in/pdf/E_Books/CTS/62/English/TP/Surveyor%20-%201st%20Year%20-%20TP%20%28NSQF%202022%29.pdf) (Exercise 1.8.54).
    - Confirms eleven-station practical booking format and intermediate sight reduction.
 
-*(Note on standards: BS 5606:1990 was withdrawn by BSI in 2022 and applies to building component fit tolerances rather than civil leveling circuits. Furthermore, the specific constant C = 24 mm/√km is treated strictly as an unverified configurable product default rather than an authoritative standard).*
+*(Note on standards: BS 5606:1990 was withdrawn by BSI in 2022 and applies to building component fit tolerances rather than civil leveling circuits. The engine enforces no automatic default for allowable error constant C; the value 24 is used solely as an illustrative preset in the 'Try sample' button and is not an authoritative standard).*
 
 ---
 
@@ -97,6 +97,7 @@ Both checks must pass in every valid level run. This guarantees internal arithme
 1. **Open Line (no known closing RL provided):**
    - The final computed RL $\text{RL}_n$ is the observed ending level.
    - Misclosure, allowable limit, and adjustment corrections are `null`.
+   - `closureStatus` is `null`.
 2. **Closed Line (known closing RL $\text{RL}_{\text{known}}$ provided):**
    $$\text{Misclosure } e = \text{RL}_n - \text{RL}_{\text{known}} \quad (\text{metres})$$
    $$\text{Misclosure in millimetres: } e_{\text{mm}} = e \times 1000 \quad (\text{mm})$$
@@ -112,19 +113,27 @@ Both checks must pass in every valid level run. This guarantees internal arithme
    - Cumulative distance: $D_i = \sum_{j=1}^i d_j$ (metres).
    - Total line distance: $D_{\text{total}} = D_n$ (metres).
    - Leveled distance in kilometres: $K = D_{\text{total}} / 1000$.
-2. **Allowable Error Formula & Status of Constant $C$:**
+2. **Allowable Error Formula & Status of Parameter $C$:**
    $$E_{\text{allow}} = \pm C \sqrt{K} \text{ mm}$$
-   - $C$ is an explicit input parameter in units of **$\text{mm}/\sqrt{\text{km}}$**.
-   - **Verified Geodetic Standards:** Primary control standards publish authoritative constants for specific network orders (e.g. NOAA/FGCC 1984 Table 2.2 specifies index $b = 0.5\text{ to }2.0\text{ mm}/\sqrt{K}$ for First- through Third-Order control networks; USACE EM 1110-1-1005 allows $12\text{ mm}\sqrt{K}$ for third-order engineering control).
-   - **Status of $C = 24$:** The value $C = 24\text{ mm}/\sqrt{\text{km}}$ is provided in the workbench as a **configurable product example and default whose technical basis has not yet been independently verified** against an accessible primary standard. It is **not** labeled or asserted as an authoritative standard.
-   - **Strictly Configurable Parameter:** Because allowable error constants vary by country, jurisdiction, and project specification, the engine treats $C$ strictly as an arbitrary user-configured numeric input string (`kConstant`, defaulting to `"24"`).
-   - **Product Copy Obligation:** The product UI and documentation must label this input as `"Allowable error constant C (mm/√km) [Default: 24]"` with explanatory helper text noting that users should enter their project-specified allowable error constant, and must never claim that 24 is an authoritative or legally mandated value.
+   - **Strictly Project-Specified:** $C$ is an explicit, optional input parameter (`kConstant`, string) in units of **$\text{mm}/\sqrt{\text{km}}$**. There is **no automatic engine default**.
+   - **User Requirement for Tolerance Evaluation:** The user must explicitly supply a project-specified $C$ for allowable error and closure pass/fail evaluation.
+   - **Missing Criterion Behaviour:** When $C$ is absent or empty:
+     - The engine computes all raw reduced levels, arithmetic checks, and closing misclosure $e$.
+     - `allowableError` is returned as `null`.
+     - `closureStatus` is returned as `'criterion-not-provided'`.
+     - The UI displays allowable limit as `—` and status badge as `Criterion not provided`.
+     - Adjustment distribution (distance or setup) proceeds normally if requested, since adjustment distributes observed misclosure $-e$ and does not require an allowable error threshold.
+   - **Status of $C = 24$:** The value $24$ is retained **only** in an explicitly labelled "Try sample" dataset as an illustrative example. Loading a sample must not imply that 24 is an authoritative standard or universal default.
+   - **UI Copy Obligation:** In the empty workbench state, the input field has no pre-filled value (placeholder: `"e.g. 12 or 24"`). Label: `"Allowable error constant C (mm/√km) [Optional]"`. Helper copy: `"Enter your contract or survey specification constant C. Leaving blank calculates misclosure without a pass/fail tolerance check."`
 3. **Deterministic Numerical Policy for $\sqrt{K}$ and Acceptance:**
-   - **Kernel Evaluation:** $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
-   - **Acceptance Criterion:** The closure decision compares the **unrounded absolute misclosure in millimetres** against the **unrounded calculated allowable threshold**:
-     $$\text{pass} \iff |e_{\text{mm}}| \le C \sqrt{K} + 10^{-9}\text{ mm}$$
-     *(The $10^{-9}\text{ mm}$ epsilon prevents floating-point rounding edge-rejections on exact boundaries).*
-   - **Displayed Allowable Limit:** Rounded half-up to 1 decimal place in millimetres ($\pm X.X\text{ mm}$). Acceptance does **not** evaluate against the displayed 0.1 mm rounded number.
+   - **Kernel Evaluation:** When $C$ is provided, $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
+   - **Acceptance Criterion:** When $C$ is present, the closure comparison evaluates against the unrounded threshold:
+     $$\text{closureStatus} = \begin{cases}
+     \text{'pass'} & \text{if } |e_{\text{mm}}| \le C\sqrt{K} + 10^{-9}\text{ mm} \\
+     \text{'fail'} & \text{if } |e_{\text{mm}}| > C\sqrt{K} + 10^{-9}\text{ mm}
+     \end{cases}$$
+     When $C$ is absent, $\text{closureStatus} = \text{'criterion-not-provided'}$.
+   - **Displayed Allowable Limit:** When $C$ is present, formatted rounded half-up to 1 decimal place in millimetres ($\pm X.X\text{ mm}$). Acceptance does **not** evaluate against the displayed 0.1 mm rounded number.
 
 ---
 
@@ -162,7 +171,7 @@ $$\text{Adjusted RL}_i = \text{round}_3\left(\text{RL}_i + c_{i,\text{m}}\right)
 - **Terminal Invariant:** To prevent floating-point rounding drift on the closing benchmark, $\text{Adjusted RL}_n \equiv \text{RL}_{\text{known}}$ strictly.
 
 ### Reconciled Worked Comparison Table
-Sample level run ($N_{\text{setups}} = 3$, $D_{\text{total}} = 160\text{ m}$, $\text{RL}_{\text{known}} = 99.805\text{ m}$, observed closing $\text{RL}_n = 99.800\text{ m}$, misclosure $e = -0.005\text{ m} = -5.0\text{ mm}$, total correction $+5.0\text{ mm}$):
+Sample level run ("Try sample" example with illustrative $C = 24\text{ mm}/\sqrt{\text{km}}$, $N_{\text{setups}} = 3$, $D_{\text{total}} = 160\text{ m}$, $\text{RL}_{\text{known}} = 99.805\text{ m}$, observed closing $\text{RL}_n = 99.800\text{ m}$, misclosure $e = -0.005\text{ m} = -5.0\text{ mm}$, total correction $+5.0\text{ mm}$, allowable error $\pm 9.6\text{ mm}$ [pass]):
 
 | Station | Type | Dist (m) | Cum $D_i$ (m) | Setup ($s_i$) | Raw RL (m) | Dist $c_{i,\text{mm}}$ (exact) | Dist Display Corr | Dist Adjusted RL (m) | Setup $c_{i,\text{mm}}$ (exact) | Setup Display Corr | Setup Adjusted RL (m) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -213,7 +222,7 @@ This contract definitively selects a **single unified operation: `survey.levelin
 - **Params Schema:**
   - `method`: `z.enum(['rise-fall', 'height-of-instrument']).default('rise-fall')`
   - `adjBy`: `z.enum(['none', 'distance', 'setup']).default('none')`
-  - `kConstant`: `z.string().default('24')` (configurable allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$).
+  - `kConstant`: `z.string().optional()` (strictly project-specified allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$; no automatic engine default).
 - **Output Schema:**
   - `rows`: array of result rows extending `@1` with:
     - `dist`: string | null (incremental distance in metres)
@@ -221,8 +230,8 @@ This contract definitively selects a **single unified operation: `survey.levelin
     - `adjustedRL`: string | null (adjusted elevation in metres to 3 decimal places, e.g. `"100.301"`)
   - Top-level metrics extending `@1`:
     - `totalDistanceKm`: string | null (total leveled distance $K$ in km to 3 decimal places)
-    - `allowableError`: string | null (allowable limit in mm to 1 decimal place, e.g. `"9.6"`)
-    - `closureStatus`: `'pass' | 'fail' | null` (evaluated against unrounded threshold)
+    - `allowableError`: string | null (allowable limit in mm to 1 decimal place, e.g. `"9.6"`, or `null` if $C$ absent)
+    - `closureStatus`: `z.enum(['pass', 'fail', 'criterion-not-provided']).nullable()`
     - `setupsCount`: number (total instrument setups count)
 
 ---
@@ -234,7 +243,8 @@ This contract definitively selects a **single unified operation: `survey.levelin
 3. `SURVEY_LEVELING_NEGATIVE_DISTANCE`: Distance value $< 0$.
 4. `SURVEY_LEVELING_ZERO_TOTAL_DISTANCE`: Sum of distances is zero when `adjBy: "distance"` is requested.
 5. `SURVEY_LEVELING_INVALID_DECIMAL`: Non-numeric decimal input.
-6. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure, allowable error, and corrections `null`.
+6. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure, allowable error, and corrections `null`, and `closureStatus: null`.
+7. **Missing Allowable Error Criterion ($C$ absent):** Not an error. When `closingRL` is present but `kConstant` is omitted or empty, the engine succeeds, computes closing misclosure $e$, leaves `allowableError: null`, and sets `closureStatus: 'criterion-not-provided'`. If `adjBy` is requested, adjustment proceeds normally.
 
 ---
 
