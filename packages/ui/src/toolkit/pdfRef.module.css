@@ -1855,3 +1855,132 @@ fieldset.options {
 :global([data-theme="dark"]) .splitOptions {
   border-top-color: #33466a;
 }
+
+/* Conversion option boxes, segmented tabs, document text preview */
+.optionBoxes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.optionBox {
+  padding: 12px 14px;
+  border: 1px solid #e3e9f3;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.seg {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #e3e9f3;
+  border-radius: 9px;
+  background: #f5f7fb;
+}
+
+.segBtn {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #334155;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segBtnActive {
+  background: #1665f5;
+  color: #ffffff;
+}
+
+.docPreview {
+  max-height: 260px;
+  overflow: auto;
+  padding: 16px 18px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+.docH1,
+.docH2,
+.docP {
+  margin: 0 0 8px;
+  color: #0b1736;
+}
+
+.docH1 {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.docH2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1650c7;
+}
+
+.docP {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.previewEmpty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed #c8d4e6;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #50617e;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .optionBoxes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+:global([data-theme="dark"]) .optionBox {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .seg {
+  background: #142035;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .segBtn {
+  color: #d5deeb;
+}
+
+:global([data-theme="dark"]) .segBtnActive {
+  background: #2f6df6;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .docPreview {
+  background: #0f182a;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .docH1 {
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .docH2 {
+  color: #a9c6ff;
+}
+
+:global([data-theme="dark"]) .docP,
+:global([data-theme="dark"]) .previewEmpty {
+  color: #c9d4e3;
+}
+
+:global([data-theme="dark"]) .previewEmpty {
+  border-color: #3d5276;
+}

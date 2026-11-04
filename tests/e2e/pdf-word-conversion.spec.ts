@@ -15,7 +15,7 @@ test.describe('PDF to Word', () => {
     await expect(page.getByText('Quarterly Report')).toBeVisible();
     await expect(page.getByText('Revenue grew 12% to ₹4,50,000 in the quarter.')).toBeVisible();
     await page.getByRole('button', { name: /Convert to Word/ }).click();
-    await expect(page.getByText('✓ Converted')).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: /^\s*Converted\s*$/ })).toBeVisible();
     const download = page.waitForEvent('download');
     await page.getByRole('button', { name: /Download DOCX/ }).click();
     const file = await download;
@@ -46,7 +46,7 @@ test.describe('Word to PDF', () => {
     await expect(page.getByText('order-summary.docx')).toBeVisible();
     await expect(page.getByText(/1 image is not included/)).toBeVisible();
     await page.getByRole('button', { name: /Create PDF/ }).click();
-    await expect(page.getByText('✓ PDF created')).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: /^\s*PDF created\s*$/ })).toBeVisible();
     await expect(page.getByText(/1 character outside Western European text/)).toBeVisible();
     const download = page.waitForEvent('download');
     await page.getByRole('button', { name: /Download PDF/ }).click();
@@ -61,7 +61,7 @@ test.describe('Word to PDF', () => {
 
   test('the sample loads two real generated documents', async ({ page }) => {
     await gotoReady(page, '/word-to-pdf');
-    await page.getByRole('button', { name: /Sample DOCX/ }).click();
+    await page.getByRole('button', { name: 'Load Sample' }).click();
     await expect(page.getByText('Project-Proposal-Sample.docx')).toBeVisible();
     await expect(page.getByText('Meeting-Notes-Sample.docx')).toBeVisible();
   });
