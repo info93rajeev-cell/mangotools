@@ -17,7 +17,7 @@ export const surveyStrings = {
   unitMetres: 'm',
   unitMillimetres: 'mm (Preview)',
   tabRiseFall: 'Rise & Fall',
-  tabHI: 'Height of Instrument · HI method (Preview — PR 4)',
+  tabHI: 'Height of Instrument',
   startRL: 'Starting BM RL',
   closingRL: 'Closing BM RL (known)',
   closingRLPlaceholder: 'Leave blank if open',
@@ -114,6 +114,8 @@ export const surveyStrings = {
   // Arithmetic Checks
   checksTitle: 'Arithmetic checks',
   checksSubtitle: 'Two arithmetic equality checks confirming three agreeing deltas:',
+  checksSubtitleHI:
+    'Collimation arithmetic check (Backsights − Foresights = Ending RL − Starting RL):',
   checkRiseFall: 'ΣRise − ΣFall = {rise} − {fall} = {delta} m',
   checkBsFs: 'ΣBS − ΣFS = {bs} − {fs} = {delta} m',
   checkFirstLast: 'Last RL − First RL = {last} − {first} = {delta} m',
@@ -122,6 +124,7 @@ export const surveyStrings = {
 
   // Reduced Levels Table
   resultsTableAria: 'Reduced levels calculation results table',
+  colHI: 'HI (m)',
   colRise: 'Rise',
   colFall: 'Fall',
   colRL: 'Raw RL (m)',
@@ -142,6 +145,11 @@ export const surveyStrings = {
   accBookTitle: 'Reading the level book — BS, IS, FS, CP',
   accBookBody:
     'BS (back sight) is the first reading after setting up the instrument, usually on a BM or change point. IS (intermediate sight) is any reading between BS and FS. FS (fore sight) is the last reading before moving the instrument. At a change point the staff stays put: record the FS, shift the level, then record a BS on the same point — both go in the same row.',
+  accMethodTitle: 'Method',
+  accMethodRF:
+    'Rise & Fall reduction method: calculates elevation differences between consecutive stations (Rise or Fall), then applies deltas to preceding levels with three agreeing deltas arithmetic equality checks.',
+  accMethodHI:
+    'Height of Instrument (Collimation) method: calculates the line of collimation (HI = RL + BS) for each instrument setup, then derives station levels (RL = HI − Staff reading) with backsights minus foresights collimation arithmetic checks.',
   accWarningsTitle: 'Important Notes / Warnings',
   accWarningsBody:
     'Validation and reduction aid for surveying and civil works. Final measurements and benchmarks must always be checked and approved by a licensed surveyor or site engineer.',

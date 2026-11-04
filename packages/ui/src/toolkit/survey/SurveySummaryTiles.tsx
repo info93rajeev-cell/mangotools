@@ -17,30 +17,16 @@ function renderAllowableSub(result: SurveyCalculationOutput | null) {
   if (!result) return surveyStrings.tileAllowableSub;
   if (!result.closingRL) return surveyStrings.tileClosingRLOpen;
   if (result.closureStatus === 'pass') {
-    return (
-      <span style={{ color: '#15803d', fontWeight: 600 }}>✓ {surveyStrings.statusWithinLimit}</span>
-    );
+    return <span class={s.statusTextPass}>✓ {surveyStrings.statusWithinLimit}</span>;
   }
   if (result.closureStatus === 'fail') {
-    return (
-      <span style={{ color: '#b91c1c', fontWeight: 600 }}>
-        ✕ {surveyStrings.statusOutsideLimit}
-      </span>
-    );
+    return <span class={s.statusTextFail}>✕ {surveyStrings.statusOutsideLimit}</span>;
   }
   if (result.closureStatus === 'criterion-not-provided') {
-    return (
-      <span style={{ color: '#b45309', fontWeight: 500 }}>
-        {surveyStrings.statusCriterionNotProvided}
-      </span>
-    );
+    return <span class={s.statusTextWarning}>{surveyStrings.statusCriterionNotProvided}</span>;
   }
   if (result.closureStatus === 'distance-not-provided') {
-    return (
-      <span style={{ color: '#b45309', fontWeight: 500 }}>
-        {surveyStrings.statusDistanceNotProvided}
-      </span>
-    );
+    return <span class={s.statusTextWarning}>{surveyStrings.statusDistanceNotProvided}</span>;
   }
   return surveyStrings.tileAllowableSub;
 }
@@ -88,7 +74,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
     <div class={s.tilesGrid} data-summary-tiles="">
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#e9f8ef', color: '#15803d' }}>
+          <span class={`${s.iconWrap} ${s.iconWrapGreen}`}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 20h16M12 4v12M8 12l4 4 4-4" />
             </svg>
@@ -103,7 +89,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
 
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#eaf1fe', color: '#1a6ef5' }}>
+          <span class={`${s.iconWrap} ${s.iconWrapBlue}`}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14M12 5v14" />
             </svg>
@@ -118,7 +104,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
 
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#fff6e5', color: '#d97706' }}>
+          <span class={`${s.iconWrap} ${s.iconWrapAmber}`}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 3l9 16H3z" />
               <path d="M12 10v4M12 17v.5" />
@@ -127,9 +113,8 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
           {surveyStrings.tileAllowable}
         </div>
         <div
-          class={s.tileValue}
+          class={`${s.tileValue} ${result?.allowableError ? '' : s.tileValueMuted}`}
           data-tile-allowable=""
-          style={result?.allowableError ? undefined : { color: '#64748b' }}
         >
           {allowableVal}
         </div>
@@ -140,7 +125,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
 
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#fdecec', color: '#dc2626' }}>
+          <span class={`${s.iconWrap} ${s.iconWrapRed}`}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="8" />
               <path d="M12 8v4l3 2" />
