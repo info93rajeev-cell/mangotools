@@ -267,6 +267,7 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
             >
               <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
                 <span
+                  class={styles.radioMark}
                   style={{ color: isActive ? 'var(--color-primary)' : 'var(--color-text-subtle)' }}
                 >
                   {isActive ? '●' : '○'}
