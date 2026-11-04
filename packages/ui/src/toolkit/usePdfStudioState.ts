@@ -115,6 +115,8 @@ function usePdfImages(
 ) {
   const [images, setImages] = useState<PdfImageItem[]>([]);
   const [isCompiling, setIsCompiling] = useState(false);
+  // True while the images shown are the sample; the user's own images then replace them.
+  const sampleShown = useRef(false);
 
   useEffect(() => {
     if (converter?.file && images.length === 0) {
@@ -136,7 +138,8 @@ function usePdfImages(
   const processFiles = async (files: FileList | File[]) => {
     const valid = await readFiles(files);
     if (valid.length > 0) {
-      setImages((prev) => [...prev, ...valid]);
+      setImages((prev) => (sampleShown.current ? valid : [...prev, ...valid]));
+      sampleShown.current = false;
       onPhase?.('idle');
       notify?.(`Added ${valid.length} image${valid.length > 1 ? 's' : ''}`);
     }
@@ -147,6 +150,7 @@ function usePdfImages(
       setIsCompiling(true);
       const items = await loadSampleItems();
       setImages(items);
+      sampleShown.current = true;
       onPhase?.('idle');
       notify?.('Loaded 5 sample images');
     } finally {

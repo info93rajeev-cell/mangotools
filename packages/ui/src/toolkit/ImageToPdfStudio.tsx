@@ -204,6 +204,12 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
   const [isTourOpen, setIsTourOpen] = useState(false);
 
+  // Open with the sample images, so the page shows the approved full design straight away; the
+  // user's own images replace them. An image handed over from another tool is kept instead.
+  useEffect(() => {
+    if (!props.converter?.file) void s.loadSamples();
+  }, []);
+
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
     window.addEventListener('mangotools:open-tour', handleOpen);

@@ -6,7 +6,7 @@ status: beta
 tier: T3
 version: 0.4.1
 changelog:
-  - { version: 0.4.1, date: 2026-11-04, type: fixed, summary: "The main button keeps the brand yellow before a file is added, instead of looking faded." }
+  - { version: 0.4.1, date: 2026-11-04, type: fixed, summary: "Opens with the sample loaded (your own file replaces it); main button keeps the brand yellow." }
   - { version: 0.4.0, date: 2026-11-04, type: added, summary: "Tables: text that lines up in columns becomes a real Word table, shown in the preview; switch off with Preserve tables." }
   - { version: 0.3.1, date: 2026-11-04, type: changed, summary: "Real page thumbnails and first-page preview, drawn in your browser. The upload box now states the true size limit (200 MB)." }
   - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Reference design: colour icons, larger text, visual preview of the Word file, and a page range to convert only some pages." }

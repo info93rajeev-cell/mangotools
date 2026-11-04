@@ -22,3 +22,14 @@ for (const path of tools) {
     expect(outside).toEqual([]);
   });
 }
+
+test('PDF Merge opens with the sample, and the user’s own file replaces it', async ({ page }) => {
+  await gotoReady(page, '/pdf-merge');
+  await expect(page.getByText('Contract.pdf', { exact: true })).toBeVisible({ timeout: 15000 });
+  await page
+    .locator('input[type="file"][accept*="pdf"]')
+    .first()
+    .setInputFiles('tools/pdf-split/fixtures/files/five-page.pdf');
+  await expect(page.getByText('five-page.pdf', { exact: true })).toBeVisible();
+  await expect(page.getByText('Contract.pdf', { exact: true })).toHaveCount(0);
+});
