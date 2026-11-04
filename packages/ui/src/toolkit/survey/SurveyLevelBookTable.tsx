@@ -114,6 +114,37 @@ function DeleteCell({
   );
 }
 
+function StationCell({
+  station,
+  idx,
+  rowError,
+  onChange,
+  onAddRow,
+}: {
+  station: string;
+  idx: number;
+  rowError?: string;
+  onChange: (v: string) => void;
+  onAddRow: () => void;
+}) {
+  return (
+    <td>
+      <input
+        type="text"
+        placeholder="Station"
+        value={station}
+        id={`survey-obs-${idx}-station`}
+        data-cell={`station-${idx}`}
+        class={rowError ? s.inputError : undefined}
+        aria-label={`${surveyStrings.colStation} ${idx + 1}`}
+        aria-invalid={rowError ? 'true' : undefined}
+        onInput={(e) => onChange((e.target as HTMLInputElement).value)}
+        onKeyDown={(e) => handleKeyDown(e, onAddRow)}
+      />
+    </td>
+  );
+}
+
 function LevelBookRow({
   row,
   idx,
@@ -141,20 +172,13 @@ function LevelBookRow({
       <td class={s.idxCol} style={{ textAlign: 'center' }}>
         {renderTag(tag)}
       </td>
-      <td>
-        <input
-          type="text"
-          placeholder="Station"
-          value={row.station}
-          id={`survey-obs-${idx}-station`}
-          data-cell={`station-${idx}`}
-          class={rowError ? s.inputError : undefined}
-          aria-label={`${surveyStrings.colStation} ${idx + 1}`}
-          aria-invalid={rowError ? 'true' : undefined}
-          onInput={(e) => onCellChange(idx, 'station', (e.target as HTMLInputElement).value)}
-          onKeyDown={(e) => handleKeyDown(e, onAddRow)}
-        />
-      </td>
+      <StationCell
+        station={row.station}
+        idx={idx}
+        rowError={rowError}
+        onChange={(v) => onCellChange(idx, 'station', v)}
+        onAddRow={onAddRow}
+      />
       <NumericCell
         field="bs"
         value={row.bs}
@@ -187,6 +211,8 @@ function LevelBookRow({
           type="text"
           inputMode="decimal"
           value={row.dist}
+          id={`survey-obs-${idx}-dist`}
+          data-cell={`dist-${idx}`}
           disabled
           aria-label={`${surveyStrings.colStation} ${row.station || idx + 1} ${surveyStrings.colDist}`}
           title="Distance column is in internal preview (requires PR 2 contract)"

@@ -1,14 +1,9 @@
 import { surveyStrings } from './surveyLevelingStrings.ts';
-import type {
-  SurveyCalculationOutput,
-  SurveyLevelingRow,
-  SurveyReducedRow,
-} from './surveyLevelingTypes.ts';
+import type { SurveyCalculationOutput, SurveyReducedRow } from './surveyLevelingTypes.ts';
 import s from './surveyProfile.module.css';
 
 export interface SurveyProfilePlaceholderProps {
   result: SurveyCalculationOutput | null;
-  inputRows?: SurveyLevelingRow[];
   closingRL?: string;
 }
 
@@ -16,7 +11,6 @@ interface ProfilePoint {
   x: number;
   y: number;
   station: string;
-  dist: number;
   isBM: boolean;
   isCP: boolean;
   rl: number;
@@ -24,18 +18,10 @@ interface ProfilePoint {
 
 function computeProfileGeometry(
   rows: SurveyReducedRow[],
-  inputRows: SurveyLevelingRow[] | undefined,
   width: number,
   height: number,
   padding: { l: number; r: number; t: number; b: number },
 ) {
-  const dists = inputRows ? inputRows.map((r) => Number(r.dist) || 0) : [];
-  let cum = 0;
-  const cums = rows.map((_, i) => {
-    cum += dists[i] ?? 0;
-    return cum;
-  });
-  const totalDist = cum;
   const ys = rows.map((r) => Number(r.rl));
   let mn = Math.min(...ys);
   let mx = Math.max(...ys);
@@ -46,20 +32,21 @@ function computeProfileGeometry(
   const X = (t: number) => padding.l + t * (width - padding.l - padding.r);
   const Y = (v: number) => padding.t + ((mx - v) / (mx - mn)) * (height - padding.t - padding.b);
 
+  // PR 1: Horizontal positions are illustrative using evenly spaced stations.
+  // Distance-based horizontal placement and line-length output require the validated PR 2 contract.
   const points: ProfilePoint[] = rows.map((r, i) => {
-    const t = totalDist > 0 ? cums[i] / totalDist : rows.length > 1 ? i / (rows.length - 1) : 0;
+    const t = rows.length > 1 ? i / (rows.length - 1) : 0.5;
     return {
       x: X(t),
       y: Y(Number(r.rl)),
       station: r.station || `P-${i + 1}`,
-      dist: cums[i],
       isBM: i === 0 || i === rows.length - 1,
       isCP: r.isChangePoint,
       rl: Number(r.rl),
     };
   });
 
-  return { points, mn, mx, totalDist, Y };
+  return { points, mn, mx, Y };
 }
 
 function ProfileSvgChart({
@@ -141,16 +128,13 @@ function ProfileSvgChart({
             />
             <text
               x={pt.x}
-              y={H - p.b + 16}
+              y={H - p.b + 18}
               font-size="10.5"
               fill="#334155"
               text-anchor="middle"
               font-weight="600"
             >
               {pt.station}
-            </text>
-            <text x={pt.x} y={H - p.b + 29} font-size="9.5" fill="#94a3b8" text-anchor="middle">
-              {pt.dist}m
             </text>
           </g>
         );
@@ -159,20 +143,13 @@ function ProfileSvgChart({
   );
 }
 
-export function SurveyProfilePlaceholder({
-  result,
-  inputRows,
-  closingRL,
-}: SurveyProfilePlaceholderProps) {
+export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePlaceholderProps) {
   const rows = result?.rows ?? [];
   const geo =
-    rows.length > 0
-      ? computeProfileGeometry(rows, inputRows, 640, 210, { l: 46, r: 16, t: 22, b: 40 })
-      : null;
+    rows.length > 0 ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }) : null;
 
   const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
   const lowest = geo ? `${Math.min(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
-  const lineLength = geo ? `${geo.totalDist} m` : '—';
 
   return (
     <div class={s.card} data-profile-card="">
@@ -212,7 +189,13 @@ export function SurveyProfilePlaceholder({
           </div>
           <div class={s.chip}>
             <span class={s.chipLabel}>{surveyStrings.profileLineLength}</span>
-            <b class={s.chipValue}>{lineLength}</b>
+            <b
+              class={s.chipValue}
+              data-line-length-value=""
+              style={{ color: 'var(--color-text-muted, #64748b)' }}
+            >
+              —
+            </b>
           </div>
         </div>
       </div>

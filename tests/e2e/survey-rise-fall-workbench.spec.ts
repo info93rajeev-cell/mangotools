@@ -335,3 +335,56 @@ test('Clipboard copy handling: success and failure toast paths', async ({ page }
     ),
   ).toBeVisible();
 });
+
+test('Unvalidated distance inputs do not fabricate line length or alter illustrative profile', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  await expect(page.getByText('✓ Calculated')).toBeVisible();
+
+  // 1. Verify Line length chip displays '—' in PR 1 (distance contract unvalidated)
+  const lineLengthChip = page.locator('[data-line-length-value]');
+  await expect(lineLengthChip).toHaveText('—');
+
+  // 2. Verify profile SVG nodes have evenly spaced illustrative horizontal distribution
+  const profileSvg = page.locator('svg[aria-label="Level profile chart"]');
+  await expect(profileSvg).toBeVisible();
+
+  // Check that no numeric distance labels (e.g. "30m", "160m") appear in the SVG
+  const svgTextContents = await profileSvg.locator('text').allTextContents();
+  for (const text of svgTextContents) {
+    expect(text).not.toMatch(/^\d+m$/);
+  }
+
+  // 3. Inject changed or invalid distance data (arbitrary numbers, text, negative values)
+  await page.evaluate(() => {
+    const inputs = document.querySelectorAll<HTMLInputElement>('[data-cell^="dist-"]');
+    inputs.forEach((input, i) => {
+      input.disabled = false;
+      input.value = i === 1 ? 'invalid-dist-string' : '99999';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  // 4. Recalculate levels
+  await page.locator('[data-calculate-btn]').click();
+  await expect(page.getByText('✓ Calculated')).toBeVisible();
+
+  // 5. Line length must remain '—' and never fabricate measured length from unvalidated strings
+  await expect(lineLengthChip).toHaveText('—');
+
+  // 6. Profile nodes must remain evenly spaced illustrative stations (width - p.l - p.r) / 5 = 115.6px
+  const circles = profileSvg.locator('circle');
+  await expect(circles).toHaveCount(6);
+  const cxValues: number[] = [];
+  for (let i = 0; i < 6; i++) {
+    const cx = Number(await circles.nth(i).getAttribute('cx'));
+    cxValues.push(cx);
+  }
+  for (let i = 1; i < cxValues.length; i++) {
+    const spacing = cxValues[i] - cxValues[i - 1];
+    expect(Math.abs(spacing - 115.6)).toBeLessThan(0.5);
+  }
+});
