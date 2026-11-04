@@ -29,23 +29,23 @@ All formulas, field-book conventions, and adjustment models in this contract are
    - **Publisher Catalog:** [Elsevier Engineering Surveying](https://www.elsevier.com/books/engineering-surveying/schofield/978-0-7506-6949-8)
    - **Chapter 3 *Levelling*:**
      - §3.7.1 *The Rise and Fall Method*: Staff reading conventions (BS, IS, FS), physical change point (CP) semantics where incoming FS and outgoing BS share staff location, and reduction equations.
-     - §3.7.3 *Arithmetic Checks*: Establishes $\sum \text{BS} - \sum \text{FS} = \sum \text{Rise} - \sum \text{Fall} = \text{Last RL} - \text{First RL}$. Notes: "This check proves the arithmetic only; it does not check the accuracy of the staff readings themselves."
-     - §3.9 *Permissible Error (Misclosure)*: General formula $E = \pm m \sqrt{K}\text{ mm}$ ($K$ in km) and setup-based $E = \pm m \sqrt{n}$. Establishes $m = 24\text{ mm}/\sqrt{\text{km}}$ as standard civil site practice.
+     - §3.7.3 *Arithmetic Checks*: Establishes $\sum \text{BS} - \sum \text{FS} = \sum \text{Rise} - \sum \text{Fall} = \text{Last RL} - \text{First RL}$.
+     - §3.9 *Permissible Error (Misclosure)*: General formula $E = \pm m \sqrt{K}\text{ mm}$ ($K$ in km) and setup-based $E = \pm m \sqrt{n}$.
      - §3.10 *Adjustment of Level Networks*: Proportional distribution by distance ($c_i = -e \times D_i / D_{\text{total}}$) and by instrument setups.
 3. **Punmia, B. C., Jain, A. K. & Jain, A. K. (2005): *Surveying (Vol. 1)* (16th ed.). Laxmi Publications. ISBN: 81-7008-853-4.**
    - **Publisher Catalog:** [Laxmi Publications](https://www.laxmipublications.com/)
    - **Chapter 5 *Levelling*:**
      - §5.16 *Booking and Reducing Levels*: Non-comparison of FS and BS on the same row.
      - §5.19 *Arithmetical Checks*: Details the two independent equality checks.
-     - §5.23 *Permissible Error in Levelling*: Categorizes closing tolerance $E = C\sqrt{D}\text{ m}$:
+     - §5.23 *Permissible Error in Levelling* (Table 5.1): Categorizes closing tolerance $E = C\sqrt{D}\text{ m}$:
        - Rough leveling: $E = \pm 0.100\sqrt{D}\text{ m} = \pm 100\sqrt{K}\text{ mm}$
        - Ordinary leveling: $E = \pm 0.024\sqrt{D}\text{ m} = \pm 24\sqrt{K}\text{ mm}$
        - Accurate leveling: $E = \pm 0.012\sqrt{D}\text{ m} = \pm 12\sqrt{K}\text{ mm}$
        - Precise leveling: $E = \pm 0.006\sqrt{D}\text{ m} = \pm 6\sqrt{K}\text{ mm}$
      - §5.25 *Adjustment of Levelling Network*: Distance-proportional and setup-proportional formulas.
 4. **NPTEL / IIT Roorkee (Prof. J. K. Ghosh): *Surveying*, Module 4 *Levelling*.**
-   - **Permanent Archive:** [Module 4 Lesson 13](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/42.htm) and [Arithmetic Checks](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/46.htm).
-   - Confirms standard BS/IS/FS booking table, change point handling, and arithmetic checks.
+   - **Accessible Course Web Archive:** [Module 4 Lesson 14 — Permissible Error in Levelling](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/46.htm) and [Lesson 13 — Arithmetic Checks](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/42.htm).
+   - Confirms standard BS/IS/FS booking table, change point handling, arithmetic checks, and explicit permissible error limits: rough ($\pm 100\sqrt{K}\text{ mm}$), ordinary ($\pm 24\sqrt{K}\text{ mm}$), and accurate ($\pm 12\sqrt{K}\text{ mm}$).
 5. **NIMI / DGT Government of India (Oct 2022): *Surveyor — Trade Practical (NSQF Level 4)*.**
    - **Official Manual:** [Bharat Skills E-Book](https://bharatskills.gov.in/pdf/E_Books/CTS/62/English/TP/Surveyor%20-%201st%20Year%20-%20TP%20%28NSQF%202022%29.pdf) (Exercise 1.8.54).
    - Confirms eleven-station practical booking format and intermediate sight reduction.
@@ -99,8 +99,9 @@ Both checks must pass in every valid level run. This guarantees internal arithme
 1. **Open Line (no known closing RL provided):**
    - The final computed RL $\text{RL}_n$ is the observed ending level.
    - Misclosure, allowable limit, and adjustment corrections are `null`.
-2. **Closed Line (known closing RL $RL_{\text{known}}$ provided):**
-   $$\text{Misclosure } e = \text{RL}_n - \text{RL}_{\text{known}}$$
+2. **Closed Line (known closing RL $\text{RL}_{\text{known}}$ provided):**
+   $$\text{Misclosure } e = \text{RL}_n - \text{RL}_{\text{known}} \quad (\text{metres})$$
+   $$\text{Misclosure in millimetres: } e_{\text{mm}} = e \times 1000 \quad (\text{mm})$$
    - Positive $e$: observed ending level is higher than the known benchmark.
    - Negative $e$: observed ending level is lower than the known benchmark.
 
@@ -112,93 +113,138 @@ Both checks must pass in every valid level run. This guarantees internal arithme
    - Each row $i$ ($i \ge 1$) specifies incremental horizontal distance $d_i \ge 0$ (in metres) from station $i-1$. $d_0 = 0$ at the starting BM.
    - Cumulative distance: $D_i = \sum_{j=1}^i d_j$ (metres).
    - Total line distance: $D_{\text{total}} = D_n$ (metres).
-   - Distance in kilometres: $K = D_{\text{total}} / 1000$.
-2. **Allowable Error Formula:**
+   - Leveled distance in kilometres: $K = D_{\text{total}} / 1000$.
+2. **Allowable Error Formula & Constant $C$:**
    $$E_{\text{allow}} = \pm C \sqrt{K} \text{ mm}$$
    - $C$ is an explicit input parameter in units of **$\text{mm}/\sqrt{\text{km}}$**.
-   - Default is $C = 24\text{ mm}/\sqrt{\text{km}}$ for ordinary civil construction; options include $12$ (Third Order) and $6$ (Second Order). $C$ is **never treated as a universal immutable constant**.
+   - **Configurable Product Default:** $C = 24\text{ mm}/\sqrt{\text{km}}$ is provided as a sensible default and standard textbook example for ordinary civil construction levelling (Punmia Table 5.1; NPTEL Lesson 14).
+   - **Not a Universal Standard:** In geodetic and project specifications, $C$ varies substantially (e.g. $2\text{--}12\text{ mm}/\sqrt{\text{km}}$ for FGCC/USACE Third-Order control, $6\text{ mm}/\sqrt{\text{km}}$ for precise levelling, $100\text{ mm}/\sqrt{\text{km}}$ for rough earthworks). Therefore, $C$ is strictly configurable by the user via parameter `kConstant` (default `"24"`).
 3. **Deterministic Numerical Policy for $\sqrt{K}$ and Acceptance:**
-   - **Engine Kernel:** $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
+   - **Kernel Evaluation:** $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
    - **Acceptance Criterion:** The closure decision compares the **unrounded absolute misclosure in millimetres** against the **unrounded calculated allowable threshold**:
-     $$\text{pass} \iff |e| \times 1000 \le C \sqrt{K} + 10^{-9}\text{ mm}$$
-     *(The $10^{-9}\text{ mm}$ epsilon prevents machine-precision edge rejections on exact boundaries).*
+     $$\text{pass} \iff |e_{\text{mm}}| \le C \sqrt{K} + 10^{-9}\text{ mm}$$
+     *(The $10^{-9}\text{ mm}$ epsilon prevents floating-point rounding edge-rejections on exact boundaries).*
    - **Displayed Allowable Limit:** Rounded half-up to 1 decimal place in millimetres ($\pm X.X\text{ mm}$). Acceptance does **not** evaluate against the displayed 0.1 mm rounded number.
 
 ---
 
 ## 6. Correction Distribution & Adjusted RLs
 
-The total error to compensate is $-e$. Three approved methods:
+Total error to compensate:
+$$\text{Total Correction: } C_{\text{total, m}} = -e \quad (\text{metres}) \quad \iff \quad C_{\text{total, mm}} = -e_{\text{mm}} \quad (\text{mm})$$
 
 ### Method A: Distance-Proportional Adjustment (`adjBy: "distance"`)
 Applied when station distances $d_i$ are measured:
-$$c_i = -e \times \frac{D_i}{D_{\text{total}}}$$
-- Start ($i = 0$): $D_0 = 0 \implies c_0 = 0$.
-- Terminal Station ($i = n$): $D_n = D_{\text{total}} \implies c_n = -e$.
-- **Terminal Constraint:** $\text{Adjusted RL}_n \equiv \text{RL}_{\text{known}}$ strictly.
+- **Theoretical correction in metres ($c_{i,\text{m}}$):**
+  $$c_{i,\text{m}} = -e \times \frac{D_i}{D_{\text{total}}} \quad (\text{metres})$$
+- **Theoretical correction in millimetres ($c_{i,\text{mm}}$):**
+  $$c_{i,\text{mm}} = c_{i,\text{m}} \times 1000 = -e_{\text{mm}} \times \frac{D_i}{D_{\text{total}}} \quad (\text{mm})$$
+- Start ($i = 0$): $D_0 = 0 \implies c_{0,\text{m}} = 0\text{ m}$ ($c_{0,\text{mm}} = 0\text{ mm}$).
+- Terminal Station ($i = n$): $D_n = D_{\text{total}} \implies c_{n,\text{m}} = -e\text{ m}$ ($c_{n,\text{mm}} = -e_{\text{mm}}\text{ mm}$).
 
 ### Method B: Setup-Proportional Adjustment (`adjBy: "setup"`)
-Standard when sight distances are uniform or distances are not chained:
-- **Physical Rationale:** Systematic and accidental errors in leveling accumulate across instrument relocations (setups).
+Standard when sight distances are uniform or distances are unchained:
+- **Physical Rationale:** Systematic and collimation errors accumulate per instrument relocation (setup). All Intermediate Sights (IS) observed during a setup share that setup's line of collimation and receive the exact same correction as the Change Point (CP) closing that setup.
 - Let $N_{\text{setups}}$ be total instrument setups ($N_{\text{setups}} = 1 + N_{\text{CP}}$).
-- Intermediate Sights (IS) belong to the setup between preceding and succeeding change points. They share that setup's line of collimation and receive that setup's cumulative correction.
 - Station $i$ observed during setup $s_i \in \{1, \dots, N_{\text{setups}}\}$ receives:
-  $$c_i = -e \times \frac{s_i}{N_{\text{setups}}}$$
-- At terminal station ($i=n$): $s_n = N_{\text{setups}} \implies c_n = -e$.
+  $$c_{i,\text{m}} = -e \times \frac{s_i}{N_{\text{setups}}} \quad (\text{metres})$$
+  $$c_{i,\text{mm}} = c_{i,\text{m}} \times 1000 = -e_{\text{mm}} \times \frac{s_i}{N_{\text{setups}}} \quad (\text{mm})$$
+- Terminal Station ($i = n$): $s_n = N_{\text{setups}} \implies c_{n,\text{m}} = -e\text{ m}$ ($c_{n,\text{mm}} = -e_{\text{mm}}\text{ mm}$).
 
 ### Method C: No Adjustment (`adjBy: "none"`)
-$c_i = 0$, $\text{Adjusted RL}_i = \text{RL}_i$.
+$c_{i,\text{m}} = 0\text{ m}$, $c_{i,\text{mm}} = 0\text{ mm}$, $\text{Adjusted RL}_i = \text{RL}_i$.
 
-### Worked Comparison: Distance vs. Setup Adjustment
-Sample level run ($N_{\text{setups}} = 3$, $D_{\text{total}} = 160\text{ m}$, $RL_{\text{known}} = 99.805\text{ m}$, $e = -0.005\text{ m}$, total correction $-e = +5.0\text{ mm}$):
+### Adjusted RL Equation & Unit Conversion
+For all methods, the Adjusted RL at station $i$ converts the correction to metres and rounds half-up to 3 decimal places (1 mm):
+$$\text{Adjusted RL}_i = \text{round}_3\left(\text{RL}_i + c_{i,\text{m}}\right) = \text{round}_3\left(\text{RL}_i + \frac{c_{i,\text{mm}}}{1000}\right)$$
 
-| Station | Type | Dist (m) | Cum (m) | Setup | Raw RL (m) | Dist Corr ($c_i$) | Dist Adj RL (m) | Setup Corr ($c_i$) | Setup Adj RL (m) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **BM-1** | Start | 0 | 0 | 0 | 100.000 | 0.0 mm | **100.000** | 0.0 mm | **100.000** |
-| **A** | IS | 30 | 30 | 1 | 100.300 | +0.9 mm | **100.301** | +1.7 mm | **100.302** |
-| **CP1** | CP | 30 | 60 | 1 | 99.500 | +1.9 mm | **99.502** | +1.7 mm | **99.502** |
-| **B** | IS | 25 | 85 | 2 | 99.200 | +2.7 mm | **99.203** | +3.3 mm | **99.203** |
-| **CP2** | CP | 35 | 120 | 2 | 99.700 | +3.8 mm | **99.704** | +3.3 mm | **99.703** |
-| **BM-2** | Close | 40 | 160 | 3 | 99.800 | +5.0 mm | **99.805** | +5.0 mm | **99.805** |
+- **Level Book Correction Display:** The level book displays `corr` in millimetres rounded half-up to 1 decimal place: $\text{round}_1(c_{i,\text{mm}})\text{ mm}$.
+- **Terminal Invariant:** To prevent floating-point rounding drift on the closing benchmark, $\text{Adjusted RL}_n \equiv \text{RL}_{\text{known}}$ strictly.
 
-### Relationship Between Reported Corrections & Rounded Adjusted RLs
-1. Theoretical correction $c_i$ is computed as an exact rational.
-2. In the level-book table, the **reported correction** is displayed in millimetres rounded half-up to 1 decimal place ($0.1\text{ mm}$).
-3. The **Adjusted RL** is computed by adding unrounded $c_i$ (in metres) to unrounded $\text{RL}_i$, then rounding half-up to 3 decimal places (1 mm):
-   $$\text{Adjusted RL}_i = \text{round}_3(\text{RL}_i + c_i)$$
-   This prevents rounding errors from compounding.
-4. **Terminal Invariant:** To prevent rounding drift on the closing benchmark, $\text{Adjusted RL}_n \equiv \text{RL}_{\text{known}}$ strictly.
+### Reconciled Worked Comparison Table
+Sample level run ($N_{\text{setups}} = 3$, $D_{\text{total}} = 160\text{ m}$, $\text{RL}_{\text{known}} = 99.805\text{ m}$, observed closing $\text{RL}_n = 99.800\text{ m}$, misclosure $e = -0.005\text{ m} = -5.0\text{ mm}$, total correction $+5.0\text{ mm}$):
+
+| Station | Type | Dist (m) | Cum $D_i$ (m) | Setup ($s_i$) | Raw RL (m) | Dist $c_{i,\text{mm}}$ (exact) | Dist Display Corr | Dist Adjusted RL (m) | Setup $c_{i,\text{mm}}$ (exact) | Setup Display Corr | Setup Adjusted RL (m) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **BM-1** | Start BM | 0 | 0 | 0 | 100.000 | $0.0\text{ mm}$ | `0.0 mm` | **100.000** | $0.0\text{ mm}$ | `0.0 mm` | **100.000** |
+| **A** | IS | 30 | 30 | 1 | 100.300 | $+0.9375\text{ mm}$ | `+0.9 mm` | **100.301** | $+1.6667\text{ mm}$ | `+1.7 mm` | **100.302** |
+| **CP1** | CP | 30 | 60 | 1 | 99.500 | $+1.8750\text{ mm}$ | `+1.9 mm` | **99.502** | $+1.6667\text{ mm}$ | `+1.7 mm` | **99.502** |
+| **B** | IS | 25 | 85 | 2 | 99.200 | $+2.65625\text{ mm}$ | `+2.7 mm` | **99.203** | $+3.3333\text{ mm}$ | `+3.3 mm` | **99.203** |
+| **CP2** | CP | 35 | 120 | 2 | 99.700 | $+3.7500\text{ mm}$ | `+3.8 mm` | **99.704** | $+3.3333\text{ mm}$ | `+3.3 mm` | **99.703** |
+| **BM-2** | Closing BM | 40 | 160 | 3 | 99.800 | $+5.0000\text{ mm}$ | `+5.0 mm` | **99.805** | $+5.0000\text{ mm}$ | `+5.0 mm` | **99.805** |
+
+*Value reconciliation notes:*
+- Station A (Distance): $\text{round}_3(100.300 + 0.0009375) = \text{round}_3(100.3009375) = 100.301\text{ m}$.
+- Station A (Setup): $\text{round}_3(100.300 + 0.0016667) = \text{round}_3(100.3016667) = 100.302\text{ m}$.
+- Station CP1 (Distance): $\text{round}_3(99.500 + 0.001875) = \text{round}_3(99.501875) = 99.502\text{ m}$.
+- Station CP1 (Setup): $\text{round}_3(99.500 + 0.0016667) = \text{round}_3(99.5016667) = 99.502\text{ m}$.
+- Station B (Distance): $\text{round}_3(99.200 + 0.00265625) = \text{round}_3(99.20265625) = 99.203\text{ m}$.
+- Station B (Setup): $\text{round}_3(99.200 + 0.0033333) = \text{round}_3(99.2033333) = 99.203\text{ m}$.
+- Station CP2 (Distance): $\text{round}_3(99.700 + 0.00375) = \text{round}_3(99.70375) = 99.704\text{ m}$.
+- Station CP2 (Setup): $\text{round}_3(99.700 + 0.0033333) = \text{round}_3(99.7033333) = 99.703\text{ m}$.
+- Terminal Station BM-2: Enforces $\text{Adjusted RL} \equiv \text{RL}_{\text{known}} = 99.805\text{ m}$.
 
 ---
 
-## 7. Missing Data & Validation Failure Order
+## 7. Selected Operation & API Shape: `survey.leveling.reduce@2`
+
+This contract definitively selects a **single unified operation: `survey.leveling.reduce@2`**.
+
+### Architectural Rationale & Why Not `adjust@1`
+1. **Domain Coherence:** In surveying engineering, booking observations, computing rises/falls, verifying arithmetic checks, evaluating misclosure against allowable limits, and distributing corrections are parts of a single unified level-book calculation.
+2. **Rejection of Chained `adjust@1`:** Splitting reduction and adjustment into two separate operations would force client applications and AI agents to make duplicate round-trips over worker/REST/MCP boundaries, duplicate row and observation data structures, and manage fragile intermediate calculation state. A single operation provides atomic, deterministic execution.
+
+### Backward Compatibility with `survey.leveling.reduce@1`
+1. Per repository blueprint §3.1 and ADR-0001, **`survey.leveling.reduce@1` is preserved immutable and intact** alongside all 37 determinism fixtures.
+2. Existing consumers, benchmark suites, and tests calling `survey.leveling.reduce@1` continue operating without breaking changes throughout the deprecation lifecycle.
+3. `survey.leveling.reduce@2` is introduced as the superset contract incorporating distances, allowable error verification, and adjustment distribution.
+
+### Specification of `survey.leveling.reduce@2`
+- **Input Schema:**
+  - `startRL`: string (optional decimal metres, e.g. `"100.000"`).
+  - `closingRL`: string (optional decimal metres, e.g. `"99.805"`).
+  - `observations`: array of station objects:
+    - `station`: optional string (opaque label)
+    - `remarks`: optional string
+    - `bs`: optional string (metres)
+    - `is`: optional string (metres)
+    - `fs`: optional string (metres)
+    - `dist`: optional string (incremental distance $d_i \ge 0$ in metres from preceding station; $d_0 = 0$).
+- **Params Schema:**
+  - `method`: `z.enum(['rise-fall', 'height-of-instrument']).default('rise-fall')`
+  - `adjBy`: `z.enum(['none', 'distance', 'setup']).default('none')`
+  - `kConstant`: `z.string().default('24')` (allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$).
+- **Output Schema:**
+  - `rows`: array of result rows extending `@1` with:
+    - `dist`: string | null (incremental distance in metres)
+    - `corr`: string | null (formatted correction in mm to 1 decimal place, e.g. `"+0.9"`)
+    - `adjustedRL`: string | null (adjusted elevation in metres to 3 decimal places, e.g. `"100.301"`)
+  - Top-level metrics extending `@1`:
+    - `totalDistanceKm`: string | null (total leveled distance $K$ in km to 3 decimal places)
+    - `allowableError`: string | null (allowable limit in mm to 1 decimal place, e.g. `"9.6"`)
+    - `closureStatus`: `'pass' | 'fail' | null` (evaluated against unrounded threshold)
+    - `setupsCount`: number (total instrument setups count)
+
+---
+
+## 8. Missing Data & Validation Failure Order
 
 1. `SURVEY_LEVELING_MISSING_START_RL`: Absent or whitespace-only start benchmark RL.
 2. `SURVEY_LEVELING_MISSING_DISTANCE`: An intermediate or closing row has an absent/empty distance while `adjBy: "distance"` is requested.
 3. `SURVEY_LEVELING_NEGATIVE_DISTANCE`: Distance value $< 0$.
 4. `SURVEY_LEVELING_ZERO_TOTAL_DISTANCE`: Sum of distances is zero when `adjBy: "distance"` is requested.
 5. `SURVEY_LEVELING_INVALID_DECIMAL`: Non-numeric decimal input.
-6. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure and corrections `null`.
+6. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure, allowable error, and corrections `null`.
 
 ---
 
-## 8. Boundaries for Height of Instrument (HI) Method
+## 9. Explicit Boundaries for Height of Instrument (HI) Method
 
-1. **Shared Invariants:** HI uses identical observation inputs (BS, IS, FS, CP), distances, and closing benchmarks.
+1. **Parameter Isolation:** `survey.leveling.reduce@2` declares `method: 'height-of-instrument'` in its parameters schema for API stability, but in PR 2 / PR 3 it strictly returns `SURVEY_LEVELING_METHOD_UNSUPPORTED` until the dedicated HI calculation PR is implemented.
 2. **Collimation Equations:**
    - At setup $j$ (row $k$ with BS): $\text{HI}_j = \text{RL}_k + \text{BS}_k$.
    - For stations $m$ observed from setup $j$: $\text{RL}_m = \text{HI}_j - (\text{IS}_m \text{ or } \text{FS}_m)$.
 3. **Checks Distinction:**
    - Primary HI check: $\sum \text{BS} - \sum \text{FS} = \text{Ending RL} - \text{Starting RL}$.
    - Standard HI does not compute rises or falls, so intermediate sights are not verified by the two primary deltas.
-   - HI is isolated in its own approved operation/parameter extension (`survey.leveling.hi@1` or `method: "height-of-instrument"`).
-
----
-
-## 9. Open Review Decisions
-
-1. **Operation Versioning:**
-   - *Option A (Recommended):* Single operation `survey.leveling.reduce@2` accepting `params: { method: 'rise-fall' | 'height-of-instrument', adjBy: 'distance' | 'setup' | 'none', kConstant: string }`.
-   - *Option B:* Separate chained operation `survey.leveling.adjust@1`.
-2. **Display of Zero Corrections:**
-   - Start benchmark displays `0.0 mm` correction, or `—`. Recommended: `0.0` matching visual mockups.
+   - HI is isolated in its own calculation engine implementation and will not interfere with the Rise & Fall reduction engine.
