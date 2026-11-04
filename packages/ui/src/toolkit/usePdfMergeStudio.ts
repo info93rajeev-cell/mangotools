@@ -138,7 +138,12 @@ function useMergeFileCollection(notify?: (msg: string) => void) {
   async function loadSampleFiles() {
     const samples: MergedFileItem[] = [];
     for (const [i, meta] of SAMPLE_MERGE_FILES.entries()) {
-      const bytes = await createSamplePdf(meta.name.replace(/\.pdf$/i, ''), meta.pageCount);
+      const bytes = await createSamplePdf(
+        meta.name.replace(/\.pdf$/i, ''),
+        meta.pageCount,
+        meta.summary,
+        meta.themeColor,
+      );
       samples.push({
         id: `sample-${i}-${meta.name}`,
         name: meta.name,

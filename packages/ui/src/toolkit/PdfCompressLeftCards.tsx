@@ -35,7 +35,7 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
             : 'Drag & drop a PDF file here, or click to browse'}
         </span>
         <span class={styles.dropSub}>
-          Supports PDF files · Max 100 MB each · Files stay in your browser
+          Supports PDF files · Max 500 MB · Files stay in your browser
         </span>
         <span class={styles.dropBtn}>Choose PDF File</span>
       </button>

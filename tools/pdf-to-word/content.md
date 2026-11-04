@@ -21,8 +21,13 @@ size are joined into paragraphs, and noticeably larger lines become Word heading
 Heading 2), so they appear in Word's navigation pane. The result is a standard `.docx` file you
 can edit in Word, Google Docs or LibreOffice.
 
-**What is not converted.** Page layout, columns, tables, images, colours and the original fonts are
-not carried over; the Word file is plain, editable text. A scanned PDF is a picture of text and has
+**Tables.** Lines whose pieces of text start at the same column positions, two or more rows in a
+row, become a Word table with borders; the first row is bold. Switch off **Preserve tables** to get
+one line per row instead. Tables are found from where the text sits, so merged cells and cells that
+wrap onto several lines may come out as separate rows.
+
+**What is not converted.** Page layout, images, colours and the original fonts are not carried
+over; the Word file is plain, editable text. A scanned PDF is a picture of text and has
 no text to read — the tool says so instead of producing an empty document. It does not do OCR.
 
 **Browser-based processing.** The PDF is read and the Word file is written on your own device; nothing
@@ -36,8 +41,8 @@ Yes. It is free, with no sign-up and no watermark.
 
 ### Will tables and formatting be kept?
 
-No. The Word file contains the text as headings and paragraphs. Table cells come out as text in
-reading order, and layout, images and fonts are not kept.
+Tables, yes: text laid out in columns becomes a real Word table. Headings and paragraphs are kept
+as Word styles. Images, colours, fonts and exact layout are not kept.
 
 ### Why does my PDF show "No text found"?
 

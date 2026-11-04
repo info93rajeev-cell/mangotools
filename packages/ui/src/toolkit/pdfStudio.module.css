@@ -1828,3 +1828,11 @@
 :global(:where([data-theme="dark"])) .pdfInfoValue {
   color: #dde4f3;
 }
+
+/* Desktop: the approved references are dense (about 12 px body text at 1672 px wide). The larger
+   text was asked for phones only, so on wide screens the studio is drawn at the reference scale. */
+@media (min-width: 1100px) {
+  .studioContainer[data-ref-look] {
+    zoom: 0.88;
+  }
+}

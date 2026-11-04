@@ -2,6 +2,7 @@ import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
 import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
 import { fileMeta } from './pdfFileMeta.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import { type PageMode, pickPages, type usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
@@ -14,7 +15,7 @@ function PdfToWordFileSection({ studio }: { studio: PdfToWordState }) {
       <RefCardHead
         step={1}
         title="Upload PDF File"
-        aside={<span class={styles.listMeta}>Supports PDF files · Max 100 MB</span>}
+        aside={<span class={styles.listMeta}>Supports PDF files · Max 200 MB</span>}
       />
       <RefDrop
         title="Drag & drop a PDF file here"
@@ -89,26 +90,38 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
           </span>
         </RefOptionBox>
         <PageRangeBox studio={studio} />
-        <div class={styles.optionBox}>
-          <RefCheck
-            label="Keep original headings"
-            hint="Larger text becomes Word headings"
-            checked={studio.keepHeadings}
-            onChange={studio.setKeepHeadings}
-          />
-        </div>
-        <div class={styles.optionBox}>
-          <RefCheck
-            label="Page break between pages"
-            hint="Start each PDF page on a new Word page"
-            checked={studio.pageBreaks}
-            onChange={studio.setPageBreaks}
-          />
+        <div class={`${c.grid3} ${c.span}`}>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Keep original headings"
+              hint="Larger text becomes Word headings"
+              checked={studio.keepHeadings}
+              onChange={studio.setKeepHeadings}
+            />
+          </div>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Preserve tables"
+              hint="Text in columns becomes a Word table"
+              checked={studio.keepTables}
+              onChange={studio.setKeepTables}
+            />
+          </div>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Page break between pages"
+              hint="Start each PDF page on a new Word page"
+              checked={studio.pageBreaks}
+              onChange={studio.setPageBreaks}
+            />
+          </div>
         </div>
       </div>
       <p class={styles.note} style={{ marginTop: '12px' }}>
-        The Word file gets the PDF's text as editable headings and paragraphs. Layout, columns,
-        tables, images and fonts are not carried over.
+        The Word file gets the PDF's text as editable headings, paragraphs and tables. Images,
+        colours, fonts and exact layout are not carried over. Tables are found from text that lines
+        up in columns; merged cells and cells that wrap onto several lines may come out as separate
+        rows.
       </p>
     </section>
   );
@@ -116,6 +129,7 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
 
 function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
   const total = studio.totalPages;
+  const thumbs = usePageThumbs(studio.fileBytes, firstPages(total, 5));
   if (!studio.fileName || total === 0) return null;
   return (
     <section class={styles.card} aria-label="Preview">
@@ -125,7 +139,7 @@ function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
         aside={<span class={styles.listMeta}>{total} pages total</span>}
       />
       <div class={c.stripWrap}>
-        <RefPageStrip count={total} max={5} />
+        <RefPageStrip count={total} max={5} thumbs={thumbs} />
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 import { RefInfoTable, RefPageStrip } from './PdfConvertParts.tsx';
 import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
@@ -70,9 +71,28 @@ function SummarySection({ studio }: { studio: WordToPdfState }) {
   );
 }
 
+/** The first five pages of the result, taken from each file's own layout in order. */
+function useResultThumbs(files: WordToPdfState['files']): (string | null)[] {
+  const per = [0, 1, 2, 3, 4].map((i) => files[i]);
+  // A fixed number of hook calls: one per possible file shown.
+  const t = [
+    usePageThumbs(per[0]?.preview, firstPages(per[0]?.pages ?? 0, 5), 120),
+    usePageThumbs(per[1]?.preview, firstPages(per[1]?.pages ?? 0, 5), 120),
+    usePageThumbs(per[2]?.preview, firstPages(per[2]?.pages ?? 0, 5), 120),
+    usePageThumbs(per[3]?.preview, firstPages(per[3]?.pages ?? 0, 5), 120),
+    usePageThumbs(per[4]?.preview, firstPages(per[4]?.pages ?? 0, 5), 120),
+  ];
+  return per
+    .flatMap((f, i) =>
+      f ? Array.from({ length: Math.min(f.pages, 5) }, (_, k) => t[i]?.[k] ?? null) : [],
+    )
+    .slice(0, 5);
+}
+
 function ResultPreviewSection({ studio }: { studio: WordToPdfState }) {
   const { pages } = totals(studio);
   const n = studio.files.length;
+  const thumbs = useResultThumbs(studio.files);
   return (
     <section class={`${styles.card} ${styles.subcard}`} aria-label="Result Preview">
       <RefCardHead
@@ -86,7 +106,7 @@ function ResultPreviewSection({ studio }: { studio: WordToPdfState }) {
       />
       {pages > 0 ? (
         <div class={c.stripWrap}>
-          <RefPageStrip count={pages} max={5} />
+          <RefPageStrip count={pages} max={5} thumbs={thumbs} />
         </div>
       ) : (
         <p class={styles.previewEmpty}>Add a .docx to see the PDF pages here.</p>
@@ -117,7 +137,6 @@ function carryNotes(studio: WordToPdfState): string[] {
 function PdfInfoSection({ studio }: { studio: WordToPdfState }) {
   const { files, exportMode, pageSize } = studio;
   const { pages, size } = totals(studio);
-  const words = files.reduce((n, f) => n + f.words, 0);
   const name =
     files.length === 0
       ? '—'
@@ -134,8 +153,6 @@ function PdfInfoSection({ studio }: { studio: WordToPdfState }) {
           ['Content', `${files.length} Word file${files.length === 1 ? '' : 's'}, ${pages} pages`],
           ['Page size', `${pageSize} (${PAGE_SIZE_LABEL[pageSize]})`],
           ['Size', size === '—' ? 'Shown after creating' : size],
-          ['Words', String(words)],
-          ['Carries over', 'Text, headings, bold, italic, lists'],
         ]}
       />
       {notes.length > 0 ? (

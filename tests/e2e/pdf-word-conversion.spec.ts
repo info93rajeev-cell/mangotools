@@ -79,7 +79,7 @@ test.describe('Word to PDF', () => {
   test('the sample loads two real generated documents', async ({ page }) => {
     await gotoReady(page, '/word-to-pdf');
     await page.getByRole('button', { name: 'Load Sample' }).click();
-    await expect(page.getByText('Project-Proposal-Sample.docx').first()).toBeVisible();
-    await expect(page.getByText('Meeting-Notes-Sample.docx').first()).toBeVisible();
+    await expect(page.getByText('Proposal-Final.docx').first()).toBeVisible();
+    await expect(page.getByText('Annexure-Notes.docx').first()).toBeVisible();
   });
 });
