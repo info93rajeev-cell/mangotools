@@ -1705,8 +1705,8 @@ fieldset.options {
 }
 
 .modeActive {
-  background: #1665f5;
-  border-color: #1665f5;
+  background: #1453d6;
+  border-color: #1453d6;
   color: #ffffff;
 }
 
@@ -1727,7 +1727,7 @@ fieldset.options {
 }
 
 .modeActive .modeSub {
-  color: #dce8ff;
+  color: #ffffff;
 }
 
 .fieldRow {
@@ -1826,7 +1826,7 @@ fieldset.options {
 }
 
 :global([data-theme="dark"]) .modeActive {
-  background: #2f6df6;
+  background: #1d55d0;
   border-color: #5b93ff;
 }
 
@@ -1839,8 +1839,9 @@ fieldset.options {
   color: #b8c5d9;
 }
 
-:global([data-theme="dark"]) .modeActive .modeSub {
-  color: #e3edff;
+:global([data-theme="dark"]) .modeActive .modeSub,
+:global([data-theme="dark"]) .modeActive .modeTitle {
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .pageMore {
