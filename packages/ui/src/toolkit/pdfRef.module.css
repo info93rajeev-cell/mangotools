@@ -1467,7 +1467,7 @@ fieldset.options {
 /* Settings choices, checks and fields */
 .settingsGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 0.9fr);
   gap: 14px 18px;
   align-items: start;
 }

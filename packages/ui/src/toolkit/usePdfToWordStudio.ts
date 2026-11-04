@@ -197,7 +197,7 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
       );
       notify?.('Summary copied');
     },
-    loadSamplePdfToWord: async () => take(SAMPLE_PDF_TO_WORD_NAME, await createTextSamplePdf()),
+    loadSamplePdfToWord: async () => take(SAMPLE_PDF_TO_WORD_NAME, await createTextSamplePdf(40)),
     handleAddNativeFile: async (file: File | undefined) => {
       if (file) await take(file.name, new Uint8Array(await file.arrayBuffer()));
     },

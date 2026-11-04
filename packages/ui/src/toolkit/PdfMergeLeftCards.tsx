@@ -1,15 +1,16 @@
 import { RefCardHead, RefCheck, RefChoice, RefDrop, RefFileItem } from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfRef.module.css';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
 
 const ROW_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#8b5cf6'];
-const MB = 1024 * 1024;
 
 function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
   const { files, moveFile, rotateFile, removeFile } = studio;
-  const totalMb = (files.reduce((acc, f) => acc + f.sizeBytes, 0) / MB).toFixed(1);
+  const totalBytes = files.reduce((acc, f) => acc + f.sizeBytes, 0);
+  const totalSize = fileMeta(0, totalBytes).split(' • ')[1];
   const totalPages = files.reduce((acc, f) => acc + f.pageCount, 0);
   return (
     <section class={styles.card} data-tour="pdf-arrange" aria-label="Arrange files">
@@ -20,7 +21,7 @@ function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
           <span class={styles.listMeta}>
             <span>{files.length} files</span>
             <span>Total: {totalPages} pages</span>
-            <span>{totalMb} MB</span>
+            <span>{totalSize}</span>
           </span>
         }
       />
@@ -30,7 +31,7 @@ function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
             key={file.id}
             index={idx}
             name={file.name}
-            meta={`${file.pageCount} pages • ${(file.sizeBytes / MB).toFixed(1)} MB${file.rotation ? ` • ${file.rotation}°` : ''}`}
+            meta={`${fileMeta(file.pageCount, file.sizeBytes)}${file.rotation ? ` • ${file.rotation}°` : ''}`}
             color={file.themeColor || ROW_COLORS[idx % ROW_COLORS.length]}
             actions={{
               onUp: idx === 0 ? undefined : () => moveFile(idx, idx - 1),

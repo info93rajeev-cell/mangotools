@@ -641,3 +641,104 @@
 :global([data-theme="dark"]) .docTable th {
   background: #1d3563;
 }
+
+/* Split: range chips and file-name example (reference layout) */
+.chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 10px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid #d5dfee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.chip input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px 8px 12px;
+  border: 0;
+  background: transparent;
+  color: #0b1736;
+  font-size: 15px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.chip button,
+.addChip {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chip button {
+  width: 34px;
+  height: 34px;
+  color: #64748b;
+}
+
+.chip :global(svg) {
+  width: 16px;
+  height: 16px;
+}
+
+.chipBad {
+  border-color: #ef4444;
+}
+
+.addChip {
+  display: inline-flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid #cddbf3;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1158e8;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.addChip :global(svg) {
+  width: 18px;
+  height: 18px;
+}
+
+.example {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #50617e;
+}
+
+:global([data-theme="dark"]) .chip,
+:global([data-theme="dark"]) .addChip {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .chip input {
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .chip button,
+:global([data-theme="dark"]) .example {
+  color: #b8c5d8;
+}
+
+:global([data-theme="dark"]) .addChip {
+  color: #8fb5ff;
+}
+
+.span {
+  grid-column: 1 / -1;
+}

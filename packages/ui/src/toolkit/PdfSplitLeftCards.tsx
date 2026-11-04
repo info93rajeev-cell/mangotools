@@ -2,9 +2,11 @@ import { useEffect, useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
 import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import { HeavyBookBanner } from './PdfSplitThumbnails.tsx';
+import c from './pdfConvertRef.module.css';
+import { fileMeta } from './pdfFileMeta.ts';
 import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
-import { parseRangeList, rangesToText } from './pdfSplitPlan.ts';
+import { parseRangeList } from './pdfSplitPlan.ts';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
@@ -62,7 +64,7 @@ function PdfSplitFileSection({ studio }: { studio: SplitStudioState }) {
       {fileName ? (
         <RefFileItem
           name={fileName}
-          meta={`${totalPages} pages • ${(fileSizeBytes / (1024 * 1024)).toFixed(1)} MB`}
+          meta={fileMeta(totalPages, fileSizeBytes)}
           actions={{ onRemove: clearAll }}
         />
       ) : (
@@ -98,39 +100,62 @@ function InvalidNote({ tokens, total }: { tokens: string[]; total: number }) {
   );
 }
 
+function RangeChip({
+  studio,
+  range,
+}: {
+  studio: SplitStudioState;
+  range: SplitStudioState['ranges'][number];
+}) {
+  const [text, setText] = useState(`${range.start} - ${range.end}`);
+  useEffect(() => setText(`${range.start} - ${range.end}`), [range.start, range.end]);
+  const parsed = parseRangeList(text.replace(/\s/g, ''), studio.totalPages);
+  const bad = parsed.ranges.length !== 1;
+  return (
+    <span class={`${c.chip} ${bad ? c.chipBad : ''}`}>
+      <input
+        aria-label={`Range ${range.start} to ${range.end}`}
+        aria-invalid={bad}
+        value={text}
+        onInput={(e) => {
+          const v = e.currentTarget.value;
+          setText(v);
+          const r = parseRangeList(v.replace(/\s/g, ''), studio.totalPages).ranges;
+          if (r.length === 1 && r[0]) studio.updateRange(range.id, r[0].start, r[0].end);
+        }}
+      />
+      <button
+        type="button"
+        aria-label={`Remove range ${range.start} to ${range.end}`}
+        onClick={() => studio.removeRange(range.id)}
+      >
+        <Icon name="x" />
+      </button>
+    </span>
+  );
+}
+
+/** One chip per output file, as in the reference; each chip is editable. */
 function RangeEditor({ studio }: { studio: SplitStudioState }) {
-  const [text, setText] = useState(rangesToText(studio.ranges));
-  const [invalid, setInvalid] = useState<string[]>([]);
-  // Follow ranges set elsewhere (a new file, the sample), but not the user's own typing.
-  useEffect(() => {
-    const typed = rangesToText(parseRangeList(text, studio.totalPages).ranges);
-    if (typed !== rangesToText(studio.ranges)) setText(rangesToText(studio.ranges));
-  }, [studio.ranges]);
   const covered = studio.parts.reduce((n, p) => n + p.pageCount, 0);
   return (
     <div>
       <div class={styles.fieldRow}>
-        <label class={styles.fieldLabel} for="split-ranges">
-          Page ranges, one output file each (e.g. 1-12, 13-42)
-        </label>
+        <span class={styles.fieldLabel}>Page ranges (e.g. 1-10, 11-20), one output file each</span>
         <span class={styles.listMeta}>
-          {studio.parts.length} file{studio.parts.length === 1 ? '' : 's'} • {covered} pages
+          {studio.ranges.length} range{studio.ranges.length === 1 ? '' : 's'} • {covered} pages
+          selected
         </span>
       </div>
-      <input
-        id="split-ranges"
-        class={styles.input}
-        value={text}
-        onInput={(e) => {
-          const value = e.currentTarget.value;
-          const parsed = parseRangeList(value, studio.totalPages);
-          setText(value);
-          setInvalid(parsed.invalid);
-          studio.setRanges(parsed.ranges);
-        }}
-        placeholder="e.g. 1-12, 13-42"
-      />
-      <InvalidNote tokens={invalid} total={studio.totalPages} />
+      <div class={c.chips}>
+        {studio.ranges.map((r) => (
+          <RangeChip key={r.id} studio={studio} range={r} />
+        ))}
+        <button type="button" class={c.addChip} onClick={studio.addRange}>
+          <Icon name="plus" />
+          Add range
+        </button>
+      </div>
     </div>
   );
 }
@@ -220,6 +245,7 @@ function PdfSplitConfigSection({ studio }: { studio: SplitStudioState }) {
             onInput={(e) => studio.setPattern(e.currentTarget.value)}
             placeholder="Part_{n}"
           />
+          <span class={c.example}>Example: {studio.parts[0]?.name ?? 'Part_1.pdf'}</span>
         </div>
       </div>
     </section>

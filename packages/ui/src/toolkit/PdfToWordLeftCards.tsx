@@ -90,29 +90,31 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
           </span>
         </RefOptionBox>
         <PageRangeBox studio={studio} />
-        <div class={styles.optionBox}>
-          <RefCheck
-            label="Keep original headings"
-            hint="Larger text becomes Word headings"
-            checked={studio.keepHeadings}
-            onChange={studio.setKeepHeadings}
-          />
-        </div>
-        <div class={styles.optionBox}>
-          <RefCheck
-            label="Preserve tables"
-            hint="Text in columns becomes a Word table"
-            checked={studio.keepTables}
-            onChange={studio.setKeepTables}
-          />
-        </div>
-        <div class={styles.optionBox}>
-          <RefCheck
-            label="Page break between pages"
-            hint="Start each PDF page on a new Word page"
-            checked={studio.pageBreaks}
-            onChange={studio.setPageBreaks}
-          />
+        <div class={`${c.grid3} ${c.span}`}>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Keep original headings"
+              hint="Larger text becomes Word headings"
+              checked={studio.keepHeadings}
+              onChange={studio.setKeepHeadings}
+            />
+          </div>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Preserve tables"
+              hint="Text in columns becomes a Word table"
+              checked={studio.keepTables}
+              onChange={studio.setKeepTables}
+            />
+          </div>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Page break between pages"
+              hint="Start each PDF page on a new Word page"
+              checked={studio.pageBreaks}
+              onChange={studio.setPageBreaks}
+            />
+          </div>
         </div>
       </div>
       <p class={styles.note} style={{ marginTop: '12px' }}>
