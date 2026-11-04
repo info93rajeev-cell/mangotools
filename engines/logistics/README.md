@@ -19,6 +19,10 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.8.0 — `logistics.weight.shipment@1`: volumetric, actual and chargeable weight for up to 50
+  package rows (cm, m, mm, in; kg, g, lb), billed on the higher of the two shipment totals, with
+  per-row values and typed row errors (`packages.<i>.<field>`). Reuses the units, divisor range and
+  limits of `logistics.weight.chargeable@1`, which is unchanged.
 - 0.7.0 — `logistics.container.load@1`: deterministic block-building placement of up to 50 package
   types (mm, cm, m, in, ft; kg, g, lb) into as many identical containers as needed (up to 20), with
   payload, stack-height, rotation, keep-upright and stackable constraints. Geometry is exact bigint
