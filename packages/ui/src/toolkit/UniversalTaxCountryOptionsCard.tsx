@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import { COUNTRIES, type CountryProfile } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -65,7 +66,11 @@ function IndiaGstRateSelect({
 
       <label
         class={styles.advancedCheckboxRow}
-        style={{ marginTop: '6px', fontSize: '11px', cursor: 'pointer' }}
+        style={{
+          marginTop: '6px',
+          fontSize: fs(11),
+          cursor: 'pointer',
+        }}
       >
         <input
           type="checkbox"
@@ -89,7 +94,7 @@ function IndiaGstCessSelect({
 }) {
   return (
     <div class={styles.formFieldGroup}>
-      <label class={styles.advancedCheckboxRow} style={{ fontSize: '11px', cursor: 'pointer' }}>
+      <label class={styles.advancedCheckboxRow} style={{ fontSize: fs(11), cursor: 'pointer' }}>
         <input
           type="checkbox"
           checked={showLegacyCess}
@@ -319,7 +324,11 @@ export function UniversalTaxCountryOptionsCard({ tax }: UniversalTaxCountryOptio
           </span>
         </div>
         <span
-          style={{ fontSize: '12px', color: 'var(--color-text-subtle)', cursor: 'help' }}
+          style={{
+            fontSize: fs(12),
+            color: 'var(--color-text-subtle)',
+            cursor: 'help',
+          }}
           title="Configure jurisdiction-specific tax rules"
           role="img"
           aria-label="Tax options help"

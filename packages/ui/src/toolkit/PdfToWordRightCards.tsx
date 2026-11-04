@@ -1,4 +1,5 @@
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
@@ -82,13 +83,25 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
   const ex = studio.extraction;
   if (!ex)
     return (
-      <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: 0 }}>
+      <p
+        style={{
+          fontSize: fs(11),
+          color: 'var(--color-text-muted)',
+          margin: 0,
+        }}
+      >
         Add a PDF to see its text here.
       </p>
     );
   if (ex.words === 0) {
     return (
-      <p style={{ fontSize: '11px', color: '#b45309', margin: 0 }}>
+      <p
+        style={{
+          fontSize: fs(11),
+          color: '#b45309',
+          margin: 0,
+        }}
+      >
         No selectable text was found. This is usually a scanned PDF (a picture of text), which needs
         OCR; this tool does not do OCR.
       </p>
@@ -104,7 +117,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
       style={{
         maxHeight: '190px',
         overflow: 'auto',
-        fontSize: '11.5px',
+        fontSize: fs(11.5),
         lineHeight: 1.5,
         color: 'var(--color-text)',
       }}
@@ -164,8 +177,8 @@ export function PdfToWordRightCards({ studio }: { studio: PdfToWordState }) {
       <PdfToWordSummaryCard studio={studio} />
       <PdfToWordPreviewCard studio={studio} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side conversion.
           </span>

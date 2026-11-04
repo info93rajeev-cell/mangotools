@@ -24,7 +24,7 @@
   border-radius: 7px;
   background: #fff;
   color: #1652c9;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -77,7 +77,7 @@
   display: grid;
   place-items: center;
   color: #4d6283;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   border: 1px dashed #dce7f7;
   border-radius: 8px;
 }
@@ -137,7 +137,7 @@
 
 .safetyText {
   margin: 0;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   line-height: 1.5;
   color: #4d6283;
 }

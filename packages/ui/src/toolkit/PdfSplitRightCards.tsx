@@ -1,5 +1,6 @@
 import { pagesLabel } from './pdfSplitPlan.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { SplitPartInfo, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
@@ -117,7 +118,7 @@ function PdfSplitPreviewGrid({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span
                 style={{
-                  fontSize: '11px',
+                  fontSize: fs(11),
                   fontWeight: 800,
                   color: PART_TEXT[idx % PART_TEXT.length],
                 }}
@@ -125,7 +126,11 @@ function PdfSplitPreviewGrid({
                 Pages {pagesLabel(part.pages)}
               </span>
               <span
-                style={{ fontSize: '10px', color: 'var(--color-text-subtle)', fontWeight: 600 }}
+                style={{
+                  fontSize: fs(10),
+                  color: 'var(--color-text-subtle)',
+                  fontWeight: 600,
+                }}
               >
                 {part.pageCount} {part.pageCount === 1 ? 'page' : 'pages'}
               </span>
@@ -152,7 +157,7 @@ function PdfSplitPreviewGrid({
             </div>
             <span
               style={{
-                fontSize: '10px',
+                fontSize: fs(10),
                 color: 'var(--color-text-muted)',
                 fontWeight: 600,
                 whiteSpace: 'nowrap',
@@ -201,8 +206,8 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
       />
       <PdfSplitPreviewGrid parts={parts} totalPages={totalPages} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side processing.
           </span>

@@ -1,5 +1,6 @@
 import { reductionPercent } from './pdfCompressor.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
 type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
@@ -88,7 +89,7 @@ function ResultNote({ studio }: { studio: CompressStudioState }) {
     <div
       class={styles.privacyNotice}
       role="status"
-      style={{ padding: '6px 10px', fontSize: '11px' }}
+      style={{ padding: '6px 10px', fontSize: fs(11) }}
     >
       <span>{text}</span>
     </div>
@@ -138,7 +139,7 @@ function PdfCompressComparisonCard({
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '11px',
+            fontSize: fs(11),
             color: 'var(--color-text-subtle)',
             marginBottom: '4px',
             fontWeight: 600,
@@ -169,7 +170,13 @@ function PdfCompressComparisonCard({
                   }}
                 />
               </div>
-              <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--color-text-muted)' }}>
+              <span
+                style={{
+                  fontSize: fs(10),
+                  fontWeight: 800,
+                  color: 'var(--color-text-muted)',
+                }}
+              >
                 Page {p}
               </span>
             </div>
@@ -226,8 +233,8 @@ export function PdfCompressRightCards({ studio }: { studio: CompressStudioState 
       />
       {studio.result ? <ResultNote studio={studio} /> : null}
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side compression.
           </span>

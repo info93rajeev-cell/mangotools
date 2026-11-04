@@ -8,6 +8,7 @@ import {
 } from './PdfSplitThumbnails.tsx';
 import { parseRangeList, rangesToText } from './pdfSplitPlan.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
@@ -48,7 +49,7 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
             type="button"
             onClick={studio.splitHeavyBookIntoChapters}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #7dd3fc',
@@ -64,7 +65,7 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
@@ -106,7 +107,14 @@ const SPLIT_MODES = [
 function InvalidNote({ tokens, total }: { tokens: string[]; total: number }) {
   if (tokens.length === 0) return null;
   return (
-    <p role="alert" style={{ margin: '2px 0 0', fontSize: '11px', color: 'var(--color-danger)' }}>
+    <p
+      role="alert"
+      style={{
+        margin: '2px 0 0',
+        fontSize: fs(11),
+        color: 'var(--color-danger)',
+      }}
+    >
       Not used: {tokens.join(', ')} (pages run from 1 to {total}).
     </p>
   );
@@ -140,7 +148,13 @@ function RangeEditor({ studio }: { studio: SplitStudioState }) {
         placeholder="e.g. 1-12, 13-42"
       />
       <InvalidNote tokens={invalid} total={studio.totalPages} />
-      <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+      <span
+        style={{
+          fontSize: fs(11),
+          color: 'var(--color-text-muted)',
+          fontWeight: 600,
+        }}
+      >
         {studio.parts.length} file{studio.parts.length === 1 ? '' : 's'} • {covered} pages
       </span>
     </div>
@@ -191,7 +205,7 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
   return (
     <p
       style={{
-        fontSize: '11.5px',
+        fontSize: fs(11.5),
         color: 'var(--color-text-muted)',
         margin: 0,
         background: 'var(--color-panel-subtle)',
@@ -234,7 +248,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
             >
               <span
                 style={{
-                  fontSize: '11px',
+                  fontSize: fs(11),
                   fontWeight: 700,
                   color: isActive ? '#ffffff' : 'var(--color-text)',
                 }}
@@ -243,7 +257,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
               </span>
               <span
                 style={{
-                  fontSize: '9.5px',
+                  fontSize: fs(9.5),
                   color: isActive ? '#ffffff' : 'var(--color-text-subtle)',
                   fontWeight: 500,
                 }}
@@ -266,7 +280,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
   return (
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.inputRow}>
-        <label class={styles.inputLabel} for="split-file-pattern" style={{ fontSize: '11px' }}>
+        <label class={styles.inputLabel} for="split-file-pattern" style={{ fontSize: fs(11) }}>
           Output file name pattern
         </label>
         <input
@@ -275,7 +289,10 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
           value={pattern}
           onInput={(e) => setPattern(e.currentTarget.value)}
           placeholder="Part_{n}"
-          style={{ padding: '6px 10px', fontSize: '12px' }}
+          style={{
+            padding: '6px 10px',
+            fontSize: fs(12),
+          }}
         />
       </div>
 
@@ -284,7 +301,7 @@ function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          fontSize: '11.5px',
+          fontSize: fs(11.5),
           fontWeight: 600,
           cursor: 'pointer',
         }}

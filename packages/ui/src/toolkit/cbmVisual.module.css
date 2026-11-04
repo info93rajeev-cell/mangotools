@@ -54,7 +54,7 @@
   background: var(--cbm-surface);
   color: var(--cbm-ink);
   font: inherit;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   white-space: nowrap;
   cursor: pointer;
 }
@@ -106,12 +106,12 @@
   justify-content: space-between;
   gap: 6px;
   color: #5069a2;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   margin-top: 4px;
   padding: 0 2px;
 }
 .artMode {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #005be5;
   border: 0;
   background: transparent;
@@ -186,7 +186,7 @@
 .dimension text {
   fill: currentColor;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 600;
   paint-order: stroke;
   stroke: var(--cbm-surface);
@@ -197,7 +197,7 @@
   margin: 0;
   max-width: 28ch;
   color: var(--cbm-muted);
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   text-align: center;
 }
 .caption {
@@ -207,7 +207,7 @@
   margin: 0;
   padding: 0 4px;
   color: var(--cbm-muted);
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   line-height: 1.3;
 }
 @media (max-width: 700px) {

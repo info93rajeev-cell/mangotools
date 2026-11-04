@@ -1,4 +1,5 @@
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
 type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
@@ -104,7 +105,14 @@ function WordToPdfNotesCard({ studio }: { studio: WordToPdfState }) {
           <span style={{ color: 'var(--color-primary)' }}>ℹ️</span> What carries over
         </h2>
       </div>
-      <p style={{ margin: 0, fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
+      <p
+        style={{
+          margin: 0,
+          fontSize: fs(11),
+          color: 'var(--color-text-muted)',
+          lineHeight: 1.5,
+        }}
+      >
         Text, headings, bold and italic, list bullets and line breaks.
         {notes.length > 0 ? ` ${notes.join(' ')}` : ''}
       </p>
@@ -120,8 +128,8 @@ export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
       <WordToPdfSummaryCard studio={studio} />
       <WordToPdfNotesCard studio={studio} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — All conversion runs locally on your
             device.

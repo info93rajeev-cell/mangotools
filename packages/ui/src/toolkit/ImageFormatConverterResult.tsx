@@ -3,6 +3,7 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import styles from './imageFormatConverter.module.css';
 import { formatImageBytes } from './imageSizeFormat.ts';
+import { fs } from './phoneFontSize.ts';
 import { messageFor } from './presentation.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
@@ -180,7 +181,12 @@ function ReadyPreviewThumb({
 
   return (
     <div class={styles.previewThumbContainer}>
-      <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>
+      <div
+        style={{
+          color: 'var(--color-text-muted)',
+          fontSize: fs(11),
+        }}
+      >
         {isError ? 'Unable to load image' : 'Awaiting Image'}
       </div>
     </div>

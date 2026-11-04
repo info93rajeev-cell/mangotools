@@ -169,3 +169,12 @@
   --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
   --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
 }
+
+/* Phones: text below 15px in tool UIs grows halfway towards 15px (9→12, 11→13, 13→14), so small
+   labels stay readable without flattening the hierarchy. Tool styles use
+   calc(<size> + (15px - <size>) * var(--fs-lift, 0)). */
+@media (max-width: 700px) {
+  :root {
+    --fs-lift: 0.5;
+  }
+}

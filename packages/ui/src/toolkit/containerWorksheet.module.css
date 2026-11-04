@@ -16,7 +16,7 @@
   align-items: center;
 }
 .tableHeader {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted);
   padding: 3px 0;
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 .selectRow input {
   margin: 0;
@@ -109,7 +109,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    font-size: 12px;
+    font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
     overflow-wrap: anywhere;
   }
   .selectRow {
@@ -152,7 +152,7 @@
     display: inline-block;
     width: auto;
     margin-right: auto;
-    font-size: 13px;
+    font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
     padding: 0 10px;
   }
   .rowButtons button {
@@ -253,7 +253,7 @@
     height: 32px;
     border: 1px solid #dce6f6;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     font-weight: 600;
   }
   .selectRow:has(input:focus-visible) {
@@ -268,7 +268,7 @@
   }
   .packageRow .packageSummary {
     min-height: 62px;
-    font-size: 12px;
+    font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
     gap: 0;
     line-height: 1.35;
   }

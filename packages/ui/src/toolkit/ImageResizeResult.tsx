@@ -1,4 +1,5 @@
 import styles from './imageResize.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageResizeReturn } from './useImageResize.ts';
 
 export interface ImageResizeResultProps {
@@ -109,7 +110,14 @@ function ReadyCockpit({ resize }: { resize: UseImageResizeReturn }) {
             }}
           />
         ) : (
-          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Image</div>
+          <div
+            style={{
+              color: 'var(--color-text-muted)',
+              fontSize: fs(11),
+            }}
+          >
+            Awaiting Image
+          </div>
         )}
       </div>
 

@@ -94,7 +94,7 @@
 }
 
 .signatureFileName {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   white-space: nowrap;
@@ -106,7 +106,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
 }
 
@@ -125,18 +125,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #047857;
 }
 
 .badgeCheckCircle {
   color: #059669;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .successBadgeSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #065f46;
   line-height: 1.15;
 }
@@ -148,7 +148,7 @@
 }
 
 .compareHeading {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #1e293b);
   margin-bottom: 4px;
@@ -169,7 +169,7 @@
 }
 
 .compareLabel {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   text-transform: uppercase;
@@ -208,7 +208,7 @@
   right: 4px;
   background: rgba(15, 23, 42, 0.78);
   color: #fde68a;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 2px 4px;
   border-radius: 3px;
@@ -225,7 +225,7 @@
   right: 4px;
   background: rgba(15, 23, 42, 0.78);
   color: #86efac;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 2px 4px;
   border-radius: 3px;
@@ -273,7 +273,7 @@
 }
 
 .cardTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #1e293b);
   display: flex;
@@ -293,7 +293,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 7px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text, #334155);
   cursor: pointer;
@@ -314,7 +314,7 @@
   border: 1px solid var(--color-border, #e2e8f0);
   border-radius: 4px;
   padding: 1px 5px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 500;
   color: var(--color-text-muted, #64748b);
   cursor: pointer;
@@ -355,7 +355,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted, #94a3b8);
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   flex-shrink: 0;
 }
 
@@ -369,7 +369,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text, #0f172a);
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   flex-shrink: 0;
@@ -384,7 +384,7 @@
 }
 
 .fileName {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   white-space: nowrap;
@@ -394,7 +394,7 @@
 }
 
 .fileSpecs {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   font-family: var(--font-mono, monospace);
   line-height: 1.2;
@@ -417,7 +417,7 @@
   border-radius: 50%;
   background: #15803d;
   color: #ffffff;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -433,14 +433,14 @@
 }
 
 .statusBoxTitle {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   line-height: 1.15;
 }
 
 .statusBoxSub {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #166534;
   line-height: 1.15;
 }
@@ -471,7 +471,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding: 0;
   line-height: 1.45;
   border-bottom: 1px dashed var(--color-border-subtle, #f1f5f9);
@@ -494,7 +494,7 @@
   font-weight: 600;
   color: var(--color-text, #0f172a);
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   text-align: right;
   max-width: 55%;
   white-space: nowrap;
@@ -512,12 +512,12 @@
   flex-direction: column;
   gap: 2px;
   color: #1e40af;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   line-height: 1.25;
 }
 
 .infoCalloutIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
   color: #2563eb;
 }
@@ -537,7 +537,7 @@
 }
 
 .subHeadingText {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   line-height: 1.2;
@@ -545,7 +545,7 @@
 
 .formatCardsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
 }
 
@@ -585,7 +585,7 @@
   border-radius: 50%;
   background: var(--color-accent, #ffb000);
   color: #0f172a;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -593,26 +593,26 @@
 }
 
 .formatIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
 }
 
 .formatTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   line-height: 1.2;
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   white-space: nowrap;
   line-height: 1.15;
 }
 
 .formatNote {
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #94a3b8);
   white-space: nowrap;
   line-height: 1.15;
@@ -625,7 +625,7 @@
 }
 
 .fieldLabel {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   line-height: 1.15;
@@ -636,7 +636,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 5px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: var(--color-text, #0f172a);
   width: 100%;
   box-sizing: border-box;
@@ -655,7 +655,7 @@
   border: 1px solid #fef08a;
   border-radius: 4px;
   padding: 1px 5px;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #854d0e;
   display: flex;
   align-items: center;
@@ -664,7 +664,7 @@
 }
 
 .warningIcon {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   flex-shrink: 0;
 }
 
@@ -691,7 +691,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -721,7 +721,7 @@
   border: 1px solid #166534;
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -751,7 +751,7 @@
   border: none;
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -775,7 +775,7 @@
 }
 
 .privacySubtext {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   text-align: center;
   line-height: 1.15;
@@ -795,7 +795,7 @@
 
 .verifMetricsRow {
   display: grid;
-  grid-template-columns: 2.2fr repeat(4, 1fr);
+  grid-template-columns: 2.2fr repeat(4, minmax(0, 1fr));
   gap: 5px;
   align-items: stretch;
 }
@@ -822,7 +822,7 @@
   border-radius: 50%;
   background: #15803d;
   color: #ffffff;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -838,14 +838,14 @@
 }
 
 .verifBannerTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   line-height: 1.15;
 }
 
 .verifBannerSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #166534;
   line-height: 1.15;
 }
@@ -864,7 +864,7 @@
 }
 
 .metricTitle {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -880,7 +880,7 @@
 }
 
 .metricVal {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   font-family: var(--font-mono, monospace);
@@ -890,7 +890,7 @@
 .reductionBadge {
   background: #bbf7d0;
   color: #166534;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 0 3px;
   border-radius: 3px;
@@ -902,14 +902,14 @@
   align-items: center;
   gap: 5px;
   flex-wrap: wrap;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding-top: 1px;
 }
 
 .removedLabel {
   font-weight: 600;
   color: var(--color-text-muted, #475569);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   line-height: 1.2;
 }
 
@@ -924,7 +924,7 @@
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
   color: #15803d;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 1px 5px;
   border-radius: 999px;
@@ -935,7 +935,7 @@
 }
 
 .chipCheck {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 800;
 }
 
@@ -977,6 +977,35 @@
 
   .badgeCheckCircle {
     font-size: 16px;
+  }
+}
+
+/* Phones: long metadata values wrap inside their column instead of pushing the page sideways. */
+@media (max-width: 700px) {
+  .metaRowsCol,
+  .metaRowItem {
+    min-width: 0;
+  }
+
+  .metaRowItem {
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .metaValueText {
+    max-width: 60%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .formatCard {
+    min-width: 0;
+  }
+
+  .formatCard span {
+    white-space: normal;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
 }
 

@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageFormatConverter.module.css';
+import { fs } from './phoneFontSize.ts';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type {
   TargetImageFormat,
@@ -123,7 +124,13 @@ function FormatSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Format</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
+        <span
+          style={{
+            fontSize: fs(10),
+            color: 'var(--color-accent-text)',
+            fontWeight: 'bold',
+          }}
+        >
           {converter.targetFormat.toUpperCase()}
         </span>
       </div>

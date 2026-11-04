@@ -1,5 +1,6 @@
 import type { JSX } from 'preact';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
@@ -21,14 +22,14 @@ function PdfMergeDropCard({
   return (
     <div class={styles.card} data-tour="pdf-upload" style={{ padding: '6px 10px', flexShrink: 0 }}>
       <div class={styles.cardHeader} style={{ marginBottom: '4px' }}>
-        <h2 class={styles.cardTitle} style={{ fontSize: '13px' }}>
+        <h2 class={styles.cardTitle} style={{ fontSize: fs(13) }}>
           <span class={styles.stepNum}>1</span> Add PDF files
         </h2>
         <button
           type="button"
           onClick={() => void loadSampleFiles()}
           style={{
-            fontSize: '11px',
+            fontSize: fs(11),
             padding: '2px 8px',
             borderRadius: '6px',
             border: '1px solid #bfdbfe',
@@ -50,15 +51,21 @@ function PdfMergeDropCard({
             📄+
           </span>
           <div>
-            <p class={styles.dropMainText} style={{ fontSize: '12px', margin: 0 }}>
+            <p class={styles.dropMainText} style={{ fontSize: fs(12), margin: 0 }}>
               Drag & drop PDF files here
             </p>
-            <p class={styles.dropSubText} style={{ fontSize: '10.5px', margin: 0 }}>
+            <p class={styles.dropSubText} style={{ fontSize: fs(10.5), margin: 0 }}>
               or click to browse • Max 100 MB per file
             </p>
           </div>
         </div>
-        <span class={styles.chooseBtn} style={{ padding: '4px 10px', fontSize: '11px' }}>
+        <span
+          class={styles.chooseBtn}
+          style={{
+            padding: '4px 10px',
+            fontSize: fs(11),
+          }}
+        >
           Choose PDF Files
         </span>
         <input
@@ -209,7 +216,7 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
               display: 'flex',
               flexDirection: 'column',
               gap: '3px',
-              fontSize: '12.5px',
+              fontSize: fs(12.5),
               cursor: 'pointer',
             }}
           >
@@ -222,7 +229,11 @@ function PdfMergeSettingsCard({ studio }: { studio: MergeStudioState }) {
               <span>Add bookmarks for each file</span>
             </span>
             <span
-              style={{ fontSize: '11px', color: 'var(--color-text-subtle)', paddingLeft: '20px' }}
+              style={{
+                fontSize: fs(11),
+                color: 'var(--color-text-subtle)',
+                paddingLeft: '20px',
+              }}
             >
               Add file names as bookmarks in the merged PDF
             </span>

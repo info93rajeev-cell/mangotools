@@ -78,7 +78,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
@@ -100,7 +100,7 @@
 }
 
 .subtitleText {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   color: #475569;
   margin: 0;
   font-weight: 450;
@@ -119,7 +119,7 @@
   align-items: center;
   gap: 5px;
   padding: 6px 12px;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
   border-radius: 8px;
   border: 1px solid #bfdbfe;
@@ -236,7 +236,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   margin: 0;
@@ -248,7 +248,7 @@
   border-radius: 50%;
   background: #2563eb;
   color: #ffffff;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -258,7 +258,7 @@
 }
 
 .headerCounter {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #526077;
   font-weight: 500;
 }
@@ -306,14 +306,14 @@
 }
 
 .dropMainText {
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
 .dropSubText {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #526077;
   margin: 0;
 }
@@ -326,7 +326,7 @@
   border-radius: 7px;
   background: #2563eb;
   color: #ffffff;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   border: none;
   cursor: pointer;
@@ -367,7 +367,7 @@
 .dragHandle {
   color: #94a3b8;
   cursor: grab;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
 }
 
@@ -377,7 +377,7 @@
   border-radius: 5px;
   background: #f1f5f9;
   color: #475569;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -393,7 +393,7 @@
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 800;
   flex-shrink: 0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
@@ -408,7 +408,7 @@
 }
 
 .fileName {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   white-space: nowrap;
@@ -417,7 +417,7 @@
 }
 
 .fileMeta {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #64748b;
   font-weight: 500;
 }
@@ -435,7 +435,7 @@
   border: 1px solid #e2e8f0;
   background: #ffffff;
   color: #475569;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -489,7 +489,7 @@
 }
 
 .radioTitle {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   display: flex;
@@ -510,7 +510,7 @@
 }
 
 .radioDesc {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #526077;
 }
 
@@ -521,7 +521,7 @@
 }
 
 .inputLabel {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
 }
@@ -530,7 +530,7 @@
   padding: 8px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   color: #0f172a;
   outline: none;
 }
@@ -542,7 +542,7 @@
 /* Stat Tiles in Summary Card */
 .statTilesGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -580,14 +580,14 @@
 }
 
 .statLabel {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #1e293b;
   margin-top: 1px;
 }
 
 .statSub {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #526077;
   font-weight: 500;
 }
@@ -616,7 +616,7 @@
 }
 
 .flowCardTitle {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   white-space: nowrap;
@@ -646,7 +646,7 @@
 }
 
 .flowBadgeRed {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 6px;
@@ -656,7 +656,7 @@
 }
 
 .flowBadgeBlue {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 6px;
@@ -666,7 +666,7 @@
 }
 
 .flowBadgeGreen {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 6px;
@@ -676,7 +676,7 @@
 }
 
 .flowBadgePurple {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 6px;
@@ -717,7 +717,7 @@
   background: #ffffff;
   border: 1.5px solid #bfdbfe;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #1d4ed8;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
@@ -730,7 +730,7 @@
   border: none;
   background: none;
   padding: 0;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
 }
 .chipCloseBtn:hover {
   color: #1e40af;
@@ -744,7 +744,7 @@
   background: #ffffff;
   border: 1.5px dashed #2563eb;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #2563eb;
   cursor: pointer;
@@ -764,7 +764,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
 }
@@ -798,7 +798,7 @@
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   border-radius: 9px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #15803d;
 }
 
@@ -837,7 +837,7 @@
   background: #ffffff;
   border: 1.5px solid #bfdbfe;
   color: #2563eb;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -858,7 +858,7 @@
   background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #334155;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -887,7 +887,7 @@
   border: none;
   background: transparent;
   color: #475569;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
@@ -929,7 +929,7 @@
   min-height: 80px;
 }
 .docPreviewMockTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   display: flex;
@@ -972,13 +972,13 @@
 /* PDF Info Grid */
 .pdfInfoGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px 12px;
   padding: 8px 12px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
 }
 .pdfInfoItem {
   display: flex;
@@ -1063,7 +1063,7 @@
     box-sizing: border-box;
   }
   .badgePill {
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
     padding: 2px 6px;
     max-width: 100%;
     box-sizing: border-box;
@@ -1071,7 +1071,7 @@
     text-overflow: ellipsis;
   }
   .subtitleText {
-    font-size: 11.5px;
+    font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
     line-height: 1.35;
     min-width: 0;
     max-width: 100%;
@@ -1090,7 +1090,7 @@
     min-width: 0;
     justify-content: center;
     text-align: center;
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
     padding: 5px 6px;
     box-sizing: border-box;
     white-space: normal;
@@ -1163,7 +1163,7 @@
   }
   .chooseBtn {
     padding: 6px 12px;
-    font-size: 11.5px;
+    font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
@@ -1184,18 +1184,18 @@
     overflow: hidden;
   }
   .statVal {
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     min-width: 0;
     overflow-wrap: break-word;
     word-break: break-word;
   }
   .statLabel {
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
     min-width: 0;
     overflow-wrap: break-word;
   }
   .statSub {
-    font-size: 9px;
+    font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
     min-width: 0;
     overflow-wrap: break-word;
   }

@@ -3,6 +3,7 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import styles from './imageBackgroundRemover.module.css';
 import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import { formatImageBytes } from './imageSizeFormat.ts';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageBackgroundRemoverReturn } from './useImageBackgroundRemover.ts';
 
 export interface ImageBackgroundRemoverResultProps {
@@ -125,7 +126,14 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
             }}
           />
         ) : (
-          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Image</div>
+          <div
+            style={{
+              color: 'var(--color-text-muted)',
+              fontSize: fs(11),
+            }}
+          >
+            Awaiting Image
+          </div>
         )}
       </div>
 
@@ -213,7 +221,7 @@ function ErrorCallout({
       </InlineAlert>
       <div
         style={{
-          fontSize: '11px',
+          fontSize: fs(11),
           color: 'var(--color-text-muted)',
           margin: '6px 0 8px 0',
           lineHeight: '1.4',

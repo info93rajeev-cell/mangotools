@@ -49,7 +49,7 @@
 }
 .panels :is(p, h3, a) {
   margin: 8px 12px 12px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   line-height: 1.5;
 }
 .panels a {
