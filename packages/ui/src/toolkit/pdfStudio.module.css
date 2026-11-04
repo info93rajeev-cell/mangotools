@@ -493,8 +493,20 @@
   font-weight: 700;
   color: #0f172a;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
+  line-height: 1.35;
+}
+
+/* Wrapped lines in option cards stay close together. */
+.radioCard > span {
+  line-height: 1.35;
+}
+
+/* The ○/● mark sits on the first line of the title, not in the middle of a wrapped title. */
+.radioMark {
+  flex: none;
+  line-height: inherit;
 }
 
 .radioDesc {
@@ -1539,6 +1551,28 @@
     width: 48px;
     height: 48px;
   }
+}
+
+/* Readability (dark): the tile label is the main text after the value, so it is brighter than
+   the small note under it; empty bar tracks stay visible. */
+:global([data-theme="dark"]) .statVal {
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: #e2e8f0;
+}
+
+:global([data-theme="dark"]) .statSub {
+  color: #b6c2d4;
+}
+
+:global([data-theme="dark"]) .barTrack {
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .radioDesc {
+  color: #c3cddb;
 }
 
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
