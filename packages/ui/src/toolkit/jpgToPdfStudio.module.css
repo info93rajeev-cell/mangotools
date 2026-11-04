@@ -841,6 +841,90 @@
   }
 }
 
+.cardTitleIcon {
+  display: inline-grid;
+  color: #1665f5;
+}
+
+.cardTitleIcon {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
+:global([data-theme="dark"]) .cardTitleIcon {
+  --knock: #182236;
+}
+
+.cardTitleIcon :global(svg) {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.25;
+}
+
+[data-ref-look] .miniBtn {
+  width: 34px;
+  height: 34px;
+}
+
+[data-ref-look] .miniBtn :global(svg) {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* Reference look: the studio sits on the page; inner cards become sections of the column
+   panels, with reference-sized titles, labels and inputs. */
+.studioContainer[data-ref-look],
+:global([data-theme="dark"]) .studioContainer[data-ref-look] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+[data-ref-look] .card,
+:global([data-theme="dark"]) [data-ref-look] .card {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+[data-ref-look] .cardTitle {
+  font-size: 18px;
+  font-weight: 750;
+}
+
+[data-ref-look] .stepBadgeCircle {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+[data-ref-look] .fieldLabel {
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  color: #1e293b;
+}
+
+[data-ref-look] .selectInput,
+[data-ref-look] .textInput {
+  min-height: 40px;
+  font-size: 14px;
+  border-color: #d5dfee;
+  border-radius: 8px;
+}
+
+:global([data-theme="dark"]) [data-ref-look] .fieldLabel {
+  color: #dbe4f1;
+}
+
+:global([data-theme="dark"]) [data-ref-look] .selectInput,
+:global([data-theme="dark"]) [data-ref-look] .textInput {
+  background: #0f182a;
+  border-color: #3d5276;
+  color: #f1f5fb;
+}
+
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
 :global(:where([data-theme="dark"])) .topBar {
   background: #151e33;
@@ -1041,4 +1125,10 @@
 
 :global(:where([data-theme="dark"])) .accordionRow {
   border-top: 1px solid #304a64;
+}
+
+@media (min-width: 1100px) {
+  .studioContainer[data-ref-look] {
+    zoom: 0.88;
+  }
 }

@@ -1,0 +1,321 @@
+.card {
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--color-surface, #fff);
+  margin-bottom: 12px;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
+}
+
+.iconWrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--color-primary, #1a6ef5);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.iconWrap svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-heading, #0b1b3f);
+}
+
+.cardHeadRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.cardBody {
+  padding: 14px 16px 16px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 11.5px;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-weight: 600;
+}
+
+.statusPass {
+  background: #e9f8ef;
+  color: #15803d;
+  border: 1px solid #86d3a2;
+}
+
+.statusFail {
+  background: #fdecec;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.statusIdle {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+/* Results Tiles */
+.tilesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tile {
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--color-surface, #fff);
+  min-width: 0;
+}
+
+.tileHead {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.tileValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-heading, #0b1b3f);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 2px;
+}
+
+.tileValue small {
+  font-size: 11px;
+  font-weight: 500;
+  color: #475569;
+  margin-left: 2px;
+}
+
+.tileSub {
+  font-size: 10.5px;
+  color: #475569;
+}
+
+/* Gradient Bar & Checks */
+.gradientBar {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #1a6ef5 0 25%, #16a34a 25% 50%, #f97316 50% 75%, #7c3aed 75%);
+  margin: 10px 0;
+}
+
+.checksList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--color-border-subtle, #e2e8f0);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+}
+
+.checkDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.checkDotPass {
+  background: #16a34a;
+}
+
+.checkDotFail {
+  background: #b91c1c;
+}
+
+.checkValue {
+  margin-left: auto;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.checkValueMismatch {
+  color: #b91c1c;
+}
+
+/* Results Table */
+.resultsTableWrap {
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 14px;
+}
+
+.resultsTable th {
+  background: var(--color-bg-subtle, #f8fafc);
+  font-size: 11.5px;
+  color: #334155;
+  font-weight: 600;
+  padding: 7px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.resultsTable tr td {
+  padding: 6px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
+}
+
+.resultsTable th:first-child,
+.resultsTable tr td:first-child {
+  text-align: left;
+}
+
+.resultsTable tr:last-child td {
+  border-bottom: 0;
+}
+
+.riseText {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.fallText {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.zeroText {
+  color: #475569;
+  font-weight: 500;
+}
+
+.staleNotice {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.outputActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.printBtn {
+  background: #fbbf24;
+  border: 0;
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  color: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.printBtn:hover:not(:disabled) {
+  background: #f59e0b;
+}
+
+.copyBtn {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  color: #1a6ef5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.copyBtn:hover:not(:disabled) {
+  border-color: #1a6ef5;
+}
+
+.btnDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .tilesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .tilesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .outputActions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media print {
+  .outputActions,
+  .statusBadge {
+    display: none;
+  }
+}

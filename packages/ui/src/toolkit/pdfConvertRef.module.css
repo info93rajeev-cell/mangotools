@@ -1,0 +1,744 @@
+/* PDF to Word and Word to PDF studios: pieces of the approved reference layout. */
+
+.listHead {
+  margin-top: 14px;
+}
+
+.clearSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #f5c6c6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #dc2626;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearSmall :global(svg) {
+  width: 16px;
+  height: 16px;
+}
+
+.clearSmall:hover {
+  background: #fff5f5;
+}
+
+/* Option boxes */
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.box {
+  container-type: inline-size;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 12px 14px;
+  border: 1px solid #e3e9f3;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.boxWide {
+  grid-column: 1 / -1;
+}
+
+.boxInline {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.boxHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: calc(15px + (15px - 15px) * var(--fs-lift, 0));
+  font-weight: 650;
+  color: #0b1736;
+  white-space: nowrap;
+}
+
+.boxHead :global(svg) {
+  width: 22px;
+  height: 22px;
+  color: #1665f5;
+  stroke-width: 2.25;
+}
+
+.boxHead > :global(.icon) {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
+:global([data-theme="dark"]) .boxHead > :global(.icon) {
+  --knock: #1f2c45;
+}
+
+.boxBody {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.boxInline .boxBody {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+}
+
+.boxValue {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #d5dfee;
+  border-radius: 8px;
+  background: #f8fafd;
+  font-size: 15px;
+  color: #0b1736;
+}
+
+.boxHint {
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  line-height: 1.45;
+  color: #50617e;
+}
+
+.invalidText {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+/* Compact choice cards inside a box */
+.compactChoices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.compactChoices > button {
+  gap: 7px;
+  padding: 9px 7px;
+  align-items: center;
+}
+
+.compactChoices > button > span:first-child {
+  width: 17px;
+  height: 17px;
+}
+
+.compactChoices > button > span:last-child > span:first-child {
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  line-height: 1.25;
+}
+
+.compactChoices > button > span:last-child > span:last-child:not(:first-child) {
+  font-size: calc(12px + (14px - 12px) * var(--fs-lift, 0));
+  line-height: 1.3;
+}
+
+@container (max-width: 250px) {
+  .compactChoices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Page thumbnails */
+.strip {
+  display: grid;
+  grid-template-columns: repeat(var(--strip-cols, 6), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 1.15;
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 10px 10px 22px;
+  border: 1px solid #dbe3ef;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.thumbFirst {
+  border: 2px solid #2f6df6;
+  background: #f5f8ff;
+}
+
+.thumbLine {
+  height: 3px;
+  border-radius: 2px;
+  background: #d9e1ec;
+}
+
+.thumbNum {
+  position: absolute;
+  left: 50%;
+  bottom: -11px;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eef2f7;
+  border: 1px solid #d5dfee;
+  color: #1e293b;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.thumbFirst .thumbNum {
+  background: #1665f5;
+  border-color: #1665f5;
+  color: #ffffff;
+}
+
+.thumbMore {
+  display: grid;
+  place-items: center;
+  border: 1px solid #dbe3ef;
+  border-radius: 9px;
+  color: #334155;
+}
+
+.thumbMore :global(svg) {
+  width: 24px;
+  height: 24px;
+}
+
+.stripWrap {
+  padding-bottom: 14px;
+}
+
+.sourceRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.7fr) minmax(0, 2fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0 14px;
+}
+
+.sourceRow + .sourceRow {
+  border-top: 1px solid #edf1f7;
+}
+
+.sourceName {
+  display: grid;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 650;
+  color: #0b1736;
+  overflow-wrap: anywhere;
+}
+
+.sourceName small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #50617e;
+}
+
+/* PDF information */
+.info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin: 0;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: minmax(84px, auto) minmax(0, 1fr);
+  gap: 10px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
+}
+
+.infoRow dt {
+  color: #50617e;
+}
+
+.infoRow dd {
+  margin: 0;
+  color: #0b1736;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Visual preview: PDF page → Word page */
+.visual {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 14px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #f5f8fd;
+}
+
+.visualArrow {
+  align-self: center;
+}
+
+.visualArrow :global(svg) {
+  width: 30px;
+  height: 30px;
+  color: #1665f5;
+  stroke-width: 2.6;
+}
+
+.paper {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: 210px;
+  padding: 14px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 0.08);
+  color: #0b1736;
+}
+
+.paperHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.paperTitle {
+  font-size: 15px;
+  font-weight: 750;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badgePdf,
+.badgeWord {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 34px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.badgePdf {
+  background: #e5322d;
+}
+
+.badgeWord {
+  background: #185abd;
+  font-size: 16px;
+}
+
+.paperLines {
+  display: grid;
+  gap: 7px;
+}
+
+.wordH2 {
+  justify-self: start;
+  max-width: 100%;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #dce8ff;
+  color: #123e9c;
+  font-size: 12.5px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wordP {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #334155;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .grid2,
+  .grid3,
+  .info {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .boxInline,
+  .boxInline .boxBody,
+  .sourceRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .visual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .thumb {
+    gap: 4px;
+    padding: 8px 8px 18px;
+  }
+
+  .visualArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+}
+
+/* Dark theme: raised panels that stand out from the page background */
+:global([data-theme="dark"]) .box {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .boxHead {
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .boxHead :global(svg) {
+  color: #7fb0ff;
+}
+
+:global([data-theme="dark"]) .boxValue {
+  background: #142035;
+  border-color: #3d5276;
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .boxHint,
+:global([data-theme="dark"]) .infoRow dt,
+:global([data-theme="dark"]) .sourceName small {
+  color: #b8c5d8;
+}
+
+:global([data-theme="dark"]) .invalidText {
+  color: #fca5a5;
+}
+
+:global([data-theme="dark"]) .clearSmall {
+  background: #2a1d24;
+  border-color: #7f3a44;
+  color: #fca5a5;
+}
+
+:global([data-theme="dark"]) .thumb {
+  background: #f8fafc;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .thumbFirst {
+  border-color: #5b93ff;
+}
+
+:global([data-theme="dark"]) .thumbMore {
+  border-color: #3d5276;
+  color: #d5deeb;
+}
+
+:global([data-theme="dark"]) .sourceName,
+:global([data-theme="dark"]) .infoRow dd {
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .sourceRow + .sourceRow {
+  border-top-color: #33466a;
+}
+
+:global([data-theme="dark"]) .visual {
+  background: #142035;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .visualArrow :global(svg) {
+  color: #7fb0ff;
+}
+
+/* Real page images (pdf.js) replace the paper placeholder. */
+.thumbImg {
+  padding: 0;
+  background: #ffffff;
+}
+
+.thumbImg > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 8px;
+}
+
+.paperImage {
+  padding: 0;
+  overflow: hidden;
+}
+
+.paperImage > img {
+  width: 100%;
+  height: 100%;
+  min-height: 210px;
+  max-height: 330px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Additional options row (Word to PDF reference) */
+.addOptions {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e3e9f3;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.addOptions .boxHead :global(svg) {
+  color: #9333ea;
+}
+
+.soon {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fff3d6;
+  color: #8a5a00;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.addRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.addCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.addCheck input {
+  width: 17px;
+  height: 17px;
+}
+
+/* Source preview: files side by side, as in the reference */
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 6px 24px;
+}
+
+.sourceGrid .sourceRow {
+  grid-template-columns: minmax(130px, 0.8fr) minmax(0, 2fr);
+  border-top: 0;
+}
+
+.sourceName :global(svg) {
+  width: 18px;
+  height: 18px;
+  color: #1665f5;
+}
+
+:global([data-theme="dark"]) .addOptions {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .addCheck {
+  color: #9fb0c8;
+}
+
+:global([data-theme="dark"]) .soon {
+  background: #3d300f;
+  color: #ffd27a;
+}
+
+/* Tables in the PDF to Word previews */
+.wordTable,
+.docTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #0b1736;
+}
+
+.wordTable {
+  table-layout: fixed;
+  font-size: 10.5px;
+}
+
+.wordTable th,
+.wordTable td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docTable {
+  margin: 4px 0 12px;
+  font-size: 13.5px;
+}
+
+.wordTable th,
+.wordTable td,
+.docTable th,
+.docTable td {
+  padding: 3px 6px;
+  border: 1px solid #a8b8d8;
+  text-align: left;
+  vertical-align: top;
+}
+
+.wordTable th,
+.docTable th {
+  background: #e3ecff;
+  font-weight: 700;
+}
+
+:global([data-theme="dark"]) .docTable {
+  color: #e8eef8;
+}
+
+:global([data-theme="dark"]) .docTable th,
+:global([data-theme="dark"]) .docTable td {
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .docTable th {
+  background: #1d3563;
+}
+
+/* Split: range chips and file-name example (reference layout) */
+.chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 10px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid #d5dfee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.chip input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px 8px 12px;
+  border: 0;
+  background: transparent;
+  color: #0b1736;
+  font-size: 15px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.chip button,
+.addChip {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chip button {
+  width: 34px;
+  height: 34px;
+  color: #64748b;
+}
+
+.chip :global(svg) {
+  width: 16px;
+  height: 16px;
+}
+
+.chipBad {
+  border-color: #ef4444;
+}
+
+.addChip {
+  display: inline-flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid #cddbf3;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1158e8;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.addChip :global(svg) {
+  width: 18px;
+  height: 18px;
+}
+
+.example {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #50617e;
+}
+
+:global([data-theme="dark"]) .chip,
+:global([data-theme="dark"]) .addChip {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .chip input {
+  color: #f4f7fb;
+}
+
+:global([data-theme="dark"]) .chip button,
+:global([data-theme="dark"]) .example {
+  color: #b8c5d8;
+}
+
+:global([data-theme="dark"]) .addChip {
+  color: #8fb5ff;
+}
+
+.span {
+  grid-column: 1 / -1;
+}

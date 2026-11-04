@@ -1,0 +1,30 @@
+{
+  "id": "014-error-zero-total-distance",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §8 point 4: Zero total distance when adjBy: distance fails with SURVEY_LEVELING_ZERO_TOTAL_DISTANCE."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "fs": "1.000",
+        "dist": "0"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "distance"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_ZERO_TOTAL_DISTANCE",
+    "path": "observations"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "015-error-invalid-distance-decimal",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §8 point 5: Non-numeric distance string fails with SURVEY_LEVELING_INVALID_DECIMAL."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "fs": "1.000",
+        "dist": "not-a-number"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_DECIMAL",
+    "path": "observations.1.dist"
+  }
+}
