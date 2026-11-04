@@ -4,8 +4,9 @@ id: volumetric-weight-calculator
 slug: volumetric-weight-calculator
 status: beta
 tier: T2
-version: 0.1.2
+version: 0.2.0
 changelog:
+  - { version: 0.2.0, date: 2026-11-04, type: changed, summary: "Every figure now comes from the tested logistics engine in exact decimals (3 places); the divisor recalculates as you type and an out-of-range divisor is explained." }
   - { version: 0.1.2, date: 2026-11-02, type: fixed, summary: "Rows with a zero size or a non-whole quantity are flagged and left out instead of being counted as 1." }
   - { version: 0.1.1, date: 2026-10-07, type: changed, summary: "Compact workspace, converting dimension and weight units, selectable 2/3/4-place precision, and collapsed supporting sections." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with volumetric, actual and chargeable weight per package and in total, divisor 5000, 6000 or custom." }

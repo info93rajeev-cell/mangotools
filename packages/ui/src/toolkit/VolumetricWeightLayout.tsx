@@ -2,10 +2,10 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
 import { Carton3DPreview } from './Carton3DPreview.tsx';
+import { useVolumetricShipment } from './useVolumetricShipment.ts';
 import { VolumetricWeightResults, VolumetricWeightSettings } from './VolumetricWeightPanels.tsx';
 import styles from './volumetricWeight.module.css';
 import {
-  computeVolumetricWeight,
   convertLengthFromCm,
   convertLengthToCm,
   SAMPLE_VOLUMETRIC_ITEMS,
@@ -20,10 +20,7 @@ interface VolumetricWeightLayoutProps {
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio volumetric weight layout
-export function VolumetricWeightLayout({
-  preset: _preset,
-  onLaunchTour,
-}: VolumetricWeightLayoutProps) {
+export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeightLayoutProps) {
   const [items, setItems] = useState<VolumetricItem[]>(SAMPLE_VOLUMETRIC_ITEMS);
   const [unit, setUnit] = useState<VolumetricUnit>('cm');
   const [standardId, setStandardId] = useState<string>('iata');
@@ -33,7 +30,7 @@ export function VolumetricWeightLayout({
   );
   const [copyFeedback, setCopyFeedback] = useState<boolean>(false);
 
-  const result = computeVolumetricWeight(items, unit, divisor);
+  const result = useVolumetricShipment(preset, items, unit, divisor);
 
   const handleUnitChange = (newUnit: VolumetricUnit) => {
     if (newUnit === unit) return;
@@ -120,7 +117,7 @@ export function VolumetricWeightLayout({
       `Total Volume: ${result.totalVolumeM3} m³ (${result.totalVolumeCm3.toLocaleString()} cm³)`,
       `Total Actual Weight: ${result.totalActualWeightKg} kg`,
       `Total Volumetric Weight: ${result.totalVolumetricWeightKg} kg`,
-      `CHARGEABLE WEIGHT: ${result.chargeableWeightKg} kg (${result.governingFactor.toUpperCase()} GOVERNS)`,
+      `CHARGEABLE WEIGHT: ${result.chargeableWeightKg} kg (${result.governingFactor === 'equal' ? 'BOTH EQUAL' : `${result.governingFactor.toUpperCase()} GOVERNS`})`,
       '--------------------------------------------------',
       'Items Breakdown:',
       ...result.itemCalculations.map(
