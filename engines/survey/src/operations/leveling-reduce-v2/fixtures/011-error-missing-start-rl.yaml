@@ -1,0 +1,22 @@
+{
+  "id": "011-error-missing-start-rl",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §8 point 1: Missing startRL fails with SURVEY_LEVELING_MISSING_START_RL."
+  },
+  "input": {
+    "observations": [
+      {
+        "bs": "1.000"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_MISSING_START_RL",
+    "path": "startRL"
+  }
+}

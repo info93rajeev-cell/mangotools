@@ -1,0 +1,26 @@
+{
+  "id": "018-negative-staff-reading-error",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §2: Negative staff reading fails with SURVEY_LEVELING_NEGATIVE_READING."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "bs": "-1.500"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_NEGATIVE_READING",
+    "path": "observations.0.bs"
+  }
+}

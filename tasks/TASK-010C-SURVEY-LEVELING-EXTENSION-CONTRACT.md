@@ -108,8 +108,9 @@ Both checks must pass in every valid level run. This guarantees internal arithme
 
 ## 5. Line Distance ($K$) & Allowable Misclosure ($C\sqrt{K}$)
 
-1. **Station Distances ($d_i$):**
-   - Each row $i$ ($i \ge 1$) specifies incremental horizontal distance $d_i \ge 0$ (in metres) from station $i-1$. $d_0 = 0$ at the starting BM.
+1. **Station Distances ($d_i$) and $d_0 = 0$ Invariant:**
+   - Each row $i$ ($i \ge 1$) specifies incremental horizontal distance $d_i \ge 0$ (in metres) from station $i-1$.
+   - **$d_0 = 0$ Invariant:** At the starting BM ($i = 0$), there is no preceding station; distance must be `0` or omitted (which normalizes to `0`). Supplying a nonzero distance ($d_0 > 0$) is rejected with `SURVEY_LEVELING_START_DISTANCE_NONZERO` on `observations.0.dist` to prevent silent misattribution or data offset. A nonzero first-station distance is never silently dropped or retained while excluded from total line distance.
    - Cumulative distance: $D_i = \sum_{j=1}^i d_j$ (metres).
    - Total line distance: $D_{\text{total}} = D_n$ (metres).
    - Leveled distance in kilometres: $K = D_{\text{total}} / 1000$.
@@ -123,16 +124,24 @@ Both checks must pass in every valid level run. This guarantees internal arithme
      - `closureStatus` is returned as `'criterion-not-provided'`.
      - The UI displays allowable limit as `—` and status badge as `Criterion not provided`.
      - Adjustment distribution (distance or setup) proceeds normally if requested, since adjustment distributes observed misclosure $-e$ and does not require an allowable error threshold.
+   - **Missing Distance Behaviour on Closed Lines:** When a closed line supplies $C$ (`kConstant`) but lacks one or more required station distances (either partially absent or entirely absent):
+     - Distance-proportional adjustment (`adjBy: "distance"`): Strictly requires complete station distances; missing any distance raises `SURVEY_LEVELING_MISSING_DISTANCE`.
+     - Setup adjustment or unadjusted (`adjBy: "setup"` or `adjBy: "none"`): The engine completes reduction, arithmetic checks, closing misclosure, and setup adjustments.
+     - `allowableError` is returned as `null`.
+     - `totalDistanceKm` is returned as `null`.
+     - `closureStatus` is returned as `'distance-not-provided'` (distinguishing it from `'criterion-not-provided'`).
+     - The UI displays allowable limit as `—` and status badge as `Distance not provided`.
    - **Status of $C = 24$:** The value $24$ is retained **only** in an explicitly labelled "Try sample" dataset as an illustrative example. Loading a sample must not imply that 24 is an authoritative standard or universal default.
    - **UI Copy Obligation:** In the empty workbench state, the input field has no pre-filled value (placeholder: `"e.g. 12 or 24"`). Label: `"Allowable error constant C (mm/√km) [Optional]"`. Helper copy: `"Enter your contract or survey specification constant C. Leaving blank calculates misclosure without a pass/fail tolerance check."`
 3. **Deterministic Numerical Policy for $\sqrt{K}$ and Acceptance:**
    - **Kernel Evaluation:** When $C$ is provided, $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
-   - **Acceptance Criterion:** When $C$ is present, the closure comparison evaluates against the unrounded threshold:
+   - **Acceptance Criterion:** When $C$ is present and total distance $K$ is available, the closure comparison evaluates against the unrounded threshold:
      $$\text{closureStatus} = \begin{cases}
      \text{'pass'} & \text{if } |e_{\text{mm}}| \le C\sqrt{K} + 10^{-9}\text{ mm} \\
      \text{'fail'} & \text{if } |e_{\text{mm}}| > C\sqrt{K} + 10^{-9}\text{ mm}
      \end{cases}$$
      When $C$ is absent, $\text{closureStatus} = \text{'criterion-not-provided'}$.
+     When $C$ is present but distance is missing, $\text{closureStatus} = \text{'distance-not-provided'}$.
    - **Displayed Allowable Limit:** When $C$ is present, formatted rounded half-up to 1 decimal place in millimetres ($\pm X.X\text{ mm}$). Acceptance does **not** evaluate against the displayed 0.1 mm rounded number.
 
 ---
@@ -231,7 +240,7 @@ This contract definitively selects a **single unified operation: `survey.levelin
   - Top-level metrics extending `@1`:
     - `totalDistanceKm`: string | null (total leveled distance $K$ in km to 3 decimal places)
     - `allowableError`: string | null (allowable limit in mm to 1 decimal place, e.g. `"9.6"`, or `null` if $C$ absent)
-    - `closureStatus`: `z.enum(['pass', 'fail', 'criterion-not-provided']).nullable()`
+    - `closureStatus`: `z.enum(['pass', 'fail', 'criterion-not-provided', 'distance-not-provided']).nullable()`
     - `setupsCount`: number (total instrument setups count)
 
 ---
@@ -239,12 +248,14 @@ This contract definitively selects a **single unified operation: `survey.levelin
 ## 8. Missing Data & Validation Failure Order
 
 1. `SURVEY_LEVELING_MISSING_START_RL`: Absent or whitespace-only start benchmark RL.
-2. `SURVEY_LEVELING_MISSING_DISTANCE`: An intermediate or closing row has an absent/empty distance while `adjBy: "distance"` is requested.
-3. `SURVEY_LEVELING_NEGATIVE_DISTANCE`: Distance value $< 0$.
-4. `SURVEY_LEVELING_ZERO_TOTAL_DISTANCE`: Sum of distances is zero when `adjBy: "distance"` is requested.
-5. `SURVEY_LEVELING_INVALID_DECIMAL`: Non-numeric decimal input.
-6. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure, allowable error, and corrections `null`, and `closureStatus: null`.
-7. **Missing Allowable Error Criterion ($C$ absent):** Not an error. When `closingRL` is present but `kConstant` is omitted or empty, the engine succeeds, computes closing misclosure $e$, leaves `allowableError: null`, and sets `closureStatus: 'criterion-not-provided'`. If `adjBy` is requested, adjustment proceeds normally.
+2. `SURVEY_LEVELING_START_DISTANCE_NONZERO`: Starting station distance $> 0$ (must be 0 or omitted).
+3. `SURVEY_LEVELING_MISSING_DISTANCE`: An intermediate or closing row has an absent/empty distance while `adjBy: "distance"` is requested.
+4. `SURVEY_LEVELING_NEGATIVE_DISTANCE`: Distance value $< 0$.
+5. `SURVEY_LEVELING_ZERO_TOTAL_DISTANCE`: Sum of distances is zero when `adjBy: "distance"` is requested.
+6. `SURVEY_LEVELING_INVALID_DECIMAL`: Non-numeric decimal input.
+7. **Open Line Fallback:** If `closingRL` is omitted while `adjBy` is `"distance"` or `"setup"`, the engine falls back to `adjBy: "none"` without failing, leaving misclosure, allowable error, and corrections `null`, and `closureStatus: null`.
+8. **Missing Allowable Error Criterion ($C$ absent):** Not an error. When `closingRL` is present but `kConstant` is omitted or empty, the engine succeeds, computes closing misclosure $e$, leaves `allowableError: null`, and sets `closureStatus: 'criterion-not-provided'`. If `adjBy` is requested, adjustment proceeds normally.
+9. **Missing Distance with Criterion ($C$ present):** Not an error under `adjBy: "none"` or `adjBy: "setup"`. When `closingRL` and `kConstant` are present but station distances are partially or entirely absent, the engine succeeds, computes closing misclosure $e$ and setup adjustments, leaves `allowableError: null` and `totalDistanceKm: null`, and sets `closureStatus: 'distance-not-provided'`.
 
 ---
 

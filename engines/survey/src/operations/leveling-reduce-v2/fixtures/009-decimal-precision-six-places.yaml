@@ -1,0 +1,74 @@
+{
+  "id": "009-decimal-precision-six-places",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §3 & §6: Six-decimal staff observation precision, unadjusted exact sums, and half-up adjusted RLs."
+  },
+  "input": {
+    "startRL": "100.123456",
+    "closingRL": "101.234567",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.654321",
+        "dist": "0"
+      },
+      {
+        "station": "BM-2",
+        "fs": "0.543210",
+        "dist": "250"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "distance",
+    "kConstant": "24"
+  },
+  "expected": {
+    "startingRL": "100.123456",
+    "endingRL": "101.234567",
+    "sumBS": "1.654321",
+    "sumFS": "0.54321",
+    "sumRise": "1.111111",
+    "sumFall": "0",
+    "bsFsDelta": "1.111111",
+    "riseFallDelta": "1.111111",
+    "rlDelta": "1.111111",
+    "closingRL": "101.234567",
+    "misclosure": "0",
+    "totalDistanceKm": "0.250",
+    "allowableError": "12.0",
+    "closureStatus": "pass",
+    "setupsCount": 1,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1.654321",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100.123456",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": "0.0",
+        "adjustedRL": "100.123"
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "0.54321",
+        "rise": "1.111111",
+        "fall": "0",
+        "rl": "101.234567",
+        "isChangePoint": false,
+        "dist": "250",
+        "corr": "0.0",
+        "adjustedRL": "101.235"
+      }
+    ]
+  }
+}
