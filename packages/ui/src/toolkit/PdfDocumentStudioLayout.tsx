@@ -240,6 +240,19 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
     wordToPdf: useWordToPdfStudio(notify),
   };
 
+  // Open with the sample loaded, so the page shows the approved full design straight away. The
+  // sample is built in the browser; the user's own file replaces it.
+  useEffect(() => {
+    const load: Record<PdfToolTab, () => unknown> = {
+      merge: studios.merge.loadSampleFiles,
+      split: studios.split.loadSampleSplit,
+      compress: studios.compress.loadSampleCompress,
+      pdfToWord: studios.pdfToWord.loadSamplePdfToWord,
+      wordToPdf: studios.wordToPdf.loadSampleWordDocs,
+    };
+    void load[activeTab]?.();
+  }, []);
+
   const handleFileChange = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
     const list = e.currentTarget.files;
     if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);

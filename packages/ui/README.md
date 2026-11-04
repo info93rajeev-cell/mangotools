@@ -41,6 +41,9 @@ browser integration remains PR 6C evidence. No production preset, tool or page i
 
 ## Changelog
 
+- Logistics studios (CBM, Volumetric Weight, Pallet Loading, Container Loading): in single-column
+  layouts (phone and tablet) the visualization / reference-image panel now comes first, above the
+  input cards. Results and actions stay below the inputs. CSS `order` only; desktop unchanged.
 - Visual v2 rolled out to the other data studios (Base64, URL, CSV→JSON, JSON→CSV, Timestamp):
   - Line icons replace the entity emoji in card titles, option cards and buttons.
   - Chips are real pills; Encode/Decode is a segmented control (`aria-pressed`).

@@ -13,6 +13,7 @@ import {
   RefTile,
   RefTopBar,
 } from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
 import refStyles from './pdfRef.module.css';
 import { ToolOnboardingTour, type TourStep } from './ToolOnboardingTour.tsx';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
@@ -87,7 +88,8 @@ function reorder<T>(arr: T[], from: number, to: number): T[] {
 }
 
 function JpgSummary({ s }: { s: ReturnType<typeof usePdfStudioState> }) {
-  const totalMb = (s.images.reduce((acc, img) => acc + img.size, 0) / (1024 * 1024)).toFixed(1);
+  const totalBytes = s.images.reduce((acc, img) => acc + img.size, 0);
+  const sizeText = totalBytes > 0 ? (fileMeta(0, totalBytes).split(' • ')[1] ?? '—') : '—';
   const ready = s.images.length > 0;
   return (
     <section class={refStyles.card} aria-label="PDF Summary">
@@ -115,7 +117,7 @@ function JpgSummary({ s }: { s: ReturnType<typeof usePdfStudioState> }) {
           tone="green"
           icon="database"
           label="Est. size"
-          value={`${totalMb} MB`}
+          value={sizeText}
           sub="After conversion"
         />
         <RefTile
@@ -201,6 +203,12 @@ function JpgToPdfWorkbench({
 export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
   const [isTourOpen, setIsTourOpen] = useState(false);
+
+  // Open with the sample images, so the page shows the approved full design straight away; the
+  // user's own images replace them. An image handed over from another tool is kept instead.
+  useEffect(() => {
+    if (!props.converter?.file) void s.loadSamples();
+  }, []);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);

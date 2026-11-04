@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { type DocxContent, readDocx } from './docxReader.ts';
 import { type Margins, type PageSize, renderDocxToPdf } from './docxToPdf.ts';
 import { buildDocxFromBlocks } from './docxZipPacker.ts';
@@ -116,6 +116,15 @@ export interface Converted {
   replacedChars: number;
 }
 
+async function readAll(fileList: FileList | File[]) {
+  return Promise.all(
+    Array.from(fileList).map(async (f) => ({
+      name: f.name,
+      bytes: new Uint8Array(await f.arrayBuffer()),
+    })),
+  );
+}
+
 export function useWordToPdfStudio(notify?: (msg: string) => void) {
   const [files, setFiles] = useState<WordFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>('A4');
@@ -125,10 +134,15 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
   const [output, setOutput] = useState<Converted[] | null>(null);
   useEffect(() => setOutput(null), [files, pageSize, margins, exportMode]);
   useRecountPages(files, setFiles, pageSize, margins);
-  const add = async (list: { name: string; bytes: Uint8Array }[]) => {
-    const added = await readWordFiles(list, files.length, { pageSize, margins }, notify);
+  // True while the files shown are the sample; the user's own files then replace them.
+  const sampleShown = useRef(false);
+  const add = async (list: { name: string; bytes: Uint8Array }[], sample = false) => {
+    const replace = sampleShown.current || sample;
+    const start = replace ? 0 : files.length;
+    const added = await readWordFiles(list, start, { pageSize, margins }, notify);
     if (added.length > 0) {
-      setFiles((prev) => [...prev, ...added]);
+      setFiles((prev) => (replace ? added : [...prev, ...added]));
+      sampleShown.current = sample;
       notify?.(`Added ${added.length} Word file${added.length === 1 ? '' : 's'}`);
     }
   };
@@ -177,15 +191,10 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
       notify?.('Summary copied');
     },
     loadSampleWordDocs: async () =>
-      add(SAMPLE_WORD_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) }))),
-    handleAddNativeFiles: async (fileList: FileList | File[]) =>
       add(
-        await Promise.all(
-          Array.from(fileList).map(async (f) => ({
-            name: f.name,
-            bytes: new Uint8Array(await f.arrayBuffer()),
-          })),
-        ),
+        SAMPLE_WORD_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) })),
+        true,
       ),
+    handleAddNativeFiles: async (fileList: FileList | File[]) => add(await readAll(fileList)),
   };
 }
