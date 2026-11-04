@@ -30,27 +30,25 @@ All formulas, field-book conventions, and adjustment models in this contract are
    - **Chapter 3 *Levelling*:**
      - §3.7.1 *The Rise and Fall Method*: Staff reading conventions (BS, IS, FS), physical change point (CP) semantics where incoming FS and outgoing BS share staff location, and reduction equations.
      - §3.7.3 *Arithmetic Checks*: Establishes $\sum \text{BS} - \sum \text{FS} = \sum \text{Rise} - \sum \text{Fall} = \text{Last RL} - \text{First RL}$.
-     - §3.9 *Permissible Error (Misclosure)*: General formula $E = \pm m \sqrt{K}\text{ mm}$ ($K$ in km) and setup-based $E = \pm m \sqrt{n}$.
+     - §3.9 *Permissible Error (Misclosure)*: General functional form $E = \pm m \sqrt{K}\text{ mm}$ ($K$ in km) and setup-based $E = \pm m \sqrt{n}$.
      - §3.10 *Adjustment of Level Networks*: Proportional distribution by distance ($c_i = -e \times D_i / D_{\text{total}}$) and by instrument setups.
 3. **Punmia, B. C., Jain, A. K. & Jain, A. K. (2005): *Surveying (Vol. 1)* (16th ed.). Laxmi Publications. ISBN: 81-7008-853-4.**
    - **Publisher Catalog:** [Laxmi Publications](https://www.laxmipublications.com/)
    - **Chapter 5 *Levelling*:**
      - §5.16 *Booking and Reducing Levels*: Non-comparison of FS and BS on the same row.
      - §5.19 *Arithmetical Checks*: Details the two independent equality checks.
-     - §5.23 *Permissible Error in Levelling* (Table 5.1): Categorizes closing tolerance $E = C\sqrt{D}\text{ m}$:
-       - Rough leveling: $E = \pm 0.100\sqrt{D}\text{ m} = \pm 100\sqrt{K}\text{ mm}$
-       - Ordinary leveling: $E = \pm 0.024\sqrt{D}\text{ m} = \pm 24\sqrt{K}\text{ mm}$
-       - Accurate leveling: $E = \pm 0.012\sqrt{D}\text{ m} = \pm 12\sqrt{K}\text{ mm}$
-       - Precise leveling: $E = \pm 0.006\sqrt{D}\text{ m} = \pm 6\sqrt{K}\text{ mm}$
+     - §5.23 *Permissible Error in Levelling*: Formulates the square-root distance relationship $E = C\sqrt{D}$.
      - §5.25 *Adjustment of Levelling Network*: Distance-proportional and setup-proportional formulas.
 4. **NPTEL / IIT Roorkee (Prof. J. K. Ghosh): *Surveying*, Module 4 *Levelling*.**
-   - **Accessible Course Web Archive:** [Module 4 Lesson 14 — Permissible Error in Levelling](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/46.htm) and [Lesson 13 — Arithmetic Checks](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/42.htm).
-   - Confirms standard BS/IS/FS booking table, change point handling, arithmetic checks, and explicit permissible error limits: rough ($\pm 100\sqrt{K}\text{ mm}$), ordinary ($\pm 24\sqrt{K}\text{ mm}$), and accurate ($\pm 12\sqrt{K}\text{ mm}$).
+   - **Accessible Course Web Archive Pages:**
+     - [Lesson 13 — Rise and Fall Method](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/42.htm): Establishes relative rise and fall principles from differential staff readings.
+     - [Lesson 13 — Arithmetic Check for Reduction of Level](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/46.htm): Documents the three agreeing differences ($\sum\text{BS} - \sum\text{FS} = \sum\text{Rise} - \sum\text{Fall} = \text{Last RL} - \text{First RL}$) with worked level net Table 13.3.
+     - [Lesson 13 — Example Ex13-3 (Adjustment of Level Net)](https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/49.htm): Demonstrates setup-proportional adjustment where total circuit closing error is divided equally per instrument setup.
 5. **NIMI / DGT Government of India (Oct 2022): *Surveyor — Trade Practical (NSQF Level 4)*.**
    - **Official Manual:** [Bharat Skills E-Book](https://bharatskills.gov.in/pdf/E_Books/CTS/62/English/TP/Surveyor%20-%201st%20Year%20-%20TP%20%28NSQF%202022%29.pdf) (Exercise 1.8.54).
    - Confirms eleven-station practical booking format and intermediate sight reduction.
 
-*(Note: BS 5606:1990 was withdrawn by BSI in 2022 and is a building guide; its previous attribution for $C = 24\text{ mm}/\sqrt{\text{km}}$ is retracted in favor of the primary engineering textbooks above).*
+*(Note on standards: BS 5606:1990 was withdrawn by BSI in 2022 and applies to building component fit tolerances rather than civil leveling circuits. Furthermore, the specific constant C = 24 mm/√km is treated strictly as an unverified configurable product default rather than an authoritative standard).*
 
 ---
 
@@ -114,11 +112,13 @@ Both checks must pass in every valid level run. This guarantees internal arithme
    - Cumulative distance: $D_i = \sum_{j=1}^i d_j$ (metres).
    - Total line distance: $D_{\text{total}} = D_n$ (metres).
    - Leveled distance in kilometres: $K = D_{\text{total}} / 1000$.
-2. **Allowable Error Formula & Constant $C$:**
+2. **Allowable Error Formula & Status of Constant $C$:**
    $$E_{\text{allow}} = \pm C \sqrt{K} \text{ mm}$$
    - $C$ is an explicit input parameter in units of **$\text{mm}/\sqrt{\text{km}}$**.
-   - **Configurable Product Default:** $C = 24\text{ mm}/\sqrt{\text{km}}$ is provided as a sensible default and standard textbook example for ordinary civil construction levelling (Punmia Table 5.1; NPTEL Lesson 14).
-   - **Not a Universal Standard:** In geodetic and project specifications, $C$ varies substantially (e.g. $2\text{--}12\text{ mm}/\sqrt{\text{km}}$ for FGCC/USACE Third-Order control, $6\text{ mm}/\sqrt{\text{km}}$ for precise levelling, $100\text{ mm}/\sqrt{\text{km}}$ for rough earthworks). Therefore, $C$ is strictly configurable by the user via parameter `kConstant` (default `"24"`).
+   - **Verified Geodetic Standards:** Primary control standards publish authoritative constants for specific network orders (e.g. NOAA/FGCC 1984 Table 2.2 specifies index $b = 0.5\text{ to }2.0\text{ mm}/\sqrt{K}$ for First- through Third-Order control networks; USACE EM 1110-1-1005 allows $12\text{ mm}\sqrt{K}$ for third-order engineering control).
+   - **Status of $C = 24$:** The value $C = 24\text{ mm}/\sqrt{\text{km}}$ is provided in the workbench as a **configurable product example and default whose technical basis has not yet been independently verified** against an accessible primary standard. It is **not** labeled or asserted as an authoritative standard.
+   - **Strictly Configurable Parameter:** Because allowable error constants vary by country, jurisdiction, and project specification, the engine treats $C$ strictly as an arbitrary user-configured numeric input string (`kConstant`, defaulting to `"24"`).
+   - **Product Copy Obligation:** The product UI and documentation must label this input as `"Allowable error constant C (mm/√km) [Default: 24]"` with explanatory helper text noting that users should enter their project-specified allowable error constant, and must never claim that 24 is an authoritative or legally mandated value.
 3. **Deterministic Numerical Policy for $\sqrt{K}$ and Acceptance:**
    - **Kernel Evaluation:** $K$ and $\sqrt{K}$ are evaluated deterministically using IEEE 754 double precision (`binary64` via `Math.sqrt(K)`).
    - **Acceptance Criterion:** The closure decision compares the **unrounded absolute misclosure in millimetres** against the **unrounded calculated allowable threshold**:
@@ -213,7 +213,7 @@ This contract definitively selects a **single unified operation: `survey.levelin
 - **Params Schema:**
   - `method`: `z.enum(['rise-fall', 'height-of-instrument']).default('rise-fall')`
   - `adjBy`: `z.enum(['none', 'distance', 'setup']).default('none')`
-  - `kConstant`: `z.string().default('24')` (allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$).
+  - `kConstant`: `z.string().default('24')` (configurable allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$).
 - **Output Schema:**
   - `rows`: array of result rows extending `@1` with:
     - `dist`: string | null (incremental distance in metres)
