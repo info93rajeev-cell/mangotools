@@ -74,6 +74,7 @@ async function executeLeveling(
       cellErrors: path ? { [path]: message } : {},
     };
   } catch {
+    if (signal.aborted) return { result: null, phase: 'idle', errors: [], cellErrors: {} };
     return {
       result: null,
       phase: 'error',
@@ -129,81 +130,126 @@ function useSurveyRows(onInvalidate: () => void) {
   };
 }
 
-export function useSurveyLeveling(customRun?: RunFn) {
-  const runFn = customRun ?? defaultRun;
+function useSurveyBenchmarks(onInvalidate: () => void) {
   const [startRL, setStartRLState] = useState(SAMPLE_START_RL);
   const [closingRL, setClosingRLState] = useState(SAMPLE_CLOSING_RL);
+  return {
+    startRL,
+    closingRL,
+    setStartRLState,
+    setClosingRLState,
+    setStartRL: (val: string) => {
+      setStartRLState(val);
+      onInvalidate();
+    },
+    setClosingRL: (val: string) => {
+      setClosingRLState(val);
+      onInvalidate();
+    },
+  };
+}
+
+const INITIAL_CALC_STATE = {
+  result: null,
+  phase: 'idle' as const,
+  errors: [],
+  cellErrors: {},
+};
+
+function useSurveyCalculation(
+  runFn: RunFn,
+  bm: ReturnType<typeof useSurveyBenchmarks>,
+  rowOps: ReturnType<typeof useSurveyRows>,
+) {
   const [calcState, setCalcState] = useState<{
     result: SurveyCalculationOutput | null;
     phase: SurveyLevelingState['phase'];
     errors: string[];
     cellErrors: Record<string, string>;
-  }>({ result: null, phase: 'idle', errors: [], cellErrors: {} });
+  }>(INITIAL_CALC_STATE);
 
   const abortRef = useRef<AbortController | null>(null);
+  const reqIdRef = useRef(0);
 
   const invalidate = () => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    reqIdRef.current++;
     setCalcState((prev) => ({
       ...prev,
       result: null,
-      phase: prev.phase === 'result' ? 'stale' : prev.phase,
+      phase:
+        prev.phase === 'result' || prev.phase === 'calculating' || prev.phase === 'stale'
+          ? 'stale'
+          : prev.phase,
       errors: [],
       cellErrors: {},
     }));
   };
 
-  const rowOps = useSurveyRows(invalidate);
-
-  const calculate = async (s = startRL, c = closingRL, r = rowOps.rows) => {
+  const calculate = async (s = bm.startRL, c = bm.closingRL, r = rowOps.rows) => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
+    const currentReqId = ++reqIdRef.current;
     setCalcState((prev) => ({ ...prev, phase: 'calculating' }));
     const outcome = await executeLeveling(runFn, s, c, r, ctrl.signal);
-    if (!ctrl.signal.aborted) setCalcState(outcome);
+    if (!ctrl.signal.aborted && currentReqId === reqIdRef.current) {
+      setCalcState(outcome);
+    }
   };
 
+  return { calcState, setCalcState, abortRef, reqIdRef, invalidate, calculate };
+}
+
+export function useSurveyLeveling(customRun?: RunFn) {
+  const runFn = customRun ?? defaultRun;
+  const invRef = useRef<() => void>(() => {});
+  const bm = useSurveyBenchmarks(() => invRef.current());
+  const rowOps = useSurveyRows(() => invRef.current());
+  const calc = useSurveyCalculation(runFn, bm, rowOps);
+  invRef.current = calc.invalidate;
+
   const loadSample = () => {
-    setStartRLState(SAMPLE_START_RL);
-    setClosingRLState(SAMPLE_CLOSING_RL);
+    calc.abortRef.current?.abort();
+    calc.abortRef.current = null;
+    calc.reqIdRef.current++;
+    bm.setStartRLState(SAMPLE_START_RL);
+    bm.setClosingRLState(SAMPLE_CLOSING_RL);
     rowOps.setRows(SAMPLE_ROWS);
-    void calculate(SAMPLE_START_RL, SAMPLE_CLOSING_RL, SAMPLE_ROWS);
+    void calc.calculate(SAMPLE_START_RL, SAMPLE_CLOSING_RL, SAMPLE_ROWS);
   };
 
   const reset = () => {
-    abortRef.current?.abort();
-    setStartRLState('');
-    setClosingRLState('');
+    calc.abortRef.current?.abort();
+    calc.abortRef.current = null;
+    calc.reqIdRef.current++;
+    bm.setStartRLState('');
+    bm.setClosingRLState('');
     rowOps.setRows(createInitialRows());
-    setCalcState({ result: null, phase: 'idle', errors: [], cellErrors: {} });
+    calc.setCalcState(INITIAL_CALC_STATE);
   };
 
   useEffect(() => {
-    void calculate();
-    return () => abortRef.current?.abort();
+    void calc.calculate();
+    return () => calc.abortRef.current?.abort();
   }, []);
 
   return {
-    startRL,
-    setStartRL: (val: string) => {
-      setStartRLState(val);
-      invalidate();
-    },
-    closingRL,
-    setClosingRL: (val: string) => {
-      setClosingRLState(val);
-      invalidate();
-    },
+    startRL: bm.startRL,
+    setStartRL: bm.setStartRL,
+    closingRL: bm.closingRL,
+    setClosingRL: bm.setClosingRL,
     rows: rowOps.rows,
-    result: calcState.result,
-    phase: calcState.phase,
-    isStale: calcState.phase === 'stale',
-    errors: calcState.errors,
-    cellErrors: calcState.cellErrors,
+    result: calc.calcState.result,
+    phase: calc.calcState.phase,
+    isStale: calc.calcState.phase === 'stale',
+    errors: calc.calcState.errors,
+    cellErrors: calc.calcState.cellErrors,
     handleCellChange: rowOps.handleCellChange,
     handleAddRow: rowOps.handleAddRow,
     handleRemoveRow: rowOps.handleRemoveRow,
-    calculate: () => calculate(startRL, closingRL, rowOps.rows),
+    calculate: () => calc.calculate(bm.startRL, bm.closingRL, rowOps.rows),
     loadSample,
     reset,
   };

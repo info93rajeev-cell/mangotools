@@ -94,24 +94,24 @@ export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResult
         </div>
       ) : null}
 
-      <div class={s.resultsActions}>
+      <div class={s.outputActions}>
         <button
           type="button"
-          class={hasRows ? s.btnSecondary : `${s.btnSecondary} ${s.btnDisabled}`}
-          onClick={onCopyBook}
-          disabled={!hasRows}
-          data-copy-book-btn=""
-        >
-          {surveyStrings.copyBook}
-        </button>
-        <button
-          type="button"
-          class={hasRows ? s.btnSecondary : `${s.btnSecondary} ${s.btnDisabled}`}
+          class={hasRows ? s.printBtn : `${s.printBtn} ${s.btnDisabled}`}
           onClick={() => hasRows && window.print()}
           disabled={!hasRows}
           data-print-book-btn=""
         >
           {surveyStrings.print}
+        </button>
+        <button
+          type="button"
+          class={hasRows ? s.copyBtn : `${s.copyBtn} ${s.btnDisabled}`}
+          onClick={onCopyBook}
+          disabled={!hasRows}
+          data-copy-book-btn=""
+        >
+          {surveyStrings.copyBook}
         </button>
       </div>
     </div>

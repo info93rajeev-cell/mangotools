@@ -19,6 +19,20 @@ test.beforeAll(async () => {
     import { engine } from ${entry('@mangotools/engine-survey', join(ROOT, 'engines/survey'))};
 
     window.__customRun = async (id, input, params, signal) => {
+      if (typeof window !== 'undefined' && window.__calculationDelay) {
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(resolve, window.__calculationDelay);
+          if (signal?.aborted) {
+            clearTimeout(timer);
+            reject(new DOMException('Aborted', 'AbortError'));
+          } else {
+            signal?.addEventListener('abort', () => {
+              clearTimeout(timer);
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
+          }
+        });
+      }
       const operation = engine.operations.find(op => op.id + '@' + op.major === id);
       if (!operation) return { ok: false, error: { code: 'OPERATION_NOT_FOUND' } };
       return executeOperation(operation, input, params, { ...createTestContext(), signal });
@@ -88,6 +102,53 @@ for (const vp of viewports) {
     await expect(firstRowCells.nth(1)).toHaveText('—');
     await expect(firstRowCells.nth(2)).toHaveText('—');
     await expect(firstRowCells.nth(3)).toHaveText('100.000');
+
+    // Verify Copy level book and Print / Save PDF buttons
+    const copyBtn = page.locator('[data-copy-book-btn]');
+    const printBtn = page.locator('[data-print-book-btn]');
+    await expect(copyBtn).toBeVisible();
+    await expect(printBtn).toBeVisible();
+    await expect(copyBtn).toHaveText(/Copy level book/);
+    await expect(printBtn).toHaveText(/Print \/ Save PDF/);
+
+    const copyClass = (await copyBtn.getAttribute('class')) ?? '';
+    const printClass = (await printBtn.getAttribute('class')) ?? '';
+    expect(copyClass).not.toContain('undefined');
+    expect(printClass).not.toContain('undefined');
+
+    const copyStyles = await copyBtn.evaluate((el) => {
+      const s = window.getComputedStyle(el);
+      return { color: s.color, cursor: s.cursor };
+    });
+    expect(copyStyles.color).toBe('rgb(26, 110, 245)');
+    expect(copyStyles.cursor).toBe('pointer');
+
+    const printStyles = await printBtn.evaluate((el) => {
+      const s = window.getComputedStyle(el);
+      return { backgroundColor: s.backgroundColor, color: s.color, cursor: s.cursor };
+    });
+    expect(printStyles.backgroundColor).toBe('rgb(251, 191, 36)');
+    expect(printStyles.color).toBe('rgb(15, 23, 42)');
+    expect(printStyles.cursor).toBe('pointer');
+
+    if (vp.name === 'mobile') {
+      const printBox = await printBtn.boundingBox();
+      const copyBox = await copyBtn.boundingBox();
+      expect(printBox).not.toBeNull();
+      expect(copyBox).not.toBeNull();
+      if (printBox && copyBox) {
+        expect(copyBox.y).toBeGreaterThanOrEqual(printBox.y + printBox.height - 2);
+      }
+    } else if (vp.name === 'desktop') {
+      const printBox = await printBtn.boundingBox();
+      const copyBox = await copyBtn.boundingBox();
+      expect(printBox).not.toBeNull();
+      expect(copyBox).not.toBeNull();
+      if (printBox && copyBox) {
+        expect(Math.abs(printBox.y - copyBox.y)).toBeLessThan(5);
+        expect(copyBox.x).toBeGreaterThan(printBox.x);
+      }
+    }
 
     // Run accessibility audit with COLOR CONTRAST ENABLED (no disabled rules)
     const axe = await new AxeBuilder({ page }).analyze();
@@ -192,4 +253,85 @@ test('Row addition and deletion interaction', async ({ page }) => {
   const lastDeleteBtn = rows.last().getByRole('button', { name: /Remove row/ });
   await lastDeleteBtn.click();
   await expect(rows).toHaveCount(initialCount);
+});
+
+test('In-flight calculation abort and invalidation on edit (deterministic delayed-run)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  await expect(page.getByText('✓ Calculated')).toBeVisible();
+
+  // Inject a 400ms delay into calculation requests
+  await page.evaluate(() => {
+    (window as unknown as { __calculationDelay: number }).__calculationDelay = 400;
+  });
+
+  // Trigger calculation
+  await page.locator('[data-calculate-btn]').click();
+
+  // While calculation is in-flight (under 400ms), edit Start RL
+  const startRLInput = page.locator('#survey-startRL');
+  await startRLInput.fill('120.000');
+
+  // Wait 600ms to allow delayed run to resolve or reject
+  await page.waitForTimeout(600);
+
+  // Assert UI remains in stale state and did NOT accept the late old response
+  await expect(page.getByText('Recalculate required')).toBeVisible();
+  await expect(page.locator('[data-stale-notice]')).toBeVisible();
+  await expect(page.locator('[data-results-table]')).not.toBeVisible();
+  await expect(page.locator('[data-copy-book-btn]')).toBeDisabled();
+  await expect(page.locator('[data-print-book-btn]')).toBeDisabled();
+
+  // Reset delay and recalculate with new input
+  await page.evaluate(() => {
+    (window as unknown as { __calculationDelay: number }).__calculationDelay = 0;
+  });
+  await page.locator('[data-calculate-btn]').click();
+
+  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  const firstRowRL = page.locator('[data-results-table] tbody tr').first().locator('td').nth(3);
+  await expect(firstRowRL).toHaveText('120.000');
+});
+
+test('Clipboard copy handling: success and failure toast paths', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  const copyBtn = page.locator('[data-copy-book-btn]');
+
+  // Test 1: Successful clipboard write
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: async () => {},
+      },
+      configurable: true,
+    });
+  });
+
+  await copyBtn.click();
+  await expect(page.getByText('Level book copied to clipboard')).toBeVisible();
+
+  // Test 2: Clipboard write rejection (e.g. permission denied)
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: async () => {
+          throw new Error('NotAllowedError: Permission denied');
+        },
+      },
+      configurable: true,
+    });
+  });
+
+  await copyBtn.click();
+  await expect(
+    page.getByText(
+      'Could not copy to clipboard. Please copy manually or check browser permissions.',
+    ),
+  ).toBeVisible();
 });

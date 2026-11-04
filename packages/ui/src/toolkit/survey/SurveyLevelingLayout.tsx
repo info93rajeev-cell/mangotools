@@ -30,7 +30,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
   const survey = useSurveyLeveling(customRun);
   const [message, notify] = useToast();
 
-  const handleCopyBook = () => {
+  const handleCopyBook = async () => {
     if (!survey.result || survey.isStale) return;
     const header = ['Station', 'BS', 'IS', 'FS', 'Rise', 'Fall', 'RL'].join('\t');
     const lines = survey.result.rows.map((r) =>
@@ -38,8 +38,17 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         '\t',
       ),
     );
-    void navigator.clipboard?.writeText([header, ...lines].join('\n'));
-    notify(surveyStrings.copiedToast);
+    const content = [header, ...lines].join('\n');
+    if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) {
+      notify(surveyStrings.copyFailedToast);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(content);
+      notify(surveyStrings.copiedToast);
+    } catch {
+      notify(surveyStrings.copyFailedToast);
+    }
   };
 
   return (

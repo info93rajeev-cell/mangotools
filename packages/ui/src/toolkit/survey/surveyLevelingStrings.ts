@@ -118,6 +118,8 @@ export const surveyStrings = {
   print: '🖨 Print / Save PDF',
   copyBook: '⧉ Copy level book',
   copiedToast: 'Level book copied to clipboard',
+  copyFailedToast:
+    'Could not copy to clipboard. Please copy manually or check browser permissions.',
 
   // Accordions
   accNotesTitle: 'Allowable misclosure & adjustment notes',
