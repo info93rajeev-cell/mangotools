@@ -1,3 +1,4 @@
+import { Icon } from '../primitives/Icon.tsx';
 import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
 import { RefCardHead, RefChoice, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
@@ -27,7 +28,7 @@ function WordFilesSection({ studio }: { studio: WordToPdfState }) {
         }
       />
       <RefDrop
-        title={files.length > 0 ? 'Add more Word files' : 'Drag & drop Word files here'}
+        title="Drag & drop Word files here"
         sub="or click to browse and select files · Supports DOCX files · Files stay in your browser"
         button="Choose Word Files"
         accept={DOCX_ACCEPT}
@@ -79,6 +80,35 @@ function WordFilesSection({ studio }: { studio: WordToPdfState }) {
         </div>
       ) : null}
     </section>
+  );
+}
+
+const COMING = [
+  'Include bookmarks from headings',
+  'Preserve hyperlinks',
+  'Include comments',
+  'Compress output (smaller file size)',
+];
+
+/** The reference's Additional options row. These four are not built yet, so they are shown
+ *  switched off and marked, instead of pretending to work. */
+function AdditionalOptions() {
+  return (
+    <div class={c.addOptions}>
+      <span class={c.boxHead}>
+        <Icon name="settings" />
+        Additional options
+        <small class={c.soon}>Coming soon</small>
+      </span>
+      <div class={c.addRow}>
+        {COMING.map((label) => (
+          <label key={label} class={c.addCheck} title="Coming soon">
+            <input type="checkbox" disabled />
+            {label}
+          </label>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -137,6 +167,7 @@ function WordSettingsSection({ studio }: { studio: WordToPdfState }) {
           </div>
         </RefOptionBox>
       </div>
+      <AdditionalOptions />
       <p class={styles.note} style={{ marginTop: '12px' }}>
         Text, headings, bold and italic, lists and table rows are laid out with standard PDF fonts.
         Images, text boxes, headers, footers and exact Word layout are not carried over. Characters
@@ -151,6 +182,7 @@ function SourceRow({ file: f }: { file: WordToPdfState['files'][number] }) {
   return (
     <div class={c.sourceRow}>
       <span class={c.sourceName}>
+        <Icon name="file-text" />
         {f.name}
         <small>
           {f.pages} page{f.pages === 1 ? '' : 's'}
@@ -166,9 +198,11 @@ function SourcePreviewSection({ studio }: { studio: WordToPdfState }) {
   return (
     <section class={styles.card} aria-label="Source Preview">
       <RefCardHead icon="eye" title="Source Preview (first few pages)" />
-      {studio.files.map((f) => (
-        <SourceRow key={f.id} file={f} />
-      ))}
+      <div class={c.sourceGrid}>
+        {studio.files.map((f) => (
+          <SourceRow key={f.id} file={f} />
+        ))}
+      </div>
     </section>
   );
 }

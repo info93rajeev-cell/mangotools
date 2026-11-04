@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
 import { type DocxContent, readDocx } from './docxReader.ts';
 import { type Margins, type PageSize, renderDocxToPdf } from './docxToPdf.ts';
-import { buildDocxFromBlocks, type DocxBlock } from './docxZipPacker.ts';
+import { buildDocxFromBlocks } from './docxZipPacker.ts';
+import { SAMPLE_WORD_DOCS } from './sampleWordDocs.ts';
 
 export interface WordFile {
   id: string;
@@ -13,33 +14,6 @@ export interface WordFile {
   /** This file laid out on its own with the current settings, for the page previews. */
   preview: Uint8Array;
 }
-
-const SAMPLE_DOCS: { name: string; blocks: DocxBlock[] }[] = [
-  {
-    name: 'Project-Proposal-Sample.docx',
-    blocks: [
-      { kind: 'h1', text: 'Project Proposal (Sample)' },
-      {
-        kind: 'p',
-        text: 'This sample Word file was generated in your browser to try Word to PDF.',
-      },
-      { kind: 'h2', text: 'Scope' },
-      {
-        kind: 'p',
-        text: 'Design, build and test a stock tracker for two warehouses over eight weeks.',
-      },
-      { kind: 'h2', text: 'Budget' },
-      { kind: 'p', text: 'Fixed price, paid in three milestones: start, beta and handover.' },
-    ],
-  },
-  {
-    name: 'Meeting-Notes-Sample.docx',
-    blocks: [
-      { kind: 'h1', text: 'Meeting Notes (Sample)' },
-      { kind: 'p', text: 'Attendees agreed the delivery dates and the next review in two weeks.' },
-    ],
-  },
-];
 
 function wordCount(c: DocxContent): number {
   return c.paragraphs
@@ -203,7 +177,7 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
       notify?.('Summary copied');
     },
     loadSampleWordDocs: async () =>
-      add(SAMPLE_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) }))),
+      add(SAMPLE_WORD_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) }))),
     handleAddNativeFiles: async (fileList: FileList | File[]) =>
       add(
         await Promise.all(

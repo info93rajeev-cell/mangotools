@@ -137,7 +137,6 @@ function carryNotes(studio: WordToPdfState): string[] {
 function PdfInfoSection({ studio }: { studio: WordToPdfState }) {
   const { files, exportMode, pageSize } = studio;
   const { pages, size } = totals(studio);
-  const words = files.reduce((n, f) => n + f.words, 0);
   const name =
     files.length === 0
       ? '—'
@@ -154,8 +153,6 @@ function PdfInfoSection({ studio }: { studio: WordToPdfState }) {
           ['Content', `${files.length} Word file${files.length === 1 ? '' : 's'}, ${pages} pages`],
           ['Page size', `${pageSize} (${PAGE_SIZE_LABEL[pageSize]})`],
           ['Size', size === '—' ? 'Shown after creating' : size],
-          ['Words', String(words)],
-          ['Carries over', 'Text, headings, bold, italic, lists'],
         ]}
       />
       {notes.length > 0 ? (

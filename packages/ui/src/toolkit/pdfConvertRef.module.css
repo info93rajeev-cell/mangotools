@@ -511,3 +511,79 @@
   object-fit: cover;
   object-position: top center;
 }
+
+/* Additional options row (Word to PDF reference) */
+.addOptions {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e3e9f3;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.addOptions .boxHead :global(svg) {
+  color: #9333ea;
+}
+
+.soon {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fff3d6;
+  color: #8a5a00;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.addRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.addCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.addCheck input {
+  width: 17px;
+  height: 17px;
+}
+
+/* Source preview: files side by side, as in the reference */
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 6px 24px;
+}
+
+.sourceGrid .sourceRow {
+  grid-template-columns: minmax(130px, 0.8fr) minmax(0, 2fr);
+  border-top: 0;
+}
+
+.sourceName :global(svg) {
+  width: 18px;
+  height: 18px;
+  color: #1665f5;
+}
+
+:global([data-theme="dark"]) .addOptions {
+  background: #1f2c45;
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .addCheck {
+  color: #9fb0c8;
+}
+
+:global([data-theme="dark"]) .soon {
+  background: #3d300f;
+  color: #ffd27a;
+}
