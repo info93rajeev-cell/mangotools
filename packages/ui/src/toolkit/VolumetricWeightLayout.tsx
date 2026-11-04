@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
 import { Carton3DPreview } from './Carton3DPreview.tsx';
 import { useVolumetricShipment } from './useVolumetricShipment.ts';
+import { VolumetricCostCard } from './VolumetricCostCard.tsx';
 import { VolumetricWeightResults, VolumetricWeightSettings } from './VolumetricWeightPanels.tsx';
 import styles from './volumetricWeight.module.css';
 import {
@@ -299,6 +300,11 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
               setDivisor(d);
               setStandardId('custom');
             }}
+          />
+          <VolumetricCostCard
+            chargeableKg={result.chargeableWeightKg}
+            volumeM3={result.totalVolumeM3}
+            preset={preset}
           />
         </div>
 
