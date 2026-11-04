@@ -100,6 +100,14 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
         </div>
         <div class={styles.optionBox}>
           <RefCheck
+            label="Preserve tables"
+            hint="Text in columns becomes a Word table"
+            checked={studio.keepTables}
+            onChange={studio.setKeepTables}
+          />
+        </div>
+        <div class={styles.optionBox}>
+          <RefCheck
             label="Page break between pages"
             hint="Start each PDF page on a new Word page"
             checked={studio.pageBreaks}
@@ -108,8 +116,10 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
         </div>
       </div>
       <p class={styles.note} style={{ marginTop: '12px' }}>
-        The Word file gets the PDF's text as editable headings and paragraphs. Layout, columns,
-        tables, images and fonts are not carried over.
+        The Word file gets the PDF's text as editable headings, paragraphs and tables. Images,
+        colours, fonts and exact layout are not carried over. Tables are found from text that lines
+        up in columns; merged cells and cells that wrap onto several lines may come out as separate
+        rows.
       </p>
     </section>
   );

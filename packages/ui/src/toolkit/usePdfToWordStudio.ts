@@ -11,28 +11,46 @@ export interface Extraction {
   pagesWithText: number;
   words: number;
   headings: number;
+  tables: number;
+}
+
+/** The plain text of a block (a table's cells joined with spaces). */
+export function blockText(b: Block): string {
+  if (b.kind === 'page') return '';
+  if (b.kind === 'table') return b.rows.map((r) => r.join(' ')).join(' ');
+  return b.text;
 }
 
 export function summarise(pages: PageText[]): Extraction {
   const blocks = toBlocks(pages);
-  const text = blocks.map((b) => (b.kind === 'page' ? '' : b.text)).join(' ');
+  const text = blocks.map(blockText).join(' ');
   return {
     pages,
     blocks,
     pagesWithText: pages.filter((p) => p.lines.length > 0).length,
     words: text.split(/\s+/).filter(Boolean).length,
     headings: blocks.filter((b) => b.kind === 'h1' || b.kind === 'h2').length,
+    tables: blocks.filter((b) => b.kind === 'table').length,
   };
 }
 
-/** Blocks for the DOCX: headings flattened to paragraphs, page breaks optional. */
-export function docxBlocks(
-  blocks: Block[],
-  opts: { keepHeadings: boolean; pageBreaks: boolean },
-): DocxBlock[] {
-  return blocks
-    .filter((b) => opts.pageBreaks || b.kind !== 'page')
-    .map((b) => (b.kind !== 'page' && !opts.keepHeadings ? { kind: 'p', text: b.text } : b));
+/**
+ * Blocks for the DOCX: headings flattened to paragraphs and tables to one paragraph per row
+ * (cells separated by tabs) when those options are off; page breaks optional.
+ */
+type DocxOpts = { keepHeadings: boolean; pageBreaks: boolean; keepTables?: boolean };
+
+function docxBlockFor(b: Block, opts: DocxOpts): DocxBlock[] {
+  if (b.kind === 'page') return opts.pageBreaks ? [b] : [];
+  if (b.kind === 'table') {
+    if (opts.keepTables !== false) return [b];
+    return b.rows.map((row) => ({ kind: 'p', text: row.join('\t') }));
+  }
+  return [opts.keepHeadings ? b : { kind: 'p', text: b.text }];
+}
+
+export function docxBlocks(blocks: Block[], opts: DocxOpts): DocxBlock[] {
+  return blocks.flatMap((b) => docxBlockFor(b, opts));
 }
 
 export type PageMode = 'all' | 'custom';
@@ -71,6 +89,7 @@ function usePdfToWordState() {
   const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
   const [extraction, setExtraction] = useState<Extraction | null>(null);
   const [keepHeadings, setKeepHeadings] = useState(true);
+  const [keepTables, setKeepTables] = useState(true);
   const [pageBreaks, setPageBreaks] = useState(true);
   const [previewTab, setPreviewTab] = useState<'visual' | 'text' | 'outline'>('visual');
   const [pageMode, setPageMode] = useState<PageMode>('all');
@@ -86,6 +105,8 @@ function usePdfToWordState() {
     setExtraction,
     keepHeadings,
     setKeepHeadings,
+    keepTables,
+    setKeepTables,
     pageBreaks,
     setPageBreaks,
     previewTab,
@@ -112,7 +133,7 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
   const [docx, setDocx] = useState<Uint8Array | null>(null);
   useEffect(
     () => setDocx(null),
-    [s.extraction, s.keepHeadings, s.pageBreaks, s.pageMode, s.pageRange],
+    [s.extraction, s.keepHeadings, s.keepTables, s.pageBreaks, s.pageMode, s.pageRange],
   );
 
   const take = async (name: string, bytes: Uint8Array) => {

@@ -185,7 +185,33 @@ function escapeXml(raw: string): string {
     .replace(/'/g, '&apos;');
 }
 
-export type DocxBlock = { kind: 'h1' | 'h2' | 'p'; text: string } | { kind: 'page' };
+export type DocxBlock =
+  | { kind: 'h1' | 'h2' | 'p'; text: string }
+  | { kind: 'table'; rows: string[][] }
+  | { kind: 'page' };
+
+const BORDER = 'w:val="single" w:sz="4" w:space="0" w:color="A6A6A6"';
+
+/** A Word table with thin borders; the first row is bold, as most tables start with a header. */
+function tableXml(rows: string[][]): string {
+  const cols = Math.max(...rows.map((r) => r.length));
+  const width = Math.floor(9000 / cols);
+  const grid = Array.from({ length: cols }, () => `<w:gridCol w:w="${width}"/>`).join('');
+  const body = rows
+    .map((row, ri) => {
+      const cells = Array.from({ length: cols }, (_, ci) => {
+        const run = ri === 0 ? '<w:rPr><w:b/></w:rPr>' : '';
+        const text = escapeXml(row[ci] ?? '');
+        return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:spacing w:after="0"/></w:pPr><w:r>${run}<w:t xml:space="preserve">${text}</w:t></w:r></w:p></w:tc>`;
+      }).join('');
+      return `<w:tr>${cells}</w:tr>`;
+    })
+    .join('');
+  const borders = ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']
+    .map((b) => `<w:${b} ${BORDER}/>`)
+    .join('');
+  return `<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>${borders}</w:tblBorders><w:tblCellMar><w:left w:w="100" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${grid}</w:tblGrid>${body}</w:tbl><w:p/>`;
+}
 
 const STYLES_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
@@ -200,6 +226,7 @@ const STYLES_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 function blockXml(block: DocxBlock): string {
   if (block.kind === 'page') return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+  if (block.kind === 'table') return tableXml(block.rows);
   const style =
     block.kind === 'p'
       ? ''

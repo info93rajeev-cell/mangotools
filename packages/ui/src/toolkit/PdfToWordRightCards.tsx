@@ -4,6 +4,7 @@ import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRe
 import c from './pdfConvertRef.module.css';
 import { usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
+import type { Block } from './pdfTextExtract.ts';
 import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
@@ -61,12 +62,49 @@ function SummarySection({ studio }: { studio: PdfToWordState }) {
   );
 }
 
-type TextBlock = { kind: 'h1' | 'h2' | 'p'; text: string };
+type ContentBlock = Exclude<Block, { kind: 'page' }>;
+
+/** A table as Word will show it: bordered cells, header row bold (or tab-separated rows if off). */
+function PreviewTable({
+  rows,
+  keep,
+  compact,
+}: {
+  rows: string[][];
+  keep: boolean;
+  compact?: boolean;
+}) {
+  if (!keep) {
+    return (
+      <>
+        {rows.map((r, i) => (
+          <p key={i} class={compact ? c.wordP : styles.docP}>
+            {r.join('    ')}
+          </p>
+        ))}
+      </>
+    );
+  }
+  return (
+    <table class={compact ? c.wordTable : c.docTable}>
+      <tbody>
+        {rows.slice(0, compact ? 4 : 40).map((r, i) => (
+          <tr key={i}>
+            {r.map((cell, j) => (i === 0 ? <th key={j}>{cell}</th> : <td key={j}>{cell}</td>))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 /** The PDF page on the left, the first part of the Word file built from its text on the right. */
-function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: TextBlock[] }) {
-  const title = blocks.find((b) => b.kind === 'h1')?.text ?? studio.fileName;
-  const body = blocks.filter((b) => b.kind !== 'h1' || b.text !== title).slice(0, 5);
+function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: ContentBlock[] }) {
+  const h1 = blocks.find((b) => b.kind === 'h1');
+  const title = h1 && 'text' in h1 ? h1.text : studio.fileName;
+  let body = blocks.filter((b) => b !== h1).slice(0, 4);
+  const table = blocks.find((b) => b.kind === 'table');
+  if (table && !body.includes(table)) body = [...body.slice(0, 3), table];
   const [page1] = usePageThumbs(studio.fileBytes, [1], 260);
   return (
     <div class={c.visual}>
@@ -75,8 +113,11 @@ function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: Tex
         <Icon name="arrow-right" />
       </span>
       <RefPaper badge="W" title={title}>
-        {body.map((b, i) =>
-          b.kind === 'p' || !studio.keepHeadings ? (
+        {body.map((b, i) => {
+          if (b.kind === 'table') {
+            return <PreviewTable key={i} rows={b.rows} keep={studio.keepTables} compact />;
+          }
+          return b.kind === 'p' || !studio.keepHeadings ? (
             <p key={i} class={c.wordP}>
               {b.text}
             </p>
@@ -84,11 +125,17 @@ function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: Tex
             <span key={i} class={c.wordH2}>
               {b.text}
             </span>
-          ),
-        )}
+          );
+        })}
       </RefPaper>
     </div>
   );
+}
+
+function TextBlockView({ b, studio }: { b: ContentBlock; studio: PdfToWordState }) {
+  if (b.kind === 'table') return <PreviewTable rows={b.rows} keep={studio.keepTables} />;
+  const cls = b.kind === 'h1' ? styles.docH1 : b.kind === 'h2' ? styles.docH2 : styles.docP;
+  return <p class={cls}>{b.text}</p>;
 }
 
 function PreviewBody({ studio }: { studio: PdfToWordState }) {
@@ -111,12 +158,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
   return (
     <div class={styles.docPreview}>
       {shown.slice(0, 60).map((b, i) => (
-        <p
-          key={i}
-          class={b.kind === 'h1' ? styles.docH1 : b.kind === 'h2' ? styles.docH2 : styles.docP}
-        >
-          {b.text}
-        </p>
+        <TextBlockView key={i} b={b} studio={studio} />
       ))}
       {shown.length === 0 ? <p class={styles.previewEmpty}>No headings were detected.</p> : null}
     </div>

@@ -1,18 +1,30 @@
 /**
  * Extracts the text of each page of a PDF, as lines, by following its text operators (Tf, Td, TD,
  * Tm, T*, Tj, TJ, ' and ") in page and form content streams. Font sizes are kept so larger lines can
- * become headings. This reads text the PDF already contains; a scanned page (a picture of text) has
- * none, and no layout, tables or images are carried over.
+ * become headings, and the start of each piece of a line is kept so tables can be found. This reads
+ * text the PDF already contains; a scanned page (a picture of text) has none, and images are not
+ * carried over.
  */
 import { PDFArray, PDFDict, PDFDocument, PDFName, type PDFPage, PDFStream } from 'pdf-lib';
 import { type FontDecoder, fontDecoder, streamText } from './pdfFontDecoder.ts';
+import { joinBaselines, tableAt } from './pdfTableDetect.ts';
 import { Lexer, type Token } from './pdfTextTokens.ts';
+
+export interface TextCell {
+  /** Where this piece of the line starts, in points. */
+  x: number;
+  text: string;
+}
 
 export interface TextLine {
   text: string;
   size: number;
   /** Baseline position in the page's text space; only differences between lines matter. */
   y: number;
+  /** Where the line starts, in points. */
+  x?: number;
+  /** The pieces of the line that sit apart from each other (table cells, columns). */
+  cells?: TextCell[];
 }
 
 export interface PageText {
@@ -35,22 +47,65 @@ interface State {
   endX: number;
   current: string;
   currentSize: number;
+  /** Pieces of the current line, each started by a move along the baseline. */
+  segs: { x: number; text: string; chars: number }[];
+  newSeg: boolean;
   lines: TextLine[];
   forms: PDFDict | null;
   depth: number;
 }
 
+/** Joins pieces that touch (kerning moves inside a word or sentence) and keeps real gaps. */
+function cellsOf(st: State): TextCell[] {
+  const size = st.currentSize || 1;
+  const out: { x: number; text: string; end: number }[] = [];
+  for (const s of st.segs) {
+    const prev = out[out.length - 1];
+    const end = s.x + s.chars * size * 0.5;
+    if (prev && s.x - prev.end < size * 1.6) {
+      prev.text += s.text;
+      prev.end = Math.max(prev.end, end);
+    } else out.push({ x: s.x, text: s.text, end });
+  }
+  return out
+    .map((c) => ({ x: Math.round(c.x), text: c.text.replace(/\s+/g, ' ').trim() }))
+    .filter((c) => c.text);
+}
+
 function flush(st: State): void {
   const text = st.current.replace(/\s+/g, ' ').trim();
-  if (text) st.lines.push({ text, size: Math.round(st.currentSize * 10) / 10, y: st.textY });
+  if (text) {
+    const cells = cellsOf(st);
+    st.lines.push({
+      text,
+      size: Math.round(st.currentSize * 10) / 10,
+      y: st.textY,
+      x: Math.round(st.segs[0]?.x ?? st.lineX),
+      ...(cells.length > 1 ? { cells } : {}),
+    });
+  }
   st.current = '';
   st.currentSize = 0;
+  st.segs = [];
+  st.newSeg = true;
 }
 
 function show(st: State, text: string): void {
   if (!text) return;
   if (st.current === '') st.textY = st.lineY;
   st.current += text;
+  const last = st.segs[st.segs.length - 1];
+  if (st.newSeg || !last)
+    st.segs.push({
+      x: st.lineX + st.segChars * (Math.abs(st.size) || 1) * 0.5,
+      text,
+      chars: text.length,
+    });
+  else {
+    last.text += text;
+    last.chars += text.length;
+  }
+  st.newSeg = false;
   st.segChars += text.length;
   st.endX = st.lineX + st.segChars * (Math.abs(st.size) || 1) * 0.5;
   st.currentSize = Math.max(st.currentSize, Math.abs(st.size));
@@ -72,13 +127,18 @@ function moveTo(st: State, x: number, y: number): void {
   st.lineX = x;
   st.lineY = y;
   st.segChars = 0;
+  st.newSeg = true;
 }
 
 function showArray(st: State, items: Token[]): void {
   for (const it of items) {
     if (it.t === 'str' && st.font) show(st, st.font.decode(it.v));
     // A large negative adjustment (in thousandths of an em) is a word gap.
-    else if (it.t === 'num' && it.v < -200 && !st.current.endsWith(' ')) st.current += ' ';
+    else if (it.t === 'num' && it.v < -200 && !st.current.endsWith(' ')) {
+      st.current += ' ';
+      const last = st.segs[st.segs.length - 1];
+      if (last) last.text += ' ';
+    }
   }
 }
 
@@ -159,6 +219,7 @@ function runForm(st: State, name: string): void {
   run(inner, streamText(form));
   st.lines = inner.lines;
   st.current = inner.current;
+  st.segs = inner.segs;
 }
 
 function run(st: State, content: string): void {
@@ -213,6 +274,8 @@ export function extractPageText(page: PDFPage): PageText {
     endX: 0,
     current: '',
     currentSize: 0,
+    segs: [],
+    newSeg: true,
     lines: [],
     forms: xobjectsOf(resources),
     depth: 0,
@@ -244,7 +307,10 @@ export function bodySize(pages: PageText[]): number {
   return best;
 }
 
-export type Block = { kind: 'h1' | 'h2' | 'p'; text: string } | { kind: 'page' };
+export type Block =
+  | { kind: 'h1' | 'h2' | 'p'; text: string }
+  | { kind: 'table'; rows: string[][] }
+  | { kind: 'page' };
 
 function kindOf(size: number, body: number): 'h1' | 'h2' | 'p' {
   if (size >= body * 1.6) return 'h1';
@@ -254,29 +320,40 @@ function kindOf(size: number, body: number): 'h1' | 'h2' | 'p' {
 
 /**
  * Lines become paragraphs: a line joins the paragraph above when it has the same size and sits
- * within about one and a half line heights of it. Larger lines become headings. Pages are separated
- * by page breaks.
+ * within about one and a half line heights of it. Larger lines become headings. Lines whose pieces
+ * line up in columns become tables. Pages are separated by page breaks.
  */
 export function toBlocks(pages: PageText[]): Block[] {
   const body = bodySize(pages);
   const out: Block[] = [];
   pages.forEach((page, pi) => {
     if (pi > 0) out.push({ kind: 'page' });
-    let prev: TextLine | null = null;
-    for (const line of page.lines) {
-      const kind = kindOf(line.size, body);
-      const last = out[out.length - 1];
-      const joins =
-        prev !== null &&
-        last !== undefined &&
-        last.kind === kind &&
-        kind === 'p' &&
-        prev.size === line.size &&
-        Math.abs(line.y - prev.y) <= line.size * 1.6;
-      if (joins && last && 'text' in last) last.text = `${last.text} ${line.text}`;
-      else out.push({ kind, text: line.text });
-      prev = line;
-    }
+    pageBlocks(joinBaselines(page.lines), body, out);
   });
   return out;
+}
+
+function pageBlocks(lines: TextLine[], body: number, out: Block[]): void {
+  let prev: TextLine | null = null;
+  for (let i = 0; i < lines.length; i++) {
+    const table = tableAt(lines, i);
+    if (table) {
+      out.push({ kind: 'table', rows: table.rows });
+      i = table.end - 1;
+      prev = null;
+      continue;
+    }
+    const line = lines[i] as TextLine;
+    const kind = kindOf(line.size, body);
+    const last = out[out.length - 1];
+    const joins =
+      prev !== null &&
+      last?.kind === 'p' &&
+      kind === 'p' &&
+      prev.size === line.size &&
+      Math.abs(line.y - prev.y) <= line.size * 1.6;
+    if (joins && last && 'text' in last) last.text = `${last.text} ${line.text}`;
+    else out.push({ kind, text: line.text });
+    prev = line;
+  }
 }

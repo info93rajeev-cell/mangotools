@@ -587,3 +587,57 @@
   background: #3d300f;
   color: #ffd27a;
 }
+
+/* Tables in the PDF to Word previews */
+.wordTable,
+.docTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #0b1736;
+}
+
+.wordTable {
+  table-layout: fixed;
+  font-size: 10.5px;
+}
+
+.wordTable th,
+.wordTable td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docTable {
+  margin: 4px 0 12px;
+  font-size: 13.5px;
+}
+
+.wordTable th,
+.wordTable td,
+.docTable th,
+.docTable td {
+  padding: 3px 6px;
+  border: 1px solid #a8b8d8;
+  text-align: left;
+  vertical-align: top;
+}
+
+.wordTable th,
+.docTable th {
+  background: #e3ecff;
+  font-weight: 700;
+}
+
+:global([data-theme="dark"]) .docTable {
+  color: #e8eef8;
+}
+
+:global([data-theme="dark"]) .docTable th,
+:global([data-theme="dark"]) .docTable td {
+  border-color: #3d5276;
+}
+
+:global([data-theme="dark"]) .docTable th {
+  background: #1d3563;
+}

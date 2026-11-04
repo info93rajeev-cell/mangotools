@@ -227,7 +227,41 @@ function drawWrapped(
   return y - opts.size * 1.35;
 }
 
-/** A real two-page text PDF (title, headings, wrapped paragraphs) for trying PDF to Word. */
+const PRICE_TABLE = [
+  ['Item', 'Description', 'Qty', 'Amount (Rs)'],
+  ['PB-01', 'Corrugated box, 5 ply', '2,000', '48,000'],
+  ['PB-02', 'Bubble wrap roll, 50 m', '120', '21,600'],
+  ['PB-03', 'Packing tape, 48 mm', '600', '9,000'],
+];
+
+/** A table drawn as text in columns with thin rules, as most PDF exports draw them. */
+function drawTable(
+  page: ReturnType<PDFDocument['addPage']>,
+  y: number,
+  fonts: {
+    font: Awaited<ReturnType<PDFDocument['embedFont']>>;
+    bold: Awaited<ReturnType<PDFDocument['embedFont']>>;
+  },
+): number {
+  const xs = [60, 130, 300, 360];
+  const right = 470;
+  PRICE_TABLE.forEach((row, ri) => {
+    page.drawLine({ start: { x: 54, y: y + 14 }, end: { x: right, y: y + 14 }, thickness: 0.6 });
+    row.forEach((cell, ci) => {
+      page.drawText(cell, {
+        x: xs[ci] ?? 60,
+        y,
+        size: 10,
+        font: ri === 0 ? fonts.bold : fonts.font,
+      });
+    });
+    y -= 20;
+  });
+  page.drawLine({ start: { x: 54, y: y + 14 }, end: { x: right, y: y + 14 }, thickness: 0.6 });
+  return y - 10;
+}
+
+/** A real two-page text PDF (title, headings, wrapped paragraphs, a price table) for PDF to Word. */
 export async function createTextSamplePdf(): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
@@ -246,6 +280,10 @@ export async function createTextSamplePdf(): Promise<Uint8Array> {
       y = drawWrapped(page, para, { x: 60, y, width: 300, size: 11, font }) - 8;
     }
     y -= 10;
+    if (i === 1) {
+      page.drawText('3. Price Schedule', { x: 60, y, size: 15, font: bold });
+      y = drawTable(page, y - 30, { font, bold });
+    }
   });
   return doc.save();
 }
