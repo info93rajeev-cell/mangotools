@@ -24,6 +24,7 @@ export * from './toolkit/imageWorkbenchGeometry.ts';
 export * from './toolkit/presentation.ts';
 export * from './toolkit/RepeatableRows.tsx';
 export * from './toolkit/repeatableRows.ts';
+export * from './toolkit/survey/index.ts';
 export * from './toolkit/ToolIsland.tsx';
 export * from './toolkit/ToolPresetManager.tsx';
 export * from './toolkit/textStats.ts';

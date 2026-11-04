@@ -1575,6 +1575,16 @@
   color: #c3cddb;
 }
 
+/* Studios rebuilt to the reference look sit directly on the page, card by card. */
+.studioContainer[data-ref-look],
+:global([data-theme="dark"]) .studioContainer[data-ref-look] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: 0;
+}
+
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
 :global(:where([data-theme="dark"])) .topBar {
   border-bottom: 1px solid #304a64;
@@ -1817,4 +1827,12 @@
 
 :global(:where([data-theme="dark"])) .pdfInfoValue {
   color: #dde4f3;
+}
+
+/* Desktop: the approved references are dense (about 12 px body text at 1672 px wide). The larger
+   text was asked for phones only, so on wide screens the studio is drawn at the reference scale. */
+@media (min-width: 1100px) {
+  .studioContainer[data-ref-look] {
+    zoom: 0.88;
+  }
 }

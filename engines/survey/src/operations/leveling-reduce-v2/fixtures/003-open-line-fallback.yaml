@@ -1,0 +1,147 @@
+{
+  "id": "003-open-line-fallback",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §4 & §8 point 6: Open line with adjustment requested falls back to adjBy: none without failing."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.500",
+        "dist": "0"
+      },
+      {
+        "station": "A",
+        "is": "1.200",
+        "dist": "30"
+      },
+      {
+        "station": "CP1",
+        "fs": "2.000",
+        "bs": "0.800",
+        "dist": "30"
+      },
+      {
+        "station": "B",
+        "is": "1.100",
+        "dist": "25"
+      },
+      {
+        "station": "CP2",
+        "fs": "0.600",
+        "bs": "2.300",
+        "dist": "35"
+      },
+      {
+        "station": "BM-2",
+        "fs": "2.200",
+        "dist": "40"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "distance",
+    "kConstant": "24"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "99.8",
+    "sumBS": "4.6",
+    "sumFS": "4.8",
+    "sumRise": "0.9",
+    "sumFall": "1.1",
+    "bsFsDelta": "-0.2",
+    "riseFallDelta": "-0.2",
+    "rlDelta": "-0.2",
+    "closingRL": null,
+    "misclosure": null,
+    "totalDistanceKm": "0.160",
+    "allowableError": null,
+    "closureStatus": null,
+    "setupsCount": 3,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1.5",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "A",
+        "bs": null,
+        "is": "1.2",
+        "fs": null,
+        "rise": "0.3",
+        "fall": "0",
+        "rl": "100.3",
+        "isChangePoint": false,
+        "dist": "30",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "CP1",
+        "bs": "0.8",
+        "is": null,
+        "fs": "2",
+        "rise": "0",
+        "fall": "0.8",
+        "rl": "99.5",
+        "isChangePoint": true,
+        "dist": "30",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "B",
+        "bs": null,
+        "is": "1.1",
+        "fs": null,
+        "rise": "0",
+        "fall": "0.3",
+        "rl": "99.2",
+        "isChangePoint": false,
+        "dist": "25",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "CP2",
+        "bs": "2.3",
+        "is": null,
+        "fs": "0.6",
+        "rise": "0.5",
+        "fall": "0",
+        "rl": "99.7",
+        "isChangePoint": true,
+        "dist": "35",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "2.2",
+        "rise": "0.1",
+        "fall": "0",
+        "rl": "99.8",
+        "isChangePoint": false,
+        "dist": "40",
+        "corr": null,
+        "adjustedRL": null
+      }
+    ]
+  }
+}

@@ -25,12 +25,12 @@ export async function bundlePublicLibrary(packageName: string, packageDirectory:
 }
 
 /** Shared in-memory test bundler; never writes or publishes a route/asset. */
-export async function bundleTestEntry(
+export async function bundleTestEntryWithAssets(
   packageName: string,
   packageDirectory: string,
   source: string,
   globalName: string,
-) {
+): Promise<{ code: string; css: string }> {
   const entry = publicLibraryEntry(packageName, packageDirectory);
   // Reuse Astro's build dependency without importing app code or adding a dependency.
   const webRequire = createRequire(join(ROOT, 'apps/web/package.json'));
@@ -59,8 +59,31 @@ export async function bundleTestEntry(
       lib: { entry: virtual, formats: ['iife'], name: globalName },
     },
   });
-  const chunks = (Array.isArray(result) ? result : [result]).flatMap((item) => item.output);
+  const chunks = (Array.isArray(result) ? result : [result]).flatMap(
+    (item) =>
+      (
+        item as unknown as {
+          output: { type: string; fileName?: string; code?: string; source?: string }[];
+        }
+      ).output,
+  );
   const chunk = chunks.find((item) => item.type === 'chunk');
   if (!chunk?.code) throw new Error('Missing public-library browser bundle');
-  return chunk.code;
+  const cssAsset = chunks.find((item) => item.type === 'asset' && item.fileName?.endsWith('.css'));
+  return { code: chunk.code, css: cssAsset?.source ?? '' };
+}
+
+export async function bundleTestEntry(
+  packageName: string,
+  packageDirectory: string,
+  source: string,
+  globalName: string,
+) {
+  const { code } = await bundleTestEntryWithAssets(
+    packageName,
+    packageDirectory,
+    source,
+    globalName,
+  );
+  return code;
 }
