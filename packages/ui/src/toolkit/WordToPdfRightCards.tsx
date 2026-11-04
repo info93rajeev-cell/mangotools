@@ -36,7 +36,7 @@ function SummarySection({ studio }: { studio: WordToPdfState }) {
         title="Export Summary"
         aside={<RefStatus text={s.text} done={s.done} />}
       />
-      <div class={styles.tiles}>
+      <div class={`${styles.tiles} ${styles.tilesBig}`}>
         <RefTile
           tone="purple"
           icon="file-text"

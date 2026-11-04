@@ -178,3 +178,29 @@
     --fs-lift: 0.5;
   }
 }
+
+/* Dark pages that use the approved reference studios get a cool navy base, so the navy panels and
+   bright accents of the studio sit on a matching background instead of warm stone. */
+:root[data-theme="dark"]:has([data-ref-look]) {
+  --color-bg: #0a1120;
+  --color-surface: #121b2d;
+  --color-surface-subtle: #18233a;
+  --color-border: #2b3a57;
+  --color-border-subtle: #1d2940;
+  --color-border-input: #4b5d80;
+  --color-text-muted: #d3dbe8;
+  --color-text-subtle: #a6b3c9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):has([data-ref-look]) {
+    --color-bg: #0a1120;
+    --color-surface: #121b2d;
+    --color-surface-subtle: #18233a;
+    --color-border: #2b3a57;
+    --color-border-subtle: #1d2940;
+    --color-border-input: #4b5d80;
+    --color-text-muted: #d3dbe8;
+    --color-text-subtle: #a6b3c9;
+  }
+}

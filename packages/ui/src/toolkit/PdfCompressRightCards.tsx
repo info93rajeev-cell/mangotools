@@ -70,14 +70,23 @@ function SummaryCard({ f, pages }: { f: Figures; pages: number }) {
       />
       <div class={styles.tiles}>
         <RefTile
+          labelFirst
           tone="purple"
           icon="file-text"
           label="Original Size"
           value={f.origMb}
           sub={`${pages} pages`}
         />
-        <RefTile tone="blue" icon="file-check" label="New Size" value={f.compMb} sub="Compressed" />
         <RefTile
+          labelFirst
+          tone="blue"
+          icon="file-check"
+          label="New Size"
+          value={f.compMb}
+          sub="Compressed"
+        />
+        <RefTile
+          labelFirst
           tone="green"
           icon="chart-pie"
           label="Reduction"
@@ -85,6 +94,7 @@ function SummaryCard({ f, pages }: { f: Figures; pages: number }) {
           sub="Smaller file"
         />
         <RefTile
+          labelFirst
           tone="amber"
           icon="star"
           label="Images Done"

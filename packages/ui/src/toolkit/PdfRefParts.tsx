@@ -88,14 +88,18 @@ export function RefTile(props: {
   label: string;
   value: string;
   sub: string;
+  /** The reference puts the value first; Compress PDF puts the label first. */
+  labelFirst?: boolean;
 }) {
   return (
-    <div class={`${styles.tile} ${TILE_TONE[props.tone]}`}>
+    <div
+      class={`${styles.tile} ${TILE_TONE[props.tone]} ${props.labelFirst ? styles.tileLabelFirst : ''}`}
+    >
       <span class={styles.tileIcon}>
         <Icon name={props.icon} />
       </span>
-      <span class={styles.tileLabel}>{props.label}</span>
       <span class={styles.tileValue}>{props.value}</span>
+      <span class={styles.tileLabel}>{props.label}</span>
       <span class={styles.tileSub}>{props.sub}</span>
     </div>
   );

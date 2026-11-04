@@ -23,8 +23,8 @@
   gap: 8px;
   padding: 7px 16px 7px 12px;
   border-radius: 999px;
-  border: 1px solid #c9ecd5;
-  background: #effbf3;
+  border: 1px solid #c5ecda;
+  background: #ecfbf4;
   color: #12673c;
   font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 600;
@@ -37,15 +37,15 @@
 }
 
 .badgeAmber :global(svg) {
-  color: #f59e0b;
+  color: #fb9c17;
 }
 
 .badgeGreen :global(svg) {
-  color: #16a34a;
+  color: #09a357;
 }
 
 .badgeBlue :global(svg) {
-  color: #1665f5;
+  color: #2981fd;
 }
 
 .btn {
@@ -100,12 +100,12 @@
   min-height: 54px;
   border: 0;
   border-radius: 10px;
-  background: #fbb81b;
+  background: #feb500;
   color: #111827;
   font-size: 19px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgb(251 184 27 / 0.35);
+  box-shadow: 0 3px 10px rgb(254 181 0 / 0.38);
 }
 
 .cta :global(svg) {
@@ -115,7 +115,7 @@
 }
 
 .cta:hover:not(:disabled) {
-  background: #f5ab00;
+  background: #f2aa00;
 }
 
 .cta:disabled {
@@ -238,7 +238,7 @@
   margin-top: 10px;
   padding: 10px 64px;
   border-radius: 9px;
-  background: #1665f5;
+  background: #0066fe;
   color: #ffffff;
   font-size: 15.5px;
   font-weight: 700;
@@ -394,11 +394,19 @@
 }
 
 .toneGreen :global(svg) {
-  color: #16a34a;
+  color: #0bc46c;
 }
 
 .toneBlue :global(svg) {
-  color: #1665f5;
+  color: #0272fc;
+}
+
+:global([data-theme="dark"]) .toneGreen :global(svg) {
+  color: #2fe08c;
+}
+
+:global([data-theme="dark"]) .toneBlue :global(svg) {
+  color: #5ea6ff;
 }
 
 .toneSlate :global(svg) {
@@ -578,7 +586,16 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
+  grid-column: 1;
   grid-row: 1 / span 3;
+}
+
+.tile > :not(.tileIcon) {
+  grid-column: 2;
+}
+
+.tileLabelFirst .tileLabel {
+  order: -1;
 }
 
 .tileIcon :global(svg) {
@@ -610,43 +627,43 @@
 }
 
 .tilePurple {
-  background: #f8f3ff;
-  border-color: #ebdcff;
+  background: #fcf8ff;
+  border-color: #e9d9fd;
 }
 
 .tilePurple .tileIcon {
-  background: #ecdcff;
-  color: #8b3ff0;
+  background: #efe2fe;
+  color: #8b2ffc;
 }
 
 .tileBlue {
-  background: #f1f6ff;
-  border-color: #d9e6ff;
+  background: #f7faff;
+  border-color: #d3e5fe;
 }
 
 .tileBlue .tileIcon {
-  background: #dce8ff;
-  color: #1665f5;
+  background: #e1effe;
+  color: #0272fc;
 }
 
 .tileGreen {
-  background: #effbf4;
-  border-color: #cdeedb;
+  background: #f6fdf9;
+  border-color: #c7f0dc;
 }
 
 .tileGreen .tileIcon {
-  background: #d3f3e1;
-  color: #15924f;
+  background: #d9f8e9;
+  color: #0bc46c;
 }
 
 .tileAmber {
-  background: #fffaec;
-  border-color: #fbe8b6;
+  background: #fffcf4;
+  border-color: #fbe6b4;
 }
 
 .tileAmber .tileIcon {
-  background: #ffefc2;
-  color: #e09a00;
+  background: #fef2d9;
+  color: #fea504;
 }
 
 /* Before and after bars */
@@ -743,15 +760,15 @@
   align-items: center;
   gap: 16px;
   padding: 14px 18px;
-  border: 1px solid #c9ecd5;
+  border: 1px solid #c4eedb;
   border-radius: 12px;
-  background: #effbf3;
+  background: #ebfaf4;
 }
 
 .privacy > :global(.icon) svg {
   width: 32px;
   height: 32px;
-  color: #16a34a;
+  color: #07a455;
   stroke-width: 1.9;
 }
 
@@ -993,16 +1010,37 @@
   color: #f1f5fb;
 }
 
-:global([data-theme="dark"]) .badge,
+:global([data-theme="dark"]) .badge {
+  background: #15213a;
+  border-color: #2e4166;
+  color: #e3ebf7;
+}
+
+:global([data-theme="dark"]) .badgeAmber :global(svg) {
+  color: #ffb547;
+}
+
+:global([data-theme="dark"]) .badgeGreen :global(svg) {
+  color: #34e08f;
+}
+
+:global([data-theme="dark"]) .badgeBlue :global(svg) {
+  color: #62a8ff;
+}
+
 :global([data-theme="dark"]) .statusPill,
 :global([data-theme="dark"]) .privacy {
-  background: #0f2a1c;
-  border-color: #1f6b43;
-  color: #9be8bd;
+  background: #0d2a26;
+  border-color: #1d6b55;
+  color: #8ff0c4;
+}
+
+:global([data-theme="dark"]) .privacy > :global(.icon) svg {
+  color: #34e08f;
 }
 
 :global([data-theme="dark"]) .privacyTitle {
-  color: #9be8bd;
+  color: #8ff0c4;
 }
 
 :global([data-theme="dark"]) .privacyText {
@@ -1024,43 +1062,47 @@
 }
 
 :global([data-theme="dark"]) .tilePurple {
-  background: #221a3a;
-  border-color: #3b2c63;
+  background: #172238;
+  border-color: #3d2b6e;
 }
 
 :global([data-theme="dark"]) .tilePurple .tileIcon {
-  background: #34265a;
-  color: #c4a2ff;
+  --knock: #33255f;
+  background: #33255f;
+  color: #b88cff;
 }
 
 :global([data-theme="dark"]) .tileBlue {
-  background: #142441;
-  border-color: #23406f;
+  background: #172238;
+  border-color: #1f4683;
 }
 
 :global([data-theme="dark"]) .tileBlue .tileIcon {
-  background: #1d3563;
-  color: #8fb5ff;
+  --knock: #153a72;
+  background: #153a72;
+  color: #5ea6ff;
 }
 
 :global([data-theme="dark"]) .tileGreen {
-  background: #0f2a1c;
-  border-color: #1d5137;
+  background: #172238;
+  border-color: #1c5d48;
 }
 
 :global([data-theme="dark"]) .tileGreen .tileIcon {
-  background: #17402b;
-  color: #6ee7a0;
+  --knock: #12443d;
+  background: #12443d;
+  color: #2fe08c;
 }
 
 :global([data-theme="dark"]) .tileAmber {
-  background: #2b210b;
-  border-color: #5a4512;
+  background: #172238;
+  border-color: #6b5220;
 }
 
 :global([data-theme="dark"]) .tileAmber .tileIcon {
-  background: #46350f;
-  color: #fcd34d;
+  --knock: #4a3c1c;
+  background: #4a3c1c;
+  color: #ffc02e;
 }
 
 fieldset.options {
@@ -2025,4 +2067,38 @@ fieldset.options {
 
 :global([data-theme="dark"]) .previewEmpty {
   border-color: #3d5276;
+}
+
+/* Large two-by-two tiles (Word to PDF reference). */
+.tilesBig {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tilesBig .tile {
+  column-gap: 14px;
+  padding: 16px 16px;
+}
+
+.tilesBig .tileIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 13px;
+}
+
+.tilesBig .tileIcon :global(svg) {
+  width: 34px;
+  height: 34px;
+}
+
+.tilesBig .tileValue {
+  font-size: calc(24px + (15px - 24px) * var(--fs-lift, 0) * 0.2);
+}
+
+.tilesBig .tileLabel {
+  font-size: calc(14.5px + (15px - 14.5px) * var(--fs-lift, 0));
+}
+
+.tilesBig .tileSub {
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
 }
