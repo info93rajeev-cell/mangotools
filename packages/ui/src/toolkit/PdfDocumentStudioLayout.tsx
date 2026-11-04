@@ -87,7 +87,7 @@ function ToolHeaderBar({
 }
 
 /** Studios already rebuilt to the approved reference design. */
-const REF_LOOK_TABS = new Set<PdfToolTab>(['compress', 'merge']);
+const REF_LOOK_TABS = new Set<PdfToolTab>(['compress', 'merge', 'split']);
 
 function resolveInitialPdfTab(toolId?: string): PdfToolTab {
   if (toolId === 'pdf-split') return 'split';
@@ -125,7 +125,6 @@ function RenderPdfMergeView({
 function RenderPdfSplitView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfSplitStudio>;
   onOpen: () => void;
@@ -133,17 +132,14 @@ function RenderPdfSplitView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfSplitIcon />}
-        title="PDF Split"
-        badge3="🛡️ Zero Server Upload"
+      <RefTopBar
+        badge3="Zero Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleSplit}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfSplitLeftCards studio={studio} />
         <PdfSplitRightCards studio={studio} />
       </div>

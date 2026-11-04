@@ -76,6 +76,7 @@ import {
   Route,
   Ruler,
   Scale,
+  Scissors,
   Search,
   Settings,
   Settings2,
@@ -97,6 +98,7 @@ import {
 } from 'lucide-static';
 
 const RAW = {
+  scissors: Scissors,
   leaf: Leaf,
   scale: Scale,
   database: Database,
