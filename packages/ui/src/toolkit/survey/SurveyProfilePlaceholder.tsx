@@ -11,6 +11,7 @@ interface ProfilePoint {
   x: number;
   y: number;
   station: string;
+  distLabel?: string;
   isBM: boolean;
   isCP: boolean;
   rl: number;
@@ -21,6 +22,7 @@ function computeProfileGeometry(
   width: number,
   height: number,
   padding: { l: number; r: number; t: number; b: number },
+  totalDistanceKm: string | null,
 ) {
   const ys = rows.map((r) => Number(r.rl));
   let mn = Math.min(...ys);
@@ -32,21 +34,38 @@ function computeProfileGeometry(
   const X = (t: number) => padding.l + t * (width - padding.l - padding.r);
   const Y = (v: number) => padding.t + ((mx - v) / (mx - mn)) * (height - padding.t - padding.b);
 
-  // PR 1: Horizontal positions are illustrative using evenly spaced stations.
-  // Distance-based horizontal placement and line-length output require the validated PR 2 contract.
+  const hasValidatedDist = totalDistanceKm !== null && Number(totalDistanceKm) > 0;
+  let cum = 0;
+  const cumDists: number[] = [];
+  if (hasValidatedDist) {
+    for (let i = 0; i < rows.length; i++) {
+      if (i > 0 && rows[i].dist) {
+        cum += Number(rows[i].dist);
+      }
+      cumDists.push(cum);
+    }
+  }
+  const totalM = hasValidatedDist ? Number(totalDistanceKm) * 1000 : 0;
+
   const points: ProfilePoint[] = rows.map((r, i) => {
-    const t = rows.length > 1 ? i / (rows.length - 1) : 0.5;
+    const t =
+      hasValidatedDist && totalM > 0
+        ? cumDists[i] / totalM
+        : rows.length > 1
+          ? i / (rows.length - 1)
+          : 0.5;
     return {
       x: X(t),
       y: Y(Number(r.rl)),
       station: r.station || `P-${i + 1}`,
+      distLabel: hasValidatedDist ? `${cumDists[i]}m` : undefined,
       isBM: i === 0 || i === rows.length - 1,
       isCP: r.isChangePoint,
       rl: Number(r.rl),
     };
   });
 
-  return { points, mn, mx, Y };
+  return { points, mn, mx, Y, hasValidatedDist };
 }
 
 function ProfileSvgChart({
@@ -128,7 +147,7 @@ function ProfileSvgChart({
             />
             <text
               x={pt.x}
-              y={H - p.b + 18}
+              y={pt.distLabel ? H - p.b + 14 : H - p.b + 18}
               font-size="10.5"
               fill="#334155"
               text-anchor="middle"
@@ -136,6 +155,11 @@ function ProfileSvgChart({
             >
               {pt.station}
             </text>
+            {pt.distLabel ? (
+              <text x={pt.x} y={H - p.b + 26} font-size="9" fill="#64748b" text-anchor="middle">
+                {pt.distLabel}
+              </text>
+            ) : null}
           </g>
         );
       })}
@@ -145,11 +169,17 @@ function ProfileSvgChart({
 
 export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePlaceholderProps) {
   const rows = result?.rows ?? [];
+  const totalDist = result?.totalDistanceKm ?? null;
   const geo =
-    rows.length > 0 ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }) : null;
+    rows.length > 0
+      ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }, totalDist)
+      : null;
 
   const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
   const lowest = geo ? `${Math.min(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
+  const lineLength = totalDist
+    ? `${Math.round(Number(totalDist) * 1000)} m (${totalDist} km)`
+    : '—';
 
   return (
     <div class={s.card} data-profile-card="">
@@ -161,7 +191,9 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
           </svg>
         </div>
         <h2 class={s.cardTitle}>{surveyStrings.profileTitle}</h2>
-        <span class={s.cardHeadRight}>Illustrative, not to scale</span>
+        <span class={s.cardHeadRight}>
+          {geo?.hasValidatedDist ? 'Proportional distance profile' : 'Illustrative, not to scale'}
+        </span>
       </div>
       <div class={s.cardBody}>
         {geo ? (
@@ -192,9 +224,9 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
             <b
               class={s.chipValue}
               data-line-length-value=""
-              style={{ color: 'var(--color-text-muted, #64748b)' }}
+              style={totalDist ? undefined : { color: 'var(--color-text-muted, #64748b)' }}
             >
-              —
+              {lineLength}
             </b>
           </div>
         </div>

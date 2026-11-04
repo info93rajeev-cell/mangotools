@@ -2,6 +2,8 @@ import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 
 export const SAMPLE_START_RL = '100.000';
 export const SAMPLE_CLOSING_RL = '99.805';
+export const SAMPLE_K_CONSTANT = '24';
+export const SAMPLE_ADJ_BY: 'none' | 'distance' | 'setup' = 'distance';
 
 export const SAMPLE_ROWS: SurveyLevelingRow[] = [
   { id: 'row-1', station: 'BM-1', bs: '1.500', is: '', fs: '', dist: '0', remarks: 'Start BM' },
@@ -58,7 +60,6 @@ export function formatLevelReading(value: string | null | undefined): string {
   if (num === 0) return '0.000';
   const fixed = num.toFixed(3);
   if (fixed === '0.000') {
-    // Nonzero value smaller than 0.0005 m — preserve decimal precision
     return trimmed;
   }
   return fixed;
@@ -104,6 +105,8 @@ export function buildLevelingRequest(
   startRL: string,
   closingRL: string,
   rows: SurveyLevelingRow[],
+  adjBy: 'none' | 'distance' | 'setup' = 'none',
+  kConstant = '',
 ): { input: Record<string, unknown>; params: Record<string, unknown> } {
   const input: Record<string, unknown> = {
     startRL: startRL.trim(),
@@ -114,11 +117,19 @@ export function buildLevelingRequest(
       if (r.bs.trim()) obs.bs = r.bs.trim();
       if (r.is.trim()) obs.is = r.is.trim();
       if (r.fs.trim()) obs.fs = r.fs.trim();
+      if (r.dist.trim()) obs.dist = r.dist.trim();
       return obs;
     }),
   };
   if (closingRL.trim()) {
     input.closingRL = closingRL.trim();
   }
-  return { input, params: { method: 'rise-fall' } };
+  const params: Record<string, unknown> = {
+    method: 'rise-fall',
+    adjBy,
+  };
+  if (kConstant.trim()) {
+    params.kConstant = kConstant.trim();
+  }
+  return { input, params };
 }

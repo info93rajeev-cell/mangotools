@@ -13,6 +13,46 @@ export interface SurveyResultsCardProps {
   onCopyBook: () => void;
 }
 
+function resolveResultsBadge(
+  isStale: boolean | undefined,
+  isCalculated: boolean,
+  isError: boolean,
+  checksPassed: boolean,
+  closureStatus: SurveyCalculationOutput['closureStatus'] | undefined,
+  styles: Record<string, string>,
+): { badgeClass: string; badgeText: string } {
+  if (isStale) {
+    return { badgeClass: styles.statusIdle, badgeText: 'Recalculate required' };
+  }
+  if (isError) {
+    return { badgeClass: styles.statusFail, badgeText: surveyStrings.statusCheckInputs };
+  }
+  if (!isCalculated) {
+    return { badgeClass: styles.statusIdle, badgeText: surveyStrings.statusNotCalculated };
+  }
+  if (!checksPassed) {
+    return { badgeClass: styles.statusFail, badgeText: surveyStrings.statusArithmeticError };
+  }
+  switch (closureStatus) {
+    case 'pass':
+      return { badgeClass: styles.statusPass, badgeText: `✓ ${surveyStrings.statusWithinLimit}` };
+    case 'fail':
+      return { badgeClass: styles.statusFail, badgeText: `✕ ${surveyStrings.statusOutsideLimit}` };
+    case 'criterion-not-provided':
+      return {
+        badgeClass: styles.statusWarning,
+        badgeText: surveyStrings.statusCriterionNotProvided,
+      };
+    case 'distance-not-provided':
+      return {
+        badgeClass: styles.statusWarning,
+        badgeText: surveyStrings.statusDistanceNotProvided,
+      };
+    default:
+      return { badgeClass: styles.statusPass, badgeText: surveyStrings.statusCalculated };
+  }
+}
+
 export function SurveyResultsCard({
   result,
   phase,
@@ -23,20 +63,14 @@ export function SurveyResultsCard({
   const isCalculated = phase === 'result' && result !== null && !isStale;
   const isError = phase === 'error';
   const checksPassed = result?.checks.every((c) => c.status === 'pass') ?? false;
-
-  let badgeClass = s.statusIdle;
-  let badgeText: string = surveyStrings.statusNotCalculated;
-
-  if (isStale) {
-    badgeClass = s.statusIdle;
-    badgeText = 'Recalculate required';
-  } else if (isCalculated) {
-    badgeClass = checksPassed ? s.statusPass : s.statusFail;
-    badgeText = checksPassed ? surveyStrings.statusCalculated : surveyStrings.statusArithmeticError;
-  } else if (isError) {
-    badgeClass = s.statusFail;
-    badgeText = surveyStrings.statusCheckInputs;
-  }
+  const { badgeClass, badgeText } = resolveResultsBadge(
+    isStale,
+    isCalculated,
+    isError,
+    checksPassed,
+    result?.closureStatus,
+    s,
+  );
 
   return (
     <div class={s.card} data-results-card="">

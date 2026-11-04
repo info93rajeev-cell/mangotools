@@ -8,26 +8,57 @@ export interface SurveySummaryTilesProps {
   closingRLInput: string;
 }
 
-function countSetupsAndCPs(result: SurveyCalculationOutput | null) {
-  if (!result)
-    return {
-      setups: '—',
-      sub: surveyStrings.tileSetupsSub
-        .replace('{cps}', '0')
-        .replace('{s}', '')
-        .replace('{count}', '0'),
-    };
+function renderAllowableSub(result: SurveyCalculationOutput | null) {
+  if (!result) return surveyStrings.tileAllowableSub;
+  if (!result.closingRL) return surveyStrings.tileClosingRLOpen;
+  if (result.closureStatus === 'pass') {
+    return (
+      <span style={{ color: '#15803d', fontWeight: 600 }}>✓ {surveyStrings.statusWithinLimit}</span>
+    );
+  }
+  if (result.closureStatus === 'fail') {
+    return (
+      <span style={{ color: '#b91c1c', fontWeight: 600 }}>
+        ✕ {surveyStrings.statusOutsideLimit}
+      </span>
+    );
+  }
+  if (result.closureStatus === 'criterion-not-provided') {
+    return (
+      <span style={{ color: '#b45309', fontWeight: 500 }}>
+        {surveyStrings.statusCriterionNotProvided}
+      </span>
+    );
+  }
+  if (result.closureStatus === 'distance-not-provided') {
+    return (
+      <span style={{ color: '#b45309', fontWeight: 500 }}>
+        {surveyStrings.statusDistanceNotProvided}
+      </span>
+    );
+  }
+  return surveyStrings.tileAllowableSub;
+}
+
+function formatLineSub(result: SurveyCalculationOutput | null) {
+  if (!result) {
+    return surveyStrings.tileSetupsSub
+      .replace('{cps}', '0')
+      .replace('{s}', '')
+      .replace('{count}', '0');
+  }
   const cps = result.rows.filter((r) => r.isChangePoint).length;
-  const setups = cps + 1;
-  const sub = surveyStrings.tileSetupsSub
-    .replace('{cps}', String(cps))
-    .replace('{s}', cps === 1 ? '' : 's')
-    .replace('{count}', String(result.rows.length));
-  return { setups: `${setups} setup${setups === 1 ? '' : 's'}`, sub };
+  const cpStr = `${cps} change point${cps === 1 ? '' : 's'}`;
+  if (result.totalDistanceKm) {
+    const metres = Math.round(Number(result.totalDistanceKm) * 1000);
+    return `${metres} m (${result.totalDistanceKm} km) · ${cpStr}`;
+  }
+  return `No measured length · ${cpStr}`;
 }
 
 export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTilesProps) {
-  const { setups, sub: setupsSub } = countSetupsAndCPs(result);
+  const setups = result ? `${result.setupsCount} setup${result.setupsCount === 1 ? '' : 's'}` : '—';
+  const setupsSub = formatLineSub(result);
   const endRL = result ? `${formatLevelReading(result.endingRL)} m` : '—';
   const endSub = result?.closingRL
     ? surveyStrings.tileClosingRLKnown.replace('{value}', formatLevelReading(result.closingRL))
@@ -44,6 +75,8 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
           : ('tileMisclosureAddBM' as const),
       };
   const misSub = surveyStrings[subKey];
+  const allowableVal = result?.allowableError ? `±${result.allowableError} mm` : '—';
+  const allowableSub = renderAllowableSub(result);
 
   return (
     <div class={s.tilesGrid} data-summary-tiles="">
@@ -87,10 +120,16 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
           </span>
           {surveyStrings.tileAllowable}
         </div>
-        <div class={s.tileValue} style={{ color: '#64748b' }}>
-          —
+        <div
+          class={s.tileValue}
+          data-tile-allowable=""
+          style={result?.allowableError ? undefined : { color: '#64748b' }}
+        >
+          {allowableVal}
         </div>
-        <div class={s.tileSub}>{surveyStrings.tileAllowableSub}</div>
+        <div class={s.tileSub} data-tile-allowable-sub="">
+          {allowableSub}
+        </div>
       </div>
 
       <div class={s.tile}>
@@ -103,8 +142,12 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
           </span>
           {surveyStrings.tileSetups}
         </div>
-        <div class={s.tileValue}>{setups}</div>
-        <div class={s.tileSub}>{setupsSub}</div>
+        <div class={s.tileValue} data-tile-setups="">
+          {setups}
+        </div>
+        <div class={s.tileSub} data-tile-setups-sub="">
+          {setupsSub}
+        </div>
       </div>
     </div>
   );

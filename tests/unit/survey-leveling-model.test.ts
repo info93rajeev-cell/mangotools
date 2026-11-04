@@ -1,6 +1,7 @@
 import { createTestContext, executeOperation } from '@mangotools/core';
 import { describe, expect, it } from 'vitest';
 import { levelingReduce } from '../../engines/survey/src/operations/leveling-reduce/operation.ts';
+import { levelingReduceV2 } from '../../engines/survey/src/operations/leveling-reduce-v2/operation.ts';
 import {
   buildLevelingRequest,
   createInitialRows,
@@ -8,7 +9,9 @@ import {
   formatReading,
   formatSigned,
   isChangePointRow,
+  SAMPLE_ADJ_BY,
   SAMPLE_CLOSING_RL,
+  SAMPLE_K_CONSTANT,
   SAMPLE_ROWS,
   SAMPLE_START_RL,
 } from '../../packages/ui/src/toolkit/survey/surveyLevelingModel.ts';
@@ -97,12 +100,13 @@ describe('Survey Leveling Model', () => {
     expect(obs[1].bs).toBeUndefined();
   });
 
-  it('executes sample rows against survey.leveling.reduce@1 with exact 3 agreeing deltas and 2 passing checks', async () => {
-    const req = buildLevelingRequest(SAMPLE_START_RL, SAMPLE_CLOSING_RL, SAMPLE_ROWS);
+  it('executes sample rows against survey.leveling.reduce@1 without dist preserving backward compatibility', async () => {
+    const rowsV1 = SAMPLE_ROWS.map((r) => ({ ...r, dist: '' }));
+    const req = buildLevelingRequest(SAMPLE_START_RL, SAMPLE_CLOSING_RL, rowsV1);
     const result = await executeOperation(
       levelingReduce,
       req.input,
-      req.params,
+      { method: 'rise-fall' },
       createTestContext(),
     );
 
@@ -145,5 +149,50 @@ describe('Survey Leveling Model', () => {
     expect(val.rows[3].isChangePoint).toBe(false);
     expect(val.rows[4].isChangePoint).toBe(true); // CP2
     expect(val.rows[5].isChangePoint).toBe(false);
+  });
+
+  it('executes sample rows against survey.leveling.reduce@2 with validated distances, allowable error and distance adjustment', async () => {
+    const req = buildLevelingRequest(
+      SAMPLE_START_RL,
+      SAMPLE_CLOSING_RL,
+      SAMPLE_ROWS,
+      SAMPLE_ADJ_BY,
+      SAMPLE_K_CONSTANT,
+    );
+    const result = await executeOperation(
+      levelingReduceV2,
+      req.input,
+      req.params,
+      createTestContext(),
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    const val = result.value as unknown as {
+      totalDistanceKm: string | null;
+      allowableError: string | null;
+      closureStatus: string | null;
+      setupsCount: number;
+      misclosure: string | null;
+      rows: Array<{ station?: string; corr: string | null; adjustedRL: string | null }>;
+    };
+
+    expect(val.totalDistanceKm).toBe('0.160');
+    expect(val.allowableError).toBe('9.6');
+    expect(val.closureStatus).toBe('pass');
+    expect(val.setupsCount).toBe(3);
+    expect(val.misclosure).toBe('-0.005');
+
+    // Distance corrections
+    expect(val.rows[0].corr).toBe('0.0');
+    expect(val.rows[1].corr).toBe('+0.9');
+    expect(val.rows[2].corr).toBe('+1.9');
+    expect(val.rows[3].corr).toBe('+2.7');
+    expect(val.rows[4].corr).toBe('+3.8');
+    expect(val.rows[5].corr).toBe('+5.0');
+
+    // Terminal adjusted RL matches closing BM
+    expect(val.rows[5].adjustedRL).toBe('99.805');
   });
 });
