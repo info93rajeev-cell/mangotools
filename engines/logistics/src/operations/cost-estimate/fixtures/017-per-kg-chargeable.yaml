@@ -1,0 +1,6 @@
+id: 017-per-kg-chargeable
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "34.646 kg × 180 per kg = 6,236.28; + other charges 500 = 6,736.28" }
+input: { rateBasis: per-kg, quantity: "34.646", rate: "180", otherCharges: "500", currency: INR }
+expected: { rateBasis: per-kg, currency: INR, quantity: "34.646", rate: "180.00", baseCharge: "6236.28", minimumCharge: null, minimumApplied: false, freightCharge: "6236.28", otherCharges: "500.00", estimatedTotal: "6736.28" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

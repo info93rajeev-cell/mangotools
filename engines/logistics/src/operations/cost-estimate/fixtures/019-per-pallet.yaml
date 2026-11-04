@@ -1,0 +1,6 @@
+id: 019-per-pallet
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "4 pallets × 2,250 per pallet = 9,000; + other charges 1,200 = 10,200" }
+input: { rateBasis: per-pallet, quantity: "4", rate: "2250", otherCharges: "1200", currency: INR }
+expected: { rateBasis: per-pallet, currency: INR, quantity: "4", rate: "2250.00", baseCharge: "9000.00", minimumCharge: null, minimumApplied: false, freightCharge: "9000.00", otherCharges: "1200.00", estimatedTotal: "10200.00" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE]

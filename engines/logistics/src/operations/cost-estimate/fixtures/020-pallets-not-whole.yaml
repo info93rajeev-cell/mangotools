@@ -1,0 +1,5 @@
+id: 020-pallets-not-whole
+operation: logistics.cost.estimate@1
+source: { type: synthetic, citation: "A fractional pallet count is rejected" }
+input: { rateBasis: per-pallet, quantity: "2.5", rate: "100", currency: INR }
+expectedError: { code: LOGISTICS_PALLET_COUNT_NOT_WHOLE, path: quantity }
