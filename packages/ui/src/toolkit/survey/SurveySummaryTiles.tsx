@@ -1,4 +1,9 @@
-import { formatLevelReading, formatMisclosure } from './surveyLevelingModel.ts';
+import {
+  computeValidatedDistance,
+  formatLevelReading,
+  formatMeasuredLineLength,
+  formatMisclosure,
+} from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyCalculationOutput } from './surveyLevelingTypes.ts';
 import s from './surveyResults.module.css';
@@ -49,9 +54,10 @@ function formatLineSub(result: SurveyCalculationOutput | null) {
   }
   const cps = result.rows.filter((r) => r.isChangePoint).length;
   const cpStr = `${cps} change point${cps === 1 ? '' : 's'}`;
-  if (result.totalDistanceKm) {
-    const metres = Math.round(Number(result.totalDistanceKm) * 1000);
-    return `${metres} m (${result.totalDistanceKm} km) · ${cpStr}`;
+  const validated = computeValidatedDistance(result.rows);
+  if (validated.isValid && validated.totalM !== null) {
+    const lengthStr = formatMeasuredLineLength(validated.totalM, result.totalDistanceKm);
+    return `${lengthStr} · ${cpStr}`;
   }
   return `No measured length · ${cpStr}`;
 }

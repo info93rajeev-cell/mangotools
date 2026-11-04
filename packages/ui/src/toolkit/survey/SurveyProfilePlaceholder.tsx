@@ -1,3 +1,8 @@
+import {
+  computeValidatedDistance,
+  formatMeasuredLineLength,
+  type ValidatedLineDistance,
+} from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyCalculationOutput, SurveyReducedRow } from './surveyLevelingTypes.ts';
 import s from './surveyProfile.module.css';
@@ -17,12 +22,36 @@ interface ProfilePoint {
   rl: number;
 }
 
+function formatDistLabel(d: number): string {
+  if (Number.isInteger(d)) {
+    return `${d}m`;
+  }
+  const fixed = d.toFixed(3);
+  const trimmed = fixed.replace(/\.?0+$/, '');
+  return `${trimmed}m`;
+}
+
+function computePointT(
+  index: number,
+  totalRows: number,
+  hasValidatedDist: boolean,
+  cumDists: number[],
+  totalM: number,
+): number {
+  if (hasValidatedDist && totalM > 0) {
+    if (index === 0) return 0;
+    if (index === totalRows - 1) return 1.0;
+    return Math.max(0, Math.min(1, cumDists[index] / totalM));
+  }
+  return totalRows > 1 ? index / (totalRows - 1) : 0.5;
+}
+
 function computeProfileGeometry(
   rows: SurveyReducedRow[],
   width: number,
   height: number,
   padding: { l: number; r: number; t: number; b: number },
-  totalDistanceKm: string | null,
+  validatedDist: ValidatedLineDistance,
 ) {
   const ys = rows.map((r) => Number(r.rl));
   let mn = Math.min(...ys);
@@ -34,31 +63,18 @@ function computeProfileGeometry(
   const X = (t: number) => padding.l + t * (width - padding.l - padding.r);
   const Y = (v: number) => padding.t + ((mx - v) / (mx - mn)) * (height - padding.t - padding.b);
 
-  const hasValidatedDist = totalDistanceKm !== null && Number(totalDistanceKm) > 0;
-  let cum = 0;
-  const cumDists: number[] = [];
-  if (hasValidatedDist) {
-    for (let i = 0; i < rows.length; i++) {
-      if (i > 0 && rows[i].dist) {
-        cum += Number(rows[i].dist);
-      }
-      cumDists.push(cum);
-    }
-  }
-  const totalM = hasValidatedDist ? Number(totalDistanceKm) * 1000 : 0;
+  const hasValidatedDist =
+    validatedDist.isValid && validatedDist.totalM !== null && validatedDist.totalM > 0;
+  const totalM = hasValidatedDist ? (validatedDist.totalM as number) : 0;
+  const cumDists = validatedDist.cumDists;
 
   const points: ProfilePoint[] = rows.map((r, i) => {
-    const t =
-      hasValidatedDist && totalM > 0
-        ? cumDists[i] / totalM
-        : rows.length > 1
-          ? i / (rows.length - 1)
-          : 0.5;
+    const t = computePointT(i, rows.length, hasValidatedDist, cumDists, totalM);
     return {
       x: X(t),
       y: Y(Number(r.rl)),
       station: r.station || `P-${i + 1}`,
-      distLabel: hasValidatedDist ? `${cumDists[i]}m` : undefined,
+      distLabel: hasValidatedDist ? formatDistLabel(cumDists[i]) : undefined,
       isBM: i === 0 || i === rows.length - 1,
       isCP: r.isChangePoint,
       rl: Number(r.rl),
@@ -169,17 +185,15 @@ function ProfileSvgChart({
 
 export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePlaceholderProps) {
   const rows = result?.rows ?? [];
-  const totalDist = result?.totalDistanceKm ?? null;
+  const validatedDist = computeValidatedDistance(rows);
   const geo =
     rows.length > 0
-      ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }, totalDist)
+      ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }, validatedDist)
       : null;
 
   const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
   const lowest = geo ? `${Math.min(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
-  const lineLength = totalDist
-    ? `${Math.round(Number(totalDist) * 1000)} m (${totalDist} km)`
-    : '—';
+  const lineLength = formatMeasuredLineLength(validatedDist.totalM, result?.totalDistanceKm);
 
   return (
     <div class={s.card} data-profile-card="">
@@ -224,7 +238,9 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
             <b
               class={s.chipValue}
               data-line-length-value=""
-              style={totalDist ? undefined : { color: 'var(--color-text-muted, #64748b)' }}
+              style={
+                validatedDist.isValid ? undefined : { color: 'var(--color-text-muted, #64748b)' }
+              }
             >
               {lineLength}
             </b>

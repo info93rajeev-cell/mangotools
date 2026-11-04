@@ -133,3 +133,75 @@ export function buildLevelingRequest(
   }
   return { input, params };
 }
+
+export interface ValidatedLineDistance {
+  isValid: boolean;
+  totalM: number | null;
+  cumDists: number[];
+}
+
+export function computeValidatedDistance(
+  rows: Array<{ dist?: string | null }>,
+): ValidatedLineDistance {
+  if (!rows || rows.length < 2) {
+    return { isValid: false, totalM: null, cumDists: [] };
+  }
+
+  const d0Str = rows[0]?.dist;
+  if (d0Str !== undefined && d0Str !== null && d0Str.trim() !== '') {
+    const d0 = Number(d0Str.trim());
+    if (Number.isNaN(d0) || d0 !== 0) {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+  }
+
+  const cumDists: number[] = [0];
+  let runningTotal = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    const dStr = rows[i]?.dist;
+    if (dStr === undefined || dStr === null || dStr.trim() === '') {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+    const val = Number(dStr.trim());
+    if (Number.isNaN(val) || !Number.isFinite(val) || val < 0) {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+    runningTotal = Number((runningTotal + val).toFixed(6));
+    cumDists.push(runningTotal);
+  }
+
+  if (runningTotal <= 0) {
+    return { isValid: false, totalM: null, cumDists: [] };
+  }
+
+  return {
+    isValid: true,
+    totalM: runningTotal,
+    cumDists,
+  };
+}
+
+export function formatMetres(metres: number): string {
+  if (Number.isInteger(metres)) {
+    return `${metres} m`;
+  }
+  const fixed = metres.toFixed(3);
+  const trimmed = fixed.replace(/\.?0+$/, '');
+  return `${trimmed} m`;
+}
+
+export function formatMeasuredLineLength(
+  totalM: number | null,
+  totalDistanceKm?: string | null,
+): string {
+  if (totalM === null || totalM <= 0) {
+    return '—';
+  }
+  const mStr = formatMetres(totalM);
+  const kmStr =
+    totalDistanceKm !== undefined && totalDistanceKm !== null && totalDistanceKm.trim() !== ''
+      ? totalDistanceKm.trim()
+      : (totalM / 1000).toFixed(3);
+  return `${mStr} (${kmStr} km)`;
+}

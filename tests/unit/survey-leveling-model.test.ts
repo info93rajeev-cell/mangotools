@@ -4,8 +4,11 @@ import { levelingReduce } from '../../engines/survey/src/operations/leveling-red
 import { levelingReduceV2 } from '../../engines/survey/src/operations/leveling-reduce-v2/operation.ts';
 import {
   buildLevelingRequest,
+  computeValidatedDistance,
   createInitialRows,
   detectRowTag,
+  formatMeasuredLineLength,
+  formatMetres,
   formatReading,
   formatSigned,
   isChangePointRow,
@@ -194,5 +197,70 @@ describe('Survey Leveling Model', () => {
 
     // Terminal adjusted RL matches closing BM
     expect(val.rows[5].adjustedRL).toBe('99.805');
+  });
+
+  it('validates precise line distances and handles sub-metre, non-integer, and missing distances', () => {
+    // Standard 6-station rows
+    const resStd = computeValidatedDistance(SAMPLE_ROWS);
+    expect(resStd.isValid).toBe(true);
+    expect(resStd.totalM).toBe(160);
+    expect(resStd.cumDists).toEqual([0, 30, 60, 85, 120, 160]);
+
+    // Sub-metre distance 0.4 m
+    const resSub = computeValidatedDistance([{ dist: '0' }, { dist: '0.4' }]);
+    expect(resSub.isValid).toBe(true);
+    expect(resSub.totalM).toBe(0.4);
+    expect(resSub.cumDists).toEqual([0, 0.4]);
+
+    // Non-integer distance 160.4 m
+    const rows1604 = [
+      { dist: '0' },
+      { dist: '30' },
+      { dist: '30' },
+      { dist: '25' },
+      { dist: '35' },
+      { dist: '40.4' },
+    ];
+    const res1604 = computeValidatedDistance(rows1604);
+    expect(res1604.isValid).toBe(true);
+    expect(res1604.totalM).toBe(160.4);
+    expect(res1604.cumDists).toEqual([0, 30, 60, 85, 120, 160.4]);
+
+    // Missing distance on intermediate station -> invalid
+    const rowsMissing = [{ dist: '0' }, { dist: '30' }, { dist: '' }, { dist: '25' }];
+    expect(computeValidatedDistance(rowsMissing).isValid).toBe(false);
+    expect(computeValidatedDistance(rowsMissing).totalM).toBeNull();
+
+    // Null distance -> invalid
+    const rowsNull = [{ dist: '0' }, { dist: null }];
+    expect(computeValidatedDistance(rowsNull).isValid).toBe(false);
+
+    // Total distance zero -> invalid
+    const rowsZero = [{ dist: '0' }, { dist: '0' }];
+    expect(computeValidatedDistance(rowsZero).isValid).toBe(false);
+
+    // Negative distance -> invalid
+    const rowsNeg = [{ dist: '0' }, { dist: '-5' }];
+    expect(computeValidatedDistance(rowsNeg).isValid).toBe(false);
+
+    // Non-zero start distance -> invalid
+    const rowsBadStart = [{ dist: '5' }, { dist: '10' }];
+    expect(computeValidatedDistance(rowsBadStart).isValid).toBe(false);
+
+    // Fewer than 2 rows -> invalid
+    expect(computeValidatedDistance([{ dist: '0' }]).isValid).toBe(false);
+  });
+
+  it('formats metres and measured line length with explicit display precision', () => {
+    expect(formatMetres(160)).toBe('160 m');
+    expect(formatMetres(0.4)).toBe('0.4 m');
+    expect(formatMetres(160.4)).toBe('160.4 m');
+    expect(formatMetres(160.45)).toBe('160.45 m');
+
+    expect(formatMeasuredLineLength(160, '0.160')).toBe('160 m (0.160 km)');
+    expect(formatMeasuredLineLength(0.4, '0.000')).toBe('0.4 m (0.000 km)');
+    expect(formatMeasuredLineLength(160.4, '0.160')).toBe('160.4 m (0.160 km)');
+    expect(formatMeasuredLineLength(null)).toBe('—');
+    expect(formatMeasuredLineLength(0)).toBe('—');
   });
 });

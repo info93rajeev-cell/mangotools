@@ -442,3 +442,84 @@ test('Tolerance criterion, missing distance, and illustrative profile when unval
     /Distance from previous station is required for distance-based adjustment\./,
   );
 });
+
+test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length text, and fallback', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  // Load sample (standard 6 stations, 160 m total)
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+  await expect(page.locator('[data-line-length-value]')).toHaveText('160 m (0.160 km)');
+
+  const profileSvg = page.locator('svg[aria-label="Level profile chart"]');
+  await expect(profileSvg).toBeVisible();
+
+  // 1. Test non-integer length (160.4 m)
+  // Edit row 5 distance from 40 to 40.4 -> total distance is 160.4 m
+  const dist5 = page.locator('#survey-obs-5-dist');
+  await dist5.fill('40.4');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must display explicit precision for non-integer distance
+  await expect(page.locator('[data-line-length-value]')).toHaveText('160.4 m (0.160 km)');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('160.4 m (0.160 km)');
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  // Terminal node position must not exceed the expected axis (W - padding.r = 640 - 16 = 624)
+  const circles1604 = profileSvg.locator('circle');
+  await expect(circles1604).toHaveCount(6);
+  const lastCx1604 = Number(await circles1604.last().getAttribute('cx'));
+  expect(lastCx1604).toBe(624);
+  expect(lastCx1604).toBeLessThanOrEqual(624);
+
+  // 2. Test sub-metre length (0.4 m)
+  // Set distances so total is 0.4 m (0.1 + 0.1 + 0.1 + 0.05 + 0.05 = 0.4)
+  await page.locator('#survey-obs-1-dist').fill('0.1');
+  await page.locator('#survey-obs-2-dist').fill('0.1');
+  await page.locator('#survey-obs-3-dist').fill('0.1');
+  await page.locator('#survey-obs-4-dist').fill('0.05');
+  await page.locator('#survey-obs-5-dist').fill('0.05');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must retain valid sub-metre distance and not collapse to 0 m
+  await expect(page.locator('[data-line-length-value]')).toHaveText('0.4 m (0.000 km)');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('0.4 m (0.000 km)');
+  // Profile must remain proportional, not illustrative
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  // Terminal node position must be exactly at 624px
+  const circles04 = profileSvg.locator('circle');
+  await expect(circles04).toHaveCount(6);
+  const lastCx04 = Number(await circles04.last().getAttribute('cx'));
+  expect(lastCx04).toBe(624);
+  expect(lastCx04).toBeLessThanOrEqual(624);
+
+  // 3. Test fallback when a distance is missing
+  // Clear distance on row 2
+  await page.locator('#survey-obs-2-dist').fill('');
+  // Select unadjusted ('none') so calculation succeeds without throwing missing-distance validation error
+  await page.locator('#survey-adjust-by').selectOption('none');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must display fallback '—'
+  await expect(page.locator('[data-line-length-value]')).toHaveText('—');
+  // Profile card header badge must show fallback 'Illustrative, not to scale'
+  await expect(page.locator('[data-profile-card]')).toContainText('Illustrative, not to scale');
+  // Summary tile subtext must display 'No measured length'
+  await expect(page.locator('[data-summary-tiles]')).toContainText('No measured length');
+
+  // Profile nodes must fall back to uniform illustrative spacing (115.6px ± 0.5px)
+  const circlesFallback = profileSvg.locator('circle');
+  await expect(circlesFallback).toHaveCount(6);
+  const cxFallback: number[] = [];
+  for (let i = 0; i < 6; i++) {
+    cxFallback.push(Number(await circlesFallback.nth(i).getAttribute('cx')));
+  }
+  for (let i = 1; i < cxFallback.length; i++) {
+    const spacing = cxFallback[i] - cxFallback[i - 1];
+    expect(Math.abs(spacing - 115.6)).toBeLessThan(0.5);
+  }
+});
