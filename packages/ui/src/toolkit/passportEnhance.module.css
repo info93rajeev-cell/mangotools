@@ -677,3 +677,182 @@ button.bgActiveSwatch {
 .bgRemoverLinkBtn:hover {
   background: #dbeafe;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .enhanceStageCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .stageCardHeader {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .stageCardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .zoomControlsGroup {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .zoomLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .miniToolBtn {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .miniToolBtn:hover {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) button.miniToolBtnActive {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .splitViewerContainer {
+  background: #182838;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .splitDividerBar {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .afterBadge {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .stageTabIconBtn {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .stageTabIconBtn:hover {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) button.tabIconActive {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .tabIconLabel {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .filtersAdjustmentsCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .filterCardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .filterCardSubtitle {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .filterThumbLabel {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .adjustmentsGrid {
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .sliderIconLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .sliderValText {
+  color: #5b8af0;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .cropWorkbenchWrapper {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .tabSectionTitle {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .resetGhostBtn {
+  color: #b8c1cf;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .resetGhostBtn:hover {
+  color: #dde4f3;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .cropPresetChip {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .cropPresetChip:hover {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) button.cropPresetChipActive {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .biometricGuideNotes {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .primaryTabActionBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .spotsCountBadge {
+  color: #9df7db;
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .retouchToolBtn {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .retouchToolBtn:hover:not(:disabled) {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .retouchHint {
+  color: #b8c1cf;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .bgSpecBadge {
+  color: #5b8af0;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .bgNoticeCallout {
+  color: #b8c1cf;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .bgRemoverLinkBtn {
+  color: #5b8af0;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .bgRemoverLinkBtn:hover {
+  background: #142944;
+}

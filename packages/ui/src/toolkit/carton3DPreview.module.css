@@ -254,3 +254,28 @@
 .zoomBtn {
   white-space: nowrap;
 }
+
+:global([data-theme="dark"]) .viewBtnActive {
+  color: #ffffff;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .reference figcaption {
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .artMode {
+  color: #72a6f4;
+}
+
+:global(:where([data-theme="dark"])) .viewBtnActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .cardFooter {
+  border-top: 1px solid #304a64;
+}

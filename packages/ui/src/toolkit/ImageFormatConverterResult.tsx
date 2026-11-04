@@ -128,7 +128,7 @@ function ReadyStatusBanner({
       <div
         class={styles.statusBanner}
         role="alert"
-        style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }}
+        style={{ background: 'var(--color-tint-red)', color: '#991b1b', borderColor: '#fecaca' }}
       >
         <span>⚠️ {errorText}</span>
       </div>

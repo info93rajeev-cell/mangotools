@@ -220,3 +220,42 @@
 :global([data-theme="dark"]) .tile small {
   color: #a9b7cc;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .headBtn:hover {
+  background: #11223b;
+  border-color: #304364;
+}
+
+:global(:where([data-theme="dark"])) .empty {
+  color: #a7b5cb;
+  border: 1px dashed #304564;
+}
+
+:global(:where([data-theme="dark"])) .tile {
+  border: 1px solid #304564;
+}
+
+:global(:where([data-theme="dark"])) .tileGreen {
+  background: linear-gradient(135deg, #123d2a, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .tilePurple {
+  background: linear-gradient(135deg, #20113b, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .tileAmber {
+  background: linear-gradient(135deg, #3e3012, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .tilePink {
+  background: linear-gradient(135deg, #3c111c, #151e33);
+}
+
+:global(:where([data-theme="dark"])) .safetyText {
+  color: #a7b5cb;
+}
+
+:global(:where([data-theme="dark"])) .optCard label {
+  color: #c4cedc;
+}

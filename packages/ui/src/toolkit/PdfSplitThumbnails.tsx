@@ -5,7 +5,7 @@ export function HeavyBookBanner({ totalPages }: { totalPages: number }) {
   return (
     <div
       style={{
-        background: '#f0f9ff',
+        background: 'var(--color-tint-blue)',
         border: '1.5px solid #7dd3fc',
         borderRadius: '8px',
         padding: '6px 10px',
@@ -17,7 +17,7 @@ export function HeavyBookBanner({ totalPages }: { totalPages: number }) {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span style={{ fontSize: '14px' }}>📚</span>
-        <strong style={{ fontSize: '12px', color: '#0369a1' }}>
+        <strong style={{ fontSize: '12px', color: 'var(--color-sky-text)' }}>
           Heavy Book Engine ({totalPages.toLocaleString()} Pages Active)
         </strong>
       </div>
@@ -154,7 +154,7 @@ export function PdfSplitLoadedRow({
   return (
     <div
       class={styles.fileRow}
-      style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '4px' }}
+      style={{ background: 'var(--color-panel)', borderColor: '#cbd5e1', marginTop: '4px' }}
     >
       <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
         PDF

@@ -442,3 +442,28 @@
   background: #3f3f46;
   border-color: #71717a;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .stepBadge {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .stepLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tourFooter {
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .nextBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .nextBtn:hover {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .tourLauncherBtn:hover {
+  color: #f5c6ac;
+}

@@ -128,7 +128,7 @@
   font-weight: 600;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #526077;
   padding: 2px 7px;
   border-radius: 4px;
   cursor: pointer;
@@ -345,7 +345,7 @@
 .status {
   font-size: 11px;
   font-weight: 600;
-  color: #16a34a;
+  color: #15803d;
   background: #edfff5;
   border: 1px solid #c8f0dc;
   border-radius: 5px;
@@ -632,4 +632,189 @@
   color: #991b1b;
   font-size: 12px;
   font-weight: 600;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .root {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .privacyBadge {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .unitRow {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .unitPillGroup {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .unitPill {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .unitPillActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .tableScrollWrap {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .itemsTable th,
+:global(:where([data-theme="dark"])) .itemsTable td {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .itemsTable th {
+  color: #b8c1cf;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .rowNum {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tableInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .outlineActionBtn {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .outlineActionBtn:hover {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .selectInput,
+:global(:where([data-theme="dark"])) .textInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .divisorCallout {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .calloutTitle {
+  color: #a1b4eb;
+}
+
+:global(:where([data-theme="dark"])) .heading h2 {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .loadCount {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .status {
+  color: #a7f1c2;
+  background: #123e25;
+  border: 1px solid #30644a;
+}
+
+:global(:where([data-theme="dark"])) .status[data-status="actual"] {
+  color: #f4b976;
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .kpi {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpi span {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpi strong {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .chargeableCallout {
+  background: linear-gradient(110deg, #12253d, #111c3a);
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .chargeableLabel {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .chargeableValue {
+  color: #7091ec;
+}
+
+:global(:where([data-theme="dark"])) .secondary > summary {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .bar {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .legend small {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tableScroll {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .detailsTable th,
+:global(:where([data-theme="dark"])) .detailsTable td {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .detailsTable thead th {
+  color: #b8c1cf;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .printBtn {
+  color: #0f1c3f;
+}
+
+:global(:where([data-theme="dark"])) .copyBtn {
+  color: #6092f2;
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .copyBtn:hover {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .skipped {
+  color: #ed9797;
+  background: #3c1111;
+  border: 1px solid #643030;
 }

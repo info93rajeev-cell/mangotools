@@ -398,3 +398,18 @@
     grid-column: 1 / -1;
   }
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .status {
+  background: #123e25;
+  border-color: #30644a;
+}
+
+:global(:where([data-theme="dark"])) .costResult {
+  background: linear-gradient(110deg, #3c3911, #433b14);
+}
+@media (max-width: 700px) {
+  :global(:where([data-theme="dark"])) .secondary {
+    border-top: 1px solid #304664;
+  }
+}

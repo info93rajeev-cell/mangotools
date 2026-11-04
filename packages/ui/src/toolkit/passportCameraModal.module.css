@@ -132,7 +132,7 @@
 
 .snapBtn {
   flex: 1;
-  background: #22c55e;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -187,4 +187,13 @@
   flex-direction: column;
   gap: 12px;
   align-items: center;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .guidePill {
+  color: #f2d35a;
+}
+
+:global(:where([data-theme="dark"])) .snapBtn {
+  color: #ffffff;
 }

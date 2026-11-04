@@ -15,7 +15,7 @@
   font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
-  background: #10b981;
+  background: #047857;
 }
 
 .outputViewTabs {
@@ -122,7 +122,7 @@ button.outputTabActive {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   font-size: 10px;
   font-weight: 800;
@@ -301,4 +301,89 @@ button.outputTabActive {
   color: #10b981;
   font-weight: 800;
   font-size: 9px;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .stepBadgeGreen {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .outputViewTabs {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .outputViewTabBtn {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) button.outputTabActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .dimBadgeText {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .dimBadgeTextVert {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .readyStatusBadge {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .greenCheckCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .readyTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .readySubtitle {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .downloadAmberBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .generateGoldBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .downloadGreenBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printSheetBlueBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .secondaryPillBtn {
+  color: #c4cedc;
+  background: #182838;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .secondaryPillBtn:hover:not(:disabled) {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .tipsCard {
+  background: #34113b;
+  border: 1px solid #5c3064;
+}
+
+:global(:where([data-theme="dark"])) .tipsHeader {
+  color: #e89eee;
+}
+
+:global(:where([data-theme="dark"])) .tipsList li {
+  color: #eaaeed;
+}
+
+:global(:where([data-theme="dark"])) .tipCheck {
+  color: #83f4cf;
 }

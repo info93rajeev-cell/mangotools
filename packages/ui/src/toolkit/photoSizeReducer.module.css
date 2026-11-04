@@ -1088,3 +1088,40 @@
 .canvasToolbarTitle {
   min-width: 0;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .reduceActionBtn {
+  color: #111827;
+}
+
+:global(:where([data-theme="dark"])) .statusBanner {
+  color: #14532d;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .applyCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .compareBtn {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .miniStageBtn {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .splitBar {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .sideBadgeAfter {
+  color: #91f0b4;
+}
+
+:global(:where([data-theme="dark"])) .quickPreviewBtn {
+  color: #ffffff;
+}

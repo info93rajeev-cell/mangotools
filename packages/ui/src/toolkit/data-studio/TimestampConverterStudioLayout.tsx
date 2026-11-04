@@ -93,7 +93,7 @@ function TimestampInputPanel({
           id={`${idPrefix}-input`}
           type="text"
           class={styles.optSelect}
-          style={{ fontSize: 17, fontWeight: 750, color: '#176bfa', minHeight: 38 }}
+          style={{ fontSize: 17, fontWeight: 750, color: 'var(--color-primary)', minHeight: 38 }}
           value={input}
           onInput={(e) => onInput((e.target as HTMLInputElement).value)}
           placeholder="e.g. 1704067200"
@@ -188,7 +188,9 @@ function TimestampDatePanel({
         class={styles.bigoutput}
         style={{ minHeight: 76, padding: '10px 12px', fontFamily: 'inherit' }}
       >
-        <div style={{ fontSize: 20, fontWeight: 500, color: '#12264e' }}>{dateFormatted}</div>
+        <div style={{ fontSize: 20, fontWeight: 500, color: 'var(--color-text)' }}>
+          {dateFormatted}
+        </div>
         <div style={{ fontSize: 20, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
           {timeFormatted}
         </div>

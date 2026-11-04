@@ -33,7 +33,7 @@ export function SellerProfitabilitySummaryCard({ state }: { state: SellerProfita
           <span class={`${styles.ico} ${styles.icoGreen}`}>％</span>
           <div class={styles.metricTextGroup}>
             <small>Net margin</small>
-            <strong style={{ color: isProfit ? '#059669' : '#dc2626' }}>
+            <strong style={{ color: isProfit ? 'var(--color-success)' : 'var(--color-danger)' }}>
               {calculation.netMargin}%
             </strong>
           </div>
@@ -115,9 +115,14 @@ export function SellerRevenueCostBreakdownCard({ state }: { state: SellerProfita
               <td>{value < 0 ? `−${rupees(-value)}` : rupees(Math.abs(value))}</td>
             </tr>
           ))}
-          <tr style={{ fontWeight: 850, background: loss ? '#fef2f2' : '#f0fdf4' }}>
+          <tr
+            style={{
+              fontWeight: 850,
+              background: loss ? 'var(--color-tint-red)' : 'var(--color-tint-green)',
+            }}
+          >
             <td>{loss ? 'Net loss' : 'Net profit'}</td>
-            <td style={{ color: loss ? '#b91c1c' : '#047857' }}>
+            <td style={{ color: loss ? 'var(--color-danger)' : 'var(--color-success)' }}>
               {loss ? `−${rupees(-calculation.netProfit)}` : rupees(calculation.netProfit)}
             </td>
           </tr>

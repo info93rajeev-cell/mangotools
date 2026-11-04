@@ -1107,3 +1107,77 @@
 .canvasTitle {
   min-width: 0;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .presetPill[data-active="true"] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .readyBadge {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .warningList {
+  color: #f5bd9b;
+  background: #4b4116;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .alignmentCallout {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .relatedActionLink {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .relatedActionLink:hover {
+  color: #7091ec;
+}
+
+:global(:where([data-theme="dark"])) .stageTabBtn[data-active="true"] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .cropDimBadge {
+  color: #7091ec;
+}
+
+:global(:where([data-theme="dark"])) .sheetMiniNotice {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .quickCountChip[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .countBadge {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .sheetActionBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .blankReusableArea {
+  border-top: 1px dashed #36485e;
+}
+
+:global(:where([data-theme="dark"])) .blankAreaNotice {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .blankAreaSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .sheetFooterCallout {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .printSheetBtn {
+  color: #ffffff;
+}

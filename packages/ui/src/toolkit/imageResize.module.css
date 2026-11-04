@@ -705,3 +705,12 @@
 .canvasToolbarTitle {
   min-width: 0;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .resizeActionBtn {
+  color: #111827;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
+}

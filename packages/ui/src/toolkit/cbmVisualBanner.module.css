@@ -86,3 +86,26 @@
     flex: 1 1 auto;
   }
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .bannerCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .bannerFeatures {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .featureTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .featureItem {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .checkIcon {
+  color: #0f172a;
+}

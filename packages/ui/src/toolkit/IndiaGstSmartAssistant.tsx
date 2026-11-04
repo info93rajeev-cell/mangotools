@@ -106,13 +106,16 @@ function ItcEstimatorTab({ tax }: { tax: UseUniversalTaxReturn }) {
             <span class={styles.itcMetricLabel}>
               {isB2B ? 'Claimable ITC' : 'Non-Refundable Tax'}
             </span>
-            <span class={styles.itcMetricVal} style={{ color: isB2B ? '#16a34a' : '#dc2626' }}>
+            <span
+              class={styles.itcMetricVal}
+              style={{ color: isB2B ? 'var(--color-success)' : 'var(--color-danger)' }}
+            >
               {formatCurrencyNumber(results.totalTax, currencySymbol)}
             </span>
           </div>
           <div class={styles.itcMetricBox}>
             <span class={styles.itcMetricLabel}>Real Net Cost</span>
-            <span class={styles.itcMetricVal} style={{ color: '#2563eb' }}>
+            <span class={styles.itcMetricVal} style={{ color: 'var(--color-primary)' }}>
               {isB2B
                 ? formatCurrencyNumber(results.taxableAmount, currencySymbol)
                 : formatCurrencyNumber(results.finalAmount, currencySymbol)}
@@ -175,7 +178,7 @@ function ComplianceRulesTab({ onSwitchToCustom }: { onSwitchToCustom: () => void
         class={styles.ghostActionBtn}
         style={{
           alignSelf: 'flex-start',
-          color: '#7c3aed',
+          color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
           fontSize: '11px',
           padding: '4px 8px',

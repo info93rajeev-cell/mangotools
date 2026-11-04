@@ -132,7 +132,7 @@
 }
 
 .actionBtnDanger {
-  color: #dc2626;
+  color: #b91c1c;
   background: #fef2f2;
   border-color: #fecaca;
 }
@@ -498,7 +498,7 @@
 
 .tileSub {
   font-size: 9.5px;
-  color: #64748b;
+  color: #526077;
 }
 
 /* 5. PDF PREVIEW CAROUSEL (Card 5) */
@@ -833,4 +833,212 @@
     flex: 1 1 auto;
     min-width: 150px;
   }
+}
+
+@media (max-width: 700px) {
+  .tileIcon {
+    font-size: 19px;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .topBar {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .titleText {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .badgePill {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .badgePillAmber {
+  color: #f5cfa3;
+  background: #403c12;
+}
+
+:global(:where([data-theme="dark"])) .badgePillBlue {
+  color: #7091ec;
+  background: #12253d;
+  border-color: #304764;
+}
+
+:global(:where([data-theme="dark"])) .subtitleText {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnGhost {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnGhost:hover {
+  color: #dde4f3;
+  background: #182838;
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger {
+  color: #ec8383;
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger:hover {
+  color: #ec8383;
+  background: #421313;
+}
+
+:global(:where([data-theme="dark"])) .stepBadgeCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .headerPill {
+  color: #b8c1cf;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .dropzone[data-dragging="true"],
+:global(:where([data-theme="dark"])) .dropzone:hover {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneHeadline {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .chooseFilesBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .imageRow {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .imageRow:hover {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .itemIndex {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .miniBtn:hover:not(:disabled) {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .miniBtnDanger {
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .miniBtnDanger:hover {
+  color: #e76c6c;
+  background: #421313;
+}
+
+:global(:where([data-theme="dark"])) .tileBlue {
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .tilePurple {
+  background: #26113b;
+  border: 1px solid #493064;
+}
+
+:global(:where([data-theme="dark"])) .tileGreen {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .tileAmber {
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .tileVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .tileLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .tileSub {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .sheetName {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .chipBlue {
+  color: #7091ec;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .chipPurple {
+  color: #b377e8;
+  background: #26113b;
+}
+
+:global(:where([data-theme="dark"])) .chipGreen {
+  color: #a7f1c2;
+  background: #123d1f;
+}
+
+:global(:where([data-theme="dark"])) .chipAmber {
+  color: #f5b889;
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .chipPink {
+  color: #ef80ae;
+  background: #3d1229;
+}
+
+:global(:where([data-theme="dark"])) .privacyBox {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .privacyTextBold {
+  color: #c3f1d5;
+}
+
+:global(:where([data-theme="dark"])) .primaryCtaBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .primaryCtaBtn:hover:not(:disabled) {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .secBtnPrimary {
+  background: #12253d;
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .secBtnPrimary:hover:not(:disabled) {
+  background: #142944;
+}
+
+:global(:where([data-theme="dark"])) .accordionRow {
+  border-top: 1px solid #304a64;
 }

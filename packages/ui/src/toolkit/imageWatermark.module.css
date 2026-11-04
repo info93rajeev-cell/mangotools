@@ -509,7 +509,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   font-size: 9px;
   font-weight: 800;
@@ -799,4 +799,136 @@
   color: var(--color-accent-strong, #b45309);
   font-weight: 700;
   box-shadow: 0 1px 2px rgba(255, 176, 0, 0.15);
+}
+
+/* Phones: small status icons were hard to see. */
+@media (max-width: 700px) {
+  .formatIcon {
+    font-size: 16px;
+  }
+
+  .infoCalloutIcon {
+    font-size: 16px;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .studioCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardHeader {
+  border-bottom: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn {
+  background: #151e33;
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .sampleMiniBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .emptyDropArea {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .posSlotBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .posSlotBtn[data-active="true"] {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .colorTextInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .selectInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .formatCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .formatCard:hover {
+  border-color: var(--color-border-strong, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .checkBadge {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .primaryActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutBox {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .verificationCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .verifBannerIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .chipBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .chipBtn:hover {
+  color: #dde4f3;
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeTitle {
+  color: #a1b4eb;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeSub {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .colorPresetDot {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .tiledControlsBox {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .tiledChipBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .tiledChipBtn[data-active="true"] {
+  background: #3b3211;
 }

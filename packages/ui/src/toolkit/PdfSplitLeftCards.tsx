@@ -52,8 +52,8 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #7dd3fc',
-              background: '#f0f9ff',
-              color: '#0369a1',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-sky-text)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -68,8 +68,8 @@ function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -106,7 +106,7 @@ const SPLIT_MODES = [
 function InvalidNote({ tokens, total }: { tokens: string[]; total: number }) {
   if (tokens.length === 0) return null;
   return (
-    <p role="alert" style={{ margin: '2px 0 0', fontSize: '11px', color: '#b91c1c' }}>
+    <p role="alert" style={{ margin: '2px 0 0', fontSize: '11px', color: 'var(--color-danger)' }}>
       Not used: {tokens.join(', ')} (pages run from 1 to {total}).
     </p>
   );
@@ -140,7 +140,7 @@ function RangeEditor({ studio }: { studio: SplitStudioState }) {
         placeholder="e.g. 1-12, 13-42"
       />
       <InvalidNote tokens={invalid} total={studio.totalPages} />
-      <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>
+      <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 600 }}>
         {studio.parts.length} file{studio.parts.length === 1 ? '' : 's'} • {covered} pages
       </span>
     </div>
@@ -192,9 +192,9 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
     <p
       style={{
         fontSize: '11.5px',
-        color: '#334155',
+        color: 'var(--color-text-muted)',
         margin: 0,
-        background: '#f8fafc',
+        background: 'var(--color-panel-subtle)',
         padding: '6px 10px',
         borderRadius: '6px',
         border: '1px solid #e2e8f0',
@@ -228,15 +228,15 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
               style={{
                 textAlign: 'left',
                 padding: '6px 8px',
-                background: isActive ? '#2563eb' : '#ffffff',
-                borderColor: isActive ? '#1d4ed8' : '#e2e8f0',
+                background: isActive ? '#2563eb' : 'var(--color-panel)',
+                borderColor: isActive ? '#1d4ed8' : 'var(--color-track)',
               }}
             >
               <span
                 style={{
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: isActive ? '#ffffff' : '#0f172a',
+                  color: isActive ? '#ffffff' : 'var(--color-text)',
                 }}
               >
                 {label}
@@ -244,7 +244,7 @@ function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
               <span
                 style={{
                   fontSize: '9.5px',
-                  color: isActive ? '#dbeafe' : '#64748b',
+                  color: isActive ? '#ffffff' : 'var(--color-text-subtle)',
                   fontWeight: 500,
                 }}
               >

@@ -15,3 +15,378 @@
 @media print{.below{display:block!important}.advanced-list{display:block!important}.pricing,.pricing-body,.pricing-breakdown{display:block!important}.advanced,.output,.pricing>summary,.pricing-settings,.pricing-fields,.pricing-note,.pricing-rounding,.recalculate-pricing{display:none!important}.pricing{break-inside:avoid;margin-top:10px}.pricing-table-scroll{overflow:visible}}
 .pricing-total,.kpi.money strong{min-width:0;white-space:normal;overflow-wrap:anywhere}
 @media print{.results[data-stale=true] .kpis,.results[data-stale=true] .result-lower{display:none!important}}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:where(:root[data-theme=dark]) a {
+  color: #7fb3f5;
+}
+
+:where(:root[data-theme=dark]) button {
+  color: #7fb1f5;
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:where(:root[data-theme=dark]) button:hover {
+  background: #12253e;
+}
+
+:where(:root[data-theme=dark]) input,
+:where(:root[data-theme=dark]) select,
+:where(:root[data-theme=dark]) textarea {
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:where(:root[data-theme=dark]) .skip {
+  background: #151e33;
+}
+
+:where(:root[data-theme=dark]) .civil-unused-header {
+  background: #151e33;
+  border-bottom: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .civil-unused-header .brand {
+  color: #d4def7;
+}
+
+:where(:root[data-theme=dark]) .civil-unused-header .brand b {
+  color: #08152f;
+}
+
+:where(:root[data-theme=dark]) .search {
+  color: #a1c1e8;
+  border: 1px solid #304464;
+}
+
+:where(:root[data-theme=dark]) .privacy {
+  color: #adf8d4;
+  background: #123e25;
+  border: 1px solid #30644c;
+}
+
+:where(:root[data-theme=dark]) .menu {
+  color: #c0d3f2;
+}
+
+:where(:root[data-theme=dark]) .breadcrumb {
+  color: #a0b1c8;
+}
+
+:where(:root[data-theme=dark]) .title p {
+  color: #a6b7cf;
+}
+
+:where(:root[data-theme=dark]) .reference-tag {
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:where(:root[data-theme=dark]) .input-card,
+:where(:root[data-theme=dark]) .visual-card,
+:where(:root[data-theme=dark]) .results {
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:where(:root[data-theme=dark]) .mode-bar {
+  background: #12253d;
+  border: 1px solid #304364;
+}
+
+:where(:root[data-theme=dark]) .mode-bar button {
+  color: #b1c2dc;
+}
+
+:where(:root[data-theme=dark]) .mode-bar button[aria-pressed=true] {
+  color: #4a3700;
+}
+
+:where(:root[data-theme=dark]) .mode-symbol {
+  color: #8aaede;
+}
+
+:where(:root[data-theme=dark]) .unit-row {
+  color: #a5b6ce;
+}
+
+:where(:root[data-theme=dark]) .field {
+  color: #b0c4de;
+}
+
+:where(:root[data-theme=dark]) .suffix {
+  color: #a7b6ca;
+}
+
+:where(:root[data-theme=dark]) .hint {
+  color: #a6b7cd;
+}
+
+:where(:root[data-theme=dark]) .row-count {
+  color: #9eb1c9;
+}
+
+:where(:root[data-theme=dark]) .row-head {
+  color: #a6b7cf;
+  background: #12253d;
+}
+
+:where(:root[data-theme=dark]) .data-row {
+  border-bottom: 1px solid #304664;
+}
+
+:where(:root[data-theme=dark]) .delete {
+  color: #d97e87;
+}
+
+:where(:root[data-theme=dark]) .calculate {
+  color: #14203b;
+}
+
+:where(:root[data-theme=dark]) .reset {
+  color: #a6b2c2;
+}
+
+:where(:root[data-theme=dark]) .illustrative {
+  color: #a2b2c8;
+}
+
+:where(:root[data-theme=dark]) .dimension-badges span {
+  color: #b7d0e7;
+  background: #151e33;
+  border: 1px solid #304964;
+}
+
+:where(:root[data-theme=dark]) .basis-banner {
+  color: #a2bcd9;
+  background: #12253e;
+  border: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .flow span {
+  background: #11233c;
+}
+
+:where(:root[data-theme=dark]) .flow b {
+  color: #abc6ee;
+}
+
+:where(:root[data-theme=dark]) .weight-bars i {
+  background: #142944;
+}
+
+:where(:root[data-theme=dark]) .results {
+  background: linear-gradient(#123e2a,#151e33);
+}
+
+:where(:root[data-theme=dark]) .status {
+  color: #b1f9da;
+  background: #123e25;
+  border: 1px solid #30644b;
+}
+
+:where(:root[data-theme=dark]) .kpi {
+  background: #151e33;
+  border: 1px solid #305564;
+}
+
+:where(:root[data-theme=dark]) .kpi .name {
+  color: #a8bbd3;
+}
+
+:where(:root[data-theme=dark]) .kpi strong {
+  color: #a5c5f3;
+}
+
+:where(:root[data-theme=dark]) .kpi em {
+  color: #a5b6cc;
+}
+
+:where(:root[data-theme=dark]) .kpi:first-child {
+  background: #134129;
+}
+
+:where(:root[data-theme=dark]) .kpi:first-child strong {
+  color: #aff9de;
+}
+
+:where(:root[data-theme=dark]) .kpi:last-child {
+  background: #443a14;
+  border-color: #645830;
+}
+
+:where(:root[data-theme=dark]) .result-lower {
+  color: #a5bcd3;
+}
+
+:where(:root[data-theme=dark]) .result-cost {
+  color: #b1cde8;
+}
+
+:where(:root[data-theme=dark]) .results[data-stale=true] .status {
+  color: #f1d8ab;
+  background: #453914;
+}
+
+:where(:root[data-theme=dark]) .advanced {
+  background: #151e33;
+  border: 1px solid #304864;
+}
+
+:where(:root[data-theme=dark]) .advanced summary {
+  color: #aac3e5;
+}
+
+:where(:root[data-theme=dark]) .advanced-body {
+  border-top: 1px solid #304864;
+}
+
+:where(:root[data-theme=dark]) .print {
+  background: #483d15;
+}
+
+:where(:root[data-theme=dark]) .copy-status {
+  color: #adf7d9;
+}
+
+:where(:root[data-theme=dark]) .warning {
+  color: #e7d6b2;
+  background: #3b3411;
+  border: 1px solid #645730;
+}
+
+:where(:root[data-theme=dark]) .utilities details {
+  background: #151e33;
+  border: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .utilities summary .icon {
+  color: #5f99f2;
+}
+
+:where(:root[data-theme=dark]) .utilities details:nth-child(4) .icon {
+  color: #e6649a;
+}
+
+:where(:root[data-theme=dark]) .utilities summary>span {
+  color: #97a7bd;
+}
+
+:where(:root[data-theme=dark]) .utility-body {
+  color: #a9b9cd;
+}
+
+:where(:root[data-theme=dark]) .civil-unused-footer {
+  background: #12273d;
+  border-top: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .footer-top p {
+  color: #a4b5ca;
+}
+
+:where(:root[data-theme=dark]) .footer-categories {
+  color: #a0b2c8;
+  border-top: 1px solid #304864;
+}
+
+:where(:root[data-theme=dark]) .footer-categories strong {
+  color: #b3cae6;
+}
+
+:where(:root[data-theme=dark]) .validation {
+  color: #ef93a2;
+  background: #3b1115;
+}
+
+:where(:root[data-theme=dark]) .polygon-label {
+  color: #aec5db;
+}
+
+:where(:root[data-theme=dark]) .layer-plan {
+  color: #a6bcd5;
+}
+
+:where(:root[data-theme=dark]) .mode-context {
+  color: #a3bbda;
+}
+
+:where(:root[data-theme=dark]) .pricing {
+  background: #12263d;
+  border: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .pricing>summary {
+  color: #9bc2f1;
+}
+
+:where(:root[data-theme=dark]) .price-heading small {
+  color: #a0b7d3;
+}
+
+:where(:root[data-theme=dark]) .pricing-total {
+  color: #aecaf0;
+}
+
+:where(:root[data-theme=dark]) .pricing>summary>span:last-child {
+  color: #8db4de;
+}
+
+:where(:root[data-theme=dark]) .pricing-body {
+  background: #102539;
+  border-top: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .pricing-note,
+:where(:root[data-theme=dark]) .pricing-rounding {
+  color: #a2b6d0;
+}
+
+:where(:root[data-theme=dark]) .pricing-table-scroll {
+  border: 1px solid #304864;
+}
+
+:where(:root[data-theme=dark]) .pricing-breakdown table {
+  background: #151e33;
+}
+
+:where(:root[data-theme=dark]) .pricing-breakdown caption {
+  color: #a7c4e6;
+  background: #12253f;
+}
+
+:where(:root[data-theme=dark]) .pricing-breakdown th,
+:where(:root[data-theme=dark]) .pricing-breakdown td {
+  border-bottom: 1px solid #304764;
+}
+
+:where(:root[data-theme=dark]) .pricing-breakdown tfoot {
+  color: #b5cfef;
+  background: #493c15;
+}
+
+:where(:root[data-theme=dark]) .pricing[data-stale=true] .pricing-total {
+  color: #f7dda6;
+}
+@media (max-width:700px) {
+  :where(:root[data-theme=dark]) .mobile-privacy {
+    color: #aff9d9;
+    background: #123e25;
+    border: 1px solid #30644a;
+  }
+
+  :where(:root[data-theme=dark]) .data-row,
+  :where(:root[data-theme=dark]) .row-section[data-rows] .data-row {
+    background: #102539;
+    border: 1px solid #304764;
+  }
+
+  :where(:root[data-theme=dark]) .data-row label>span {
+    color: #a4b5cd;
+  }
+
+  :where(:root[data-theme=dark]) .result-cost {
+    border-top: 1px solid #325762;
+  }
+}

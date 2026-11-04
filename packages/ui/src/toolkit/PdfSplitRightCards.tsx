@@ -23,36 +23,48 @@ function PdfSplitSummaryCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Split Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Split Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           {partCount === 0 ? 'Nothing to split' : '✓ Ready to split'}
         </span>
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📑
+          </span>
           <span class={styles.statVal}>{totalPages}</span>
           <span class={styles.statLabel}>Total pages</span>
           <span class={styles.statSub}>Input file</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📄
+          </span>
           <span class={styles.statVal}>{partCount}</span>
           <span class={styles.statLabel}>Split files</span>
           <span class={styles.statSub}>Will be created</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📊
+          </span>
           <span class={styles.statVal}>~{totalMb} MB</span>
           <span class={styles.statLabel}>Est. output size</span>
           <span class={styles.statSub}>Pages × average size</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>📦</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📦
+          </span>
           <span class={styles.statVal}>{partCount > 1 && downloadAsZip ? 'ZIP' : 'PDF'}</span>
           <span class={styles.statLabel}>Download format</span>
           <span class={styles.statSub}>
@@ -75,7 +87,7 @@ function PdfSplitPreviewGrid({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> Output Preview
+          <span style={{ color: 'var(--color-primary)' }}>👁️</span> Output Preview
         </h2>
         <span class={styles.headerCounter}>
           {parts.length} files • {totalPages} pages total
@@ -112,14 +124,16 @@ function PdfSplitPreviewGrid({
               >
                 Pages {pagesLabel(part.pages)}
               </span>
-              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
+              <span
+                style={{ fontSize: '10px', color: 'var(--color-text-subtle)', fontWeight: 600 }}
+              >
                 {part.pageCount} {part.pageCount === 1 ? 'page' : 'pages'}
               </span>
             </div>
             <div
               style={{
                 height: '24px',
-                background: '#ffffff',
+                background: 'var(--color-panel)',
                 borderRadius: '4px',
                 border: '1px dashed #cbd5e1',
                 display: 'flex',
@@ -131,7 +145,7 @@ function PdfSplitPreviewGrid({
                 style={{
                   width: '60%',
                   height: '3px',
-                  background: '#e2e8f0',
+                  background: 'var(--color-track)',
                   borderRadius: '1.5px',
                 }}
               />
@@ -139,7 +153,7 @@ function PdfSplitPreviewGrid({
             <span
               style={{
                 fontSize: '10px',
-                color: '#334155',
+                color: 'var(--color-text-muted)',
                 fontWeight: 600,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',

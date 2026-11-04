@@ -116,7 +116,7 @@ export function InternationalTaxGuide({ tax, onSwitchToCustom }: InternationalTa
         class={styles.ghostActionBtn}
         style={{
           alignSelf: 'flex-start',
-          color: '#7c3aed',
+          color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
           fontSize: '11px',
           padding: '4px 8px',

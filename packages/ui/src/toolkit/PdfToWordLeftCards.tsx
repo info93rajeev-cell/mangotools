@@ -14,7 +14,7 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
           display: 'flex',
           justifyContent: 'space-between',
           fontSize: '11px',
-          color: '#64748b',
+          color: 'var(--color-text-subtle)',
           marginBottom: '4px',
           fontWeight: 600,
         }}
@@ -30,7 +30,7 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
               <div
                 style={{
                   height: '2px',
-                  background: '#e2e8f0',
+                  background: 'var(--color-track)',
                   borderRadius: '1.5px',
                   width: '80%',
                 }}
@@ -38,13 +38,15 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
               <div
                 style={{
                   height: '2px',
-                  background: '#e2e8f0',
+                  background: 'var(--color-track)',
                   borderRadius: '1.5px',
                   width: '60%',
                 }}
               />
             </div>
-            <span style={{ fontSize: '10px', fontWeight: 800, color: '#334155' }}>Page {p}</span>
+            <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--color-text-muted)' }}>
+              Page {p}
+            </span>
           </div>
         ))}
       </div>
@@ -66,7 +68,7 @@ function PdfToWordLoadedRow({
   return (
     <div
       class={styles.fileRow}
-      style={{ background: '#ffffff', borderColor: '#bfdbfe', marginTop: '4px' }}
+      style={{ background: 'var(--color-panel)', borderColor: '#bfdbfe', marginTop: '4px' }}
     >
       <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
         PDF
@@ -125,8 +127,8 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -141,8 +143,8 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -232,7 +234,14 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
             onChange={studio.setPageBreaks}
           />
         </div>
-        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '10.5px',
+            color: 'var(--color-text-muted)',
+            lineHeight: 1.45,
+          }}
+        >
           The Word file gets the PDF's text as editable headings and paragraphs. Layout, columns,
           tables, images and fonts are not carried over. A scanned PDF is a picture of text and has
           no text to convert; this tool does not do OCR.
