@@ -5,6 +5,7 @@ import s from './containerResults.module.css';
 import type { LoadSnapshot } from './containerWorkspaceModel.ts';
 import { loadMoney, packageTitle } from './containerWorkspacePresentation.ts';
 import { containerText as t, unloadedReasonText } from './containerWorkspaceStrings.ts';
+import { type ResultKpi, ResultKpiCards } from './ResultKpiCards.tsx';
 import { ScrollableItemTable } from './ScrollableItemTable.tsx';
 export function ContainerLoadingResults({
   state,
@@ -51,17 +52,7 @@ const group = (v: string) => {
   return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${d ? `.${d}` : ''}`;
 };
 
-interface Kpi {
-  tone: string;
-  icon: string;
-  label: string;
-  value: string;
-  sub: string;
-  percent: number | null;
-  meter: string;
-}
-
-function kpisOf(r: NonNullable<LoadSnapshot['result']>): Kpi[] {
+function kpisOf(r: NonNullable<LoadSnapshot['result']>): ResultKpi[] {
   const weightKnown = r.weightStatus === 'complete' && r.loadedWeight !== null;
   const weightPct =
     r.weightStatus === 'complete' && r.maxPayload !== null ? r.weightUtilizationPercent : null;
@@ -107,30 +98,8 @@ function kpisOf(r: NonNullable<LoadSnapshot['result']>): Kpi[] {
   ];
 }
 
-/** The four result cards of the approved reference: icon tile, label, big value, note, meter. */
 function LoadKpis({ r }: { r: NonNullable<LoadSnapshot['result']> }) {
-  return (
-    <div class={s.kpis}>
-      {kpisOf(r).map((k, i) => (
-        <div key={k.label} class={s.kpi} data-tone={k.tone}>
-          <span class={s.kpiIcon}>
-            <Icon name={k.icon} />
-          </span>
-          <span class={s.kpiLabel}>{k.label}</span>
-          <strong class={s.kpiValue} data-load-kpi={i}>
-            {k.value}
-          </strong>
-          <span class={s.kpiSub}>{k.sub}</span>
-          <span class={s.kpiMeter}>
-            <span class={s.kpiTrack}>
-              <span style={{ width: `${k.percent ?? 0}%` }} />
-            </span>
-            {k.meter ? <span class={s.kpiMeterText}>{k.meter}</span> : null}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
+  return <ResultKpiCards items={kpisOf(r)} idPrefix="load" />;
 }
 
 function Allocation({ state, selected }: { state: LoadSnapshot; selected: number }) {

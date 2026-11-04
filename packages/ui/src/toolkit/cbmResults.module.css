@@ -233,7 +233,7 @@
 }
 .actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1.3fr 1fr 1fr;
   gap: 10px;
 }
 .actions .print[data-variant],
@@ -325,4 +325,56 @@
   :global([data-secondary-information]) {
     display: none;
   }
+}
+
+/* Result cards in the approved Container Loading style: bold coloured icon top-left, label, large
+   value. Same markup as before, so tests and data hooks are unchanged. */
+.kpis {
+  gap: 8px;
+}
+.kpi {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 8px;
+  align-content: start;
+  min-height: 74px;
+  padding: 11px 10px 10px;
+  border-radius: 12px;
+  background: var(--cbm-surface);
+  box-shadow: 0 1px 2px rgb(15 28 63 / 0.04);
+}
+.kpi > * {
+  grid-column: 2;
+}
+.kpi :global(.icon) {
+  position: static;
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  transform: none;
+  width: 30px;
+  height: 30px;
+}
+.kpi :global(.icon svg) {
+  stroke-width: 2.1;
+}
+.toneAmber :global(.icon) {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--cbm-surface);
+}
+.toneRed {
+  --tone: #ef4444;
+}
+.toneAmber {
+  --tone: #f5a400;
+}
+.toneBlue {
+  --tone: #1a66e8;
+}
+.kpi dt {
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
+  font-weight: 600;
+}
+.value {
+  font-size: calc(21px + (15px - 21px) * var(--fs-lift, 0) * 0.2);
+  font-weight: 800;
 }

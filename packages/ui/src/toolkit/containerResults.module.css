@@ -66,6 +66,10 @@
   --tone: #f5a400;
   --tone-soft: #fff4d6;
 }
+.kpi[data-tone="purple"] {
+  --tone: #7c3aed;
+  --tone-soft: #f1e8ff;
+}
 .kpi[data-tone="red"] {
   --tone: #ef4444;
   --tone-soft: #fde8e8;

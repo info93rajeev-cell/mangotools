@@ -1,5 +1,6 @@
 import { Icon } from '../primitives/Icon.tsx';
 import { packageColors } from './containerPlacementGeometry.ts';
+import { type ResultKpi, ResultKpiCards } from './ResultKpiCards.tsx';
 import styles from './volumetricWeight.module.css';
 import { VOLUMETRIC_STANDARDS, type VolumetricCalculationResult } from './volumetricWeightModel.ts';
 
@@ -71,11 +72,63 @@ interface VolumetricResultsProps {
   result: VolumetricCalculationResult & { error?: string | null };
 }
 
+const num = (v: string) => Number(String(v).replace(/,/g, '')) || 0;
+
+function volumetricKpis(r: VolumetricResultsProps['result']): ResultKpi[] {
+  const vol = num(r.totalVolumetricWeightKg);
+  const act = num(r.totalActualWeightKg);
+  const charge = num(r.chargeableWeightKg) || 1;
+  const governs =
+    r.governingFactor === 'equal'
+      ? 'Both weights equal'
+      : r.governingFactor === 'volumetric'
+        ? 'Volumetric governs'
+        : 'Actual governs';
+  return [
+    {
+      tone: 'green',
+      icon: 'box',
+      label: 'Total Volume',
+      value: `${r.totalVolumeM3} m³`,
+      sub: `${r.totalPieces} pieces`,
+      percent: 100,
+      meter: `${r.itemCalculations.length} items`,
+    },
+    {
+      tone: 'amber',
+      icon: 'weight',
+      label: 'Actual Weight',
+      value: `${r.totalActualWeightKg} kg`,
+      sub: 'Scale weight',
+      percent: (act / charge) * 100,
+      meter: `${Math.round((act / charge) * 100)}%`,
+    },
+    {
+      tone: 'purple',
+      icon: 'package',
+      label: 'Volumetric Weight',
+      value: `${r.totalVolumetricWeightKg} kg`,
+      sub: 'From size ÷ divisor',
+      percent: (vol / charge) * 100,
+      meter: `${Math.round((vol / charge) * 100)}%`,
+    },
+    {
+      tone: 'blue',
+      icon: 'badge-check',
+      label: 'Chargeable Weight',
+      value: `${r.chargeableWeightKg} kg`,
+      sub: governs,
+      percent: 100,
+      meter: 'Billed',
+    },
+  ];
+}
+
 export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
   return (
     <div class={styles.card}>
       <div class={styles.heading}>
-        <h2 id="volumetric-results-title">Results Summary</h2>
+        <h2 id="volumetric-results-title">Weight Results</h2>
         <span class={styles.loadCount}>
           Items: {result.itemCalculations.length} · Pieces: {result.totalPieces}
         </span>
@@ -100,42 +153,7 @@ export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
           least 1.
         </p>
       ) : null}
-      <div class={styles.kpis}>
-        <div class={styles.kpi} style={{ '--tone': '#0eb779' }}>
-          <Icon name="box" />
-          <span>Total Pieces</span>
-          <strong>{result.totalPieces}</strong>
-        </div>
-        <div class={styles.kpi} style={{ '--tone': '#0065ff' }}>
-          <Icon name="box" />
-          <span>Total Volume</span>
-          <strong>{result.totalVolumeM3} m³</strong>
-        </div>
-        <div class={styles.kpi} style={{ '--tone': '#df9c00' }}>
-          <Icon name="weight" />
-          <span>Actual Weight</span>
-          <strong>{result.totalActualWeightKg} kg</strong>
-        </div>
-        <div class={styles.kpi} style={{ '--tone': '#6366f1' }}>
-          <Icon name="weight" />
-          <span>Volumetric Weight</span>
-          <strong>{result.totalVolumetricWeightKg} kg</strong>
-        </div>
-      </div>
-
-      <div class={styles.chargeableCallout}>
-        <div class={styles.chargeableHead}>
-          <span class={styles.chargeableLabel}>Chargeable Weight:</span>
-          <span class={styles.chargeableValue}>{result.chargeableWeightKg} kg</span>
-        </div>
-        <span class={styles.chargeableSub}>
-          {result.governingFactor === 'volumetric'
-            ? 'Volumetric weight exceeds actual weight (Volumetric Governs)'
-            : result.governingFactor === 'actual'
-              ? 'Actual weight exceeds volumetric weight (Actual Governs)'
-              : 'Volumetric and actual weight are equal'}
-        </span>
-      </div>
+      <ResultKpiCards items={volumetricKpis(result)} idPrefix="volumetric" />
 
       <details class={`${styles.allocation} ${styles.secondary}`} open>
         <summary>Package Allocation by Volume</summary>

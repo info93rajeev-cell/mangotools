@@ -1,7 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
-import { Icon } from '../primitives/Icon.tsx';
 import { Carton3DPreview } from './Carton3DPreview.tsx';
+import { ToolActionRow } from './ToolActionRow.tsx';
 import { useVolumetricShipment } from './useVolumetricShipment.ts';
 import { VolumetricCostCard } from './VolumetricCostCard.tsx';
 import { VolumetricWeightResults, VolumetricWeightSettings } from './VolumetricWeightPanels.tsx';
@@ -21,7 +21,7 @@ interface VolumetricWeightLayoutProps {
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio volumetric weight layout
-export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeightLayoutProps) {
+export function VolumetricWeightLayout({ preset }: VolumetricWeightLayoutProps) {
   const [items, setItems] = useState<VolumetricItem[]>(SAMPLE_VOLUMETRIC_ITEMS);
   const [unit, setUnit] = useState<VolumetricUnit>('cm');
   const [standardId, setStandardId] = useState<string>('iata');
@@ -29,7 +29,6 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
   const [selectedPreviewId, setSelectedPreviewId] = useState<string>(
     SAMPLE_VOLUMETRIC_ITEMS[0]?.id || 'item-1',
   );
-  const [copyFeedback, setCopyFeedback] = useState<boolean>(false);
 
   const result = useVolumetricShipment(preset, items, unit, divisor);
 
@@ -109,8 +108,8 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
     setStandardId('iata');
   };
 
-  const handleCopySummary = async () => {
-    const lines = [
+  const summaryText = () =>
+    [
       'BeyondTheAI - Volumetric Weight Calculation Summary',
       '--------------------------------------------------',
       `Standard / Divisor: ${VOLUMETRIC_STANDARDS.find((s) => s.id === standardId)?.name || 'Custom'} (${divisor} cm³/kg)`,
@@ -125,16 +124,7 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
         (r, idx) =>
           `#${idx + 1} ${r.description}: Vol ${r.volumeM3PerPiece} m³ | Vol Wt ${r.volumetricWeightKgPerPiece} kg/pc | Row Act ${r.totalActualWeightKg} kg | Row Vol ${r.totalVolumetricWeightKg} kg`,
       ),
-    ];
-
-    try {
-      await navigator.clipboard.writeText(lines.join('\n'));
-      setCopyFeedback(true);
-      setTimeout(() => setCopyFeedback(false), 2000);
-    } catch {
-      // clipboard fallback
-    }
-  };
+    ].join('\n');
 
   return (
     <div class={styles.root} data-volumetric-weight-workspace="">
@@ -319,25 +309,12 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
 
           <VolumetricWeightResults result={result} />
 
-          <div class={styles.actions}>
-            {onLaunchTour ? (
-              <button
-                type="button"
-                class={styles.printBtn}
-                onClick={onLaunchTour}
-                title="Step-by-step tool guide"
-                aria-label="Step-by-step tool guide"
-              >
-                <Icon name="info" /> Guide
-              </button>
-            ) : null}
-            <button type="button" class={styles.printBtn} onClick={() => window.print()}>
-              <Icon name="file-text" /> Print / Save PDF
-            </button>
-            <button type="button" class={styles.copyBtn} onClick={handleCopySummary}>
-              <Icon name="copy" /> {copyFeedback ? 'Copied!' : 'Copy Summary'}
-            </button>
-          </div>
+          <ToolActionRow
+            calculateLabel="Calculate Chargeable Weight"
+            resultsId="volumetric-results-title"
+            ready={result.itemCalculations.length > 0 && !result.error}
+            summary={summaryText()}
+          />
         </div>
       </div>
     </div>

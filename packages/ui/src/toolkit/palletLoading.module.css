@@ -35,10 +35,8 @@
 /* 4-COLUMN DESKTOP GRID MATCHING REFERENCE STUDIO */
 .workspaceGrid {
   display: grid;
-  grid-template-columns: minmax(520px, 2.3fr) minmax(280px, 1.2fr) minmax(240px, 1.05fr) minmax(
-      210px,
-      0.9fr
-    );
+  /* Container Loading reference: inputs on the left, view and results on the right. */
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 14px;
   align-items: start;
   min-width: 0;
@@ -46,9 +44,9 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1100px) {
   .workspaceGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -666,6 +664,13 @@
 .settingsStack {
   display: grid;
   gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+
+.resultsStack {
+  display: grid;
+  gap: 12px;
   align-content: start;
   min-width: 0;
 }

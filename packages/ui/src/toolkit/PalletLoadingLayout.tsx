@@ -2,11 +2,7 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
 import { Pallet3DCanvas } from './Pallet3DCanvas.tsx';
 import { PalletCostCard } from './PalletCostCard.tsx';
-import {
-  PalletLoadingActionBar,
-  PalletLoadingQuickGuide,
-  PalletLoadingResults,
-} from './PalletLoadingPanels.tsx';
+import { PalletResultsCard } from './PalletResultsCard.tsx';
 import styles from './palletLoading.module.css';
 import {
   computePalletLoading,
@@ -19,6 +15,7 @@ import {
   type PalletLoadingInput,
   type PalletUnit,
 } from './palletLoadingModel.ts';
+import { ToolActionRow } from './ToolActionRow.tsx';
 
 interface PalletLoadingLayoutProps {
   preset?: ResolvedPreset;
@@ -26,9 +23,8 @@ interface PalletLoadingLayoutProps {
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio pallet loading layout
-export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoadingLayoutProps) {
+export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProps) {
   const [input, setInput] = useState<PalletLoadingInput>(DEFAULT_PALLET_INPUT);
-  const [copyFeedback, setCopyFeedback] = useState(false);
 
   const result = computePalletLoading(input);
 
@@ -73,8 +69,8 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
     });
   };
 
-  const handleCopySummary = async () => {
-    const summaryText = [
+  const summaryText = () =>
+    [
       'BeyondTheAI - Pallet Loading Summary',
       '------------------------------------',
       `Pallet Type: ${PALLET_PRESETS.find((p) => p.id === input.palletTypeId)?.name || 'Custom'}`,
@@ -88,27 +84,8 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
       `Total Gross Weight: ${result.weightBreakdown.totalGrossWeightKg} kg (Box: ${result.weightBreakdown.boxWeightKg} kg, Pallet: ${PALLET_TARE_KG} kg)`,
     ].join('\n');
 
-    try {
-      await navigator.clipboard.writeText(summaryText);
-      setCopyFeedback(true);
-      setTimeout(() => setCopyFeedback(false), 2000);
-    } catch {
-      // clipboard fallback
-    }
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_PALLET_INPUT);
-  };
-
   return (
     <div class={styles.root} data-pallet-loading-workspace="">
-      <div class={styles.topMetaRow}>
-        <span class={styles.privacyBadge}>
-          <span aria-hidden="true">🔒</span> Runs on your device · 100% private
-        </span>
-      </div>
-
       <div class={styles.workspaceGrid}>
         <div class={styles.settingsStack}>
           {/* 1. Pallet & Box Settings */}
@@ -346,37 +323,34 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
           <PalletCostCard result={result} preset={_preset} />
         </div>
 
-        {/* Mobile-only Calculate button */}
-        <div class={styles.mobileOnlyCta}>
-          <button type="button" class={styles.primaryCalculateBtn}>
-            <span aria-hidden="true">🧮</span> Calculate Pallet Loading
-          </button>
+        <div class={styles.resultsStack}>
+          <Pallet3DCanvas
+            result={result}
+            palletLength={convertToCm(input.palletLength, input.unit)}
+            palletWidth={convertToCm(input.palletWidth, input.unit)}
+            boxLength={convertToCm(input.boxLength, input.unit)}
+            boxWidth={convertToCm(input.boxWidth, input.unit)}
+            boxHeight={convertToCm(input.boxHeight, input.unit)}
+          />
+          <PalletResultsCard
+            result={result}
+            heightLimitCm={convertToCm(input.palletHeightLimit, input.unit)}
+            box={{
+              l: input.boxLength,
+              w: input.boxWidth,
+              h: input.boxHeight,
+              unit: input.unit,
+              kg: input.boxWeight,
+            }}
+          />
+          <ToolActionRow
+            calculateLabel="Calculate Pallet Loading"
+            resultsId="pallet-results-title"
+            ready={result.totalBoxes > 0}
+            summary={summaryText()}
+          />
         </div>
-
-        {/* 2. 3D Pallet View */}
-        <Pallet3DCanvas
-          result={result}
-          palletLength={convertToCm(input.palletLength, input.unit)}
-          palletWidth={convertToCm(input.palletWidth, input.unit)}
-          boxLength={convertToCm(input.boxLength, input.unit)}
-          boxWidth={convertToCm(input.boxWidth, input.unit)}
-          boxHeight={convertToCm(input.boxHeight, input.unit)}
-        />
-
-        {/* 3. Results Summary */}
-        <PalletLoadingResults result={result} showWeightInResults={input.showWeightInResults} />
-
-        {/* Quick Guide & Accordions */}
-        <PalletLoadingQuickGuide />
       </div>
-
-      {/* BOTTOM ACTION BAR */}
-      <PalletLoadingActionBar
-        copyFeedback={copyFeedback}
-        onCopySummary={handleCopySummary}
-        onReset={handleReset}
-        onLaunchTour={onLaunchTour}
-      />
     </div>
   );
 }

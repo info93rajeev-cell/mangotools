@@ -80,6 +80,7 @@ export const containerText = {
   visualLimit:
     'Viewer shows the first 250 packages in the selected container; reported totals include every package.',
   results: 'Loading Results',
+  calculate: 'Calculate Loading',
   pieces: 'Total Packages',
   loadedVolume: 'Loaded Volume',
   cargoWeight: 'Cargo Weight',

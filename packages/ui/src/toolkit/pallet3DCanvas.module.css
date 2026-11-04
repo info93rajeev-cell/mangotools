@@ -67,7 +67,7 @@
 .canvasWrap {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 215px;
   background: #f8fafc;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@
 .canvasSvg {
   width: 100%;
   height: 100%;
-  max-height: 245px;
+  max-height: 210px;
   display: block;
 }
 

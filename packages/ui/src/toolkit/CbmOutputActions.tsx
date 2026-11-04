@@ -4,7 +4,7 @@ import { copyText } from './actions.ts';
 import s from './cbmResults.module.css';
 import { cbmText as t } from './cbmStrings.ts';
 
-/** Output actions: Print / Save PDF is primary, Copy Summary secondary. Behaviour is unchanged. */
+/** Output actions: Calculate (primary, shows the current results), Print / Save PDF, Copy Summary. */
 export function CbmOutputActions({
   summary,
   enabled,
@@ -23,8 +23,21 @@ export function CbmOutputActions({
         <Button
           variant="primary"
           size="lg"
-          icon="file-text"
+          icon="zap"
           class={s.print}
+          onClick={() => {
+            const el = document.getElementById('cbm-summary-title');
+            el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            notify(enabled ? t.calcDone : t.calcIncomplete);
+          }}
+        >
+          {t.calculate}
+        </Button>
+        <Button
+          variant="secondary"
+          size="lg"
+          icon="file-text"
+          class={s.copy}
           disabled={!enabled}
           onClick={() => window.print()}
         >
