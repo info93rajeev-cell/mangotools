@@ -4,8 +4,9 @@ id: word-to-pdf
 slug: word-to-pdf
 status: beta
 tier: T3
-version: 0.3.1
+version: 0.3.2
 changelog:
+  - { version: 0.3.2, date: 2026-11-04, type: fixed, summary: "Opens with the sample loaded (your own file replaces it); main button keeps the brand yellow." }
   - { version: 0.3.1, date: 2026-11-04, type: changed, summary: "Real previews of the PDF pages, drawn in your browser from your settings, before you create the file." }
   - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Reference design: colour icons, larger text, setting boxes, page previews and a PDF information panel." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Conversion is now real: the .docx text, headings and lists are laid out as PDF pages, instead of placeholder pages." }

@@ -6,6 +6,7 @@ import {
   RefStatus,
   RefTile,
 } from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfRef.module.css';
 import { pagesLabel } from './pdfSplitPlan.ts';
 import type { SplitPartInfo, usePdfSplitStudio } from './usePdfSplitStudio.ts';
@@ -67,7 +68,7 @@ function downloadLabelFor(count: number, zip: boolean): string {
 export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
   const { totalPages, parts, fileSizeBytes, isProcessing, downloadAsZip } = studio;
   const estimate = parts.reduce((n, p) => n + p.sizeBytes, 0) || fileSizeBytes;
-  const totalMb = (estimate / (1024 * 1024)).toFixed(1);
+  const sizeText = estimate > 0 ? `~${fileMeta(0, estimate).split(' • ')[1]}` : '—';
   const zip = parts.length > 1 && downloadAsZip;
   return (
     <div class={styles.column}>
@@ -101,7 +102,7 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
             tone="green"
             icon="database"
             label="Est. size"
-            value={`~${totalMb} MB`}
+            value={sizeText}
             sub="After split"
           />
           <RefTile

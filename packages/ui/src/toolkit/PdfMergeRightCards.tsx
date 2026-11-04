@@ -7,6 +7,7 @@ import {
   RefStatus,
   RefTile,
 } from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfRef.module.css';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
@@ -59,7 +60,6 @@ function MergePreview({
 
 export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
   const { files, summary, isProcessing } = studio;
-  const totalMb = (summary.totalSizeBytes / (1024 * 1024)).toFixed(1);
   const ready = files.length > 1;
   return (
     <div class={styles.column}>
@@ -88,7 +88,11 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
             tone="green"
             icon="database"
             label="Est. size"
-            value={`${totalMb} MB`}
+            value={
+              summary.totalSizeBytes > 0
+                ? (fileMeta(0, summary.totalSizeBytes).split(' • ')[1] ?? '—')
+                : '—'
+            }
             sub="After merge"
           />
           <RefTile
