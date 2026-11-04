@@ -1,4 +1,7 @@
+import { Icon } from '../primitives/Icon.tsx';
+import { RefPaper } from './PdfConvertParts.tsx';
 import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
+import c from './pdfConvertRef.module.css';
 import styles from './pdfRef.module.css';
 import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
@@ -57,6 +60,35 @@ function SummarySection({ studio }: { studio: PdfToWordState }) {
   );
 }
 
+type TextBlock = { kind: 'h1' | 'h2' | 'p'; text: string };
+
+/** The PDF page on the left, the first part of the Word file built from its text on the right. */
+function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: TextBlock[] }) {
+  const title = blocks.find((b) => b.kind === 'h1')?.text ?? studio.fileName;
+  const body = blocks.filter((b) => b.kind !== 'h1' || b.text !== title).slice(0, 5);
+  return (
+    <div class={c.visual}>
+      <RefPaper badge="PDF" title={studio.fileName} />
+      <span class={c.visualArrow} aria-hidden="true">
+        <Icon name="arrow-right" />
+      </span>
+      <RefPaper badge="W" title={title}>
+        {body.map((b, i) =>
+          b.kind === 'p' || !studio.keepHeadings ? (
+            <p key={i} class={c.wordP}>
+              {b.text}
+            </p>
+          ) : (
+            <span key={i} class={c.wordH2}>
+              {b.text}
+            </span>
+          ),
+        )}
+      </RefPaper>
+    </div>
+  );
+}
+
 function PreviewBody({ studio }: { studio: PdfToWordState }) {
   const ex = studio.extraction;
   if (!ex) return <p class={styles.previewEmpty}>Add a PDF to see its text here.</p>;
@@ -69,6 +101,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
     );
   }
   const blocks = ex.blocks.flatMap((b) => (b.kind === 'page' ? [] : [b]));
+  if (studio.previewTab === 'visual') return <VisualPreview studio={studio} blocks={blocks} />;
   const shown =
     studio.previewTab === 'outline'
       ? blocks.filter((b) => b.kind === 'h1' || b.kind === 'h2')
@@ -77,7 +110,6 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
     <div class={styles.docPreview}>
       {shown.slice(0, 60).map((b, i) => (
         <p
-          // biome-ignore lint/suspicious/noArrayIndexKey: preview blocks have no id
           key={i}
           class={b.kind === 'h1' ? styles.docH1 : b.kind === 'h2' ? styles.docH2 : styles.docP}
         >
@@ -90,7 +122,7 @@ function PreviewBody({ studio }: { studio: PdfToWordState }) {
 }
 
 function PreviewSection({ studio }: { studio: PdfToWordState }) {
-  const tab = (id: 'text' | 'outline', label: string) => (
+  const tab = (id: 'visual' | 'text' | 'outline', label: string) => (
     <button
       type="button"
       aria-pressed={studio.previewTab === id}
@@ -107,6 +139,7 @@ function PreviewSection({ studio }: { studio: PdfToWordState }) {
         title="Editable Output Preview"
         aside={
           <span class={styles.seg}>
+            {tab('visual', 'Visual Preview')}
             {tab('text', 'Text View')}
             {tab('outline', 'Outline')}
           </span>

@@ -6,7 +6,7 @@ status: beta
 tier: T3
 version: 0.3.0
 changelog:
-  - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Rebuilt to the approved reference design: colour icons, larger text, file list, output choices and summary tiles." }
+  - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Reference design: colour icons, larger text, setting boxes, page previews and a PDF information panel." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Conversion is now real: the .docx text, headings and lists are laid out as PDF pages, instead of placeholder pages." }
   - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: convert Word DOCX documents to standard PDF files entirely in the browser." }
 name: Word to PDF

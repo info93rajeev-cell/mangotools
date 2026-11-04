@@ -25,6 +25,23 @@ test.describe('PDF to Word', () => {
     expect(bytes.toString('latin1')).toContain('Quarterly Report');
   });
 
+  test('converts only the pages listed in Page range', async ({ page }) => {
+    await gotoReady(page, '/pdf-to-word');
+    await page
+      .locator('input[type="file"][accept="application/pdf"]')
+      .first()
+      .setInputFiles(fixture('tools/pdf-to-word/fixtures/files/chromium-report.pdf'));
+    await page.getByLabel('Pages to convert').selectOption('custom');
+    await page.getByLabel('Page list').fill('2, 7');
+    await expect(page.getByText('Not in this file: 7')).toBeVisible();
+    await page.getByRole('button', { name: /Convert to Word/ }).click();
+    const download = page.waitForEvent('download');
+    await page.getByRole('button', { name: /Download DOCX/ }).click();
+    const text = readFileSync(await (await download).path()).toString('latin1');
+    expect(text).toContain('Page two text.');
+    expect(text).not.toContain('Quarterly Report');
+  });
+
   test('says when a PDF has no text instead of inventing content', async ({ page }) => {
     await gotoReady(page, '/pdf-to-word');
     await page
@@ -43,7 +60,7 @@ test.describe('Word to PDF', () => {
       .locator('input[type="file"][accept^=".docx"]')
       .first()
       .setInputFiles(fixture('tools/word-to-pdf/fixtures/files/order-summary.docx'));
-    await expect(page.getByText('order-summary.docx')).toBeVisible();
+    await expect(page.getByText('order-summary.docx').first()).toBeVisible();
     await expect(page.getByText(/1 image is not included/)).toBeVisible();
     await page.getByRole('button', { name: /Create PDF/ }).click();
     await expect(page.getByRole('status').filter({ hasText: /^\s*PDF created\s*$/ })).toBeVisible();
@@ -62,7 +79,7 @@ test.describe('Word to PDF', () => {
   test('the sample loads two real generated documents', async ({ page }) => {
     await gotoReady(page, '/word-to-pdf');
     await page.getByRole('button', { name: 'Load Sample' }).click();
-    await expect(page.getByText('Project-Proposal-Sample.docx')).toBeVisible();
-    await expect(page.getByText('Meeting-Notes-Sample.docx')).toBeVisible();
+    await expect(page.getByText('Project-Proposal-Sample.docx').first()).toBeVisible();
+    await expect(page.getByText('Meeting-Notes-Sample.docx').first()).toBeVisible();
   });
 });

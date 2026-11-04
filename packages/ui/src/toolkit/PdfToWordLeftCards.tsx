@@ -1,7 +1,9 @@
-import { RefCardHead, RefCheck, RefDrop, RefFileItem, RefPages } from './PdfRefParts.tsx';
+import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
+import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
+import c from './pdfConvertRef.module.css';
 import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfRef.module.css';
-import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
+import { type PageMode, pickPages, type usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 
@@ -25,25 +27,50 @@ function PdfToWordFileSection({ studio }: { studio: PdfToWordState }) {
         }}
       />
       {fileName ? (
-        <div class={styles.fileList} style={{ marginTop: '12px' }}>
-          <RefFileItem
-            name={fileName}
-            meta={fileMeta(totalPages, fileSizeBytes)}
-            actions={{ onRemove: clearAll }}
-          />
-        </div>
-      ) : null}
-      {fileName && totalPages > 0 ? (
-        <div style={{ marginTop: '14px' }}>
-          <RefCardHead
-            icon="eye"
-            title={`Preview (first ${Math.min(5, totalPages)} pages)`}
-            aside={<span class={styles.listMeta}>{totalPages} pages total</span>}
-          />
-          <RefPages count={totalPages} />
-        </div>
+        <>
+          <RefListHead title="Selected File (1)" onClear={clearAll} />
+          <div class={styles.fileList}>
+            <RefFileItem
+              index={0}
+              name={fileName}
+              meta={fileMeta(totalPages, fileSizeBytes)}
+              actions={{ onRemove: clearAll }}
+            />
+          </div>
+        </>
       ) : null}
     </section>
+  );
+}
+
+function PageRangeBox({ studio }: { studio: PdfToWordState }) {
+  const custom = studio.pageMode === 'custom';
+  const picked = studio.extraction
+    ? pickPages(studio.extraction.pages, studio.pageMode, studio.pageRange)
+    : null;
+  return (
+    <RefOptionBox icon="file-text" title="Page range" wide inline>
+      <select
+        class={styles.input}
+        aria-label="Pages to convert"
+        value={studio.pageMode}
+        onChange={(e) => studio.setPageMode(e.currentTarget.value as PageMode)}
+      >
+        <option value="all">All pages</option>
+        <option value="custom">Selected pages</option>
+      </select>
+      <input
+        class={styles.input}
+        aria-label="Page list"
+        placeholder="e.g. 1-5, 8, 10-12"
+        disabled={!custom}
+        value={studio.pageRange}
+        onInput={(e) => studio.setPageRange(e.currentTarget.value)}
+      />
+      {custom && picked && picked.invalid.length > 0 ? (
+        <p class={c.invalidText}>Not in this file: {picked.invalid.join(', ')}</p>
+      ) : null}
+    </RefOptionBox>
   );
 }
 
@@ -51,7 +78,17 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
   return (
     <section class={styles.card} aria-label="Conversion Options">
       <RefCardHead step={2} title="Conversion Options" />
-      <div class={styles.optionBoxes}>
+      <div class={c.grid2}>
+        <RefOptionBox icon="file-check" title="Output format">
+          <span class={c.boxValue}>DOCX (Word Document)</span>
+        </RefOptionBox>
+        <RefOptionBox icon="info" title="Scanned PDFs">
+          <span class={c.boxHint}>
+            Text inside images is not read: this tool does not do OCR. Use a PDF with selectable
+            text.
+          </span>
+        </RefOptionBox>
+        <PageRangeBox studio={studio} />
         <div class={styles.optionBox}>
           <RefCheck
             label="Keep original headings"
@@ -71,9 +108,25 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
       </div>
       <p class={styles.note} style={{ marginTop: '12px' }}>
         The Word file gets the PDF's text as editable headings and paragraphs. Layout, columns,
-        tables, images and fonts are not carried over. A scanned PDF is a picture of text and has no
-        text to convert; this tool does not do OCR.
+        tables, images and fonts are not carried over.
       </p>
+    </section>
+  );
+}
+
+function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
+  const total = studio.totalPages;
+  if (!studio.fileName || total === 0) return null;
+  return (
+    <section class={styles.card} aria-label="Preview">
+      <RefCardHead
+        icon="eye"
+        title={`Preview (first ${Math.min(5, total)} pages)`}
+        aside={<span class={styles.listMeta}>{total} pages total</span>}
+      />
+      <div class={c.stripWrap}>
+        <RefPageStrip count={total} max={5} />
+      </div>
     </section>
   );
 }
@@ -83,6 +136,7 @@ export function PdfToWordLeftCards({ studio }: { studio: PdfToWordState }) {
     <div class={styles.column}>
       <PdfToWordFileSection studio={studio} />
       <PdfToWordOptionsSection studio={studio} />
+      <PdfToWordPreviewSection studio={studio} />
     </div>
   );
 }
