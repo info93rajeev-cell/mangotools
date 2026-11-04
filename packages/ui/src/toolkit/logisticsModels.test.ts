@@ -5,7 +5,7 @@ import {
   DEFAULT_PALLET_INPUT,
   layerPattern,
 } from './palletLoadingModel.ts';
-import { computeVolumetricWeight, SAMPLE_VOLUMETRIC_ITEMS } from './volumetricWeightModel.ts';
+import { isUsableItem, SAMPLE_VOLUMETRIC_ITEMS } from './volumetricWeightModel.ts';
 
 describe('pallet loading model', () => {
   it('computes the default case: 9 per layer, 4 layers, 36 boxes', () => {
@@ -51,18 +51,10 @@ describe('pallet loading model', () => {
   });
 });
 
-describe('volumetric weight model', () => {
-  it('computes the sample: 34.6 kg volumetric governs over 30.5 kg actual', () => {
-    const r = computeVolumetricWeight(SAMPLE_VOLUMETRIC_ITEMS, 'cm', 6000);
-    expect([r.totalPieces, r.totalActualWeightKg, r.totalVolumetricWeightKg]).toEqual([
-      8, 30.5, 34.6,
-    ]);
-    expect(r.chargeableWeightKg).toBe(34.6);
-    expect(r.governingFactor).toBe('volumetric');
-    expect(r.skippedRowIds).toEqual([]);
-  });
-
-  it('skips rows with zero sizes or a quantity that is not a whole number of at least 1', () => {
+describe('volumetric weight rows', () => {
+  // The weights themselves come from logistics.weight.shipment@1 (engine fixtures); this only checks
+  // which rows the tool sends to the engine and which it flags.
+  it('counts the sample rows and flags rows the engine cannot take', () => {
     const items = [
       ...SAMPLE_VOLUMETRIC_ITEMS,
       { id: 'zero', description: 'x', length: 0, width: 10, height: 10, weightKg: 1, quantity: 1 },
@@ -76,19 +68,22 @@ describe('volumetric weight model', () => {
         quantity: 2.5,
       },
       { id: 'none', description: 'z', length: 10, width: 10, height: 10, weightKg: 1, quantity: 0 },
+      {
+        id: 'light',
+        description: 'w',
+        length: 10,
+        width: 10,
+        height: 10,
+        weightKg: 0,
+        quantity: 1,
+      },
     ];
-    const r = computeVolumetricWeight(items, 'cm', 6000);
-    expect(r.skippedRowIds).toEqual(['zero', 'half', 'none']);
-    expect(r.totalPieces).toBe(8);
-  });
-
-  it('converts inches to cm before dividing by the cm³/kg divisor', () => {
-    const r = computeVolumetricWeight(
-      [{ id: 'a', description: 'a', length: 10, width: 10, height: 10, weightKg: 1, quantity: 1 }],
-      'inch',
-      5000,
-    );
-    // 1000 in³ = 16 387.064 cm³ → 3.28 kg at 5000.
-    expect(r.totalVolumetricWeightKg).toBe(3.3);
+    expect(items.filter((i) => !isUsableItem(i)).map((i) => i.id)).toEqual([
+      'zero',
+      'half',
+      'none',
+      'light',
+    ]);
+    expect(SAMPLE_VOLUMETRIC_ITEMS.every(isUsableItem)).toBe(true);
   });
 });
