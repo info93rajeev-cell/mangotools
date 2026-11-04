@@ -429,3 +429,41 @@
 :global(:where([data-theme="dark"])) .amountInput:has(span) {
   background: #151e33;
 }
+
+/* Tablet and phone order (founder rule): picture, inputs, Calculate, results, Print / Copy. */
+@media (max-width: 1100px) and (min-width: 701px) {
+  .workspace {
+    --calc-order: 1;
+    --out-order: 3;
+  }
+  .right > * {
+    order: 2;
+  }
+  .right > [data-selected-container] {
+    order: -1;
+  }
+}
+@media (max-width: 700px) {
+  .workspace {
+    --calc-order: 35;
+    --out-order: 80;
+  }
+  .constraints {
+    order: 25;
+  }
+  .costInputs {
+    order: 28;
+  }
+  .workspace.workspace :global([data-cost-input]),
+  .workspace.workspace :global([data-cost-result]) {
+    grid-row: auto;
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .workspace.workspace :global([data-tool-calc]),
+  .workspace.workspace :global([data-tool-out]) {
+    grid-column: 1 / -1;
+  }
+}

@@ -434,8 +434,6 @@
 .costResult {
   background: linear-gradient(110deg, #fffef1, #fff9dd);
 }
-@media (max-width: 700px) {
-}
 
 .secondary {
   margin-top: 4px;
@@ -515,4 +513,15 @@
   background: #0d2a26;
   border-color: #1d6b55;
   color: #8ff0c4;
+}
+
+@media (max-width: 700px) {
+  .kpiLabel,
+  .kpiSub {
+    white-space: normal;
+    line-height: 1.25;
+  }
+  .details th {
+    white-space: nowrap;
+  }
 }

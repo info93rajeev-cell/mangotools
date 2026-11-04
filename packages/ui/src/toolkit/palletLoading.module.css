@@ -674,3 +674,30 @@
   align-content: start;
   min-width: 0;
 }
+
+/* Tablet and phone order (founder rule): picture, inputs, Calculate, results, Print / Copy. */
+@media (max-width: 1100px) {
+  .workspaceGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    --calc-order: 3;
+    --out-order: 5;
+  }
+  .settingsStack,
+  .resultsStack {
+    display: contents;
+  }
+  .resultsStack > :first-child {
+    order: 0;
+  }
+  .settingsStack > :first-child {
+    order: 1;
+  }
+  .settingsStack > :nth-child(2) {
+    order: 2;
+  }
+  .resultsStack > :nth-child(2) {
+    order: 4;
+  }
+}

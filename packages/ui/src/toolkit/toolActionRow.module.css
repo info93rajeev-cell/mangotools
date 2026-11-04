@@ -1,7 +1,12 @@
 /* Calculate · Print / Save PDF · Copy Summary — shared by the Logistics calculators. */
 .row {
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr;
+  grid-template-columns: 1.3fr 2fr;
+  gap: 10px;
+}
+.out {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 .row button {
@@ -26,11 +31,11 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
-.calc {
-  color: #171300 !important;
-  background: linear-gradient(110deg, #ffcf3e, #ffc72b) !important;
-  border-color: #ffca28 !important;
-  font-size: 15.5px !important;
+.row .calc {
+  color: #171300;
+  background: linear-gradient(110deg, #ffcf3e, #ffc72b);
+  border-color: #ffca28;
+  font-size: 15.5px;
 }
 .note {
   grid-column: 1 / -1;
@@ -47,13 +52,29 @@
   outline-offset: 3px;
   transition: outline-color 0.6s;
 }
-@media (max-width: 700px) {
+/* Single column (tablet and phone): Calculate after the inputs, Print / Copy after the results. */
+@media (max-width: 1100px) {
   .row {
-    grid-template-columns: 1fr;
-    gap: 6px;
+    display: contents;
   }
+  .calc {
+    order: var(--calc-order, 50);
+    width: 100%;
+  }
+  .out {
+    order: var(--out-order, 95);
+    width: 100%;
+  }
+  .note {
+    order: var(--out-order, 95);
+  }
+}
+@media (max-width: 700px) {
   .row button {
     min-height: 44px;
+  }
+  .out {
+    gap: 6px;
   }
 }
 :global([data-theme="dark"]) .row button:not(.calc) {

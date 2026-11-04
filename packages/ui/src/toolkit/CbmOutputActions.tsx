@@ -25,6 +25,7 @@ export function CbmOutputActions({
           size="lg"
           icon="zap"
           class={s.print}
+          data-cbm-calc=""
           onClick={() => {
             const el = document.getElementById('cbm-summary-title');
             el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
