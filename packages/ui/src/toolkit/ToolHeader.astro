@@ -83,12 +83,14 @@ const badge = privacyBadge(processing);
     height: 76px;
     border-radius: 18px;
   }
+  .tool-icon {
+    --icon-fill: currentColor;
+    --icon-detail-color: #ffffff;
+  }
   .tool-icon :global(svg) {
-    width: 42px;
-    height: 42px;
-    stroke-width: 2;
-    fill: currentColor;
-    fill-opacity: 0.2;
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.75;
   }
   .tool-header.has-icon .summary {
     font-size: 17px;
@@ -103,6 +105,7 @@ const badge = privacyBadge(processing);
   .tone-red { background: #ffe9ea; color: #e5384b; }
   .tone-green { background: #e3f8ec; color: #15924f; }
   .tone-amber { background: #fff3d6; color: #d98a00; }
+  :global([data-theme='dark']) .tool-icon { --icon-detail-color: #121a2c; }
   :global([data-theme='dark']) .tone-purple { background: #2e1d4f; color: #c4a2ff; }
   :global([data-theme='dark']) .tone-blue { background: #172a4f; color: #8fb5ff; }
   :global([data-theme='dark']) .tone-red { background: #44181e; color: #ff98a2; }

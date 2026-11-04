@@ -846,12 +846,19 @@
   color: #1665f5;
 }
 
+.cardTitleIcon {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
+:global([data-theme="dark"]) .cardTitleIcon {
+  --knock: #182236;
+}
+
 .cardTitleIcon :global(svg) {
   width: 24px;
   height: 24px;
-  fill: currentColor;
-  fill-opacity: 0.3;
-  stroke-width: 2;
+  stroke-width: 2.25;
 }
 
 [data-ref-look] .miniBtn {

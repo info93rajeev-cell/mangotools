@@ -31,8 +31,8 @@
 }
 
 .badge :global(svg) {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   stroke-width: 2;
 }
 
@@ -575,15 +575,15 @@
 .tileIcon {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   grid-row: 1 / span 3;
 }
 
 .tileIcon :global(svg) {
-  width: 22px;
-  height: 22px;
+  width: 27px;
+  height: 27px;
   stroke-width: 1.9;
 }
 
@@ -1080,8 +1080,21 @@ fieldset.options {
   border-color: #a14b4b;
 }
 
-/* Duotone icons (reference look): a tinted fill under a 2px outline gives the solid, colourful
-   weight of the reference instead of thin line art. */
+/* Solid icons (reference look): these slots opt in to the solid icon style in global.css; shapes
+   are filled in full colour with white cut-out details, line-only icons get bold full-colour lines. */
+.duo,
+.optionIcon,
+.tileIcon,
+.badge,
+.cardTitle > :global(.icon),
+.drop > :global(.icon),
+.privacy > :global(.icon),
+.mode > :global(.icon),
+.advanced > summary {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
 .duo :global(svg),
 .optionIcon :global(svg),
 .tileIcon :global(svg),
@@ -1089,10 +1102,15 @@ fieldset.options {
 .cardTitle > :global(.icon) svg,
 .drop > :global(.icon) svg,
 .privacy > :global(.icon) svg,
+.mode > :global(.icon) svg,
 .advanced > summary :global(svg) {
-  fill: currentColor;
-  fill-opacity: 0.38;
-  stroke-width: 2;
+  stroke-width: 2.25;
+}
+
+:global([data-theme="dark"]) :is(.tileIcon, .badge, .privacy, .drop, .optionIcon, .duo, .mode),
+:global([data-theme="dark"]) .cardTitle > :global(.icon),
+:global([data-theme="dark"]) .advanced > summary {
+  --knock: #14203a;
 }
 
 /* Desktop: the actions sit on the title's right and the badges line up under the summary,
@@ -1264,13 +1282,13 @@ fieldset.options {
   }
 
   .tileIcon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
 
   .tileIcon :global(svg) {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
   }
 
   .tileLabel {
@@ -1723,8 +1741,6 @@ fieldset.options {
   width: 26px;
   height: 26px;
   color: #334155;
-  fill: currentColor;
-  fill-opacity: 0.15;
   stroke-width: 1.9;
 }
 

@@ -36,14 +36,14 @@ function SummarySection({ studio }: { studio: PdfToWordState }) {
         />
         <RefTile
           tone="green"
-          icon="type"
+          icon="book-open"
           label="Words found"
           value={String(ex?.words ?? 0)}
           sub="Selectable text"
         />
         <RefTile
           tone="amber"
-          icon="list"
+          icon="layers"
           label="Headings"
           value={String(ex?.headings ?? 0)}
           sub="From larger text"

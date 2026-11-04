@@ -206,7 +206,10 @@ export function iconSvg(name: string): string {
   const svg = raw
     .replace(/\s+class="[^"]*"/, '')
     .replace(/stroke-width="2"/, 'stroke-width="1.5"')
-    .replace('<svg', '<svg aria-hidden="true" focusable="false"')
+    .replace(
+      '<svg',
+      `<svg aria-hidden="true" focusable="false" data-icon="${name in RAW ? name : 'info'}"`,
+    )
     .replace(/\n\s*/g, ' ')
     .trim();
   cache.set(name, svg);

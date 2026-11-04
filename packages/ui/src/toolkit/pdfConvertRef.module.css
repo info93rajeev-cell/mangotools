@@ -74,8 +74,16 @@
   width: 22px;
   height: 22px;
   color: #1665f5;
-  fill: currentColor;
-  fill-opacity: 0.16;
+  stroke-width: 2.25;
+}
+
+.boxHead > :global(.icon) {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
+:global([data-theme="dark"]) .boxHead > :global(.icon) {
+  --knock: #1f2c45;
 }
 
 .boxBody {
