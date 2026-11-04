@@ -112,8 +112,8 @@
     --color-bg: #0c0a09;
     --color-surface: #1c1917;
     --color-surface-subtle: #292524;
-    --color-border: #292524;
-    --color-border-subtle: #1c1917;
+    --color-border: #3a3532;
+    --color-border-subtle: #292524;
     --color-border-input: #6b645e;
     --color-text: #fafaf9;
     --color-text-muted: #d6d3d1;
@@ -144,8 +144,8 @@
   --color-bg: #0c0a09;
   --color-surface: #1c1917;
   --color-surface-subtle: #292524;
-  --color-border: #292524;
-  --color-border-subtle: #1c1917;
+  --color-border: #3a3532;
+  --color-border-subtle: #292524;
   --color-border-input: #6b645e;
   --color-text: #fafaf9;
   --color-text-muted: #d6d3d1;
@@ -176,5 +176,31 @@
 @media (max-width: 700px) {
   :root {
     --fs-lift: 0.5;
+  }
+}
+
+/* Dark pages that use the approved reference studios get a cool navy base, so the navy panels and
+   bright accents of the studio sit on a matching background instead of warm stone. */
+:root[data-theme="dark"]:has([data-ref-look]) {
+  --color-bg: #0a1120;
+  --color-surface: #121b2d;
+  --color-surface-subtle: #18233a;
+  --color-border: #2b3a57;
+  --color-border-subtle: #1d2940;
+  --color-border-input: #4b5d80;
+  --color-text-muted: #d3dbe8;
+  --color-text-subtle: #a6b3c9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):has([data-ref-look]) {
+    --color-bg: #0a1120;
+    --color-surface: #121b2d;
+    --color-surface-subtle: #18233a;
+    --color-border: #2b3a57;
+    --color-border-subtle: #1d2940;
+    --color-border-input: #4b5d80;
+    --color-text-muted: #d3dbe8;
+    --color-text-subtle: #a6b3c9;
   }
 }

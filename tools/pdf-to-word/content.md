@@ -4,11 +4,13 @@ lastReviewed: 2026-11-02
 
 ## How to use
 
-1. **Open or drop a PDF**, or select **Sample PDF** to try a two-page agreement generated in your
+1. **Open or drop a PDF**, or select **Load Sample** to try a two-page agreement generated in your
    browser.
 2. The summary shows how many pages have text, the words found and the headings detected; the
-   **Text** and **Outline** tabs preview what the Word file will contain.
-3. Choose whether to keep headings and whether to start each PDF page on a new Word page.
+   **Visual Preview**, **Text View** and **Outline** tabs show what the Word file will contain.
+3. Choose whether to keep headings and whether to start each PDF page on a new Word page. To
+   convert only some pages, set **Page range** to **Selected pages** and type them, for example
+   `1-5, 8`.
 4. Select **Convert to Word**, then **Download DOCX**.
 
 ## Method

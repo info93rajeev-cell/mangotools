@@ -4,8 +4,9 @@ id: pdf-merge
 slug: pdf-merge
 status: beta
 tier: T3
-version: 0.2.0
+version: 0.3.0
 changelog:
+  - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Rebuilt to the approved reference design: colour icons, larger text, file list and summary tiles." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Real bookmarks per file, real sample files, limits enforced, protected PDFs refused, and the result follows reordering." }
   - { version: 0.1.3, date: 2026-09-30, type: changed, summary: "Describe limitations without future versions; say free to use; state that processing is local." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }

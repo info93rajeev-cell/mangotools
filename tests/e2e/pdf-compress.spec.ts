@@ -7,14 +7,16 @@ test.describe('Compress PDF', () => {
     page,
   }) => {
     await gotoReady(page, '/compress-pdf');
-    await page.getByRole('button', { name: /Sample PDF/ }).click();
+    await page.getByRole('button', { name: 'Load Sample' }).click();
     await expect(page.getByText('Site-Photo-Report-Sample.pdf')).toBeVisible();
     await expect(page.getByText('Ready to compress')).toBeVisible();
-    await page.getByRole('button', { name: /Compress PDF →/ }).click();
-    await expect(page.getByText('✓ Compressed')).toBeVisible({ timeout: 30_000 });
+    await page.getByRole('button', { name: 'Compress PDF', exact: true }).click();
+    await expect(page.getByRole('status').filter({ hasText: /^\s*Compressed\s*$/ })).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(page.getByText(/3 of 3 JPEG images were re-encoded/)).toBeVisible();
     const reduction = await page
-      .getByText('Size Reduction', { exact: true })
+      .getByText('Reduction', { exact: true })
       .locator('..')
       .textContent();
     expect(Number(/(\d+)%/.exec(reduction ?? '')?.[1] ?? 0)).toBeGreaterThan(10);
@@ -31,9 +33,11 @@ test.describe('Compress PDF', () => {
 
   test('changing a setting clears the old result', async ({ page }) => {
     await gotoReady(page, '/compress-pdf');
-    await page.getByRole('button', { name: /Sample PDF/ }).click();
-    await page.getByRole('button', { name: /Compress PDF →/ }).click();
-    await expect(page.getByText('✓ Compressed')).toBeVisible({ timeout: 30_000 });
+    await page.getByRole('button', { name: 'Load Sample' }).click();
+    await page.getByRole('button', { name: 'Compress PDF', exact: true }).click();
+    await expect(page.getByRole('status').filter({ hasText: /^\s*Compressed\s*$/ })).toBeVisible({
+      timeout: 30_000,
+    });
     await page.getByRole('button', { name: /Strong Compression/ }).click();
     await expect(page.getByText('Ready to compress')).toBeVisible();
   });

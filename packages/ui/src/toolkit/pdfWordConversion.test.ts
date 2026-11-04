@@ -6,9 +6,9 @@ import { parseDocumentXml, readDocx, readZipText } from './docxReader.ts';
 import { renderDocxToPdf, sanitise } from './docxToPdf.ts';
 import { buildDocxFromBlocks } from './docxZipPacker.ts';
 import { decodeWithCMap, parseCMap } from './pdfFontDecoder.ts';
-import { extractPdfText, toBlocks } from './pdfTextExtract.ts';
+import { extractPdfText, type PageText, toBlocks } from './pdfTextExtract.ts';
 import { createTextSamplePdf } from './samplePdfDocuments.ts';
-import { docxBlocks, summarise } from './usePdfToWordStudio.ts';
+import { docxBlocks, pickPages, summarise } from './usePdfToWordStudio.ts';
 
 const root = join(__dirname, '../../../..');
 const file = (p: string) => new Uint8Array(readFileSync(join(root, p)));
@@ -116,5 +116,25 @@ describe('DOCX reading and PDF output', () => {
   it('sanitises text for the standard fonts', () => {
     expect(sanitise('€ café ₹ नमस्ते')).toEqual({ text: '€ café ? ??????', replaced: 7 });
     expect(parseDocumentXml('<w:body><w:p/></w:body>').paragraphs).toHaveLength(1);
+  });
+});
+
+describe('PDF to Word page range', () => {
+  const pages: PageText[] = [1, 2, 3, 4, 5].map((n) => ({
+    lines: [{ text: `Page ${n}`, size: 12, y: 700 }],
+  }));
+
+  it('keeps every page in "all" mode, whatever the text says', () => {
+    expect(pickPages(pages, 'all', '2').pages).toHaveLength(5);
+  });
+
+  it('keeps only the listed pages and reports items outside the file', () => {
+    const r = pickPages(pages, 'custom', '1-2, 4, 9');
+    expect(r.pages.map((p) => p.lines[0]?.text)).toEqual(['Page 1', 'Page 2', 'Page 4']);
+    expect(r.invalid).toEqual(['9']);
+  });
+
+  it('keeps nothing until pages are entered', () => {
+    expect(pickPages(pages, 'custom', '').pages).toHaveLength(0);
   });
 });

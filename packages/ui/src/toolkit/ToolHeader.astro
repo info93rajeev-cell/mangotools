@@ -3,18 +3,28 @@ import type { Processing } from '@mangotools/schemas';
 import { Icon } from '../primitives/Icon.tsx';
 import FullscreenToggle from './FullscreenToggle.astro';
 import { privacyBadge } from './privacyBadge.ts';
+import type { ToolHeaderIcon } from './toolHeaderIcons.ts';
 
 interface Props {
   name: string;
   summary: string;
   /** Evidence-based processing from the registry. The badge renders only for `device`. */
   processing: Processing;
+  /** Optional large tool icon left of the title (reference layout). */
+  icon?: ToolHeaderIcon | undefined;
 }
-const { name, summary, processing } = Astro.props;
+const { name, summary, processing, icon } = Astro.props;
 const badge = privacyBadge(processing);
 ---
 
-<div class="tool-header">
+<div class:list={['tool-header', { 'has-icon': icon }]}>
+  {
+    icon ? (
+      <span class={`tool-icon tone-${icon.tone}`}>
+        <Icon name={icon.name} />
+      </span>
+    ) : null
+  }
   <div class="title-row">
     <h1>{name}</h1>
     <div class="header-badges">
@@ -57,6 +67,50 @@ const badge = privacyBadge(processing);
     display: grid;
     gap: var(--space-1);
   }
+  .tool-header.has-icon {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 18px;
+    align-items: center;
+  }
+  .tool-header.has-icon .summary {
+    grid-column: 2;
+  }
+  .tool-icon {
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 18px;
+  }
+  .tool-icon {
+    --icon-fill: currentColor;
+    --icon-detail-color: #ffffff;
+  }
+  .tool-icon :global(svg) {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.75;
+  }
+  .tool-header.has-icon .summary {
+    font-size: 17px;
+    line-height: 1.45;
+    color: #3b4f6e;
+  }
+  :global([data-theme='dark']) .tool-header.has-icon .summary {
+    color: #c3cfe0;
+  }
+  .tone-purple { background: linear-gradient(145deg, #f4ecff, #e6d6ff); color: #7c3aed; }
+  .tone-blue { background: #e8f0ff; color: #1665f5; }
+  .tone-red { background: #ffe9ea; color: #e5384b; }
+  .tone-green { background: #e3f8ec; color: #15924f; }
+  .tone-amber { background: #fff3d6; color: #d98a00; }
+  :global([data-theme='dark']) .tool-icon { --icon-detail-color: #121a2c; }
+  :global([data-theme='dark']) .tone-purple { background: #2e1d4f; color: #c4a2ff; }
+  :global([data-theme='dark']) .tone-blue { background: #172a4f; color: #8fb5ff; }
+  :global([data-theme='dark']) .tone-red { background: #44181e; color: #ff98a2; }
+  :global([data-theme='dark']) .tone-green { background: #10351f; color: #6ee7a0; }
+  :global([data-theme='dark']) .tone-amber { background: #3b2a08; color: #fcd34d; }
   .title-row {
     display: flex;
     flex-wrap: wrap;
@@ -157,6 +211,25 @@ const badge = privacyBadge(processing);
     }
     .summary {
       display: none;
+    }
+    .tool-header.has-icon {
+      column-gap: 12px;
+    }
+    .tool-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+    }
+    .tool-icon :global(svg) {
+      width: 28px;
+      height: 28px;
+    }
+    /* With the reference layout the one-line purpose stays visible on phones. */
+    .tool-header.has-icon .summary {
+      display: block;
+      font-size: 14px;
+      line-height: 1.45;
+      margin-top: 2px;
     }
   }
 </style>

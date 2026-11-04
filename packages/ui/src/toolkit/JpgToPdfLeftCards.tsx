@@ -1,5 +1,6 @@
 import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
 import styles from './jpgToPdfStudio.module.css';
 import { fs } from './phoneFontSize.ts';
 import type { PdfImageItem } from './usePdfStudioState.ts';
@@ -151,7 +152,7 @@ function ImageRowItem({
           aria-label={`Move ${item.name} up`}
           title={`Move ${item.name} up`}
         >
-          ↑
+          <Icon name="chevron-up" />
         </button>
         <button
           type="button"
@@ -161,7 +162,7 @@ function ImageRowItem({
           aria-label={`Move ${item.name} down`}
           title={`Move ${item.name} down`}
         >
-          ↓
+          <Icon name="chevron-down" />
         </button>
         <button
           type="button"
@@ -170,7 +171,7 @@ function ImageRowItem({
           aria-label={`Rotate ${item.name}`}
           title={`Rotate ${item.name} 90°`}
         >
-          🔄
+          <Icon name="rotate-ccw" />
         </button>
         <button
           type="button"
@@ -179,7 +180,7 @@ function ImageRowItem({
           aria-label={`Remove ${item.name}`}
           title={`Remove ${item.name}`}
         >
-          🗑️
+          <Icon name="trash-2" />
         </button>
       </div>
     </li>

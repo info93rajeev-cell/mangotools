@@ -1,8 +1,9 @@
 import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
+import { RefCardHead } from './PdfRefParts.tsx';
 import { fileMeta } from './pdfFileMeta.ts';
-import styles from './pdfStudio.module.css';
-import { fs } from './phoneFontSize.ts';
+import styles from './pdfRef.module.css';
 import type { CompressionPreset, usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
 type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
@@ -17,299 +18,217 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
   }
 
   return (
-    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
+    <section class={styles.card} data-tour="pdf-upload" aria-label="Add PDF file">
       <input
         ref={fileInputRef}
         type="file"
         accept="application/pdf"
-        style={{ display: 'none' }}
+        hidden
         onChange={onFileInputChange}
       />
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>1</span> Add PDF file
-        </h2>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
-            type="button"
-            onClick={studio.loadSampleCompress}
-            style={{
-              fontSize: fs(11),
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: 'var(--color-tint-blue)',
-              color: 'var(--color-primary)',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            📄 Sample PDF
-          </button>
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              fontSize: fs(11),
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: 'var(--color-tint-blue)',
-              color: 'var(--color-primary)',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            {fileName ? 'Change File' : 'Upload PDF'}
-          </button>
-        </div>
-      </div>
-
-      {!fileName ? (
-        <button
-          type="button"
-          class={styles.dropZoneCompact}
-          onClick={() => fileInputRef.current?.click()}
-          style={{ cursor: 'pointer', textAlign: 'left', width: '100%' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
-              🗜️+
-            </span>
-            <div>
-              <p class={styles.dropMainText} style={{ fontSize: fs(13) }}>
-                Drag & drop a PDF file here
-              </p>
-              <p class={styles.dropSubText} style={{ fontSize: fs(11) }}>
-                or click to browse • 100% in-browser compression
-              </p>
-            </div>
-          </div>
-          <span
-            class={styles.chooseBtn}
-            style={{
-              padding: '6px 14px',
-              fontSize: fs(12),
-            }}
-          >
-            Choose PDF File
-          </span>
-        </button>
-      ) : (
-        <div
-          class={styles.fileRow}
-          style={{ background: 'var(--color-panel)', borderColor: '#cbd5e1', marginTop: '4px' }}
-        >
-          <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
-            PDF
-          </div>
-          <div class={styles.fileDetails}>
+      <RefCardHead step={1} title="Add PDF file" />
+      <button type="button" class={styles.drop} onClick={() => fileInputRef.current?.click()}>
+        <Icon name="file-plus" />
+        <span class={styles.dropTitle}>
+          {fileName
+            ? 'Drag & drop another PDF here, or click to browse'
+            : 'Drag & drop a PDF file here, or click to browse'}
+        </span>
+        <span class={styles.dropSub}>
+          Supports PDF files · Max 100 MB each · Files stay in your browser
+        </span>
+        <span class={styles.dropBtn}>Choose PDF File</span>
+      </button>
+      {fileName ? (
+        <div class={styles.fileRow}>
+          <span class={styles.fileBadge}>PDF</span>
+          <span class={styles.fileText}>
             <span class={styles.fileName}>{fileName}</span>
             <span class={styles.fileMeta}>{fileMeta(totalPages, fileSizeBytes)}</span>
-          </div>
-          <button
-            type="button"
-            class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-            onClick={clearAll}
-            title="Clear file"
-          >
-            ✕
+          </span>
+          <button type="button" class={styles.iconBtn} onClick={clearAll} aria-label="Remove file">
+            <Icon name="trash-2" />
           </button>
         </div>
-      )}
-    </div>
+      ) : null}
+    </section>
   );
 }
 
-const PRESET_OPTIONS = [
-  ['light', '🌱 Light Compression', 'Minimal quality loss', 'JPEG 82%, up to 3000 px'],
-  ['balanced', '⚖️ Balanced (Recommended)', 'Best size and clarity', 'JPEG 70%, up to 2000 px'],
-  ['strong', '📊 Strong Compression', 'Maximum size reduction', 'JPEG 50%, up to 1400 px'],
-  ['custom', '⚙️ Custom', 'Choose the image quality', 'Your quality, up to 2000 px'],
-] as const;
+const PRESET_OPTIONS: readonly {
+  id: CompressionPreset;
+  icon: string;
+  tone: string;
+  title: string;
+  desc: string;
+  foot: string;
+}[] = [
+  {
+    id: 'light',
+    icon: 'leaf',
+    tone: styles.toneGreen as string,
+    title: 'Light Compression',
+    desc: 'Minimal quality loss. Images kept sharp.',
+    foot: 'JPEG 82% · 3000 px',
+  },
+  {
+    id: 'balanced',
+    icon: 'scale',
+    tone: styles.toneBlue as string,
+    title: 'Balanced (Recommended)',
+    desc: 'Good balance of file size and visual quality.',
+    foot: 'JPEG 70% · 2000 px',
+  },
+  {
+    id: 'strong',
+    icon: 'database',
+    tone: styles.toneSlate as string,
+    title: 'Strong Compression',
+    desc: 'Maximum size reduction with lower image quality.',
+    foot: 'JPEG 50% · 1400 px',
+  },
+  {
+    id: 'custom',
+    icon: 'settings',
+    tone: styles.toneDark as string,
+    title: 'Custom',
+    desc: 'Choose the image quality yourself.',
+    foot: 'Your quality · 2000 px',
+  },
+];
 
-function OptionCheck(props: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+function PresetOptions({ studio }: { studio: CompressStudioState }) {
   return (
-    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+    <fieldset class={styles.options} aria-label="Compression level">
+      {PRESET_OPTIONS.map((o) => {
+        const active = studio.preset === o.id;
+        return (
+          <button
+            key={o.id}
+            type="button"
+            aria-pressed={active}
+            class={`${styles.option} ${active ? styles.optionActive : ''}`}
+            onClick={() => studio.setPreset(o.id)}
+          >
+            <span class={`${styles.optionIcon} ${o.tone}`}>
+              <Icon name={o.icon} />
+            </span>
+            <span class={styles.optionTitle}>{o.title}</span>
+            <span class={styles.optionDesc}>{o.desc}</span>
+            <span class={styles.optionFoot}>
+              <span class={styles.radio} aria-hidden="true" />
+              {o.foot}
+            </span>
+          </button>
+        );
+      })}
+    </fieldset>
+  );
+}
+
+function Check(props: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label>
       <input
         type="checkbox"
         checked={props.checked}
         onChange={(e) => props.onChange(e.currentTarget.checked)}
       />
-      <span>{props.label}</span>
+      {props.label}
     </label>
   );
 }
 
-function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '6px 12px',
-        fontSize: fs(11),
-        fontWeight: 600,
-      }}
-    >
-      <OptionCheck
-        label="Convert images to grayscale"
-        checked={studio.convertToGrayscale}
-        onChange={studio.setConvertToGrayscale}
-      />
-      <OptionCheck
-        label="Remove page thumbnails"
-        checked={studio.removeThumbnails}
-        onChange={studio.setRemoveThumbnails}
-      />
-      <OptionCheck
-        label="Aim for a maximum size"
-        checked={studio.useSizeTarget}
-        onChange={studio.setUseSizeTarget}
-      />
-    </div>
-  );
-}
-
-function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }) {
+function AdvancedSettings({ studio }: { studio: CompressStudioState }) {
   const { imageQuality, setImageQuality, maxOutputSizeMb, setMaxOutputSizeMb } = studio;
-
   return (
-    <details
-      style={{
-        background: 'var(--color-panel-subtle)',
-        padding: '8px 10px',
-        borderRadius: '8px',
-        border: '1px solid #e2e8f0',
-        marginTop: '6px',
-      }}
-    >
-      <summary
-        style={{
-          fontWeight: 700,
-          fontSize: fs(11.5),
-          cursor: 'pointer',
-          color: 'var(--color-text)',
-        }}
-      >
-        ⚙️ Advanced settings (optional)
+    <details class={styles.advanced} open>
+      <summary>
+        <Icon name="settings" />
+        Advanced settings <small>(optional)</small>
+        <span class={styles.advancedChevron}>
+          <Icon name="chevron-down" />
+        </span>
       </summary>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-        <label class={styles.inputLabel} for="compress-image-quality" style={{ fontSize: fs(11) }}>
-          Image quality (Custom): {imageQuality}%
-        </label>
-        <input
-          id="compress-image-quality"
-          type="range"
-          min={10}
-          max={100}
-          value={imageQuality}
-          onInput={(e) => {
-            setImageQuality(Number(e.currentTarget.value));
-            studio.setPreset('custom');
-          }}
-          style={{ width: '100%', accentColor: '#2563eb' }}
-        />
-        <PdfCompressOptionCheckboxes studio={studio} />
-        <p
-          style={{
-            margin: 0,
-            fontSize: fs(10.5),
-            color: 'var(--color-text-muted)',
-            lineHeight: 1.45,
-          }}
-        >
-          JPEG images are re-encoded in your browser; text, fonts and vector graphics are never
-          changed, so text stays searchable. Other image types are kept as they are.
-        </p>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="compress-max-size" style={{ fontSize: fs(11) }}>
-            Maximum size (MB)
+      <div class={styles.advancedBody}>
+        <div>
+          <label class={styles.fieldLabel} for="compress-image-quality">
+            Image quality
+          </label>
+          <div class={styles.rangeRow}>
+            <input
+              id="compress-image-quality"
+              type="range"
+              min={10}
+              max={100}
+              value={imageQuality}
+              onInput={(e) => {
+                setImageQuality(Number(e.currentTarget.value));
+                studio.setPreset('custom');
+              }}
+            />
+            <span class={styles.rangeValue}>{imageQuality}%</span>
+          </div>
+          <div class={styles.rangeEnds}>
+            <span>Lower size</span>
+            <span>Higher quality</span>
+          </div>
+        </div>
+        <div class={styles.checks}>
+          <Check
+            label="Convert images to grayscale"
+            checked={studio.convertToGrayscale}
+            onChange={studio.setConvertToGrayscale}
+          />
+          <Check
+            label="Remove page thumbnails"
+            checked={studio.removeThumbnails}
+            onChange={studio.setRemoveThumbnails}
+          />
+          <Check
+            label="Aim for a maximum size"
+            checked={studio.useSizeTarget}
+            onChange={studio.setUseSizeTarget}
+          />
+        </div>
+        <div>
+          <label class={styles.fieldLabel} for="compress-max-size">
+            Maximum output size (MB)
           </label>
           <input
             id="compress-max-size"
             type="number"
-            class={styles.textInput}
+            class={styles.input}
             value={maxOutputSizeMb}
             onInput={(e) => setMaxOutputSizeMb(Number(e.currentTarget.value) || 1)}
             disabled={!studio.useSizeTarget}
             min={0.1}
             step={0.1}
             max={100}
-            style={{
-              padding: '5px 8px',
-              fontSize: fs(12),
-            }}
           />
         </div>
+        <p class={styles.note}>
+          JPEG images are re-encoded in your browser. Text, fonts and vector graphics are never
+          changed, so text stays searchable. Other image types are kept as they are.
+        </p>
       </div>
     </details>
   );
 }
 
 function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
-  const { preset, setPreset } = studio;
-
   return (
-    <div class={styles.card} data-tour="pdf-arrange" style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>2</span> Compression settings
-        </h2>
-      </div>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-          gap: '6px',
-        }}
-      >
-        {PRESET_OPTIONS.map(([p, title, desc, tag]) => {
-          const isActive = preset === p;
-          return (
-            <button
-              key={p}
-              type="button"
-              class={`${styles.radioCard} ${isActive ? styles.radioCardActive : ''}`}
-              onClick={() => setPreset(p as CompressionPreset)}
-              style={{ textAlign: 'left', padding: '6px 8px' }}
-            >
-              <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
-                <span
-                  class={styles.radioMark}
-                  style={{ color: isActive ? 'var(--color-primary)' : 'var(--color-text-subtle)' }}
-                >
-                  {isActive ? '●' : '○'}
-                </span>
-                {title}
-              </span>
-              <span class={styles.radioDesc} style={{ fontSize: fs(10) }}>
-                {desc}
-              </span>
-              <span
-                style={{
-                  fontSize: fs(10.5),
-                  fontWeight: 700,
-                  color: 'var(--color-primary)',
-                  marginTop: '2px',
-                }}
-              >
-                {tag}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <PdfCompressAdvancedSettings studio={studio} />
-    </div>
+    <section class={styles.card} data-tour="pdf-arrange" aria-label="Compression settings">
+      <RefCardHead step={2} title="Compression settings" />
+      <PresetOptions studio={studio} />
+      <AdvancedSettings studio={studio} />
+    </section>
   );
 }
 
 export function PdfCompressLeftCards({ studio }: { studio: CompressStudioState }) {
   return (
-    <div class={styles.leftMergeCol}>
+    <div class={styles.column}>
       <PdfCompressFileCard studio={studio} />
       <PdfCompressSettingsCard studio={studio} />
     </div>

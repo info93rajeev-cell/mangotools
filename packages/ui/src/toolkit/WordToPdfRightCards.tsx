@@ -1,165 +1,173 @@
-import styles from './pdfStudio.module.css';
-import { fs } from './phoneFontSize.ts';
+import { RefInfoTable, RefPageStrip } from './PdfConvertParts.tsx';
+import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
+import c from './pdfConvertRef.module.css';
+import styles from './pdfRef.module.css';
 import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
 type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
 
-function Tile(props: { tone: string; icon: string; value: string; label: string; sub: string }) {
-  return (
-    <div class={`${styles.statTile} ${props.tone}`}>
-      <span class={styles.statIcon} aria-hidden="true">
-        {props.icon}
-      </span>
-      <span class={styles.statVal}>{props.value}</span>
-      <span class={styles.statLabel}>{props.label}</span>
-      <span class={styles.statSub}>{props.sub}</span>
-    </div>
-  );
+function statusOf(studio: WordToPdfState): { text: string; done: boolean } {
+  if (studio.isProcessing) return { text: 'Creating…', done: false };
+  if (studio.output) return { text: 'PDF created', done: true };
+  if (studio.files.length > 0) return { text: 'Ready to convert', done: true };
+  return { text: 'Add a .docx', done: false };
 }
 
-function WordToPdfSummaryCard({ studio }: { studio: WordToPdfState }) {
-  const { files, output, pageSize, isProcessing } = studio;
-  const words = files.reduce((n, f) => n + f.words, 0);
+const PAGE_SIZE_LABEL = { A4: '210 × 297 mm', Letter: '8.5 × 11 in' } as const;
+
+function totals(studio: WordToPdfState) {
+  const { files, output } = studio;
   const pages = output
     ? output.reduce((n, o) => n + o.pages, 0)
     : files.reduce((n, f) => n + f.pages, 0);
-  const size = output
-    ? `${Math.max(1, Math.round(output.reduce((n, o) => n + o.bytes.length, 0) / 1024))} KB`
-    : '—';
-  const label = isProcessing
-    ? 'Creating…'
-    : output
-      ? '✓ PDF created'
-      : files.length > 0
-        ? 'Ready to convert'
-        : 'Add a .docx';
+  const bytes = output?.reduce((n, o) => n + o.bytes.length, 0) ?? 0;
+  const size = output ? `${Math.max(1, Math.round(bytes / 1024))} KB` : '—';
+  return { pages, size };
+}
+
+function SummarySection({ studio }: { studio: WordToPdfState }) {
+  const { files, pageSize } = studio;
+  const { pages, size } = totals(studio);
+  const s = statusOf(studio);
   return (
-    <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span style={{ color: 'var(--color-primary)' }}>📋</span> Export Summary
-        </h2>
-        <span
-          class={styles.badgePill}
-          style={{
-            background: 'var(--color-tint-green)',
-            color: 'var(--color-success)',
-            borderColor: '#86efac',
-          }}
-        >
-          {label}
-        </span>
-      </div>
-      <div class={styles.statTilesGrid}>
-        <Tile
-          tone={styles.statTilePurple}
-          icon="📑"
+    <section class={styles.card} aria-label="Export Summary">
+      <RefCardHead
+        icon="files"
+        title="Export Summary"
+        aside={<RefStatus text={s.text} done={s.done} />}
+      />
+      <div class={`${styles.tiles} ${styles.tilesBig}`}>
+        <RefTile
+          tone="purple"
+          icon="file-text"
+          label="Total pages"
           value={String(pages)}
-          label="PDF pages"
-          sub={`${pageSize} layout`}
+          sub={`Across ${files.length} file${files.length === 1 ? '' : 's'}`}
         />
-        <Tile
-          tone={styles.statTileGreen}
-          icon="🔤"
-          value={String(words)}
-          label="Words"
-          sub="From the .docx text"
-        />
-        <Tile
-          tone={styles.statTileBlue}
-          icon="📄"
-          value={size}
+        <RefTile
+          tone="green"
+          icon="file-check"
           label="PDF size"
+          value={size}
           sub="After creating"
         />
-        <Tile
-          tone={styles.statTileAmber}
-          icon="📚"
-          value={String(files.length)}
-          label="Documents"
-          sub={studio.exportMode === 'single' ? 'One combined PDF' : 'One PDF each'}
+        <RefTile
+          tone="blue"
+          icon="file-output"
+          label="Page size"
+          value={pageSize}
+          sub={PAGE_SIZE_LABEL[pageSize]}
+        />
+        <RefTile
+          tone="amber"
+          icon="circle-check"
+          label={studio.output ? 'Created' : 'Status'}
+          value={files.length > 0 ? 'Ready' : '—'}
+          sub={studio.exportMode === 'single' ? 'Combined' : 'Separate'}
         />
       </div>
-    </div>
+    </section>
   );
 }
 
-function WordToPdfNotesCard({ studio }: { studio: WordToPdfState }) {
+function ResultPreviewSection({ studio }: { studio: WordToPdfState }) {
+  const { pages } = totals(studio);
+  const n = studio.files.length;
+  return (
+    <section class={`${styles.card} ${styles.subcard}`} aria-label="Result Preview">
+      <RefCardHead
+        icon="eye"
+        title="Result Preview"
+        aside={
+          <span class={styles.listMeta}>
+            {pages} pages ({n} file{n === 1 ? '' : 's'})
+          </span>
+        }
+      />
+      {pages > 0 ? (
+        <div class={c.stripWrap}>
+          <RefPageStrip count={pages} max={5} />
+        </div>
+      ) : (
+        <p class={styles.previewEmpty}>Add a .docx to see the PDF pages here.</p>
+      )}
+    </section>
+  );
+}
+
+function carryNotes(studio: WordToPdfState): string[] {
   const images = studio.files.reduce((n, f) => n + f.content.images, 0);
   const tables = studio.files.reduce((n, f) => n + f.content.tables, 0);
   const replaced = studio.output?.reduce((n, o) => n + o.replacedChars, 0) ?? 0;
   const notes: string[] = [];
   if (images > 0) notes.push(`${images} image${images === 1 ? ' is' : 's are'} not included.`);
-  if (tables > 0)
+  if (tables > 0) {
     notes.push(
       `${tables} table${tables === 1 ? '' : 's'}: each row is written as one line, cells separated by “|”.`,
     );
-  if (replaced > 0)
+  }
+  if (replaced > 0) {
     notes.push(
       `${replaced} character${replaced === 1 ? '' : 's'} outside Western European text show as “?”.`,
     );
+  }
+  return notes;
+}
+
+function PdfInfoSection({ studio }: { studio: WordToPdfState }) {
+  const { files, exportMode, pageSize } = studio;
+  const { pages, size } = totals(studio);
+  const words = files.reduce((n, f) => n + f.words, 0);
+  const name =
+    files.length === 0
+      ? '—'
+      : exportMode === 'separate' || files.length === 1
+        ? `${files.length} PDF${files.length === 1 ? '' : 's'}, named after each file`
+        : 'Combined-Word-Documents.pdf';
+  const notes = carryNotes(studio);
   return (
-    <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span style={{ color: 'var(--color-primary)' }}>ℹ️</span> What carries over
-        </h2>
-      </div>
-      <p
-        style={{
-          margin: 0,
-          fontSize: fs(11),
-          color: 'var(--color-text-muted)',
-          lineHeight: 1.5,
-        }}
-      >
-        Text, headings, bold and italic, list bullets and line breaks.
-        {notes.length > 0 ? ` ${notes.join(' ')}` : ''}
-      </p>
-    </div>
+    <section class={`${styles.card} ${styles.subcard}`} aria-label="PDF information">
+      <RefCardHead icon="file-text" title="PDF Information" />
+      <RefInfoTable
+        rows={[
+          ['File name', name],
+          ['Content', `${files.length} Word file${files.length === 1 ? '' : 's'}, ${pages} pages`],
+          ['Page size', `${pageSize} (${PAGE_SIZE_LABEL[pageSize]})`],
+          ['Size', size === '—' ? 'Shown after creating' : size],
+          ['Words', String(words)],
+          ['Carries over', 'Text, headings, bold, italic, lists'],
+        ]}
+      />
+      {notes.length > 0 ? (
+        <p class={styles.note} style={{ marginTop: '10px' }}>
+          {notes.join(' ')}
+        </p>
+      ) : null}
+    </section>
   );
 }
 
 export function WordToPdfRightCards({ studio }: { studio: WordToPdfState }) {
-  const { files, isProcessing, executeWordToPdf, downloadPdf, copySummary, clearAll } = studio;
-
+  const { files, isProcessing } = studio;
   return (
-    <div class={styles.leftMergeCol}>
-      <WordToPdfSummaryCard studio={studio} />
-      <WordToPdfNotesCard studio={studio} />
-      <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
-          <span style={{ fontSize: fs(14) }}>🔒</span>
-          <span>
-            <strong>Your files stay in your browser</strong> — All conversion runs locally on your
-            device.
-          </span>
-        </div>
-        <button
-          type="button"
-          class={styles.primaryCtaBtn}
-          disabled={isProcessing || files.length === 0}
-          onClick={() => void executeWordToPdf()}
-        >
-          {isProcessing ? '⏳ Creating PDF...' : '📄 Create PDF →'}
-        </button>
-        <div class={styles.secondaryActionRow}>
-          <button
-            type="button"
-            class={styles.actionBtnPrimaryBlue}
-            onClick={() => void downloadPdf()}
-            disabled={files.length === 0 || isProcessing}
-          >
-            📥 Download PDF
-          </button>
-          <button type="button" class={styles.actionBtnNeutral} onClick={copySummary}>
-            📋 Copy Summary
-          </button>
-          <button type="button" class={styles.actionBtnNeutral} onClick={clearAll}>
-            ↻ Reset
-          </button>
-        </div>
-      </div>
+    <div class={styles.column}>
+      <SummarySection studio={studio} />
+      <ResultPreviewSection studio={studio} />
+      <PdfInfoSection studio={studio} />
+      <RefPrivacy />
+      <RefActions
+        icon="file-output"
+        label="Create PDF"
+        busyLabel="Creating PDF…"
+        busy={isProcessing}
+        disabled={files.length === 0}
+        onRun={() => void studio.executeWordToPdf()}
+        downloadLabel="Download PDF"
+        downloadDisabled={files.length === 0 || isProcessing}
+        onDownload={() => void studio.downloadPdf()}
+        onCopy={studio.copySummary}
+        onReset={studio.clearAll}
+      />
     </div>
   );
 }

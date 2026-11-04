@@ -1575,6 +1575,16 @@
   color: #c3cddb;
 }
 
+/* Studios rebuilt to the reference look sit directly on the page, card by card. */
+.studioContainer[data-ref-look],
+:global([data-theme="dark"]) .studioContainer[data-ref-look] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: 0;
+}
+
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
 :global(:where([data-theme="dark"])) .topBar {
   border-bottom: 1px solid #304a64;

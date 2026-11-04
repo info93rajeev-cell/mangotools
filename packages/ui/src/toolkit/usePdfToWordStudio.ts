@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { buildDocxFromBlocks, type DocxBlock } from './docxZipPacker.ts';
 import { openUserPdf } from './pdfInput.ts';
+import { parseRangeList } from './pdfSplitPlan.ts';
 import { type Block, extractPdfText, type PageText, toBlocks } from './pdfTextExtract.ts';
 import { createTextSamplePdf, SAMPLE_PDF_TO_WORD_NAME } from './samplePdfDocuments.ts';
 
@@ -34,6 +35,21 @@ export function docxBlocks(
     .map((b) => (b.kind !== 'page' && !opts.keepHeadings ? { kind: 'p', text: b.text } : b));
 }
 
+export type PageMode = 'all' | 'custom';
+
+/** The pages to convert: all of them, or the ones listed as "1-5, 8, 10-12". */
+export function pickPages(
+  pages: PageText[],
+  mode: PageMode,
+  text: string,
+): { pages: PageText[]; invalid: string[] } {
+  if (mode === 'all') return { pages, invalid: [] };
+  const { ranges, invalid } = parseRangeList(text, pages.length);
+  const keep = new Set<number>();
+  for (const r of ranges) for (let p = r.start; p <= r.end; p++) keep.add(p);
+  return { pages: pages.filter((_, i) => keep.has(i + 1)), invalid };
+}
+
 function save(bytes: Uint8Array, name: string) {
   const url = URL.createObjectURL(
     new Blob([bytes as BlobPart], {
@@ -55,7 +71,9 @@ function usePdfToWordState() {
   const [extraction, setExtraction] = useState<Extraction | null>(null);
   const [keepHeadings, setKeepHeadings] = useState(true);
   const [pageBreaks, setPageBreaks] = useState(true);
-  const [previewTab, setPreviewTab] = useState<'text' | 'outline'>('text');
+  const [previewTab, setPreviewTab] = useState<'visual' | 'text' | 'outline'>('visual');
+  const [pageMode, setPageMode] = useState<PageMode>('all');
+  const [pageRange, setPageRange] = useState('');
   return {
     fileName,
     setFileName,
@@ -69,14 +87,29 @@ function usePdfToWordState() {
     setPageBreaks,
     previewTab,
     setPreviewTab,
+    pageMode,
+    setPageMode,
+    pageRange,
+    setPageRange,
   };
+}
+
+function resetState(s: ReturnType<typeof usePdfToWordState>) {
+  s.setFileName('');
+  s.setFileSizeBytes(0);
+  s.setExtraction(null);
+  s.setPageMode('all');
+  s.setPageRange('');
 }
 
 export function usePdfToWordStudio(notify?: (msg: string) => void) {
   const s = usePdfToWordState();
   const [isProcessing, setIsProcessing] = useState(false);
   const [docx, setDocx] = useState<Uint8Array | null>(null);
-  useEffect(() => setDocx(null), [s.extraction, s.keepHeadings, s.pageBreaks]);
+  useEffect(
+    () => setDocx(null),
+    [s.extraction, s.keepHeadings, s.pageBreaks, s.pageMode, s.pageRange],
+  );
 
   const take = async (name: string, bytes: Uint8Array) => {
     const opened = await openUserPdf(name, bytes, 200);
@@ -101,13 +134,19 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
   const convert = (): Uint8Array | null => {
     const ex = s.extraction;
     if (!ex) return null;
-    if (ex.words === 0) {
+    const picked = pickPages(ex.pages, s.pageMode, s.pageRange);
+    if (picked.pages.length === 0) {
+      notify?.('Enter the pages to convert, for example 1-5, 8.');
+      return null;
+    }
+    const part = summarise(picked.pages);
+    if (part.words === 0) {
       notify?.('No selectable text was found. Scanned PDFs need OCR, which this tool does not do.');
       return null;
     }
-    const bytes = buildDocxFromBlocks(docxBlocks(ex.blocks, s));
+    const bytes = buildDocxFromBlocks(docxBlocks(part.blocks, s));
     setDocx(bytes);
-    notify?.(`Converted ${ex.words} words to an editable Word document.`);
+    notify?.(`Converted ${part.words} words to an editable Word document.`);
     return bytes;
   };
 
@@ -119,11 +158,7 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
     isProcessing,
     docx,
     executeConvertToWord: async () => convert(),
-    clearAll: () => {
-      s.setFileName('');
-      s.setFileSizeBytes(0);
-      s.setExtraction(null);
-    },
+    clearAll: () => resetState(s),
     downloadDocx: () => {
       const bytes = docx ?? convert();
       if (bytes) save(bytes, outName);

@@ -4,8 +4,9 @@ id: compress-pdf
 slug: compress-pdf
 status: beta
 tier: T3
-version: 0.2.1
+version: 0.3.0
 changelog:
+  - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Rebuilt to the approved reference design: colour icons, larger text, clear options and summary tiles." }
   - { version: 0.2.1, date: 2026-11-04, type: fixed, summary: "Easier to read in dark mode on phones: option marks line up, tile labels are brighter, the empty bar shows." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Compression is now real: JPEG images are re-encoded in the browser and every figure is measured, not estimated." }
   - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: compress PDF documents locally with balanced and custom quality presets." }
