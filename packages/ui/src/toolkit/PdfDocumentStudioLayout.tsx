@@ -4,16 +4,12 @@ import { PdfCompressLeftCards } from './PdfCompressLeftCards.tsx';
 import { PdfCompressRightCards } from './PdfCompressRightCards.tsx';
 import { PdfMergeLeftCards } from './PdfMergeLeftCards.tsx';
 import { PdfMergeRightCards } from './PdfMergeRightCards.tsx';
+import { RefTopBar } from './PdfRefParts.tsx';
 import { PdfSplitLeftCards } from './PdfSplitLeftCards.tsx';
 import { PdfSplitRightCards } from './PdfSplitRightCards.tsx';
-import {
-  PdfCompressIcon,
-  PdfMergeIcon,
-  PdfSplitIcon,
-  PdfToWordIcon,
-  WordToPdfIcon,
-} from './PdfToolIcons.tsx';
+import { PdfMergeIcon, PdfSplitIcon, PdfToWordIcon, WordToPdfIcon } from './PdfToolIcons.tsx';
 import { PdfToWordLeftCards, PdfToWordRightCards } from './PdfToWordCards.tsx';
+import refStyles from './pdfRef.module.css';
 import styles from './pdfStudio.module.css';
 import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
 import { ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
@@ -159,7 +155,6 @@ function RenderPdfSplitView({
 function RenderPdfCompressView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfCompressStudio>;
   onOpen: () => void;
@@ -167,17 +162,14 @@ function RenderPdfCompressView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfCompressIcon />}
-        title="Compress PDF"
-        badge3="🛡️ No Server Upload"
+      <RefTopBar
+        badge3="No Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleCompress}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfCompressLeftCards studio={studio} />
         <PdfCompressRightCards studio={studio} />
       </div>
@@ -332,6 +324,7 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
     // biome-ignore lint/a11y/noStaticElementInteractions: drop target for files; the Open buttons give keyboard access.
     <div
       class={styles.studioContainer}
+      data-ref-look={activeTab === 'compress' ? '' : undefined}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
