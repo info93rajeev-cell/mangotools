@@ -55,6 +55,12 @@ export function ImageBackgroundRemoverLayout({
         </button>
       </div>
 
+      <p class={styles.aiDisclosure} data-ai-disclosure={activeMode}>
+        {activeMode === 'pen'
+          ? preset.strings['disclosure.pen']
+          : preset.strings['disclosure.quick']}
+      </p>
+
       {activeMode === 'pen' ? (
         /* ADVANCED BEZIER PEN SELECTION & FEATHER STUDIO */
         <AdvancedPenStudioLayout notify={notify} />
