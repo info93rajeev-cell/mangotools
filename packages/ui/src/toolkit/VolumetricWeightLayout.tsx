@@ -1,6 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
 import { Carton3DPreview } from './Carton3DPreview.tsx';
+import { LogisticsInfoCards } from './LogisticsInfoCards.tsx';
+import { volumetricInfo } from './logisticsInfoText.ts';
 import { ToolActionRow } from './ToolActionRow.tsx';
 import { useVolumetricShipment } from './useVolumetricShipment.ts';
 import { VolumetricCostCard } from './VolumetricCostCard.tsx';
@@ -296,6 +298,7 @@ export function VolumetricWeightLayout({ preset }: VolumetricWeightLayoutProps) 
             volumeM3={result.totalVolumeM3}
             preset={preset}
           />
+          <LogisticsInfoCards info={volumetricInfo} />
         </div>
 
         {/* RIGHT COLUMN: 3D Visualization, Results Summary & Actions */}

@@ -1,5 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
+import { LogisticsInfoCards } from './LogisticsInfoCards.tsx';
+import { palletInfo } from './logisticsInfoText.ts';
 import { Pallet3DCanvas } from './Pallet3DCanvas.tsx';
 import { PalletCostCard } from './PalletCostCard.tsx';
 import { PalletResultsCard } from './PalletResultsCard.tsx';
@@ -321,6 +323,7 @@ export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProp
           </div>
 
           <PalletCostCard result={result} preset={_preset} />
+          <LogisticsInfoCards info={palletInfo} />
         </div>
 
         <div class={styles.resultsStack}>

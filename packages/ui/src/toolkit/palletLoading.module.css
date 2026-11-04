@@ -701,3 +701,9 @@
     order: 4;
   }
 }
+
+@media (max-width: 1100px) {
+  .settingsStack > :nth-child(3) {
+    order: 9;
+  }
+}
