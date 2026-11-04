@@ -121,8 +121,8 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   pointer-events: none;
   border: 1px dashed rgba(255, 255, 255, 0.35);
 }

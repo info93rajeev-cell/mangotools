@@ -1,5 +1,6 @@
 import { useRef, useState } from 'preact/hooks';
 import { formatBytes, StageSideView, StageSplitView } from './PhotoSizeComparisonViews.tsx';
+import { fs } from './phoneFontSize.ts';
 import styles from './photoSizeReducer.module.css';
 import type { UsePhotoSizeReducerReturn } from './usePhotoSizeReducer.ts';
 
@@ -182,8 +183,16 @@ function EmptyStageMessage() {
   return (
     <div class={styles.emptyStageMessage}>
       <div style={{ fontSize: '32px', marginBottom: '8px' }}>📸</div>
-      <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>No Photo Loaded</p>
-      <p style={{ margin: '4px 0 0', fontSize: '11px' }}>
+      <p
+        style={{
+          margin: 0,
+          fontSize: fs(13),
+          fontWeight: 'bold',
+        }}
+      >
+        No Photo Loaded
+      </p>
+      <p style={{ margin: '4px 0 0', fontSize: fs(11) }}>
         Upload a photo or click "Try Sample" to begin
       </p>
     </div>

@@ -38,7 +38,7 @@
     color: #0f172a;
     border: none;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -65,7 +65,7 @@
     color: #ffffff;
     border: none;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -93,7 +93,7 @@
     color: #334155;
     border: 1px solid #cbd5e1;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
     font-weight: 600;
     cursor: pointer;
     display: flex;

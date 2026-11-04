@@ -1,3 +1,4 @@
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import { formatCurrencyNumber } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -210,7 +211,7 @@ export function UniversalTaxResultsCard({ tax }: UniversalTaxResultsCardProps) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '5px',
-            fontSize: '11px',
+            fontSize: fs(11),
             cursor: 'pointer',
           }}
         >

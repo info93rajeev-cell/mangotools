@@ -2,6 +2,7 @@ import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
@@ -13,7 +14,7 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          fontSize: '11px',
+          fontSize: fs(11),
           color: 'var(--color-text-subtle)',
           marginBottom: '4px',
           fontWeight: 600,
@@ -44,7 +45,7 @@ function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
                 }}
               />
             </div>
-            <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--color-text-muted)' }}>
+            <span style={{ fontSize: fs(10), fontWeight: 800, color: 'var(--color-text-muted)' }}>
               Page {p}
             </span>
           </div>
@@ -123,7 +124,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
             type="button"
             onClick={() => void loadSamplePdfToWord()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
@@ -139,7 +140,7 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
@@ -166,15 +167,15 @@ function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
               📄+
             </span>
             <div>
-              <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+              <p class={styles.dropMainText} style={{ fontSize: fs(13) }}>
                 Drag & drop a PDF file here
               </p>
-              <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+              <p class={styles.dropSubText} style={{ fontSize: fs(11) }}>
                 or click to browse • 100% in-browser processing
               </p>
             </div>
           </div>
-          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: fs(12) }}>
             Choose PDF File
           </span>
         </button>
@@ -219,7 +220,7 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '6px',
-            fontSize: '11.5px',
+            fontSize: fs(11.5),
             fontWeight: 600,
           }}
         >
@@ -237,7 +238,7 @@ function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
         <p
           style={{
             margin: 0,
-            fontSize: '10.5px',
+            fontSize: fs(10.5),
             color: 'var(--color-text-muted)',
             lineHeight: 1.45,
           }}

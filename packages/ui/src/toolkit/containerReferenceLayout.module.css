@@ -19,7 +19,7 @@
   border-radius: 5px;
   background: #fff;
   color: #005be5;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   min-height: 32px;
   padding: 5px 8px;
   text-decoration: none;
@@ -44,7 +44,7 @@
   .utilities a,
   .utilities button {
     min-height: 36px;
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
     padding: 4px 6px;
     min-width: 0;
   }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { fs } from './phoneFontSize.ts';
 import styles from './universalUploadDropzone.module.css';
 
 export interface UniversalUploadDropzoneProps {
@@ -96,7 +97,11 @@ function LoadedFileCard({
       ) : (
         <div
           class={styles.fileThumbnail}
-          style={{ display: 'grid', placeItems: 'center', fontSize: '14px' }}
+          style={{
+            display: 'grid',
+            placeItems: 'center',
+            fontSize: fs(14),
+          }}
         >
           🖼️
         </div>

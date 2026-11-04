@@ -35,13 +35,13 @@
     gap: 2px;
     min-width: 0;
     color: var(--cbm-muted);
-    font-size: 12.5px;
+    font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
     line-height: 1.35;
     overflow-wrap: anywhere;
   }
   .text strong {
     color: var(--cbm-ink);
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   }
   .text b {
     color: var(--cbm-ink);

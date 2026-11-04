@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { InlineAlert } from '../primitives/feedback.tsx';
 import { formatImageBytes } from './imageSizeFormat.ts';
+import { fs } from './phoneFontSize.ts';
 import styles from './photoSizeReducer.module.css';
 import { messageFor } from './presentation.ts';
 import { NoteList } from './ResultNotices.tsx';
@@ -150,7 +151,14 @@ function ReadyCockpit({ photoSize }: { photoSize: UsePhotoSizeReducerReturn }) {
             }}
           />
         ) : (
-          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Photo</div>
+          <div
+            style={{
+              color: 'var(--color-text-muted)',
+              fontSize: fs(11),
+            }}
+          >
+            Awaiting Photo
+          </div>
         )}
       </div>
 

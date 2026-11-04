@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import type { TaxSlab, TaxSystemType } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -173,7 +174,10 @@ function InlineAddSlabForm({
         <button
           type="button"
           class={styles.calculateBtn}
-          style={{ padding: '4px 10px', fontSize: '11px' }}
+          style={{
+            padding: '4px 10px',
+            fontSize: fs(11),
+          }}
           onClick={() => onSave({ minAmount: min, maxAmount: max, rate, taxType: type, notes })}
         >
           Save
@@ -181,7 +185,7 @@ function InlineAddSlabForm({
         <button
           type="button"
           class={styles.ghostActionBtn}
-          style={{ padding: '4px 8px', fontSize: '11px' }}
+          style={{ padding: '4px 8px', fontSize: fs(11) }}
           onClick={onCancel}
         >
           Cancel

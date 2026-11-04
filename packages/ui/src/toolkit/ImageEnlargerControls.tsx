@@ -1,5 +1,6 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './imageEnlarger.module.css';
+import { fs } from './phoneFontSize.ts';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { EnlargeOutputFormat, UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
@@ -107,7 +108,14 @@ function ScaleSection({
                 {isActive ? '✓ ' : ''}
                 {p.label}
               </span>
-              <span style={{ fontSize: '9px', opacity: isActive ? 1 : 0.8 }}>{p.desc}</span>
+              <span
+                style={{
+                  fontSize: fs(9),
+                  opacity: isActive ? 1 : 0.8,
+                }}
+              >
+                {p.desc}
+              </span>
             </button>
           );
         })}

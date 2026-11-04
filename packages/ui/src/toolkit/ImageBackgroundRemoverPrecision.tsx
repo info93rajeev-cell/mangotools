@@ -1,4 +1,5 @@
 import styles from './imageBackgroundRemover.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageBackgroundRemoverReturn } from './useImageBackgroundRemover.ts';
 
 export function ModeSelectorRow({
@@ -236,7 +237,7 @@ export function BackgroundFillRow({
         <span
           style={{
             display: 'block',
-            fontSize: '9px',
+            fontSize: fs(9),
             color: '#b45309',
             marginTop: '2px',
             lineHeight: '1.2',
@@ -326,7 +327,7 @@ export function PrecisionSection({
       <details class={styles.fineTuneDetails}>
         <summary class={styles.fineTuneSummary}>
           <span>⚙️ Advanced Matte & Shadow</span>
-          <span style={{ fontSize: '10px' }}>▾</span>
+          <span style={{ fontSize: fs(10) }}>▾</span>
         </summary>
         <div class={styles.fineTuneBody}>
           <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />

@@ -141,7 +141,7 @@
 }
 
 .dropZoneHint {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -159,7 +159,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .activeFileName {
@@ -173,13 +173,13 @@
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 5px;
 }
 
@@ -215,12 +215,12 @@
 }
 
 .formatName {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -236,7 +236,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -261,7 +261,7 @@
 .qualityNumber {
   width: 50px;
   padding: 3px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -271,7 +271,7 @@
 }
 
 .filenameLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   display: flex;
   flex-direction: column;
@@ -282,7 +282,7 @@
 .filenameInput {
   width: 100%;
   padding: 4px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -326,7 +326,7 @@
 .resetGhostBtn {
   background: transparent;
   border: none;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   cursor: pointer;
   text-align: center;
@@ -451,7 +451,7 @@
 }
 
 .canvasHint {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -508,7 +508,7 @@
 .metricsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .metricsTable td {
@@ -552,7 +552,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   text-align: center;
   padding-top: 4px;
@@ -577,7 +577,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text);
 }
 
@@ -640,7 +640,7 @@
   border: 1px solid rgba(59, 130, 246, 0.25);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #1e40af;
   line-height: 1.35;
   margin-top: 6px;
@@ -657,7 +657,7 @@
   color: #0f172a;
   border: 1px solid #eab308;
   border-radius: var(--radius-md);
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(234, 179, 8, 0.25);
@@ -692,7 +692,7 @@
   border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #065f46;
   margin-bottom: 8px;
@@ -700,13 +700,13 @@
 
 .bottomMetricsRow4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
 @media (max-width: 640px) {
   .bottomMetricsRow4 {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -721,14 +721,14 @@
 }
 
 .metricLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
 }
 
 .metricValue {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 800;
   color: var(--color-text);
   display: flex;
@@ -737,7 +737,7 @@
 }
 
 .sizeDiffPill {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #065f46;
   background: #d1fae5;

@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import styles from './imageEnlarger.module.css';
 import { formatImageBytes } from './imageSizeFormat.ts';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
 export interface ImageEnlargerResultProps {
@@ -21,7 +22,7 @@ export function ImageEnlargerResult({ preset: _preset, enlarger }: ImageEnlarger
         <span class={styles.sectionTitle}>5. Output Summary</span>
         <span
           style={{
-            fontSize: '10px',
+            fontSize: fs(10),
             color: hasResult ? 'var(--color-primary)' : 'var(--color-text-muted)',
             fontWeight: 'var(--weight-bold)',
           }}

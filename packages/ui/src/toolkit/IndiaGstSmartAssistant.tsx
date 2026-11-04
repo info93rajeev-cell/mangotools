@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { POPULAR_GST_CATEGORIES } from './indiaGstCategories.ts';
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import { formatCurrencyNumber } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -40,7 +41,7 @@ function RateFinderTab({
           <div key={cat.id} class={styles.categoryItemCard}>
             <div class={styles.categoryInfoCol}>
               <div class={styles.categoryTitleRow}>
-                <span style={{ fontSize: '14px' }}>{cat.icon}</span>
+                <span style={{ fontSize: fs(14) }}>{cat.icon}</span>
                 <span class={styles.categoryTitleText}>{cat.title}</span>
                 <span class={styles.categoryRatePill}>
                   {cat.rate}%{cat.cess > 0 ? ` + ${cat.cess}% cess` : ''}
@@ -180,7 +181,7 @@ function ComplianceRulesTab({ onSwitchToCustom }: { onSwitchToCustom: () => void
           alignSelf: 'flex-start',
           color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
-          fontSize: '11px',
+          fontSize: fs(11),
           padding: '4px 8px',
         }}
         onClick={onSwitchToCustom}

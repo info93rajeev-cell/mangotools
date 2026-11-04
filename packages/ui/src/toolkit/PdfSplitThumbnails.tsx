@@ -1,4 +1,5 @@
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 
 export function HeavyBookBanner({ totalPages }: { totalPages: number }) {
   if (totalPages < 1500) return null;
@@ -16,12 +17,24 @@ export function HeavyBookBanner({ totalPages }: { totalPages: number }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <span style={{ fontSize: '14px' }}>📚</span>
-        <strong style={{ fontSize: '12px', color: 'var(--color-sky-text)' }}>
+        <span style={{ fontSize: fs(14) }}>📚</span>
+        <strong
+          style={{
+            fontSize: fs(12),
+            color: 'var(--color-sky-text)',
+          }}
+        >
           Heavy Book Engine ({totalPages.toLocaleString()} Pages Active)
         </strong>
       </div>
-      <p style={{ fontSize: '11px', color: '#0c4a6e', margin: 0, lineHeight: 1.3 }}>
+      <p
+        style={{
+          fontSize: fs(11),
+          color: '#0c4a6e',
+          margin: 0,
+          lineHeight: 1.3,
+        }}
+      >
         Split into 16 chapters locally. Zero upload limits or tab freezing.
       </p>
     </div>
@@ -97,7 +110,7 @@ function ThumbnailItem({
       </div>
       <span
         style={{
-          fontSize: '11px',
+          fontSize: fs(11),
           fontWeight: 700,
           color: isSelected ? '#2563eb' : '#475569',
         }}
@@ -190,15 +203,15 @@ export function PdfSplitDropZone({ onChoose }: { onChoose: () => void }) {
           📄+
         </span>
         <div>
-          <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+          <p class={styles.dropMainText} style={{ fontSize: fs(13) }}>
             Drag & drop PDF to split
           </p>
-          <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+          <p class={styles.dropSubText} style={{ fontSize: fs(11) }}>
             or click to browse • 100% in-browser processing
           </p>
         </div>
       </div>
-      <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+      <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: fs(12) }}>
         Choose PDF File
       </span>
     </button>

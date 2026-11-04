@@ -1,4 +1,5 @@
 import styles from './jpgToPdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { PageSizeOption, PdfImageItem } from './usePdfStudioState.ts';
 
 function resolveChipClass(index: number): string {
@@ -105,7 +106,7 @@ export function JpgToPdfPreviewCard({ images }: { images: PdfImageItem[] }) {
             padding: '24px 12px',
             textAlign: 'center',
             color: 'var(--color-text-subtle)',
-            fontSize: '12px',
+            fontSize: fs(12),
           }}
         >
           Upload images to view live page preview sheets.

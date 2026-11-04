@@ -1,4 +1,5 @@
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
@@ -130,8 +131,8 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
       />
       <PdfMergePreviewFlowCard ranges={summary.ranges} totalPageCount={summary.totalPageCount} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side processing.
           </span>
