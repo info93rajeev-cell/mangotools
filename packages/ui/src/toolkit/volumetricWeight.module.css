@@ -63,6 +63,16 @@
     gap: 12px;
     align-items: stretch;
   }
+  /* Single column: 3D preview / reference image first, then inputs, then results. */
+  .right {
+    display: contents;
+  }
+  .right > * {
+    order: 1;
+  }
+  .right > :first-child {
+    order: -1;
+  }
 }
 
 /* CARDS */
