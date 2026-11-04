@@ -742,6 +742,23 @@
   border-top: 1px solid var(--color-border);
 }
 
+.aiDisclosure {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid #c7d7f5;
+  border-radius: 8px;
+  background: #f1f6ff;
+  color: #1e3a6e;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+:global([data-theme="dark"]) .aiDisclosure {
+  border-color: #1e3a8a;
+  background: #0f1e3a;
+  color: #bfdbfe;
+}
+
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
 :global(:where([data-theme="dark"])) .downloadCtaBtn {
   color: #ffffff;
