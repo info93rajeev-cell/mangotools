@@ -19,8 +19,11 @@ Every Logistics tool that offers a cost estimate uses the same formula, implemen
 |---|---|---|
 | `per-cbm` | shipment volume in m³ — positive, at most 12 decimal places, at most 1,000,000 | CBM Calculator (exact shipment CBM) |
 | `per-container` | whole number of containers, 1–10,000 | Container Loading Calculator — **always the placement-derived container count** from `logistics.container.load@1`, never CBM ÷ nominal container volume |
+| `per-kg` | weight in kg — positive, at most 100,000,000 | Volumetric Weight Calculator (chargeable weight); Pallet Loading (gross weight) |
+| `per-pallet` | whole number of pallets, 1–100,000 | Pallet Loading Calculator (number of pallets entered by the user) |
 
-Per-kg (chargeable weight) and per-pallet bases are deliberately **out of scope** for this version.
+`per-kg` and `per-pallet` were added at the founder's request on 5 Nov 2026 so the Volumetric Weight
+and Pallet Loading calculators can offer the same cost estimate. The formula is unchanged.
 
 ## Inputs
 

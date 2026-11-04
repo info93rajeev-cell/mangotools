@@ -1,0 +1,6 @@
+id: 018-per-kg-minimum-applied
+operation: logistics.cost.estimate@1
+source: { type: hand-verified, citation: "2.5 kg × 120 = 300; minimum charge 750 is higher, so freight = 750" }
+input: { rateBasis: per-kg, quantity: "2.5", rate: "120", minimumCharge: "750", currency: INR }
+expected: { rateBasis: per-kg, currency: INR, quantity: "2.5", rate: "120.00", baseCharge: "300.00", minimumCharge: "750.00", minimumApplied: true, freightCharge: "750.00", otherCharges: "0.00", estimatedTotal: "750.00" }
+expectedWarnings: [LOGISTICS_COST_USER_RATE, LOGISTICS_COST_MINIMUM_APPLIED]
