@@ -4,8 +4,9 @@ id: pdf-merge
 slug: pdf-merge
 status: beta
 tier: T3
-version: 0.3.1
+version: 0.3.2
 changelog:
+  - { version: 0.3.2, date: 2026-11-04, type: fixed, summary: "Step 2 (arrange files) is shown before files are added; the main button keeps the brand yellow; size shows "—" when empty." }
   - { version: 0.3.1, date: 2026-11-04, type: changed, summary: "Real first-page previews of each file; sample files with real pages; sizes in KB; true limits shown (25 MB, 20 files)." }
   - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Rebuilt to the approved reference design: colour icons, larger text, file list and summary tiles." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Real bookmarks per file, real sample files, limits enforced, protected PDFs refused, and the result follows reordering." }
