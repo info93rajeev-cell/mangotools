@@ -19,6 +19,9 @@ axis-aligned orientation search shared by `container-fit` and `pallet-fit` lives
 `src/lib/orientation-grid.ts`.
 
 ## Changelog
+- 0.9.0 — `logistics.cost.estimate@1`: two more rate bases, `per-kg` (up to 100,000,000 kg) and
+  `per-pallet` (whole, 1–100,000; new error `LOGISTICS_PALLET_COUNT_NOT_WHOLE`). Same formula;
+  fixtures 017–020 added. Founder request, 5 Nov 2026.
 - 0.8.0 — `logistics.weight.shipment@1`: volumetric, actual and chargeable weight for up to 50
   package rows (cm, m, mm, in; kg, g, lb), billed on the higher of the two shipment totals, with
   per-row values and typed row errors (`packages.<i>.<field>`). Reuses the units, divisor range and

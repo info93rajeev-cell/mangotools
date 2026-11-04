@@ -14,8 +14,12 @@ import { add, compare, mul } from '@mangotools/engine-numeric';
  * round each output once, for display.
  */
 
-/** Approved rate bases. Per-kg and per-pallet are deliberately not part of this version. */
-export const rateBases = ['per-cbm', 'per-container'] as const;
+/**
+ * Rate bases: per m³, per container, per kg (chargeable or gross weight) and per pallet. Per-kg and
+ * per-pallet were added at the founder's request (5 Nov 2026) for the Volumetric Weight and Pallet
+ * Loading calculators; the formula is the same for every basis.
+ */
+export const rateBases = ['per-cbm', 'per-container', 'per-kg', 'per-pallet'] as const;
 export type RateBasis = (typeof rateBases)[number];
 
 /**
@@ -26,7 +30,7 @@ export const freightCurrencies = ['INR', 'USD', 'EUR', 'GBP', 'AED'] as const;
 export type FreightCurrency = (typeof freightCurrencies)[number];
 
 export interface FreightTerms {
-  /** Price per unit of the rate basis (per m³ or per container); greater than zero. */
+  /** Price per unit of the rate basis (per m³, container, kg or pallet); greater than zero. */
   rate: string;
   /** Optional floor for the freight charge; zero or more. */
   minimumCharge: string | null;

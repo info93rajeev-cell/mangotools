@@ -661,3 +661,11 @@
   background: #3c1111;
   border: 1px solid #643030;
 }
+
+/* Settings and the optional cost estimate share the first column. */
+.settingsStack {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+}

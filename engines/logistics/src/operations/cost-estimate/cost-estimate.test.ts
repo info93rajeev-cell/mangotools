@@ -16,8 +16,8 @@ const perContainer = {
 };
 
 describe('logistics.cost.estimate', () => {
-  it('supports exactly the two approved rate bases', () => {
-    expect([...rateBases]).toEqual(['per-cbm', 'per-container']);
+  it('supports exactly the four approved rate bases', () => {
+    expect([...rateBases]).toEqual(['per-cbm', 'per-container', 'per-kg', 'per-pallet']);
   });
 
   it('supports exactly the five approved Phase 1 currencies', async () => {

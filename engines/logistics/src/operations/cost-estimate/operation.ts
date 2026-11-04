@@ -17,7 +17,7 @@ export const costEstimate = defineOperation({
   major: 1,
   title: 'Freight cost estimate',
   summary:
-    'Estimated freight cost from your own rate per m³ or per container, with an optional minimum and other charges.',
+    'Estimated freight cost from your own rate per m³, container, kg or pallet, with an optional minimum and other charges.',
   input: costEstimateInput,
   params: costEstimateParams,
   output: costEstimateOutput,
@@ -30,6 +30,7 @@ export const costEstimate = defineOperation({
     'LOGISTICS_AMOUNT_TOO_LARGE',
     'LOGISTICS_RATE_QUANTITY_NOT_POSITIVE',
     'LOGISTICS_CONTAINER_COUNT_NOT_WHOLE',
+    'LOGISTICS_PALLET_COUNT_NOT_WHOLE',
     'LOGISTICS_RATE_QUANTITY_TOO_LARGE',
   ],
   runtimes: ['worker', 'node'],
