@@ -27,7 +27,38 @@ function AccordionCard({ title, children }: { title: string; children: preact.Co
   );
 }
 
-function buildCopyText(rows: SurveyCalculationOutput['rows']): string {
+function buildCopyText(
+  rows: SurveyCalculationOutput['rows'],
+  method: 'rise-fall' | 'height-of-instrument' = 'rise-fall',
+): string {
+  if (method === 'height-of-instrument') {
+    const header = [
+      'Station',
+      'Dist (m)',
+      'BS',
+      'IS',
+      'FS',
+      'HI',
+      'Raw RL',
+      'Corr (mm)',
+      'Adjusted RL',
+    ].join('\t');
+    const lines = rows.map((r) =>
+      [
+        r.station ?? '',
+        r.dist ?? '',
+        r.bs ?? '',
+        r.is ?? '',
+        r.fs ?? '',
+        r.hi ?? '',
+        r.rl,
+        r.corr ?? '',
+        r.adjustedRL ?? '',
+      ].join('\t'),
+    );
+    return [header, ...lines].join('\n');
+  }
+
   const header = [
     'Station',
     'Dist (m)',
@@ -93,7 +124,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
 
   const handleCopyBook = async () => {
     if (!survey.result || survey.isStale) return;
-    const content = buildCopyText(survey.result.rows);
+    const content = buildCopyText(survey.result.rows, survey.method);
     if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) {
       notify(surveyStrings.copyFailedToast);
       return;
@@ -113,6 +144,8 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
       <div class={s.grid}>
         <div>
           <SurveyBenchmarkCard
+            method={survey.method}
+            setMethod={survey.setMethod}
             startRL={survey.startRL}
             setStartRL={survey.setStartRL}
             closingRL={survey.closingRL}
@@ -143,6 +176,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
           <SurveyProfilePlaceholder result={survey.result} closingRL={survey.closingRL} />
           <SurveyResultsCard
             phase={survey.phase}
+            method={survey.method}
             result={survey.result}
             isStale={survey.isStale}
             closingRLInput={survey.closingRL}

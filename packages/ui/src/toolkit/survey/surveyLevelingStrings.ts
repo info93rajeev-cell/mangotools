@@ -17,7 +17,7 @@ export const surveyStrings = {
   unitMetres: 'm',
   unitMillimetres: 'mm (Preview)',
   tabRiseFall: 'Rise & Fall',
-  tabHI: 'Height of Instrument · HI method (Preview — PR 4)',
+  tabHI: 'Height of Instrument',
   startRL: 'Starting BM RL',
   closingRL: 'Closing BM RL (known)',
   closingRLPlaceholder: 'Leave blank if open',
@@ -114,6 +114,8 @@ export const surveyStrings = {
   // Arithmetic Checks
   checksTitle: 'Arithmetic checks',
   checksSubtitle: 'Two arithmetic equality checks confirming three agreeing deltas:',
+  checksSubtitleHI:
+    'Collimation arithmetic check (Backsights − Foresights = Ending RL − Starting RL):',
   checkRiseFall: 'ΣRise − ΣFall = {rise} − {fall} = {delta} m',
   checkBsFs: 'ΣBS − ΣFS = {bs} − {fs} = {delta} m',
   checkFirstLast: 'Last RL − First RL = {last} − {first} = {delta} m',
@@ -122,6 +124,7 @@ export const surveyStrings = {
 
   // Reduced Levels Table
   resultsTableAria: 'Reduced levels calculation results table',
+  colHI: 'HI (m)',
   colRise: 'Rise',
   colFall: 'Fall',
   colRL: 'Raw RL (m)',

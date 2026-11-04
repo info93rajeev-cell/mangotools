@@ -6,6 +6,8 @@ import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 
 export interface SurveyBenchmarkCardProps {
+  method: 'rise-fall' | 'height-of-instrument';
+  setMethod: (val: 'rise-fall' | 'height-of-instrument') => void;
   startRL: string;
   setStartRL: (val: string) => void;
   closingRL: string;
@@ -25,17 +27,34 @@ export interface SurveyBenchmarkCardProps {
   reset: () => void;
 }
 
-function BenchmarkMethodTabs() {
+interface BenchmarkMethodTabsProps {
+  method: 'rise-fall' | 'height-of-instrument';
+  setMethod: (m: 'rise-fall' | 'height-of-instrument') => void;
+}
+
+function BenchmarkMethodTabs({ method, setMethod }: BenchmarkMethodTabsProps) {
+  const isRf = method === 'rise-fall';
   return (
-    <div class={sb.tabs}>
-      <button type="button" class={`${sb.tab} ${sb.tabActive}`}>
+    <div class={sb.tabs} role="tablist" aria-label="Reduction method">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={isRf}
+        class={`${sb.tab} ${isRf ? sb.tabActive : ''}`}
+        onClick={() => setMethod('rise-fall')}
+        data-method-tab="rise-fall"
+        data-method-rf=""
+      >
         ▤ {surveyStrings.tabRiseFall}
       </button>
       <button
         type="button"
-        class={`${sb.tab} ${sb.tabDisabled}`}
-        disabled
-        title="HI method contract arrives in PR 4"
+        role="tab"
+        aria-selected={!isRf}
+        class={`${sb.tab} ${!isRf ? sb.tabActive : ''}`}
+        onClick={() => setMethod('height-of-instrument')}
+        data-method-tab="height-of-instrument"
+        data-method-hi=""
       >
         ⌖ {surveyStrings.tabHI}
       </button>
@@ -44,6 +63,8 @@ function BenchmarkMethodTabs() {
 }
 
 export function SurveyBenchmarkCard({
+  method,
+  setMethod,
   startRL,
   setStartRL,
   closingRL,
@@ -99,7 +120,7 @@ export function SurveyBenchmarkCard({
       </div>
 
       <div class={sb.cardBody}>
-        <BenchmarkMethodTabs />
+        <BenchmarkMethodTabs method={method} setMethod={setMethod} />
 
         <BenchmarkFieldsGrid
           startRL={startRL}

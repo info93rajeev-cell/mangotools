@@ -5,6 +5,7 @@ import s from './surveyResults.module.css';
 
 export interface SurveyResultsTableProps {
   result: SurveyCalculationOutput | null;
+  method?: 'rise-fall' | 'height-of-instrument';
   isStale?: boolean;
   onCopyBook: () => void;
 }
@@ -12,6 +13,7 @@ export interface SurveyResultsTableProps {
 interface RowDisplay {
   station: string;
   distText: string;
+  hiText: string;
   riseText: string;
   fallText: string;
   rlText: string;
@@ -65,6 +67,7 @@ function computeRowDisplay(
   const station = row.station || `P-${idx + 1}`;
   const rlText = formatLevelReading(row.rl);
   const distText = row.dist ?? (idx === 0 ? '0' : '—');
+  const hiText = row.hi ? formatLevelReading(row.hi) : '—';
   const corrText = row.corr ?? '—';
   const adjRLText = row.adjustedRL ? formatLevelReading(row.adjustedRL) : '—';
   const rf = computeRiseFallDisplay(row.rise, row.fall, idx, styles);
@@ -72,6 +75,7 @@ function computeRowDisplay(
   return {
     station,
     distText,
+    hiText,
     rlText,
     corrText,
     adjRLText,
@@ -79,8 +83,56 @@ function computeRowDisplay(
   };
 }
 
-export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResultsTableProps) {
+function ResultsTableHeader({ isHI }: { isHI: boolean }) {
+  return (
+    <thead>
+      <tr>
+        <th style={{ textAlign: 'left' }}>{surveyStrings.colStation}</th>
+        <th>{surveyStrings.colDist}</th>
+        {isHI ? (
+          <th>{surveyStrings.colHI}</th>
+        ) : (
+          <>
+            <th>{surveyStrings.colRise}</th>
+            <th>{surveyStrings.colFall}</th>
+          </>
+        )}
+        <th>{surveyStrings.colRL}</th>
+        <th>{surveyStrings.colCorr}</th>
+        <th style={{ color: '#1d4ed8', fontWeight: 700 }}>{surveyStrings.colAdjRL}</th>
+      </tr>
+    </thead>
+  );
+}
+
+function ResultsTableRow({ d, isHI }: { d: RowDisplay; isHI: boolean }) {
+  return (
+    <tr>
+      <td style={{ textAlign: 'left', fontWeight: 600 }}>{d.station}</td>
+      <td>{d.distText}</td>
+      {isHI ? (
+        <td style={{ fontWeight: 600, color: '#0f766e' }}>{d.hiText}</td>
+      ) : (
+        <>
+          <td class={d.riseClass}>{d.riseText}</td>
+          <td class={d.fallClass}>{d.fallText}</td>
+        </>
+      )}
+      <td style={{ fontWeight: 600, color: '#334155' }}>{d.rlText}</td>
+      <td style={{ fontSize: '11.5px', color: '#475569' }}>{d.corrText}</td>
+      <td style={{ fontWeight: 700, color: '#0b1b3f' }}>{d.adjRLText}</td>
+    </tr>
+  );
+}
+
+export function SurveyResultsTable({
+  result,
+  method = 'rise-fall',
+  isStale,
+  onCopyBook,
+}: SurveyResultsTableProps) {
   const hasRows = Boolean(result && result.rows.length > 0 && !isStale);
+  const isHI = method === 'height-of-instrument';
 
   return (
     <div data-results-table-section="">
@@ -92,32 +144,15 @@ export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResult
           aria-label={surveyStrings.resultsTableAria}
         >
           <table class={s.resultsTable} data-results-table="">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>{surveyStrings.colStation}</th>
-                <th>{surveyStrings.colDist}</th>
-                <th>{surveyStrings.colRise}</th>
-                <th>{surveyStrings.colFall}</th>
-                <th>{surveyStrings.colRL}</th>
-                <th>{surveyStrings.colCorr}</th>
-                <th style={{ color: '#1d4ed8', fontWeight: 700 }}>{surveyStrings.colAdjRL}</th>
-              </tr>
-            </thead>
+            <ResultsTableHeader isHI={isHI} />
             <tbody>
-              {result.rows.map((row, idx) => {
-                const d = computeRowDisplay(row, idx, s);
-                return (
-                  <tr key={idx}>
-                    <td style={{ textAlign: 'left', fontWeight: 600 }}>{d.station}</td>
-                    <td>{d.distText}</td>
-                    <td class={d.riseClass}>{d.riseText}</td>
-                    <td class={d.fallClass}>{d.fallText}</td>
-                    <td style={{ fontWeight: 600, color: '#334155' }}>{d.rlText}</td>
-                    <td style={{ fontSize: '11.5px', color: '#475569' }}>{d.corrText}</td>
-                    <td style={{ fontWeight: 700, color: '#0b1b3f' }}>{d.adjRLText}</td>
-                  </tr>
-                );
-              })}
+              {result.rows.map((row, idx) => (
+                <ResultsTableRow
+                  key={row.station || idx}
+                  d={computeRowDisplay(row, idx, s)}
+                  isHI={isHI}
+                />
+              ))}
             </tbody>
           </table>
         </section>
