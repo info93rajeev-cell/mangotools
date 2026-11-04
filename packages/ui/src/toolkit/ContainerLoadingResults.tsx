@@ -22,37 +22,21 @@ export function ContainerLoadingResults({
     );
   const weight =
     r.weightStatus === 'complete' && r.maxPayload !== null ? r.weightUtilizationPercent : null;
-  const kpis = [
-    [t.pieces, r.totalPieces],
-    [t.containers, r.containersRequired],
-    [t.volume, `${r.volumeUtilizationPercent}%`],
-    [t.weightUsage, weight === null ? t.unknown : `${weight}%`],
-  ];
   return (
     <section class={s.card} aria-labelledby="load-results-title">
       <div class={s.heading}>
         <h2 id="load-results-title">{t.results}</h2>
         <span class={s.loadCount} title={t.overall}>
+          <strong data-load-containers="">{r.containersRequired}</strong> {t.containerCount} ·{' '}
           {t.loaded}: {r.loadedPieces} · {t.unloaded}: {r.unloadedPieces}
           {r.weightStatus === 'partial' ? ` · ${t.known}` : ''}
         </span>
         <span class={s.status} data-status={r.status}>
+          {r.status === 'complete' ? <Icon name="circle-check" /> : null}
           {t[r.status]}
         </span>
       </div>
-      <div class={s.kpis}>
-        {kpis.map(([label, value], i) => (
-          <div
-            key={label}
-            class={s.kpi}
-            style={{ '--tone': ['#0eb779', '#0065ff', '#11ad77', '#df9c00'][i] }}
-          >
-            <Icon name={['box', 'box', 'rotate-ccw', 'weight'][i] ?? 'container'} />
-            <span>{label}</span>
-            <strong data-load-kpi={i}>{value}</strong>
-          </div>
-        ))}
-      </div>
+      <LoadKpis r={r} />
 
       {r.weightStatus === 'partial' ? <p class={s.note}>{t.partialWeight}</p> : null}
       <Allocation state={state} selected={selected} />
@@ -60,6 +44,95 @@ export function ContainerLoadingResults({
     </section>
   );
 }
+const pct = (v: string | null) => Math.max(0, Math.min(100, Number(v ?? 0)));
+const trimNum = (v: string) => (v.includes('.') ? v.replace(/\.?0+$/, '') : v);
+const group = (v: string) => {
+  const [i = '', d] = v.split('.');
+  return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${d ? `.${d}` : ''}`;
+};
+
+interface Kpi {
+  tone: string;
+  icon: string;
+  label: string;
+  value: string;
+  sub: string;
+  percent: number | null;
+  meter: string;
+}
+
+function kpisOf(r: NonNullable<LoadSnapshot['result']>): Kpi[] {
+  const weightKnown = r.weightStatus === 'complete' && r.loadedWeight !== null;
+  const weightPct =
+    r.weightStatus === 'complete' && r.maxPayload !== null ? r.weightUtilizationPercent : null;
+  const loaded = Number(r.loadedPieces);
+  const total = Number(r.totalPieces) || 0;
+  return [
+    {
+      tone: 'green',
+      icon: 'box',
+      label: t.loadedVolume,
+      value: `${trimNum(Number(r.loadedVolume).toFixed(1))} m³`,
+      sub: `of ${trimNum((Number(r.containerVolume) * (Number(r.containersRequired) || 1)).toFixed(1))} m³`,
+      percent: pct(r.volumeUtilizationPercent),
+      meter: `${Math.round(pct(r.volumeUtilizationPercent))}%`,
+    },
+    {
+      tone: 'blue',
+      icon: 'box',
+      label: t.cargoWeight,
+      value: weightKnown ? `${group(trimNum(Number(r.loadedWeight).toFixed(0)))} kg` : t.unknown,
+      sub: r.maxPayload ? `Max: ${group(trimNum(r.maxPayload))} kg` : t.noPayload,
+      percent: weightPct === null ? null : pct(weightPct),
+      meter: weightPct === null ? '' : `${Math.round(pct(weightPct))}%`,
+    },
+    {
+      tone: 'amber',
+      icon: 'package',
+      label: t.loadedPieces,
+      value: group(r.loadedPieces),
+      sub: t.totalPiecesSub,
+      percent: total > 0 ? (loaded / total) * 100 : 0,
+      meter: `${group(r.loadedPieces)} / ${group(r.totalPieces)}`,
+    },
+    {
+      tone: 'red',
+      icon: 'package',
+      label: t.unloadedPieces,
+      value: group(r.unloadedPieces),
+      sub: t.remaining,
+      percent: total > 0 ? (Number(r.unloadedPieces) / total) * 100 : 0,
+      meter: '',
+    },
+  ];
+}
+
+/** The four result cards of the approved reference: icon tile, label, big value, note, meter. */
+function LoadKpis({ r }: { r: NonNullable<LoadSnapshot['result']> }) {
+  return (
+    <div class={s.kpis}>
+      {kpisOf(r).map((k, i) => (
+        <div key={k.label} class={s.kpi} data-tone={k.tone}>
+          <span class={s.kpiIcon}>
+            <Icon name={k.icon} />
+          </span>
+          <span class={s.kpiLabel}>{k.label}</span>
+          <strong class={s.kpiValue} data-load-kpi={i}>
+            {k.value}
+          </strong>
+          <span class={s.kpiSub}>{k.sub}</span>
+          <span class={s.kpiMeter}>
+            <span class={s.kpiTrack}>
+              <span style={{ width: `${k.percent ?? 0}%` }} />
+            </span>
+            {k.meter ? <span class={s.kpiMeterText}>{k.meter}</span> : null}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Allocation({ state, selected }: { state: LoadSnapshot; selected: number }) {
   const r = state.result;
   if (!r) return null;

@@ -40,31 +40,128 @@
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 5px;
-  margin-top: 7px;
+  gap: 8px;
+  margin-top: 10px;
 }
+/* Result cards, approved reference: tinted icon tile, label, large value, note, meter. */
 .kpi {
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  --tone: #0eb779;
+  --tone-soft: #e5f7ef;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  padding: 11px 10px 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(15 28 63 / 0.04);
   min-width: 0;
-  position: relative;
-  padding-left: 32px;
-  min-height: 48px;
-  justify-content: center;
 }
-.kpi span {
+.kpi[data-tone="blue"] {
+  --tone: #1a66e8;
+  --tone-soft: #e8f0fe;
+}
+.kpi[data-tone="amber"] {
+  --tone: #f5a400;
+  --tone-soft: #fff4d6;
+}
+.kpi[data-tone="red"] {
+  --tone: #ef4444;
+  --tone-soft: #fde8e8;
+}
+.kpiIcon {
+  grid-row: 1 / span 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--tone);
+}
+/* Reference: bold coloured line icons, no tile behind them. */
+.kpiIcon :global(svg) {
+  width: 30px;
+  height: 30px;
+  stroke-width: 2.1;
+}
+.kpiLabel {
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
+  font-weight: 600;
+  color: #1e293b;
   white-space: nowrap;
-  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
-  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.kpi strong {
-  font-size: 18px;
+.kpiValue {
+  margin-top: 2px;
+  font-size: calc(21px + (15px - 21px) * var(--fs-lift, 0) * 0.2);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #0f1c3f;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+}
+.kpiSub {
+  margin-top: 2px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kpiMeter {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  min-height: 16px;
+}
+.kpiTrack {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e9f0;
+  overflow: hidden;
+}
+.kpiTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+}
+.kpi[data-tone="blue"] .kpiTrack > span {
+  background: #22c37a;
+}
+.kpi[data-tone="amber"] .kpiTrack > span {
+  background: #1a66e8;
+}
+.kpiMeterText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+:global([data-theme="dark"]) .kpi {
+  background: #172238;
+  border-color: #2e4166;
+  box-shadow: none;
+}
+:global([data-theme="dark"]) .kpi {
+  --tone-soft: color-mix(in srgb, var(--tone) 22%, #172238);
+}
+:global([data-theme="dark"]) .kpiLabel,
+:global([data-theme="dark"]) .kpiMeterText {
+  color: #d5deeb;
+}
+:global([data-theme="dark"]) .kpiValue {
+  color: #f4f7fb;
+}
+:global([data-theme="dark"]) .kpiSub {
+  color: #a6b3c9;
+}
+:global([data-theme="dark"]) .kpiTrack {
+  background: #2e4166;
 }
 .loadCount {
   font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
@@ -191,12 +288,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 7px;
   }
-  .kpi span {
-    font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
-  }
-  .kpi strong {
-    font-size: 18px;
-  }
   .legend {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
@@ -318,33 +409,28 @@
   }
 }
 
-.kpi :global(.icon) {
-  position: absolute;
-  left: 5px;
-  top: 17px;
-  color: var(--tone);
-  width: 24px;
-  height: 24px;
-}
-.kpi :global(.icon svg) {
-  width: 100%;
-  height: 100%;
-}
 .status {
-  background: #edfff5;
-  border-color: #c8f0dc;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: #e8f8ef;
+  border-color: #bfe9d1;
+  color: #15803d;
+  font-weight: 600;
+}
+.status :global(svg) {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+  fill: #16a34a;
+  stroke-width: 2.4;
 }
 .costResult {
   background: linear-gradient(110deg, #fffef1, #fff9dd);
 }
 @media (max-width: 700px) {
-  .kpi {
-    padding-left: 38px;
-    min-height: 61px;
-  }
-  .kpi :global(.icon) {
-    left: 7px;
-  }
 }
 
 .secondary {
@@ -412,4 +498,17 @@
   :global(:where([data-theme="dark"])) .secondary {
     border-top: 1px solid #304664;
   }
+}
+/* The reference draws the pieces icon solid. */
+.kpi[data-tone="amber"] .kpiIcon {
+  --icon-fill: currentColor;
+  --icon-detail-color: #ffffff;
+}
+:global([data-theme="dark"]) .kpi[data-tone="amber"] .kpiIcon {
+  --icon-detail-color: #172238;
+}
+:global([data-theme="dark"]) .status[data-status="complete"] {
+  background: #0d2a26;
+  border-color: #1d6b55;
+  color: #8ff0c4;
 }

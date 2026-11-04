@@ -14,9 +14,10 @@ test.afterAll(async () => {
   await preview?.close();
 });
 const kpi = (page: Page, index: number) => page.locator(`[data-load-kpi="${index}"]`);
+const containers = (page: Page) => page.locator('[data-load-containers]');
 async function ready(page: Page) {
   await page.goto(url);
-  await expect(kpi(page, 1)).toHaveText('2');
+  await expect(containers(page)).toHaveText('2');
 }
 async function priced(page: Page) {
   await page.getByLabel('Enable cost estimate').check();
@@ -55,8 +56,8 @@ test.describe('Container workspace #226', () => {
     page,
   }) => {
     await ready(page);
-    await expect(kpi(page, 0)).toHaveText('200');
-    await expect(kpi(page, 2)).toHaveText('70.5%');
+    await expect(kpi(page, 2)).toHaveText('200');
+    await expect(kpi(page, 0)).toHaveText('46.8 m³');
     await expect(page.getByText('Loaded: 200 · Unloaded: 0', { exact: false })).toBeVisible();
     await expect(page.locator('[data-reference-artwork] img')).toBeVisible();
     await expect(
@@ -94,17 +95,17 @@ test.describe('Container workspace #226', () => {
     await expect(page.getByRole('region', { name: 'Estimated Freight Cost' })).not.toContainText(
       '₹3,02,000.00',
     );
-    await expect(page.getByRole('region', { name: 'Loading Result', exact: true })).toContainText(
+    await expect(page.getByRole('region', { name: 'Loading Results', exact: true })).toContainText(
       'Unloaded: 100',
     );
   });
   test('unknown or partial weights do not claim full weight utilization', async ({ page }) => {
     await ready(page);
     await page.getByLabel('Weight / item 1', { exact: true }).fill('');
-    await expect(kpi(page, 3)).toHaveText('Not available');
+    await expect(kpi(page, 1)).toHaveText('Not available');
     await expect(
       page
-        .getByRole('region', { name: 'Loading Result', exact: true })
+        .getByRole('region', { name: 'Loading Results', exact: true })
         .getByText('Some package weights are missing.', { exact: false }),
     ).toBeVisible();
   });
@@ -121,7 +122,7 @@ test.describe('Container workspace #226', () => {
     await page.getByLabel('Qty 1', { exact: true }).fill('2');
     for (const key of ['Length', 'Width', 'Height'])
       await page.getByLabel(`${key} (cm)`, { exact: true }).fill('100');
-    await expect(kpi(page, 1)).toHaveText('2');
+    await expect(containers(page)).toHaveText('2');
     await page.getByRole('button', { name: 'Copy Summary', exact: true }).click();
     expect((await copiedTexts(page))[0]).toContain('Containers Required: 2');
     await page.evaluate(() => {
@@ -189,7 +190,7 @@ test.describe('Container workspace #226', () => {
   }) => {
     await ready(page);
     await expect(page.locator('[data-reference-artwork] img')).toBeVisible();
-    await expect(kpi(page, 1)).toHaveText('2');
+    await expect(containers(page)).toHaveText('2');
     const bottom = page.locator('[data-shared-tool-bottom]');
     for (const label of ['Disclaimer', 'How to use', 'Method', 'FAQ', 'Related tools'])
       await expect(bottom.getByText(label, { exact: true })).toBeVisible();
