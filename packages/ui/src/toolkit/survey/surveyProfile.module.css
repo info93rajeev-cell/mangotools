@@ -44,14 +44,26 @@
 
 .cardHeadRight {
   margin-left: auto;
-  font-size: 12px;
-  color: #334155;
+  font-size: 11px;
+  color: var(--color-text-muted, #64748b);
 }
 
 .cardBody {
   padding: 14px 16px 16px;
   min-width: 0;
   max-width: 100%;
+}
+
+.profileWrap {
+  width: 100%;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.profileSvg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .notice {

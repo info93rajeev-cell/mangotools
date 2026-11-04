@@ -38,7 +38,9 @@ export function SurveyArithmeticChecks({ result }: SurveyArithmeticChecksProps) 
               .replace('{fs}', result.sumFS)
               .replace('{delta}', deltaBSFS)}
           </span>
-          <span class={s.checkValue}>{deltaBSFS} m</span>
+          <span class={`${s.checkValue} ${check1Pass ? '' : s.checkValueMismatch}`}>
+            {deltaBSFS} m
+          </span>
         </li>
 
         <li class={s.checkItem}>
@@ -51,7 +53,9 @@ export function SurveyArithmeticChecks({ result }: SurveyArithmeticChecksProps) 
               .replace('{fall}', result.sumFall)
               .replace('{delta}', deltaRiseFall)}
           </span>
-          <span class={s.checkValue}>{deltaRiseFall} m</span>
+          <span class={`${s.checkValue} ${check1Pass ? '' : s.checkValueMismatch}`}>
+            {deltaRiseFall} m
+          </span>
         </li>
 
         <li class={s.checkItem}>
@@ -64,7 +68,9 @@ export function SurveyArithmeticChecks({ result }: SurveyArithmeticChecksProps) 
               .replace('{first}', result.startingRL)
               .replace('{delta}', deltaRL)}
           </span>
-          <span class={s.checkValue}>{deltaRL} m</span>
+          <span class={`${s.checkValue} ${check2Pass ? '' : s.checkValueMismatch}`}>
+            {deltaRL} m
+          </span>
         </li>
       </ul>
     </div>

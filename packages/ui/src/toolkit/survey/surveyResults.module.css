@@ -173,6 +173,11 @@
 .checkValue {
   margin-left: auto;
   font-weight: 600;
+  color: #15803d;
+}
+
+.checkValueMismatch {
+  color: #b91c1c;
 }
 
 /* Results Table */

@@ -93,7 +93,11 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         </div>
 
         <div>
-          <SurveyProfilePlaceholder result={survey.result} />
+          <SurveyProfilePlaceholder
+            result={survey.result}
+            inputRows={survey.rows}
+            closingRL={survey.closingRL}
+          />
           <SurveyResultsCard
             phase={survey.phase}
             result={survey.result}

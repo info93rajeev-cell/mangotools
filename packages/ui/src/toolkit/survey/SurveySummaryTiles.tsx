@@ -49,7 +49,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
     <div class={s.tilesGrid} data-summary-tiles="">
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#e9f8ef', color: '#16a34a' }}>
+          <span class={s.iconWrap} style={{ background: '#e9f8ef', color: '#15803d' }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 20h16M12 4v12M8 12l4 4 4-4" />
             </svg>
@@ -66,8 +66,7 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
         <div class={s.tileHead}>
           <span class={s.iconWrap} style={{ background: '#eaf1fe', color: '#1a6ef5' }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 8v4l3 3" />
+              <path d="M5 12h14M12 5v14" />
             </svg>
           </span>
           {surveyStrings.tileMisclosure}
@@ -80,9 +79,10 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
 
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#fffbeb', color: '#d97706' }}>
+          <span class={s.iconWrap} style={{ background: '#fff6e5', color: '#d97706' }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-5-6.5 5 2-7.5L2 9h7z" />
+              <path d="M12 3l9 16H3z" />
+              <path d="M12 10v4M12 17v.5" />
             </svg>
           </span>
           {surveyStrings.tileAllowable}
@@ -95,10 +95,10 @@ export function SurveySummaryTiles({ result, closingRLInput }: SurveySummaryTile
 
       <div class={s.tile}>
         <div class={s.tileHead}>
-          <span class={s.iconWrap} style={{ background: '#f3e8ff', color: '#7c3aed' }}>
+          <span class={s.iconWrap} style={{ background: '#fdecec', color: '#dc2626' }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 8v4l3 2" />
             </svg>
           </span>
           {surveyStrings.tileSetups}
