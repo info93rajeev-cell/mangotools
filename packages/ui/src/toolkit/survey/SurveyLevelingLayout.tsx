@@ -104,12 +104,16 @@ function SurveyHeaderPills() {
   );
 }
 
-function SurveyBottomFaq() {
+function SurveyBottomFaq({ method }: { method: 'rise-fall' | 'height-of-instrument' }) {
+  const methodText =
+    method === 'height-of-instrument' ? surveyStrings.accMethodHI : surveyStrings.accMethodRF;
   return (
-    <div class={s.bottomGrid}>
+    <div class={s.bottomGrid} data-bottom-faq="">
       <AccordionCard title="ⓘ Disclaimer">Estimation aid for civil surveying.</AccordionCard>
       <AccordionCard title="📖 How to use">Enter starting BM RL and observations.</AccordionCard>
-      <AccordionCard title="⚙ Method">Rise & Fall reduction method.</AccordionCard>
+      <AccordionCard title={`⚙ ${surveyStrings.accMethodTitle}`}>
+        <span data-method-accordion-desc="">{methodText}</span>
+      </AccordionCard>
       <AccordionCard title="❓ FAQ">Calculations run 100% locally on your device.</AccordionCard>
       <AccordionCard title="🔗 Related tools">
         Explore other civil and surveying tools.
@@ -189,7 +193,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         {surveyStrings.accWarningsBody}
       </AccordionCard>
 
-      <SurveyBottomFaq />
+      <SurveyBottomFaq method={survey.method} />
 
       <Toast message={message} />
     </div>

@@ -224,7 +224,6 @@ function useSurveyActions(
     calc.abortRef.current?.abort();
     calc.abortRef.current = null;
     calc.reqIdRef.current++;
-    bm.setMethodState('rise-fall');
     bm.setStartRLState(SAMPLE_START_RL);
     bm.setClosingRLState(SAMPLE_CLOSING_RL);
     bm.setKConstantState(SAMPLE_K_CONSTANT);
@@ -236,7 +235,7 @@ function useSurveyActions(
       SAMPLE_ROWS,
       SAMPLE_ADJ_BY,
       SAMPLE_K_CONSTANT,
-      'rise-fall',
+      bm.method,
     );
   };
 
@@ -244,7 +243,6 @@ function useSurveyActions(
     calc.abortRef.current?.abort();
     calc.abortRef.current = null;
     calc.reqIdRef.current++;
-    bm.setMethodState('rise-fall');
     bm.setStartRLState('');
     bm.setClosingRLState('');
     bm.setKConstantState('');

@@ -301,3 +301,124 @@ test('HI mode with setup-based adjustment, open line, and missing C/distance', a
     /Distance from previous station is required for distance-based adjustment\./,
   );
 });
+
+test('Selecting HI first then clicking Try sample retains HI mode and calculates with HI', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  // Wait for hydration
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  // 1. Select HI tab first BEFORE loading sample
+  const hiTab = page.locator('[data-method-tab="height-of-instrument"]');
+  const rfTab = page.locator('[data-method-tab="rise-fall"]');
+  await hiTab.click();
+
+  await expect(hiTab).toHaveAttribute('aria-selected', 'true');
+  await expect(rfTab).toHaveAttribute('aria-selected', 'false');
+
+  // 2. Click "Try sample"
+  await page.locator('[data-try-sample]').click();
+
+  // 3. Verify selected tab is STILL Height of Instrument (not silently switched to Rise & Fall)
+  await expect(hiTab).toHaveAttribute('aria-selected', 'true');
+  await expect(rfTab).toHaveAttribute('aria-selected', 'false');
+
+  // 4. Verify calculation succeeded in HI mode
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+
+  // 5. Verify HI arithmetic checks
+  await expect(
+    page.getByText(
+      'Collimation arithmetic check (Backsights − Foresights = Ending RL − Starting RL):',
+    ),
+  ).toBeVisible();
+  const checkItems = page.locator('[data-arithmetic-checks] li');
+  await expect(checkItems).toHaveCount(2);
+  await expect(page.getByText(/ΣRise − ΣFall/)).not.toBeVisible();
+
+  // 6. Verify Results Table has HI (m) header and values
+  const resultTable = page.locator('[data-results-table]');
+  await expect(resultTable).toBeVisible();
+  await expect(resultTable.locator('thead th').nth(2)).toHaveText('HI (m)');
+  const rows = resultTable.locator('tbody tr');
+  await expect(rows).toHaveCount(6);
+  await expect(rows.nth(0).locator('td').nth(2)).toHaveText('101.500');
+  await expect(rows.nth(2).locator('td').nth(2)).toHaveText('100.300');
+  await expect(rows.nth(4).locator('td').nth(2)).toHaveText('102.000');
+  await expect(rows.nth(5).locator('td').nth(5)).toHaveText('99.805');
+});
+
+test('Method accordion describes the currently selected reduction method', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  // Wait for hydration
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  // Open the Method accordion
+  const methodAcc = page.locator('[data-bottom-faq]').getByRole('button', { name: /Method/ });
+  await methodAcc.click();
+
+  const desc = page.locator('[data-method-accordion-desc]');
+  // In initial Rise & Fall mode
+  await expect(desc).toContainText('Rise & Fall reduction method');
+
+  // Switch to Height of Instrument
+  await page.locator('[data-method-tab="height-of-instrument"]').click();
+  await expect(desc).toContainText('Height of Instrument (Collimation) method');
+
+  // Switch back to Rise & Fall
+  await page.locator('[data-method-tab="rise-fall"]').click();
+  await expect(desc).toContainText('Rise & Fall reduction method');
+});
+
+test('Keyboard navigation (arrow keys, Home, End) on method tabs', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  // Wait for hydration
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  const rfTab = page.locator('[data-method-tab="rise-fall"]');
+  const hiTab = page.locator('[data-method-tab="height-of-instrument"]');
+
+  // Focus the active Rise & Fall tab
+  await rfTab.focus();
+  await expect(rfTab).toBeFocused();
+  await expect(rfTab).toHaveAttribute('tabindex', '0');
+  await expect(hiTab).toHaveAttribute('tabindex', '-1');
+
+  // Press ArrowRight -> moves focus to HI tab and selects it
+  await page.keyboard.press('ArrowRight');
+  await expect(hiTab).toBeFocused();
+  await expect(hiTab).toHaveAttribute('aria-selected', 'true');
+  await expect(hiTab).toHaveAttribute('tabindex', '0');
+  await expect(rfTab).toHaveAttribute('aria-selected', 'false');
+  await expect(rfTab).toHaveAttribute('tabindex', '-1');
+
+  // Press ArrowLeft -> moves focus back to RF tab and selects it
+  await page.keyboard.press('ArrowLeft');
+  await expect(rfTab).toBeFocused();
+  await expect(rfTab).toHaveAttribute('aria-selected', 'true');
+  await expect(rfTab).toHaveAttribute('tabindex', '0');
+  await expect(hiTab).toHaveAttribute('aria-selected', 'false');
+  await expect(hiTab).toHaveAttribute('tabindex', '-1');
+
+  // Press End -> selects HI
+  await page.keyboard.press('End');
+  await expect(hiTab).toBeFocused();
+  await expect(hiTab).toHaveAttribute('aria-selected', 'true');
+
+  // Press Home -> selects RF
+  await page.keyboard.press('Home');
+  await expect(rfTab).toBeFocused();
+  await expect(rfTab).toHaveAttribute('aria-selected', 'true');
+
+  // Press ArrowDown / ArrowUp wrap-around
+  await page.keyboard.press('ArrowDown');
+  await expect(hiTab).toBeFocused();
+  await expect(hiTab).toHaveAttribute('aria-selected', 'true');
+});
