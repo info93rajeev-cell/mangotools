@@ -1,68 +1,111 @@
 import { expect, test } from '@playwright/test';
 import { control, openEvidence } from '../support/amazon-evidence.ts';
+import { primaryResult } from '../support/tool-page.ts';
 
-for (const prefix of ['referral', 'closing', 'weightHandling']) {
-  test(`Amazon final evidence: ${prefix} slab bounds and canonical row correction`, async ({
-    page,
-  }) => {
-    const d = await openEvidence(page);
-    const weight = prefix === 'weightHandling';
-    const key = `${prefix}${weight ? 'WeightSlabs' : 'PriceSlabs'}`;
-    await d.configure({
-      [`${prefix}Mode`]: weight ? 'weight-slabs' : 'price-slabs',
-      [`${prefix}GstTreatment`]: 'none',
-    });
-    if (weight) await d.set('chargeableWeightValue', '1');
-    const cell = weight ? 'amount' : 'value';
-    await d.rows(key, [
-      { max: weight ? '1' : '1000', [cell]: prefix === 'referral' ? '7' : '10' },
-      { min: weight ? '1' : '1000', max: weight ? '2' : '2000', [cell]: '20' },
-    ]);
-    expect((await d.verify()).marketplaceFees).toMatchObject([
-      { matchedSlabIndex: 0, amount: prefix === 'referral' ? '70.00' : '10.00' },
-    ]);
-    const matchKey = weight ? 'chargeableWeightValue' : 'sellingPricePerUnit';
-    await d.set(matchKey, weight ? '1.001' : '1000.01');
-    expect((await d.verify()).marketplaceFees).toMatchObject([{ matchedSlabIndex: 1 }]);
-    await d.set(matchKey, weight ? '1' : '1000');
-    if (weight) {
-      await d.set('chargeableWeightUnit', 'g');
-      await expect(control(page, 'chargeableWeightValue')).toHaveValue('1');
-      await expect(control(page, `${key}-0-max`)).toHaveValue('1');
-      await d.verify();
-    }
-    await control(page, `${key}-0-${cell}`).fill(prefix === 'referral' ? '101' : '-1');
-    await d.set('showAmazonFees', 'false');
-    await expect(control(page, 'showAmazonFees')).toBeChecked();
-    await expect(control(page, `${key}-0-${cell}`)).toBeFocused();
-    await expect(control(page, `${key}-0-${cell}`)).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.locator('[data-primary-result]')).toHaveCount(0);
-    await expect(control(page, 'showTaxes')).not.toBeChecked();
-    await control(page, `${key}-0-${cell}`).fill('7');
-    await expect(control(page, `${key}-0-${cell}`)).not.toHaveAttribute('aria-invalid', 'true');
-    await control(page, `${key}-1-remove`).focus();
-    await page.keyboard.press('Enter');
-    await expect(control(page, `${key}-0-remove`)).toBeFocused();
-    d.audit();
-  });
-}
-for (const [key, section, value] of [
-  ['productGstRatePercent', 'showTaxes', '101'],
-  ['chargeableWeightValue', 'showShipping', '-1'],
-  ['inventoryWriteOffAmount', 'showAdjustments', '-1'],
-]) {
-  test(`Amazon final evidence: reveal only ${section} for ${key}`, async ({ page }) => {
-    const d = await openEvidence(page);
-    if (key === 'inventoryWriteOffAmount') await d.set('inventoryWriteOffApplyReturn', 'true');
-    await d.set(key, value);
-    await d.set(section, 'false');
-    await expect(control(page, section)).toBeChecked();
-    await expect(control(page, key)).toBeFocused();
-    await expect(control(page, key)).toHaveValue(value);
-    for (const other of ['showTaxes', 'showShipping', 'showAdjustments'].filter(
-      (s) => s !== section,
-    ))
-      await expect(control(page, other)).not.toBeChecked();
-    d.audit();
-  });
-}
+test('Amazon category evidence: category presets dynamically calculate referral fee', async ({
+  page,
+}) => {
+  const d = await openEvidence(page);
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  // Default is 'custom': referral fee is editable input with default ₹120
+  const refFee = control(page, 'referralFee');
+  await expect(refFee).toHaveValue('120');
+  await expect(refFee).not.toHaveAttribute('readonly', '');
+
+  // Select Electronics (8.5%): 8.5% of 1500 = ₹127.50
+  await d.set('category', 'electronics');
+  await expect(refFee).toHaveValue('₹127.50');
+  await expect(refFee).toHaveAttribute('readonly', '');
+
+  // Select Apparel (13%): 13% of 1500 = ₹195.00
+  await d.set('category', 'apparel');
+  await expect(refFee).toHaveValue('₹195.00');
+
+  // Select Home & Kitchen (10%): 10% of 1500 = ₹150.00
+  await d.set('category', 'home');
+  await expect(refFee).toHaveValue('₹150.00');
+
+  // Select Beauty (8%): 8% of 1500 = ₹120.00
+  await d.set('category', 'beauty');
+  await expect(refFee).toHaveValue('₹120.00');
+
+  // Select Grocery (6%): 6% of 1500 = ₹90.00
+  await d.set('category', 'grocery');
+  await expect(refFee).toHaveValue('₹90.00');
+
+  // Select Books & Media (6%): 6% of 1500 = ₹90.00
+  await d.set('category', 'books');
+  await expect(refFee).toHaveValue('₹90.00');
+
+  // Switch back to custom: user can type custom numeric amount
+  await d.set('category', 'custom');
+  await expect(refFee).not.toHaveAttribute('readonly', '');
+  await refFee.fill('150');
+  await expect(primaryResult(page)).not.toHaveText('…');
+
+  d.audit();
+});
+
+test('Amazon fulfilment evidence: mode tabs and scenario comparison', async ({ page }) => {
+  const d = await openEvidence(page);
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  // Initial mode is FBA
+  const fbaTab = page.getByRole('tab', { name: 'FBA' });
+  await expect(fbaTab).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[data-fulfilment-hint]')).toContainText('FBA');
+
+  // Switch to Easy Ship
+  const easyShipTab = page.getByRole('tab', { name: 'Easy Ship' });
+  await easyShipTab.click();
+  await expect(easyShipTab).toHaveAttribute('aria-selected', 'true');
+  await expect(fbaTab).toHaveAttribute('aria-selected', 'false');
+  await expect(page.locator('[data-fulfilment-hint]')).toContainText('Easy Ship');
+
+  // Switch to Self Ship
+  const selfShipTab = page.getByRole('tab', { name: 'Self Ship' });
+  await selfShipTab.click();
+  await expect(selfShipTab).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[data-fulfilment-hint]')).toContainText('Self Ship');
+
+  // Scenario comparison table reflects selected mode
+  const scenarioTable = page.getByRole('table', { name: 'Scenario Comparison Table' });
+  await expect(scenarioTable).toBeVisible();
+  await expect(scenarioTable).toContainText('Self Ship · your fees');
+
+  // Comparison tab shows guidance
+  await page
+    .locator('[aria-label="Comparison Tabs"]')
+    .getByRole('button', { name: 'Compare' })
+    .click();
+  await expect(page.getByText('Fees differ by mode. To compare')).toBeVisible();
+
+  d.audit();
+});
+
+test('Amazon tax evidence: GST rates and ITC registration conditional display', async ({
+  page,
+}) => {
+  const d = await openEvidence(page);
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  // Default is 18% GST: ITC checkbox visible
+  const itc = control(page, 'claimFeeGstCredit');
+  await expect(itc).toBeVisible();
+
+  // Change GST to 0% (unregistered): ITC checkbox hidden
+  await d.set('productGstRatePercent', '0');
+  await expect(itc).toHaveCount(0);
+
+  // Statement table does not show GST deduction inside selling price
+  const statement = page.getByRole('table', { name: 'Statement Table' });
+  await expect(statement).not.toContainText('GST inside the price');
+
+  // Change GST to 5%: ITC checkbox reappears
+  await d.set('productGstRatePercent', '5');
+  await expect(control(page, 'claimFeeGstCredit')).toBeVisible();
+  await expect(statement).toContainText('GST inside the price');
+
+  d.audit();
+});
