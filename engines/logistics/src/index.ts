@@ -7,6 +7,7 @@ import { containerLoad } from './operations/container-load/operation.ts';
 import { costEstimate } from './operations/cost-estimate/operation.ts';
 import { palletFit } from './operations/pallet-fit/operation.ts';
 import { weightChargeable } from './operations/weight-chargeable/operation.ts';
+import { weightShipment } from './operations/weight-shipment/operation.ts';
 
 export const engine: EngineModule = {
   engineId: 'logistics',
@@ -14,6 +15,7 @@ export const engine: EngineModule = {
     cbmShipment,
     cbmCompute,
     weightChargeable,
+    weightShipment,
     containerFit,
     palletFit,
     costEstimate,
@@ -30,4 +32,5 @@ export {
   costEstimate,
   palletFit,
   weightChargeable,
+  weightShipment,
 };
