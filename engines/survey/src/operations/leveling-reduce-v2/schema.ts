@@ -26,7 +26,7 @@ export const levelingParamsV2 = z.strictObject({
   method: z
     .enum(['rise-fall', 'height-of-instrument'])
     .default('rise-fall')
-    .describe('Reduction method; height-of-instrument reserved for future PR.'),
+    .describe('Reduction method (rise-fall or height-of-instrument).'),
   adjBy: z
     .enum(['none', 'distance', 'setup'])
     .default('none')
@@ -42,6 +42,10 @@ const resultRowV2 = z.strictObject({
   bs: metres.nullable(),
   is: metres.nullable(),
   fs: metres.nullable(),
+  hi: metres
+    .nullable()
+    .optional()
+    .describe('Height of instrument (collimation) in metres for this setup, or null.'),
   rise: metres.nullable(),
   fall: metres.nullable(),
   rl: metres,
@@ -73,13 +77,7 @@ const check = z.strictObject({
 const working = z.strictObject({
   ref: z.string(),
   formulaKey: z.string(),
-  variables: z.strictObject({
-    previousRL: metres,
-    previousReading: metres,
-    incomingReading: metres,
-    rise: metres,
-    fall: metres,
-  }),
+  variables: z.record(z.string(), metres),
   result: metres,
 });
 
@@ -89,10 +87,16 @@ export const levelingOutputV2 = z.strictObject({
   endingRL: metres,
   sumBS: metres,
   sumFS: metres,
-  sumRise: metres,
-  sumFall: metres,
+  sumRise: metres
+    .nullable()
+    .describe('Sum of rises in metres, or null for height-of-instrument method.'),
+  sumFall: metres
+    .nullable()
+    .describe('Sum of falls in metres, or null for height-of-instrument method.'),
   bsFsDelta: metres,
-  riseFallDelta: metres,
+  riseFallDelta: metres
+    .nullable()
+    .describe('Difference sumRise - sumFall in metres, or null for height-of-instrument method.'),
   rlDelta: metres,
   closingRL: metres.nullable(),
   misclosure: metres.nullable(),
