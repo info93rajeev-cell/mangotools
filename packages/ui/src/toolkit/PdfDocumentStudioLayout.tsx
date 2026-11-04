@@ -86,6 +86,9 @@ function ToolHeaderBar({
   );
 }
 
+/** Studios already rebuilt to the approved reference design. */
+const REF_LOOK_TABS = new Set<PdfToolTab>(['compress', 'merge']);
+
 function resolveInitialPdfTab(toolId?: string): PdfToolTab {
   if (toolId === 'pdf-split') return 'split';
   if (toolId === 'compress-pdf') return 'compress';
@@ -97,7 +100,6 @@ function resolveInitialPdfTab(toolId?: string): PdfToolTab {
 function RenderPdfMergeView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfMergeStudio>;
   onOpen: () => void;
@@ -105,17 +107,14 @@ function RenderPdfMergeView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfMergeIcon />}
-        title="PDF Merge"
-        badge3="🛡️ No Sign-up Needed"
+      <RefTopBar
+        badge3="No Sign-up Needed"
         openLabel="Open Files"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleFiles}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfMergeLeftCards studio={studio} />
         <PdfMergeRightCards studio={studio} />
       </div>
@@ -324,7 +323,7 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
     // biome-ignore lint/a11y/noStaticElementInteractions: drop target for files; the Open buttons give keyboard access.
     <div
       class={styles.studioContainer}
-      data-ref-look={activeTab === 'compress' ? '' : undefined}
+      data-ref-look={REF_LOOK_TABS.has(activeTab) ? '' : undefined}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();

@@ -6,6 +6,7 @@ export interface ToolHeaderIcon {
 
 const ICONS: Readonly<Record<string, ToolHeaderIcon>> = {
   'compress-pdf': { name: 'file-archive', tone: 'purple' },
+  'pdf-merge': { name: 'files', tone: 'purple' },
 };
 
 export function toolHeaderIcon(slug: string): ToolHeaderIcon | undefined {
