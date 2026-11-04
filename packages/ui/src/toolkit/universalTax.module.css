@@ -38,7 +38,7 @@
 }
 
 .pageSubtitle {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #64748b;
   margin: 0;
   line-height: 1.35;
@@ -75,13 +75,13 @@
 }
 
 .calloutTitle {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #065f46;
 }
 
 .calloutSub {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #047857;
 }
 
@@ -120,7 +120,7 @@
   border: 1px solid #cbd5e1;
   background: #ffffff;
   color: #1e293b;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -158,7 +158,7 @@
 }
 
 .taxSystemNavLabel {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
 }
@@ -177,7 +177,7 @@
   border: none;
   background: transparent;
   color: #475569;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -241,7 +241,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #ffffff;
 }
@@ -263,13 +263,13 @@
 }
 
 .cardTitleText {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
 
 .cardHeaderSub {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
   margin-top: -4px;
 }
@@ -293,7 +293,7 @@
   border: none;
   border-radius: 5px;
   padding: 6px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   cursor: pointer;
@@ -331,7 +331,7 @@
 }
 
 .fieldLabel {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
 }
@@ -340,7 +340,7 @@
   padding: 6px 9px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #0f172a;
   background: #f8fafc;
@@ -367,7 +367,7 @@
   border-right: 1px solid #cbd5e1;
   background: #e2e8f0;
   padding: 6px 6px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
   cursor: pointer;
@@ -377,7 +377,7 @@
 .discountValInput {
   border: none;
   padding: 6px 8px;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #0f172a;
   background: transparent;
@@ -390,7 +390,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   background: #f8fafc;
@@ -408,7 +408,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .advancedCheckboxRow {
@@ -437,7 +437,7 @@
 }
 
 .headlineSub {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #065f46;
 }
@@ -456,7 +456,7 @@
   border: 1px solid #86efac;
   border-radius: 6px;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   display: flex;
   flex-direction: column;
@@ -465,7 +465,7 @@
 }
 
 .effectiveRateSub {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 500;
   color: #166534;
 }
@@ -473,7 +473,7 @@
 /* 4-KPI METRICS ROW */
 .kpiMetricsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 5px;
 }
 
@@ -491,13 +491,13 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
 }
 
 .kpiVal {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   white-space: nowrap;
@@ -510,7 +510,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 2px;
@@ -543,14 +543,14 @@
 }
 
 .donutTotalVal {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 750;
   color: #0f172a;
   line-height: 1.1;
 }
 
 .donutTotalSub {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   color: #64748b;
   line-height: 1;
 }
@@ -566,7 +566,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   padding-bottom: 2px;
   border-bottom: 1px dashed #e2e8f0;
 }
@@ -602,7 +602,7 @@
 }
 
 .breakdownPercent {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -619,7 +619,7 @@
 }
 
 .savingsNoticeText {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #1e40af;
   line-height: 1.35;
 }
@@ -649,7 +649,7 @@
   border: none;
   border-radius: 6px;
   padding: 8px 14px;
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
@@ -668,7 +668,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 7px 11px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -694,7 +694,7 @@
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   table-layout: fixed;
   box-sizing: border-box;
 }
@@ -755,7 +755,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   padding: 1px 3px;
   opacity: 0.7;
   transition: opacity 0.15s;
@@ -779,7 +779,7 @@
   background: transparent;
   border-radius: 4px;
   padding: 3px 8px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   cursor: pointer;
@@ -795,7 +795,7 @@
   border: 1px solid #fef08a;
   border-radius: 7px;
   padding: 8px 10px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #713f12;
   display: flex;
   flex-direction: column;
@@ -819,7 +819,7 @@
   background: transparent;
   border-radius: 5px;
   padding: 5px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   cursor: pointer;
@@ -843,7 +843,7 @@
   padding: 6px 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   box-sizing: border-box;
   margin-bottom: 8px;
   outline: none;
@@ -900,7 +900,7 @@
 }
 
 .categoryTitleText {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
   min-width: 0;
@@ -910,7 +910,7 @@
 }
 
 .categoryRatePill {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 4px;
@@ -921,14 +921,14 @@
 }
 
 .categoryDescText {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #64748b;
   line-height: 1.3;
 }
 
 .categoryApplyBtn {
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   border-radius: 5px;
   border: 1px solid #2563eb;
@@ -966,7 +966,7 @@
   background: transparent;
   border-radius: 5px;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   cursor: pointer;
@@ -992,7 +992,7 @@
 
 .itcGrid3Col {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -1007,13 +1007,13 @@
 }
 
 .itcMetricLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
   font-weight: 500;
 }
 
 .itcMetricVal {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -1023,7 +1023,7 @@
   border: 1px solid #a7f3d0;
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #065f46;
   font-weight: 600;
   line-height: 1.35;
@@ -1034,7 +1034,7 @@
   border: 1px solid #fde68a;
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #92400e;
   line-height: 1.35;
 }
@@ -1059,7 +1059,7 @@
 }
 
 .complianceItemTitle {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #1e293b;
   display: flex;
@@ -1068,7 +1068,7 @@
 }
 
 .complianceItemBody {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #475569;
   line-height: 1.4;
 }
@@ -1108,7 +1108,7 @@
   .countryPillBtn {
     flex-shrink: 0;
     min-width: 0;
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
     padding: 4px 7px;
     box-sizing: border-box;
   }
@@ -1148,7 +1148,7 @@
   .taxSystemTabBtn {
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 10.5px;
+    font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
     padding: 4px 6px;
     text-align: center;
   }
@@ -1251,7 +1251,7 @@
   .mobileOnlyActions .ghostActionBtn {
     flex: 1;
     justify-content: center;
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
     padding: 7px 8px;
     min-width: 0;
   }
@@ -1270,7 +1270,7 @@
     gap: 8px;
   }
   .countryPillBtn {
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
     padding: 3px 6px;
   }
   .kpiMetricsGrid {
@@ -1573,7 +1573,7 @@
   .slabsTable {
     min-width: 460px;
     max-width: none;
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   }
 
   .slabsTable th,
@@ -1581,4 +1581,180 @@
     word-break: normal;
     overflow-wrap: normal;
   }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .calloutSparkles {
+  color: #f3d26b;
+}
+
+:global(:where([data-theme="dark"])) .cardHeaderRow {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .discountInputRow {
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .discountTypeSelect {
+  color: #d4dce9;
+  background: #1f2c3c;
+  border-right: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .discountValInput {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .advancedToggleRow {
+  color: #b8c1cf;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .advancedDrawer {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .headlineHeroCard {
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .headlineSub {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .headlineAmount {
+  color: #aef8e3;
+}
+
+:global(:where([data-theme="dark"])) .headlineRateBadge {
+  color: #a7f1c2;
+  background: #144525;
+}
+
+:global(:where([data-theme="dark"])) .effectiveRateSub {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .kpiCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpiHeader {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpiVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .breakdownTitleRow {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .donutBreakdownContainer {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .donutTotalVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .donutTotalSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .breakdownRow {
+  border-bottom: 1px dashed #324761;
+}
+
+:global(:where([data-theme="dark"])) .breakdownLabelGroup {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .breakdownAmount {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .breakdownPercent {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .savingsNoticeText {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .calculateBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .slabsTable th {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .slabsTable td {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabsRow {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .formulaTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabsRow {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn:hover {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .assistantTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .rateSearchInput {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .categoryRatePill {
+  color: #5b8af0;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .categoryApplyBtn {
+  color: #5b8af0;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .categoryApplyBtn:hover {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .itcBadgeHighlight {
+  color: #bcfae8;
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .itcBadgeNotice {
+  color: #f5bd9b;
+  background: #3e3512;
 }

@@ -24,7 +24,7 @@
 }
 
 .modeDescription {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   font-weight: 500;
 }
@@ -58,7 +58,7 @@
   border: none;
   border-radius: 6px;
   padding: 4px 12px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -83,7 +83,7 @@
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #15803d;
 }
@@ -103,7 +103,7 @@
 }
 
 .subtitleText {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   margin: 0;
   line-height: 1.4;
@@ -194,14 +194,14 @@
 }
 
 .browseLink {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #2563eb;
   margin: 0 0 6px 0;
 }
 
 .dropHint {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #64748b;
   margin: 0;
   max-width: 380px;
@@ -218,7 +218,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #3b82f6;
   cursor: pointer;
@@ -238,7 +238,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
@@ -302,7 +302,7 @@
   border-radius: 6px;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
   display: flex;
@@ -330,7 +330,7 @@
 }
 
 .itemName {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
   white-space: nowrap;
@@ -339,7 +339,7 @@
 }
 
 .itemMeta {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -353,7 +353,7 @@
   background: transparent;
   border: none;
   color: #94a3b8;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   padding: 2px 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -390,7 +390,7 @@
 /* SECTION 3: PDF SETTINGS */
 .settingsGridRow1 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -414,7 +414,7 @@
 }
 
 .fieldLabel {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   display: flex;
@@ -423,7 +423,7 @@
 }
 
 .helpIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #94a3b8;
   cursor: help;
 }
@@ -435,7 +435,7 @@
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   color: #1e293b;
   box-sizing: border-box;
   outline: none;
@@ -459,14 +459,14 @@
 
 .previewGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin-top: 10px;
 }
 
 @media (max-width: 640px) {
   .previewGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -533,7 +533,7 @@
 }
 
 .pageNumber {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
 }
@@ -588,7 +588,7 @@
 }
 
 .successSubtitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #166534;
   margin: 0;
 }
@@ -597,7 +597,7 @@
   display: flex;
   gap: 16px;
   align-items: center;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #374151;
 }
 
@@ -609,7 +609,7 @@
 
 .statLabel {
   color: #64748b;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .statValue {
@@ -647,7 +647,7 @@
 
 .privacyFootnote {
   text-align: center;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #64748b;
   margin: 0;
 }
@@ -675,7 +675,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
 }
@@ -690,5 +690,164 @@
 
 .relatedArrow {
   color: #94a3b8;
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .formatTab[data-active="true"] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .securityBadge {
+  color: #a7f1c2;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .dropzone {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .dropzone:hover,
+:global(:where([data-theme="dark"])) .dropzone[data-dragging="true"] {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .cloudIcon {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .dropHeadline {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .browseLink {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .dropHint {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .trySampleBtn {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .trySampleBtn:hover {
+  background: #12253d;
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .clearAllBtn {
+  color: #a3adbd;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .clearAllBtn:hover {
+  color: #e76c6c;
+  background: #421313;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .imageRow {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .imageRow:hover {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .indexBadge {
+  color: #b8c1cf;
+  background: #182838;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .itemName {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .itemMeta {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .reorderBtn:hover:not(:disabled) {
+  color: #d4dce9;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .removeItemBtn:hover {
+  background: #3c1111;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .fieldSelect,
+:global(:where([data-theme="dark"])) .fieldInput {
+  color: #d4dce9;
+  background: #151e33;
+  border: 1.5px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .previewContainer {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .pageNumber {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .successBanner {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .successTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .successSubtitle {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .successStats {
+  color: #c7ced9;
+}
+
+:global(:where([data-theme="dark"])) .statLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .statValue {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .downloadPdfBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .privacyFootnote {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .relatedActionCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .relatedActionCard:hover {
+  background: #172635;
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .relatedLeft {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .relatedLinkText {
+  color: #5b8af0;
 }

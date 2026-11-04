@@ -38,7 +38,7 @@
     color: #0f172a;
     border: none;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -61,11 +61,11 @@
   .downloadBtn {
     flex: 2;
     min-height: 44px;
-    background: #16a34a;
+    background: #15803d;
     color: #ffffff;
     border: none;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -93,7 +93,7 @@
     color: #334155;
     border: 1px solid #cbd5e1;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -104,5 +104,31 @@
 
   .resetBtn:hover {
     background: #e2e8f0;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+@media (max-width: 960px) {
+  :global(:where([data-theme="dark"])) .mobileBarWrap {
+    background: #151e33;
+    border-top: 1px solid #324761;
+  }
+
+  :global(:where([data-theme="dark"])) .primaryBtn {
+    color: #0f172a;
+  }
+
+  :global(:where([data-theme="dark"])) .downloadBtn {
+    color: #ffffff;
+  }
+
+  :global(:where([data-theme="dark"])) .resetBtn {
+    color: #c4cedc;
+    background: #182838;
+    border: 1px solid #36485e;
+  }
+
+  :global(:where([data-theme="dark"])) .resetBtn:hover {
+    background: #1f2c3c;
   }
 }

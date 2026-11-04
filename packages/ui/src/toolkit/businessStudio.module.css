@@ -54,7 +54,7 @@
 
 .subtitle {
   color: #5a719c;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   margin: 3px 0 0;
   line-height: 1.35;
 }
@@ -106,7 +106,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 850;
   color: #0d1d4b;
   margin-bottom: 10px;
@@ -119,7 +119,7 @@
   height: 27px;
   width: 27px;
   border-radius: 7px;
-  font-size: 14.5px;
+  font-size: calc(14.5px + (15px - 14.5px) * var(--fs-lift, 0));
   font-weight: 900;
   flex: none;
 }
@@ -146,7 +146,7 @@
 
 .icoViolet {
   background: #f1e4ff;
-  color: #a126ed;
+  color: #8419c6;
 }
 
 .icoCyan {
@@ -162,13 +162,13 @@
 /* 5. Grids, Fields & Inputs */
 .grid2 {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
 .grid3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -180,7 +180,7 @@
 
 .label {
   color: #57719d;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 750;
 }
 
@@ -189,7 +189,7 @@
   border: 1px solid #d5e2f5;
   border-radius: 6px;
   background: #fbfdff;
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 780;
   color: #102252;
   width: 100%;
@@ -210,15 +210,15 @@
   border: 1px solid #d5e2f5;
   border-radius: 6px;
   background: #fbfdff;
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 780;
   color: #102252;
   box-sizing: border-box;
 }
 
 .muted {
-  color: #7184a7;
-  font-size: 11px;
+  color: #55678a;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1.45;
   margin: 4px 0 0;
 }
@@ -239,7 +239,7 @@
   flex: 1 1 auto;
   min-width: 0;
   text-align: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 750;
   color: #3d6198;
   cursor: pointer;
@@ -272,7 +272,7 @@
   text-align: center;
   font-weight: 900;
   color: #131b33;
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -298,7 +298,7 @@
 .headlineResult small {
   display: block;
   color: #00834a;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -348,7 +348,7 @@
 .metric .ico {
   width: 25px;
   height: 25px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
 }
 
 .metricTextGroup {
@@ -361,7 +361,7 @@
   display: block;
   color: #5c729b;
   font-weight: 750;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -395,7 +395,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #506688;
   font-weight: 700;
 }
@@ -416,7 +416,7 @@
   border: 1px solid #d0e1fd;
   border-radius: 7px;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1.45;
 }
 
@@ -424,7 +424,7 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   line-height: 1.4;
   color: #334155;
   cursor: pointer;
@@ -443,7 +443,7 @@
   color: #89641b;
   border-radius: 7px;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1.5;
 }
 
@@ -451,12 +451,12 @@
 .smallTable {
   border-collapse: collapse;
   width: 100%;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .smallTable th {
   background: #f0f5fd;
-  color: #5d7199;
+  color: #4a5f86;
   padding: 7px 6px;
   font-weight: 750;
   text-align: left;
@@ -497,7 +497,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 850;
   line-height: 1.3;
   color: #10204c;
@@ -512,13 +512,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #3b5072;
 }
 
 .strip b {
   color: #125ad3;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 800;
 }
 
@@ -530,7 +530,7 @@
   border-radius: 7px;
   padding: 6px 10px;
   font-weight: 750;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   white-space: nowrap;
   cursor: pointer;
   text-align: center;
@@ -547,7 +547,7 @@
 }
 
 .pillDanger {
-  color: #ea3d48;
+  color: #c81e2c;
   border-color: #ffd0d0;
 }
 
@@ -613,9 +613,13 @@
     flex-wrap: wrap;
   }
 
-  .grid2,
+  /* Phones keep two (or three) short inputs per row instead of one long column. */
+  .grid2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .grid3 {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .metrics {
@@ -768,4 +772,152 @@
 
 :global([data-theme="dark"]) .headlineResultLoss strong {
   color: #f87171;
+}
+
+/* Dark: labels, tables, notes, check rows and the donut centre kept their light colours. */
+:global([data-theme="dark"]) .label,
+:global([data-theme="dark"]) .legend,
+:global([data-theme="dark"]) .checkRow {
+  color: #cbd5e1;
+}
+
+:global([data-theme="dark"]) .smallTable th {
+  background: #0f172a;
+  color: #cbd5e1;
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .smallTable td {
+  color: #e2e8f0;
+  border-bottom-color: #334155;
+}
+
+:global([data-theme="dark"]) .note {
+  background: #0f1e3a;
+  border-color: #1e3a8a;
+  color: #bfdbfe;
+}
+
+:global([data-theme="dark"]) .warn {
+  background: #2a2110;
+  border-color: #78530f;
+  color: #fde68a;
+}
+
+:global([data-theme="dark"]) .strip b {
+  color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .chartcircleInner {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .bar {
+  background: #334155;
+}
+
+:global([data-theme="dark"]) .icoBlue {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+:global([data-theme="dark"]) .icoGreen {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+:global([data-theme="dark"]) .icoPink {
+  background: #701a45;
+  color: #fbcfe8;
+}
+:global([data-theme="dark"]) .icoAmber {
+  background: #713f12;
+  color: #fde68a;
+}
+:global([data-theme="dark"]) .icoViolet {
+  background: #4c1d95;
+  color: #ddd6fe;
+}
+:global([data-theme="dark"]) .icoCyan {
+  background: #164e63;
+  color: #a5f3fc;
+}
+:global([data-theme="dark"]) .icoRed {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+/* Phones: card icons were small and pale; make them larger and stronger. */
+@media (max-width: 900px) {
+  .ico {
+    height: 32px;
+    width: 32px;
+    font-size: 17px;
+  }
+
+  .metric .ico {
+    height: 30px;
+    width: 30px;
+    font-size: 16px;
+  }
+}
+
+.smallTable .tdMuted {
+  color: #64748b;
+}
+.smallTable .totalRow {
+  font-weight: 850;
+  background: #f0fdf4;
+}
+.smallTable .tdLoss {
+  color: #dc2626;
+}
+.smallTable .tdGain {
+  color: #047857;
+}
+:global([data-theme="dark"]) .smallTable .tdMuted {
+  color: #94a3b8;
+}
+:global([data-theme="dark"]) .smallTable .totalRow {
+  background: #052e1c;
+}
+:global([data-theme="dark"]) .smallTable .tdLoss {
+  color: #f87171;
+}
+:global([data-theme="dark"]) .smallTable .tdGain {
+  color: #34d399;
+}
+
+/* Phones: metric labels wrap rather than being cut off with "…". */
+@media (max-width: 600px) {
+  .metric small {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .heroIcon {
+  color: #af63ec;
+  background: #231240;
+}
+
+:global(:where([data-theme="dark"])) .tab:hover {
+  border-color: #304464;
+}
+
+:global(:where([data-theme="dark"])) .btn {
+  color: #131b33;
+}
+
+:global(:where([data-theme="dark"])) .smallTable th {
+  border-bottom: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .smallTable td {
+  border-bottom: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .pillDanger:hover {
+  border-color: #643030;
 }

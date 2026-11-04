@@ -26,7 +26,7 @@
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   color: #166534;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 999px;
@@ -48,7 +48,7 @@
 
 @media (max-width: 1280px) {
   .workspaceGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -93,7 +93,7 @@
 }
 
 .cardTitle {
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   letter-spacing: -0.01em;
@@ -104,7 +104,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
 }
@@ -118,11 +118,11 @@
 }
 
 .unitPill {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #526077;
   padding: 3px 8px;
   border-radius: 4px;
   cursor: pointer;
@@ -144,7 +144,7 @@
 }
 
 .fieldLabel {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
   white-space: nowrap;
@@ -157,7 +157,7 @@
   min-width: 0;
   box-sizing: border-box;
   height: 34px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 500;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -177,7 +177,7 @@
   min-width: 0;
   box-sizing: border-box;
   height: 34px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 500;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
@@ -215,7 +215,7 @@
 }
 
 .subColTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   padding-bottom: 4px;
@@ -233,7 +233,7 @@
 .inputSuffix {
   position: absolute;
   right: 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #64748b;
   pointer-events: none;
@@ -252,7 +252,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 500;
   color: #334155;
   cursor: pointer;
@@ -298,7 +298,7 @@
 }
 
 .kpiLabel {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
@@ -314,7 +314,7 @@
 }
 
 .kpiSub {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #475569;
   margin-top: 2px;
 }
@@ -349,7 +349,7 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #334155;
   line-height: 1.4;
 }
@@ -360,7 +360,7 @@
   border-radius: 50%;
   background: #e0f2fe;
   color: #0284c7;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -376,7 +376,7 @@
 }
 
 .accordionSummary {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   padding: 8px 10px;
@@ -388,7 +388,7 @@
 }
 
 .accordionContent {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #475569;
   padding: 8px 10px;
   background: #ffffff;
@@ -431,7 +431,7 @@
   color: #0f172a;
   border: none;
   border-radius: 8px;
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -454,7 +454,7 @@
   color: #334155;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -494,6 +494,166 @@
   border-radius: 8px;
   background: #fef2f2;
   color: #991b1b;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
+}
+
+/* Phones: three short number inputs per row (length · width · height) instead of one long column. */
+@media (max-width: 700px) {
+  .subCol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+  }
+
+  .subCol > .subColTitle,
+  .subCol > .fieldRow:has(select),
+  .subCol > .checkboxRow {
+    grid-column: 1 / -1;
+  }
+
+  .subCol > .fieldRow {
+    margin-bottom: 0;
+  }
+
+  .subCol .fieldLabel {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .root {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .privacyBadge {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .unitRow {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .unitPillGroup {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .unitPill {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .unitPillActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .selectInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .subColTitle {
+  color: #dde4f3;
+  border-bottom: 1px dashed #324761;
+}
+
+:global(:where([data-theme="dark"])) .inputSuffix {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .checkboxRow {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .kpiCard {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpiLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpiValue {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .kpiSub {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .progressBarWrap {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .guideStep {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .stepNum {
+  color: #82cef5;
+  background: #133042;
+}
+
+:global(:where([data-theme="dark"])) .accordionItem {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .accordionSummary {
+  color: #c4cedc;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .accordionContent {
+  color: #b8c1cf;
+  background: #151e33;
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .primaryCalculateBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .secondaryBtn {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .secondaryBtn:hover {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .issue {
+  color: #ed9797;
+  background: #3c1111;
+  border: 1px solid #643030;
 }

@@ -12,10 +12,10 @@
   height: 18px;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   flex-shrink: 0;
-  background: #10b981;
+  background: #047857;
 }
 
 .outputViewTabs {
@@ -29,7 +29,7 @@
 .outputViewTabBtn {
   flex: 1;
   padding: 3px 6px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
   background: transparent;
@@ -64,7 +64,7 @@ button.outputTabActive {
   background: #94a3b8;
 }
 .dimBadgeText {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
 }
@@ -100,7 +100,7 @@ button.outputTabActive {
   background: #94a3b8;
 }
 .dimBadgeTextVert {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
 }
@@ -122,9 +122,9 @@ button.outputTabActive {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -133,12 +133,12 @@ button.outputTabActive {
   flex-direction: column;
 }
 .readyTitle {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
 }
 .readySubtitle {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #166534;
 }
 
@@ -153,7 +153,7 @@ button.outputTabActive {
   color: #ffffff;
   border: 1px solid #d97706;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
@@ -175,7 +175,7 @@ button.outputTabActive {
   color: #ffffff;
   border: 1px solid #d97706;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
@@ -201,7 +201,7 @@ button.outputTabActive {
   color: #ffffff;
   border: 1px solid #166534;
   border-radius: 6px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(21, 128, 61, 0.25);
@@ -227,7 +227,7 @@ button.outputTabActive {
   color: #ffffff;
   border: 1px solid #1d4ed8;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   margin-top: 4px;
@@ -241,7 +241,7 @@ button.outputTabActive {
   cursor: not-allowed;
 }
 .btnArrow {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
 }
 
 .secondaryPillsRow {
@@ -252,7 +252,7 @@ button.outputTabActive {
 .secondaryPillBtn {
   flex: 1;
   padding: 4px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   background: #f1f5f9;
@@ -277,7 +277,7 @@ button.outputTabActive {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #86198f;
   margin-bottom: 3px;
@@ -294,11 +294,96 @@ button.outputTabActive {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #701a75;
 }
 .tipCheck {
   color: #10b981;
   font-weight: 800;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .stepBadgeGreen {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .outputViewTabs {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .outputViewTabBtn {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) button.outputTabActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .dimBadgeText {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .dimBadgeTextVert {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .readyStatusBadge {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .greenCheckCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .readyTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .readySubtitle {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .downloadAmberBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .generateGoldBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .downloadGreenBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printSheetBlueBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .secondaryPillBtn {
+  color: #c4cedc;
+  background: #182838;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .secondaryPillBtn:hover:not(:disabled) {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .tipsCard {
+  background: #34113b;
+  border: 1px solid #5c3064;
+}
+
+:global(:where([data-theme="dark"])) .tipsHeader {
+  color: #e89eee;
+}
+
+:global(:where([data-theme="dark"])) .tipsList li {
+  color: #eaaeed;
+}
+
+:global(:where([data-theme="dark"])) .tipCheck {
+  color: #83f4cf;
 }

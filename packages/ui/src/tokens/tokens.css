@@ -29,6 +29,15 @@
   --color-warning: #c2410c;
   --color-danger: #b91c1c;
   --color-info: #1665f5;
+  /* Studio panels and tints used by inline styles in tool cards (slate in dark, to match the cards). */
+  --color-panel: #ffffff;
+  --color-panel-subtle: #f8fafc;
+  --color-track: #e2e8f0;
+  --color-tint-blue: #eff6ff;
+  --color-tint-green: #dcfce7;
+  --color-tint-red: #fef2f2;
+  --color-violet-text: #6d28d9;
+  --color-sky-text: #0369a1;
 
   --font-sans:
     "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -116,6 +125,14 @@
     --color-danger: #f87171;
     --color-info: #60a5fa;
     --color-primary: #60a5fa;
+    --color-panel: #0f172a;
+    --color-panel-subtle: #1e293b;
+    --color-track: #334155;
+    --color-tint-blue: #172554;
+    --color-tint-green: #052e1c;
+    --color-tint-red: #3b0d0d;
+    --color-violet-text: #c4b5fd;
+    --color-sky-text: #7dd3fc;
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
     --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
@@ -140,7 +157,24 @@
   --color-danger: #f87171;
   --color-info: #60a5fa;
   --color-primary: #60a5fa;
+  --color-panel: #0f172a;
+  --color-panel-subtle: #1e293b;
+  --color-track: #334155;
+  --color-tint-blue: #172554;
+  --color-tint-green: #052e1c;
+  --color-tint-red: #3b0d0d;
+  --color-violet-text: #c4b5fd;
+  --color-sky-text: #7dd3fc;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
   --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+/* Phones: text below 15px in tool UIs grows halfway towards 15px (9→12, 11→13, 13→14), so small
+   labels stay readable without flattening the hierarchy. Tool styles use
+   calc(<size> + (15px - <size>) * var(--fs-lift, 0)). */
+@media (max-width: 700px) {
+  :root {
+    --fs-lift: 0.5;
+  }
 }

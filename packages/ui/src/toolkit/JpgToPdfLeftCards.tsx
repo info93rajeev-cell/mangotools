@@ -1,6 +1,7 @@
 import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
 import styles from './jpgToPdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { PdfImageItem } from './usePdfStudioState.ts';
 
 export function formatBytes(bytes: number): string {
@@ -218,7 +219,12 @@ export function JpgToPdfArrangeCard({
 
       {images.length === 0 ? (
         <div
-          style={{ padding: '24px 12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}
+          style={{
+            padding: '24px 12px',
+            textAlign: 'center',
+            color: 'var(--color-text-subtle)',
+            fontSize: fs(12),
+          }}
         >
           No images uploaded yet. Choose files above or click <strong>Load Sample</strong> in the
           header.

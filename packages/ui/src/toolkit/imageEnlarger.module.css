@@ -85,7 +85,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 1px 5px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   cursor: pointer;
   color: var(--color-text-muted);
   line-height: 1.2;
@@ -98,7 +98,7 @@
 }
 
 .sectionTitle {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   color: var(--color-text-muted);
   text-transform: uppercase;
@@ -120,7 +120,7 @@
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   color: var(--color-text);
   cursor: pointer;
@@ -142,7 +142,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   min-width: 0;
   overflow: hidden;
   flex: 1;
@@ -154,19 +154,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
 }
 
 /* PRESETS */
 .presetRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -178,7 +178,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -204,7 +204,7 @@
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(217, 119, 6, 0.2);
@@ -235,19 +235,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   line-height: 1.2;
 }
 
 .sliderLabel {
   font-weight: var(--weight-medium);
   color: var(--color-text);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .sliderVal {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -262,7 +262,7 @@
 /* FORMAT SELECTION */
 .formatRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
 }
 
@@ -271,7 +271,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   text-align: center;
   cursor: pointer;
@@ -301,7 +301,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 1px 5px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   cursor: pointer;
   color: var(--color-text-muted);
   line-height: 1.2;
@@ -327,7 +327,7 @@
   color: #0f172a;
   border: 1.5px solid #d97706;
   border-radius: var(--radius-sm, 6px);
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -345,7 +345,7 @@
 }
 
 .applyBtn[data-applied="true"] {
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border-color: #059669;
   box-shadow: 0 1px 3px rgba(16, 185, 129, 0.25);
@@ -364,7 +364,7 @@
   border: none;
   border-radius: var(--radius-sm);
   padding: 1.5px 6px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -380,7 +380,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 1.5px 5px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   cursor: pointer;
   color: var(--color-text-muted);
 }
@@ -415,7 +415,7 @@
   color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   letter-spacing: 0.03em;
   pointer-events: none;
@@ -431,7 +431,7 @@
   color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   letter-spacing: 0.03em;
   pointer-events: none;
@@ -446,7 +446,7 @@
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   cursor: pointer;
   margin-top: 4px;
@@ -473,7 +473,7 @@
 }
 
 .stageTitle {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   color: var(--color-text-muted);
   text-transform: uppercase;
@@ -489,7 +489,7 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: pointer;
 }
 
@@ -535,7 +535,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: ew-resize;
 }
 
@@ -547,7 +547,7 @@
   color: #fff;
   padding: 3px 6px;
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-family: var(--font-mono);
 }
 
@@ -566,7 +566,7 @@
 .specsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
 }
 
 .specsTable td {
@@ -601,7 +601,7 @@
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(21, 128, 61, 0.25);
@@ -628,7 +628,7 @@
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   cursor: pointer;
 }
 
@@ -637,7 +637,44 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   margin-top: 4px;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .presetBtn[data-active="true"] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .autoEnhanceBtn {
+  color: #fff;
+}
+
+:global(:where([data-theme="dark"])) .formatBtn[data-active="true"] {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .applyBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .applyBtn[data-applied="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .compareBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .primaryActionBtn {
+  color: #fff;
+}
+
+:global(:where([data-theme="dark"])) .splitBar {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
 }

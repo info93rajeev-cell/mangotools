@@ -59,7 +59,13 @@ export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstima
           <tbody>
             <tr>
               <td>{MODE_NAMES[state.fulfilmentMode]} · your fees</td>
-              <td style={{ color: r?.economicProfit.startsWith('-') ? '#b91c1c' : '#047857' }}>
+              <td
+                style={{
+                  color: r?.economicProfit.startsWith('-')
+                    ? 'var(--color-danger)'
+                    : 'var(--color-success)',
+                }}
+              >
                 {inr(r?.economicProfit ?? null)}
               </td>
             </tr>

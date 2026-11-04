@@ -200,7 +200,9 @@ function calculate(){
  try{validate();const result=applyPricing(calculators[cfg.id]());for(const v of Object.values(result))if(typeof v==='number'&&!Number.isFinite(v))throw Error('Input exceeds the bounded reference range.');render(result);q('.validation').hidden=true;return result;}
  catch(e){q('.validation').hidden=false;q('.validation').textContent=e.message;q('.status').textContent='Check inputs';q('.results').dataset.stale='true';q('.copy').disabled=true;q('.print').disabled=true;return null;}
 }
-function stale(){q('.pricing-total').textContent='Recalculate';q('.pricing').dataset.stale='true';q('.results').dataset.stale='true';q('.status').textContent='Inputs changed';q('.copy').disabled=true;q('.print').disabled=true;}
+let liveTimer=0;
+// Every edit recalculates on its own after a short pause; Calculate still runs it at once.
+function stale(){q('.pricing-total').textContent='Recalculate';q('.pricing').dataset.stale='true';q('.results').dataset.stale='true';q('.status').textContent='Updating…';q('.copy').disabled=true;q('.print').disabled=true;clearTimeout(liveTimer);liveTimer=setTimeout(calculate,350);}
 function saveMode(){modeValues[mode]={};qa('.dimensions input,.dimensions select').forEach(n=>modeValues[mode][n.id]=n.value);}
 qa('[data-mode]').forEach(b=>b.onclick=()=>{saveMode();mode=b.dataset.mode;updateMode();if(cfg.id==='volumetric-weight')q('#divisor').value=mode==='Air Freight'?6000:5000;stale();});
 for(const section of qa('[data-rows]')){

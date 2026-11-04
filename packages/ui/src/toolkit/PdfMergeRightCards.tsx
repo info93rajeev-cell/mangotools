@@ -1,4 +1,5 @@
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
@@ -18,36 +19,48 @@ function PdfMergeSummaryCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Merge Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Merge Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           ✓ Ready to merge
         </span>
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📄
+          </span>
           <span class={styles.statVal}>{fileCount}</span>
           <span class={styles.statLabel}>PDF files</span>
           <span class={styles.statSub}>Selected</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📑
+          </span>
           <span class={styles.statVal}>{totalPageCount}</span>
           <span class={styles.statLabel}>Total pages</span>
           <span class={styles.statSub}>Across all files</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📊
+          </span>
           <span class={styles.statVal}>{totalMb} MB</span>
           <span class={styles.statLabel}>Estimated size</span>
           <span class={styles.statSub}>After merge</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>🔖</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            🔖
+          </span>
           <span class={styles.statVal}>{hasBookmarks ? 'Yes' : 'No'}</span>
           <span class={styles.statLabel}>Bookmarks</span>
           <span class={styles.statSub}>File names</span>
@@ -75,7 +88,7 @@ function PdfMergePreviewFlowCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> Merged Document Preview
+          <span style={{ color: 'var(--color-primary)' }}>👁️</span> Merged Document Preview
         </h2>
         <span class={styles.headerCounter}>Total pages: {totalPageCount}</span>
       </div>
@@ -118,8 +131,8 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
       />
       <PdfMergePreviewFlowCard ranges={summary.ranges} totalPageCount={summary.totalPageCount} />
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side processing.
           </span>

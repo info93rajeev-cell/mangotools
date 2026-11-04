@@ -108,23 +108,23 @@
 }
 
 .controlSection :global([class*="primaryText"]) {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1.15;
 }
 
 .controlSection :global([class*="browseLinkRow"]),
 .controlSection :global([class*="browseButtonRow"]) {
   margin: 1px 0;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .controlSection :global([class*="uploadBrowseBtn"]) {
   padding: 1.5px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .controlSection :global([class*="supportHint"]) {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   line-height: 1.1;
   margin-top: 1px;
 }
@@ -139,11 +139,11 @@
 }
 
 .controlSection :global([class*="fileName"]) {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .controlSection :global([class*="fileMeta"]) {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
 }
 
 .sectionHeader {
@@ -153,7 +153,7 @@
 }
 
 .sectionTitle {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -165,7 +165,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: pointer;
   color: var(--color-text-muted);
   line-height: 1.2;
@@ -223,7 +223,7 @@
 }
 
 .dropZoneHint {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -235,7 +235,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 5px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .activeFileName {
@@ -249,7 +249,7 @@
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
 }
 
 /* TARGET KB PRESETS */
@@ -267,7 +267,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   text-align: center;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -292,7 +292,7 @@
 }
 
 .fieldLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   color: var(--color-text-muted);
 }
@@ -306,7 +306,7 @@
 .numInput {
   width: 100%;
   padding: 2px 24px 2px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   height: 24px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -323,7 +323,7 @@
 .suffix {
   position: absolute;
   right: 6px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   pointer-events: none;
 }
@@ -340,14 +340,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-medium);
   cursor: pointer;
   user-select: none;
 }
 
 .switchHint {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   line-height: 1.25;
 }
@@ -355,7 +355,7 @@
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -385,12 +385,12 @@
 }
 
 .formatName {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -406,7 +406,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -431,7 +431,7 @@
 .qualityNumber {
   width: 48px;
   padding: 2px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   height: 22px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -442,7 +442,7 @@
 }
 
 .filenameLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   display: flex;
   flex-direction: column;
@@ -452,7 +452,7 @@
 .filenameInput {
   width: 100%;
   padding: 2px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   height: 24px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -493,7 +493,7 @@
   background: transparent;
   border: none;
   color: var(--color-text-muted);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: pointer;
   text-align: center;
   padding: 2px;
@@ -529,7 +529,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
 }
 
@@ -544,7 +544,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -618,7 +618,7 @@
   gap: 6px;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   border: 1px solid #16a34a33;
   background: color-mix(in srgb, #16a34a 10%, var(--color-bg));
@@ -645,7 +645,7 @@
 .metricsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .metricsTable tr {
@@ -692,7 +692,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   text-align: center;
   padding-top: 2px;
@@ -709,7 +709,7 @@
   background: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   line-height: 1.3;
 }
@@ -733,7 +733,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   height: 24px;
   box-sizing: border-box;
 }
@@ -751,7 +751,7 @@
 }
 
 .primaryLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-text-muted);
@@ -815,7 +815,7 @@
 }
 
 .viewModeTab {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding: 2px 6px;
   border: none;
   border-radius: 3px;
@@ -833,7 +833,7 @@
 }
 
 .compareBtn {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding: 2px 6px;
   border: 1px solid var(--color-border);
   border-radius: 3px;
@@ -847,7 +847,7 @@
 }
 
 .miniStageBtn {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding: 2px 6px;
   border: 1px solid var(--color-border);
   border-radius: 3px;
@@ -909,7 +909,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #d97706;
   cursor: ew-resize;
@@ -923,7 +923,7 @@
   color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   pointer-events: none;
   backdrop-filter: blur(4px);
@@ -938,7 +938,7 @@
   color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   pointer-events: none;
   backdrop-filter: blur(4px);
@@ -978,7 +978,7 @@
   color: var(--color-text);
   padding: 1px 5px;
   border-radius: 3px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
 }
 
@@ -987,12 +987,12 @@
   color: #16a34a;
   padding: 1px 5px;
   border-radius: 3px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
 }
 
 .sideMetaText {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -1017,7 +1017,7 @@
   color: #ffffff;
   padding: 3px 8px;
   border-radius: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
 }
 
@@ -1037,7 +1037,7 @@
   color: #ffffff;
   padding: 6px 12px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1054,7 +1054,7 @@
   border: none;
   border-radius: 4px;
   padding: 2px 8px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
 
@@ -1087,4 +1087,41 @@
 
 .canvasToolbarTitle {
   min-width: 0;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .reduceActionBtn {
+  color: #111827;
+}
+
+:global(:where([data-theme="dark"])) .statusBanner {
+  color: #14532d;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .applyCtaBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .compareBtn {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .miniStageBtn {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .splitBar {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .sideBadgeAfter {
+  color: #91f0b4;
+}
+
+:global(:where([data-theme="dark"])) .quickPreviewBtn {
+  color: #ffffff;
 }

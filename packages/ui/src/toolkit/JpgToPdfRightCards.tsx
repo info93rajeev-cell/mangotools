@@ -1,4 +1,5 @@
 import styles from './jpgToPdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { PageSizeOption, PdfImageItem } from './usePdfStudioState.ts';
 
 function resolveChipClass(index: number): string {
@@ -30,11 +31,15 @@ export function JpgToPdfSummaryCard({
     <div class={styles.card} data-tour="summary">
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📄</span> PDF Summary
+          <span style={{ color: 'var(--color-primary)' }}>📄</span> PDF Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           ✓ Ready to convert
         </span>
@@ -89,7 +94,7 @@ export function JpgToPdfPreviewCard({ images }: { images: PdfImageItem[] }) {
     <div class={styles.card}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> PDF Preview ({images.length}{' '}
+          <span style={{ color: 'var(--color-primary)' }}>👁️</span> PDF Preview ({images.length}{' '}
           {images.length === 1 ? 'page' : 'pages'})
         </h2>
         <span class={styles.headerPill}>Total pages: {images.length}</span>
@@ -97,7 +102,12 @@ export function JpgToPdfPreviewCard({ images }: { images: PdfImageItem[] }) {
 
       {images.length === 0 ? (
         <div
-          style={{ padding: '24px 12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}
+          style={{
+            padding: '24px 12px',
+            textAlign: 'center',
+            color: 'var(--color-text-subtle)',
+            fontSize: fs(12),
+          }}
         >
           Upload images to view live page preview sheets.
         </div>

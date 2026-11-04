@@ -2,6 +2,7 @@ import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
 type WordToPdfState = ReturnType<typeof useWordToPdfStudio>;
@@ -16,7 +17,7 @@ function WordToPdfItemRow({
   return (
     <div
       class={styles.fileRow}
-      style={{ background: '#ffffff', borderColor: '#bfdbfe', padding: '6px 10px' }}
+      style={{ background: 'var(--color-panel)', borderColor: '#bfdbfe', padding: '6px 10px' }}
     >
       <div class={styles.fileIconBadge} style={{ backgroundColor: '#2563eb' }}>
         DOC
@@ -69,12 +70,12 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
             type="button"
             onClick={() => void loadSampleWordDocs()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -85,12 +86,12 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -112,15 +113,21 @@ function WordToPdfFileListCard({ studio }: { studio: WordToPdfState }) {
               📘+
             </span>
             <div>
-              <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+              <p class={styles.dropMainText} style={{ fontSize: fs(13) }}>
                 Drag & drop Word files (.docx, .doc)
               </p>
-              <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+              <p class={styles.dropSubText} style={{ fontSize: fs(11) }}>
                 or click to browse multiple files • 100% in-browser
               </p>
             </div>
           </div>
-          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+          <span
+            class={styles.chooseBtn}
+            style={{
+              padding: '6px 14px',
+              fontSize: fs(12),
+            }}
+          >
             Choose Word Files
           </span>
         </button>
@@ -154,10 +161,10 @@ function WordToPdfExportModeButtons({
         onClick={() => setExportMode('single')}
         style={{ flex: '1 1 calc(50% - 4px)', minWidth: 0, textAlign: 'left', padding: '6px 10px' }}
       >
-        <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+        <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
           <span>{exportMode === 'single' ? '●' : '○'}</span> Single merged PDF
         </span>
-        <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+        <span class={styles.radioDesc} style={{ fontSize: fs(10) }}>
           Combine all Word files
         </span>
       </button>
@@ -167,10 +174,10 @@ function WordToPdfExportModeButtons({
         onClick={() => setExportMode('separate')}
         style={{ flex: '1 1 calc(50% - 4px)', minWidth: 0, textAlign: 'left', padding: '6px 10px' }}
       >
-        <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+        <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
           <span>{exportMode === 'separate' ? '●' : '○'}</span> One PDF per file
         </span>
-        <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+        <span class={styles.radioDesc} style={{ fontSize: fs(10) }}>
           Keep files separate
         </span>
       </button>
@@ -197,28 +204,34 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
           }}
         >
           <div class={styles.radioCard} style={{ padding: '6px 10px' }}>
-            <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+            <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
               Page size
             </span>
             <select
               class={styles.textInput}
               value={pageSize}
               onChange={(e) => setPageSize(e.currentTarget.value as 'A4' | 'Letter')}
-              style={{ padding: '5px 8px', fontSize: '11.5px' }}
+              style={{
+                padding: '5px 8px',
+                fontSize: fs(11.5),
+              }}
             >
               <option value="A4">A4 (210 × 297 mm)</option>
               <option value="Letter">Letter (8.5 × 11 in)</option>
             </select>
           </div>
           <div class={styles.radioCard} style={{ padding: '6px 10px' }}>
-            <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
+            <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
               Margins
             </span>
             <select
               class={styles.textInput}
               value={margins}
               onChange={(e) => setMargins(e.currentTarget.value as 'Standard' | 'Compact')}
-              style={{ padding: '5px 8px', fontSize: '11.5px' }}
+              style={{
+                padding: '5px 8px',
+                fontSize: fs(11.5),
+              }}
             >
               <option value="Standard">Standard (Normal)</option>
               <option value="Compact">Compact (Reduced)</option>
@@ -226,7 +239,14 @@ function WordToPdfSettingsCard({ studio }: { studio: WordToPdfState }) {
           </div>
         </div>
         <WordToPdfExportModeButtons exportMode={exportMode} setExportMode={setExportMode} />
-        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: fs(10.5),
+            color: 'var(--color-text-muted)',
+            lineHeight: 1.45,
+          }}
+        >
           Text, headings, bold and italic, lists and table rows are laid out with standard PDF
           fonts. Images, text boxes, headers, footers and exact Word layout are not carried over.
           Characters outside Western European text (for example Hindi or ₹) show as “?”.

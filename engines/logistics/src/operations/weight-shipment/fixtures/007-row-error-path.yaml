@@ -1,0 +1,11 @@
+id: 007-row-error-path
+operation: logistics.weight.shipment@1
+source: { type: regression }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "5000"
+  packages:
+    - { length: "30", width: "20", height: "10", quantity: "1", weightPerPiece: "5" }
+    - { length: "30", width: "0", height: "10", quantity: "1", weightPerPiece: "5" }
+expectedError: { code: LOGISTICS_NOT_POSITIVE, path: packages.1.width }

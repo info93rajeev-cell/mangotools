@@ -2,6 +2,7 @@ import type { JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 import { fileMeta } from './pdfFileMeta.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { CompressionPreset, usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
 type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
@@ -33,12 +34,12 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
             type="button"
             onClick={studio.loadSampleCompress}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -49,12 +50,12 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             style={{
-              fontSize: '11px',
+              fontSize: fs(11),
               padding: '3px 8px',
               borderRadius: '6px',
               border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
+              background: 'var(--color-tint-blue)',
+              color: 'var(--color-primary)',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -76,22 +77,28 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
               🗜️+
             </span>
             <div>
-              <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
+              <p class={styles.dropMainText} style={{ fontSize: fs(13) }}>
                 Drag & drop a PDF file here
               </p>
-              <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
+              <p class={styles.dropSubText} style={{ fontSize: fs(11) }}>
                 or click to browse • 100% in-browser compression
               </p>
             </div>
           </div>
-          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
+          <span
+            class={styles.chooseBtn}
+            style={{
+              padding: '6px 14px',
+              fontSize: fs(12),
+            }}
+          >
             Choose PDF File
           </span>
         </button>
       ) : (
         <div
           class={styles.fileRow}
-          style={{ background: '#ffffff', borderColor: '#cbd5e1', marginTop: '4px' }}
+          style={{ background: 'var(--color-panel)', borderColor: '#cbd5e1', marginTop: '4px' }}
         >
           <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
             PDF
@@ -141,7 +148,7 @@ function PdfCompressOptionCheckboxes({ studio }: { studio: CompressStudioState }
         display: 'flex',
         flexWrap: 'wrap',
         gap: '6px 12px',
-        fontSize: '11px',
+        fontSize: fs(11),
         fontWeight: 600,
       }}
     >
@@ -170,18 +177,25 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
   return (
     <details
       style={{
-        background: '#f8fafc',
+        background: 'var(--color-panel-subtle)',
         padding: '8px 10px',
         borderRadius: '8px',
         border: '1px solid #e2e8f0',
         marginTop: '6px',
       }}
     >
-      <summary style={{ fontWeight: 700, fontSize: '11.5px', cursor: 'pointer', color: '#0f172a' }}>
+      <summary
+        style={{
+          fontWeight: 700,
+          fontSize: fs(11.5),
+          cursor: 'pointer',
+          color: 'var(--color-text)',
+        }}
+      >
         ⚙️ Advanced settings (optional)
       </summary>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-        <label class={styles.inputLabel} for="compress-image-quality" style={{ fontSize: '11px' }}>
+        <label class={styles.inputLabel} for="compress-image-quality" style={{ fontSize: fs(11) }}>
           Image quality (Custom): {imageQuality}%
         </label>
         <input
@@ -197,12 +211,19 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
           style={{ width: '100%', accentColor: '#2563eb' }}
         />
         <PdfCompressOptionCheckboxes studio={studio} />
-        <p style={{ margin: 0, fontSize: '10.5px', color: '#475569', lineHeight: 1.45 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: fs(10.5),
+            color: 'var(--color-text-muted)',
+            lineHeight: 1.45,
+          }}
+        >
           JPEG images are re-encoded in your browser; text, fonts and vector graphics are never
           changed, so text stays searchable. Other image types are kept as they are.
         </p>
         <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="compress-max-size" style={{ fontSize: '11px' }}>
+          <label class={styles.inputLabel} for="compress-max-size" style={{ fontSize: fs(11) }}>
             Maximum size (MB)
           </label>
           <input
@@ -215,7 +236,10 @@ function PdfCompressAdvancedSettings({ studio }: { studio: CompressStudioState }
             min={0.1}
             step={0.1}
             max={100}
-            style={{ padding: '5px 8px', fontSize: '12px' }}
+            style={{
+              padding: '5px 8px',
+              fontSize: fs(12),
+            }}
           />
         </div>
       </div>
@@ -251,20 +275,23 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
               onClick={() => setPreset(p as CompressionPreset)}
               style={{ textAlign: 'left', padding: '6px 8px' }}
             >
-              <span class={styles.radioTitle} style={{ fontSize: '11.5px' }}>
-                <span style={{ color: isActive ? '#2563eb' : '#94a3b8' }}>
+              <span class={styles.radioTitle} style={{ fontSize: fs(11.5) }}>
+                <span
+                  class={styles.radioMark}
+                  style={{ color: isActive ? 'var(--color-primary)' : 'var(--color-text-subtle)' }}
+                >
                   {isActive ? '●' : '○'}
                 </span>
                 {title}
               </span>
-              <span class={styles.radioDesc} style={{ fontSize: '10px' }}>
+              <span class={styles.radioDesc} style={{ fontSize: fs(10) }}>
                 {desc}
               </span>
               <span
                 style={{
-                  fontSize: '10.5px',
+                  fontSize: fs(10.5),
                   fontWeight: 700,
-                  color: isActive ? '#1d4ed8' : '#2563eb',
+                  color: 'var(--color-primary)',
                   marginTop: '2px',
                 }}
               >

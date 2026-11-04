@@ -1,5 +1,6 @@
 import { reductionPercent } from './pdfCompressor.ts';
 import styles from './pdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
 type CompressStudioState = ReturnType<typeof usePdfCompressStudio>;
@@ -23,36 +24,48 @@ function PdfCompressSummaryCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Compression Summary
+          <span style={{ color: 'var(--color-primary)' }}>📋</span> Compression Summary
         </h2>
         <span
           class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
+          style={{
+            background: 'var(--color-tint-green)',
+            color: 'var(--color-success)',
+            borderColor: '#86efac',
+          }}
         >
           {status}
         </span>
       </div>
       <div class={styles.statTilesGrid}>
         <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📑
+          </span>
           <span class={styles.statVal}>{origMb} MB</span>
           <span class={styles.statLabel}>Original Size</span>
           <span class={styles.statSub}>{totalPages} pages</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📄
+          </span>
           <span class={styles.statVal}>{compMb}</span>
           <span class={styles.statLabel}>Compressed Size</span>
           <span class={styles.statSub}>Measured result</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            📊
+          </span>
           <span class={styles.statVal}>{reduction}</span>
           <span class={styles.statLabel}>Size Reduction</span>
           <span class={styles.statSub}>Smaller size</span>
         </div>
         <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>⭐</span>
+          <span class={styles.statIcon} aria-hidden="true">
+            ⭐
+          </span>
           <span class={styles.statVal}>{imagesNote}</span>
           <span class={styles.statLabel}>Images re-encoded</span>
           <span class={styles.statSub}>JPEG images only</span>
@@ -76,7 +89,7 @@ function ResultNote({ studio }: { studio: CompressStudioState }) {
     <div
       class={styles.privacyNotice}
       role="status"
-      style={{ padding: '6px 10px', fontSize: '11px' }}
+      style={{ padding: '6px 10px', fontSize: fs(11) }}
     >
       <span>{text}</span>
     </div>
@@ -98,14 +111,14 @@ function PdfCompressComparisonCard({
     <div class={styles.card} style={{ padding: '8px 12px' }}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📊</span> Before & After Comparison
+          <span style={{ color: 'var(--color-primary)' }}>📊</span> Before & After Comparison
         </h2>
       </div>
       <div class={styles.compareContainer}>
         <div>
           <div class={styles.compareRow}>
             <span>Original PDF</span>
-            <span style={{ color: '#0f172a', fontWeight: 700 }}>{origMb} MB</span>
+            <span style={{ color: 'var(--color-text)', fontWeight: 700 }}>{origMb} MB</span>
           </div>
           <div class={styles.barTrack}>
             <div class={styles.barFillOriginal} style={{ width: '100%' }} />
@@ -114,7 +127,7 @@ function PdfCompressComparisonCard({
         <div>
           <div class={styles.compareRow}>
             <span>Compressed PDF</span>
-            <span style={{ color: '#16a34a', fontWeight: 800 }}>{compMb}</span>
+            <span style={{ color: 'var(--color-success)', fontWeight: 800 }}>{compMb}</span>
           </div>
           <div class={styles.barTrack}>
             <div class={styles.barFillCompressed} style={{ width: `${compPercent}%` }} />
@@ -126,8 +139,8 @@ function PdfCompressComparisonCard({
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: '11px',
-            color: '#64748b',
+            fontSize: fs(11),
+            color: 'var(--color-text-subtle)',
             marginBottom: '4px',
             fontWeight: 600,
           }}
@@ -143,7 +156,7 @@ function PdfCompressComparisonCard({
                 <div
                   style={{
                     height: '2px',
-                    background: '#e2e8f0',
+                    background: 'var(--color-track)',
                     borderRadius: '1.5px',
                     width: '80%',
                   }}
@@ -151,13 +164,21 @@ function PdfCompressComparisonCard({
                 <div
                   style={{
                     height: '2px',
-                    background: '#e2e8f0',
+                    background: 'var(--color-track)',
                     borderRadius: '1.5px',
                     width: '60%',
                   }}
                 />
               </div>
-              <span style={{ fontSize: '10px', fontWeight: 800, color: '#334155' }}>Page {p}</span>
+              <span
+                style={{
+                  fontSize: fs(10),
+                  fontWeight: 800,
+                  color: 'var(--color-text-muted)',
+                }}
+              >
+                Page {p}
+              </span>
             </div>
           ))}
         </div>
@@ -212,8 +233,8 @@ export function PdfCompressRightCards({ studio }: { studio: CompressStudioState 
       />
       {studio.result ? <ResultNote studio={studio} /> : null}
       <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
+        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: fs(11) }}>
+          <span style={{ fontSize: fs(14) }}>🔒</span>
           <span>
             <strong>Your files stay in your browser</strong> — 100% private client-side compression.
           </span>

@@ -1,4 +1,5 @@
 import styles from './passportMobileStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UsePassportEnhanceStateReturn } from './usePassportEnhanceState.ts';
 import {
   PASSPORT_PRESETS,
@@ -308,7 +309,7 @@ function SheetTabContent({ passport }: { passport: UsePassportPhotoReturn }) {
   return (
     <div class={styles.sheetTabWrap}>
       <div class={styles.sheetConfigRow}>
-        <span style={{ fontSize: '11px', fontWeight: 700 }}>
+        <span style={{ fontSize: fs(11), fontWeight: 700 }}>
           Paper Layout: {sheetLayout.paper.name} ({sheetLayout.photoCount} photos)
         </span>
         <select
