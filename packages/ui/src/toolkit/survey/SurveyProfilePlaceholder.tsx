@@ -26,8 +26,11 @@ function formatDistLabel(d: number): string {
   if (Number.isInteger(d)) {
     return `${d}m`;
   }
-  const fixed = d.toFixed(3);
+  const fixed = d.toFixed(6);
   const trimmed = fixed.replace(/\.?0+$/, '');
+  if (trimmed === '' || trimmed === '0') {
+    return `${d}m`;
+  }
   return `${trimmed}m`;
 }
 

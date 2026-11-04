@@ -449,6 +449,9 @@ test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
+  // Wait for initial render before clicking sample
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
   // Load sample (standard 6 stations, 160 m total)
   await page.locator('[data-try-sample]').click();
   await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
@@ -463,9 +466,10 @@ test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length 
   await dist5.fill('40.4');
   await page.locator('[data-calculate-btn]').click();
 
-  // Line length chip must display explicit precision for non-integer distance
-  await expect(page.locator('[data-line-length-value]')).toHaveText('160.4 m (0.160 km)');
-  await expect(page.locator('[data-summary-tiles]')).toContainText('160.4 m (0.160 km)');
+  // Line length chip must display explicit precision for non-integer distance consistent with km
+  await expect(page.locator('[data-line-length-value]')).toHaveText('160.4 m (0.1604 km)');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('160.4 m (0.1604 km)');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
   await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
 
   // Terminal node position must not exceed the expected axis (W - padding.r = 640 - 16 = 624)
@@ -484,9 +488,11 @@ test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length 
   await page.locator('#survey-obs-5-dist').fill('0.05');
   await page.locator('[data-calculate-btn]').click();
 
-  // Line length chip must retain valid sub-metre distance and not collapse to 0 m
-  await expect(page.locator('[data-line-length-value]')).toHaveText('0.4 m (0.000 km)');
-  await expect(page.locator('[data-summary-tiles]')).toContainText('0.4 m (0.000 km)');
+  // Line length chip must retain valid sub-metre distance without misleading 0.000 km or collapsing to 0 m
+  await expect(page.locator('[data-line-length-value]')).toHaveText('0.4 m');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('0.4 m');
+  await expect(page.locator('[data-line-length-value]')).not.toContainText('0.000 km');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
   // Profile must remain proportional, not illustrative
   await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
 
@@ -497,7 +503,29 @@ test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length 
   expect(lastCx04).toBe(624);
   expect(lastCx04).toBeLessThanOrEqual(624);
 
-  // 3. Test fallback when a distance is missing
+  // 3. Test micro sub-metre length (0.0004 m)
+  // Set distances so total is 0.0004 m (0.0001 + 0.0001 + 0.0001 + 0.00005 + 0.00005 = 0.0004)
+  await page.locator('#survey-obs-1-dist').fill('0.0001');
+  await page.locator('#survey-obs-2-dist').fill('0.0001');
+  await page.locator('#survey-obs-3-dist').fill('0.0001');
+  await page.locator('#survey-obs-4-dist').fill('0.00005');
+  await page.locator('#survey-obs-5-dist').fill('0.00005');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Micro distance must NOT collapse to 0 m and must omit kilometre text rather than showing 0.000 km
+  await expect(page.locator('[data-line-length-value]')).toHaveText('0.0004 m');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('0.0004 m');
+  await expect(page.locator('[data-line-length-value]')).not.toContainText('0.000 km');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  const circles0004 = profileSvg.locator('circle');
+  await expect(circles0004).toHaveCount(6);
+  const lastCx0004 = Number(await circles0004.last().getAttribute('cx'));
+  expect(lastCx0004).toBe(624);
+  expect(lastCx0004).toBeLessThanOrEqual(624);
+
+  // 4. Test fallback when a distance is missing
   // Clear distance on row 2
   await page.locator('#survey-obs-2-dist').fill('');
   // Select unadjusted ('none') so calculation succeeds without throwing missing-distance validation error

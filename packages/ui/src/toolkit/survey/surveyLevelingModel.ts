@@ -186,8 +186,11 @@ export function formatMetres(metres: number): string {
   if (Number.isInteger(metres)) {
     return `${metres} m`;
   }
-  const fixed = metres.toFixed(3);
+  const fixed = metres.toFixed(6);
   const trimmed = fixed.replace(/\.?0+$/, '');
+  if (trimmed === '' || trimmed === '0') {
+    return `${metres} m`;
+  }
   return `${trimmed} m`;
 }
 
@@ -199,9 +202,22 @@ export function formatMeasuredLineLength(
     return '—';
   }
   const mStr = formatMetres(totalM);
+  const km = totalM / 1000;
+  if (Number(km.toFixed(3)) === 0) {
+    return mStr;
+  }
+  const decPart = mStr.replace(/ m$/, '').split('.')[1] || '';
+  const mDecimals = decPart.length;
+  if (mDecimals > 0) {
+    const kmDecimals = Math.max(3, Math.min(9, 3 + mDecimals));
+    const kmFixed = km.toFixed(kmDecimals);
+    const kmTrimmed = kmFixed.replace(/0+$/, '');
+    const kmStr = (kmTrimmed.split('.')[1] || '').length < 3 ? km.toFixed(3) : kmTrimmed;
+    return `${mStr} (${kmStr} km)`;
+  }
   const kmStr =
     totalDistanceKm !== undefined && totalDistanceKm !== null && totalDistanceKm.trim() !== ''
       ? totalDistanceKm.trim()
-      : (totalM / 1000).toFixed(3);
+      : km.toFixed(3);
   return `${mStr} (${kmStr} km)`;
 }

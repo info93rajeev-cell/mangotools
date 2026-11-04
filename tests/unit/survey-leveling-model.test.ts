@@ -212,6 +212,12 @@ describe('Survey Leveling Model', () => {
     expect(resSub.totalM).toBe(0.4);
     expect(resSub.cumDists).toEqual([0, 0.4]);
 
+    // Sub-metre distance 0.0004 m
+    const resMicro = computeValidatedDistance([{ dist: '0' }, { dist: '0.0004' }]);
+    expect(resMicro.isValid).toBe(true);
+    expect(resMicro.totalM).toBe(0.0004);
+    expect(resMicro.cumDists).toEqual([0, 0.0004]);
+
     // Non-integer distance 160.4 m
     const rows1604 = [
       { dist: '0' },
@@ -252,15 +258,30 @@ describe('Survey Leveling Model', () => {
   });
 
   it('formats metres and measured line length with explicit display precision', () => {
+    // Exact metre formatting up to 6 decimal places without collapsing nonzero values to zero
     expect(formatMetres(160)).toBe('160 m');
     expect(formatMetres(0.4)).toBe('0.4 m');
+    expect(formatMetres(0.0004)).toBe('0.0004 m');
+    expect(formatMetres(0.000001)).toBe('0.000001 m');
     expect(formatMetres(160.4)).toBe('160.4 m');
     expect(formatMetres(160.45)).toBe('160.45 m');
 
+    expect(formatMetres(0.0004)).not.toBe('0 m');
+    expect(formatMetres(0.4)).not.toBe('0 m');
+    expect(formatMetres(0.000001)).not.toBe('0 m');
+
+    // Measured line length: standard lines include km; sub-metre lines omit km when it would round to zero
     expect(formatMeasuredLineLength(160, '0.160')).toBe('160 m (0.160 km)');
-    expect(formatMeasuredLineLength(0.4, '0.000')).toBe('0.4 m (0.000 km)');
-    expect(formatMeasuredLineLength(160.4, '0.160')).toBe('160.4 m (0.160 km)');
+    expect(formatMeasuredLineLength(160.4)).toBe('160.4 m (0.1604 km)');
+    expect(formatMeasuredLineLength(0.4)).toBe('0.4 m');
+    expect(formatMeasuredLineLength(0.0004)).toBe('0.0004 m');
     expect(formatMeasuredLineLength(null)).toBe('—');
     expect(formatMeasuredLineLength(0)).toBe('—');
+
+    // Verify nonzero line is never labelled zero or with misleading 0.000 km
+    expect(formatMeasuredLineLength(0.4)).not.toContain('0.000 km');
+    expect(formatMeasuredLineLength(0.0004)).not.toContain('0.000 km');
+    expect(formatMeasuredLineLength(0.0004)).not.toBe('0 m');
+    expect(formatMeasuredLineLength(0.4)).not.toBe('0 m');
   });
 });
