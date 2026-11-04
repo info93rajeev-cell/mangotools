@@ -133,7 +133,7 @@
   background: #ffffff;
   border: 1px solid #e3e9f3;
   border-radius: 14px;
-  padding: 18px 20px;
+  padding: 16px 18px;
   box-shadow: 0 1px 3px rgb(15 23 42 / 0.04);
 }
 
@@ -142,7 +142,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .cardTitle {
@@ -201,9 +201,9 @@
 .drop {
   display: grid;
   justify-items: center;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  padding: 22px 16px 20px;
+  padding: 16px 16px 18px;
   border: 1.5px dashed #a9c4f5;
   border-radius: 12px;
   background: #f7faff;
@@ -218,10 +218,9 @@
 }
 
 .drop > :global(.icon) svg {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   color: #1665f5;
-  stroke-width: 1.5;
 }
 
 .dropTitle {
@@ -235,8 +234,8 @@
 }
 
 .dropBtn {
-  margin-top: 8px;
-  padding: 11px 48px;
+  margin-top: 10px;
+  padding: 10px 64px;
   border-radius: 9px;
   background: #1665f5;
   color: #ffffff;
@@ -316,9 +315,9 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
-  column-gap: 12px;
-  row-gap: 6px;
-  padding: 16px 14px 14px;
+  column-gap: 10px;
+  row-gap: 4px;
+  padding: 14px 12px 12px;
   border: 1px solid #e3e9f3;
   border-radius: 12px;
   background: #ffffff;
@@ -334,7 +333,7 @@
 .optionActive {
   border: 2px solid #2f6df6;
   background: #eef4ff;
-  padding: 15px 13px 13px;
+  padding: 13px 11px 11px;
 }
 
 .optionIcon {
@@ -342,13 +341,12 @@
 }
 
 .optionIcon :global(svg) {
-  width: 34px;
-  height: 34px;
-  stroke-width: 1.8;
+  width: 32px;
+  height: 32px;
 }
 
 .optionTitle {
-  font-size: calc(15px + (15px - 15px) * var(--fs-lift, 0));
+  font-size: calc(14.5px + (15px - 14.5px) * var(--fs-lift, 0));
   font-weight: 750;
   line-height: 1.3;
 }
@@ -358,8 +356,8 @@
 }
 
 .optionDesc {
-  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
-  line-height: 1.45;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
+  line-height: 1.4;
   color: #50617e;
 }
 
@@ -579,6 +577,7 @@
 }
 
 .tileLabel {
+  white-space: nowrap;
   line-height: 1.3;
   font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 650;
@@ -586,7 +585,7 @@
 }
 
 .tileValue {
-  font-size: calc(24px + (15px - 24px) * var(--fs-lift, 0) * 0.2);
+  font-size: calc(22px + (15px - 22px) * var(--fs-lift, 0) * 0.2);
   font-weight: 800;
   line-height: 1.2;
   color: #0b1736;
@@ -594,7 +593,7 @@
 }
 
 .tileSub {
-  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #50617e;
 }
 
@@ -649,7 +648,7 @@
 }
 
 .barTrack {
-  height: 14px;
+  height: 12px;
   border-radius: 999px;
   background: #edf1f7;
   overflow: hidden;
@@ -1067,4 +1066,245 @@ fieldset.options {
 :global([data-theme="dark"]) .btnDanger:hover:not(:disabled) {
   background: #3a1a1f;
   border-color: #a14b4b;
+}
+
+/* Duotone icons (reference look): a tinted fill under a 2px outline gives the solid, colourful
+   weight of the reference instead of thin line art. */
+.duo :global(svg),
+.optionIcon :global(svg),
+.tileIcon :global(svg),
+.badge :global(svg),
+.cardTitle > :global(.icon) svg,
+.drop > :global(.icon) svg,
+.privacy > :global(.icon) svg,
+.advanced > summary :global(svg) {
+  fill: currentColor;
+  fill-opacity: 0.3;
+  stroke-width: 2;
+}
+
+/* Desktop: the actions sit on the title's right and the badges line up under the summary,
+   beside the large tool icon, as in the reference header. */
+@media (min-width: 1100px) {
+  .topBar {
+    margin-top: -2px;
+    padding-left: 94px;
+  }
+}
+
+/* Reference structure: each column is one white panel; its sections sit inside without their
+   own frame, and only the nested boxes (comparison, preview) keep a border. */
+.column {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  min-width: 0;
+  padding: 16px 18px 18px;
+  background: #ffffff;
+  border: 1px solid #e3e9f3;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 0.04);
+}
+
+.column > .card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.column > .subcard,
+.column > .card.subcard {
+  padding: 12px 14px 14px;
+  border: 1px solid #e6ecf5;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.column > .subcard .cardHead {
+  margin-bottom: 10px;
+}
+
+.column > .subcard .cardTitle {
+  font-size: 17px;
+}
+
+.actionRow .btn {
+  white-space: nowrap;
+  font-size: 14.5px;
+  padding-inline: 10px;
+}
+
+:global([data-theme="dark"]) .column {
+  background: #121b2c;
+  border-color: #2c3b55;
+}
+
+:global([data-theme="dark"]) .column > .card {
+  background: transparent;
+}
+
+:global([data-theme="dark"]) .column > .subcard {
+  background: #162033;
+  border-color: #2c3b55;
+}
+
+/* Document-shaped PDF badge with a folded corner. */
+.fileBadge {
+  clip-path: polygon(0 0, 72% 0, 100% 24%, 100% 100%, 0 100%);
+  align-items: end;
+  padding-bottom: 7px;
+}
+
+/* Paper preview: a heading block and denser text lines read as a document. */
+.pageHead {
+  height: 7px;
+  width: 55%;
+  border-radius: 2px;
+  background: #c9d3e2;
+  margin-bottom: 2px;
+}
+
+.pageLine {
+  height: 3px;
+}
+
+/* Desktop density matched to the reference (phones keep the larger --fs-lift sizes). */
+@media (min-width: 641px) {
+  .cardTitle {
+    font-size: 18px;
+  }
+
+  .drop {
+    padding: 14px 16px 16px;
+  }
+
+  .drop > :global(.icon) svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dropTitle {
+    font-size: 15.5px;
+  }
+
+  .dropSub {
+    font-size: 13px;
+  }
+
+  .dropBtn {
+    margin-top: 8px;
+    padding: 9px 64px;
+    font-size: 15px;
+  }
+
+  .fileRow {
+    margin-top: 10px;
+    padding: 9px 12px;
+  }
+
+  .option {
+    padding: 12px 12px 10px;
+  }
+
+  .optionActive {
+    padding: 11px 11px 9px;
+  }
+
+  .optionTitle {
+    font-size: 14px;
+  }
+
+  .optionDesc {
+    font-size: 12.5px;
+  }
+
+  .optionFoot {
+    margin-top: 4px;
+  }
+
+  .advanced > summary {
+    padding: 11px 14px;
+    font-size: 15px;
+  }
+
+  .advancedBody {
+    gap: 12px 20px;
+    padding: 0 14px 12px;
+  }
+
+  .fieldLabel,
+  .checks {
+    font-size: 13.5px;
+  }
+
+  .checks {
+    gap: 6px;
+  }
+
+  .input {
+    min-height: 38px;
+    font-size: 14px;
+  }
+
+  .tileIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tileIcon :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tileLabel {
+    font-size: 12.5px;
+  }
+
+  .tileValue {
+    font-size: 20px;
+  }
+
+  .tileSub {
+    font-size: 11.5px;
+    white-space: nowrap;
+  }
+
+  .bars {
+    font-size: 14px;
+    gap: 8px 14px;
+  }
+
+  .privacy {
+    padding: 11px 16px;
+    gap: 14px;
+  }
+
+  .privacy > :global(.icon) svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .privacyTitle {
+    font-size: 15px;
+  }
+
+  .privacyText {
+    font-size: 13px;
+  }
+
+  .cta {
+    min-height: 48px;
+    font-size: 18px;
+  }
+
+  .actionRow .btn,
+  .actions .btn {
+    min-height: 42px;
+  }
+
+  .column {
+    gap: 14px;
+  }
 }

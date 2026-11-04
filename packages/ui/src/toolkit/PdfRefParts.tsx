@@ -122,6 +122,8 @@ export function RefBars(props: {
   );
 }
 
+const LINE_WIDTHS = ['92%', '100%', '84%', '96%', '70%', '100%', '88%', '60%'];
+
 /** Paper-style page placeholders (the studio does not render page images). */
 export function RefPages(props: { count: number }) {
   const shown = Math.min(5, props.count);
@@ -129,10 +131,11 @@ export function RefPages(props: { count: number }) {
     <div class={styles.pages}>
       {Array.from({ length: shown }, (_, i) => (
         <div key={i} class={`${styles.page} ${i === 0 ? styles.pageFirst : ''}`}>
-          <span class={styles.pageLine} style={{ width: '70%' }} />
-          <span class={styles.pageLine} />
-          <span class={styles.pageLine} style={{ width: '85%' }} />
-          <span class={styles.pageLine} style={{ width: '60%' }} />
+          <span class={styles.pageHead} />
+          {LINE_WIDTHS.map((w, n) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: fixed decorative lines
+            <span key={n} class={styles.pageLine} style={{ width: w }} />
+          ))}
           <span class={styles.pageNum}>{i + 1}</span>
         </div>
       ))}

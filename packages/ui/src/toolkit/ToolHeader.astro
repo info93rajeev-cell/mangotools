@@ -84,11 +84,21 @@ const badge = privacyBadge(processing);
     border-radius: 18px;
   }
   .tool-icon :global(svg) {
-    width: 40px;
-    height: 40px;
-    stroke-width: 1.75;
+    width: 42px;
+    height: 42px;
+    stroke-width: 2;
+    fill: currentColor;
+    fill-opacity: 0.2;
   }
-  .tone-purple { background: #f1e8ff; color: #8b3ff0; }
+  .tool-header.has-icon .summary {
+    font-size: 17px;
+    line-height: 1.45;
+    color: #3b4f6e;
+  }
+  :global([data-theme='dark']) .tool-header.has-icon .summary {
+    color: #c3cfe0;
+  }
+  .tone-purple { background: linear-gradient(145deg, #f4ecff, #e6d6ff); color: #7c3aed; }
   .tone-blue { background: #e8f0ff; color: #1665f5; }
   .tone-red { background: #ffe9ea; color: #e5384b; }
   .tone-green { background: #e3f8ec; color: #15924f; }

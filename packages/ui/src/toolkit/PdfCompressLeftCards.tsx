@@ -30,10 +30,12 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
       <button type="button" class={styles.drop} onClick={() => fileInputRef.current?.click()}>
         <Icon name="file-plus" />
         <span class={styles.dropTitle}>
-          {fileName ? 'Drag & drop another PDF here' : 'Drag & drop a PDF file here'}
+          {fileName
+            ? 'Drag & drop another PDF here, or click to browse'
+            : 'Drag & drop a PDF file here, or click to browse'}
         </span>
         <span class={styles.dropSub}>
-          or click to browse · PDF files up to 100 MB · files stay in your browser
+          Supports PDF files · Max 100 MB each · Files stay in your browser
         </span>
         <span class={styles.dropBtn}>Choose PDF File</span>
       </button>
@@ -140,7 +142,7 @@ function Check(props: { label: string; checked: boolean; onChange: (v: boolean) 
 function AdvancedSettings({ studio }: { studio: CompressStudioState }) {
   const { imageQuality, setImageQuality, maxOutputSizeMb, setMaxOutputSizeMb } = studio;
   return (
-    <details class={styles.advanced}>
+    <details class={styles.advanced} open>
       <summary>
         <Icon name="settings" />
         Advanced settings <small>(optional)</small>
@@ -226,7 +228,7 @@ function PdfCompressSettingsCard({ studio }: { studio: CompressStudioState }) {
 
 export function PdfCompressLeftCards({ studio }: { studio: CompressStudioState }) {
   return (
-    <div class={styles.stack}>
+    <div class={styles.column}>
       <PdfCompressFileCard studio={studio} />
       <PdfCompressSettingsCard studio={studio} />
     </div>

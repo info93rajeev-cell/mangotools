@@ -76,26 +76,20 @@ function SummaryCard({ f, pages }: { f: Figures; pages: number }) {
           value={f.origMb}
           sub={`${pages} pages`}
         />
-        <RefTile
-          tone="blue"
-          icon="file-check"
-          label="Compressed Size"
-          value={f.compMb}
-          sub="Measured result"
-        />
+        <RefTile tone="blue" icon="file-check" label="New Size" value={f.compMb} sub="Compressed" />
         <RefTile
           tone="green"
           icon="chart-pie"
-          label="Size Reduction"
+          label="Reduction"
           value={f.reduction}
-          sub="Smaller size"
+          sub="Smaller file"
         />
         <RefTile
           tone="amber"
           icon="star"
-          label="Images re-encoded"
+          label="Images Done"
           value={f.imagesNote}
-          sub="JPEG images only"
+          sub="Re-encoded"
         />
       </div>
     </section>
@@ -104,7 +98,7 @@ function SummaryCard({ f, pages }: { f: Figures; pages: number }) {
 
 function ComparisonCard({ f, pages }: { f: Figures; pages: number }) {
   return (
-    <section class={styles.card} aria-label="Before & After Comparison">
+    <section class={`${styles.card} ${styles.subcard}`} aria-label="Before & After Comparison">
       <RefCardHead icon="chart-column" title="Before & After Comparison" />
       <RefBars
         rows={[
@@ -133,7 +127,7 @@ export function PdfCompressRightCards({ studio }: { studio: CompressStudioState 
   const f = figures(studio);
   const note = resultText(studio);
   return (
-    <div class={styles.stack}>
+    <div class={styles.column}>
       <SummaryCard f={f} pages={totalPages} />
       <ComparisonCard f={f} pages={totalPages} />
       {note ? (

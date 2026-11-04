@@ -16,7 +16,7 @@ test.describe('Compress PDF', () => {
     });
     await expect(page.getByText(/3 of 3 JPEG images were re-encoded/)).toBeVisible();
     const reduction = await page
-      .getByText('Size Reduction', { exact: true })
+      .getByText('Reduction', { exact: true })
       .locator('..')
       .textContent();
     expect(Number(/(\d+)%/.exec(reduction ?? '')?.[1] ?? 0)).toBeGreaterThan(10);
