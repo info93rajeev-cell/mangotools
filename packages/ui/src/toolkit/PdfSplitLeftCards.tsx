@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
 import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import { HeavyBookBanner } from './PdfSplitThumbnails.tsx';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import { parseRangeList, rangesToText } from './pdfSplitPlan.ts';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
@@ -10,20 +11,27 @@ type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
 
 function PageStrip({ studio }: { studio: SplitStudioState }) {
   const shown = Math.min(6, studio.totalPages);
+  const thumbs = usePageThumbs(studio.fileBytes, firstPages(shown, 6), 120);
   return (
     <div class={styles.pageStrip}>
       {Array.from({ length: shown }, (_, i) => i + 1).map((p) => (
         <button
           key={p}
           type="button"
-          class={`${styles.page} ${styles.pageBtn} ${studio.selectedPage === p ? styles.pageFirst : ''}`}
+          class={`${styles.page} ${styles.pageBtn} ${studio.selectedPage === p ? styles.pageFirst : ''} ${thumbs[p - 1] ? styles.pageImg : ''}`}
           onClick={() => studio.onSelectPage(p)}
           aria-label={`Page ${p}`}
         >
-          <span class={styles.pageHead} />
-          <span class={styles.pageLine} />
-          <span class={styles.pageLine} style={{ width: '80%' }} />
-          <span class={styles.pageLine} style={{ width: '92%' }} />
+          {thumbs[p - 1] ? (
+            <img src={thumbs[p - 1] ?? undefined} alt="" />
+          ) : (
+            <>
+              <span class={styles.pageHead} />
+              <span class={styles.pageLine} />
+              <span class={styles.pageLine} style={{ width: '80%' }} />
+              <span class={styles.pageLine} style={{ width: '92%' }} />
+            </>
+          )}
           <span class={styles.pageNum}>{p}</span>
         </button>
       ))}
@@ -60,7 +68,7 @@ function PdfSplitFileSection({ studio }: { studio: SplitStudioState }) {
       ) : (
         <RefDrop
           title="Drag & drop a PDF to split"
-          sub="or click to browse · Max 100 MB · Files stay in your browser"
+          sub="or click to browse · Max 25 MB · Files stay in your browser"
           button="Choose PDF File"
           accept="application/pdf"
           onFiles={(list) => {

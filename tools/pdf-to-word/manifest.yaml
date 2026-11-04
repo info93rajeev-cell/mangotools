@@ -4,8 +4,9 @@ id: pdf-to-word
 slug: pdf-to-word
 status: beta
 tier: T3
-version: 0.3.0
+version: 0.3.1
 changelog:
+  - { version: 0.3.1, date: 2026-11-04, type: changed, summary: "Real page thumbnails and first-page preview, drawn in your browser. The upload box now states the true size limit (200 MB)." }
   - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Reference design: colour icons, larger text, visual preview of the Word file, and a page range to convert only some pages." }
   - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Conversion is now real: the PDF's own text becomes Word headings and paragraphs, instead of placeholder content." }
   - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: convert PDF documents to editable Microsoft Word DOCX files in browser." }

@@ -1,5 +1,6 @@
 import { type ComponentChildren, Fragment } from 'preact';
 import { Icon } from '../primitives/Icon.tsx';
+import { usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 
 /** Shared pieces of the PDF studios in the approved reference look. */
@@ -128,21 +129,32 @@ export function RefBars(props: {
 
 const LINE_WIDTHS = ['92%', '100%', '84%', '96%', '70%', '100%', '88%', '60%'];
 
-/** Paper-style page placeholders (the studio does not render page images). */
-export function RefPages(props: { count: number }) {
+/** Page previews: real page images when `thumbs` has them, paper placeholders until then. */
+export function RefPages(props: { count: number; thumbs?: (string | null)[] }) {
   const shown = Math.min(5, props.count);
   return (
     <div class={styles.pages}>
-      {Array.from({ length: shown }, (_, i) => (
-        <div key={i} class={`${styles.page} ${i === 0 ? styles.pageFirst : ''}`}>
-          <span class={styles.pageHead} />
-          {LINE_WIDTHS.map((w, n) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: fixed decorative lines
-            <span key={n} class={styles.pageLine} style={{ width: w }} />
-          ))}
-          <span class={styles.pageNum}>{i + 1}</span>
-        </div>
-      ))}
+      {Array.from({ length: shown }, (_, i) => {
+        const src = props.thumbs?.[i];
+        return (
+          <div
+            key={i}
+            class={`${styles.page} ${i === 0 ? styles.pageFirst : ''} ${src ? styles.pageImg : ''}`}
+          >
+            {src ? (
+              <img src={src} alt={`Page ${i + 1}`} />
+            ) : (
+              <>
+                <span class={styles.pageHead} />
+                {LINE_WIDTHS.map((w, n) => (
+                  <span key={n} class={styles.pageLine} style={{ width: w }} />
+                ))}
+              </>
+            )}
+            <span class={styles.pageNum}>{i + 1}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -359,5 +371,28 @@ export function RefActions(props: {
         </button>
       </div>
     </div>
+  );
+}
+
+/** One real page image inside a small paper frame (merge and split previews). */
+export function RefPaperThumb(props: {
+  bytes?: Uint8Array | null;
+  page?: number;
+  rotation?: number;
+  children?: ComponentChildren;
+}) {
+  const [src] = usePageThumbs(props.bytes, [props.page ?? 1], 120);
+  return (
+    <span class={`${styles.flowPaper} ${src ? styles.pageImg : ''}`}>
+      {src ? (
+        <img
+          src={src}
+          alt={`Page ${props.page ?? 1}`}
+          style={props.rotation ? { transform: `rotate(${props.rotation}deg)` } : undefined}
+        />
+      ) : (
+        props.children
+      )}
+    </span>
   );
 }

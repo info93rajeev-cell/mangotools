@@ -1,4 +1,11 @@
-import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
+import {
+  RefActions,
+  RefCardHead,
+  RefPaperThumb,
+  RefPrivacy,
+  RefStatus,
+  RefTile,
+} from './PdfRefParts.tsx';
 import styles from './pdfRef.module.css';
 import { pagesLabel } from './pdfSplitPlan.ts';
 import type { SplitPartInfo, usePdfSplitStudio } from './usePdfSplitStudio.ts';
@@ -7,7 +14,15 @@ type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
 
 const PART_TONES = [styles.rangeRed, styles.rangeBlue, styles.rangeGreen, styles.rangePurple];
 
-function OutputPreview({ parts, totalPages }: { parts: SplitPartInfo[]; totalPages: number }) {
+function OutputPreview({
+  parts,
+  totalPages,
+  bytes,
+}: {
+  parts: SplitPartInfo[];
+  totalPages: number;
+  bytes: Uint8Array | null;
+}) {
   return (
     <section class={`${styles.card} ${styles.subcard}`} aria-label="Output Preview">
       <RefCardHead
@@ -28,12 +43,12 @@ function OutputPreview({ parts, totalPages }: { parts: SplitPartInfo[]; totalPag
                 {part.pageCount} {part.pageCount === 1 ? 'page' : 'pages'}
               </small>
             </span>
-            <span class={styles.flowPaper}>
+            <RefPaperThumb bytes={bytes} page={part.pages[0]}>
               <span class={styles.pageHead} />
               <span class={styles.pageLine} />
               <span class={styles.pageLine} style={{ width: '84%' }} />
               <span class={styles.pageLine} style={{ width: '92%' }} />
-            </span>
+            </RefPaperThumb>
             <span class={styles.partName} title={part.name}>
               {part.name}
             </span>
@@ -98,7 +113,9 @@ export function PdfSplitRightCards({ studio }: { studio: SplitStudioState }) {
           />
         </div>
       </section>
-      {parts.length > 0 ? <OutputPreview parts={parts} totalPages={totalPages} /> : null}
+      {parts.length > 0 ? (
+        <OutputPreview parts={parts} totalPages={totalPages} bytes={studio.fileBytes} />
+      ) : null}
       <RefPrivacy />
       <RefActions
         icon="file-minus"

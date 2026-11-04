@@ -48,19 +48,31 @@ export function RefOptionBox(props: {
 
 const LINES = ['92%', '100%', '84%', '96%', '70%', '88%'];
 
-/** Numbered paper thumbnails; a "…" tile stands for the pages not shown. */
-export function RefPageStrip(props: { count: number; max: number }) {
+/** Numbered page thumbnails (real images when given); a "…" tile stands for the pages not shown. */
+export function RefPageStrip(props: {
+  count: number;
+  max: number;
+  thumbs?: (string | null)[];
+  /** Number shown on the first thumbnail (for strips that continue a document). */
+  start?: number;
+}) {
   const shown = Math.min(props.max, props.count);
+  const start = props.start ?? 1;
   return (
-    <div class={c.strip} style={{ '--strip-cols': String(props.max + 1) }} aria-hidden="true">
-      {Array.from({ length: shown }, (_, i) => (
-        <div key={i} class={`${c.thumb} ${i === 0 ? c.thumbFirst : ''}`}>
-          {LINES.map((w, n) => (
-            <span key={n} class={c.thumbLine} style={{ width: w }} />
-          ))}
-          <span class={c.thumbNum}>{i + 1}</span>
-        </div>
-      ))}
+    <div class={c.strip} style={{ '--strip-cols': String(props.max + 1) }}>
+      {Array.from({ length: shown }, (_, i) => {
+        const src = props.thumbs?.[i];
+        return (
+          <div key={i} class={`${c.thumb} ${i === 0 ? c.thumbFirst : ''} ${src ? c.thumbImg : ''}`}>
+            {src ? (
+              <img src={src} alt={`Page ${start + i}`} />
+            ) : (
+              LINES.map((w, n) => <span key={n} class={c.thumbLine} style={{ width: w }} />)
+            )}
+            <span class={c.thumbNum}>{start + i}</span>
+          </div>
+        );
+      })}
       {props.count > shown ? (
         <span class={c.thumbMore} title={`${props.count - shown} more pages`}>
           <Icon name="ellipsis" />
@@ -88,8 +100,17 @@ export function RefInfoTable(props: { rows: Array<[string, string]> }) {
 export function RefPaper(props: {
   badge: 'PDF' | 'W';
   title: string;
+  /** A real page image to show instead of placeholder lines. */
+  image?: string | null;
   children?: ComponentChildren;
 }) {
+  if (props.image) {
+    return (
+      <div class={`${c.paper} ${c.paperImage}`}>
+        <img src={props.image} alt={`First page of ${props.title}`} />
+      </div>
+    );
+  }
   return (
     <div class={c.paper}>
       <span class={c.paperHead}>

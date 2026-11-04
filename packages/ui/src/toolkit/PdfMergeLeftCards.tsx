@@ -101,7 +101,7 @@ export function PdfMergeLeftCards({ studio }: { studio: MergeStudioState }) {
         <RefCardHead step={1} title="Add PDF files" />
         <RefDrop
           title="Drag & drop PDF files here"
-          sub="or click to browse and select multiple files · Files stay in your browser · Max 100 MB per file"
+          sub="or click to browse and select multiple files · Files stay in your browser · Max 25 MB per file, 20 files"
           button="Choose PDF Files"
           accept="application/pdf"
           multiple

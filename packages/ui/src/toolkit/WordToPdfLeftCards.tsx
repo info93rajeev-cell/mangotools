@@ -2,6 +2,7 @@ import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
 import { RefCardHead, RefChoice, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
 import { fileMeta } from './pdfFileMeta.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import type { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 
@@ -145,21 +146,28 @@ function WordSettingsSection({ studio }: { studio: WordToPdfState }) {
   );
 }
 
+function SourceRow({ file: f }: { file: WordToPdfState['files'][number] }) {
+  const thumbs = usePageThumbs(f.preview, firstPages(f.pages, 4), 120);
+  return (
+    <div class={c.sourceRow}>
+      <span class={c.sourceName}>
+        {f.name}
+        <small>
+          {f.pages} page{f.pages === 1 ? '' : 's'}
+        </small>
+      </span>
+      <RefPageStrip count={f.pages} max={4} thumbs={thumbs} />
+    </div>
+  );
+}
+
 function SourcePreviewSection({ studio }: { studio: WordToPdfState }) {
   if (studio.files.length === 0) return null;
   return (
     <section class={styles.card} aria-label="Source Preview">
       <RefCardHead icon="eye" title="Source Preview (first few pages)" />
       {studio.files.map((f) => (
-        <div key={f.id} class={c.sourceRow}>
-          <span class={c.sourceName}>
-            {f.name}
-            <small>
-              {f.pages} page{f.pages === 1 ? '' : 's'}
-            </small>
-          </span>
-          <RefPageStrip count={f.pages} max={4} />
-        </div>
+        <SourceRow key={f.id} file={f} />
       ))}
     </section>
   );

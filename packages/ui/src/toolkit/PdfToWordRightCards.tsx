@@ -2,6 +2,7 @@ import { Icon } from '../primitives/Icon.tsx';
 import { RefPaper } from './PdfConvertParts.tsx';
 import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
+import { usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import type { usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
@@ -66,9 +67,10 @@ type TextBlock = { kind: 'h1' | 'h2' | 'p'; text: string };
 function VisualPreview({ studio, blocks }: { studio: PdfToWordState; blocks: TextBlock[] }) {
   const title = blocks.find((b) => b.kind === 'h1')?.text ?? studio.fileName;
   const body = blocks.filter((b) => b.kind !== 'h1' || b.text !== title).slice(0, 5);
+  const [page1] = usePageThumbs(studio.fileBytes, [1], 260);
   return (
     <div class={c.visual}>
-      <RefPaper badge="PDF" title={studio.fileName} />
+      <RefPaper badge="PDF" title={studio.fileName} image={page1} />
       <span class={c.visualArrow} aria-hidden="true">
         <Icon name="arrow-right" />
       </span>

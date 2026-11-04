@@ -1,6 +1,7 @@
 import { Icon } from '../primitives/Icon.tsx';
 import { RefBars, RefCardHead, RefPages, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
 import { reductionPercent } from './pdfCompressor.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import type { usePdfCompressStudio } from './usePdfCompressStudio.ts';
 
@@ -106,7 +107,16 @@ function SummaryCard({ f, pages }: { f: Figures; pages: number }) {
   );
 }
 
-function ComparisonCard({ f, pages }: { f: Figures; pages: number }) {
+function ComparisonCard({
+  f,
+  pages,
+  bytes,
+}: {
+  f: Figures;
+  pages: number;
+  bytes: Uint8Array | null;
+}) {
+  const thumbs = usePageThumbs(bytes, firstPages(pages, 5));
   return (
     <section class={`${styles.card} ${styles.subcard}`} aria-label="Before & After Comparison">
       <RefCardHead icon="chart-column" title="Before & After Comparison" />
@@ -124,7 +134,7 @@ function ComparisonCard({ f, pages }: { f: Figures; pages: number }) {
       {pages > 0 ? (
         <div style={{ marginTop: '18px' }}>
           <RefCardHead icon="eye" title={`Preview (first ${Math.min(5, pages)} pages)`} />
-          <RefPages count={pages} />
+          <RefPages count={pages} thumbs={thumbs} />
         </div>
       ) : null}
     </section>
@@ -139,7 +149,7 @@ export function PdfCompressRightCards({ studio }: { studio: CompressStudioState 
   return (
     <div class={styles.column}>
       <SummaryCard f={f} pages={totalPages} />
-      <ComparisonCard f={f} pages={totalPages} />
+      <ComparisonCard f={f} pages={totalPages} bytes={studio.fileBytes} />
       {note ? (
         <p class={styles.resultNote} role="status">
           {note}

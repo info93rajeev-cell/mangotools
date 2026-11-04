@@ -2,6 +2,7 @@ import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
 import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
 import c from './pdfConvertRef.module.css';
 import { fileMeta } from './pdfFileMeta.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
 import styles from './pdfRef.module.css';
 import { type PageMode, pickPages, type usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
@@ -14,7 +15,7 @@ function PdfToWordFileSection({ studio }: { studio: PdfToWordState }) {
       <RefCardHead
         step={1}
         title="Upload PDF File"
-        aside={<span class={styles.listMeta}>Supports PDF files · Max 100 MB</span>}
+        aside={<span class={styles.listMeta}>Supports PDF files · Max 200 MB</span>}
       />
       <RefDrop
         title="Drag & drop a PDF file here"
@@ -116,6 +117,7 @@ function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
 
 function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
   const total = studio.totalPages;
+  const thumbs = usePageThumbs(studio.fileBytes, firstPages(total, 5));
   if (!studio.fileName || total === 0) return null;
   return (
     <section class={styles.card} aria-label="Preview">
@@ -125,7 +127,7 @@ function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
         aside={<span class={styles.listMeta}>{total} pages total</span>}
       />
       <div class={c.stripWrap}>
-        <RefPageStrip count={total} max={5} />
+        <RefPageStrip count={total} max={5} thumbs={thumbs} />
       </div>
     </section>
   );

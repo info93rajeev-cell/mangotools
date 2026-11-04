@@ -10,6 +10,8 @@ export interface WordFile {
   content: DocxContent;
   pages: number;
   words: number;
+  /** This file laid out on its own with the current settings, for the page previews. */
+  preview: Uint8Array;
 }
 
 const SAMPLE_DOCS: { name: string; blocks: DocxBlock[] }[] = [
@@ -83,6 +85,7 @@ async function readWordFiles(
         content,
         pages: r.pages,
         words: wordCount(content),
+        preview: r.bytes,
       });
     } catch {
       notify?.(`${f.name} could not be read as a Word document.`);
@@ -109,7 +112,7 @@ async function renderGroups(
   return out;
 }
 
-/** Page counts depend on page size and margins, so they are recounted when those change. */
+/** Page counts and previews depend on page size and margins, so they are redone when those change. */
 function useRecountPages(
   files: WordFile[],
   setFiles: (f: WordFile[]) => void,
@@ -119,12 +122,12 @@ function useRecountPages(
   useEffect(() => {
     let current = true;
     void Promise.all(
-      files.map(async (f) => ({
-        ...f,
-        pages: (await renderDocxToPdf([f.content], { pageSize, margins })).pages,
-      })),
+      files.map(async (f) => {
+        const r = await renderDocxToPdf([f.content], { pageSize, margins });
+        return { ...f, pages: r.pages, preview: r.bytes };
+      }),
     ).then((updated) => {
-      if (current && updated.some((f, i) => f.pages !== files[i]?.pages)) setFiles(updated);
+      if (current && updated.length > 0) setFiles(updated);
     });
     return () => {
       current = false;

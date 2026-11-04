@@ -68,6 +68,7 @@ function save(bytes: Uint8Array, name: string) {
 function usePdfToWordState() {
   const [fileName, setFileName] = useState('');
   const [fileSizeBytes, setFileSizeBytes] = useState(0);
+  const [fileBytes, setFileBytes] = useState<Uint8Array | null>(null);
   const [extraction, setExtraction] = useState<Extraction | null>(null);
   const [keepHeadings, setKeepHeadings] = useState(true);
   const [pageBreaks, setPageBreaks] = useState(true);
@@ -79,6 +80,8 @@ function usePdfToWordState() {
     setFileName,
     fileSizeBytes,
     setFileSizeBytes,
+    fileBytes,
+    setFileBytes,
     extraction,
     setExtraction,
     keepHeadings,
@@ -97,6 +100,7 @@ function usePdfToWordState() {
 function resetState(s: ReturnType<typeof usePdfToWordState>) {
   s.setFileName('');
   s.setFileSizeBytes(0);
+  s.setFileBytes(null);
   s.setExtraction(null);
   s.setPageMode('all');
   s.setPageRange('');
@@ -122,6 +126,7 @@ export function usePdfToWordStudio(notify?: (msg: string) => void) {
       const pages = await extractPdfText(bytes);
       s.setFileName(name);
       s.setFileSizeBytes(bytes.length);
+      s.setFileBytes(bytes);
       s.setExtraction(summarise(pages));
       notify?.(`Loaded ${name}`);
     } catch {

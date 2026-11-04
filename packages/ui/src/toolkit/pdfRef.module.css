@@ -2102,3 +2102,21 @@ fieldset.options {
 .tilesBig .tileSub {
   font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
 }
+
+/* Real page images (pdf.js) replace the paper placeholder. */
+.pageImg {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.pageImg > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: inherit;
+}

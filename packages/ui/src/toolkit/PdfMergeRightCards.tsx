@@ -1,5 +1,12 @@
 import { Fragment } from 'preact';
-import { RefActions, RefCardHead, RefPrivacy, RefStatus, RefTile } from './PdfRefParts.tsx';
+import {
+  RefActions,
+  RefCardHead,
+  RefPaperThumb,
+  RefPrivacy,
+  RefStatus,
+  RefTile,
+} from './PdfRefParts.tsx';
 import styles from './pdfRef.module.css';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
@@ -10,9 +17,11 @@ const RANGE_TONES = [styles.rangeRed, styles.rangeBlue, styles.rangeGreen, style
 function MergePreview({
   ranges,
   total,
+  files,
 }: {
   ranges: MergeStudioState['summary']['ranges'];
   total: number;
+  files: MergeStudioState['files'];
 }) {
   return (
     <section class={`${styles.card} ${styles.subcard}`} aria-label="Merged Document Preview">
@@ -25,13 +34,13 @@ function MergePreview({
         {ranges.map((r, i) => (
           <Fragment key={r.name}>
             <div class={styles.flowItem}>
-              <span class={styles.flowPaper}>
+              <RefPaperThumb bytes={files[i]?.bytes} rotation={files[i]?.rotation}>
                 <span class={styles.flowName}>{r.name.replace(/\.pdf$/i, '')}</span>
                 <span class={styles.pageLine} />
                 <span class={styles.pageLine} style={{ width: '85%' }} />
                 <span class={styles.pageLine} style={{ width: '92%' }} />
                 <span class={styles.pageLine} style={{ width: '70%' }} />
-              </span>
+              </RefPaperThumb>
               <span class={`${styles.flowRange} ${RANGE_TONES[i % RANGE_TONES.length]}`}>
                 {r.start} – {r.end}
               </span>
@@ -92,7 +101,7 @@ export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
         </div>
       </section>
       {summary.ranges.length > 0 ? (
-        <MergePreview ranges={summary.ranges} total={summary.totalPageCount} />
+        <MergePreview ranges={summary.ranges} total={summary.totalPageCount} files={studio.files} />
       ) : null}
       <RefPrivacy />
       <RefActions
