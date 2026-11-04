@@ -1,0 +1,74 @@
+{
+  "id": "006-tolerance-boundary-fail-unrounded",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5: Acceptance compares unrounded |e| <= C*sqrt(K) where limit=9.59mm (display 9.6) and |e|=9.60mm fails."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "100.00960",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "station": "BM-2",
+        "fs": "1.000",
+        "dist": "160"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "none",
+    "kConstant": "23.975"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "100",
+    "sumBS": "1",
+    "sumFS": "1",
+    "sumRise": "0",
+    "sumFall": "0",
+    "bsFsDelta": "0",
+    "riseFallDelta": "0",
+    "rlDelta": "0",
+    "closingRL": "100.0096",
+    "misclosure": "-0.0096",
+    "totalDistanceKm": "0.160",
+    "allowableError": "9.6",
+    "closureStatus": "fail",
+    "setupsCount": 1,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "1",
+        "rise": "0",
+        "fall": "0",
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "160",
+        "corr": null,
+        "adjustedRL": null
+      }
+    ]
+  }
+}
