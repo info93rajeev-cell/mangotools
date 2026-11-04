@@ -1,3 +1,4 @@
+import { Icon } from '../primitives/Icon.tsx';
 import styles from './jpgToPdfStudio.module.css';
 import { fs } from './phoneFontSize.ts';
 import type { PageSizeOption, PdfImageItem } from './usePdfStudioState.ts';
@@ -94,8 +95,10 @@ export function JpgToPdfPreviewCard({ images }: { images: PdfImageItem[] }) {
     <div class={styles.card}>
       <div class={styles.cardHeader}>
         <h2 class={styles.cardTitle}>
-          <span style={{ color: 'var(--color-primary)' }}>👁️</span> PDF Preview ({images.length}{' '}
-          {images.length === 1 ? 'page' : 'pages'})
+          <span class={styles.cardTitleIcon}>
+            <Icon name="eye" />
+          </span>{' '}
+          PDF Preview ({images.length} {images.length === 1 ? 'page' : 'pages'})
         </h2>
         <span class={styles.headerPill}>Total pages: {images.length}</span>
       </div>

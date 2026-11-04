@@ -10,6 +10,7 @@ const ICONS: Readonly<Record<string, ToolHeaderIcon>> = {
   'pdf-split': { name: 'scissors', tone: 'red' },
   'pdf-to-word': { name: 'file-text', tone: 'blue' },
   'word-to-pdf': { name: 'file-output', tone: 'blue' },
+  'jpg-to-pdf': { name: 'image', tone: 'purple' },
 };
 
 export function toolHeaderIcon(slug: string): ToolHeaderIcon | undefined {
