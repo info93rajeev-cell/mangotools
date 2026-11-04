@@ -63,14 +63,15 @@ function validateCounts(input: LevelingInputV2): Result<true> {
   return ok(true);
 }
 
-function validateStartDistance(rawDist?: string): Result<string> {
+function validateStartDistance(rawDist?: string): Result<string | undefined> {
   if (rawDist !== undefined && rawDist.trim() !== '') {
     const d = decimal(rawDist, 'observations.0.dist', false);
     if (!d.ok) return d;
     if (compare(d.value, '0') < 0) return failure('NEGATIVE_DISTANCE', 'observations.0.dist');
-    return ok(d.value);
+    if (compare(d.value, '0') > 0) return failure('START_DISTANCE_NONZERO', 'observations.0.dist');
+    return ok('0');
   }
-  return ok('0');
+  return ok(undefined);
 }
 
 function validateRowDistance(
@@ -89,16 +90,24 @@ function validateRowDistance(
   return ok(d.value);
 }
 
+function appendDistance(
+  obs: LevelingInputV2['observations'][number] | undefined,
+  val: string,
+  acc: { normalizedDistances: string[]; totalDistance: string },
+) {
+  acc.normalizedDistances.push(val);
+  acc.totalDistance = add(acc.totalDistance, val);
+  if (obs) obs.dist = val;
+}
+
 function validateDistances(
   observations: LevelingInputV2['observations'],
   requireDistances: boolean,
 ): Result<{ normalizedDistances?: string[]; totalDistance?: string }> {
   const startDist = validateStartDistance(observations[0]?.dist);
   if (!startDist.ok) return startDist;
-  if (observations[0]) observations[0].dist = startDist.value;
 
-  const normalizedDistances: string[] = [startDist.value];
-  let totalDistance = '0';
+  const acc = { normalizedDistances: ['0'], totalDistance: '0' };
   let allDistancesPresent = true;
 
   for (let i = 1; i < observations.length; i++) {
@@ -107,20 +116,21 @@ function validateDistances(
     if (distRes.value === undefined) {
       allDistancesPresent = false;
     } else {
-      normalizedDistances.push(distRes.value);
-      totalDistance = add(totalDistance, distRes.value);
-      const obs = observations[i];
-      if (obs) obs.dist = distRes.value;
+      appendDistance(observations[i], distRes.value, acc);
     }
   }
 
-  if (requireDistances && isZero(totalDistance)) {
+  if (requireDistances && isZero(acc.totalDistance)) {
     return failure('ZERO_TOTAL_DISTANCE', 'observations');
   }
 
+  if (allDistancesPresent && observations[0]) {
+    observations[0].dist = '0';
+  }
+
   return ok({
-    normalizedDistances: allDistancesPresent ? normalizedDistances : undefined,
-    totalDistance: allDistancesPresent ? totalDistance : undefined,
+    normalizedDistances: allDistancesPresent ? acc.normalizedDistances : undefined,
+    totalDistance: allDistancesPresent ? acc.totalDistance : undefined,
   });
 }
 

@@ -10,6 +10,7 @@ export const messages = {
   SURVEY_LEVELING_INVALID_READING_COMBINATION: 'Use BS, IS, FS, or a change-point FS and BS.',
   SURVEY_LEVELING_INVALID_SEQUENCE: 'Start with BS only and finish with FS only.',
   SURVEY_LEVELING_CHANGE_POINT_INCONSISTENT: 'Interior rows need IS or both FS and BS.',
+  SURVEY_LEVELING_START_DISTANCE_NONZERO: 'Starting station distance must be 0 or omitted.',
   SURVEY_LEVELING_MISSING_DISTANCE: 'Enter the distance from the previous station.',
   SURVEY_LEVELING_NEGATIVE_DISTANCE: 'Distances cannot be negative.',
   SURVEY_LEVELING_ZERO_TOTAL_DISTANCE: 'Total measured distance must be greater than zero.',

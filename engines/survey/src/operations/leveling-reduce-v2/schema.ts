@@ -110,7 +110,7 @@ export const levelingOutputV2 = z.strictObject({
       'Allowable error in millimetres to 1 decimal place, or null if C or distance absent.',
     ),
   closureStatus: z
-    .enum(['pass', 'fail', 'criterion-not-provided'])
+    .enum(['pass', 'fail', 'criterion-not-provided', 'distance-not-provided'])
     .nullable()
     .describe('Closure tolerance status; null if open line.'),
   setupsCount: z.number().describe('Total number of instrument setups.'),

@@ -267,21 +267,53 @@ describe('survey.leveling.reduce@2 engine', () => {
     });
   });
 
-  it('returns SURVEY_LEVELING_INVALID_DECIMAL on non-numeric kConstant', async () => {
-    const res = await runV2(
-      {
-        startRL: '100.000',
-        observations: [{ bs: '1.000' }, { fs: '1.000' }],
-      },
-      { kConstant: 'invalid' },
-    );
+  it('rejects nonzero start station distance with SURVEY_LEVELING_START_DISTANCE_NONZERO', async () => {
+    const res = await runV2({
+      startRL: '100.000',
+      observations: [
+        { bs: '1.000', dist: '10' },
+        { fs: '1.000', dist: '20' },
+      ],
+    });
     expect(res).toEqual({
       ok: false,
       error: {
-        code: 'SURVEY_LEVELING_INVALID_DECIMAL',
-        path: 'kConstant',
-        messageKey: 'errors.SURVEY_LEVELING_INVALID_DECIMAL',
+        code: 'SURVEY_LEVELING_START_DISTANCE_NONZERO',
+        path: 'observations.0.dist',
+        messageKey: 'errors.SURVEY_LEVELING_START_DISTANCE_NONZERO',
       },
     });
+  });
+
+  it('reports closureStatus distance-not-provided when kConstant is supplied but distances are absent or partial', async () => {
+    const entirelyAbsent = await runV2(
+      {
+        startRL: '100.000',
+        closingRL: '100.005',
+        observations: [{ bs: '1.000' }, { fs: '1.000' }],
+      },
+      { kConstant: '24' },
+    );
+    expect(entirelyAbsent.ok).toBe(true);
+    if (entirelyAbsent.ok) {
+      expect(entirelyAbsent.value.closureStatus).toBe('distance-not-provided');
+      expect(entirelyAbsent.value.allowableError).toBeNull();
+      expect(entirelyAbsent.value.totalDistanceKm).toBeNull();
+    }
+
+    const partial = await runV2(
+      {
+        startRL: '100.000',
+        closingRL: '100.005',
+        observations: [{ bs: '1.000', dist: '0' }, { is: '1.100', dist: '40' }, { fs: '1.000' }],
+      },
+      { kConstant: '24', adjBy: 'setup' },
+    );
+    expect(partial.ok).toBe(true);
+    if (partial.ok) {
+      expect(partial.value.closureStatus).toBe('distance-not-provided');
+      expect(partial.value.allowableError).toBeNull();
+      expect(partial.value.totalDistanceKm).toBeNull();
+    }
   });
 });

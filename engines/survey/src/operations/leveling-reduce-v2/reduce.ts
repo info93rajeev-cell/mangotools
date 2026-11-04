@@ -122,8 +122,11 @@ function evaluateClosure(
     return { misclosure: null, allowableError: null, closureStatus: null };
   }
   const misclosure = sub(endingRL, closingRL);
-  if (!kConstant || !totalDistance) {
+  if (!kConstant) {
     return { misclosure, allowableError: null, closureStatus: 'criterion-not-provided' as const };
+  }
+  if (!totalDistance) {
+    return { misclosure, allowableError: null, closureStatus: 'distance-not-provided' as const };
   }
   const cNum = Number(kConstant);
   const kNum = Number(totalDistance) / 1000;
