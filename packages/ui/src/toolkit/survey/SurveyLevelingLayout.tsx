@@ -146,46 +146,54 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
       {showHeader && <SurveyHeaderPills />}
 
       <div class={s.grid}>
-        <div>
-          <SurveyBenchmarkCard
-            method={survey.method}
-            setMethod={survey.setMethod}
-            startRL={survey.startRL}
-            setStartRL={survey.setStartRL}
-            closingRL={survey.closingRL}
-            setClosingRL={survey.setClosingRL}
-            kConstant={survey.kConstant}
-            setKConstant={survey.setKConstant}
-            adjBy={survey.adjBy}
-            setAdjBy={survey.setAdjBy}
-            rows={survey.rows}
-            errors={survey.errors}
-            cellErrors={survey.cellErrors}
-            handleCellChange={survey.handleCellChange}
-            handleAddRow={survey.handleAddRow}
-            handleRemoveRow={survey.handleRemoveRow}
-            calculate={survey.calculate}
-            loadSample={survey.loadSample}
-            reset={survey.reset}
-          />
-          <AccordionCard title={`+ ${surveyStrings.accNotesTitle}`}>
-            {surveyStrings.accNotesBody}
-          </AccordionCard>
-          <AccordionCard title={`+ ${surveyStrings.accBookTitle}`}>
-            {surveyStrings.accBookBody}
-          </AccordionCard>
+        <div class={s.leftCol}>
+          <div class={s.inputsSlot} data-survey-inputs-slot="">
+            <SurveyBenchmarkCard
+              method={survey.method}
+              setMethod={survey.setMethod}
+              startRL={survey.startRL}
+              setStartRL={survey.setStartRL}
+              closingRL={survey.closingRL}
+              setClosingRL={survey.setClosingRL}
+              kConstant={survey.kConstant}
+              setKConstant={survey.setKConstant}
+              adjBy={survey.adjBy}
+              setAdjBy={survey.setAdjBy}
+              rows={survey.rows}
+              errors={survey.errors}
+              cellErrors={survey.cellErrors}
+              handleCellChange={survey.handleCellChange}
+              handleAddRow={survey.handleAddRow}
+              handleRemoveRow={survey.handleRemoveRow}
+              calculate={survey.calculate}
+              loadSample={survey.loadSample}
+              reset={survey.reset}
+            />
+          </div>
+          <div class={s.accordionsSlot} data-survey-accordions-slot="">
+            <AccordionCard title={`+ ${surveyStrings.accNotesTitle}`}>
+              {surveyStrings.accNotesBody}
+            </AccordionCard>
+            <AccordionCard title={`+ ${surveyStrings.accBookTitle}`}>
+              {surveyStrings.accBookBody}
+            </AccordionCard>
+          </div>
         </div>
 
-        <div>
-          <SurveyProfilePlaceholder result={survey.result} closingRL={survey.closingRL} />
-          <SurveyResultsCard
-            phase={survey.phase}
-            method={survey.method}
-            result={survey.result}
-            isStale={survey.isStale}
-            closingRLInput={survey.closingRL}
-            onCopyBook={handleCopyBook}
-          />
+        <div class={s.rightCol}>
+          <div class={s.visualSlot} data-survey-visual-slot="">
+            <SurveyProfilePlaceholder result={survey.result} closingRL={survey.closingRL} />
+          </div>
+          <div class={s.resultsSlot} data-survey-results-slot="">
+            <SurveyResultsCard
+              phase={survey.phase}
+              method={survey.method}
+              result={survey.result}
+              isStale={survey.isStale}
+              closingRLInput={survey.closingRL}
+              onCopyBook={handleCopyBook}
+            />
+          </div>
         </div>
       </div>
 

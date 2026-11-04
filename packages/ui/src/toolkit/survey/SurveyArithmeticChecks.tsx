@@ -44,9 +44,7 @@ function HIChecksList({ result }: { result: SurveyCalculationOutput }) {
 
   return (
     <>
-      <div style={{ fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>
-        {surveyStrings.checksSubtitleHI}
-      </div>
+      <div class={s.checksSubtitle}>{surveyStrings.checksSubtitleHI}</div>
       <ul class={s.checksList}>
         <CheckItem pass={pass} text={bsFsText} value={`${deltaBSFS} m`} />
         <CheckItem pass={pass} text={firstLastText} value={`${deltaRL} m`} />
@@ -83,9 +81,7 @@ function RiseFallChecksList({ result }: { result: SurveyCalculationOutput }) {
 
   return (
     <>
-      <div style={{ fontSize: '12px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>
-        {surveyStrings.checksSubtitle}
-      </div>
+      <div class={s.checksSubtitle}>{surveyStrings.checksSubtitle}</div>
       <ul class={s.checksList}>
         <CheckItem pass={check1Pass} text={bsFsText} value={`${deltaBSFS} m`} />
         <CheckItem pass={check1Pass} text={riseFallText} value={`${deltaRiseFall} m`} />

@@ -87,6 +87,120 @@ function computeProfileGeometry(
   return { points, mn, mx, Y, hasValidatedDist };
 }
 
+function ProfileSvgGrid({
+  gridLevels,
+  p,
+  W,
+}: {
+  gridLevels: Array<{ val: string; y: number }>;
+  p: { l: number; r: number };
+  W: number;
+}) {
+  return (
+    <>
+      {gridLevels.map((g, i) => (
+        <g key={i}>
+          <line
+            x1={p.l}
+            x2={W - p.r}
+            y1={g.y}
+            y2={g.y}
+            stroke="var(--chart-grid, #eef2f7)"
+            stroke-width="1"
+          />
+          <text
+            x={p.l - 6}
+            y={g.y + 3}
+            font-size="10"
+            fill="var(--chart-text-muted, #94a3b8)"
+            text-anchor="end"
+          >
+            {g.val}
+          </text>
+        </g>
+      ))}
+    </>
+  );
+}
+
+function ProfileClosingBM({
+  knownBMY,
+  closingRL,
+  p,
+  W,
+}: {
+  knownBMY: number | null;
+  closingRL?: string;
+  p: { l: number; r: number };
+  W: number;
+}) {
+  if (knownBMY === null) return null;
+  return (
+    <g>
+      <line
+        x1={p.l}
+        x2={W - p.r}
+        y1={knownBMY}
+        y2={knownBMY}
+        stroke="#16a34a"
+        stroke-dasharray="4 4"
+        stroke-width="1.5"
+      />
+      <text x={W - p.r} y={knownBMY - 5} font-size="10" fill="#15803d" text-anchor="end">
+        Closing BM {closingRL}
+      </text>
+    </g>
+  );
+}
+
+function ProfileSvgPoints({ points, H, b }: { points: ProfilePoint[]; H: number; b: number }) {
+  return (
+    <>
+      {points.map((pt, i) => {
+        const dotFill = pt.isBM
+          ? '#16a34a'
+          : pt.isCP
+            ? 'var(--chart-line, #1a6ef5)'
+            : 'var(--chart-dot-bg, #ffffff)';
+        const dotStroke = pt.isBM ? '#16a34a' : 'var(--chart-line, #1a6ef5)';
+        return (
+          <g key={i}>
+            <circle
+              cx={pt.x}
+              cy={pt.y}
+              r={pt.isBM || pt.isCP ? 5 : 4}
+              fill={dotFill}
+              stroke={dotStroke}
+              stroke-width="2"
+            />
+            <text
+              x={pt.x}
+              y={pt.distLabel ? H - b + 14 : H - b + 18}
+              font-size="10.5"
+              fill="var(--chart-text, #334155)"
+              text-anchor="middle"
+              font-weight="600"
+            >
+              {pt.station}
+            </text>
+            {pt.distLabel ? (
+              <text
+                x={pt.x}
+                y={H - b + 26}
+                font-size="9"
+                fill="var(--chart-text-muted, #64748b)"
+                text-anchor="middle"
+              >
+                {pt.distLabel}
+              </text>
+            ) : null}
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
 function ProfileSvgChart({
   points,
   mn,
@@ -116,72 +230,17 @@ function ProfileSvgChart({
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} class={s.profileSvg} aria-label="Level profile chart">
-      {gridLevels.map((g, i) => (
-        <g key={i}>
-          <line x1={p.l} x2={W - p.r} y1={g.y} y2={g.y} stroke="#eef2f7" stroke-width="1" />
-          <text x={p.l - 6} y={g.y + 3} font-size="10" fill="#94a3b8" text-anchor="end">
-            {g.val}
-          </text>
-        </g>
-      ))}
-
-      <polygon points={polygonPts} fill="#eaf1fe" />
+      <ProfileSvgGrid gridLevels={gridLevels} p={p} W={W} />
+      <polygon points={polygonPts} fill="var(--chart-area, #eaf1fe)" />
       <polyline
         points={polylinePts}
         fill="none"
-        stroke="#1a6ef5"
+        stroke="var(--chart-line, #1a6ef5)"
         stroke-width="2.5"
         stroke-linejoin="round"
       />
-
-      {knownBMY !== null && (
-        <g>
-          <line
-            x1={p.l}
-            x2={W - p.r}
-            y1={knownBMY}
-            y2={knownBMY}
-            stroke="#16a34a"
-            stroke-dasharray="4 4"
-            stroke-width="1.5"
-          />
-          <text x={W - p.r} y={knownBMY - 5} font-size="10" fill="#15803d" text-anchor="end">
-            Closing BM {closingRL}
-          </text>
-        </g>
-      )}
-
-      {points.map((pt, i) => {
-        const dotFill = pt.isBM ? '#16a34a' : pt.isCP ? '#1a6ef5' : '#ffffff';
-        const dotStroke = pt.isBM ? '#16a34a' : '#1a6ef5';
-        return (
-          <g key={i}>
-            <circle
-              cx={pt.x}
-              cy={pt.y}
-              r={pt.isBM || pt.isCP ? 5 : 4}
-              fill={dotFill}
-              stroke={dotStroke}
-              stroke-width="2"
-            />
-            <text
-              x={pt.x}
-              y={pt.distLabel ? H - p.b + 14 : H - p.b + 18}
-              font-size="10.5"
-              fill="#334155"
-              text-anchor="middle"
-              font-weight="600"
-            >
-              {pt.station}
-            </text>
-            {pt.distLabel ? (
-              <text x={pt.x} y={H - p.b + 26} font-size="9" fill="#64748b" text-anchor="middle">
-                {pt.distLabel}
-              </text>
-            ) : null}
-          </g>
-        );
-      })}
+      <ProfileClosingBM knownBMY={knownBMY} closingRL={closingRL} p={p} W={W} />
+      <ProfileSvgPoints points={points} H={H} b={p.b} />
     </svg>
   );
 }

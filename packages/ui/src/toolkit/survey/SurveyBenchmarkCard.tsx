@@ -199,20 +199,7 @@ export function SurveyBenchmarkCard({
         </div>
 
         {generalRowError ? (
-          <div
-            style={{
-              padding: '8px 12px',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '6px',
-              color: '#b91c1c',
-              fontSize: '12px',
-              fontWeight: 600,
-              marginBottom: '10px',
-            }}
-            role="alert"
-            data-survey-error=""
-          >
+          <div class={sb.generalRowError} role="alert" data-survey-error="">
             {generalRowError}
           </div>
         ) : null}

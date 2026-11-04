@@ -422,3 +422,79 @@ test('Keyboard navigation (arrow keys, Home, End) on method tabs', async ({ page
   await expect(hiTab).toBeFocused();
   await expect(hiTab).toHaveAttribute('aria-selected', 'true');
 });
+
+test('Mobile layout order: Header -> Hero Visual -> Inputs -> Action Buttons -> Output -> Accordions', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  // Load sample so all sections (inputs, visual, action buttons, output) are active
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+
+  const visualBox = await page.locator('[data-survey-visual-slot]').boundingBox();
+  const inputsBox = await page.locator('[data-survey-inputs-slot]').boundingBox();
+  const calcBtnBox = await page.locator('[data-calculate-btn]').boundingBox();
+  const resultsBox = await page.locator('[data-survey-results-slot]').boundingBox();
+  const accordionsBox = await page.locator('[data-survey-accordions-slot]').boundingBox();
+
+  expect(visualBox).toBeTruthy();
+  expect(inputsBox).toBeTruthy();
+  expect(calcBtnBox).toBeTruthy();
+  expect(resultsBox).toBeTruthy();
+  expect(accordionsBox).toBeTruthy();
+
+  if (!visualBox || !inputsBox || !calcBtnBox || !resultsBox || !accordionsBox) {
+    throw new Error('All layout slots must be visible');
+  }
+
+  // 1. Hero visual is right below header, before inputs
+  expect(visualBox.y).toBeLessThan(inputsBox.y);
+
+  // 2. Action buttons are at the bottom of inputs, before output
+  expect(calcBtnBox.y).toBeGreaterThan(inputsBox.y);
+  expect(calcBtnBox.y).toBeLessThan(resultsBox.y);
+
+  // 3. Output is below calculation inputs and action buttons
+  expect(resultsBox.y).toBeGreaterThan(inputsBox.y);
+
+  // 4. Accordions are below output
+  expect(accordionsBox.y).toBeGreaterThan(resultsBox.y);
+});
+
+test('Dark mode theme support and zero axe violations', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  // Toggle dark mode on documentElement
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = 'dark';
+  });
+
+  // Load sample in dark mode
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+
+  // Switch to HI mode and recalculate
+  await page.locator('[data-method-tab="height-of-instrument"]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
+  await page.locator('[data-calculate-btn]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+
+  // Run Axe accessibility audit in dark mode (contrast, roles, etc.)
+  const axe = await new AxeBuilder({ page }).analyze();
+  expect(axe.violations).toEqual([]);
+
+  // Capture dark mode screenshot
+  const shotPath = 'tests/artifacts/screenshots/survey-hi-workbench-desktop-1440-dark.png';
+  await page.screenshot({ path: shotPath, fullPage: true });
+  try {
+    copyFileSync(
+      shotPath,
+      'C:/Users/user/.gemini/antigravity/brain/ad6e6067-5d37-4438-af77-b06a7b8c5081/survey-hi-workbench-desktop-1440-dark.png',
+    );
+  } catch {}
+});

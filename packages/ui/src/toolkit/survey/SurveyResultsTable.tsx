@@ -99,7 +99,7 @@ function ResultsTableHeader({ isHI }: { isHI: boolean }) {
         )}
         <th>{surveyStrings.colRL}</th>
         <th>{surveyStrings.colCorr}</th>
-        <th style={{ color: '#1d4ed8', fontWeight: 700 }}>{surveyStrings.colAdjRL}</th>
+        <th class={s.colAdjRLHeader}>{surveyStrings.colAdjRL}</th>
       </tr>
     </thead>
   );
@@ -108,19 +108,19 @@ function ResultsTableHeader({ isHI }: { isHI: boolean }) {
 function ResultsTableRow({ d, isHI }: { d: RowDisplay; isHI: boolean }) {
   return (
     <tr>
-      <td style={{ textAlign: 'left', fontWeight: 600 }}>{d.station}</td>
+      <td class={s.stationCell}>{d.station}</td>
       <td>{d.distText}</td>
       {isHI ? (
-        <td style={{ fontWeight: 600, color: '#0f766e' }}>{d.hiText}</td>
+        <td class={s.hiCell}>{d.hiText}</td>
       ) : (
         <>
           <td class={d.riseClass}>{d.riseText}</td>
           <td class={d.fallClass}>{d.fallText}</td>
         </>
       )}
-      <td style={{ fontWeight: 600, color: '#334155' }}>{d.rlText}</td>
-      <td style={{ fontSize: '11.5px', color: '#475569' }}>{d.corrText}</td>
-      <td style={{ fontWeight: 700, color: '#0b1b3f' }}>{d.adjRLText}</td>
+      <td class={s.rlCell}>{d.rlText}</td>
+      <td class={s.corrCell}>{d.corrText}</td>
+      <td class={s.adjRLCell}>{d.adjRLText}</td>
     </tr>
   );
 }
