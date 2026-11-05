@@ -226,7 +226,7 @@ test.describe('CBM results presentation (#219 B)', () => {
     await expect(cost(page).locator('[data-cost-total]')).toHaveText('Estimated Total₹ 1,000');
   });
 
-  test('Print / Save PDF is primary and Copy Summary secondary, both for current results only', async ({
+  test('Calculate is primary; Print / Save PDF and Copy Summary are secondary, for current results only', async ({
     page,
   }) => {
     await stubClipboard(page);
@@ -236,7 +236,11 @@ test.describe('CBM results presentation (#219 B)', () => {
       });
     });
     await ready(page);
-    await expect(print(page)).toHaveAttribute('data-variant', 'primary');
+    await expect(page.getByRole('button', { name: 'Calculate CBM' })).toHaveAttribute(
+      'data-variant',
+      'primary',
+    );
+    await expect(print(page)).toHaveAttribute('data-variant', 'secondary');
     await expect(copy(page)).toHaveAttribute('data-variant', 'secondary');
     const [a, b] = [await print(page).boundingBox(), await copy(page).boundingBox()];
     expect(Math.abs((a?.y ?? 0) - (b?.y ?? 1))).toBeLessThan(2);
@@ -364,6 +368,8 @@ test.describe('CBM results responsive and accessible (#219 B)', () => {
     ).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(composition(page).getByRole('list')).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: 'Calculate CBM' })).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(print(page)).toBeFocused();
     expect(await ring(print(page))).toBe('solid 2px');

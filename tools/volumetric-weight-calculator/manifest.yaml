@@ -4,8 +4,9 @@ id: volumetric-weight-calculator
 slug: volumetric-weight-calculator
 status: beta
 tier: T2
-version: 0.3.0
+version: 0.4.0
 changelog:
+  - { version: 0.4.0, date: 2026-11-05, type: changed, summary: "Weight Results cards in the Logistics style, Calculate with Print and Copy, notes and FAQ cards; phone order fixed." }
   - { version: 0.3.0, date: 2026-11-05, type: added, summary: "Optional cost estimate with your own rate: per kg of chargeable weight or per m³, with minimum and other charges." }
   - { version: 0.2.0, date: 2026-11-04, type: changed, summary: "All figures now come from the logistics engine in exact decimals; the divisor updates as you type." }
   - { version: 0.1.2, date: 2026-11-02, type: fixed, summary: "Rows with a zero size or a non-whole quantity are flagged and left out instead of being counted as 1." }
