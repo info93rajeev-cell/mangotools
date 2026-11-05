@@ -4,8 +4,10 @@ id: container-loading-calculator
 slug: container-loading-calculator
 status: beta
 tier: T2
-version: 0.1.3
+version: 0.1.5
 changelog:
+  - { version: 0.1.5, date: 2026-11-05, type: changed, summary: "Calculate button added; on tablet and phone: picture, inputs, Calculate, results, then Print / Copy." }
+  - { version: 0.1.4, date: 2026-11-05, type: changed, summary: "Loading Results cards in the approved design: loaded volume, cargo weight, loaded and unloaded pieces, each with a meter." }
   - { version: 0.1.3, date: 2026-11-02, type: fixed, summary: "Fix: page buttons no longer overlap the header, and the duplicated help section at the bottom is removed." }
   - { version: 0.1.2, date: 2026-10-07, type: changed, summary: "Use the compact Logistics workspace, convert entered dimensions when units change, and add selectable 2, 3 or 4-place decimal presentation." }
   - { version: 0.1.1, date: 2026-09-30, type: changed, summary: "Fix the worked-example carton size (60 × 40 × 40 cm) and say the volume estimate is usually, not always, higher." }

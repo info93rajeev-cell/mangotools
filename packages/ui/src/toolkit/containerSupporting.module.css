@@ -89,3 +89,16 @@
 :global(:where([data-theme="dark"])) .panels a {
   color: #72a6f4;
 }
+
+/* Pallet and Volumetric show the cards on phones too, one per row. */
+@media (max-width: 700px) {
+  .panels.always {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Inside a tool column the cards sit right under the inputs. */
+.panels.always {
+  margin-top: 0;
+}

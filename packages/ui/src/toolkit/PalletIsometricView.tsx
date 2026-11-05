@@ -1,3 +1,4 @@
+import { PalletDimensions } from './PalletDimensions.tsx';
 import styles from './pallet3DCanvas.module.css';
 
 // Isometric projection helper
@@ -33,10 +34,10 @@ export function SvgRealisticIsometricPallet({
 }: SvgRealisticIsometricPalletProps) {
   const W = 380;
   const H = 250;
-  const ox = 190;
-  const oy = 115;
+  const ox = 175;
+  const oy = 110;
   const maxDim = Math.max(palletL, palletW, nz * boxH + 18);
-  const baseScale = (105 / maxDim) * zoom;
+  const baseScale = (100 / maxDim) * zoom;
 
   const pL = palletL;
   const pW = palletW;
@@ -327,6 +328,7 @@ export function SvgRealisticIsometricPallet({
           />
         </g>
       ))}
+      <PalletDimensions pL={pL} pW={pW} top={pH + nz * boxH} scale={baseScale} ox={ox} oy={oy} />
     </svg>
   );
 }

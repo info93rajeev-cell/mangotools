@@ -67,7 +67,7 @@
 .canvasWrap {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 215px;
   background: #f8fafc;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@
 .canvasSvg {
   width: 100%;
   height: 100%;
-  max-height: 245px;
+  max-height: 210px;
   display: block;
 }
 
@@ -178,4 +178,30 @@
 
 :global(:where([data-theme="dark"])) .canvasEmpty {
   color: #b8c1cf;
+}
+
+.dimLabel {
+  font-size: 10px;
+  font-weight: 700;
+  fill: #1e293b;
+  paint-order: stroke;
+  stroke: #f8fafc;
+  stroke-width: 3px;
+}
+:global([data-theme="dark"]) .dimLabel {
+  fill: #e2e8f0;
+  stroke: #0f172a;
+}
+
+.dimLine {
+  stroke: #1e293b;
+}
+.dimArrow {
+  fill: #1e293b;
+}
+:global([data-theme="dark"]) .dimLine {
+  stroke: #cbd5e1;
+}
+:global([data-theme="dark"]) .dimArrow {
+  fill: #cbd5e1;
 }

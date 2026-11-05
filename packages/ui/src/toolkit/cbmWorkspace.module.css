@@ -110,3 +110,40 @@
     display: none;
   }
 }
+
+/* Tablet and phone order (founder rule): picture, inputs (cartons, options, cost), Calculate,
+   results, Print / Copy. */
+@media (max-width: 1050px) and (min-width: 701px) {
+  .outputActionsSlot {
+    display: contents;
+  }
+  .outputActionsSlot > :global([data-cbm-calc]) {
+    order: 1;
+    width: 100%;
+  }
+  .resultsSlot,
+  .costResultSlot {
+    order: 2;
+  }
+  .outputActionsSlot > :not(:global([data-cbm-calc])),
+  .outputFeedbackSlot {
+    order: 3;
+    width: 100%;
+  }
+}
+@media (max-width: 700px) {
+  .costInputsSlot {
+    order: 12;
+  }
+  .outputActionsSlot {
+    display: contents;
+  }
+  .outputActionsSlot > :global([data-cbm-calc]) {
+    order: 13;
+    width: 100%;
+  }
+  .outputActionsSlot > :not(:global([data-cbm-calc])) {
+    order: 35;
+    width: 100%;
+  }
+}

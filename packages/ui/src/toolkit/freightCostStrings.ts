@@ -1,0 +1,26 @@
+/** Text for the shared freight cost estimate card (Pallet Loading, Volumetric Weight). */
+export const freightCostText = {
+  title: 'Cost Estimate',
+  optional: '(Optional)',
+  enable: 'Enable cost estimate',
+  help: 'Estimate your freight cost using your own rate. No live prices. Results are for planning only.',
+  rateBasis: 'Rate basis',
+  rate: 'Freight rate',
+  minimumCharge: 'Minimum charge',
+  otherCharges: 'Other charges',
+  optionalField: '(optional)',
+  otherNote: 'Added once to the freight, for example handling or documentation.',
+  currency: 'Currency',
+  currencyNote: 'Changing currency relabels amounts; no currency conversion is performed.',
+  pallets: 'Number of pallets',
+  palletsHelp: 'Pallets in this shipment, each loaded as shown.',
+  quantity: 'Charged on',
+  resultTitle: 'Cost Estimate Result',
+  calculated: 'Estimate calculated',
+  freight: 'Freight',
+  minimumApplied: 'Minimum charge applied',
+  total: 'Estimated Total',
+  waiting: 'Enter your freight rate to see the estimate.',
+  disclaimer:
+    'This is an estimate using your entered rate. Actual freight charges depend on carrier, route, surcharges and other terms.',
+} as const;

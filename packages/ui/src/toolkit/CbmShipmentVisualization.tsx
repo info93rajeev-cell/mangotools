@@ -149,7 +149,8 @@ function ViewButtons({ view, onView }: { view: ViewKind; onView: (view: ViewKind
   );
 }
 
-const cbmReferenceImage = '/logistics/cbm-reference-sample.jpg';
+/** Founder reference: carton with L × W × H, crate, palletised stack and container. */
+const cbmReferenceImage = '/logistics/cbm-cargo-banner.png';
 
 /** Shipment visualization: the active package drawn as an illustrative stack, never a loading plan. */
 export function CbmVisualizationPanel({
@@ -193,9 +194,9 @@ export function CbmVisualizationPanel({
             <figure class={s.reference} data-reference-artwork="">
               <img
                 src={cbmReferenceImage}
-                alt="3D CBM cargo illustration on wooden pallet"
-                width="518"
-                height="220"
+                alt="Carton with length, width and height marked, a crate, a pallet stack and a container"
+                width="610"
+                height="135"
               />
               <figcaption>
                 <span>{t.illustrative}</span>

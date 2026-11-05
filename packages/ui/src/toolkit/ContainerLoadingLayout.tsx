@@ -1,7 +1,6 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useState } from 'preact/hooks';
 import { Icon } from '../primitives/Icon.tsx';
-import { copyText } from './actions.ts';
 import {
   ContainerConstraints,
   ContainerCostInputs,
@@ -18,6 +17,7 @@ import reference from './containerReferenceLayout.module.css';
 import s from './containerWorkspace.module.css';
 import { loadSummary } from './containerWorkspacePresentation.ts';
 import { containerText as t } from './containerWorkspaceStrings.ts';
+import { ToolActionRow } from './ToolActionRow.tsx';
 import { useContainerWorkspace } from './useContainerWorkspace.ts';
 export function ContainerLoadingLayout({
   run,
@@ -28,7 +28,6 @@ export function ContainerLoadingLayout({
 }) {
   const [state, controller] = useContainerWorkspace(run);
   const [selection, setSelection] = useState(0);
-  const [feedback, setFeedback] = useState('');
   const selected = state.result?.containers.some((c) => c.index === selection) ? selection : 0;
   const summary = loadSummary(state);
   return (
@@ -69,24 +68,12 @@ export function ContainerLoadingLayout({
           <ContainerPlacementView state={state} selected={selected} onSelect={setSelection} />
           <ContainerLoadingResults state={state} selected={selected} />
           <ContainerFreightResult state={state} />
-          <div class={`${s.actions} ${output.actions}`}>
-            <button
-              type="button"
-              class={s.print}
-              disabled={!state.result}
-              onClick={() => window.print()}
-            >
-              <Icon name="file-text" /> {t.print}
-            </button>
-            <button
-              type="button"
-              disabled={!state.result}
-              onClick={async () => setFeedback((await copyText(summary)) ? t.copied : t.copyFailed)}
-            >
-              <Icon name="copy" /> {t.copy}
-            </button>
-          </div>
-          {feedback ? <p role="status">{feedback}</p> : null}
+          <ToolActionRow
+            calculateLabel={t.calculate}
+            resultsId="load-results-title"
+            ready={!!state.result}
+            summary={summary}
+          />
         </div>
         {state.error ? (
           <p class={s.error} role="alert">

@@ -1,11 +1,10 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { useState } from 'preact/hooks';
+import { LogisticsInfoCards } from './LogisticsInfoCards.tsx';
+import { palletInfo } from './logisticsInfoText.ts';
 import { Pallet3DCanvas } from './Pallet3DCanvas.tsx';
-import {
-  PalletLoadingActionBar,
-  PalletLoadingQuickGuide,
-  PalletLoadingResults,
-} from './PalletLoadingPanels.tsx';
+import { PalletCostCard } from './PalletCostCard.tsx';
+import { PalletResultsCard } from './PalletResultsCard.tsx';
 import styles from './palletLoading.module.css';
 import {
   computePalletLoading,
@@ -18,6 +17,7 @@ import {
   type PalletLoadingInput,
   type PalletUnit,
 } from './palletLoadingModel.ts';
+import { ToolActionRow } from './ToolActionRow.tsx';
 
 interface PalletLoadingLayoutProps {
   preset?: ResolvedPreset;
@@ -25,9 +25,8 @@ interface PalletLoadingLayoutProps {
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio pallet loading layout
-export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoadingLayoutProps) {
+export function PalletLoadingLayout({ preset: _preset }: PalletLoadingLayoutProps) {
   const [input, setInput] = useState<PalletLoadingInput>(DEFAULT_PALLET_INPUT);
-  const [copyFeedback, setCopyFeedback] = useState(false);
 
   const result = computePalletLoading(input);
 
@@ -72,8 +71,8 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
     });
   };
 
-  const handleCopySummary = async () => {
-    const summaryText = [
+  const summaryText = () =>
+    [
       'BeyondTheAI - Pallet Loading Summary',
       '------------------------------------',
       `Pallet Type: ${PALLET_PRESETS.find((p) => p.id === input.palletTypeId)?.name || 'Custom'}`,
@@ -87,288 +86,274 @@ export function PalletLoadingLayout({ preset: _preset, onLaunchTour }: PalletLoa
       `Total Gross Weight: ${result.weightBreakdown.totalGrossWeightKg} kg (Box: ${result.weightBreakdown.boxWeightKg} kg, Pallet: ${PALLET_TARE_KG} kg)`,
     ].join('\n');
 
-    try {
-      await navigator.clipboard.writeText(summaryText);
-      setCopyFeedback(true);
-      setTimeout(() => setCopyFeedback(false), 2000);
-    } catch {
-      // clipboard fallback
-    }
-  };
-
-  const handleReset = () => {
-    setInput(DEFAULT_PALLET_INPUT);
-  };
-
   return (
     <div class={styles.root} data-pallet-loading-workspace="">
-      <div class={styles.topMetaRow}>
-        <span class={styles.privacyBadge}>
-          <span aria-hidden="true">🔒</span> Runs on your device · 100% private
-        </span>
-      </div>
-
       <div class={styles.workspaceGrid}>
-        {/* 1. Pallet & Box Settings */}
-        <div class={styles.card}>
-          <div class={styles.cardHead}>
-            <span class={styles.cardTitle}>1. Pallet & Box Settings</span>
-            <div class={styles.unitRow}>
-              <span>Unit:</span>
-              <div class={styles.unitPillGroup}>
-                {(['mm', 'cm', 'inch'] as const).map((u) => (
-                  <button
-                    type="button"
-                    key={u}
-                    class={`${styles.unitPill} ${input.unit === u ? styles.unitPillActive : ''}`}
-                    aria-pressed={input.unit === u}
-                    onClick={() => handleUnitChange(u)}
+        <div class={styles.settingsStack}>
+          {/* 1. Pallet & Box Settings */}
+          <div class={styles.card}>
+            <div class={styles.cardHead}>
+              <span class={styles.cardTitle}>1. Pallet & Box Settings</span>
+              <div class={styles.unitRow}>
+                <span>Unit:</span>
+                <div class={styles.unitPillGroup}>
+                  {(['mm', 'cm', 'inch'] as const).map((u) => (
+                    <button
+                      type="button"
+                      key={u}
+                      class={`${styles.unitPill} ${input.unit === u ? styles.unitPillActive : ''}`}
+                      aria-pressed={input.unit === u}
+                      onClick={() => handleUnitChange(u)}
+                    >
+                      {u}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class={styles.settingsSubColumns}>
+              {/* Sub-column 1: Pallet Specs */}
+              <div class={styles.subCol}>
+                <div class={styles.fieldRow}>
+                  <label for="palletTypeSelect" class={styles.fieldLabel}>
+                    Pallet type
+                  </label>
+                  <select
+                    id="palletTypeSelect"
+                    class={styles.selectInput}
+                    value={input.palletTypeId}
+                    onChange={(e) => handlePalletTypeChange((e.target as HTMLSelectElement).value)}
                   >
-                    {u}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+                    {PALLET_PRESETS.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          <div class={styles.settingsSubColumns}>
-            {/* Sub-column 1: Pallet Specs */}
-            <div class={styles.subCol}>
-              <div class={styles.fieldRow}>
-                <label for="palletTypeSelect" class={styles.fieldLabel}>
-                  Pallet type
-                </label>
-                <select
-                  id="palletTypeSelect"
-                  class={styles.selectInput}
-                  value={input.palletTypeId}
-                  onChange={(e) => handlePalletTypeChange((e.target as HTMLSelectElement).value)}
-                >
-                  {PALLET_PRESETS.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="palletLengthInput" class={styles.fieldLabel}>
-                  Pallet length ({input.unit})
-                </label>
-                <input
-                  id="palletLengthInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.palletLength}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      palletLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="palletWidthInput" class={styles.fieldLabel}>
-                  Pallet width ({input.unit})
-                </label>
-                <input
-                  id="palletWidthInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.palletWidth}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      palletWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label
-                  for="palletHeightLimitInput"
-                  class={styles.fieldLabel}
-                  title={`Pallet Height Limit (${input.unit})`}
-                >
-                  Pallet height limit ({input.unit})
-                </label>
-                <input
-                  id="palletHeightLimitInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.palletHeightLimit}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      palletHeightLimit: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Sub-column 2: Box / Carton size */}
-            <div class={styles.subCol}>
-              <div class={styles.subColTitle}>Box / Carton size</div>
-
-              <div class={styles.fieldRow}>
-                <label for="boxLengthInput" class={styles.fieldLabel}>
-                  Length ({input.unit})
-                </label>
-                <input
-                  id="boxLengthInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.boxLength}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      boxLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="boxWidthInput" class={styles.fieldLabel}>
-                  Width ({input.unit})
-                </label>
-                <input
-                  id="boxWidthInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.boxWidth}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      boxWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="boxHeightInput" class={styles.fieldLabel}>
-                  Height ({input.unit})
-                </label>
-                <input
-                  id="boxHeightInput"
-                  type="number"
-                  class={styles.textInput}
-                  value={input.boxHeight}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      boxHeight: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                    }))
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Sub-column 3: Quantity & Options */}
-            <div class={styles.subCol}>
-              <div class={styles.subColTitle}>Quantity & Options</div>
-
-              <div class={styles.fieldRow}>
-                <label for="maxStackLayersSelect" class={styles.fieldLabel}>
-                  Max stack layers
-                </label>
-                <select
-                  id="maxStackLayersSelect"
-                  class={styles.selectInput}
-                  value={String(input.maxStackLayers)}
-                  onChange={(e) => {
-                    const val = (e.target as HTMLSelectElement).value;
-                    setInput((prev) => ({
-                      ...prev,
-                      maxStackLayers: val === 'auto' ? 'auto' : Number(val),
-                    }));
-                  }}
-                >
-                  <option value="auto">Auto</option>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                    <option key={num} value={num}>
-                      {num} layers
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div class={styles.fieldRow}>
-                <label for="boxWeightInput" class={styles.fieldLabel}>
-                  Box weight (optional, kg)
-                </label>
-                <div class={styles.inputWithSuffix}>
+                <div class={styles.fieldRow}>
+                  <label for="palletLengthInput" class={styles.fieldLabel}>
+                    Pallet length ({input.unit})
+                  </label>
                   <input
-                    id="boxWeightInput"
+                    id="palletLengthInput"
                     type="number"
                     class={styles.textInput}
-                    value={input.boxWeight || ''}
-                    placeholder="12"
+                    value={input.palletLength}
                     onChange={(e) =>
                       setInput((prev) => ({
                         ...prev,
-                        boxWeight: Math.max(0, Number((e.target as HTMLInputElement).value)),
+                        palletLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
                       }))
                     }
                   />
-                  <span class={styles.inputSuffix}>kg</span>
+                </div>
+
+                <div class={styles.fieldRow}>
+                  <label for="palletWidthInput" class={styles.fieldLabel}>
+                    Pallet width ({input.unit})
+                  </label>
+                  <input
+                    id="palletWidthInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.palletWidth}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        palletWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                      }))
+                    }
+                  />
+                </div>
+
+                <div class={styles.fieldRow}>
+                  <label
+                    for="palletHeightLimitInput"
+                    class={styles.fieldLabel}
+                    title={`Pallet Height Limit (${input.unit})`}
+                  >
+                    Pallet height limit ({input.unit})
+                  </label>
+                  <input
+                    id="palletHeightLimitInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.palletHeightLimit}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        palletHeightLimit: Math.max(
+                          1,
+                          Number((e.target as HTMLInputElement).value),
+                        ),
+                      }))
+                    }
+                  />
                 </div>
               </div>
 
-              <label class={styles.checkboxRow}>
-                <input
-                  type="checkbox"
-                  checked={input.showWeightInResults}
-                  onChange={(e) =>
-                    setInput((prev) => ({
-                      ...prev,
-                      showWeightInResults: (e.target as HTMLInputElement).checked,
-                    }))
-                  }
-                />
-                <span>Show weight in results</span>
-              </label>
+              {/* Sub-column 2: Box / Carton size */}
+              <div class={styles.subCol}>
+                <div class={styles.subColTitle}>Box / Carton size</div>
+
+                <div class={styles.fieldRow}>
+                  <label for="boxLengthInput" class={styles.fieldLabel}>
+                    Length ({input.unit})
+                  </label>
+                  <input
+                    id="boxLengthInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.boxLength}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        boxLength: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                      }))
+                    }
+                  />
+                </div>
+
+                <div class={styles.fieldRow}>
+                  <label for="boxWidthInput" class={styles.fieldLabel}>
+                    Width ({input.unit})
+                  </label>
+                  <input
+                    id="boxWidthInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.boxWidth}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        boxWidth: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                      }))
+                    }
+                  />
+                </div>
+
+                <div class={styles.fieldRow}>
+                  <label for="boxHeightInput" class={styles.fieldLabel}>
+                    Height ({input.unit})
+                  </label>
+                  <input
+                    id="boxHeightInput"
+                    type="number"
+                    class={styles.textInput}
+                    value={input.boxHeight}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        boxHeight: Math.max(1, Number((e.target as HTMLInputElement).value)),
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Sub-column 3: Quantity & Options */}
+              <div class={styles.subCol}>
+                <div class={styles.subColTitle}>Quantity & Options</div>
+
+                <div class={styles.fieldRow}>
+                  <label for="maxStackLayersSelect" class={styles.fieldLabel}>
+                    Max stack layers
+                  </label>
+                  <select
+                    id="maxStackLayersSelect"
+                    class={styles.selectInput}
+                    value={String(input.maxStackLayers)}
+                    onChange={(e) => {
+                      const val = (e.target as HTMLSelectElement).value;
+                      setInput((prev) => ({
+                        ...prev,
+                        maxStackLayers: val === 'auto' ? 'auto' : Number(val),
+                      }));
+                    }}
+                  >
+                    <option value="auto">Auto</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <option key={num} value={num}>
+                        {num} layers
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div class={styles.fieldRow}>
+                  <label for="boxWeightInput" class={styles.fieldLabel}>
+                    Box weight (optional, kg)
+                  </label>
+                  <div class={styles.inputWithSuffix}>
+                    <input
+                      id="boxWeightInput"
+                      type="number"
+                      class={styles.textInput}
+                      value={input.boxWeight || ''}
+                      placeholder="12"
+                      onChange={(e) =>
+                        setInput((prev) => ({
+                          ...prev,
+                          boxWeight: Math.max(0, Number((e.target as HTMLInputElement).value)),
+                        }))
+                      }
+                    />
+                    <span class={styles.inputSuffix}>kg</span>
+                  </div>
+                </div>
+
+                <label class={styles.checkboxRow}>
+                  <input
+                    type="checkbox"
+                    checked={input.showWeightInResults}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        showWeightInResults: (e.target as HTMLInputElement).checked,
+                      }))
+                    }
+                  />
+                  <span>Show weight in results</span>
+                </label>
+              </div>
             </div>
           </div>
+
+          <PalletCostCard result={result} preset={_preset} />
+          <LogisticsInfoCards info={palletInfo} />
         </div>
 
-        {/* Mobile-only Calculate button */}
-        <div class={styles.mobileOnlyCta}>
-          <button type="button" class={styles.primaryCalculateBtn}>
-            <span aria-hidden="true">🧮</span> Calculate Pallet Loading
-          </button>
+        <div class={styles.resultsStack}>
+          <Pallet3DCanvas
+            result={result}
+            palletLength={convertToCm(input.palletLength, input.unit)}
+            palletWidth={convertToCm(input.palletWidth, input.unit)}
+            boxLength={convertToCm(input.boxLength, input.unit)}
+            boxWidth={convertToCm(input.boxWidth, input.unit)}
+            boxHeight={convertToCm(input.boxHeight, input.unit)}
+          />
+          <PalletResultsCard
+            result={result}
+            heightLimitCm={convertToCm(input.palletHeightLimit, input.unit)}
+            box={{
+              l: input.boxLength,
+              w: input.boxWidth,
+              h: input.boxHeight,
+              unit: input.unit,
+              kg: input.boxWeight,
+            }}
+          />
+          <ToolActionRow
+            calculateLabel="Calculate Pallet Loading"
+            resultsId="pallet-results-title"
+            ready={result.totalBoxes > 0}
+            summary={summaryText()}
+          />
         </div>
-
-        {/* 2. 3D Pallet View */}
-        <Pallet3DCanvas
-          result={result}
-          palletLength={convertToCm(input.palletLength, input.unit)}
-          palletWidth={convertToCm(input.palletWidth, input.unit)}
-          boxLength={convertToCm(input.boxLength, input.unit)}
-          boxWidth={convertToCm(input.boxWidth, input.unit)}
-          boxHeight={convertToCm(input.boxHeight, input.unit)}
-        />
-
-        {/* 3. Results Summary */}
-        <PalletLoadingResults result={result} showWeightInResults={input.showWeightInResults} />
-
-        {/* Quick Guide & Accordions */}
-        <PalletLoadingQuickGuide />
       </div>
-
-      {/* BOTTOM ACTION BAR */}
-      <PalletLoadingActionBar
-        copyFeedback={copyFeedback}
-        onCopySummary={handleCopySummary}
-        onReset={handleReset}
-        onLaunchTour={onLaunchTour}
-      />
     </div>
   );
 }

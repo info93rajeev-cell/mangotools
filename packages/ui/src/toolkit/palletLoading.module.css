@@ -35,10 +35,8 @@
 /* 4-COLUMN DESKTOP GRID MATCHING REFERENCE STUDIO */
 .workspaceGrid {
   display: grid;
-  grid-template-columns: minmax(520px, 2.3fr) minmax(280px, 1.2fr) minmax(240px, 1.05fr) minmax(
-      210px,
-      0.9fr
-    );
+  /* Container Loading reference: inputs on the left, view and results on the right. */
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 14px;
   align-items: start;
   min-width: 0;
@@ -46,9 +44,9 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1100px) {
   .workspaceGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -660,4 +658,52 @@
   color: #ed9797;
   background: #3c1111;
   border: 1px solid #643030;
+}
+
+/* Settings and the optional cost estimate share the first column. */
+.settingsStack {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+
+.resultsStack {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+}
+
+/* Tablet and phone order (founder rule): picture, inputs, Calculate, results, Print / Copy. */
+@media (max-width: 1100px) {
+  .workspaceGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    --calc-order: 3;
+    --out-order: 5;
+  }
+  .settingsStack,
+  .resultsStack {
+    display: contents;
+  }
+  .resultsStack > :first-child {
+    order: 0;
+  }
+  .settingsStack > :first-child {
+    order: 1;
+  }
+  .settingsStack > :nth-child(2) {
+    order: 2;
+  }
+  .resultsStack > :nth-child(2) {
+    order: 4;
+  }
+}
+
+@media (max-width: 1100px) {
+  .settingsStack > :nth-child(3) {
+    order: 9;
+  }
 }

@@ -4,8 +4,9 @@ id: cbm-calculator
 slug: cbm-calculator
 status: beta
 tier: T2
-version: 0.2.2
+version: 0.2.3
 changelog:
+  - { version: 0.2.3, date: 2026-11-05, type: changed, summary: "Result cards in the Logistics style, Calculate button with Print and Copy, reference banner image, phone order fixed." }
   - { version: 0.2.2, date: 2026-10-22, type: changed, summary: "Shared supporting strip and footer below the workspace; How to use and Method describe the current workbench." }
   - { version: 0.2.1, date: 2026-10-22, type: changed, summary: "Founder-approved CBM workbench layout; summary reworded to match it." }
   - { version: 0.2.0, date: 2026-10-21, type: changed, summary: "Activate multi-package shipment totals, optional packed weight and user-entered cost estimate; classify free-text worksheets as personal." }
