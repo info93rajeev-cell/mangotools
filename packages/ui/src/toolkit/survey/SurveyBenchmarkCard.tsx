@@ -1,3 +1,4 @@
+import { BenchmarkFieldsGrid } from './SurveyBenchmarkFields.tsx';
 import { SurveyLevelBookTable } from './SurveyLevelBookTable.tsx';
 import sb from './surveyBenchmark.module.css';
 import sl from './surveyLevelBook.module.css';
@@ -9,6 +10,10 @@ export interface SurveyBenchmarkCardProps {
   setStartRL: (val: string) => void;
   closingRL: string;
   setClosingRL: (val: string) => void;
+  kConstant: string;
+  setKConstant: (val: string) => void;
+  adjBy: 'none' | 'distance' | 'setup';
+  setAdjBy: (val: 'none' | 'distance' | 'setup') => void;
   rows: SurveyLevelingRow[];
   errors: string[];
   cellErrors: Record<string, string>;
@@ -38,118 +43,15 @@ function BenchmarkMethodTabs() {
   );
 }
 
-interface BenchmarkFieldsGridProps {
-  startRL: string;
-  setStartRL: (val: string) => void;
-  closingRL: string;
-  setClosingRL: (val: string) => void;
-  startRLError?: string;
-  closeRLError?: string;
-}
-
-function BenchmarkFieldsGrid({
-  startRL,
-  setStartRL,
-  closingRL,
-  setClosingRL,
-  startRLError,
-  closeRLError,
-}: BenchmarkFieldsGridProps) {
-  return (
-    <div class={sb.fieldsGrid}>
-      <div class={sb.field}>
-        <label class={sb.fieldLabel} for="survey-startRL">
-          {surveyStrings.startRL}
-        </label>
-        <div class={sb.inputWrap}>
-          <input
-            id="survey-startRL"
-            type="text"
-            inputMode="decimal"
-            value={startRL}
-            class={startRLError ? sb.inputError : undefined}
-            aria-invalid={startRLError ? 'true' : undefined}
-            aria-describedby={startRLError ? 'survey-startRL-error' : undefined}
-            data-input-start-rl=""
-            onInput={(e) => setStartRL((e.target as HTMLInputElement).value)}
-          />
-          <em class={sb.unitSuffix}>m</em>
-        </div>
-        {startRLError ? (
-          <span id="survey-startRL-error" class={sb.fieldErrorMessage} role="alert">
-            {startRLError}
-          </span>
-        ) : null}
-      </div>
-
-      <div class={sb.field}>
-        <label class={sb.fieldLabel} for="survey-closeRL">
-          {surveyStrings.closingRL}
-        </label>
-        <div class={sb.inputWrap}>
-          <input
-            id="survey-closeRL"
-            type="text"
-            inputMode="decimal"
-            placeholder={surveyStrings.closingRLPlaceholder}
-            value={closingRL}
-            class={closeRLError ? sb.inputError : undefined}
-            aria-invalid={closeRLError ? 'true' : undefined}
-            aria-describedby={closeRLError ? 'survey-closeRL-error' : undefined}
-            data-input-close-rl=""
-            onInput={(e) => setClosingRL((e.target as HTMLInputElement).value)}
-          />
-          <em class={sb.unitSuffix}>m</em>
-        </div>
-        {closeRLError ? (
-          <span id="survey-closeRL-error" class={sb.fieldErrorMessage} role="alert">
-            {closeRLError}
-          </span>
-        ) : null}
-      </div>
-
-      <div class={sb.field}>
-        <label class={sb.fieldLabel} for="survey-allowable-const">
-          {surveyStrings.allowableConstant}
-        </label>
-        <div class={sb.inputWrap}>
-          <input
-            id="survey-allowable-const"
-            type="text"
-            value="24"
-            disabled
-            title="Requires PR 2 allowable error contract"
-          />
-          <em class={sb.unitSuffix}>mm·√K</em>
-        </div>
-      </div>
-
-      <div class={sb.field}>
-        <label class={sb.fieldLabel} for="survey-adjust-by">
-          {surveyStrings.adjustBy}
-        </label>
-        <div class={sb.inputWrap}>
-          <select
-            id="survey-adjust-by"
-            value="none"
-            disabled
-            title="Requires PR 2 adjustment contract"
-          >
-            <option value="none">{surveyStrings.adjustNone}</option>
-            <option value="dist">{surveyStrings.adjustDistance}</option>
-            <option value="setup">{surveyStrings.adjustSetups}</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function SurveyBenchmarkCard({
   startRL,
   setStartRL,
   closingRL,
   setClosingRL,
+  kConstant,
+  setKConstant,
+  adjBy,
+  setAdjBy,
   rows,
   errors,
   cellErrors,
@@ -162,7 +64,12 @@ export function SurveyBenchmarkCard({
 }: SurveyBenchmarkCardProps) {
   const startRLError = cellErrors.startRL;
   const closeRLError = cellErrors.closingRL;
-  const generalRowError = errors.length > 0 && !startRLError && !closeRLError ? errors[0] : null;
+  const kConstantError = cellErrors.kConstant;
+  const adjByError = cellErrors.adjBy;
+  const generalRowError =
+    errors.length > 0 && !startRLError && !closeRLError && !kConstantError && !adjByError
+      ? errors[0]
+      : null;
 
   return (
     <div class={sb.card}>
@@ -199,8 +106,14 @@ export function SurveyBenchmarkCard({
           setStartRL={setStartRL}
           closingRL={closingRL}
           setClosingRL={setClosingRL}
+          kConstant={kConstant}
+          setKConstant={setKConstant}
+          adjBy={adjBy}
+          setAdjBy={setAdjBy}
           startRLError={startRLError}
           closeRLError={closeRLError}
+          kConstantError={kConstantError}
+          adjByError={adjByError}
         />
 
         <div class={sl.secHead}>

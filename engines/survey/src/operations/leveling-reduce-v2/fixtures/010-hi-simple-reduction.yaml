@@ -1,0 +1,76 @@
+{
+  "id": "010-hi-simple-reduction",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §9: Height of Instrument method reduction on two stations."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "params": {
+    "method": "height-of-instrument"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "100",
+    "sumBS": "1",
+    "sumFS": "1",
+    "sumRise": null,
+    "sumFall": null,
+    "bsFsDelta": "0",
+    "riseFallDelta": null,
+    "rlDelta": "0",
+    "closingRL": null,
+    "misclosure": null,
+    "totalDistanceKm": null,
+    "allowableError": null,
+    "closureStatus": null,
+    "setupsCount": 1,
+    "checks": [
+      {
+        "id": "arithmetic-first-last",
+        "labelKey": "leveling.check.firstLast",
+        "status": "pass",
+        "expected": "0",
+        "actual": "0"
+      }
+    ],
+    "rows": [
+      {
+        "bs": "1",
+        "is": null,
+        "fs": null,
+        "hi": "101",
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": null,
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "bs": null,
+        "is": null,
+        "fs": "1",
+        "hi": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": null,
+        "corr": null,
+        "adjustedRL": null
+      }
+    ]
+  }
+}

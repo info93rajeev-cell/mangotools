@@ -21,11 +21,14 @@ export const surveyStrings = {
   startRL: 'Starting BM RL',
   closingRL: 'Closing BM RL (known)',
   closingRLPlaceholder: 'Leave blank if open',
-  allowableConstant: 'Allowable error constant (Preview — PR 2)',
-  adjustBy: 'Adjust misclosure by (Preview — PR 2)',
+  allowableConstant: 'Allowable error constant C (mm/√km) [Optional]',
+  allowableConstantPlaceholder: 'e.g. 12 or 24',
+  allowableConstantHelper:
+    'Enter your contract or survey specification constant C. Leaving blank calculates misclosure without a pass/fail tolerance check.',
+  adjustBy: 'Adjustment method',
   adjustNone: "Don't adjust (raw reduction)",
-  adjustDistance: 'Distance (PR 2)',
-  adjustSetups: 'No. of setups (PR 2)',
+  adjustDistance: 'Distance-proportional',
+  adjustSetups: 'Setup-proportional',
 
   // Field Readings & Table
   fieldReadings: 'Field readings',
@@ -64,14 +67,20 @@ export const surveyStrings = {
       'Intermediate stations must have an IS or a Change Point (BS + FS).',
     SURVEY_LEVELING_TOO_FEW_OBSERVATIONS: 'At least 2 stations are required to reduce levels.',
     SURVEY_LEVELING_TOO_MANY_OBSERVATIONS: 'Maximum 50 stations allowed per level run.',
+    SURVEY_LEVELING_START_DISTANCE_NONZERO: 'Starting station distance must be 0 or omitted.',
+    SURVEY_LEVELING_MISSING_DISTANCE:
+      'Distance from previous station is required for distance-based adjustment.',
+    SURVEY_LEVELING_NEGATIVE_DISTANCE: 'Distances cannot be negative.',
+    SURVEY_LEVELING_ZERO_TOTAL_DISTANCE: 'Total measured distance must be greater than zero.',
+    SURVEY_LEVELING_METHOD_UNSUPPORTED:
+      'Height of instrument method is not yet supported in this version.',
     SURVEY_LEVELING_UNKNOWN_INPUT: 'Unexpected input structure provided.',
     CALCULATION_ERROR: 'Calculation could not be completed with the current inputs.',
   },
 
   // Profile Card
   profileTitle: 'Level profile · RL along the line',
-  profileNotice:
-    'Internal review preview: profile plotting along the station distance axis requires validated distance data arriving with the PR 2 contract and PR 5 chart integration.',
+  profileNotice: 'Profile chart will render once observations are entered and calculated.',
   profileHighestRL: 'Highest RL',
   profileLowestRL: 'Lowest RL',
   profileLineLength: 'Line length',
@@ -82,6 +91,10 @@ export const surveyStrings = {
   statusCalculated: '✓ Calculated',
   statusArithmeticError: '✕ Arithmetic error',
   statusCheckInputs: 'Check inputs',
+  statusCriterionNotProvided: 'Criterion not provided',
+  statusDistanceNotProvided: 'Distance not provided',
+  statusWithinLimit: 'Within limit',
+  statusOutsideLimit: 'Outside limit',
 
   tileClosingRL: 'Closing RL',
   tileClosingRLObserved: 'Observed, before adjust',
@@ -92,10 +105,10 @@ export const surveyStrings = {
   tileMisclosureSub: 'Observed − known',
   tileMisclosureAddBM: 'Add closing BM RL',
 
-  tileAllowable: 'Allowable',
-  tileAllowableSub: 'Requires distance contract (PR 2)',
+  tileAllowable: 'Allowable limit',
+  tileAllowableSub: 'Based on C·√K',
 
-  tileSetups: 'Setups',
+  tileSetups: 'Setups & Line',
   tileSetupsSub: '{cps} change point{s} · {count} stations',
 
   // Arithmetic Checks
@@ -108,11 +121,12 @@ export const surveyStrings = {
   checkFail: 'Mismatch',
 
   // Reduced Levels Table
+  resultsTableAria: 'Reduced levels calculation results table',
   colRise: 'Rise',
   colFall: 'Fall',
-  colRL: 'RL (m)',
+  colRL: 'Raw RL (m)',
   colCorr: 'Corr. (mm)',
-  colAdjRL: 'Adjusted RL',
+  colAdjRL: 'Adjusted RL (m)',
 
   // Actions
   print: '🖨 Print / Save PDF',

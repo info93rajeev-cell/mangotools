@@ -49,6 +49,12 @@
   color: #92400e;
 }
 
+.miniBtnHighlight:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #78350f;
+}
+
 .tableContainer {
   width: 100%;
   max-width: 100%;

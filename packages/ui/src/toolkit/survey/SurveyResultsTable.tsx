@@ -11,11 +11,50 @@ export interface SurveyResultsTableProps {
 
 interface RowDisplay {
   station: string;
+  distText: string;
   riseText: string;
   fallText: string;
   rlText: string;
+  corrText: string;
+  adjRLText: string;
   riseClass?: string;
   fallClass?: string;
+}
+
+function computeRiseFallDisplay(
+  rise: string | null,
+  fall: string | null,
+  idx: number,
+  styles: Record<string, string>,
+): { riseText: string; fallText: string; riseClass?: string; fallClass?: string } {
+  if (idx === 0 || (rise === null && fall === null)) {
+    return { riseText: '—', fallText: '—' };
+  }
+  const rVal = rise !== null ? Number(rise) : null;
+  const fVal = fall !== null ? Number(fall) : null;
+  if (rVal === 0 && fVal === 0) {
+    return {
+      riseText: '0.000',
+      fallText: '0.000',
+      riseClass: styles.zeroText,
+      fallClass: styles.zeroText,
+    };
+  }
+  if (rVal !== null && rVal > 0) {
+    return {
+      riseText: formatLevelReading(rise),
+      fallText: '—',
+      riseClass: styles.riseText,
+    };
+  }
+  if (fVal !== null && fVal > 0) {
+    return {
+      riseText: '—',
+      fallText: formatLevelReading(fall),
+      fallClass: styles.fallText,
+    };
+  }
+  return { riseText: '—', fallText: '—' };
 }
 
 function computeRowDisplay(
@@ -25,40 +64,19 @@ function computeRowDisplay(
 ): RowDisplay {
   const station = row.station || `P-${idx + 1}`;
   const rlText = formatLevelReading(row.rl);
-  if (idx === 0 || (row.rise === null && row.fall === null)) {
-    return { station, riseText: '—', fallText: '—', rlText };
-  }
-  const rVal = row.rise !== null ? Number(row.rise) : null;
-  const fVal = row.fall !== null ? Number(row.fall) : null;
-  if (rVal === 0 && fVal === 0) {
-    return {
-      station,
-      riseText: '0.000',
-      fallText: '0.000',
-      rlText,
-      riseClass: styles.zeroText,
-      fallClass: styles.zeroText,
-    };
-  }
-  if (rVal !== null && rVal > 0) {
-    return {
-      station,
-      riseText: formatLevelReading(row.rise),
-      fallText: '—',
-      rlText,
-      riseClass: styles.riseText,
-    };
-  }
-  if (fVal !== null && fVal > 0) {
-    return {
-      station,
-      riseText: '—',
-      fallText: formatLevelReading(row.fall),
-      rlText,
-      fallClass: styles.fallText,
-    };
-  }
-  return { station, riseText: '—', fallText: '—', rlText };
+  const distText = row.dist ?? (idx === 0 ? '0' : '—');
+  const corrText = row.corr ?? '—';
+  const adjRLText = row.adjustedRL ? formatLevelReading(row.adjustedRL) : '—';
+  const rf = computeRiseFallDisplay(row.rise, row.fall, idx, styles);
+
+  return {
+    station,
+    distText,
+    rlText,
+    corrText,
+    adjRLText,
+    ...rf,
+  };
 }
 
 export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResultsTableProps) {
@@ -67,14 +85,22 @@ export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResult
   return (
     <div data-results-table-section="">
       {hasRows && result ? (
-        <div class={s.resultsTableWrap}>
+        <section
+          class={s.resultsTableWrap}
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: Scrollable table container requires keyboard access for WCAG 2.1.1/2.1.3
+          tabIndex={0}
+          aria-label={surveyStrings.resultsTableAria}
+        >
           <table class={s.resultsTable} data-results-table="">
             <thead>
               <tr>
                 <th style={{ textAlign: 'left' }}>{surveyStrings.colStation}</th>
+                <th>{surveyStrings.colDist}</th>
                 <th>{surveyStrings.colRise}</th>
                 <th>{surveyStrings.colFall}</th>
                 <th>{surveyStrings.colRL}</th>
+                <th>{surveyStrings.colCorr}</th>
+                <th style={{ color: '#1d4ed8', fontWeight: 700 }}>{surveyStrings.colAdjRL}</th>
               </tr>
             </thead>
             <tbody>
@@ -83,15 +109,18 @@ export function SurveyResultsTable({ result, isStale, onCopyBook }: SurveyResult
                 return (
                   <tr key={idx}>
                     <td style={{ textAlign: 'left', fontWeight: 600 }}>{d.station}</td>
+                    <td>{d.distText}</td>
                     <td class={d.riseClass}>{d.riseText}</td>
                     <td class={d.fallClass}>{d.fallText}</td>
-                    <td style={{ fontWeight: 600 }}>{d.rlText}</td>
+                    <td style={{ fontWeight: 600, color: '#334155' }}>{d.rlText}</td>
+                    <td style={{ fontSize: '11.5px', color: '#475569' }}>{d.corrText}</td>
+                    <td style={{ fontWeight: 700, color: '#0b1b3f' }}>{d.adjRLText}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-        </div>
+        </section>
       ) : null}
 
       <div class={s.outputActions}>

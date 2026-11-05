@@ -22,6 +22,9 @@ export interface SurveyReducedRow {
   rl: string;
   isChangePoint: boolean;
   remarks?: string;
+  dist: string | null;
+  corr: string | null;
+  adjustedRL: string | null;
 }
 
 export interface SurveyCheck {
@@ -46,11 +49,17 @@ export interface SurveyCalculationOutput {
   closingRL: string | null;
   misclosure: string | null;
   checks: SurveyCheck[];
+  totalDistanceKm: string | null;
+  allowableError: string | null;
+  closureStatus: 'pass' | 'fail' | 'criterion-not-provided' | 'distance-not-provided' | null;
+  setupsCount: number;
 }
 
 export interface SurveyLevelingState {
   startRL: string;
   closingRL: string;
+  kConstant: string;
+  adjBy: 'none' | 'distance' | 'setup';
   rows: SurveyLevelingRow[];
   result: SurveyCalculationOutput | null;
   phase: 'idle' | 'calculating' | 'result' | 'error' | 'stale';

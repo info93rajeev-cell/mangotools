@@ -164,6 +164,13 @@
   font-weight: 600;
 }
 
+.fieldHelperText {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
 .actionRow {
   display: flex;
   justify-content: center;

@@ -1,0 +1,84 @@
+{
+  "id": "030-hi-terminal-closure-exactness",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §6 & §9: Terminal benchmark adjusted RL strictly equals known closing RL in Height of Instrument method."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "100.000",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "2.007",
+        "dist": "0"
+      },
+      {
+        "station": "BM-2",
+        "fs": "2.000",
+        "dist": "100"
+      }
+    ]
+  },
+  "params": {
+    "method": "height-of-instrument",
+    "adjBy": "distance"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "100.007",
+    "sumBS": "2.007",
+    "sumFS": "2",
+    "sumRise": null,
+    "sumFall": null,
+    "bsFsDelta": "0.007",
+    "riseFallDelta": null,
+    "rlDelta": "0.007",
+    "closingRL": "100",
+    "misclosure": "0.007",
+    "totalDistanceKm": "0.100",
+    "allowableError": null,
+    "closureStatus": "criterion-not-provided",
+    "setupsCount": 1,
+    "checks": [
+      {
+        "id": "arithmetic-first-last",
+        "labelKey": "leveling.check.firstLast",
+        "status": "pass",
+        "expected": "0.007",
+        "actual": "0.007"
+      }
+    ],
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "2.007",
+        "is": null,
+        "fs": null,
+        "hi": "102.007",
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": "0.0",
+        "adjustedRL": "100.000"
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "2",
+        "hi": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100.007",
+        "isChangePoint": false,
+        "dist": "100",
+        "corr": "-7.0",
+        "adjustedRL": "100.000"
+      }
+    ]
+  }
+}
