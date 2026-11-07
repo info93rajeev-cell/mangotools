@@ -60,9 +60,19 @@ export function isEmptySelection(src: MaskSources): boolean {
   return !src.aiMask && src.path.points.length < 3 && !src.strokes.some((s) => s.mode === 'add');
 }
 
+/** True when there is nothing to show yet, so the stage should show the photo itself. */
+export function hasNoEdits(src: MaskSources): boolean {
+  return isEmptySelection(src) && src.strokes.length === 0;
+}
+
 /** The sharp (unfeathered) selection mask. White = keep, transparent = remove. */
 export function composeSelectionMask(width: number, height: number, src: MaskSources) {
   const [c, ctx] = canvas2d(width, height);
+  // Brush Remove with nothing selected yet erases from the whole photo.
+  if (isEmptySelection(src) && src.strokes.length > 0) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+  }
   if (src.aiMask) ctx.drawImage(src.aiMask, 0, 0, width, height);
   if (src.path.points.length >= 3) {
     ctx.fillStyle = '#ffffff';

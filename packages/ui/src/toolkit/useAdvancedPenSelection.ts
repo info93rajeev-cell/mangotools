@@ -7,7 +7,7 @@ import {
   moveHandleCoords,
   movePointCoords,
 } from './bezierPathModel.ts';
-import type { BrushStroke } from './selectionMask.ts';
+import { type BrushStroke, hasNoEdits } from './selectionMask.ts';
 import {
   type RenderCutoutResult,
   renderSelectionCutout,
@@ -118,6 +118,12 @@ function useCutoutRenderer(
 
   useEffect(() => {
     if (!image) return;
+    // Nothing selected yet: show the photo itself, not an empty transparent cutout.
+    if (hasNoEdits({ path, strokes, aiMask })) {
+      setCutoutResult(null);
+      setIsProcessing(false);
+      return;
+    }
     let cancelled = false;
     setIsProcessing(true);
     const timer = setTimeout(() => {
