@@ -1,0 +1,95 @@
+id: 002-limited-burners-bottleneck
+operation: food.schedule.generate@1
+source:
+  type: synthetic
+  citation: Single burner forces sequential active cooking, shifting earlier dishes.
+input:
+  mealTime: "13:00"
+  burnersAvailable: 1
+  prepStations: 1
+  guests: 4
+  recipes:
+    - id: dal-tadka
+      version: 0.1.0
+      name: Dal Tadka
+      servings: 4
+      prepMinutes: 15
+      cookMinutes: 25
+      steps:
+        - Pressure cook dal.
+    - id: jeera-rice
+      version: 0.1.0
+      name: Jeera Rice
+      servings: 4
+      prepMinutes: 10
+      cookMinutes: 20
+      steps:
+        - Cook rice.
+  selection:
+    - { recipe: dal-tadka, recipeVersion: 0.1.0 }
+    - { recipe: jeera-rice, recipeVersion: 0.1.0 }
+params:
+  restMinutes: 10
+  prepScaleFactor: none
+expected:
+  totalSpanMinutes: 65
+  earliestStartTime: "11:55"
+  mealTime: "13:00"
+  criticalPath:
+    - jeera-rice-prep
+    - jeera-rice-cook
+  capacityBottlenecks: 1
+  timeline:
+    - id: jeera-rice-prep
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Jeera Rice
+      durationMinutes: 10
+      startOffsetMinutes: -65
+      endOffsetMinutes: -55
+      startTime: "11:55"
+      endTime: "12:05"
+      station: prep-1
+      dependsOn: []
+    - id: jeera-rice-cook
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: active-cooking
+      description: Cook and temper Jeera Rice per recipe steps
+      durationMinutes: 20
+      startOffsetMinutes: -55
+      endOffsetMinutes: -35
+      startTime: "12:05"
+      endTime: "12:25"
+      station: burner-1
+      dependsOn:
+        - jeera-rice-prep
+    - id: dal-tadka-prep
+      recipe: dal-tadka
+      recipeName: Dal Tadka
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Dal Tadka
+      durationMinutes: 15
+      startOffsetMinutes: -50
+      endOffsetMinutes: -35
+      startTime: "12:10"
+      endTime: "12:25"
+      station: prep-1
+      dependsOn: []
+    - id: dal-tadka-cook
+      recipe: dal-tadka
+      recipeName: Dal Tadka
+      phase: active-cooking
+      description: Cook and temper Dal Tadka per recipe steps
+      durationMinutes: 25
+      startOffsetMinutes: -35
+      endOffsetMinutes: -10
+      startTime: "12:25"
+      endTime: "12:50"
+      station: burner-1
+      dependsOn:
+        - dal-tadka-prep
+expectedWarnings:
+  - FOOD_SCHEDULE_ESTIMATE
+  - FOOD_CAPACITY_BOTTLENECK

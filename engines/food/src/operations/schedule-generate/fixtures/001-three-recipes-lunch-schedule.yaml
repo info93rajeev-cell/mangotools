@@ -1,0 +1,139 @@
+id: 001-three-recipes-lunch-schedule
+operation: food.schedule.generate@1
+source:
+  type: synthetic
+  citation: >-
+    Three recipes scheduled backward from 13:00 lunch with 4 burners.
+    Rest 10 min. Dishes finish cooking at 12:50.
+    Dal Tadka (cook 25, prep 15) starts prep at 12:10.
+    Aloo Gobi (cook 25, prep 15) starts prep at 12:10.
+    Jeera Rice (cook 20, prep 10) starts prep at 12:20.
+input:
+  mealTime: "13:00"
+  burnersAvailable: 4
+  prepStations: 2
+  guests: 4
+  recipes:
+    - id: jeera-rice
+      version: 0.1.0
+      name: Jeera Rice
+      servings: 4
+      prepMinutes: 10
+      cookMinutes: 20
+      steps:
+        - Wash basmati rice and soak in water for 20 minutes.
+        - Heat ghee and add cumin seeds until aromatic.
+        - Add drained rice and water; simmer until cooked.
+    - id: dal-tadka
+      version: 0.1.0
+      name: Dal Tadka
+      servings: 4
+      prepMinutes: 15
+      cookMinutes: 25
+      steps:
+        - Pressure cook rinsed toor dal with turmeric and salt.
+        - Prepare tempering with ghee, cumin, garlic, and dried chillies.
+        - Pour tempering over hot cooked dal.
+    - id: aloo-gobi
+      version: 0.1.0
+      name: Aloo Gobi
+      servings: 4
+      prepMinutes: 15
+      cookMinutes: 25
+      steps:
+        - Cut cauliflower into florets and peel potatoes into cubes.
+        - Saute cumin, ginger-garlic, onion, and spices in oil.
+        - Add vegetables and cook covered on low flame.
+  selection:
+    - { recipe: dal-tadka, recipeVersion: 0.1.0 }
+    - { recipe: aloo-gobi, recipeVersion: 0.1.0 }
+    - { recipe: jeera-rice, recipeVersion: 0.1.0 }
+params:
+  restMinutes: 10
+  prepScaleFactor: none
+expected:
+  totalSpanMinutes: 50
+  earliestStartTime: "12:10"
+  mealTime: "13:00"
+  criticalPath:
+    - dal-tadka-prep
+    - dal-tadka-cook
+  capacityBottlenecks: 0
+  timeline:
+    - id: dal-tadka-prep
+      recipe: dal-tadka
+      recipeName: Dal Tadka
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Dal Tadka
+      durationMinutes: 15
+      startOffsetMinutes: -50
+      endOffsetMinutes: -35
+      startTime: "12:10"
+      endTime: "12:25"
+      station: prep-1
+      dependsOn: []
+    - id: aloo-gobi-prep
+      recipe: aloo-gobi
+      recipeName: Aloo Gobi
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Aloo Gobi
+      durationMinutes: 15
+      startOffsetMinutes: -50
+      endOffsetMinutes: -35
+      startTime: "12:10"
+      endTime: "12:25"
+      station: prep-2
+      dependsOn: []
+    - id: jeera-rice-prep
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: prep
+      description: Clean, peel, chop and measure ingredients for Jeera Rice
+      durationMinutes: 10
+      startOffsetMinutes: -40
+      endOffsetMinutes: -30
+      startTime: "12:20"
+      endTime: "12:30"
+      station: prep-1
+      dependsOn: []
+    - id: dal-tadka-cook
+      recipe: dal-tadka
+      recipeName: Dal Tadka
+      phase: active-cooking
+      description: Cook and temper Dal Tadka per recipe steps
+      durationMinutes: 25
+      startOffsetMinutes: -35
+      endOffsetMinutes: -10
+      startTime: "12:25"
+      endTime: "12:50"
+      station: burner-1
+      dependsOn:
+        - dal-tadka-prep
+    - id: aloo-gobi-cook
+      recipe: aloo-gobi
+      recipeName: Aloo Gobi
+      phase: active-cooking
+      description: Cook and temper Aloo Gobi per recipe steps
+      durationMinutes: 25
+      startOffsetMinutes: -35
+      endOffsetMinutes: -10
+      startTime: "12:25"
+      endTime: "12:50"
+      station: burner-2
+      dependsOn:
+        - aloo-gobi-prep
+    - id: jeera-rice-cook
+      recipe: jeera-rice
+      recipeName: Jeera Rice
+      phase: active-cooking
+      description: Cook and temper Jeera Rice per recipe steps
+      durationMinutes: 20
+      startOffsetMinutes: -30
+      endOffsetMinutes: -10
+      startTime: "12:30"
+      endTime: "12:50"
+      station: burner-3
+      dependsOn:
+        - jeera-rice-prep
+expectedWarnings:
+  - FOOD_SCHEDULE_ESTIMATE
