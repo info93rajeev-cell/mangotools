@@ -107,6 +107,7 @@ export function buildLevelingRequest(
   rows: SurveyLevelingRow[],
   adjBy: 'none' | 'distance' | 'setup' = 'none',
   kConstant = '',
+  method: 'rise-fall' | 'height-of-instrument' = 'rise-fall',
 ): { input: Record<string, unknown>; params: Record<string, unknown> } {
   const input: Record<string, unknown> = {
     startRL: startRL.trim(),
@@ -125,7 +126,7 @@ export function buildLevelingRequest(
     input.closingRL = closingRL.trim();
   }
   const params: Record<string, unknown> = {
-    method: 'rise-fall',
+    method,
     adjBy,
   };
   if (kConstant.trim()) {

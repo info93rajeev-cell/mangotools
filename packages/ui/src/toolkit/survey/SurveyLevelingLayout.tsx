@@ -27,7 +27,38 @@ function AccordionCard({ title, children }: { title: string; children: preact.Co
   );
 }
 
-function buildCopyText(rows: SurveyCalculationOutput['rows']): string {
+function buildCopyText(
+  rows: SurveyCalculationOutput['rows'],
+  method: 'rise-fall' | 'height-of-instrument' = 'rise-fall',
+): string {
+  if (method === 'height-of-instrument') {
+    const header = [
+      'Station',
+      'Dist (m)',
+      'BS',
+      'IS',
+      'FS',
+      'HI',
+      'Raw RL',
+      'Corr (mm)',
+      'Adjusted RL',
+    ].join('\t');
+    const lines = rows.map((r) =>
+      [
+        r.station ?? '',
+        r.dist ?? '',
+        r.bs ?? '',
+        r.is ?? '',
+        r.fs ?? '',
+        r.hi ?? '',
+        r.rl,
+        r.corr ?? '',
+        r.adjustedRL ?? '',
+      ].join('\t'),
+    );
+    return [header, ...lines].join('\n');
+  }
+
   const header = [
     'Station',
     'Dist (m)',
@@ -73,12 +104,16 @@ function SurveyHeaderPills() {
   );
 }
 
-function SurveyBottomFaq() {
+function SurveyBottomFaq({ method }: { method: 'rise-fall' | 'height-of-instrument' }) {
+  const methodText =
+    method === 'height-of-instrument' ? surveyStrings.accMethodHI : surveyStrings.accMethodRF;
   return (
-    <div class={s.bottomGrid}>
+    <div class={s.bottomGrid} data-bottom-faq="">
       <AccordionCard title="ⓘ Disclaimer">Estimation aid for civil surveying.</AccordionCard>
       <AccordionCard title="📖 How to use">Enter starting BM RL and observations.</AccordionCard>
-      <AccordionCard title="⚙ Method">Rise & Fall reduction method.</AccordionCard>
+      <AccordionCard title={`⚙ ${surveyStrings.accMethodTitle}`}>
+        <span data-method-accordion-desc="">{methodText}</span>
+      </AccordionCard>
       <AccordionCard title="❓ FAQ">Calculations run 100% locally on your device.</AccordionCard>
       <AccordionCard title="🔗 Related tools">
         Explore other civil and surveying tools.
@@ -93,7 +128,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
 
   const handleCopyBook = async () => {
     if (!survey.result || survey.isStale) return;
-    const content = buildCopyText(survey.result.rows);
+    const content = buildCopyText(survey.result.rows, survey.method);
     if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) {
       notify(surveyStrings.copyFailedToast);
       return;
@@ -111,43 +146,54 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
       {showHeader && <SurveyHeaderPills />}
 
       <div class={s.grid}>
-        <div>
-          <SurveyBenchmarkCard
-            startRL={survey.startRL}
-            setStartRL={survey.setStartRL}
-            closingRL={survey.closingRL}
-            setClosingRL={survey.setClosingRL}
-            kConstant={survey.kConstant}
-            setKConstant={survey.setKConstant}
-            adjBy={survey.adjBy}
-            setAdjBy={survey.setAdjBy}
-            rows={survey.rows}
-            errors={survey.errors}
-            cellErrors={survey.cellErrors}
-            handleCellChange={survey.handleCellChange}
-            handleAddRow={survey.handleAddRow}
-            handleRemoveRow={survey.handleRemoveRow}
-            calculate={survey.calculate}
-            loadSample={survey.loadSample}
-            reset={survey.reset}
-          />
-          <AccordionCard title={`+ ${surveyStrings.accNotesTitle}`}>
-            {surveyStrings.accNotesBody}
-          </AccordionCard>
-          <AccordionCard title={`+ ${surveyStrings.accBookTitle}`}>
-            {surveyStrings.accBookBody}
-          </AccordionCard>
+        <div class={s.leftCol}>
+          <div class={s.inputsSlot} data-survey-inputs-slot="">
+            <SurveyBenchmarkCard
+              method={survey.method}
+              setMethod={survey.setMethod}
+              startRL={survey.startRL}
+              setStartRL={survey.setStartRL}
+              closingRL={survey.closingRL}
+              setClosingRL={survey.setClosingRL}
+              kConstant={survey.kConstant}
+              setKConstant={survey.setKConstant}
+              adjBy={survey.adjBy}
+              setAdjBy={survey.setAdjBy}
+              rows={survey.rows}
+              errors={survey.errors}
+              cellErrors={survey.cellErrors}
+              handleCellChange={survey.handleCellChange}
+              handleAddRow={survey.handleAddRow}
+              handleRemoveRow={survey.handleRemoveRow}
+              calculate={survey.calculate}
+              loadSample={survey.loadSample}
+              reset={survey.reset}
+            />
+          </div>
+          <div class={s.accordionsSlot} data-survey-accordions-slot="">
+            <AccordionCard title={`+ ${surveyStrings.accNotesTitle}`}>
+              {surveyStrings.accNotesBody}
+            </AccordionCard>
+            <AccordionCard title={`+ ${surveyStrings.accBookTitle}`}>
+              {surveyStrings.accBookBody}
+            </AccordionCard>
+          </div>
         </div>
 
-        <div>
-          <SurveyProfilePlaceholder result={survey.result} closingRL={survey.closingRL} />
-          <SurveyResultsCard
-            phase={survey.phase}
-            result={survey.result}
-            isStale={survey.isStale}
-            closingRLInput={survey.closingRL}
-            onCopyBook={handleCopyBook}
-          />
+        <div class={s.rightCol}>
+          <div class={s.visualSlot} data-survey-visual-slot="">
+            <SurveyProfilePlaceholder result={survey.result} closingRL={survey.closingRL} />
+          </div>
+          <div class={s.resultsSlot} data-survey-results-slot="">
+            <SurveyResultsCard
+              phase={survey.phase}
+              method={survey.method}
+              result={survey.result}
+              isStale={survey.isStale}
+              closingRLInput={survey.closingRL}
+              onCopyBook={handleCopyBook}
+            />
+          </div>
         </div>
       </div>
 
@@ -155,7 +201,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         {surveyStrings.accWarningsBody}
       </AccordionCard>
 
-      <SurveyBottomFaq />
+      <SurveyBottomFaq method={survey.method} />
 
       <Toast message={message} />
     </div>

@@ -1,3 +1,4 @@
+import { useRef } from 'preact/hooks';
 import { BenchmarkFieldsGrid } from './SurveyBenchmarkFields.tsx';
 import { SurveyLevelBookTable } from './SurveyLevelBookTable.tsx';
 import sb from './surveyBenchmark.module.css';
@@ -6,6 +7,8 @@ import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 
 export interface SurveyBenchmarkCardProps {
+  method: 'rise-fall' | 'height-of-instrument';
+  setMethod: (val: 'rise-fall' | 'height-of-instrument') => void;
   startRL: string;
   setStartRL: (val: string) => void;
   closingRL: string;
@@ -25,17 +28,72 @@ export interface SurveyBenchmarkCardProps {
   reset: () => void;
 }
 
-function BenchmarkMethodTabs() {
+interface BenchmarkMethodTabsProps {
+  method: 'rise-fall' | 'height-of-instrument';
+  setMethod: (m: 'rise-fall' | 'height-of-instrument') => void;
+}
+
+function handleTabKeyDown(
+  e: KeyboardEvent,
+  method: 'rise-fall' | 'height-of-instrument',
+  setMethod: (m: 'rise-fall' | 'height-of-instrument') => void,
+  rfRef: { current: HTMLButtonElement | null },
+  hiRef: { current: HTMLButtonElement | null },
+) {
+  let target: 'rise-fall' | 'height-of-instrument' | null = null;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    target = method === 'rise-fall' ? 'height-of-instrument' : 'rise-fall';
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    target = method === 'height-of-instrument' ? 'rise-fall' : 'height-of-instrument';
+  } else if (e.key === 'Home') {
+    target = 'rise-fall';
+  } else if (e.key === 'End') {
+    target = 'height-of-instrument';
+  }
+  if (target) {
+    e.preventDefault();
+    setMethod(target);
+    const btn = target === 'rise-fall' ? rfRef.current : hiRef.current;
+    btn?.focus();
+  }
+}
+
+function BenchmarkMethodTabs({ method, setMethod }: BenchmarkMethodTabsProps) {
+  const isRf = method === 'rise-fall';
+  const rfRef = useRef<HTMLButtonElement>(null);
+  const hiRef = useRef<HTMLButtonElement>(null);
+
+  const onKeyDown = (e: KeyboardEvent) => handleTabKeyDown(e, method, setMethod, rfRef, hiRef);
+
   return (
-    <div class={sb.tabs}>
-      <button type="button" class={`${sb.tab} ${sb.tabActive}`}>
+    <div class={sb.tabs} role="tablist" aria-label="Reduction method">
+      <button
+        ref={rfRef}
+        id="survey-tab-rise-fall"
+        type="button"
+        role="tab"
+        aria-selected={isRf}
+        tabIndex={isRf ? 0 : -1}
+        class={`${sb.tab} ${isRf ? sb.tabActive : ''}`}
+        onClick={() => setMethod('rise-fall')}
+        onKeyDown={onKeyDown}
+        data-method-tab="rise-fall"
+        data-method-rf=""
+      >
         ▤ {surveyStrings.tabRiseFall}
       </button>
       <button
+        ref={hiRef}
+        id="survey-tab-height-of-instrument"
         type="button"
-        class={`${sb.tab} ${sb.tabDisabled}`}
-        disabled
-        title="HI method contract arrives in PR 4"
+        role="tab"
+        aria-selected={!isRf}
+        tabIndex={!isRf ? 0 : -1}
+        class={`${sb.tab} ${!isRf ? sb.tabActive : ''}`}
+        onClick={() => setMethod('height-of-instrument')}
+        onKeyDown={onKeyDown}
+        data-method-tab="height-of-instrument"
+        data-method-hi=""
       >
         ⌖ {surveyStrings.tabHI}
       </button>
@@ -44,6 +102,8 @@ function BenchmarkMethodTabs() {
 }
 
 export function SurveyBenchmarkCard({
+  method,
+  setMethod,
   startRL,
   setStartRL,
   closingRL,
@@ -99,7 +159,7 @@ export function SurveyBenchmarkCard({
       </div>
 
       <div class={sb.cardBody}>
-        <BenchmarkMethodTabs />
+        <BenchmarkMethodTabs method={method} setMethod={setMethod} />
 
         <BenchmarkFieldsGrid
           startRL={startRL}
@@ -139,20 +199,7 @@ export function SurveyBenchmarkCard({
         </div>
 
         {generalRowError ? (
-          <div
-            style={{
-              padding: '8px 12px',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '6px',
-              color: '#b91c1c',
-              fontSize: '12px',
-              fontWeight: 600,
-              marginBottom: '10px',
-            }}
-            role="alert"
-            data-survey-error=""
-          >
+          <div class={sb.generalRowError} role="alert" data-survey-error="">
             {generalRowError}
           </div>
         ) : null}
