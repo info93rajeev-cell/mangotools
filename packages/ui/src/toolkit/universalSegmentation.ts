@@ -158,7 +158,7 @@ async function createRefinedCanvas(
     if (ctxOrig && ctxCut) {
       ctxOrig.drawImage(origBitmap, 0, 0, w, h);
       ctxCut.drawImage(cutoutBitmap, 0, 0, w, h);
-      const refinedData = refineForBackground(ctxOrig, ctxCut, cOrig, cCut, w, h, input);
+      const refinedData = refineForBackground(ctxOrig, ctxCut, w, h, input);
       const canvas = document.createElement('canvas');
       canvas.width = w;
       canvas.height = h;
