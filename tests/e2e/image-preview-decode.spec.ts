@@ -9,11 +9,12 @@ test('Crop shared preview decoding targets the source while both UI images remai
   const tool = island(page, 'image-crop');
   await tool
     .locator('input[type="file"]')
+    .first()
     .setInputFiles(join(process.cwd(), 'tools/image-crop/fixtures/files/sample.jpg'));
-  await expect(tool.getByRole('img', { name: 'sample.jpg', exact: true })).toBeVisible();
+  await expect(tool.getByRole('img', { name: 'sample.jpg', exact: true }).first()).toBeVisible();
   await expect(tool.getByRole('img', { name: 'Live crop preview', exact: true })).toBeVisible();
   await produceResult(page, 'image-crop');
   await expect(tool.locator('[data-primary-result]')).toHaveText('sample-cropped.jpg');
-  await expect(tool.getByRole('img', { name: 'sample.jpg', exact: true })).toBeVisible();
+  await expect(tool.getByRole('img', { name: 'sample.jpg', exact: true }).first()).toBeVisible();
   await expect(tool.locator('[data-crop-result-image]')).toBeVisible();
 });

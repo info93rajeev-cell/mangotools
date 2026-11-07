@@ -4,18 +4,20 @@ id: profit-margin-calculator
 slug: profit-margin-calculator
 status: beta
 tier: T2
-version: 0.3.0
+version: 0.4.0
 changelog:
+  - { version: 0.4.0, date: 2026-11-03, type: changed, summary: "Calculated by the tested engine in exact decimals; every cost is editable; target-profit and desired-margin prices now work." }
+  - { version: 0.3.1, date: 2026-11-03, type: fixed, summary: "Profit excludes GST inside the price; true break-even; 0.6% TCS/TDS (was 2%); cost table adds up." }
   - { version: 0.3.0, date: 2026-10-09, type: changed, summary: "Upgrade to seller profitability with optional costs, payout and settlement deductions." }
   - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Add an FAQ on pricing/accounting advice." }
   - { version: 0.2.0, date: 2026-09-25, type: changed, summary: "Money shown in ₹ with Indian digit grouping." }
   - { version: 0.1.0, date: 2026-09-25, type: added, summary: "First beta with margin, price and cost solve modes." }
 name: Seller Profitability Calculator
 shortName: Seller Profitability
-summary: Calculate economic profit, cash payout, margin and markup from selling price and seller costs.
+summary: Calculate profit, margin, bank payout and break-even price for one product from price, GST, costs, fees and returns.
 archetype: B
-preset: estimate/seller.profitability
-sample: seller-costs
+preset: estimate/seller.unit-economics
+sample: marketplace-seller
 taxonomy:
   category: business
   tags: [pricing, profit]
@@ -32,6 +34,6 @@ graph:
   related: [gst-calculator, markup-calculator]
 quality:
   verifiedAgainst:
-    - { citation: "TASK-008B approved seller profitability formulas", locator: "Engine fixtures 001–014" }
-    - { citation: "Hand-verified arithmetic", locator: "Tool fixtures 007 and 008" }
-  lastVerified: 2026-10-09
+    - { citation: "Hand-verified unit-economics arithmetic", locator: "estimate.seller.unit-economics@1 fixtures 001–010" }
+    - { citation: "Hand-verified arithmetic", locator: "Tool fixture 009" }
+  lastVerified: 2026-11-03

@@ -12,6 +12,8 @@ import { deployEnvironment, deployProblems } from '../check/deploy-rules.ts';
 import { runPostbuild } from '../check/postbuild.ts';
 import { walkFiles } from '../lib/files.ts';
 import { ROOT } from '../lib/paths.ts';
+import { verifyPagesDistHasNoOversizedModels } from '../models/fetch-background-remover-models.ts';
+import { stageBackgroundRemoverModels } from '../models/stage-background-remover-models.ts';
 import { buildSite } from './site.ts';
 
 const env = deployEnvironment(process.env.MANGOTOOLS_ENV);
@@ -31,6 +33,10 @@ const siteUrl = (registry.site.environments[env]?.url ?? '').replace(/\/$/, '');
 
 try {
   await buildSite(env, './dist');
+  // The background-remover model is served from this site (split into <25 MiB parts), so the
+  // deployed build must contain it. A failed or mismatched download fails the deploy.
+  await stageBackgroundRemoverModels(dist);
+  await verifyPagesDistHasNoOversizedModels(dist);
   const result = runPostbuild(dist, env);
   const reader = {
     files: walkFiles(dist, '').map((f) => relative(dist, f).split('\\').join('/')),

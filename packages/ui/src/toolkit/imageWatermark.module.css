@@ -49,7 +49,7 @@
 }
 
 .cardTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #1e293b);
   display: flex;
@@ -69,7 +69,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 7px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text, #334155);
   cursor: pointer;
@@ -90,7 +90,7 @@
   border: 1px solid var(--color-border, #e2e8f0);
   border-radius: 4px;
   padding: 1px 5px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 500;
   color: var(--color-text-muted, #64748b);
   cursor: pointer;
@@ -152,7 +152,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text, #0f172a);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
 }
@@ -194,7 +194,7 @@
 }
 
 .fieldLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   line-height: 1.15;
@@ -205,7 +205,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text, #0f172a);
   width: 100%;
   box-sizing: border-box;
@@ -222,7 +222,7 @@
 /* 3x3 POSITION MATRIX */
 .pos3x3Grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3px;
   max-width: 110px;
   margin-top: 1px;
@@ -253,7 +253,7 @@
 }
 
 .posDot {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   line-height: 1;
   color: #94a3b8;
 }
@@ -276,7 +276,7 @@
 }
 
 .sliderVal {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   font-family: var(--font-mono, monospace);
   color: var(--color-text, #0f172a);
@@ -309,7 +309,7 @@
 .colorTextInput {
   height: 22px;
   padding: 2px 5px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-family: var(--font-mono, monospace);
   color: var(--color-text, #0f172a);
   border: 1px solid var(--color-border, #cbd5e1);
@@ -328,7 +328,7 @@
 .selectInput {
   height: 22px;
   padding: 1px 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text, #0f172a);
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
@@ -347,7 +347,7 @@
 
 .formatCardsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
 }
 
@@ -387,7 +387,7 @@
   border-radius: 50%;
   background: var(--color-accent, #ffb000);
   color: #0f172a;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -395,26 +395,26 @@
 }
 
 .formatIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
 }
 
 .formatTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   line-height: 1.2;
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   white-space: nowrap;
   line-height: 1.15;
 }
 
 .formatNote {
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #94a3b8);
   white-space: nowrap;
   line-height: 1.15;
@@ -426,7 +426,7 @@
   border: none;
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -458,12 +458,12 @@
   gap: 5px;
   align-items: flex-start;
   color: #1e40af;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   line-height: 1.25;
 }
 
 .infoCalloutIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
   color: #2563eb;
   flex-shrink: 0;
@@ -484,7 +484,7 @@
 
 .verifMetricsRow {
   display: grid;
-  grid-template-columns: 2.2fr repeat(5, 1fr);
+  grid-template-columns: 2.2fr repeat(5, minmax(0, 1fr));
   gap: 5px;
   align-items: stretch;
 }
@@ -509,9 +509,9 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -527,14 +527,14 @@
 }
 
 .verifBannerTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   line-height: 1.15;
 }
 
 .verifBannerSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #166534;
   line-height: 1.15;
 }
@@ -553,7 +553,7 @@
 }
 
 .metricTitle {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -569,7 +569,7 @@
 }
 
 .metricVal {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   font-family: var(--font-mono, monospace);
@@ -583,7 +583,7 @@
 .reductionBadge {
   background: #bbf7d0;
   color: #166534;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 0 3px;
   border-radius: 3px;
@@ -632,7 +632,7 @@
 .modeTabBtn {
   flex: 1;
   padding: 4px 6px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 5px;
@@ -647,9 +647,9 @@
 }
 
 .modeTabBtn[data-active="true"] {
-  background: #0f172a;
+  background: #1a66e8;
   color: #ffffff;
-  border-color: #0f172a;
+  border-color: #1a66e8;
 }
 
 .chipsRow {
@@ -664,7 +664,7 @@
   border: 1px solid var(--color-border, #e2e8f0);
   border-radius: 3px;
   padding: 1px 5px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   cursor: pointer;
@@ -698,13 +698,13 @@
 }
 
 .tiledBadgeTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #1e3a8a;
 }
 
 .tiledBadgeSub {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #475569;
 }
 
@@ -748,7 +748,7 @@
 }
 
 .tiledSectionTitle {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   display: flex;
@@ -757,7 +757,7 @@
 }
 
 .tiledValBadge {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 700;
   font-family: var(--font-mono, monospace);
   color: var(--color-accent-strong, #b45309);
@@ -779,7 +779,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 3px;
   padding: 1px 4px;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 500;
   color: var(--color-text, #334155);
   cursor: pointer;
@@ -799,4 +799,149 @@
   color: var(--color-accent-strong, #b45309);
   font-weight: 700;
   box-shadow: 0 1px 2px rgba(255, 176, 0, 0.15);
+}
+
+/* Phones: small status icons were hard to see. */
+@media (max-width: 700px) {
+  .formatIcon {
+    font-size: 16px;
+  }
+
+  .infoCalloutIcon {
+    font-size: 16px;
+  }
+}
+
+/* Phones: format cards share the row; their text wraps instead of overflowing. */
+@media (max-width: 700px) {
+  .formatCard {
+    min-width: 0;
+  }
+
+  .formatCard span {
+    white-space: normal;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .studioCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardHeader {
+  border-bottom: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn {
+  background: #151e33;
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .sampleMiniBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .emptyDropArea {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .posSlotBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .posSlotBtn[data-active="true"] {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .colorTextInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .selectInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .formatCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .formatCard:hover {
+  border-color: var(--color-border-strong, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .checkBadge {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .primaryActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutBox {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .verificationCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .verifBannerIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn[data-active="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .chipBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .chipBtn:hover {
+  color: #dde4f3;
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeTitle {
+  color: #a1b4eb;
+}
+
+:global(:where([data-theme="dark"])) .tiledBadgeSub {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .colorPresetDot {
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .tiledControlsBox {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .tiledChipBtn {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .tiledChipBtn[data-active="true"] {
+  background: #3b3211;
 }

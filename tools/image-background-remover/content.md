@@ -1,5 +1,5 @@
 ---
-lastReviewed: 2026-10-24
+lastReviewed: 2026-11-04
 ---
 
 ## How to use
@@ -34,9 +34,15 @@ Click **Upload Image** or drag your photo onto the stage. The in-browser Univers
 
 You can download your cutout as a transparent PNG, compact transparent WebP, solid JPG (with white or black background), or an official PDF document.
 
+### Does this tool use AI?
+
+Yes, but only in **Quick Auto Removal**. That mode runs an AI model (BiRefNet-lite, MIT licence) on your own device. A model is used because removing backgrounds from people, hair, pets and busy scenes without one gives rough edges, and we tested that. The first time you use it, the model files (about 100 MB, or up to 190 MB on browsers without WebGPU) download from this website (beyandtheai.com) itself, and your browser keeps them for later visits. Only the model comes to you; nothing goes back.
+
+**Pen Selection** and its **Auto Select** use no AI. They use classic edge and colour detection, so choose that mode if you prefer no AI at all.
+
 ### Are my images uploaded to any server or remote AI?
 
-No. 100% of the neural inference, pixel masking, and re-encoding occurs locally inside your web browser. Your photos never leave your device.
+No. The model runs on your device, and all masking and re-encoding happen there too. Your photos never leave your device. You can check this yourself: open your browser's developer tools, go to the Network tab, and remove a background. You will see only the one-time model download, never your image.
 
 ### Can I replace the background with white or black instead of transparent?
 

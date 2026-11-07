@@ -49,7 +49,7 @@ export function VolumetricWeightSettings({
           type="number"
           class={styles.textInput}
           value={divisor}
-          onChange={(e) =>
+          onInput={(e) =>
             onDivisorChange(Math.max(1, Number((e.target as HTMLInputElement).value)))
           }
         />
@@ -68,7 +68,7 @@ export function VolumetricWeightSettings({
 }
 
 interface VolumetricResultsProps {
-  result: VolumetricCalculationResult;
+  result: VolumetricCalculationResult & { error?: string | null };
 }
 
 export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
@@ -79,11 +79,27 @@ export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
         <span class={styles.loadCount}>
           Items: {result.itemCalculations.length} · Pieces: {result.totalPieces}
         </span>
-        <span class={styles.status} data-status={result.governingFactor}>
-          {result.governingFactor.toUpperCase()} GOVERNS
-        </span>
+        {result.error || result.itemCalculations.length === 0 ? null : (
+          <span class={styles.status} data-status={result.governingFactor}>
+            {result.governingFactor === 'equal'
+              ? 'BOTH EQUAL'
+              : `${result.governingFactor.toUpperCase()} GOVERNS`}
+          </span>
+        )}
       </div>
 
+      {result.error ? (
+        <p role="alert" class={styles.skipped} data-engine-error="">
+          {result.error}
+        </p>
+      ) : null}
+      {result.skippedRowIds.length > 0 ? (
+        <p role="alert" class={styles.skipped}>
+          {result.skippedRowIds.length} row{result.skippedRowIds.length === 1 ? ' is' : 's are'} not
+          counted: every size and the weight must be above zero, and quantity a whole number of at
+          least 1.
+        </p>
+      ) : null}
       <div class={styles.kpis}>
         <div class={styles.kpi} style={{ '--tone': '#0eb779' }}>
           <Icon name="box" />
@@ -115,7 +131,9 @@ export function VolumetricWeightResults({ result }: VolumetricResultsProps) {
         <span class={styles.chargeableSub}>
           {result.governingFactor === 'volumetric'
             ? 'Volumetric weight exceeds actual weight (Volumetric Governs)'
-            : 'Actual weight exceeds volumetric weight (Actual Governs)'}
+            : result.governingFactor === 'actual'
+              ? 'Actual weight exceeds volumetric weight (Actual Governs)'
+              : 'Volumetric and actual weight are equal'}
         </span>
       </div>
 

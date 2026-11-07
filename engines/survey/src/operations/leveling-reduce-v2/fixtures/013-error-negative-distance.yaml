@@ -1,0 +1,28 @@
+{
+  "id": "013-error-negative-distance",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §8 point 3: Negative distance fails with SURVEY_LEVELING_NEGATIVE_DISTANCE."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "fs": "1.000",
+        "dist": "-10"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_NEGATIVE_DISTANCE",
+    "path": "observations.1.dist"
+  }
+}

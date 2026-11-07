@@ -1,0 +1,45 @@
+id: 003-missing-price-warning
+operation: food.cost.estimate@1
+source:
+  type: synthetic
+  citation: Unpriced ingredient handling and warnings.
+input:
+  guests: 10
+  lines:
+    - { ingredient: basmati-rice, buy: "500", unit: g }
+    - { ingredient: bay-leaf, buy: "4", unit: piece }
+  prices:
+    - ingredient: basmati-rice
+      kind: retail-reference
+      priceInr: "120"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+expected:
+  totalCostInr: "60.00"
+  exactTotalCost: "60"
+  costPerGuestInr: "6.00"
+  budgetStatus: no-budget
+  pricedCount: 1
+  unpricedCount: 1
+  unpricedIngredients:
+    - bay-leaf
+  items:
+    - ingredient: basmati-rice
+      quantity: "500"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.12"
+      costInr: "60.00"
+      exactCost: "60"
+      observedOn: "2026-11-01"
+    - ingredient: bay-leaf
+      quantity: "4"
+      unit: piece
+      isPriced: false
+      priceKind: unpriced
+      costInr: "0.00"
+      exactCost: "0"
+expectedWarnings:
+  - FOOD_MISSING_PRICE

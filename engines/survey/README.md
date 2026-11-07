@@ -19,6 +19,7 @@ Optional station/remarks make inputs personal.
 | `survey.traverse.compute@1` | Ordered unadjusted closed-loop components, coordinates and closure |
 
 Contract: [TASK-010A](../../tasks/TASK-010A-SURVEY-LEVELING-CONTRACT.md).
+Extension Contract (distance, tolerance, adjustment): [TASK-010C](../../tasks/TASK-010C-SURVEY-LEVELING-EXTENSION-CONTRACT.md).
 Boundary: [accepted Survey decision](../../docs/decisions/DECISION-SURVEY-LEVELING-ENGINE.md).
 See the [operation README](src/operations/leveling-reduce/README.md) for numerical rules and sources.
 English error catalogue: `src/errors.ts`. Colocated golden fixtures are discovered by the existing

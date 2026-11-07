@@ -1,0 +1,72 @@
+{
+  "id": "022-missing-distance-closed-line-entirely-absent",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5 point 2 & §8 point 9: Closed line with kConstant present but distances entirely absent reports closureStatus distance-not-provided."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "99.805",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.500"
+      },
+      {
+        "station": "BM-2",
+        "fs": "1.700"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "none",
+    "kConstant": "24"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "99.8",
+    "sumBS": "1.5",
+    "sumFS": "1.7",
+    "sumRise": "0",
+    "sumFall": "0.2",
+    "bsFsDelta": "-0.2",
+    "riseFallDelta": "-0.2",
+    "rlDelta": "-0.2",
+    "closingRL": "99.805",
+    "misclosure": "-0.005",
+    "totalDistanceKm": null,
+    "allowableError": null,
+    "closureStatus": "distance-not-provided",
+    "setupsCount": 1,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1.5",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": null,
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "1.7",
+        "rise": "0",
+        "fall": "0.2",
+        "rl": "99.8",
+        "isChangePoint": false,
+        "dist": null,
+        "corr": null,
+        "adjustedRL": null
+      }
+    ]
+  }
+}

@@ -1,307 +1,159 @@
-import type { JSX } from 'preact';
-import { useRef } from 'preact/hooks';
-import styles from './pdfStudio.module.css';
-import type { usePdfToWordStudio } from './usePdfConvertStudio.ts';
+import { RefListHead, RefOptionBox, RefPageStrip } from './PdfConvertParts.tsx';
+import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
+import c from './pdfConvertRef.module.css';
+import { fileMeta } from './pdfFileMeta.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
+import styles from './pdfRef.module.css';
+import { type PageMode, pickPages, type usePdfToWordStudio } from './usePdfToWordStudio.ts';
 
 type PdfToWordState = ReturnType<typeof usePdfToWordStudio>;
 
-function PdfPreviewStrip({ totalPages }: { totalPages: number }) {
+function PdfToWordFileSection({ studio }: { studio: PdfToWordState }) {
+  const { fileName, totalPages, fileSizeBytes, clearAll } = studio;
   return (
-    <div style={{ marginTop: '6px' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '11px',
-          color: '#64748b',
-          marginBottom: '4px',
-          fontWeight: 600,
-        }}
-      >
-        <span>Preview (first 5 pages)</span>
-        <span>{totalPages} pages total</span>
-      </div>
-      <div class={styles.thumbStrip}>
-        {[1, 2, 3, 4, 5].map((p) => (
-          <div key={p} class={styles.thumbItemBtn} style={{ cursor: 'default' }}>
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <div style={{ height: '3px', background: '#94a3b8', borderRadius: '1.5px' }} />
-              <div
-                style={{
-                  height: '2px',
-                  background: '#e2e8f0',
-                  borderRadius: '1.5px',
-                  width: '80%',
-                }}
-              />
-              <div
-                style={{
-                  height: '2px',
-                  background: '#e2e8f0',
-                  borderRadius: '1.5px',
-                  width: '60%',
-                }}
-              />
-            </div>
-            <span style={{ fontSize: '10px', fontWeight: 800, color: '#334155' }}>Page {p}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function PdfToWordLoadedRow({
-  fileName,
-  totalPages,
-  mb,
-  onClear,
-}: {
-  fileName: string;
-  totalPages: number;
-  mb: string;
-  onClear: () => void;
-}) {
-  return (
-    <div
-      class={styles.fileRow}
-      style={{ background: '#ffffff', borderColor: '#bfdbfe', marginTop: '4px' }}
-    >
-      <div class={styles.fileIconBadge} style={{ backgroundColor: '#ef4444' }}>
-        PDF
-      </div>
-      <div class={styles.fileDetails}>
-        <span class={styles.fileName}>{fileName}</span>
-        <span class={styles.fileMeta}>
-          {totalPages} pages • {mb} MB
-        </span>
-      </div>
-      <button
-        type="button"
-        class={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-        onClick={onClear}
-        title="Clear file"
-      >
-        ✕
-      </button>
-    </div>
-  );
-}
-
-function PdfToWordFileCard({ studio }: { studio: PdfToWordState }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    fileName,
-    totalPages,
-    fileSizeBytes,
-    clearAll,
-    loadSamplePdfToWord,
-    handleAddNativeFile,
-  } = studio;
-  const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
-
-  function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
-    const file = e.currentTarget.files?.[0];
-    if (file) void handleAddNativeFile(file);
-  }
-
-  return (
-    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf"
-        style={{ display: 'none' }}
-        onChange={onFileInputChange}
+    <section class={styles.card} data-tour="pdf-upload" aria-label="Upload PDF File">
+      <RefCardHead
+        step={1}
+        title="Upload PDF File"
+        aside={<span class={styles.listMeta}>Supports PDF files · Max 200 MB</span>}
       />
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>1</span> Upload PDF File
-        </h2>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
-            type="button"
-            onClick={loadSamplePdfToWord}
-            style={{
-              fontSize: '11px',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            📄 Sample Contract
-          </button>
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              fontSize: '11px',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            {fileName ? 'Change File' : 'Upload PDF'}
-          </button>
-        </div>
+      <div data-primary-result="" class="visually-hidden">
+        <output>{studio.docx ? studio.docx.length : ''}</output>
       </div>
-
-      {!fileName ? (
-        <button
-          type="button"
-          class={styles.dropZoneCompact}
-          onClick={() => fileInputRef.current?.click()}
-          style={{ cursor: 'pointer', textAlign: 'left', width: '100%' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span class={styles.dropIcon} style={{ fontSize: '22px' }}>
-              📄+
-            </span>
-            <div>
-              <p class={styles.dropMainText} style={{ fontSize: '13px' }}>
-                Drag & drop a PDF file here
-              </p>
-              <p class={styles.dropSubText} style={{ fontSize: '11px' }}>
-                or click to browse • 100% in-browser processing
-              </p>
-            </div>
+      <RefDrop
+        title="Drag & drop a PDF file here"
+        sub="or click to browse and select a file · Files stay in your browser"
+        button="Choose PDF File"
+        accept="application/pdf"
+        onFiles={(list) => {
+          const file = list[0];
+          if (file) void studio.handleAddNativeFile(file);
+        }}
+      />
+      {fileName ? (
+        <>
+          <RefListHead title="Selected File (1)" onClear={clearAll} />
+          <div class={styles.fileList}>
+            <RefFileItem
+              index={0}
+              name={fileName}
+              meta={fileMeta(totalPages, fileSizeBytes)}
+              actions={{ onRemove: clearAll }}
+            />
           </div>
-          <span class={styles.chooseBtn} style={{ padding: '6px 14px', fontSize: '12px' }}>
-            Choose PDF File
-          </span>
-        </button>
-      ) : (
-        <PdfToWordLoadedRow
-          fileName={fileName}
-          totalPages={totalPages}
-          mb={mb}
-          onClear={clearAll}
-        />
-      )}
-
-      {fileName && <PdfPreviewStrip totalPages={totalPages} />}
-    </div>
+        </>
+      ) : null}
+    </section>
   );
 }
 
-function PdfToWordOptionsCard({ studio }: { studio: PdfToWordState }) {
-  const {
-    enableOcr,
-    setEnableOcr,
-    keepHeadings,
-    setKeepHeadings,
-    preserveTables,
-    setPreserveTables,
-    language,
-    setLanguage,
-  } = studio;
-
+function PageRangeBox({ studio }: { studio: PdfToWordState }) {
+  const custom = studio.pageMode === 'custom';
+  const picked = studio.extraction
+    ? pickPages(studio.extraction.pages, studio.pageMode, studio.pageRange)
+    : null;
   return (
-    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>2</span> Conversion Options
-        </h2>
-      </div>
-      <div class={styles.settingsGrid}>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="p2w-output-format" style={{ fontSize: '11px' }}>
-            Output format
-          </label>
-          <input
-            id="p2w-output-format"
-            class={styles.textInput}
-            value="DOCX (Word Document)"
-            readOnly
-            style={{ padding: '6px 10px', fontSize: '12px' }}
-          />
-        </div>
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '6px 10px',
-            background: '#f8fafc',
-            border: '1px solid #e2e8f0',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          <div>
-            <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#0f172a' }}>
-              OCR for scanned PDFs
-            </span>
-            <p style={{ margin: 0, fontSize: '10.5px', color: '#64748b' }}>
-              Extract text from scanned PDFs and images
-            </p>
+    <RefOptionBox icon="file-text" title="Page range" wide inline>
+      <select
+        class={styles.input}
+        aria-label="Pages to convert"
+        value={studio.pageMode}
+        onChange={(e) => studio.setPageMode(e.currentTarget.value as PageMode)}
+      >
+        <option value="all">All pages</option>
+        <option value="custom">Selected pages</option>
+      </select>
+      <input
+        class={styles.input}
+        aria-label="Page list"
+        placeholder="e.g. 1-5, 8, 10-12"
+        disabled={!custom}
+        value={studio.pageRange}
+        onInput={(e) => studio.setPageRange(e.currentTarget.value)}
+      />
+      {custom && picked && picked.invalid.length > 0 ? (
+        <p class={c.invalidText}>Not in this file: {picked.invalid.join(', ')}</p>
+      ) : null}
+    </RefOptionBox>
+  );
+}
+
+function PdfToWordOptionsSection({ studio }: { studio: PdfToWordState }) {
+  return (
+    <section class={styles.card} aria-label="Conversion Options">
+      <RefCardHead step={2} title="Conversion Options" />
+      <div class={c.grid2}>
+        <RefOptionBox icon="file-check" title="Output format">
+          <span class={c.boxValue}>DOCX (Word Document)</span>
+        </RefOptionBox>
+        <RefOptionBox icon="info" title="Scanned PDFs">
+          <span class={c.boxHint}>
+            Text inside images is not read: this tool does not do OCR. Use a PDF with selectable
+            text.
+          </span>
+        </RefOptionBox>
+        <PageRangeBox studio={studio} />
+        <div class={`${c.grid3} ${c.span}`}>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Keep original headings"
+              hint="Larger text becomes Word headings"
+              checked={studio.keepHeadings}
+              onChange={studio.setKeepHeadings}
+            />
           </div>
-          <input
-            type="checkbox"
-            checked={enableOcr}
-            onChange={(e) => setEnableOcr(e.currentTarget.checked)}
-          />
-        </label>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '6px',
-            fontSize: '11.5px',
-            fontWeight: 600,
-          }}
-        >
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={keepHeadings}
-              onChange={(e) => setKeepHeadings(e.currentTarget.checked)}
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Preserve tables"
+              hint="Text in columns becomes a Word table"
+              checked={studio.keepTables}
+              onChange={studio.setKeepTables}
             />
-            <span>Keep original headings</span>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={preserveTables}
-              onChange={(e) => setPreserveTables(e.currentTarget.checked)}
+          </div>
+          <div class={styles.optionBox}>
+            <RefCheck
+              label="Page break between pages"
+              hint="Start each PDF page on a new Word page"
+              checked={studio.pageBreaks}
+              onChange={studio.setPageBreaks}
             />
-            <span>Preserve tables & layout</span>
-          </label>
-        </div>
-        <div class={styles.inputRow}>
-          <label class={styles.inputLabel} for="p2w-lang-select" style={{ fontSize: '11px' }}>
-            Language (OCR)
-          </label>
-          <select
-            id="p2w-lang-select"
-            class={styles.textInput}
-            value={language}
-            onChange={(e) => setLanguage(e.currentTarget.value)}
-            style={{ padding: '6px 10px', fontSize: '12px' }}
-          >
-            <option value="English (Auto-detect)">English (Auto-detect)</option>
-            <option value="Hindi / Bilingual">Hindi / Bilingual</option>
-            <option value="European Languages">European Languages</option>
-          </select>
+          </div>
         </div>
       </div>
-    </div>
+      <p class={styles.note} style={{ marginTop: '12px' }}>
+        The Word file gets the PDF's text as editable headings, paragraphs and tables. Images,
+        colours, fonts and exact layout are not carried over. Tables are found from text that lines
+        up in columns; merged cells and cells that wrap onto several lines may come out as separate
+        rows.
+      </p>
+    </section>
+  );
+}
+
+function PdfToWordPreviewSection({ studio }: { studio: PdfToWordState }) {
+  const total = studio.totalPages;
+  const thumbs = usePageThumbs(studio.fileBytes, firstPages(total, 5));
+  if (!studio.fileName || total === 0) return null;
+  return (
+    <section class={styles.card} aria-label="Preview">
+      <RefCardHead
+        icon="eye"
+        title={`Preview (first ${Math.min(5, total)} pages)`}
+        aside={<span class={styles.listMeta}>{total} pages total</span>}
+      />
+      <div class={c.stripWrap}>
+        <RefPageStrip count={total} max={5} thumbs={thumbs} />
+      </div>
+    </section>
   );
 }
 
 export function PdfToWordLeftCards({ studio }: { studio: PdfToWordState }) {
   return (
-    <div class={styles.leftMergeCol}>
-      <PdfToWordFileCard studio={studio} />
-      <PdfToWordOptionsCard studio={studio} />
+    <div class={styles.column}>
+      <PdfToWordFileSection studio={studio} />
+      <PdfToWordOptionsSection studio={studio} />
+      <PdfToWordPreviewSection studio={studio} />
     </div>
   );
 }

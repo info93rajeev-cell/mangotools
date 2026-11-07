@@ -1,0 +1,40 @@
+id: 002-user-price-precedence
+operation: food.cost.estimate@1
+source:
+  type: synthetic
+  citation: User-entered price overrides retail reference price.
+input:
+  guests: 10
+  lines:
+    - { ingredient: toor-dal, buy: "500", unit: g }
+  prices:
+    - ingredient: toor-dal
+      kind: retail-reference
+      priceInr: "160"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+    - ingredient: toor-dal
+      kind: user-entered
+      priceInr: "140"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-03"
+expected:
+  totalCostInr: "70.00"
+  exactTotalCost: "70"
+  costPerGuestInr: "7.00"
+  budgetStatus: no-budget
+  pricedCount: 1
+  unpricedCount: 0
+  unpricedIngredients: []
+  items:
+    - ingredient: toor-dal
+      quantity: "500"
+      unit: g
+      isPriced: true
+      priceKind: user-entered
+      ratePerBaseUnitInr: "0.14"
+      costInr: "70.00"
+      exactCost: "70"
+      observedOn: "2026-11-03"

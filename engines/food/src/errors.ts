@@ -22,4 +22,12 @@ export const messages: Readonly<Record<string, string>> = {
     '{count} cooking task(s) had to be rescheduled earlier due to burner limits.',
   FOOD_SCHEDULE_ESTIMATE:
     'Schedule timings are deterministic model estimates based on recipe steps, not kitchen-measured guarantees.',
+  FOOD_PRICE_DIMENSION_MISMATCH:
+    'Price for "{ingredient}" measures in "{priceUnit}", which does not match line unit "{lineUnit}".',
+  FOOD_INVALID_PRICE:
+    'The price amount "{value}" for "{ingredient}" is not a valid non-negative decimal.',
+  FOOD_DUPLICATE_PRICE: 'Multiple prices of kind "{kind}" provided for "{ingredient}".',
+  FOOD_MISSING_PRICE: 'No price reference or user price found for "{ingredient}".',
+  FOOD_BUDGET_EXCEEDED:
+    'Total estimated cost (Rs. {total}) exceeds the budget (Rs. {budget}) by Rs. {difference}.',
 };

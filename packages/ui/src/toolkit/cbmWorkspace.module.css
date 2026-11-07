@@ -4,7 +4,7 @@
   grid-template-columns: minmax(0, 1.235fr) minmax(0, 1fr);
   gap: 16px;
   color: var(--cbm-text);
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   line-height: 1.4;
 }
 .left,
@@ -39,11 +39,27 @@
 .error {
   margin: 3px 0;
   color: var(--color-danger);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
 }
 @media (max-width: 1050px) and (min-width: 701px) {
   .workspace {
     grid-template-columns: minmax(0, 1fr);
+  }
+  /* Single column: reference/visual panel first, then inputs, then results. */
+  .right {
+    display: contents;
+  }
+  .visualizationSlot {
+    order: -1;
+  }
+  .left {
+    order: 0;
+  }
+  .resultsSlot,
+  .costResultSlot,
+  .outputActionsSlot,
+  .outputFeedbackSlot {
+    order: 1;
   }
 }
 @media (max-width: 700px) {
@@ -71,7 +87,7 @@
     order: 11;
   }
   .visualizationSlot {
-    order: 15;
+    order: 1;
   }
   .resultsSlot {
     order: 20;

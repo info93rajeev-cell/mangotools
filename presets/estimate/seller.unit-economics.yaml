@@ -1,0 +1,122 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: estimate/seller.unit-economics
+version: 0.1.0
+operation: estimate.seller.unit-economics@1
+params: { rounding: half-up }
+locked: [rounding]
+fields:
+  sellingPrice: { labelKey: unitEconomics.field.sellingPrice, kind: money, order: 10, width: half, currency: INR, default: "1000", required: true }
+  priceIncludesGst: { labelKey: unitEconomics.field.priceIncludesGst, kind: enum, order: 20, width: half, control: select, options: [{ value: "yes", labelKey: unitEconomics.option.yes }, { value: "no", labelKey: unitEconomics.option.no }], default: "yes", required: true }
+  gstRatePercent: { labelKey: unitEconomics.field.gstRatePercent, kind: percent, order: 30, width: half, unit: "%", default: "18" }
+  productCost: { labelKey: unitEconomics.field.productCost, kind: money, order: 40, width: half, currency: INR, default: "400", required: true }
+  packagingCost: { labelKey: unitEconomics.field.packagingCost, kind: money, order: 50, width: half, currency: INR, default: "30" }
+  shippingCost: { labelKey: unitEconomics.field.shippingCost, kind: money, order: 60, width: half, currency: INR, default: "70" }
+  warehousingCost: { labelKey: unitEconomics.field.warehousingCost, kind: money, order: 70, width: half, currency: INR, default: "20" }
+  labourCost: { labelKey: unitEconomics.field.labourCost, kind: money, order: 80, width: half, currency: INR, default: "15" }
+  overheadCost: { labelKey: unitEconomics.field.overheadCost, kind: money, order: 90, width: half, currency: INR, default: "10" }
+  commissionPercent: { labelKey: unitEconomics.field.commissionPercent, kind: percent, order: 100, width: half, unit: "%", default: "10" }
+  referralFee: { labelKey: unitEconomics.field.referralFee, kind: money, order: 110, width: half, currency: INR, default: "0" }
+  closingFee: { labelKey: unitEconomics.field.closingFee, kind: money, order: 120, width: half, currency: INR, default: "25" }
+  handlingFee: { labelKey: unitEconomics.field.handlingFee, kind: money, order: 130, width: half, currency: INR, default: "0" }
+  feeGstRatePercent: { labelKey: unitEconomics.field.feeGstRatePercent, kind: percent, order: 140, width: half, unit: "%", default: "18" }
+  advertisingCost: { labelKey: unitEconomics.field.advertisingCost, kind: money, order: 150, width: half, currency: INR, default: "50" }
+  otherCost: { labelKey: unitEconomics.field.otherCost, kind: money, order: 160, width: half, currency: INR, default: "10" }
+  returnRatePercent: { labelKey: unitEconomics.field.returnRatePercent, kind: percent, order: 170, width: half, unit: "%", default: "8" }
+  reverseShippingCost: { labelKey: unitEconomics.field.reverseShippingCost, kind: money, order: 180, width: half, currency: INR, default: "90" }
+  damagedLossPercent: { labelKey: unitEconomics.field.damagedLossPercent, kind: percent, order: 190, width: half, unit: "%", default: "20" }
+  expectedReturnCost: { labelKey: unitEconomics.field.expectedReturnCost, kind: money, order: 200, width: half, currency: INR, default: "0" }
+  withholdingPercent: { labelKey: unitEconomics.field.withholdingPercent, kind: percent, order: 210, width: half, unit: "%", default: "0.6" }
+  quantity: { labelKey: unitEconomics.field.quantity, kind: number, order: 220, width: half, default: "100", required: true }
+  targetProfit: { labelKey: unitEconomics.field.targetProfit, kind: money, order: 230, width: half, currency: INR, default: "300" }
+  targetMarginPercent: { labelKey: unitEconomics.field.targetMarginPercent, kind: percent, order: 240, width: half, unit: "%", default: "30" }
+outputs:
+  netProfit: { labelKey: unitEconomics.out.netProfit, format: money, order: 0, primary: true }
+  netMarginPercent: { labelKey: unitEconomics.out.netMarginPercent, format: percent, order: 10 }
+  markupPercent: { labelKey: unitEconomics.out.markupPercent, format: percent, order: 20 }
+  cashSettlement: { labelKey: unitEconomics.out.cashSettlement, format: money, order: 30 }
+  monthlyProfit: { labelKey: unitEconomics.out.monthlyProfit, format: money, order: 40 }
+  breakEvenPrice: { labelKey: unitEconomics.out.breakEvenPrice, format: money, order: 50 }
+  priceForTargetProfit: { labelKey: unitEconomics.out.priceForTargetProfit, format: money, order: 60 }
+  priceForTargetMargin: { labelKey: unitEconomics.out.priceForTargetMargin, format: money, order: 70 }
+  gstInPrice: { labelKey: unitEconomics.out.gstInPrice, format: money, order: 80 }
+  netRevenue: { labelKey: unitEconomics.out.netRevenue, format: money, order: 90 }
+  totalCosts: { labelKey: unitEconomics.out.totalCosts, format: money, order: 100 }
+  directFulfillment: { labelKey: unitEconomics.out.directFulfillment, format: money, order: 110 }
+  marketplaceFees: { labelKey: unitEconomics.out.marketplaceFees, format: money, order: 120 }
+  marketplaceFeeGst: { labelKey: unitEconomics.out.marketplaceFeeGst, format: money, order: 130 }
+  returnLoss: { labelKey: unitEconomics.out.returnLoss, format: money, order: 140 }
+  otherCosts: { labelKey: unitEconomics.out.otherCosts, format: money, order: 150 }
+  withholding: { labelKey: unitEconomics.out.withholding, format: money, order: 160 }
+  monthlyRevenue: { labelKey: unitEconomics.out.monthlyRevenue, format: money, order: 170 }
+  commissionAmount: { labelKey: unitEconomics.out.commissionAmount, format: money, order: 180 }
+  productSharePercent: { labelKey: unitEconomics.out.productSharePercent, format: percent, order: 190 }
+  fulfillmentSharePercent: { labelKey: unitEconomics.out.fulfillmentSharePercent, format: percent, order: 200 }
+  feesSharePercent: { labelKey: unitEconomics.out.feesSharePercent, format: percent, order: 210 }
+  otherSharePercent: { labelKey: unitEconomics.out.otherSharePercent, format: percent, order: 220 }
+  gstSharePercent: { labelKey: unitEconomics.out.gstSharePercent, format: percent, order: 230 }
+  profitSharePercent: { labelKey: unitEconomics.out.profitSharePercent, format: percent, order: 240 }
+samples:
+  marketplace-seller:
+    titleKey: unitEconomics.sample.marketplaceSeller
+    input: { sellingPrice: "1000", priceIncludesGst: "yes", gstRatePercent: "18", productCost: "400", packagingCost: "30", shippingCost: "70", warehousingCost: "20", labourCost: "15", overheadCost: "10", commissionPercent: "10", closingFee: "25", feeGstRatePercent: "18", advertisingCost: "50", otherCost: "10", returnRatePercent: "8", reverseShippingCost: "90", damagedLossPercent: "20", withholdingPercent: "0.6", quantity: "100", targetProfit: "300", targetMarginPercent: "30" }
+ui: { archetypes: [B], density: compact, compute: live, collapseNotices: true }
+strings:
+  en:
+    unitEconomics.field.sellingPrice: "Selling price"
+    unitEconomics.field.priceIncludesGst: "GST in the price"
+    unitEconomics.field.gstRatePercent: "GST rate"
+    unitEconomics.field.productCost: "Product cost"
+    unitEconomics.field.packagingCost: "Packaging"
+    unitEconomics.field.shippingCost: "Shipping"
+    unitEconomics.field.warehousingCost: "Warehousing"
+    unitEconomics.field.labourCost: "Labour"
+    unitEconomics.field.overheadCost: "Overhead"
+    unitEconomics.field.commissionPercent: "Commission"
+    unitEconomics.field.referralFee: "Referral fee"
+    unitEconomics.field.closingFee: "Closing fee"
+    unitEconomics.field.handlingFee: "Handling fee"
+    unitEconomics.field.feeGstRatePercent: "GST on marketplace fees"
+    unitEconomics.field.advertisingCost: "Advertising per order"
+    unitEconomics.field.otherCost: "Other charges"
+    unitEconomics.field.returnRatePercent: "Return rate"
+    unitEconomics.field.reverseShippingCost: "Reverse shipping per return"
+    unitEconomics.field.damagedLossPercent: "Damaged on return"
+    unitEconomics.field.expectedReturnCost: "Other expected return cost"
+    unitEconomics.field.withholdingPercent: "TCS + TDS withheld"
+    unitEconomics.field.quantity: "Quantity per month"
+    unitEconomics.field.targetProfit: "Target profit"
+    unitEconomics.field.targetMarginPercent: "Desired margin"
+    unitEconomics.out.netProfit: "Net profit per order"
+    unitEconomics.out.netMarginPercent: "Net margin"
+    unitEconomics.out.markupPercent: "Markup on cost"
+    unitEconomics.out.cashSettlement: "Bank settlement"
+    unitEconomics.out.monthlyProfit: "Monthly profit"
+    unitEconomics.out.breakEvenPrice: "Break-even price"
+    unitEconomics.out.priceForTargetProfit: "Price for target profit"
+    unitEconomics.out.priceForTargetMargin: "Price for desired margin"
+    unitEconomics.out.gstInPrice: "GST inside the price"
+    unitEconomics.out.netRevenue: "Revenue without GST"
+    unitEconomics.out.totalCosts: "Total costs"
+    unitEconomics.out.directFulfillment: "Fulfilment costs"
+    unitEconomics.out.marketplaceFees: "Marketplace fees"
+    unitEconomics.out.marketplaceFeeGst: "GST on fees"
+    unitEconomics.out.returnLoss: "Returns (per order, averaged)"
+    unitEconomics.out.otherCosts: "Advertising and other"
+    unitEconomics.out.withholding: "TCS + TDS"
+    unitEconomics.out.monthlyRevenue: "Monthly revenue"
+    unitEconomics.out.commissionAmount: "Commission"
+    unitEconomics.out.productSharePercent: "Product share"
+    unitEconomics.out.fulfillmentSharePercent: "Fulfilment share"
+    unitEconomics.out.feesSharePercent: "Fees share"
+    unitEconomics.out.otherSharePercent: "Other share"
+    unitEconomics.out.gstSharePercent: "GST share"
+    unitEconomics.out.profitSharePercent: "Profit share"
+    unitEconomics.option.yes: "Yes, price includes GST"
+    unitEconomics.option.no: "No, GST is added on top"
+    unitEconomics.sample.marketplaceSeller: "Marketplace seller example"
+    work.unitEconomics.netRevenueInclusive: "Revenue without GST = {sellingPrice:money} × 100 ÷ (100 + {gstRatePercent}) = {result:money}"
+    work.unitEconomics.netRevenue: "Revenue = {sellingPrice:money} (GST is added on top) = {result:money}"
+    work.unitEconomics.totalCosts: "Total costs = {productCost:money} + {directFulfillment:money} + {marketplaceFees:money} + {marketplaceFeeGst:money} + {otherCosts:money} + {returnLoss:money} = {result:money}"
+    work.unitEconomics.netProfit: "Net profit = {netRevenue:money} − {totalCosts:money} = {result:money}"
+    work.unitEconomics.cashSettlement: "Bank settlement = {sellingPrice:money} − {marketplaceFees:money} − {marketplaceFeeGst:money} − {withholding:money} − {shippingCost:money} = {result:money}"

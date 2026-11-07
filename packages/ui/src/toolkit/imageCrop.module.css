@@ -28,6 +28,7 @@
   .workbench3Panel {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: var(--space-3);
     width: 100%;
   }
@@ -91,7 +92,7 @@
 
 .activeRatioHint,
 .activeFormatHint {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   color: var(--color-accent-text);
 }
@@ -178,7 +179,7 @@
   border-radius: var(--radius-sm);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   color: var(--color-text);
   cursor: pointer;
@@ -232,7 +233,7 @@
 }
 
 .activeFileMeta {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -243,7 +244,7 @@
 }
 
 .changeFileBtn {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
@@ -264,7 +265,7 @@
   font-weight: bold;
   cursor: pointer;
   padding: 2px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .removeFileBtn:hover {
@@ -274,7 +275,7 @@
 /* RATIO & FORMAT GRIDS */
 .ratioGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 4px;
 }
 
@@ -302,7 +303,7 @@
 }
 
 .ratioCardSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -321,7 +322,7 @@
 
 .numericGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   margin: 0;
   padding: 0;
@@ -337,13 +338,13 @@
 }
 
 .numericLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
 }
 
@@ -370,7 +371,7 @@
 }
 
 .formatCardSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -382,7 +383,7 @@
 
 .numericField :global(input) {
   padding: 3px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   height: 26px;
   min-height: 26px;
 }
@@ -398,7 +399,7 @@
   background: transparent;
   border: 0;
   color: var(--color-text-muted);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   cursor: pointer;
   padding: 2px 4px;
   text-align: center;
@@ -501,7 +502,7 @@
 }
 
 .canvasHint {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -589,13 +590,13 @@
 
 .specLabel,
 .resultRow dt {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
 .specValue,
 .resultRow dd {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   margin: 0;
@@ -606,7 +607,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   text-align: center;
   display: flex;
@@ -635,7 +636,7 @@
 }
 
 .notesSummary {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   cursor: pointer;
 }
@@ -643,7 +644,7 @@
 .notesList {
   margin: 4px 0 0;
   padding-left: var(--space-4);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -651,4 +652,17 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+/* Zoom buttons never wrap their icon; the stage title shrinks instead. */
+.canvasToolbarControls {
+  flex: none;
+}
+
+.canvasToolBtn {
+  white-space: nowrap;
+}
+
+.canvasToolbarTitle {
+  min-width: 0;
 }

@@ -1,0 +1,156 @@
+{
+  "id": "001-approved-six-station-distance-adjust",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §6 worked table with distance-proportional adjustment, C=24 mm/sqrt(km)."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "99.805",
+    "observations": [
+      {
+        "station": "BM-1",
+        "remarks": "Start BM",
+        "bs": "1.500",
+        "dist": "0"
+      },
+      {
+        "station": "A",
+        "is": "1.200",
+        "dist": "30"
+      },
+      {
+        "station": "CP1",
+        "remarks": "Change point",
+        "fs": "2.000",
+        "bs": "0.800",
+        "dist": "30"
+      },
+      {
+        "station": "B",
+        "is": "1.100",
+        "dist": "25"
+      },
+      {
+        "station": "CP2",
+        "remarks": "Change point",
+        "fs": "0.600",
+        "bs": "2.300",
+        "dist": "35"
+      },
+      {
+        "station": "BM-2",
+        "remarks": "Closing BM",
+        "fs": "2.200",
+        "dist": "40"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "distance",
+    "kConstant": "24"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "99.8",
+    "sumBS": "4.6",
+    "sumFS": "4.8",
+    "sumRise": "0.9",
+    "sumFall": "1.1",
+    "bsFsDelta": "-0.2",
+    "riseFallDelta": "-0.2",
+    "rlDelta": "-0.2",
+    "closingRL": "99.805",
+    "misclosure": "-0.005",
+    "totalDistanceKm": "0.160",
+    "allowableError": "9.6",
+    "closureStatus": "pass",
+    "setupsCount": 3,
+    "rows": [
+      {
+        "station": "BM-1",
+        "remarks": "Start BM",
+        "bs": "1.5",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": "0.0",
+        "adjustedRL": "100.000"
+      },
+      {
+        "station": "A",
+        "bs": null,
+        "is": "1.2",
+        "fs": null,
+        "rise": "0.3",
+        "fall": "0",
+        "rl": "100.3",
+        "isChangePoint": false,
+        "dist": "30",
+        "corr": "+0.9",
+        "adjustedRL": "100.301"
+      },
+      {
+        "station": "CP1",
+        "remarks": "Change point",
+        "bs": "0.8",
+        "is": null,
+        "fs": "2",
+        "rise": "0",
+        "fall": "0.8",
+        "rl": "99.5",
+        "isChangePoint": true,
+        "dist": "30",
+        "corr": "+1.9",
+        "adjustedRL": "99.502"
+      },
+      {
+        "station": "B",
+        "bs": null,
+        "is": "1.1",
+        "fs": null,
+        "rise": "0",
+        "fall": "0.3",
+        "rl": "99.2",
+        "isChangePoint": false,
+        "dist": "25",
+        "corr": "+2.7",
+        "adjustedRL": "99.203"
+      },
+      {
+        "station": "CP2",
+        "remarks": "Change point",
+        "bs": "2.3",
+        "is": null,
+        "fs": "0.6",
+        "rise": "0.5",
+        "fall": "0",
+        "rl": "99.7",
+        "isChangePoint": true,
+        "dist": "35",
+        "corr": "+3.8",
+        "adjustedRL": "99.704"
+      },
+      {
+        "station": "BM-2",
+        "remarks": "Closing BM",
+        "bs": null,
+        "is": null,
+        "fs": "2.2",
+        "rise": "0.1",
+        "fall": "0",
+        "rl": "99.8",
+        "isChangePoint": false,
+        "dist": "40",
+        "corr": "+5.0",
+        "adjustedRL": "99.805"
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+id: 002-actual-billed
+operation: logistics.weight.shipment@1
+source: { type: hand-verified, citation: "30×20×10 = 6,000 cm³ ÷ 5000 = 1.2 kg ×2 = 2.4; actual 5 × 2 = 10; chargeable = max(10, 2.4) = 10 (actual)" }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "5000"
+  packages:
+    - { length: "30", width: "20", height: "10", quantity: "2", weightPerPiece: "5" }
+expected: { volumetricTotal: "2.400", actualTotal: "10.000", chargeableTotal: "10.000", billedOn: actual, totalPieces: "2" }

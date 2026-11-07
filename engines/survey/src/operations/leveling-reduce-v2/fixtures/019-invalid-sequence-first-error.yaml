@@ -1,0 +1,26 @@
+{
+  "id": "019-invalid-sequence-first-error",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §2: First observation must be BS only; IS at start fails with SURVEY_LEVELING_INVALID_SEQUENCE."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "is": "1.500"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_SEQUENCE",
+    "path": "observations.0"
+  }
+}

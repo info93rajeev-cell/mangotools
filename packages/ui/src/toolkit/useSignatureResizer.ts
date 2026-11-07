@@ -24,20 +24,16 @@ import {
   type SignatureResultData,
 } from './signatureWorkerService.ts';
 
+export type { CropFile as SignatureFile } from './imageFileInspection.ts';
 export type {
   SignatureBackground,
-  SignatureFile,
   SignatureOutputFormat,
   SignaturePresetItem,
   SignatureResultData,
 };
 export { SIGNATURE_PRESETS };
 
-function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
-  const [file, setFile] = useState<SignatureFile | null>(null);
-  const [invalidFile, setInvalidFile] = useState<{ name: string } | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
+function useSignatureConfigState(clearError: () => void) {
   const [targetWidth, setTargetWidth] = useState(400);
   const [targetHeight, setTargetHeight] = useState(150);
   const [keepAspectRatio, setKeepAspectRatio] = useState(true);
@@ -46,6 +42,39 @@ function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
   const [quality, setQuality] = useState(90);
   const [maxFileSizeKB, setMaxFileSizeKB] = useState<number | undefined>(undefined);
   const [customFileName, setCustomFileName] = useState('');
+
+  const withClear =
+    <T>(setter: (v: T) => void) =>
+    (v: T) => {
+      clearError();
+      setter(v);
+    };
+
+  return {
+    targetWidth,
+    setTargetWidth: withClear(setTargetWidth),
+    targetHeight,
+    setTargetHeight: withClear(setTargetHeight),
+    keepAspectRatio,
+    setKeepAspectRatio,
+    outputFormat,
+    setOutputFormat: withClear(setOutputFormat),
+    background,
+    setBackground: withClear(setBackground),
+    quality,
+    setQuality: withClear(setQuality),
+    maxFileSizeKB,
+    setMaxFileSizeKB: withClear(setMaxFileSizeKB),
+    customFileName,
+    setCustomFileName,
+  };
+}
+
+function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
+  const [file, setFile] = useState<SignatureFile | null>(null);
+  const [invalidFile, setInvalidFile] = useState<{ name: string } | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [sourceDims, setSourceDims] = useState({ width: 0, height: 0 });
   const [phase, setPhaseState] = useState<FilePhase>('idle');
   const [result, setResult] = useState<SignatureResultData | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -57,6 +86,15 @@ function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
     onPhase?.(p);
   };
 
+  const clearError = () => {
+    if (phase === 'error' || error) {
+      setError(null);
+      setPhase('idle');
+    }
+  };
+
+  const cfg = useSignatureConfigState(clearError);
+
   return {
     file,
     setFile,
@@ -66,22 +104,7 @@ function useSignatureCoreState(onPhase?: (phase: FilePhase) => void) {
     setImageSrc,
     sourceDims,
     setSourceDims,
-    targetWidth,
-    setTargetWidth,
-    targetHeight,
-    setTargetHeight,
-    keepAspectRatio,
-    setKeepAspectRatio,
-    outputFormat,
-    setOutputFormat,
-    background,
-    setBackground,
-    quality,
-    setQuality,
-    maxFileSizeKB,
-    setMaxFileSizeKB,
-    customFileName,
-    setCustomFileName,
+    ...cfg,
     phase,
     setPhase,
     result,

@@ -198,15 +198,17 @@ describe('Universal Background Remover Model Delivery', () => {
     rmSync(bigFile);
   });
 
-  it('7. Universal mode configures Cloudflare R2 custom domain and remote model loading', () => {
+  it('7. Universal mode loads the model from this site (same origin, chunked parts)', () => {
     const src = readFileSync(
       join(ROOT, 'packages/ui/src/toolkit/universalSegmentation.ts'),
       'utf8',
     );
     expect(src).toContain('env.allowLocalModels = false');
     expect(src).toContain('env.allowRemoteModels = true');
-    expect(src).toContain("env.remoteHost = customHost || 'https://models.beyandtheai.com/'");
-    expect(src).toContain("env.remotePathTemplate = 'birefnet-lite-512/{revision}/'");
+    expect(src).toContain('env.remoteHost = host;');
+    expect(src).toContain("env.remotePathTemplate = 'models/birefnet-lite-512/{revision}/'");
+    expect(src).toContain('installChunkedModelFetch([MODEL_PATH_PREFIX])');
+    expect(src).not.toContain('models.beyandtheai.com');
 
     const bg0Src = readFileSync(
       join(ROOT, 'packages/ui/node_modules/@bg0/browser/dist/index.js'),

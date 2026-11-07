@@ -1,0 +1,5 @@
+id: 008-percent-above-100
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "A commission rate above 100% is not a rate" }
+input: { sellingPrice: "100", productCost: "10", commissionPercent: "120" }
+expectedError: { code: ESTIMATE_PERCENT_OUT_OF_RANGE, path: commissionPercent }

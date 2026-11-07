@@ -6,5 +6,9 @@ export const legendMetrics = (legend: Locator) =>
     scrollWidth: node.scrollWidth,
     clientWidth: node.clientWidth,
     scrollLeft: node.scrollLeft,
+    scrollHeight: node.scrollHeight,
+    clientHeight: node.clientHeight,
+    scrollTop: node.scrollTop,
     overflowX: getComputedStyle(node).overflowX,
+    overflowY: getComputedStyle(node).overflowY,
   }));

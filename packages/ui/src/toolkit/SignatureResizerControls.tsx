@@ -24,9 +24,9 @@ function DocFileIcon() {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
       class={styles.formatDocIcon}
       aria-hidden="true"
     >
@@ -330,7 +330,7 @@ export function SignatureResizerControls({
             name="Download signature"
             aria-label="Download signature"
             onClick={() => void signature.executeResizeAndDownload()}
-            disabled={isExecuting || !signature.file || signature.phase === 'error'}
+            disabled={isExecuting || !signature.file}
           >
             <svg
               width="15"
@@ -338,9 +338,9 @@ export function SignatureResizerControls({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
               aria-hidden="true"
             >
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

@@ -19,7 +19,8 @@ interface ResultItem {
 
 /** Description · SKU · HSN · Qty · Unit · Origin — no price, no amount, no commercial value. */
 function ItemTable({ preset, items }: { preset: ResolvedPreset; items: ResultItem[] }) {
-  const col = (key: string) => label(preset, `packing.item.${key}`);
+  // Column headers drop the form's "Item — " prefix so the narrow result table stays readable.
+  const col = (key: string) => label(preset, `packing.item.${key}`).replace(/^Item — /, '');
   return (
     <ScrollableItemTable caption={label(preset, 'packing.out.items')}>
       <thead>

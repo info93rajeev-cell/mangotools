@@ -1,0 +1,5 @@
+id: 017-fractional-quantity-error
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "Units are whole numbers" }
+input: { solve: price-from-cost-and-markup, cost: "500", markupPercent: "40", quantity: "2.5" }
+expectedError: { code: ESTIMATE_INVALID_QUANTITY, path: quantity }

@@ -1,0 +1,88 @@
+id: 001-standard-reference-prices
+operation: food.cost.estimate@1
+source:
+  type: synthetic
+  citation: >-
+    Standard reference prices for key staples. Exact rational math.
+    Basmati rice: Rs. 120 per 1 kg -> 2500 g = Rs. 300.00.
+    Toor dal: Rs. 160 per 1 kg -> 2500 g = Rs. 400.00.
+    Ghee: Rs. 650 per 1 l -> 562.5 ml = Rs. 365.625 -> Rs. 365.63.
+    Tomato: Rs. 5 per 1 piece -> 38 pieces = Rs. 190.00.
+    Total = 300 + 400 + 365.625 + 190 = 1255.625 -> Rs. 1255.63.
+input:
+  guests: 50
+  lines:
+    - { ingredient: basmati-rice, buy: "2500", unit: g }
+    - { ingredient: toor-dal, buy: "2500", unit: g }
+    - { ingredient: ghee, buy: "562.5", unit: ml }
+    - { ingredient: tomato, buy: "38", unit: piece }
+  prices:
+    - ingredient: basmati-rice
+      kind: retail-reference
+      priceInr: "120"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+    - ingredient: toor-dal
+      kind: retail-reference
+      priceInr: "160"
+      per: "1"
+      unit: kg
+      observedOn: "2026-11-01"
+    - ingredient: ghee
+      kind: retail-reference
+      priceInr: "650"
+      per: "1"
+      unit: l
+      observedOn: "2026-11-01"
+    - ingredient: tomato
+      kind: retail-reference
+      priceInr: "5"
+      per: "1"
+      unit: piece
+      observedOn: "2026-11-01"
+expected:
+  totalCostInr: "1255.63"
+  exactTotalCost: "1255.625"
+  costPerGuestInr: "25.11"
+  budgetStatus: no-budget
+  pricedCount: 4
+  unpricedCount: 0
+  unpricedIngredients: []
+  items:
+    - ingredient: basmati-rice
+      quantity: "2500"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.12"
+      costInr: "300.00"
+      exactCost: "300"
+      observedOn: "2026-11-01"
+    - ingredient: ghee
+      quantity: "562.5"
+      unit: ml
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.65"
+      costInr: "365.63"
+      exactCost: "365.625"
+      observedOn: "2026-11-01"
+    - ingredient: tomato
+      quantity: "38"
+      unit: piece
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "5"
+      costInr: "190.00"
+      exactCost: "190"
+      observedOn: "2026-11-01"
+    - ingredient: toor-dal
+      quantity: "2500"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.16"
+      costInr: "400.00"
+      exactCost: "400"
+      observedOn: "2026-11-01"
