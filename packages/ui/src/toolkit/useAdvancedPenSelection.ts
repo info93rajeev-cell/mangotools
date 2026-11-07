@@ -72,7 +72,7 @@ function usePenImageState(notify: (msg: string) => void) {
 
 function usePenEdgeAndBgState() {
   const [edgeSettings, setEdgeSettings] = useState<SelectionEdgeSettings>({
-    featherRadius: 5,
+    featherRadius: 2,
     expandContract: 0,
     smoothPath: 0,
     edgeBlur: 0,

@@ -21,36 +21,42 @@ const EMPTY: SelectionSnapshot = {
 };
 const MAX_STEPS = 30;
 
+interface HistoryState {
+  stack: SelectionSnapshot[];
+  index: number;
+}
+
+/** Undo stack with functional updates, so rapid edits always build on the latest state. */
 function useSnapshotHistory() {
-  const [current, setCurrent] = useState<SelectionSnapshot>(EMPTY);
-  const [history, setHistory] = useState<SelectionSnapshot[]>([EMPTY]);
-  const [index, setIndex] = useState(0);
+  const [h, setH] = useState<HistoryState>({ stack: [EMPTY], index: 0 });
+  const current = h.stack[h.index] ?? EMPTY;
 
   const commit = useCallback(
-    (next: SelectionSnapshot) => {
-      setHistory((prev) => [...prev.slice(0, index + 1), next].slice(-MAX_STEPS));
-      setIndex((i) => Math.min(i + 1, MAX_STEPS - 1));
-      setCurrent(next);
-    },
-    [index],
+    (next: (cur: SelectionSnapshot) => SelectionSnapshot) =>
+      setH((prev) => {
+        const cur = prev.stack[prev.index] ?? EMPTY;
+        const stack = [...prev.stack.slice(0, prev.index + 1), next(cur)].slice(-MAX_STEPS);
+        return { stack, index: stack.length - 1 };
+      }),
+    [],
   );
-  const reset = useCallback((next: SelectionSnapshot = EMPTY) => {
-    setHistory([next]);
-    setIndex(0);
-    setCurrent(next);
-  }, []);
-  const undo = useCallback(() => {
-    if (index <= 0) return;
-    setIndex(index - 1);
-    setCurrent(history[index - 1] ?? EMPTY);
-  }, [history, index]);
-  const redo = useCallback(() => {
-    if (index >= history.length - 1) return;
-    setIndex(index + 1);
-    setCurrent(history[index + 1] ?? EMPTY);
-  }, [history, index]);
-
-  return { current, setCurrent, commit, reset, undo, redo, index, length: history.length };
+  /** Replace the current step in place (live dragging; no new undo step). */
+  const setCurrent = useCallback(
+    (next: (cur: SelectionSnapshot) => SelectionSnapshot) =>
+      setH((prev) => {
+        const stack = [...prev.stack];
+        stack[prev.index] = next(stack[prev.index] ?? EMPTY);
+        return { stack, index: prev.index };
+      }),
+    [],
+  );
+  const reset = useCallback(() => setH({ stack: [EMPTY], index: 0 }), []);
+  const undo = useCallback(() => setH((p) => ({ ...p, index: Math.max(0, p.index - 1) })), []);
+  const redo = useCallback(
+    () => setH((p) => ({ ...p, index: Math.min(p.stack.length - 1, p.index + 1) })),
+    [],
+  );
+  return { current, commit, setCurrent, reset, undo, redo, index: h.index, length: h.stack.length };
 }
 
 export function usePenSelectionHistory(
@@ -64,23 +70,23 @@ export function usePenSelectionHistory(
   /** Live path update while dragging (no undo step). */
   const setPath = useCallback(
     (update: BezierPath | ((prev: BezierPath) => BezierPath)) =>
-      h.setCurrent((prev) => ({
-        ...prev,
-        path: typeof update === 'function' ? update(prev.path) : update,
+      h.setCurrent((cur) => ({
+        ...cur,
+        path: typeof update === 'function' ? update(cur.path) : update,
       })),
     [h.setCurrent],
   );
   const pushHistory = useCallback(
-    (path: BezierPath) => commit({ ...current, path }),
-    [commit, current],
+    (path: BezierPath) => commit((cur) => ({ ...cur, path })),
+    [commit],
   );
   const addStroke = useCallback(
-    (stroke: BrushStroke) => commit({ ...current, strokes: [...current.strokes, stroke] }),
-    [commit, current],
+    (stroke: BrushStroke) => commit((cur) => ({ ...cur, strokes: [...cur.strokes, stroke] })),
+    [commit],
   );
   const setAiMask = useCallback(
     (aiMask: ImageBitmap | null) =>
-      commit({ path: { points: [], isClosed: false }, strokes: [], aiMask }),
+      commit(() => ({ path: { points: [], isClosed: false }, strokes: [], aiMask })),
     [commit],
   );
 

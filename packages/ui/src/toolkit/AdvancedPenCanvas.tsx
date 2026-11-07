@@ -142,6 +142,9 @@ function useBrushStroke(
   svgRef: { current: SVGSVGElement | null },
 ) {
   const { activeTool, brushRadius, imageDims, addStroke } = penSelection;
+  // The stroke lives in a ref so fast taps (down + up before a re-render) are never lost;
+  // `live` only drives the on-screen preview.
+  const pointsRef = useRef<BrushPoint[] | null>(null);
   const [live, setLive] = useState<BrushPoint[] | null>(null);
   const brushing = activeTool === 'brushAdd' || activeTool === 'brushRemove';
   const radius = useCallback(() => {
@@ -156,27 +159,32 @@ function useBrushStroke(
       if (!c) return;
       e.preventDefault();
       (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+      pointsRef.current = [c];
       setLive([c]);
     },
     [brushing, getSvgCoords],
   );
   const onPointerMove = useCallback(
     (e: PointerEvent) => {
-      if (!live) return;
-      const c = getSvgCoords(e);
-      if (c) setLive((prev) => (prev ? [...prev, c] : prev));
+      const pts = pointsRef.current;
+      const c = pts ? getSvgCoords(e) : null;
+      if (!pts || !c) return;
+      pts.push(c);
+      setLive([...pts]);
     },
-    [live, getSvgCoords],
+    [getSvgCoords],
   );
   const onPointerUp = useCallback(() => {
-    if (!live) return;
+    const pts = pointsRef.current;
+    if (!pts) return;
+    pointsRef.current = null;
     addStroke({
       mode: activeTool === 'brushAdd' ? 'add' : 'remove',
       radius: radius(),
-      points: live,
+      points: pts,
     });
     setLive(null);
-  }, [live, activeTool, addStroke, radius]);
+  }, [activeTool, addStroke, radius]);
 
   return { brushing, live, liveRadius: radius(), onPointerDown, onPointerMove, onPointerUp };
 }
