@@ -1,0 +1,28 @@
+id: 002-family-dinner
+preset: food/planner
+source: { type: hand-verified, citation: "Derived from reference recipe jeera-rice scaled for 10 guests" }
+input:
+  guests: 10
+  servingsPerGuest: "1"
+  ingredients:
+    - { id: basmati-rice, dimension: mass, allergens: [], notFor: [] }
+    - { id: cumin-seeds, dimension: mass, allergens: [], notFor: [] }
+    - { id: ghee, dimension: volume, allergens: [dairy], notFor: [vegan] }
+  recipes:
+    - id: jeera-rice
+      version: "0.1.0"
+      servings: 4
+      diet: vegetarian
+      ingredients:
+        - { ingredient: basmati-rice, quantity: "200", unit: g }
+        - { ingredient: cumin-seeds, quantity: "5", unit: g }
+        - { ingredient: ghee, quantity: "15", unit: ml }
+  selection:
+    - { recipe: jeera-rice, recipeVersion: "0.1.0", portionFactor: "1" }
+expected:
+  scale:
+    - { recipe: jeera-rice, factor: "2.5" }
+  lines:
+    - { ingredient: basmati-rice, total: "500", unit: g, buy: "500", usedIn: [jeera-rice] }
+    - { ingredient: cumin-seeds, total: "12.5", unit: g, buy: "12.5", usedIn: [jeera-rice] }
+    - { ingredient: ghee, total: "37.5", unit: ml, buy: "37.5", usedIn: [jeera-rice] }

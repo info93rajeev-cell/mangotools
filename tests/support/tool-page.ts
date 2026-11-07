@@ -36,6 +36,7 @@ export const SAMPLES = {
   // The studio's Load sample button loads the reference records shown on first open.
   'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
+  'food-planner': { archetype: 'B', resultPattern: /Food Planner|Diwali Feast/ },
 } as const;
 
 /**
@@ -213,7 +214,7 @@ export const island = (page: Page, id: string) => {
 };
 export const primaryResult = (page: Page) =>
   page.locator(
-    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong',
+    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong, [data-tool-island="food-planner"]',
   );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
@@ -300,6 +301,10 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(page.locator('[data-image-bg-remover-layout]')).toBeVisible();
     return;
   }
+  if (id === 'food-planner') {
+    await expect(page.locator('[data-tool-island="food-planner"]')).toBeVisible();
+    return;
+  }
   if (CIVIL_TOOL_IDS.has(id)) {
     await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
       'data-stale',
@@ -362,8 +367,8 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     }
     await triggerFileToolAction(page, id);
     await page.getByRole('button', { name: tool.downloadCta }).click();
-  } else if (isLogisticsStudio(id) || id === 'gst-calculator') {
-    // The Logistics studios and Universal Tax worksheets open already filled with their calculation result
+  } else if (isLogisticsStudio(id) || id === 'gst-calculator' || id === 'food-planner') {
+    // The Logistics studios, Universal Tax worksheets and Food Planner open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
   } else if (CIVIL_TOOL_IDS.has(id)) {
     // Civil workspaces open pre-calculated with default reference values; pressing Calculate performs the calculation.

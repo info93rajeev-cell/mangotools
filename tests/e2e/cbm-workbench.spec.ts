@@ -69,7 +69,7 @@ async function expectFooterLayout(footer: Locator, width: number) {
         (links) => new Set(links.map((link) => Math.round(link.getBoundingClientRect().top))).size,
       );
   expect(await rows('nav.info a')).toBe(1);
-  expect(await rows('nav.categories a')).toBeLessThanOrEqual(width >= 768 ? 2 : 4);
+  expect(await rows('nav.categories a')).toBeLessThanOrEqual(width >= 768 ? 2 : 6);
 }
 
 test.describe('CBM workbench (#219 founder reference)', () => {

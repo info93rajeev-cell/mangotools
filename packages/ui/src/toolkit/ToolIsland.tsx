@@ -21,6 +21,7 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicAmazonFeeLayout } from './DynamicAmazonFeeLayout.tsx';
+import { DynamicFoodPlannerLayout } from './DynamicFoodPlannerLayout.tsx';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
 import { DynamicMarkupCalculatorLayout } from './DynamicMarkupCalculatorLayout.tsx';
 import { DynamicPdfDocumentLayout } from './DynamicPdfDocumentLayout.tsx';
@@ -60,6 +61,7 @@ const PDF_STUDIO_TOOL_IDS = new Set([
   'pdf-to-word',
   'word-to-pdf',
 ]);
+const FOOD_STUDIO_TOOL_IDS = new Set(['food-planner']);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -145,7 +147,8 @@ const isStandardCalculator = (
   archetype === 'B' &&
   presetId !== INVOICE_MULTI_ITEM_PRESET_ID &&
   presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID &&
-  !BUSINESS_STUDIO_TOOL_IDS.has(toolId ?? '');
+  !BUSINESS_STUDIO_TOOL_IDS.has(toolId ?? '') &&
+  !FOOD_STUDIO_TOOL_IDS.has(toolId ?? '');
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -170,7 +173,9 @@ function ToolIslandView(props: ToolIslandViewProps) {
   } = props;
   const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
   const isPdfStudio = PDF_STUDIO_TOOL_IDS.has(toolId);
-  const isCustomStudio = isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId) || isPdfStudio;
+  const isFoodStudio = FOOD_STUDIO_TOOL_IDS.has(toolId);
+  const isCustomStudio =
+    isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId) || isPdfStudio || isFoodStudio;
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       {standardCalculator || isCustomStudio ? null : (
@@ -188,6 +193,9 @@ function ToolIslandView(props: ToolIslandViewProps) {
 
 function renderSpecialCalculators(props: ArchetypeProps) {
   const { toolId, preset, idPrefix, snapshot, store, notify } = props;
+  if (toolId === 'food-planner') {
+    return <DynamicFoodPlannerLayout notify={notify} />;
+  }
   if (toolId === 'gst-calculator') {
     return <DynamicUniversalTaxLayout notify={notify} />;
   }
