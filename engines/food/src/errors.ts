@@ -17,4 +17,12 @@ export const messages: Readonly<Record<string, string>> = {
     '{count} recipe(s) were left out because they are not suitable for a {diet} diet.',
   FOOD_VALUES_ROUNDED:
     '{count} value(s) could not be written exactly and were rounded to 3 decimals.',
+  FOOD_PRICE_DIMENSION_MISMATCH:
+    'Price for "{ingredient}" measures in "{priceUnit}", which does not match line unit "{lineUnit}".',
+  FOOD_INVALID_PRICE:
+    'The price amount "{value}" for "{ingredient}" is not a valid non-negative decimal.',
+  FOOD_DUPLICATE_PRICE: 'Multiple prices of kind "{kind}" provided for "{ingredient}".',
+  FOOD_MISSING_PRICE: 'No price reference or user price found for "{ingredient}".',
+  FOOD_BUDGET_EXCEEDED:
+    'Total estimated cost (Rs. {total}) exceeds the budget (Rs. {budget}) by Rs. {difference}.',
 };
