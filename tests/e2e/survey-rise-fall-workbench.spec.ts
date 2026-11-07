@@ -81,9 +81,15 @@ for (const vp of viewports) {
     await expect(page.getByText('Home')).toBeVisible();
     await expect(page.getByText('Surveying')).toBeVisible();
 
-    // Wait for initial sample calculation
-    const readyBadge = page.getByText('✓ Calculated');
-    await expect(readyBadge).toBeVisible();
+    // On initial mount, allowable constant C has no automatic default -> Criterion not provided
+    const resultsBadge = page.locator('[data-results-badge]');
+    await expect(resultsBadge).toHaveText(/Criterion not provided/);
+
+    // Click "Try sample" button to load approved 6-station sample with C=24 and distance adjustment
+    await page.locator('[data-try-sample]').click();
+
+    // Wait for sample calculation -> Within limit
+    await expect(resultsBadge).toHaveText(/Within limit/);
 
     // Verify arithmetic equality checks text
     await expect(
@@ -97,11 +103,29 @@ for (const vp of viewports) {
     const resultRows = resultTable.locator('tbody tr');
     await expect(resultRows).toHaveCount(6);
 
-    // Verify Row 0 has absent rise/fall (—) rather than fabricated zeroes
+    // Verify Row 0 has dist=0, absent rise/fall (—), Raw RL 100.000, corr 0.0, Adjusted RL 100.000
     const firstRowCells = resultRows.first().locator('td');
-    await expect(firstRowCells.nth(1)).toHaveText('—');
+    await expect(firstRowCells.nth(0)).toHaveText('BM-1');
+    await expect(firstRowCells.nth(1)).toHaveText('0');
     await expect(firstRowCells.nth(2)).toHaveText('—');
-    await expect(firstRowCells.nth(3)).toHaveText('100.000');
+    await expect(firstRowCells.nth(3)).toHaveText('—');
+    await expect(firstRowCells.nth(4)).toHaveText('100.000');
+    await expect(firstRowCells.nth(5)).toHaveText('0.0');
+    await expect(firstRowCells.nth(6)).toHaveText('100.000');
+
+    // Verify Row 5 (closing BM): dist=40, raw RL 99.800, corr +5.0, Adjusted RL 99.805
+    const lastRowCells = resultRows.last().locator('td');
+    await expect(lastRowCells.nth(0)).toHaveText('BM-2');
+    await expect(lastRowCells.nth(1)).toHaveText('40');
+    await expect(lastRowCells.nth(4)).toHaveText('99.800');
+    await expect(lastRowCells.nth(5)).toHaveText('+5.0');
+    await expect(lastRowCells.nth(6)).toHaveText('99.805');
+
+    // Verify Line length chip displays measured length
+    await expect(page.locator('[data-line-length-value]')).toHaveText('160 m (0.160 km)');
+
+    // Verify Allowable limit tile displays ±9.6 mm
+    await expect(page.locator('[data-tile-allowable]')).toHaveText('±9.6 mm');
 
     // Verify Copy level book and Print / Save PDF buttons
     const copyBtn = page.locator('[data-copy-book-btn]');
@@ -178,7 +202,9 @@ test('Stale state invalidation on input change and recalculation', async ({ page
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
   const copyBtn = page.locator('[data-copy-book-btn]');
   const printBtn = page.locator('[data-print-book-btn]');
   await expect(copyBtn).toBeEnabled();
@@ -198,12 +224,12 @@ test('Stale state invalidation on input change and recalculation', async ({ page
   await expect(copyBtn).toBeDisabled();
   await expect(printBtn).toBeDisabled();
 
-  // Recalculate
+  // Recalculate (Start RL changed to 105.000 while known closing RL is 99.805 -> misclosure exceeds limit)
   await page.locator('[data-calculate-btn]').click();
 
   // Verify updated results
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
-  const firstRowRL = page.locator('[data-results-table] tbody tr').first().locator('td').nth(3);
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Outside limit/);
+  const firstRowRL = page.locator('[data-results-table] tbody tr').first().locator('td').nth(4);
   await expect(firstRowRL).toHaveText('105.000');
   await expect(copyBtn).toBeEnabled();
 });
@@ -212,7 +238,9 @@ test('Error path alignment, input focus and error recovery', async ({ page }) =>
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 
   // Change row 0 BS to invalid negative reading
   const cell = page.locator('#survey-obs-0-bs');
@@ -231,15 +259,33 @@ test('Error path alignment, input focus and error recovery', async ({ page }) =>
   await page.locator('[data-calculate-btn]').click();
 
   // Verify error cleared and calculation succeeds
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
   await expect(cell).not.toHaveAttribute('aria-invalid', 'true');
+
+  // Test start distance non-zero rejection (contract invariant: d0 must be 0 or omitted)
+  const dist0 = page.locator('#survey-obs-0-dist');
+  await dist0.fill('10');
+  await page.locator('[data-calculate-btn]').click();
+
+  await expect(dist0).toBeFocused();
+  await expect(dist0).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('[data-survey-error]')).toHaveText(
+    /Starting station distance must be 0 or omitted\./,
+  );
+
+  // Recovery
+  await dist0.fill('0');
+  await page.locator('[data-calculate-btn]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 });
 
 test('Row addition and deletion interaction', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 
   const rows = page.locator('[data-level-book-table] tbody tr');
   const initialCount = await rows.count();
@@ -261,7 +307,9 @@ test('In-flight calculation abort and invalidation on edit (deterministic delaye
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 
   // Inject a 400ms delay into calculation requests
   await page.evaluate(() => {
@@ -285,14 +333,14 @@ test('In-flight calculation abort and invalidation on edit (deterministic delaye
   await expect(page.locator('[data-copy-book-btn]')).toBeDisabled();
   await expect(page.locator('[data-print-book-btn]')).toBeDisabled();
 
-  // Reset delay and recalculate with new input
+  // Reset delay and recalculate with new input (Start RL=120.000 -> misclosure exceeds limit)
   await page.evaluate(() => {
     (window as unknown as { __calculationDelay: number }).__calculationDelay = 0;
   });
   await page.locator('[data-calculate-btn]').click();
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
-  const firstRowRL = page.locator('[data-results-table] tbody tr').first().locator('td').nth(3);
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Outside limit/);
+  const firstRowRL = page.locator('[data-results-table] tbody tr').first().locator('td').nth(4);
   await expect(firstRowRL).toHaveText('120.000');
 });
 
@@ -300,7 +348,9 @@ test('Clipboard copy handling: success and failure toast paths', async ({ page }
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
   const copyBtn = page.locator('[data-copy-book-btn]');
 
   // Test 1: Successful clipboard write
@@ -336,46 +386,36 @@ test('Clipboard copy handling: success and failure toast paths', async ({ page }
   ).toBeVisible();
 });
 
-test('Unvalidated distance inputs do not fabricate line length or alter illustrative profile', async ({
+test('Tolerance criterion, missing distance, and illustrative profile when unvalidated', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  // Initial load without C -> Criterion not provided
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+  await expect(page.locator('[data-tile-allowable]')).toHaveText('—');
 
-  // 1. Verify Line length chip displays '—' in PR 1 (distance contract unvalidated)
-  const lineLengthChip = page.locator('[data-line-length-value]');
-  await expect(lineLengthChip).toHaveText('—');
-
-  // 2. Verify profile SVG nodes have evenly spaced illustrative horizontal distribution
-  const profileSvg = page.locator('svg[aria-label="Level profile chart"]');
-  await expect(profileSvg).toBeVisible();
-
-  // Check that no numeric distance labels (e.g. "30m", "160m") appear in the SVG
-  const svgTextContents = await profileSvg.locator('text').allTextContents();
-  for (const text of svgTextContents) {
-    expect(text).not.toMatch(/^\d+m$/);
-  }
-
-  // 3. Inject changed or invalid distance data (arbitrary numbers, text, negative values)
+  // Clear all distances to test illustrative spacing when distances are absent
   await page.evaluate(() => {
     const inputs = document.querySelectorAll<HTMLInputElement>('[data-cell^="dist-"]');
-    inputs.forEach((input, i) => {
-      input.disabled = false;
-      input.value = i === 1 ? 'invalid-dist-string' : '99999';
+    inputs.forEach((input) => {
+      input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
   });
 
-  // 4. Recalculate levels
   await page.locator('[data-calculate-btn]').click();
-  await expect(page.getByText('✓ Calculated')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
 
-  // 5. Line length must remain '—' and never fabricate measured length from unvalidated strings
+  // Line length chip must display '—'
+  const lineLengthChip = page.locator('[data-line-length-value]');
   await expect(lineLengthChip).toHaveText('—');
 
-  // 6. Profile nodes must remain evenly spaced illustrative stations (width - p.l - p.r) / 5 = 115.6px
+  // Profile nodes must be evenly spaced (115.6px ± 0.5px)
+  const profileSvg = page.locator('svg[aria-label="Level profile chart"]');
+  await expect(profileSvg).toBeVisible();
+
   const circles = profileSvg.locator('circle');
   await expect(circles).toHaveCount(6);
   const cxValues: number[] = [];
@@ -385,6 +425,129 @@ test('Unvalidated distance inputs do not fabricate line length or alter illustra
   }
   for (let i = 1; i < cxValues.length; i++) {
     const spacing = cxValues[i] - cxValues[i - 1];
+    expect(Math.abs(spacing - 115.6)).toBeLessThan(0.5);
+  }
+
+  // Supply C=24 and request distance adjustment with missing distances -> missing distance error
+  const constInput = page.locator('#survey-allowable-const');
+  await constInput.fill('24');
+  const adjustSelect = page.locator('#survey-adjust-by');
+  await adjustSelect.selectOption('distance');
+  await page.locator('[data-calculate-btn]').click();
+
+  const dist1 = page.locator('#survey-obs-1-dist');
+  await expect(dist1).toBeFocused();
+  await expect(dist1).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('[data-survey-error]')).toHaveText(
+    /Distance from previous station is required for distance-based adjustment\./,
+  );
+});
+
+test('Sub-metre (0.4 m) and non-integer (160.4 m) profile geometry, line-length text, and fallback', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
+
+  // Wait for initial render before clicking sample
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
+
+  // Load sample (standard 6 stations, 160 m total)
+  await page.locator('[data-try-sample]').click();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
+  await expect(page.locator('[data-line-length-value]')).toHaveText('160 m (0.160 km)');
+
+  const profileSvg = page.locator('svg[aria-label="Level profile chart"]');
+  await expect(profileSvg).toBeVisible();
+
+  // 1. Test non-integer length (160.4 m)
+  // Edit row 5 distance from 40 to 40.4 -> total distance is 160.4 m
+  const dist5 = page.locator('#survey-obs-5-dist');
+  await dist5.fill('40.4');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must display explicit precision for non-integer distance consistent with km
+  await expect(page.locator('[data-line-length-value]')).toHaveText('160.4 m (0.1604 km)');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('160.4 m (0.1604 km)');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  // Terminal node position must not exceed the expected axis (W - padding.r = 640 - 16 = 624)
+  const circles1604 = profileSvg.locator('circle');
+  await expect(circles1604).toHaveCount(6);
+  const lastCx1604 = Number(await circles1604.last().getAttribute('cx'));
+  expect(lastCx1604).toBe(624);
+  expect(lastCx1604).toBeLessThanOrEqual(624);
+
+  // 2. Test sub-metre length (0.4 m)
+  // Set distances so total is 0.4 m (0.1 + 0.1 + 0.1 + 0.05 + 0.05 = 0.4)
+  await page.locator('#survey-obs-1-dist').fill('0.1');
+  await page.locator('#survey-obs-2-dist').fill('0.1');
+  await page.locator('#survey-obs-3-dist').fill('0.1');
+  await page.locator('#survey-obs-4-dist').fill('0.05');
+  await page.locator('#survey-obs-5-dist').fill('0.05');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must retain valid sub-metre distance without misleading 0.000 km or collapsing to 0 m
+  await expect(page.locator('[data-line-length-value]')).toHaveText('0.4 m');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('0.4 m');
+  await expect(page.locator('[data-line-length-value]')).not.toContainText('0.000 km');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
+  // Profile must remain proportional, not illustrative
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  // Terminal node position must be exactly at 624px
+  const circles04 = profileSvg.locator('circle');
+  await expect(circles04).toHaveCount(6);
+  const lastCx04 = Number(await circles04.last().getAttribute('cx'));
+  expect(lastCx04).toBe(624);
+  expect(lastCx04).toBeLessThanOrEqual(624);
+
+  // 3. Test micro sub-metre length (0.0004 m)
+  // Set distances so total is 0.0004 m (0.0001 + 0.0001 + 0.0001 + 0.00005 + 0.00005 = 0.0004)
+  await page.locator('#survey-obs-1-dist').fill('0.0001');
+  await page.locator('#survey-obs-2-dist').fill('0.0001');
+  await page.locator('#survey-obs-3-dist').fill('0.0001');
+  await page.locator('#survey-obs-4-dist').fill('0.00005');
+  await page.locator('#survey-obs-5-dist').fill('0.00005');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Micro distance must NOT collapse to 0 m and must omit kilometre text rather than showing 0.000 km
+  await expect(page.locator('[data-line-length-value]')).toHaveText('0.0004 m');
+  await expect(page.locator('[data-summary-tiles]')).toContainText('0.0004 m');
+  await expect(page.locator('[data-line-length-value]')).not.toContainText('0.000 km');
+  await expect(page.locator('[data-line-length-value]')).not.toHaveText('0 m');
+  await expect(page.locator('[data-profile-card]')).toContainText('Proportional distance profile');
+
+  const circles0004 = profileSvg.locator('circle');
+  await expect(circles0004).toHaveCount(6);
+  const lastCx0004 = Number(await circles0004.last().getAttribute('cx'));
+  expect(lastCx0004).toBe(624);
+  expect(lastCx0004).toBeLessThanOrEqual(624);
+
+  // 4. Test fallback when a distance is missing
+  // Clear distance on row 2
+  await page.locator('#survey-obs-2-dist').fill('');
+  // Select unadjusted ('none') so calculation succeeds without throwing missing-distance validation error
+  await page.locator('#survey-adjust-by').selectOption('none');
+  await page.locator('[data-calculate-btn]').click();
+
+  // Line length chip must display fallback '—'
+  await expect(page.locator('[data-line-length-value]')).toHaveText('—');
+  // Profile card header badge must show fallback 'Illustrative, not to scale'
+  await expect(page.locator('[data-profile-card]')).toContainText('Illustrative, not to scale');
+  // Summary tile subtext must display 'No measured length'
+  await expect(page.locator('[data-summary-tiles]')).toContainText('No measured length');
+
+  // Profile nodes must fall back to uniform illustrative spacing (115.6px ± 0.5px)
+  const circlesFallback = profileSvg.locator('circle');
+  await expect(circlesFallback).toHaveCount(6);
+  const cxFallback: number[] = [];
+  for (let i = 0; i < 6; i++) {
+    cxFallback.push(Number(await circlesFallback.nth(i).getAttribute('cx')));
+  }
+  for (let i = 1; i < cxFallback.length; i++) {
+    const spacing = cxFallback[i] - cxFallback[i - 1];
     expect(Math.abs(spacing - 115.6)).toBeLessThan(0.5);
   }
 });

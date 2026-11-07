@@ -6,6 +6,7 @@ import { SurveyProfilePlaceholder } from './SurveyProfilePlaceholder.tsx';
 import { SurveyResultsCard } from './SurveyResultsCard.tsx';
 import s from './surveyLevelingLayout.module.css';
 import { surveyStrings } from './surveyLevelingStrings.ts';
+import type { SurveyCalculationOutput } from './surveyLevelingTypes.ts';
 import { useSurveyLeveling } from './useSurveyLeveling.ts';
 
 export interface SurveyLevelingLayoutProps {
@@ -26,19 +27,73 @@ function AccordionCard({ title, children }: { title: string; children: preact.Co
   );
 }
 
+function buildCopyText(rows: SurveyCalculationOutput['rows']): string {
+  const header = [
+    'Station',
+    'Dist (m)',
+    'BS',
+    'IS',
+    'FS',
+    'Rise',
+    'Fall',
+    'Raw RL',
+    'Corr (mm)',
+    'Adjusted RL',
+  ].join('\t');
+  const lines = rows.map((r) =>
+    [
+      r.station ?? '',
+      r.dist ?? '',
+      r.bs ?? '',
+      r.is ?? '',
+      r.fs ?? '',
+      r.rise ?? '',
+      r.fall ?? '',
+      r.rl,
+      r.corr ?? '',
+      r.adjustedRL ?? '',
+    ].join('\t'),
+  );
+  return [header, ...lines].join('\n');
+}
+
+function SurveyHeaderPills() {
+  return (
+    <div class={s.titleBar}>
+      <div>
+        <h2 class={s.title}>{surveyStrings.title}</h2>
+        <p class={s.subtitle}>{surveyStrings.subtitle}</p>
+      </div>
+      <div class={s.pills}>
+        <span class={s.pill}>💡 {surveyStrings.guide}</span>
+        <span class={s.pill}>⛶ {surveyStrings.fullScreen}</span>
+        <span class={`${s.pill} ${s.pillSuccess}`}>🔒 {surveyStrings.privacyBadge}</span>
+      </div>
+    </div>
+  );
+}
+
+function SurveyBottomFaq() {
+  return (
+    <div class={s.bottomGrid}>
+      <AccordionCard title="ⓘ Disclaimer">Estimation aid for civil surveying.</AccordionCard>
+      <AccordionCard title="📖 How to use">Enter starting BM RL and observations.</AccordionCard>
+      <AccordionCard title="⚙ Method">Rise & Fall reduction method.</AccordionCard>
+      <AccordionCard title="❓ FAQ">Calculations run 100% locally on your device.</AccordionCard>
+      <AccordionCard title="🔗 Related tools">
+        Explore other civil and surveying tools.
+      </AccordionCard>
+    </div>
+  );
+}
+
 export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLevelingLayoutProps) {
   const survey = useSurveyLeveling(customRun);
   const [message, notify] = useToast();
 
   const handleCopyBook = async () => {
     if (!survey.result || survey.isStale) return;
-    const header = ['Station', 'BS', 'IS', 'FS', 'Rise', 'Fall', 'RL'].join('\t');
-    const lines = survey.result.rows.map((r) =>
-      [r.station ?? '', r.bs ?? '', r.is ?? '', r.fs ?? '', r.rise ?? '', r.fall ?? '', r.rl].join(
-        '\t',
-      ),
-    );
-    const content = [header, ...lines].join('\n');
+    const content = buildCopyText(survey.result.rows);
     if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) {
       notify(surveyStrings.copyFailedToast);
       return;
@@ -53,19 +108,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
 
   return (
     <div class={s.root} data-survey-workbench="">
-      {showHeader && (
-        <div class={s.titleBar}>
-          <div>
-            <h2 class={s.title}>{surveyStrings.title}</h2>
-            <p class={s.subtitle}>{surveyStrings.subtitle}</p>
-          </div>
-          <div class={s.pills}>
-            <span class={s.pill}>💡 {surveyStrings.guide}</span>
-            <span class={s.pill}>⛶ {surveyStrings.fullScreen}</span>
-            <span class={`${s.pill} ${s.pillSuccess}`}>🔒 {surveyStrings.privacyBadge}</span>
-          </div>
-        </div>
-      )}
+      {showHeader && <SurveyHeaderPills />}
 
       <div class={s.grid}>
         <div>
@@ -74,6 +117,10 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
             setStartRL={survey.setStartRL}
             closingRL={survey.closingRL}
             setClosingRL={survey.setClosingRL}
+            kConstant={survey.kConstant}
+            setKConstant={survey.setKConstant}
+            adjBy={survey.adjBy}
+            setAdjBy={survey.setAdjBy}
             rows={survey.rows}
             errors={survey.errors}
             cellErrors={survey.cellErrors}
@@ -108,15 +155,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         {surveyStrings.accWarningsBody}
       </AccordionCard>
 
-      <div class={s.bottomGrid}>
-        <AccordionCard title="ⓘ Disclaimer">Estimation aid for civil surveying.</AccordionCard>
-        <AccordionCard title="📖 How to use">Enter starting BM RL and observations.</AccordionCard>
-        <AccordionCard title="⚙ Method">Rise & Fall reduction per BS 5606 / NPTEL.</AccordionCard>
-        <AccordionCard title="❓ FAQ">Calculations run 100% locally on your device.</AccordionCard>
-        <AccordionCard title="🔗 Related tools">
-          Explore other civil and surveying tools.
-        </AccordionCard>
-      </div>
+      <SurveyBottomFaq />
 
       <Toast message={message} />
     </div>

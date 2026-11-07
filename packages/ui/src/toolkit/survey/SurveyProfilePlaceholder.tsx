@@ -1,3 +1,8 @@
+import {
+  computeValidatedDistance,
+  formatMeasuredLineLength,
+  type ValidatedLineDistance,
+} from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyCalculationOutput, SurveyReducedRow } from './surveyLevelingTypes.ts';
 import s from './surveyProfile.module.css';
@@ -11,9 +16,37 @@ interface ProfilePoint {
   x: number;
   y: number;
   station: string;
+  distLabel?: string;
   isBM: boolean;
   isCP: boolean;
   rl: number;
+}
+
+function formatDistLabel(d: number): string {
+  if (Number.isInteger(d)) {
+    return `${d}m`;
+  }
+  const fixed = d.toFixed(6);
+  const trimmed = fixed.replace(/\.?0+$/, '');
+  if (trimmed === '' || trimmed === '0') {
+    return `${d}m`;
+  }
+  return `${trimmed}m`;
+}
+
+function computePointT(
+  index: number,
+  totalRows: number,
+  hasValidatedDist: boolean,
+  cumDists: number[],
+  totalM: number,
+): number {
+  if (hasValidatedDist && totalM > 0) {
+    if (index === 0) return 0;
+    if (index === totalRows - 1) return 1.0;
+    return Math.max(0, Math.min(1, cumDists[index] / totalM));
+  }
+  return totalRows > 1 ? index / (totalRows - 1) : 0.5;
 }
 
 function computeProfileGeometry(
@@ -21,6 +54,7 @@ function computeProfileGeometry(
   width: number,
   height: number,
   padding: { l: number; r: number; t: number; b: number },
+  validatedDist: ValidatedLineDistance,
 ) {
   const ys = rows.map((r) => Number(r.rl));
   let mn = Math.min(...ys);
@@ -32,21 +66,25 @@ function computeProfileGeometry(
   const X = (t: number) => padding.l + t * (width - padding.l - padding.r);
   const Y = (v: number) => padding.t + ((mx - v) / (mx - mn)) * (height - padding.t - padding.b);
 
-  // PR 1: Horizontal positions are illustrative using evenly spaced stations.
-  // Distance-based horizontal placement and line-length output require the validated PR 2 contract.
+  const hasValidatedDist =
+    validatedDist.isValid && validatedDist.totalM !== null && validatedDist.totalM > 0;
+  const totalM = hasValidatedDist ? (validatedDist.totalM as number) : 0;
+  const cumDists = validatedDist.cumDists;
+
   const points: ProfilePoint[] = rows.map((r, i) => {
-    const t = rows.length > 1 ? i / (rows.length - 1) : 0.5;
+    const t = computePointT(i, rows.length, hasValidatedDist, cumDists, totalM);
     return {
       x: X(t),
       y: Y(Number(r.rl)),
       station: r.station || `P-${i + 1}`,
+      distLabel: hasValidatedDist ? formatDistLabel(cumDists[i]) : undefined,
       isBM: i === 0 || i === rows.length - 1,
       isCP: r.isChangePoint,
       rl: Number(r.rl),
     };
   });
 
-  return { points, mn, mx, Y };
+  return { points, mn, mx, Y, hasValidatedDist };
 }
 
 function ProfileSvgChart({
@@ -128,7 +166,7 @@ function ProfileSvgChart({
             />
             <text
               x={pt.x}
-              y={H - p.b + 18}
+              y={pt.distLabel ? H - p.b + 14 : H - p.b + 18}
               font-size="10.5"
               fill="#334155"
               text-anchor="middle"
@@ -136,6 +174,11 @@ function ProfileSvgChart({
             >
               {pt.station}
             </text>
+            {pt.distLabel ? (
+              <text x={pt.x} y={H - p.b + 26} font-size="9" fill="#64748b" text-anchor="middle">
+                {pt.distLabel}
+              </text>
+            ) : null}
           </g>
         );
       })}
@@ -145,11 +188,15 @@ function ProfileSvgChart({
 
 export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePlaceholderProps) {
   const rows = result?.rows ?? [];
+  const validatedDist = computeValidatedDistance(rows);
   const geo =
-    rows.length > 0 ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }) : null;
+    rows.length > 0
+      ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }, validatedDist)
+      : null;
 
   const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
   const lowest = geo ? `${Math.min(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
+  const lineLength = formatMeasuredLineLength(validatedDist.totalM, result?.totalDistanceKm);
 
   return (
     <div class={s.card} data-profile-card="">
@@ -161,7 +208,9 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
           </svg>
         </div>
         <h2 class={s.cardTitle}>{surveyStrings.profileTitle}</h2>
-        <span class={s.cardHeadRight}>Illustrative, not to scale</span>
+        <span class={s.cardHeadRight}>
+          {geo?.hasValidatedDist ? 'Proportional distance profile' : 'Illustrative, not to scale'}
+        </span>
       </div>
       <div class={s.cardBody}>
         {geo ? (
@@ -192,9 +241,11 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
             <b
               class={s.chipValue}
               data-line-length-value=""
-              style={{ color: 'var(--color-text-muted, #64748b)' }}
+              style={
+                validatedDist.isValid ? undefined : { color: 'var(--color-text-muted, #64748b)' }
+              }
             >
-              —
+              {lineLength}
             </b>
           </div>
         </div>
