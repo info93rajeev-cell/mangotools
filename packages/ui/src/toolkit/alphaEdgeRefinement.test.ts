@@ -125,4 +125,29 @@ describe('alpha edge refinement', () => {
     const out = refineCutoutEdges(rgba, raw, w, h);
     for (const x of [150, 250, 350]) expect(alphaAt(out, w, x, 20)).toBeCloseTo(150 / 255, 2);
   });
+
+  it('does not turn faint model haze on a mixed background into blotchy patches', () => {
+    // Subject (red) on the left; the background is grey stone and green leaves in 40 px blocks,
+    // and the model left a faint 0.08 haze over it (as an upscaled 512 px mask does).
+    const w = 1024;
+    const h = 96;
+    const STONE = [130, 130, 125, 255];
+    const LEAF = [40, 150, 50, 255];
+    const colour = (x: number, y: number) => {
+      if (x < 300) return RED;
+      return (Math.floor(x / 40) + Math.floor(y / 40)) % 2 ? STONE : LEAF;
+    };
+    const rgba = new Uint8ClampedArray(w * h * 4);
+    for (let i = 0; i < w * h; i++) rgba.set(colour(i % w, Math.floor(i / w)), i * 4);
+    const raw = softMask(w, h, 300, 8);
+    for (let y = 0; y < h; y++) {
+      for (let x = 340; x < w; x++) raw[(y * w + x) * 4 + 3] = 20; // ~0.08 haze
+    }
+    const out = refineCutoutEdges(rgba, raw, w, h);
+    let worst = 0;
+    for (let i = 0; i < w * h; i += 7) {
+      if (i % w >= 360) worst = Math.max(worst, (out[i * 4 + 3] ?? 0) / 255);
+    }
+    expect(worst).toBeLessThanOrEqual(20 / 255 + 1e-6); // never raised above the model's haze
+  });
 });

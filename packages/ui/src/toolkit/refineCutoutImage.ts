@@ -82,14 +82,9 @@ export function refineForBackground(
     return refineMatte(ctxOrig, ctxCut, w, h, feather, mode, input.tolerance);
   }
   const cut = ctxCut.getImageData(0, 0, w, h);
-  const raw = new Float32Array(w * h);
-  for (let i = 0; i < raw.length; i++) raw[i] = (cut.data[i * 4 + 3] ?? 0) / 255;
-  // Keep the existing fine-twig recovery (it brings back thin parts the model barely saw, such as
-  // the branch under the kingfisher), then refit edges and clean edge colours.
-  const structured = recoverFineStructures(raw, orig, w, h, bg);
-  for (let i = 0; i < structured.length; i++) {
-    cut.data[i * 4 + 3] = Math.round((structured[i] ?? 0) * 255);
-  }
+  // Fine-twig recovery first (brings back thin parts the model barely saw, such as the branch
+  // under the kingfisher), then refit edges and clean edge colours.
+  withFineStructures(orig, cut.data, w, h);
   const refined = refineCutoutEdges(orig, cut.data, w, h);
   const alpha = new Float32Array(w * h);
   for (let i = 0; i < alpha.length; i++) alpha[i] = (refined[i * 4 + 3] ?? 0) / 255;
