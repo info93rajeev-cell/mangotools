@@ -1,0 +1,58 @@
+# Original BeyondTheAI recipe text. Quantities cross-checked against the sources below.
+id: aloo-gobi
+version: 0.1.0
+name: Aloo Gobi (dry)
+localName: आलू गोभी
+course: side
+cuisine: North Indian
+diet: vegan
+servings: 4
+prepMinutes: 15
+cookMinutes: 30
+ingredients:
+  - { ingredient: potato, quantity: "400", unit: g, note: "peeled, 2 cm cubes" }
+  - { ingredient: cauliflower, quantity: "400", unit: g, note: medium florets }
+  - { ingredient: cooking-oil, quantity: "2", unit: tbsp }
+  - { ingredient: cumin-seeds, quantity: "1", unit: tsp }
+  - { ingredient: onion, quantity: "1", unit: piece, note: finely chopped }
+  - { ingredient: ginger-garlic-paste, quantity: "1", unit: tsp }
+  - { ingredient: tomato, quantity: "1", unit: piece, note: chopped }
+  - { ingredient: turmeric-powder, quantity: "0.5", unit: tsp }
+  - { ingredient: red-chilli-powder, quantity: "0.5", unit: tsp }
+  - { ingredient: coriander-powder, quantity: "1", unit: tsp }
+  - { ingredient: garam-masala, quantity: "0.25", unit: tsp }
+  - { ingredient: amchur, quantity: "0.5", unit: tsp }
+  - { ingredient: salt, quantity: "1", unit: tsp, note: adjust to taste }
+  - { ingredient: coriander-leaves, quantity: "2", unit: tbsp }
+steps:
+  - Heat the oil in a wide pan, add the cumin seeds and let them crackle.
+  - Add the onion and cook on medium heat until light golden, then stir in the ginger-garlic paste for a minute.
+  - Add the tomato, turmeric, red chilli powder, coriander powder and salt, and cook until the tomato is soft and the oil begins to separate.
+  - Add the potato cubes and cauliflower florets, toss to coat, cover and cook on low heat for 15 to 20 minutes, stirring now and then, until both are tender but still hold their shape. Sprinkle a little water only if the masala starts to stick.
+  - Uncover, raise the heat for 2 to 3 minutes to dry off any moisture, then add the garam masala and amchur and toss gently.
+  - Finish with the coriander leaves.
+sources:
+  - title: Aloo Gobi Dry Recipe
+    publisher: Hebbars Kitchen
+    url: https://hebbarskitchen.com/easy-aloo-gobi-recipe-quick-aloo-gobi-curry-recipe/
+    accessed: 2026-11-02
+    checks: 4 servings; 1 tsp cumin; 1 onion; 1 tsp ginger-garlic paste; 1 tomato; 1/2 tsp amchur; 1/4 tsp garam masala; 2 tbsp coriander leaves.
+  - title: Aloo Gobi Recipe for a Cauliflower and Potato Curry
+    publisher: Grantourismo
+    url: https://grantourismotravels.com/wprm_print/aloo-gobi-recipe-for-a-cauliflower-and-potato-curry
+    accessed: 2026-11-02
+    checks: 500 g potato for 4 servings (vegetable weight per serving).
+  - title: Aloo Gobi Recipe (Dry)
+    publisher: Yummy Tummy Aarthi
+    url: https://www.yummytummyaarthi.com/wprm_print/173548
+    accessed: 2026-11-02
+    checks: 4 servings; 2 tbsp oil; 1 tsp cumin seeds.
+verification:
+  status: source-checked
+  by: Claude (Engineering Office), desk check
+  date: 2026-11-02
+  notes: >-
+    Spice, oil and aromatics amounts follow the sources for 4 servings. Vegetable weight (800 g
+    total, 200 g per serving) is an assumption between the sources' 500 g potato for 4 and
+    count-based amounts; it is not measured. Red chilli and coriander powder amounts were not
+    visible in the checked source excerpts and are conservative choices. Not kitchen-tested.

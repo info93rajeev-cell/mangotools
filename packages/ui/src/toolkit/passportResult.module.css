@@ -31,7 +31,7 @@
   padding: 3px 6px;
   font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -172,7 +172,7 @@ button.outputTabActive {
   width: 100%;
   padding: 8px 12px;
   background: #f59e0b;
-  color: #ffffff;
+  color: #0f172a;
   border: 1px solid #d97706;
   border-radius: 6px;
   font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
@@ -303,6 +303,16 @@ button.outputTabActive {
   font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
 }
 
+.warningBanner {
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
+  color: var(--color-text, #0f172a);
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
+  border: 1px solid #f59e0b;
+  border-radius: var(--radius-sm, 6px);
+  padding: 6px 8px;
+  line-height: 1.35;
+}
+
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
 :global(:where([data-theme="dark"])) .stepBadgeGreen {
   color: #ffffff;
@@ -313,7 +323,7 @@ button.outputTabActive {
 }
 
 :global(:where([data-theme="dark"])) .outputViewTabBtn {
-  color: #a3adbd;
+  color: #cbd5e1;
 }
 
 :global(:where([data-theme="dark"])) button.outputTabActive {
@@ -350,7 +360,7 @@ button.outputTabActive {
 }
 
 :global(:where([data-theme="dark"])) .generateGoldBtn {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 :global(:where([data-theme="dark"])) .downloadGreenBtn {

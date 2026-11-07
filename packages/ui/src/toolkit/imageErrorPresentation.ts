@@ -54,8 +54,11 @@ const STATIC_CODE_MESSAGES: Record<string, string> = {
     'The image could not be compressed. Please try again with a different image.',
   IMAGE_RESIZE_FAILED: 'The image could not be resized. Please try again with a different image.',
   IMAGE_CROP_FAILED: 'The image could not be cropped. Please try again with a different image.',
+  IMAGE_CROP_POSITION_INVALID: 'Enter a crop X and Y position of 0 or greater.',
+  IMAGE_CROP_SIZE_INVALID: 'Enter a crop width and height greater than 0.',
   IMAGE_WATERMARK_FAILED:
     'The watermark could not be added. Please try again with a different image.',
+  IMAGE_WATERMARK_TEXT_REQUIRED: 'Enter the text to use as a watermark.',
 };
 
 type ParametricHandler = (err: ImageErrorLike, name?: string) => string;
@@ -92,6 +95,17 @@ const PARAMETRIC_HANDLERS: Record<string, ParametricHandler> = {
     name
       ? `"${name}" is an animated image. Animated images are not supported for this operation.`
       : 'Animated images are not supported for this operation. Please use a static image.',
+
+  IMAGE_CROP_OUT_OF_BOUNDS: (err) => {
+    const w = err.details?.width ?? 0;
+    const h = err.details?.height ?? 0;
+    return `The crop rectangle extends outside the image, which is ${w}×${h} pixels.`;
+  },
+
+  IMAGE_WATERMARK_TEXT_TOO_LONG: (err) => {
+    const max = err.details?.max ?? 100;
+    return `Watermark text must be ${max} characters or fewer.`;
+  },
 
   IMAGE_SIZE_TARGET_UNREACHABLE: (err) => {
     const bytes = err.details?.bytes;

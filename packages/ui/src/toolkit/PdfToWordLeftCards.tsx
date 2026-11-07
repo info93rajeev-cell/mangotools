@@ -17,6 +17,9 @@ function PdfToWordFileSection({ studio }: { studio: PdfToWordState }) {
         title="Upload PDF File"
         aside={<span class={styles.listMeta}>Supports PDF files · Max 200 MB</span>}
       />
+      <div data-primary-result="" class="visually-hidden">
+        <output>{studio.docx ? studio.docx.length : ''}</output>
+      </div>
       <RefDrop
         title="Drag & drop a PDF file here"
         sub="or click to browse and select a file · Files stay in your browser"

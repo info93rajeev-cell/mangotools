@@ -1,0 +1,45 @@
+id: 006-missing-ingredient-error
+operation: food.shopping.consolidate@1
+source: {type: synthetic}
+input:
+  ingredients:
+  - {id: rice, dimension: mass}
+  - id: ghee
+    dimension: volume
+    allergens: [milk]
+    notFor: [vegan]
+  - id: potato
+    dimension: mass
+    notFor: [jain]
+  - id: onion
+    dimension: count
+    notFor: [jain]
+  - {id: tomato, dimension: count}
+  recipes:
+  - id: plain-rice
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: source-checked}
+    ingredients:
+    - {ingredient: rice, quantity: '200', unit: g}
+    - {ingredient: ghee, quantity: '1', unit: tbsp}
+  - id: potato-sabzi
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: draft}
+    ingredients:
+    - {ingredient: potato, quantity: '400', unit: g}
+    - {ingredient: onion, quantity: '1', unit: piece}
+    - {ingredient: tomato, quantity: '1', unit: piece}
+    - {ingredient: ghee, quantity: '1', unit: tsp}
+    - {ingredient: paneer, quantity: '100', unit: g}
+  selection:
+  - {recipe: plain-rice, recipeVersion: 0.1.0}
+  - {recipe: potato-sabzi, recipeVersion: 0.1.0}
+  guests: 4
+expectedError:
+  code: FOOD_UNKNOWN_INGREDIENT
+  path: recipes
+  details: {recipe: potato-sabzi, ingredient: paneer}

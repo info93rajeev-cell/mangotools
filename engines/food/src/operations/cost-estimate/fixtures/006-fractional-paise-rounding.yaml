@@ -1,0 +1,70 @@
+id: 006-fractional-paise-rounding
+operation: food.cost.estimate@1
+source:
+  type: synthetic
+  citation: >-
+    Proves total cost accumulates exact rational fractions and rounds once for display,
+    rather than summing rounded line costs (1/3 + 1/3 + 1/3 = 1.00, not 0.99).
+    Three ingredients each cost exactly 1/3 INR (1 INR per 300 g, 100 g each).
+    Individual line display costs round to 0.33 INR. Total cost formats as 1.00 INR, never 0.99 INR.
+input:
+  guests: 3
+  lines:
+    - { ingredient: item-a, buy: "100", unit: g }
+    - { ingredient: item-b, buy: "100", unit: g }
+    - { ingredient: item-c, buy: "100", unit: g }
+  prices:
+    - ingredient: item-a
+      kind: retail-reference
+      priceInr: "1"
+      per: "300"
+      unit: g
+      observedOn: "2026-11-01"
+    - ingredient: item-b
+      kind: retail-reference
+      priceInr: "1"
+      per: "300"
+      unit: g
+      observedOn: "2026-11-01"
+    - ingredient: item-c
+      kind: retail-reference
+      priceInr: "1"
+      per: "300"
+      unit: g
+      observedOn: "2026-11-01"
+expected:
+  totalCostInr: "1.00"
+  exactTotalCost: "1"
+  costPerGuestInr: "0.33"
+  budgetStatus: no-budget
+  pricedCount: 3
+  unpricedCount: 0
+  unpricedIngredients: []
+  items:
+    - ingredient: item-a
+      quantity: "100"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.003"
+      costInr: "0.33"
+      exactCost: "0.333"
+      observedOn: "2026-11-01"
+    - ingredient: item-b
+      quantity: "100"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.003"
+      costInr: "0.33"
+      exactCost: "0.333"
+      observedOn: "2026-11-01"
+    - ingredient: item-c
+      quantity: "100"
+      unit: g
+      isPriced: true
+      priceKind: retail-reference
+      ratePerBaseUnitInr: "0.003"
+      costInr: "0.33"
+      exactCost: "0.333"
+      observedOn: "2026-11-01"

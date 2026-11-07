@@ -2,7 +2,7 @@ import { inr, pct } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
 import type { AmazonFeeEstimatorState, AmazonResult } from './useAmazonFeeEstimator.ts';
 
-const isLoss = (r: AmazonResult | null) => r !== null && r.economicProfit.startsWith('-');
+const isLoss = (r: AmazonResult | null) => Boolean(r?.economicProfit.startsWith('-'));
 
 function Metric(props: {
   ico: string;

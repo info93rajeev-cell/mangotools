@@ -18,6 +18,9 @@ function ResultCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetu
 
   return (
     <div class={styles.previewCockpitCard} data-bg-result="">
+      <div data-primary-result="" class="visually-hidden">
+        <output>{`${bgRemover.file?.name.replace(/\.[^.]+$/, '') ?? 'sample'}-no-bg.${res.outputFormat}`}</output>
+      </div>
       <div class={styles.statusBanner} role="status">
         <span>✓</span>
         <span>Background Removed</span>
@@ -100,6 +103,13 @@ function ReadyCockpit({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRetur
 
   return (
     <div class={styles.previewCockpitCard} data-bg-ready-panel="">
+      <div data-primary-result="" class="visually-hidden">
+        <output>
+          {hasFile
+            ? `${bgRemover.file?.name.replace(/\.[^.]+$/, '') ?? 'sample'}-no-bg.${bgRemover.outputFormat}`
+            : ''}
+        </output>
+      </div>
       <div
         class={styles.statusBanner}
         style={{
@@ -280,50 +290,44 @@ function HiddenMetricsDl({ bgRemover }: { bgRemover: UseImageBackgroundRemoverRe
   const formatName = res ? res.outputFormat : bgRemover.outputFormat;
 
   return (
-    <>
-      <div data-primary-result="" class="visually-hidden">
-        <output>{res ? res.fileName : ''}</output>
+    <dl class="visually-hidden">
+      <div data-output="fileName">
+        <dt>Output file</dt>
+        <dd>{res ? res.fileName : ''}</dd>
       </div>
-
-      <dl class="visually-hidden">
-        <div data-output="fileName">
-          <dt>Output file</dt>
-          <dd>{res ? res.fileName : ''}</dd>
-        </div>
-        <div data-output="outputFormat">
-          <dt>Format</dt>
-          <dd>{formatName}</dd>
-        </div>
-        <div data-output="outputFileSize">
-          <dt>Cutout size</dt>
-          <dd data-raw-value={res ? res.outputFileSize : undefined}>
-            {res ? formatImageBytes(res.outputFileSize) : ''}
-          </dd>
-        </div>
-        <div data-output="originalFileSize">
-          <dt>Original size</dt>
-          <dd data-raw-value={res ? res.originalFileSize : undefined}>
-            {res ? formatImageBytes(res.originalFileSize) : ''}
-          </dd>
-        </div>
-        <div data-output="outputWidth">
-          <dt>Width</dt>
-          <dd>{res ? res.outputWidth : bgRemover.sourceDims.width}</dd>
-        </div>
-        <div data-output="outputHeight">
-          <dt>Height</dt>
-          <dd>{res ? res.outputHeight : bgRemover.sourceDims.height}</dd>
-        </div>
-        <div data-output="tolerance">
-          <dt>Tolerance</dt>
-          <dd>{res ? `${res.tolerance}%` : `${bgRemover.tolerance}%`}</dd>
-        </div>
-        <div data-output="feather">
-          <dt>Feather</dt>
-          <dd>{res ? `${res.feather} px` : `${bgRemover.feather} px`}</dd>
-        </div>
-      </dl>
-    </>
+      <div data-output="outputFormat">
+        <dt>Format</dt>
+        <dd>{formatName}</dd>
+      </div>
+      <div data-output="outputFileSize">
+        <dt>Cutout size</dt>
+        <dd data-raw-value={res ? res.outputFileSize : undefined}>
+          {res ? formatImageBytes(res.outputFileSize) : ''}
+        </dd>
+      </div>
+      <div data-output="originalFileSize">
+        <dt>Original size</dt>
+        <dd data-raw-value={res ? res.originalFileSize : undefined}>
+          {res ? formatImageBytes(res.originalFileSize) : ''}
+        </dd>
+      </div>
+      <div data-output="outputWidth">
+        <dt>Width</dt>
+        <dd>{res ? res.outputWidth : bgRemover.sourceDims.width}</dd>
+      </div>
+      <div data-output="outputHeight">
+        <dt>Height</dt>
+        <dd>{res ? res.outputHeight : bgRemover.sourceDims.height}</dd>
+      </div>
+      <div data-output="tolerance">
+        <dt>Tolerance</dt>
+        <dd>{res ? `${res.tolerance}%` : `${bgRemover.tolerance}%`}</dd>
+      </div>
+      <div data-output="feather">
+        <dt>Feather</dt>
+        <dd>{res ? `${res.feather} px` : `${bgRemover.feather} px`}</dd>
+      </div>
+    </dl>
   );
 }
 

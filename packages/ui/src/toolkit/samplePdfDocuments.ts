@@ -34,25 +34,25 @@ export const SAMPLE_MERGE_FILES: SampleDocMeta[] = [
   {
     name: 'Contract.pdf',
     pageCount: 28,
-    themeColor: '#ef4444',
+    themeColor: '#dc2626',
     summary: 'Master service agreement with corporate terms',
   },
   {
     name: 'Annexure-A.pdf',
     pageCount: 16,
-    themeColor: '#3b82f6',
+    themeColor: '#1d4ed8',
     summary: 'Technical specifications & service level terms',
   },
   {
     name: 'Invoice-Batch.pdf',
     pageCount: 62,
-    themeColor: '#10b981',
+    themeColor: '#047857',
     summary: 'Itemized commercial invoice schedule and billings',
   },
   {
     name: 'Signed-Appendix.pdf',
     pageCount: 18,
-    themeColor: '#a855f7',
+    themeColor: '#6d28d9',
     summary: 'Signatures, legal attestations and compliance proofs',
   },
 ];
@@ -60,14 +60,14 @@ export const SAMPLE_MERGE_FILES: SampleDocMeta[] = [
 export const SAMPLE_SPLIT_FILE: SampleDocMeta = {
   name: 'Audit-Report-2025.pdf',
   pageCount: 124,
-  themeColor: '#ef4444',
+  themeColor: '#dc2626',
   summary: 'Annual corporate audit, balance sheets and governance',
 };
 
 export const SAMPLE_HEAVY_BOOK_FILE: SampleDocMeta = {
   name: 'Sample_Book_1600_Pages.pdf',
   pageCount: 1600,
-  themeColor: '#0284c7',
+  themeColor: '#0369a1',
   summary: '1,600-page sample book (16 chapters of 100 pages), generated in your browser',
 };
 
