@@ -1,0 +1,11 @@
+id: 016-formula-guard
+operation: data.json.to-csv@1
+source: { type: standard, citation: "OWASP, CSV Injection — prefix cells beginning with = + - @ tab or carriage return with a single quote so spreadsheet software treats them as text" }
+input:
+  text: '[{"note":"=SUM(A1:A2)","n":-5,"t":"-5","ok":"plain"}]'
+params: { formulaGuard: true }
+expected:
+  formulaCount: 2
+  text: |
+    note,n,t,ok
+    '=SUM(A1:A2),-5,'-5,plain

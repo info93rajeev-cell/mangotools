@@ -1,3 +1,4 @@
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import type { CountryCode } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -116,9 +117,9 @@ export function InternationalTaxGuide({ tax, onSwitchToCustom }: InternationalTa
         class={styles.ghostActionBtn}
         style={{
           alignSelf: 'flex-start',
-          color: '#7c3aed',
+          color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
-          fontSize: '11px',
+          fontSize: fs(11),
           padding: '4px 8px',
         }}
         onClick={onSwitchToCustom}

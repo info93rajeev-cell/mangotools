@@ -25,9 +25,11 @@ export function Pallet3DCanvas({
   const [view, setView] = useState<PalletViewAngle>('3d');
   const [zoom, setZoom] = useState(1);
 
-  const nx = Math.max(1, result.alongLength || 2);
-  const ny = Math.max(1, result.alongWidth || 5);
-  const nz = Math.max(1, Math.min(8, result.totalLayers || 5));
+  // The drawing shows the calculated grid (at most 8 layers drawn); nothing is drawn when no box fits.
+  const fits = result.totalBoxes > 0;
+  const nx = result.alongLength;
+  const ny = result.alongWidth;
+  const nz = Math.min(8, result.totalLayers);
 
   const handleZoomIn = () => setZoom((z) => Math.min(1.6, z + 0.15));
   const handleZoomOut = () => setZoom((z) => Math.max(0.65, z - 0.15));
@@ -56,7 +58,9 @@ export function Pallet3DCanvas({
       </div>
 
       <div class={styles.canvasWrap}>
-        {view === '3d' ? (
+        {!fits ? (
+          <p class={styles.canvasEmpty}>No boxes fit with these sizes.</p>
+        ) : view === '3d' ? (
           <SvgRealisticIsometricPallet
             nx={nx}
             ny={ny}

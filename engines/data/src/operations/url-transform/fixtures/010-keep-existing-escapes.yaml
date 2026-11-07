@@ -1,0 +1,6 @@
+id: 010-keep-existing-escapes
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.4 — percent-encoded octets must not be encoded again (double encoding); only the space is new" }
+params: { direction: encode, mode: component, keepEscapes: true }
+input: { text: "50%25 off" }
+expected: { text: "50%25%20off", changedCount: 1 }

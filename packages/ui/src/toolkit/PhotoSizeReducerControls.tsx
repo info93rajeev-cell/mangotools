@@ -1,4 +1,5 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
+import { fs } from './phoneFontSize.ts';
 import styles from './photoSizeReducer.module.css';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { PhotoSizeOutputFormat, UsePhotoSizeReducerReturn } from './usePhotoSizeReducer.ts';
@@ -102,7 +103,7 @@ function TargetSizeSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Size (KB)</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
+        <span style={{ fontSize: fs(10), color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
           {photoSize.maxFileSizeKB ? `≤ ${photoSize.maxFileSizeKB} KB` : 'Auto'}
         </span>
       </div>

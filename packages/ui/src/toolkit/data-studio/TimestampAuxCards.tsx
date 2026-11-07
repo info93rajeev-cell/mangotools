@@ -117,7 +117,7 @@ export function TimestampAuxCards({
         <div class={styles.optHelptext} style={{ marginTop: 2 }}>
           {batchOpen
             ? 'Paste comma or line-separated timestamps in the input panel to convert in bulk.'
-            : 'Negative epochs &middot; DST warnings &middot; custom formats'}
+            : 'Negative epochs · DST warnings · custom formats'}
         </div>
       </section>
     </div>

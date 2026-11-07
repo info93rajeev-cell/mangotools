@@ -1,5 +1,6 @@
 import { defineOperation, err, type OpWarning, ok, warning } from '@mangotools/core';
 import { div, isZero, mul, sub, toFixedString } from '@mangotools/engine-numeric';
+import { priceWithGst, profitTotal, withExtraCost } from './extras.ts';
 import { marginInput, marginOutput, marginParams } from './schema.ts';
 import { solvePrices } from './solve.ts';
 
@@ -19,15 +20,21 @@ export const pricingMargin = defineOperation({
     'ESTIMATE_PRICE_ZERO',
     'ESTIMATE_MARGIN_OUT_OF_RANGE',
     'ESTIMATE_MARKUP_OUT_OF_RANGE',
+    'ESTIMATE_INVALID_QUANTITY',
+    'ESTIMATE_GST_RATE_OUT_OF_RANGE',
   ],
   runtimes: ['worker', 'node'],
   cost: { weight: 'light' },
   exposure: 'internal',
   dataClass: 'public',
-  run(input, params) {
+  run(rawInput, params) {
+    const extra = withExtraCost(rawInput, params.rounding);
+    if (!extra.ok) return extra;
+    const input = extra.value.input;
     const solved = solvePrices(input, params.rounding);
     if (!solved.ok) return solved;
-    const { cost, price, working } = solved.value;
+    const { cost, price } = solved.value;
+    const working = [...extra.value.working, ...solved.value.working];
     if (isZero(price)) return err('ESTIMATE_PRICE_ZERO', { path: 'price' });
     const pct = (v: string) => toFixedString(v, 2, params.rounding);
     const profit = toFixedString(sub(price, cost), 2, params.rounding);
@@ -56,6 +63,23 @@ export const pricingMargin = defineOperation({
         result: markupPercent,
       });
     }
-    return ok({ cost, price, profit, marginPercent, markupPercent, working }, warnings);
+    const total = profitTotal(input, profit, params.rounding);
+    if (!total.ok) return total;
+    const withGst = priceWithGst(input, price, params.rounding);
+    if (!withGst.ok) return withGst;
+    working.push(...total.value.working, ...withGst.value.working);
+    return ok(
+      {
+        cost,
+        price,
+        profit,
+        marginPercent,
+        markupPercent,
+        profitTotal: total.value.value,
+        priceWithGst: withGst.value.value,
+        working,
+      },
+      warnings,
+    );
   },
 });

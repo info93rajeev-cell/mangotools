@@ -58,3 +58,18 @@
 .controls input[type="checkbox"]:checked::after {
   left: 18px;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .controls button,
+:global(:where([data-theme="dark"])) .controls input,
+:global(:where([data-theme="dark"])) .controls select {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .controls input[type="checkbox"] {
+  background: #203047;
+}
+
+:global(:where([data-theme="dark"])) .controls input[type="checkbox"]::after {
+  background: #151e33;
+}

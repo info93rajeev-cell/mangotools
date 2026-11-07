@@ -49,7 +49,7 @@
 }
 .panels :is(p, h3, a) {
   margin: 8px 12px 12px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   line-height: 1.5;
 }
 .panels a {
@@ -70,4 +70,22 @@
   .panels {
     display: none;
   }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .panels details {
+  background: #151e33;
+  border: 1px solid #304664;
+}
+
+:global(:where([data-theme="dark"])) .panels summary {
+  color: #cdcff3;
+}
+
+:global(:where([data-theme="dark"])) .panels summary > span:not(:last-child) {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .panels a {
+  color: #72a6f4;
 }

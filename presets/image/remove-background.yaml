@@ -54,6 +54,8 @@ outputs:
   sizeDifferenceBytes: { labelKey: output.sizeDifferenceBytes, format: bytes, order: 10 }
 strings:
   en:
+    disclosure.quick: "Quick Auto Removal uses an AI model that runs only on your device. The first time, the model (about 100 MB; up to 190 MB on browsers without WebGPU) downloads from this website (beyandtheai.com) itself, and is then kept in your browser. Your photo is never uploaded."
+    disclosure.pen: "No AI here: Pen Selection and Auto Select use classic edge and colour detection on your device. Your photo is never uploaded."
     fileTool.dropHint: "Drag and drop a JPG, PNG, or WebP image here, or choose a file."
     fileTool.queueLabel: "Selected image"
     fileTool.outputNamePlaceholder: "image-no-bg.png"

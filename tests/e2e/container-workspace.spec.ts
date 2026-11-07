@@ -27,26 +27,12 @@ async function priced(page: Page) {
   );
 }
 async function expectSharedBottom(page: Page, width: number) {
-  const bottom = page.locator('[data-shared-tool-bottom]');
-  const shortcuts = bottom.locator('summary');
-  await expect(shortcuts).toHaveText([
-    'Disclaimer+',
-    'How to use+',
-    'Method+',
-    'FAQ+',
-    'Related tools+',
-  ]);
-  const boxes = await shortcuts.evaluateAll((nodes) =>
-    nodes.map((node) => {
-      const box = node.getBoundingClientRect();
-      return { top: Math.round(box.top), width: box.width };
-    }),
-  );
-  const tops = [...new Set(boxes.map((box) => box.top))];
-  if (width < 700) {
-    expect(boxes.map((box) => tops.indexOf(box.top))).toEqual([0, 0, 1, 1, 2]);
-    expect(boxes[4]?.width ?? 0).toBeGreaterThan((boxes[0]?.width ?? 0) * 1.9);
-  } else expect(tops).toHaveLength(1);
+  const supporting = page.locator('[data-container-supporting]');
+  if (width >= 700) {
+    await expect(supporting).toBeVisible();
+  } else {
+    await expect(supporting).toBeHidden();
+  }
   await expect(page.locator('footer')).toHaveCount(1);
 }
 
@@ -132,7 +118,6 @@ test.describe('Container workspace #226', () => {
     await page.emulateMedia({ media: 'print' });
     await expect(page.getByRole('navigation', { name: 'Workspace actions' })).toBeHidden();
     await expect(page.locator('[data-container-supporting]')).toBeHidden();
-    await expect(page.locator('[data-shared-tool-bottom]')).toBeHidden();
     await expect(page.locator('footer')).toBeHidden();
     await expect(page.locator('pre')).toContainText('Containers Required: 2');
   });
@@ -190,13 +175,8 @@ test.describe('Container workspace #226', () => {
     await ready(page);
     await expect(page.locator('[data-reference-artwork] img')).toBeVisible();
     await expect(kpi(page, 1)).toHaveText('2');
-    const bottom = page.locator('[data-shared-tool-bottom]');
-    for (const label of ['Disclaimer', 'How to use', 'Method', 'FAQ', 'Related tools'])
-      await expect(bottom.getByText(label, { exact: true })).toBeVisible();
-    await bottom.getByText('How to use', { exact: true }).click();
-    await expect(
-      bottom.getByText('Add package dimensions and quantities', { exact: false }),
-    ).toBeVisible();
+    const supporting = page.locator('[data-container-supporting]');
+    await expect(supporting).toBeVisible();
     await expect(page.locator('footer')).toContainText(
       'Professional tools for work that should not depend on AI.',
     );

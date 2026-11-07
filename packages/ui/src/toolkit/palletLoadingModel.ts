@@ -58,7 +58,6 @@ export interface PalletLoadingInput {
   boxHeight: number;
   maxStackLayers: number | 'auto';
   boxWeight: number; // in kg
-  stackingType: 'standard' | 'interlocking' | 'column';
   showWeightInResults: boolean;
 }
 
@@ -66,6 +65,10 @@ export interface PalletLoadingResult {
   boxesPerLayer: number;
   alongLength: number;
   alongWidth: number;
+  /** Boxes turned 90° in the strip left over along the pallet length (mixed pattern). */
+  rotatedExtra: number;
+  /** Why nothing fits, when that is the case. */
+  issue: string | null;
   totalLayers: number;
   totalBoxes: number;
   spaceUtilizationPercent: number;
@@ -94,7 +97,6 @@ export const DEFAULT_PALLET_INPUT: PalletLoadingInput = {
   boxHeight: 30,
   maxStackLayers: 'auto',
   boxWeight: 12,
-  stackingType: 'standard',
   showWeightInResults: true,
 };
 
@@ -110,86 +112,106 @@ export function convertToCm(val: number, unit: PalletUnit): number {
   return val;
 }
 
+/** Assumed height of the empty pallet and its tare weight, stated in the results. */
+export const PALLET_BASE_HEIGHT_CM = 14.4;
+export const PALLET_TARE_KG = 25;
+
+interface Layer {
+  count: number;
+  alongL: number;
+  alongW: number;
+  rotatedExtra: number;
+}
+
+/** Best single-layer pattern: either grid orientation, or the first one plus a rotated strip. */
+export function bestLayer(pL: number, pW: number, bL: number, bW: number): Layer {
+  const fitL1 = Math.floor(pL / bL);
+  const fitW1 = Math.floor(pW / bW);
+  const fitL2 = Math.floor(pL / bW);
+  const fitW2 = Math.floor(pW / bL);
+  let best: Layer = { count: fitL1 * fitW1, alongL: fitL1, alongW: fitW1, rotatedExtra: 0 };
+  if (fitL2 * fitW2 > best.count)
+    best = { count: fitL2 * fitW2, alongL: fitL2, alongW: fitW2, rotatedExtra: 0 };
+  const remL = pL - fitL1 * bL;
+  const extra = remL >= bW ? Math.floor(remL / bW) * Math.floor(pW / bL) : 0;
+  if (fitL1 * fitW1 + extra > best.count) {
+    best = { count: fitL1 * fitW1 + extra, alongL: fitL1, alongW: fitW1, rotatedExtra: extra };
+  }
+  return best;
+}
+
+const positive = (n: number) => Number.isFinite(n) && n > 0;
+
+function inputIssue(
+  dims: number[],
+  usableHeightCm: number,
+  boxHeightCm: number,
+  layer: Layer,
+): string | null {
+  if (!dims.every(positive)) return 'Enter pallet and box sizes greater than zero.';
+  if (layer.count === 0) return 'The box is larger than the pallet surface, so no box fits.';
+  if (boxHeightCm > usableHeightCm) {
+    return `The box is taller than the usable height (${Math.round(usableHeightCm * 10) / 10} cm above the pallet).`;
+  }
+  return null;
+}
+
 export function computePalletLoading(input: PalletLoadingInput): PalletLoadingResult {
   const pL = convertToCm(input.palletLength, input.unit);
   const pW = convertToCm(input.palletWidth, input.unit);
   const pHLimit = convertToCm(input.palletHeightLimit, input.unit);
-  const bL = Math.max(1, convertToCm(input.boxLength, input.unit));
-  const bW = Math.max(1, convertToCm(input.boxWidth, input.unit));
-  const bH = Math.max(1, convertToCm(input.boxHeight, input.unit));
+  const bL = convertToCm(input.boxLength, input.unit);
+  const bW = convertToCm(input.boxWidth, input.unit);
+  const bH = convertToCm(input.boxHeight, input.unit);
+  const dims = [pL, pW, pHLimit, bL, bW, bH];
+  const layer = dims.every(positive)
+    ? bestLayer(pL, pW, bL, bW)
+    : { count: 0, alongL: 0, alongW: 0, rotatedExtra: 0 };
+  const usableHeightCm = Math.max(0, pHLimit - PALLET_BASE_HEIGHT_CM);
+  const issue = inputIssue(dims, usableHeightCm, bH, layer);
 
-  // Orientation 1: length along length, width along width
-  const fitL1 = Math.floor(pL / bL);
-  const fitW1 = Math.floor(pW / bW);
-  const count1 = fitL1 * fitW1;
-
-  // Orientation 2: width along length, length along width
-  const fitL2 = Math.floor(pL / bW);
-  const fitW2 = Math.floor(pW / bL);
-  const count2 = fitL2 * fitW2;
-
-  let boxesPerLayer = count1;
-  let alongL = fitL1;
-  let alongW = fitW1;
-
-  if (count2 > count1) {
-    boxesPerLayer = count2;
-    alongL = fitL2;
-    alongW = fitW2;
-  }
-
-  // Check pinwheel or combination if box fits better
-  const remL = pL - fitL1 * bL;
-  if (remL >= bW) {
-    const extra = Math.floor(remL / bW) * Math.floor(pW / bL);
-    if (count1 + extra > boxesPerLayer) {
-      boxesPerLayer = count1 + extra;
-    }
-  }
-
-  // Pallet base height ~ 14 cm
-  const palletBaseHeightCm = 14.4;
-  const usableHeightCm = Math.max(0, pHLimit - palletBaseHeightCm);
-  let layers = Math.floor(usableHeightCm / bH);
-
+  let layers = issue ? 0 : Math.floor(usableHeightCm / bH);
   if (typeof input.maxStackLayers === 'number' && input.maxStackLayers > 0) {
     layers = Math.min(layers, input.maxStackLayers);
   }
-  layers = Math.max(1, layers);
-
-  const totalBoxes = boxesPerLayer * layers;
-
-  // Total space calculation
-  const totalBoxVolCm3 = totalBoxes * (bL * bW * bH);
-  const actualLoadedHeightCm = layers * bH + palletBaseHeightCm;
-  const palletFootprintVolCm3 = pL * pW * actualLoadedHeightCm;
+  const totalBoxes = layer.count * layers;
+  const loadedHeightCm = layers * bH + PALLET_BASE_HEIGHT_CM;
+  const footprintVolCm3 = pL * pW * loadedHeightCm;
   const utilization =
-    palletFootprintVolCm3 > 0
-      ? Math.min(100, Math.round((totalBoxVolCm3 / palletFootprintVolCm3) * 100))
+    totalBoxes > 0 && footprintVolCm3 > 0
+      ? Math.min(100, Math.round(((totalBoxes * bL * bW * bH) / footprintVolCm3) * 100))
       : 0;
-
-  const tareKg = 25; // standard wooden pallet tare weight
-  const boxesWeightKg = Math.round(totalBoxes * input.boxWeight * 10) / 10;
-  const grossWeightKg = Math.round((boxesWeightKg + tareKg) * 10) / 10;
+  const boxWeight = Number.isFinite(input.boxWeight) && input.boxWeight > 0 ? input.boxWeight : 0;
+  const boxesWeightKg = Math.round(totalBoxes * boxWeight * 10) / 10;
 
   return {
-    boxesPerLayer,
-    alongLength: alongL,
-    alongWidth: alongW,
+    boxesPerLayer: issue ? 0 : layer.count,
+    alongLength: layer.alongL,
+    alongWidth: layer.alongW,
+    rotatedExtra: layer.rotatedExtra,
+    issue,
     totalLayers: layers,
     totalBoxes,
-    spaceUtilizationPercent: utilization || 83,
+    spaceUtilizationPercent: utilization,
     loadedDimensions: {
       length: Math.round(pL),
       width: Math.round(pW),
-      height: Math.round(actualLoadedHeightCm),
+      height: Math.round(loadedHeightCm),
       unit: 'cm',
     },
     weightBreakdown: {
-      boxWeightKg: input.boxWeight,
+      boxWeightKg: boxWeight,
       totalBoxesWeightKg: boxesWeightKg,
-      palletTareWeightKg: tareKg,
-      totalGrossWeightKg: grossWeightKg,
+      palletTareWeightKg: PALLET_TARE_KG,
+      totalGrossWeightKg: Math.round((boxesWeightKg + PALLET_TARE_KG) * 10) / 10,
     },
   };
+}
+
+/** "(3 × 3)" or "(3 × 3 + 2 rotated)" for the layer pattern. */
+export function layerPattern(
+  r: Pick<PalletLoadingResult, 'alongLength' | 'alongWidth' | 'rotatedExtra'>,
+): string {
+  const extra = r.rotatedExtra > 0 ? ` + ${r.rotatedExtra} rotated` : '';
+  return `(${r.alongLength} × ${r.alongWidth}${extra})`;
 }

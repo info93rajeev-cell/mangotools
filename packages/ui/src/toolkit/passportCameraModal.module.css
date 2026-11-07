@@ -112,7 +112,7 @@
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
   color: #facc15;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 6px 14px;
   border-radius: 9999px;
@@ -132,7 +132,7 @@
 
 .snapBtn {
   flex: 1;
-  background: #22c55e;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -165,7 +165,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 12px 16px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -182,9 +182,18 @@
   padding: 24px;
   text-align: center;
   color: #f87171;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .guidePill {
+  color: #f2d35a;
+}
+
+:global(:where([data-theme="dark"])) .snapBtn {
+  color: #ffffff;
 }

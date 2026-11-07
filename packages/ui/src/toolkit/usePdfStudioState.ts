@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { downloadBytes } from './actions.ts';
 import { compileImagesToPdf } from './imagePdfExport.ts';
+import { DEFAULT_PAGE_EXTRAS, type PageExtras } from './imagePdfPageOptions.ts';
 import { createScenicSampleImages } from './samplePdfImages.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
@@ -62,6 +63,7 @@ async function executePdfDownload(
     orientation: OrientationOption;
     margins: MarginsOption;
     fitMode: FitModeOption;
+    extras: PageExtras;
   },
 ): Promise<Uint8Array | null> {
   const res = await compileImagesToPdf({
@@ -70,11 +72,13 @@ async function executePdfDownload(
       bytes: img.bytes,
       width: img.width,
       height: img.height,
+      rotation: img.rotation ?? 0,
     })),
     pageSize: settings.pageSize,
     orientation: settings.orientation,
     margins: settings.margins,
     fitMode: settings.fitMode,
+    extras: settings.extras,
   });
 
   if (!res.ok) return null;
@@ -111,6 +115,9 @@ function usePdfImages(
 ) {
   const [images, setImages] = useState<PdfImageItem[]>([]);
   const [isCompiling, setIsCompiling] = useState(false);
+  // True while the images shown are the sample; the user's own images then replace them.
+  const sampleShown = useRef(false);
+  const userInteracted = useRef(false);
 
   useEffect(() => {
     if (converter?.file && images.length === 0) {
@@ -130,31 +137,43 @@ function usePdfImages(
   }, [converter?.file]);
 
   const processFiles = async (files: FileList | File[]) => {
+    userInteracted.current = true;
     const valid = await readFiles(files);
     if (valid.length > 0) {
-      setImages((prev) => [...prev, ...valid]);
+      setImages((prev) => (sampleShown.current ? valid : [...prev, ...valid]));
+      sampleShown.current = false;
       onPhase?.('idle');
       notify?.(`Added ${valid.length} image${valid.length > 1 ? 's' : ''}`);
+    } else if (sampleShown.current) {
+      setImages([]);
+      sampleShown.current = false;
+      notify?.('Please select valid image files');
     }
   };
 
-  const loadSamples = async () => {
+  const loadSamples = async (force = false) => {
     try {
       setIsCompiling(true);
       const items = await loadSampleItems();
-      setImages(items);
-      onPhase?.('idle');
-      notify?.('Loaded 5 sample images');
+      if (force || !userInteracted.current) {
+        setImages(items);
+        sampleShown.current = true;
+        userInteracted.current = false;
+        onPhase?.('idle');
+        notify?.('Loaded 5 sample images');
+      }
     } finally {
       setIsCompiling(false);
     }
   };
 
   const clearAll = () => {
+    userInteracted.current = true;
     for (const img of images) {
       if (img.blobUrl.startsWith('blob:')) URL.revokeObjectURL(img.blobUrl);
     }
     setImages([]);
+    sampleShown.current = false;
     onPhase?.('idle');
   };
 
@@ -184,6 +203,7 @@ function usePdfSettings() {
   const [fitMode, setFitMode] = useState<FitModeOption>('fit');
   const [margins, setMargins] = useState<MarginsOption>('normal');
   const [outputFileName, setOutputFileName] = useState<string>('images.pdf');
+  const [extras, setExtras] = useState<PageExtras>(DEFAULT_PAGE_EXTRAS);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -198,6 +218,8 @@ function usePdfSettings() {
     setMargins,
     outputFileName,
     setOutputFileName,
+    extras,
+    setExtras,
     isDragging,
     setIsDragging,
     fileInputRef,
@@ -222,6 +244,7 @@ export function usePdfStudioState(
         orientation: cfgState.orientation,
         margins: cfgState.margins,
         fitMode: cfgState.fitMode,
+        extras: cfgState.extras,
       });
       if (!pdfBytes) {
         notify?.('Failed to compile PDF.');

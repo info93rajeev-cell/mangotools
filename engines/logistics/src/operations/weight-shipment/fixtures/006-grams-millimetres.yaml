@@ -1,0 +1,11 @@
+id: 006-grams-millimetres
+operation: logistics.weight.shipment@1
+source: { type: hand-verified, citation: "300×200×100 mm = 6,000,000 mm³ × 0.001 = 6,000 cm³ ÷ 6000 = 1 kg ×3 = 3; 750 g × 0.001 = 0.75 kg ×3 = 2.25; volumetric billed, 2 dp requested" }
+input:
+  unit: mm
+  weightUnit: g
+  divisor: "6000"
+  decimalPlaces: "2"
+  packages:
+    - { length: "300", width: "200", height: "100", quantity: "3", weightPerPiece: "750" }
+expected: { volumetricTotal: "3.00", actualTotal: "2.25", chargeableTotal: "3.00", billedOn: volumetric, totalVolumeM3: "0.02" }

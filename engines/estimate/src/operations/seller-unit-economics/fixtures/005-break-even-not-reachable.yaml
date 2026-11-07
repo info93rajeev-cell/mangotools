@@ -1,0 +1,9 @@
+id: 005-break-even-not-reachable
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "90% commission plus 18% GST takes 106.2% of the price, more than the 84.75% revenue share, so no price breaks even; loss 847.46 - 1462 = -614.54" }
+input: { sellingPrice: "1000", productCost: "400", gstRatePercent: "18", commissionPercent: "90", feeGstRatePercent: "18" }
+expected:
+  netProfit: "-614.54"
+  cashSettlement: "-62.00"
+  breakEvenPrice: null
+expectedWarnings: [ESTIMATE_BREAK_EVEN_NOT_DETERMINABLE]

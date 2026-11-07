@@ -37,7 +37,7 @@
 }
 
 .featureTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 8px;
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
 }
@@ -72,7 +72,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 800;
 }
 
@@ -85,4 +85,27 @@
   .bannerFeatures {
     flex: 1 1 auto;
   }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .bannerCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .bannerFeatures {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .featureTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .featureItem {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .checkIcon {
+  color: #0f172a;
 }

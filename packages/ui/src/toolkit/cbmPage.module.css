@@ -107,7 +107,7 @@
   border-radius: 6px;
   background: var(--cbm-green-soft);
   color: var(--cbm-green);
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 600;
 }
 @media (max-width: 900px) {
@@ -120,6 +120,6 @@
     font-size: 30px;
   }
   :global(body:has([data-cbm-workspace]) .tool-header .summary) {
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   }
 }

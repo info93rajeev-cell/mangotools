@@ -50,9 +50,9 @@ function TimestampInputPanel({
           <button
             type="button"
             class={styles.btnSecondary}
-            onClick={onCurrentTime}
+            onClick={() => onInput('1700000000')}
             data-try-sample=""
-            title="Use current timestamp"
+            title="Use sample timestamp"
           >
             <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
@@ -93,7 +93,7 @@ function TimestampInputPanel({
           id={`${idPrefix}-input`}
           type="text"
           class={styles.optSelect}
-          style={{ fontSize: 17, fontWeight: 750, color: '#176bfa', minHeight: 38 }}
+          style={{ fontSize: 17, fontWeight: 750, color: 'var(--color-primary)', minHeight: 38 }}
           value={input}
           onInput={(e) => onInput((e.target as HTMLInputElement).value)}
           placeholder="e.g. 1704067200"
@@ -184,9 +184,14 @@ function TimestampDatePanel({
         </div>
       </div>
 
-      <div class={styles.bigoutput} style={{ minHeight: 76, padding: '10px 12px' }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#12264e' }}>{dateFormatted}</div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
+      <div
+        class={styles.bigoutput}
+        style={{ minHeight: 76, padding: '10px 12px', fontFamily: 'inherit' }}
+      >
+        <div style={{ fontSize: 20, fontWeight: 500, color: 'var(--color-text)' }}>
+          {dateFormatted}
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 800, color: '#1672e8', marginTop: 2 }}>
           {timeFormatted}
         </div>
       </div>
@@ -198,7 +203,7 @@ function TimestampDatePanel({
         </div>
         <div class={`${styles.mini} ${styles.miniGreen}`}>
           <small>{timezone.split('/')[1] || timezone}</small>
-          <b>{selectedTzTime.split(',')[1]?.trim() || selectedTzTime}</b>
+          <b>{selectedTzTime.split(',').pop()?.trim() || selectedTzTime}</b>
         </div>
         <div class={`${styles.mini} ${styles.miniPurple}`}>
           <small>ISO 8601</small>
@@ -213,6 +218,7 @@ function TimestampDatePanel({
       <div class={styles.optField} style={{ marginTop: 'auto' }}>
         <span class={styles.optLabel}>Timezone</span>
         <select
+          aria-label="Timezone"
           class={styles.optSelect}
           value={timezone}
           onChange={(e) => onTimezoneChange((e.target as HTMLSelectElement).value)}
@@ -309,6 +315,13 @@ export function TimestampConverterStudioLayout({
       <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
 
       <main class={styles.work}>
+        <textarea
+          id={`${idPrefix}-output`}
+          class="visually-hidden"
+          readOnly
+          value={studio.isoString}
+          aria-label="Converted ISO 8601 timestamp output"
+        />
         <TimestampInputPanel
           idPrefix={idPrefix}
           input={studio.input}

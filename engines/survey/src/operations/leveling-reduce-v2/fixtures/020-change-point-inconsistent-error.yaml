@@ -1,0 +1,29 @@
+{
+  "id": "020-change-point-inconsistent-error",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §2: Interior row with BS alone without FS fails with SURVEY_LEVELING_CHANGE_POINT_INCONSISTENT."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000"
+      },
+      {
+        "bs": "1.000"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_CHANGE_POINT_INCONSISTENT",
+    "path": "observations.1"
+  }
+}

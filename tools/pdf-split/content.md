@@ -1,91 +1,66 @@
 ---
-lastReviewed: 2026-09-30
+lastReviewed: 2026-11-02
 ---
 
 ## How to use
 
-1. **Choose one PDF.** Drag and drop a PDF file onto the box, or select one from your device.
-2. **Enter a start page and an end page** — the range of pages (1-based, inclusive) you want to keep in
-   the new PDF.
-3. Select **Download split PDF**. The file is read, the selected pages are copied into a new PDF, and the
-   result downloads immediately — nothing is uploaded anywhere.
-
-**What PDF Split does:** it extracts a page range from a single PDF into a brand-new PDF, entirely on your
-device, with no sign-up and no branding added to the result. It does not modify your original
-file.
+1. **Open or drop one PDF**, or try a sample: a 124-page report, or a 1,600-page book split into
+   100-page chapters. Samples are generated in your browser.
+2. **Choose how to split:**
+   - **Page ranges** — type ranges such as `1-12, 13-42`; each range becomes its own PDF. A new
+     file starts as two halves.
+   - **Extract pages** — type pages such as `1, 3, 5-10` (or click page thumbnails); they go into
+     one new PDF, in the order you typed them.
+   - **Every page** — one PDF per page.
+   - **Fixed chunks** — a new PDF every N pages.
+3. Optionally set the file name pattern (`{n}` is the part number) and whether several files
+   download as one ZIP.
+4. Select **Split PDF**, then download. One file downloads as a PDF; several download as a ZIP or as
+   separate PDFs.
 
 ## Method
 
-**Page range examples.** A 10-page PDF with a start page of 3 and an end page of 7 produces a new 5-page
-PDF containing pages 3, 4, 5, 6, and 7, in their original order. A start page equal to the end page (for
-example, 4 to 4) extracts a single page. A start page of 1 and an end page equal to the document's own
-page count extracts every page into a new file.
+**What is split.** Pages are copied from your PDF into new PDF files exactly as they are; their
+content is not changed. Ranges or pages outside the document are listed as "not used" instead of
+causing an error, and the summary always shows how many files and pages will be created.
 
-**Extracting pages vs. splitting every page.** This tool extracts one page range into one output PDF per
-run — it does not split a document into one file per page. If you need several different page ranges from
-the same PDF, run the tool again for each range you want.
+**Browser-based processing.** The PDF is read and the new files are written on your own device;
+nothing is uploaded.
 
-**Browser-based processing.** No file upload is required for this tool — the PDF you select is read and
-processed on your own device, and the result downloads without ever leaving it.
+**Limits.** Files up to 25 MB. Password-protected PDFs are refused with a clear message; remove the
+password in your PDF reader first. Bookmarks, form fields, annotations and other advanced features
+of the original may not carry over into the split files. Output sizes are estimates until the files
+are created.
 
-**File limits and encrypted PDFs.** Files up to 25 MB are supported. Password-protected (encrypted) PDFs
-are not supported — a clear error explains this rather than silently failing. Bookmarks,
-form fields, annotations, and other advanced PDF features from the original file may not be preserved in
-the extracted result.
-
-**What this tool does not do.** It handles one PDF and one page range per run — there is no batch
-splitting, no ZIP download of multiple ranges, and no page reordering. It does not merge its own output
-with another file (use [PDF Merge](tool:pdf-merge) afterward if you need that). It does not add a
-watermark of any kind, and it does not perform OCR or read the document's text content.
-
-**Common errors.** A specific, plain-English message explains exactly what went wrong: no file selected, a
-file that isn't a PDF, a file over the size limit, a password-protected PDF, a corrupted or unreadable
-file, an invalid start or end page, an end page before the start page, or a page range that extends beyond
-the document's own page count (stated with the actual page count). Do not use this tool for documents you
-are not allowed to process.
+**Related tools.** Combine the results again with [PDF Merge](tool:pdf-merge), or reduce their size
+with [Compress PDF](tool:compress-pdf).
 
 ## FAQ
 
 ### How do I split a PDF?
 
-Select your PDF, enter a start page and an end page, and select Download split PDF. The pages in that
-range are copied into a new PDF.
+Open the PDF, choose a split mode, check the summary and select Split PDF.
 
 ### Can I extract only pages 3 to 7?
 
-Yes — enter 3 as the start page and 7 as the end page. The new PDF will contain exactly those five pages,
-in order.
+Yes. Use Extract pages and type `3-7`, or use Page ranges with the single range `3-7`.
 
-### Does this split every page into separate PDFs?
+### Can I split every page into separate PDFs?
 
-No. This tool extracts one page range into one PDF per run. To get several ranges
-from the same document, run the tool again for each range.
+Yes. Choose Every page. You get one PDF per page, downloaded together as a ZIP or separately.
 
-### Can I split multiple PDFs at once?
+### Can I split several PDFs at once?
 
-No. This tool works on one PDF at a time.
+No. The tool works on one PDF at a time.
 
 ### Does the PDF upload to a server?
 
-No. The file you select is read and processed in this browser. Nothing is uploaded anywhere.
+No. Everything runs in your browser.
 
 ### Can it handle password-protected PDFs?
 
-No. A password-protected (encrypted) PDF shows a clear error instead of being processed.
-
-### Can I reorder pages?
-
-No. The extracted pages keep their original order from the source document.
-
-### Can I merge the result with another PDF?
-
-Not directly in this tool, but you can download the split result and then use [PDF Merge](tool:pdf-merge)
-to combine it with another PDF.
+No. You will see a clear message instead of an empty or broken result.
 
 ### Does this tool add a watermark?
 
-No. The extracted PDF contains only the pages you selected — no branding or watermark is added.
-
-### Do I need to sign up?
-
-No. This tool works without an account, sign-up, or login.
+No. The new PDFs contain only the pages you chose.

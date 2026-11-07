@@ -32,6 +32,7 @@
     flex-direction: column;
     gap: 6px;
     width: 100%;
+    align-items: stretch;
   }
 }
 
@@ -58,7 +59,7 @@
 }
 
 .cardTitle {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -70,7 +71,7 @@
 }
 
 .miniGhostBtn {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   background: #f8fafc;
@@ -91,7 +92,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   background: #f8fafc;
@@ -143,7 +144,7 @@
 }
 
 .signatureFileName {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   white-space: nowrap;
@@ -155,7 +156,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #64748b;
   margin-bottom: 3px;
 }
@@ -171,7 +172,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
 }
@@ -185,12 +186,12 @@
   background: #15803d;
   color: #ffffff;
   border-radius: 50%;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: bold;
 }
 
 .successBadgeSub {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #166534;
   margin-top: 1px;
 }
@@ -208,7 +209,7 @@
 }
 
 .autoDetectHeading {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
   margin-bottom: 3px;
@@ -228,7 +229,7 @@
 }
 
 .detectionLabel {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
@@ -336,7 +337,7 @@
 }
 
 .inputLabel {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   white-space: nowrap;
@@ -355,7 +356,7 @@
   min-width: 0;
   height: 26px;
   padding: 2px 22px 2px 5px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #0f172a;
   background: #ffffff;
@@ -373,7 +374,7 @@
 .unitBadge {
   position: absolute;
   right: 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
   pointer-events: none;
 }
@@ -388,7 +389,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   transition: all 0.15s ease;
 }
 
@@ -407,7 +408,7 @@
   border: 1px solid #bae6fd;
   border-radius: 5px;
   padding: 2px 6px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #0369a1;
   line-height: 1.3;
   margin-bottom: 4px;
@@ -415,7 +416,7 @@
 
 .infoIcon {
   font-weight: bold;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
 }
 
 /* Presets Row */
@@ -430,7 +431,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   background: #f8fafc;
@@ -453,8 +454,8 @@
 }
 
 .presetDims {
-  font-size: 8.5px;
-  color: #64748b;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
+  color: #57534e;
 }
 
 /* Format Section */
@@ -513,13 +514,13 @@
 }
 
 .tileTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
 
 .tileSubtitle {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   color: #64748b;
   margin-top: 1px;
 }
@@ -536,7 +537,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: bold;
 }
 
@@ -563,7 +564,7 @@
 
 .styledSelect {
   height: 26px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #0f172a;
   background: #ffffff;
   border: 1px solid #cbd5e1;
@@ -583,7 +584,7 @@
 }
 
 .qualityValBadge {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
   background: #f1f5f9;
@@ -603,7 +604,7 @@
 .sliderScaleLabels {
   display: flex;
   justify-content: space-between;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -630,7 +631,7 @@
   gap: 6px;
   background: #ffb000;
   color: #1e293b;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   border: none;
   border-radius: 6px;
@@ -645,12 +646,16 @@
 }
 
 .goldDownloadBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
 .downloadSubtext {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #64748b;
   text-align: center;
   margin-top: 2px;
@@ -678,7 +683,7 @@
 }
 
 .resultCardTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -721,7 +726,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: bold;
   flex-shrink: 0;
 }
@@ -733,13 +738,13 @@
 }
 
 .statusMainText {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
 }
 
 .statusSubText {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #166534;
 }
 
@@ -752,14 +757,14 @@
 }
 
 .resultLabel {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
 }
 
 .resultValue {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -771,7 +776,7 @@
 }
 
 .smallerPill {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   background: #dcfce7;
@@ -782,7 +787,7 @@
 /* Notes & details */
 .notesDisclosure {
   margin-top: 2px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -793,7 +798,7 @@
 
 .notesText {
   margin-top: 1px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
 }
 
 .errorContainer {
@@ -851,4 +856,203 @@
 :global([data-theme="dark"]) .presetPill:hover {
   background: #1e293b;
   color: #f8fafc;
+}
+
+/* Phones: small status icons were hard to see. */
+@media (max-width: 700px) {
+  .infoIcon {
+    font-size: 16px;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .cardHeader {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .miniGhostBtn:hover:not(:disabled) {
+  color: #dde4f3;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn:hover {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .signatureFileName {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .signatureFileSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .loadedSuccessBadge {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .successBadgeTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .badgeCheckCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .successBadgeSub {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .autoDetectSection {
+  border-top: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .autoDetectHeading {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .detectionLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .inputLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .dimInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .unitBadge {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .lockAspectBtn {
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .lockActive {
+  background: #4b4116;
+}
+
+:global(:where([data-theme="dark"])) .infoCallout {
+  color: #98d5f7;
+  background: #122b3d;
+  border: 1px solid #305264;
+}
+
+:global(:where([data-theme="dark"])) .presetPillActive {
+  background: #4b4116;
+}
+
+:global(:where([data-theme="dark"])) .presetDims {
+  color: #bcc5d2;
+}
+
+:global(:where([data-theme="dark"])) .formatTile {
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .formatTileActive {
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .formatDocIcon {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .tileTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .tileSubtitle {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tileCheckCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .styledSelect {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .qualityValBadge {
+  color: #c4cedc;
+  background: #182838;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .sliderScaleLabels {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .goldDownloadBtn {
+  color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .goldDownloadBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+}
+
+:global(:where([data-theme="dark"])) .downloadSubtext {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .resultOuterCard {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .resultCardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .resultSummaryRow {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .greenCheckCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .statusMainText {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .statusSubText {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .resultLabel {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .resultValue {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .smallerPill {
+  color: #a7f1c2;
+  background: #144525;
+}
+
+:global(:where([data-theme="dark"])) .notesDisclosure {
+  color: #a3adbd;
 }

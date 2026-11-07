@@ -6,17 +6,20 @@
 | **Date** | 2026-11-02 |
 | **Decided by** | Founder (on merge) |
 | **Contract** | `tasks/TASK-FP-001-FOOD-DATA-FOUNDATION.md` |
-| **Audit** | Project doc `qa/AUDIT-food-planner-business-memory-readiness.md` (2 Nov 2026) |
+| **Audit** | Project doc `qa/AUDIT-food-planner-business-memory-readiness.md` (2 Nov 2026; its Business Memory and Planners-menu proposals are superseded by the scope update in §1) |
 | **Affects** | Adds Food Planner schemas (`schemas/src/food.ts`, `food-menu.ts`), reference data (`reference/food/`) and one data test. Proposes, but does not create, the engine `engines/food`. Changes no navigation, page, preset, tool, CSP, privacy text, workflow or deployment. |
 
 ## 1. Context
 
-The founder approved one Food Planner module with five connected sections (Recipes & Menu,
-Ingredients, Shopping List, Cost Estimation, Cooking Schedule) for four event categories
-(Small Party, Wedding, Corporate, Festivals). Its menus are shared and versioned, are reviewed
-every 30 days using event, season, region and available trend signals, and are published
-automatically after validation. Business Memory is a separate future module and is not covered
-here.
+The founder approved **Food & Catering** as the only new website navigation entry. Its Food
+Planner has five connected sections (Recipes & Menu, Ingredients, Shopping List, Cost Estimation,
+Cooking Schedule) for four event categories (Small Party, Wedding, Corporate, Festivals). Its menus
+are shared and versioned, are reviewed every 30 days using event, season, region and available
+trend signals, and are published automatically after validation.
+
+Scope update (2 Nov 2026): the earlier Business Memory module and the shared "Planners" menu are
+cancelled and are not part of any plan. Student Tools remain a possible future project only, with
+no implementation or navigation.
 
 The repository today is a fully static site with no backend, no database and no scheduled
 jobs. Its CSP blocks runtime calls to outside hosts, and production deploys only from an
@@ -129,8 +132,22 @@ live.
   already cover the engine's schema and fixtures and `reference/food/` (including its golden fixture).
 - **Blueprint (human-only, founder).** Add `food | core` to the §2.4 engine-edge table, and `food`
   to the list of portable engines.
-- **Module page.** A multi-section page conflicts with "`apps/web` contains no tool-specific code";
-  it needs its own short decision before any UI task.
+- **Navigation and page.** The only approved new navigation entry is a single **Food & Catering**
+  category; there is no shared "Planners" menu. Existing tools and categories stay unchanged.
+  Approved names: category **Food & Catering**, main tool **Food Planner**. Proposed routes,
+  checked against the current routing and taxonomy rules:
+  - `/food-and-catering`: a new entry in `taxonomy/categories.yaml` (id = slug
+    `food-and-catering`, kebab-case, not reserved, no collision). It appears automatically in
+    the header Tools menu and the footer, like every category, so `SiteHeader.astro` is not
+    edited. It becomes visible only once it has at least one listed tool
+    (`navigation.minToolsPerCategory: 1`), and that PR must update the visible-category list in
+    `scripts/generate/pipeline.test.ts`.
+  - `/food-planner`: a tool slug served by the existing `[slug].astro` route. It must **not** be
+    added to `taxonomy/reserved-slugs.yaml`, because a reserved slug cannot be used by a tool.
+  - Constraint: a tool manifest points at exactly one preset, i.e. one engine operation. A first
+    Food Planner tool can therefore be built on `food.shopping.consolidate@1`. The full
+    five-section planner on one page conflicts with "`apps/web` contains no tool-specific code"
+    and needs its own short decision before that UI task.
 - **Outbound links.** Maps and YouTube links in page HTML need `ALLOWED_HOSTS` approval.
   Saved-plan storage on the device needs privacy-text review. Both are founder decisions, and not
   part of this task.

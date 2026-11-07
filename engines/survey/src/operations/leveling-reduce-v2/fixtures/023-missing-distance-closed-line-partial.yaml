@@ -1,0 +1,96 @@
+{
+  "id": "023-missing-distance-closed-line-partial",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5 point 2 & §8 point 9: Closed line with kConstant present and setup adjustment but partial distances reports closureStatus distance-not-provided."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "99.805",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.500",
+        "dist": "0"
+      },
+      {
+        "station": "CP1",
+        "remarks": "Change point",
+        "fs": "2.000",
+        "bs": "0.800",
+        "dist": "50"
+      },
+      {
+        "station": "BM-2",
+        "remarks": "Closing BM",
+        "fs": "0.500"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "setup",
+    "kConstant": "24"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "99.8",
+    "sumBS": "2.3",
+    "sumFS": "2.5",
+    "sumRise": "0.3",
+    "sumFall": "0.5",
+    "bsFsDelta": "-0.2",
+    "riseFallDelta": "-0.2",
+    "rlDelta": "-0.2",
+    "closingRL": "99.805",
+    "misclosure": "-0.005",
+    "totalDistanceKm": null,
+    "allowableError": null,
+    "closureStatus": "distance-not-provided",
+    "setupsCount": 2,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1.5",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": "0.0",
+        "adjustedRL": "100.000"
+      },
+      {
+        "station": "CP1",
+        "remarks": "Change point",
+        "bs": "0.8",
+        "is": null,
+        "fs": "2",
+        "rise": "0",
+        "fall": "0.5",
+        "rl": "99.5",
+        "isChangePoint": true,
+        "dist": "50",
+        "corr": "+2.5",
+        "adjustedRL": "99.503"
+      },
+      {
+        "station": "BM-2",
+        "remarks": "Closing BM",
+        "bs": null,
+        "is": null,
+        "fs": "0.5",
+        "rise": "0.3",
+        "fall": "0",
+        "rl": "99.8",
+        "isChangePoint": false,
+        "dist": null,
+        "corr": "+5.0",
+        "adjustedRL": "99.805"
+      }
+    ]
+  }
+}

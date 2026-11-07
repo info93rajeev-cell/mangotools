@@ -42,13 +42,13 @@ function formatTzDate(d: Date, timezone: string, ms: number) {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false,
+    hourCycle: 'h23',
   });
   const localFmt = new Intl.DateTimeFormat('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false,
+    hourCycle: 'h23',
   });
   const y = d.getUTCFullYear();
   const isLeap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;

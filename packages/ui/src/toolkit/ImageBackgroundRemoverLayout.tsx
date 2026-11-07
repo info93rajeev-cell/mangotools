@@ -25,7 +25,7 @@ export function ImageBackgroundRemoverLayout({
   notify,
   onPhase,
 }: ImageBackgroundRemoverLayoutProps) {
-  const [activeMode, setActiveMode] = useState<'quick' | 'pen'>('pen');
+  const [activeMode, setActiveMode] = useState<'quick' | 'pen'>('quick');
   const bgRemover = useImageBackgroundRemover(preset, toolId, notify, onPhase);
 
   const hasFile = !!bgRemover.file;
@@ -34,25 +34,33 @@ export function ImageBackgroundRemoverLayout({
 
   return (
     <div class={styles.container} data-image-bg-remover-layout="">
-      {/* MODE SWITCHER TABS */}
-      <div class={penStyles.modeSwitcherBar}>
-        <button
-          type="button"
-          class={`${penStyles.modeTabBtn} ${activeMode === 'pen' ? penStyles.modeTabActive : ''}`}
-          onClick={() => setActiveMode('pen')}
-        >
-          <span>✒️</span>
-          <span>Advanced Pen Selection & Feather</span>
-        </button>
+      {/* MODE SWITCHER TABS & AI DISCLOSURE */}
+      <div class={styles.topBarRow}>
+        <div class={penStyles.modeSwitcherBar}>
+          <button
+            type="button"
+            class={`${penStyles.modeTabBtn} ${activeMode === 'pen' ? penStyles.modeTabActive : ''}`}
+            onClick={() => setActiveMode('pen')}
+          >
+            <span>✒️</span>
+            <span>Advanced Pen Selection & Feather</span>
+          </button>
 
-        <button
-          type="button"
-          class={`${penStyles.modeTabBtn} ${activeMode === 'quick' ? penStyles.modeTabActive : ''}`}
-          onClick={() => setActiveMode('quick')}
-        >
-          <span>🪄</span>
-          <span>Quick Auto Removal</span>
-        </button>
+          <button
+            type="button"
+            class={`${penStyles.modeTabBtn} ${activeMode === 'quick' ? penStyles.modeTabActive : ''}`}
+            onClick={() => setActiveMode('quick')}
+          >
+            <span>🪄</span>
+            <span>Quick Auto Removal</span>
+          </button>
+        </div>
+
+        <p class={styles.aiDisclosure} data-ai-disclosure={activeMode}>
+          {activeMode === 'pen'
+            ? preset.strings['disclosure.pen']
+            : preset.strings['disclosure.quick']}
+        </p>
       </div>
 
       {activeMode === 'pen' ? (
