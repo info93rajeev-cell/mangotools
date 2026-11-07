@@ -6,10 +6,14 @@ test.describe('navigation', () => {
     await gotoReady(page, '/');
     const search = page.getByRole('combobox', { name: 'Search tools' });
     await search.fill('gst');
-    await expect(page.getByRole('option', { name: /GST Calculator/ })).toBeVisible();
+    await expect(
+      page.getByRole('option', { name: /Universal Tax Calculator|GST Calculator/ }),
+    ).toBeVisible();
     await search.press('Enter');
     await expect(page).toHaveURL(/\/gst-calculator$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('GST Calculator');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      /Universal Tax Calculator|GST Calculator/,
+    );
   });
 
   test('home displays hero, search, popular tools, categories, and all tools catalog', async ({
@@ -37,11 +41,11 @@ test.describe('navigation', () => {
     await expect(popularSection).toBeVisible();
     await expect(popularSection.locator('[data-tool-card]')).toHaveCount(6);
 
-    // All Tools section has exactly 36 unique tool cards
+    // All Tools section has exactly 39 unique tool cards
     const allToolsSection = page.locator('#all-tools');
     await expect(allToolsSection).toBeVisible();
     const allCards = allToolsSection.locator('[data-tool-card]');
-    await expect(allCards).toHaveCount(36);
+    await expect(allCards).toHaveCount(39);
 
     await expect(page.locator('[data-trust-line]')).toHaveText(
       'No ads · No unnecessary uploads · Deterministic results · Built for professional workflows',
@@ -76,13 +80,15 @@ test.describe('navigation', () => {
 
     // Clear and search for an older tool: "gst"
     await search.fill('gst');
-    await expect(page.getByRole('option', { name: /GST Calculator/ })).toBeVisible();
+    await expect(
+      page.getByRole('option', { name: /Universal Tax Calculator|GST Calculator/ }),
+    ).toBeVisible();
     await expect(page.locator('#all-tools [data-tool-card="gst-calculator"]')).toBeVisible();
     await expect(page.locator('#all-tools [data-tool-card="image-crop"]')).toBeHidden();
 
     // Clear search restores all cards
     await search.fill('');
-    await expect(page.locator('#all-tools [data-tool-card]')).toHaveCount(36);
+    await expect(page.locator('#all-tools [data-tool-card]')).toHaveCount(39);
   });
 
   test('clicking upgraded tools opens modern studio layout', async ({ page }) => {

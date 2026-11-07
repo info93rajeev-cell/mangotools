@@ -114,7 +114,7 @@
   font-size: var(--text-caption);
   font-weight: var(--weight-bold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
@@ -135,7 +135,7 @@
   background: var(--color-surface-subtle);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
 }
 
 .compactDropZone:hover {
@@ -202,7 +202,7 @@
   color: var(--color-text);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
 }
 
 .presetBtn:hover:not(:disabled) {
@@ -646,7 +646,7 @@
   font-size: var(--text-ui);
   font-weight: var(--weight-bold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
   box-shadow: 0 1px 3px rgba(22, 163, 74, 0.2);
 }
 
@@ -655,7 +655,11 @@
 }
 
 .downloadCtaBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -705,6 +709,12 @@
 }
 
 /* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
-:global(:where([data-theme="dark"])) .downloadCtaBtn {
+:global([data-theme="dark"]) .downloadCtaBtn {
   color: #ffffff;
+}
+
+:global([data-theme="dark"]) .downloadCtaBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
 }

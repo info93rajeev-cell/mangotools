@@ -116,36 +116,36 @@ function OutputContent({
   parsedResult,
   tableData,
 }: JsonOutputPanelProps) {
-  if (activeTab === 'tree') {
-    return (
-      <div class={styles.treeScrollContainer}>
-        {parsedResult.valid ? (
-          <JsonTreeView data={parsedResult.data} />
-        ) : (
-          <div class={styles.invalidNotice}>
-            <strong>Cannot build tree:</strong>
-            <p>{parsedResult.error || 'Invalid JSON syntax'}</p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (activeTab === 'table') {
-    return <JsonTableView tableData={tableData} />;
-  }
-
   return (
-    <div class={styles.editorContainer}>
-      <textarea
-        id={`${idPrefix}-output`}
-        class={styles.codeTextarea}
-        value={outputFormatted}
-        readOnly
-        spellcheck={false}
-        aria-label="Formatted JSON output"
-      />
-    </div>
+    <>
+      <div
+        class={styles.editorContainer}
+        style={activeTab === 'raw' ? undefined : { display: 'none' }}
+      >
+        <textarea
+          id={`${idPrefix}-output`}
+          class={styles.codeTextarea}
+          value={outputFormatted}
+          readOnly
+          spellcheck={false}
+          aria-label="Formatted JSON output"
+        />
+      </div>
+      {activeTab === 'tree' ? (
+        <div class={styles.treeScrollContainer}>
+          {parsedResult.valid ? (
+            <JsonTreeView data={parsedResult.data} />
+          ) : (
+            <div class={styles.invalidNotice}>
+              <strong>Cannot build tree:</strong>
+              <p>{parsedResult.error || 'Invalid JSON syntax'}</p>
+            </div>
+          )}
+        </div>
+      ) : activeTab === 'table' ? (
+        <JsonTableView tableData={tableData} />
+      ) : null}
+    </>
   );
 }
 

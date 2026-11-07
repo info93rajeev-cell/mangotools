@@ -1,5 +1,40 @@
 import { useEffect, useState } from 'preact/hooks';
 
+interface MapLike {
+  has(k: unknown): boolean;
+  get(k: unknown): unknown;
+  set(k: unknown, v: unknown): unknown;
+}
+
+// Polyfill for Map.prototype.getOrInsertComputed and WeakMap.prototype.getOrInsertComputed
+// used by pdfjs-dist 6.x in browsers without native support
+for (const Ctor of [
+  typeof Map !== 'undefined' ? Map : null,
+  typeof WeakMap !== 'undefined' ? WeakMap : null,
+]) {
+  if (!Ctor) continue;
+  const proto = Ctor.prototype as unknown as Record<string, unknown>;
+  if (!('getOrInsertComputed' in proto)) {
+    proto.getOrInsertComputed = function (
+      this: MapLike,
+      key: unknown,
+      callback: (k: unknown) => unknown,
+    ) {
+      if (this.has(key)) return this.get(key);
+      const val = callback(key);
+      this.set(key, val);
+      return val;
+    };
+  }
+  if (!('getOrInsert' in proto)) {
+    proto.getOrInsert = function (this: MapLike, key: unknown, defaultVal: unknown) {
+      if (this.has(key)) return this.get(key);
+      this.set(key, defaultVal);
+      return defaultVal;
+    };
+  }
+}
+
 /**
  * Real page thumbnails, drawn in the browser with pdf.js (Apache-2.0). The library and its worker
  * load only when a preview is first needed, and both come from this site: no file and no page
@@ -64,7 +99,8 @@ async function renderOne(
     await page.render({ canvas, viewport }).promise;
     page.cleanup();
     return await toBlobUrl(canvas);
-  } catch {
+  } catch (err) {
+    console.error('PDF RENDER ERROR:', err);
     return null;
   }
 }

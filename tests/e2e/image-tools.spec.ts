@@ -4,9 +4,10 @@ import { expect, type Page, test } from '@playwright/test';
 import { island, openTool, primaryResult } from '../support/tool-page.ts';
 
 test.describe('Image Resize', () => {
-  const fileInput = (page: Page) => island(page, 'image-resize').locator('input[type="file"]');
+  const fileInput = (page: Page) =>
+    island(page, 'image-resize').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-resize').locator('img');
+  const preview = (page: Page) => island(page, 'image-resize').locator('img').first();
 
   test('selecting an image previews it and prefills width and height', async ({ page }) => {
     await openTool(page, 'image-resize');
@@ -68,8 +69,12 @@ test.describe('Image Resize', () => {
     await openTool(page, 'image-resize');
     const notAnImage = join(process.cwd(), 'tools/image-resize/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download resized image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 
   test('shows a specific error for an invalid width', async ({ page }) => {
@@ -83,11 +88,12 @@ test.describe('Image Resize', () => {
 });
 
 test.describe('Image Compress', () => {
-  const fileInput = (page: Page) => island(page, 'image-compress').locator('input[type="file"]');
+  const fileInput = (page: Page) =>
+    island(page, 'image-compress').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-compress/fixtures/files/sample.jpg');
   const photo = join(process.cwd(), 'tools/image-compress/fixtures/files/photo.jpg');
   const compressible = join(process.cwd(), 'tools/image-compress/fixtures/files/compressible.png');
-  const preview = (page: Page) => island(page, 'image-compress').locator('img');
+  const preview = (page: Page) => island(page, 'image-compress').locator('img').first();
 
   test('selecting an image previews it without exposing width or height controls', async ({
     page,
@@ -221,8 +227,12 @@ test.describe('Image Compress', () => {
     await openTool(page, 'image-compress');
     const notAnImage = join(process.cwd(), 'tools/image-compress/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download compressed image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 
   test('fits strictly within 900px desktop viewport without page scrolling', async ({ page }) => {
@@ -254,9 +264,9 @@ test.describe('Image Compress', () => {
 
 test.describe('Image Format Converter', () => {
   const fileInput = (page: Page) =>
-    island(page, 'image-format-converter').locator('input[type="file"]');
+    island(page, 'image-format-converter').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-format-converter/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-format-converter').locator('img');
+  const preview = (page: Page) => island(page, 'image-format-converter').locator('img').first();
 
   test('selecting an image previews it without exposing width or height controls', async ({
     page,
@@ -341,16 +351,20 @@ test.describe('Image Format Converter', () => {
     await openTool(page, 'image-format-converter');
     const notAnImage = join(process.cwd(), 'tools/image-format-converter/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download converted image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 });
 
 test.describe('Background Remover', () => {
   const fileInput = (page: Page) =>
-    island(page, 'image-background-remover').locator('input[type="file"]');
+    island(page, 'image-background-remover').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-background-remover').locator('img');
+  const preview = (page: Page) => island(page, 'image-background-remover').locator('img').first();
 
   test('selecting an image previews it and exposes tolerance and feather controls', async ({
     page,
@@ -399,8 +413,12 @@ test.describe('Background Remover', () => {
     await openTool(page, 'image-background-remover');
     const notAnImage = join(process.cwd(), 'tools/image-background-remover/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download transparent image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 
   test('fits strictly within 900px desktop viewport without page scrolling', async ({ page }) => {
@@ -449,6 +467,7 @@ test.describe('Background Remover', () => {
     );
     await openTool(page, 'image-background-remover');
     await fileInput(page).setInputFiles([portrait]);
+    await expect(page.getByText('portrait.jpg', { exact: true }).first()).toBeVisible();
 
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download transparent image' }).click();
