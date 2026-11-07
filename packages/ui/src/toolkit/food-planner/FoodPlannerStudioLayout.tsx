@@ -73,7 +73,7 @@ function PlannerTopHeader({
           <div class={styles.headerIcon}>
             <Icon name="chef-hat" />
           </div>
-          <h1 class={styles.toolTitle}>Food Planner</h1>
+          <h2 class={styles.toolTitle}>Food Planner</h2>
           <span class={styles.guidePill}>
             <Icon name="lightbulb" /> Guide
           </span>
