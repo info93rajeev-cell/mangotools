@@ -13,6 +13,17 @@ describe('selection state', () => {
     expect(hasNoEdits({ path: noPath, strokes: [], aiMask: null })).toBe(true);
   });
 
+  it('an open pen path is not a selection until it is closed', () => {
+    const point = { id: 'p1', x: 0, y: 0, cp1x: 0, cp1y: 0, cp2x: 0, cp2y: 0, isSmooth: false };
+    const pts = [point, { ...point, id: 'p2', x: 5 }, { ...point, id: 'p3', y: 5 }];
+    expect(hasNoEdits({ path: { points: pts, isClosed: false }, strokes: [], aiMask: null })).toBe(
+      true,
+    );
+    expect(hasNoEdits({ path: { points: pts, isClosed: true }, strokes: [], aiMask: null })).toBe(
+      false,
+    );
+  });
+
   it('a pen path with fewer than three points is not a selection yet', () => {
     const point = { id: 'p1', x: 0, y: 0, cp1x: 0, cp1y: 0, cp2x: 0, cp2y: 0, isSmooth: false };
     const path = { points: [point, { ...point, id: 'p2', x: 5 }], isClosed: false };

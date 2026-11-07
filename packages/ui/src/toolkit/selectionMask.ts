@@ -55,9 +55,14 @@ export function drawStroke(ctx: CanvasRenderingContext2D, stroke: BrushStroke): 
   ctx.restore();
 }
 
-/** True when nothing has been selected yet (no AI mask, no usable path, no added strokes). */
+/** Only a closed pen path with three or more points selects an area. */
+export function isFillablePath(path: MaskSources['path']): boolean {
+  return path.isClosed && path.points.length >= 3;
+}
+
+/** True when nothing has been selected yet (no AI mask, no closed path, no added strokes). */
 export function isEmptySelection(src: MaskSources): boolean {
-  return !src.aiMask && src.path.points.length < 3 && !src.strokes.some((s) => s.mode === 'add');
+  return !src.aiMask && !isFillablePath(src.path) && !src.strokes.some((s) => s.mode === 'add');
 }
 
 /** True when there is nothing to show yet, so the stage should show the photo itself. */
@@ -74,7 +79,7 @@ export function composeSelectionMask(width: number, height: number, src: MaskSou
     ctx.fillRect(0, 0, width, height);
   }
   if (src.aiMask) ctx.drawImage(src.aiMask, 0, 0, width, height);
-  if (src.path.points.length >= 3) {
+  if (isFillablePath(src.path)) {
     ctx.fillStyle = '#ffffff';
     drawPathToCanvas(ctx, src.path);
     ctx.fill();

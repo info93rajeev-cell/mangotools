@@ -334,6 +334,10 @@ button.toolActive .gridToolText {
 .pathPillBtn:hover {
   background: #e2e8f0;
 }
+.pathPillBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* CENTER CANVAS */
 .centerCanvasCard {
@@ -454,7 +458,7 @@ div.bgBlack {
   display: inline-block;
   max-width: 100%;
   max-height: 95%;
-  overflow: hidden;
+  overflow: visible;
 }
 .stageImage {
   position: relative;
@@ -489,20 +493,50 @@ div.bgBlack {
   width: 100%;
   height: 100%;
   cursor: crosshair;
-  overflow: hidden;
+  overflow: visible;
 }
 .anchorNode {
   cursor: move;
-  transition: r 0.1s ease;
 }
 .anchorNode:hover {
-  r: 7px;
+  fill: #bfdbfe;
 }
-.handleCircle {
+.anchorNode[data-close-target] {
   cursor: pointer;
 }
+.handleCircle {
+  cursor: grab;
+}
 .handleCircle:hover {
-  r: 6px;
+  fill: #bfdbfe;
+}
+/* Hand tool, Space held, or a pan in progress. */
+.canvasStageWrapper[data-pan-mode="true"],
+.canvasStageWrapper[data-pan-mode="true"] .pathOverlaySvg,
+.canvasStageWrapper[data-pan-mode="true"] .anchorNode {
+  cursor: grab;
+}
+.canvasStageWrapper[data-panning="true"],
+.canvasStageWrapper[data-panning="true"] .pathOverlaySvg {
+  cursor: grabbing;
+}
+.toolIconBtn[data-active="true"] {
+  background: #dbeafe;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+.stageHint {
+  margin: 0;
+  padding: 6px 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
+  color: #1e3a8a;
+  background: #eff6ff;
+  border-bottom: 1px solid #dbeafe;
+}
+:global(:where([data-theme="dark"])) .stageHint {
+  color: #bfdbfe;
+  background: #172554;
+  border-bottom-color: #1e3a8a;
 }
 
 /* RIGHT PANEL & SLIDERS */

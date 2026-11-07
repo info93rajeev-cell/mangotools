@@ -1,10 +1,12 @@
 ---
-lastReviewed: 2026-11-04
+lastReviewed: 2026-11-07
 ---
 
 ## How to use
 
-1. **Upload your image.** Click the prominent **Upload Image** button, drag and drop any JPG, PNG, or WebP photo, or click **Try Sample** to test with an authentic example photograph.
+The tool opens in **Quick Auto Removal**. Advanced users can switch to **Advanced Pen Selection & Feather**; a photo you already opened comes along.
+
+1. **Upload your image.** Click **Upload Image**, drop a JPG, PNG, or WebP photo onto the image card, or click the sample photo to try it. Once your photo is open the same card shows **Replace Image**: it clears the current work and starts again with a new photo.
 2. **Choose removal mode.** The tool defaults to **Universal Mode** to isolate arbitrary products, people, pets, vehicles, furniture, food, and objects using browser-local neural matting. Use **Person Mode** for ultra-fast headshots, or **Solid Chroma** for flat single-color graphics and logos.
 3. **Select output format & download.** Choose **PNG (Transparent)** for crisp cutouts, **WebP** for compact file size, **JPG** with a solid white or custom background, or **PDF** for official document submittals. Click **Download transparent image** to save your result instantly.
 
@@ -37,6 +39,8 @@ You can download your cutout as a transparent PNG, compact transparent WebP, sol
 ### Does this tool use AI?
 
 Yes, but only in **Quick Auto Removal**. That mode runs an AI model (BiRefNet-lite, MIT licence) on your own device. A model is used because removing backgrounds from people, hair, pets and busy scenes without one gives rough edges, and we tested that. The first time you use it, the model files (about 100 MB, or up to 190 MB on browsers without WebGPU) download from this website (beyandtheai.com) itself, and your browser keeps them for later visits. Only the model comes to you; nothing goes back.
+
+**Pen tool, step by step.** Click to place points around the area; click and drag while placing a point to make a curve. The path stays open until you close it: click the green first point, press **C**, or use **Close Path**. Only then does the area inside join the selection. Drag a point to move it, and drag its round handles to bend the curve. Double-click a point (or use **Make Curve / Make Corner**) to switch between a curve point and a corner. Use the **✋ Hand** tool (or hold **Space**) to move the photo while zoomed in.
 
 In **Pen Selection**, **Auto Select** uses the same on-device AI model to make the first selection; the **Pen** and the **Brush Add / Brush Remove** tools use no AI. If you prefer no AI at all, skip Auto Select and draw the selection with the Pen and brushes.
 

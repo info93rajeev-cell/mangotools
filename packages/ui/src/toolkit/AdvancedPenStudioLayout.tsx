@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'preact/hooks';
 import { AdvancedPenCanvas } from './AdvancedPenCanvas.tsx';
 import { AdvancedPenControls } from './AdvancedPenControls.tsx';
 import { AdvancedPenHeader } from './AdvancedPenHeader.tsx';
@@ -8,10 +9,19 @@ import { useAdvancedPenSelection } from './useAdvancedPenSelection.ts';
 
 export interface AdvancedPenStudioLayoutProps {
   notify: (msg: string) => void;
+  /** The photo already opened in Quick Auto Removal, so you can keep working on it here. */
+  initialFile?: File | null;
 }
 
-export function AdvancedPenStudioLayout({ notify }: AdvancedPenStudioLayoutProps) {
+export function AdvancedPenStudioLayout({ notify, initialFile }: AdvancedPenStudioLayoutProps) {
   const penSelection = useAdvancedPenSelection(notify);
+  const { loadFile } = penSelection;
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current || !initialFile) return;
+    started.current = true;
+    void loadFile(initialFile);
+  }, [initialFile, loadFile]);
 
   return (
     <div class={styles.studioContainer} data-advanced-pen-studio="">

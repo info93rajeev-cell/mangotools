@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import {
-  type BezierPath,
-  type BezierPoint,
-  deletePointById,
-  insertPointAt,
-  moveHandleCoords,
-  movePointCoords,
-} from './bezierPathModel.ts';
+import type { BezierPath } from './bezierPathModel.ts';
 import { type BrushStroke, hasNoEdits } from './selectionMask.ts';
 import {
   type RenderCutoutResult,
@@ -14,9 +7,10 @@ import {
   type SelectionEdgeSettings,
 } from './selectionMaskRenderer.ts';
 import { type AutoSelectStatus, useAutoSelect } from './usePenAutoSelect.ts';
+import { usePenPathMutations } from './usePenPathMutations.ts';
 import { usePenSelectionHistory } from './usePenSelectionHistory.ts';
 
-export type ActiveTool = 'pen' | 'add' | 'delete' | 'brushAdd' | 'brushRemove';
+export type ActiveTool = 'pen' | 'add' | 'delete' | 'brushAdd' | 'brushRemove' | 'pan';
 export type BgMode = 'transparent' | 'white' | 'black' | 'custom';
 
 function usePenImageState(notify: (msg: string) => void) {
@@ -176,55 +170,6 @@ function useCutoutRenderer(
   return { cutoutResult, isProcessing, downloadCutout };
 }
 
-function newPoint(x: number, y: number): BezierPoint {
-  const rx = Math.round(x);
-  const ry = Math.round(y);
-  const id = `pt_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-  return { id, x: rx, y: ry, cp1x: rx, cp1y: ry, cp2x: rx, cp2y: ry, isSmooth: false };
-}
-
-function usePathPointMutations(
-  pathState: ReturnType<typeof usePenSelectionHistory>,
-  notify: (msg: string) => void,
-) {
-  const { path, setPath, pushHistory, setSelectedPointIndex } = pathState;
-  const onMovePoint = useCallback(
-    (idx: number, nx: number, ny: number) => setPath((prev) => movePointCoords(prev, idx, nx, ny)),
-    [setPath],
-  );
-  const onMoveHandle = useCallback(
-    (idx: number, handle: 'cp1' | 'cp2', nx: number, ny: number) =>
-      setPath((prev) => moveHandleCoords(prev, idx, handle, nx, ny)),
-    [setPath],
-  );
-  const onInsertPoint = useCallback(
-    (segIdx: number, t: number) => pushHistory(insertPointAt(path, segIdx, t)),
-    [path, pushHistory],
-  );
-  /** Pen tool: each click adds a corner of a hard-edged area that is added to the selection. */
-  const onAppendPoint = useCallback(
-    (x: number, y: number) => {
-      pushHistory({ points: [...path.points, newPoint(x, y)], isClosed: true });
-      setSelectedPointIndex(path.points.length);
-    },
-    [path, pushHistory, setSelectedPointIndex],
-  );
-  const onDeletePoint = useCallback(
-    (idx: number) => {
-      const target = path.points[idx];
-      if (target) pushHistory(deletePointById(path, target.id));
-      setSelectedPointIndex(null);
-    },
-    [path, pushHistory, setSelectedPointIndex],
-  );
-  const clearAll = useCallback(() => {
-    pathState.setAiMask(null);
-    notify('Selection cleared');
-  }, [pathState.setAiMask, notify]);
-
-  return { onMovePoint, onMoveHandle, onInsertPoint, onAppendPoint, onDeletePoint, clearAll };
-}
-
 export interface UseAdvancedPenSelectionReturn {
   image: HTMLImageElement | null;
   imageSrc: string | null;
@@ -237,7 +182,11 @@ export interface UseAdvancedPenSelectionReturn {
   brushRadius: number;
   setBrushRadius: (r: number) => void;
   addStroke: (stroke: BrushStroke) => void;
-  onAppendPoint: (x: number, y: number) => void;
+  onAppendPoint: (x: number, y: number) => number | null;
+  onClosePath: () => void;
+  onToggleCurve: (idx: number) => void;
+  onPullHandles: (idx: number, x: number, y: number) => void;
+  beginEdit: () => void;
   selectedPointIndex: number | null;
   activeTool: ActiveTool;
   edgeSettings: SelectionEdgeSettings;
@@ -282,7 +231,7 @@ export function useAdvancedPenSelection(
   notify: (msg: string) => void,
 ): UseAdvancedPenSelectionReturn {
   const imgState = usePenImageState(notify);
-  const pathState = usePenSelectionHistory(imgState.imageDims, notify);
+  const pathState = usePenSelectionHistory(notify);
   const edgeState = usePenEdgeAndBgState();
   const [activeTool, setActiveTool] = useState<ActiveTool>('pen');
   const [brushRadius, setBrushRadius] = useState<number>(24);
@@ -299,7 +248,7 @@ export function useAdvancedPenSelection(
     notify,
   );
 
-  const mutations = usePathPointMutations(pathState, notify);
+  const mutations = usePenPathMutations(pathState, notify);
   const auto = useAutoSelect(imgState.image, pathState, notify);
   const { resetSelection } = pathState;
 

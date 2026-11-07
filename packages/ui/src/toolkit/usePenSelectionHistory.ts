@@ -1,10 +1,5 @@
 import { useCallback, useState } from 'preact/hooks';
-import {
-  type BezierPath,
-  createKingfisherReferencePath,
-  simplifyPath,
-  smoothAllPoints,
-} from './bezierPathModel.ts';
+import { type BezierPath, simplifyPath, smoothAllPoints } from './bezierPathModel.ts';
 import type { BrushStroke } from './selectionMask.ts';
 
 /** Everything that makes up the selection; one entry per undo step. */
@@ -59,10 +54,7 @@ function useSnapshotHistory() {
   return { current, commit, setCurrent, reset, undo, redo, index: h.index, length: h.stack.length };
 }
 
-export function usePenSelectionHistory(
-  imageDims: { width: number; height: number },
-  notify: (msg: string) => void,
-) {
+export function usePenSelectionHistory(notify: (msg: string) => void) {
   const h = useSnapshotHistory();
   const { current, commit } = h;
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
@@ -98,10 +90,6 @@ export function usePenSelectionHistory(
     pushHistory(simplifyPath(current.path, 14));
     notify('Selection path simplified');
   }, [current.path, notify, pushHistory]);
-  const resetCurrentPath = useCallback(() => {
-    pushHistory(createKingfisherReferencePath(imageDims.width, imageDims.height));
-    notify('Selection path reset to default');
-  }, [imageDims, notify, pushHistory]);
 
   return {
     path: current.path,
@@ -120,6 +108,5 @@ export function usePenSelectionHistory(
     canRedo: h.index < h.length - 1,
     smoothCurrentPath,
     simplifyCurrentPath,
-    resetCurrentPath,
   };
 }

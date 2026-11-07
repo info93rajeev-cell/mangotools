@@ -1,139 +1,142 @@
 import styles from './advancedPenSelection.module.css';
 import type { BezierPoint } from './bezierPathModel.ts';
 
-export function SvgCalloutBadge({ anchor }: { anchor: BezierPoint }) {
+/** `k` = image pixels per screen pixel, so markers keep the same on-screen size at any zoom. */
+type HandleKind = 'cp1' | 'cp2';
+
+function hasHandle(p: BezierPoint, kind: HandleKind): boolean {
+  return kind === 'cp1' ? p.cp1x !== p.x || p.cp1y !== p.y : p.cp2x !== p.x || p.cp2y !== p.y;
+}
+
+function Handle({
+  point,
+  kind,
+  k,
+  onDown,
+}: {
+  point: BezierPoint;
+  kind: HandleKind;
+  k: number;
+  onDown: (kind: HandleKind, e: PointerEvent) => void;
+}) {
+  if (!hasHandle(point, kind)) return null;
+  const hx = kind === 'cp1' ? point.cp1x : point.cp2x;
+  const hy = kind === 'cp1' ? point.cp1y : point.cp2y;
   return (
-    <g class={styles.calloutGroup} pointer-events="none">
-      <path
-        d={`M ${anchor.x + 90} ${anchor.y - 40} Q ${anchor.x + 40} ${anchor.y - 30} ${anchor.x + 10} ${anchor.y}`}
-        fill="none"
-        stroke="#ec4899"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        marker-end="url(#arrowhead)"
+    <g>
+      <line
+        x1={point.x}
+        y1={point.y}
+        x2={hx}
+        y2={hy}
+        stroke="#3b82f6"
+        stroke-width={1.5 * k}
+        pointer-events="none"
       />
-      <defs>
-        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto">
-          <polygon points="0 1, 8 4, 0 7" fill="#ec4899" />
-        </marker>
-      </defs>
-      <rect
-        x={anchor.x + 80}
-        y={anchor.y - 85}
-        width="230"
-        height="42"
-        rx="8"
-        fill="#fce7f3"
-        stroke="#f472b6"
-        stroke-width="1.5"
+      <circle
+        cx={hx}
+        cy={hy}
+        r={6 * k}
+        fill="#ffffff"
+        stroke="#2563eb"
+        stroke-width={2 * k}
+        class={styles.handleCircle}
+        data-handle={kind}
+        onPointerDown={(e) => onDown(kind, e)}
       />
-      <text
-        x={anchor.x + 92}
-        y={anchor.y - 69}
-        fill="#be185d"
-        font-size="11"
-        font-weight="700"
-        font-family="Inter, sans-serif"
-      >
-        Editable pen tool path
-      </text>
-      <text
-        x={anchor.x + 92}
-        y={anchor.y - 54}
-        fill="#be185d"
-        font-size="10"
-        font-family="Inter, sans-serif"
-      >
-        with anchor points and handles
-      </text>
     </g>
   );
 }
 
+/** Direction handles of the selected point; drag them to bend the curve. */
 export function SvgTangentHandles({
   selectedPt,
   selectedPointIndex,
-  onHandleMouseDown,
+  k,
+  onHandlePointerDown,
 }: {
   selectedPt: BezierPoint;
   selectedPointIndex: number;
-  onHandleMouseDown: (idx: number, type: 'cp1' | 'cp2', e: MouseEvent) => void;
+  k: number;
+  onHandlePointerDown: (idx: number, type: HandleKind, e: PointerEvent) => void;
 }) {
+  const onDown = (kind: HandleKind, e: PointerEvent) =>
+    onHandlePointerDown(selectedPointIndex, kind, e);
   return (
     <g class={styles.handlesGroup}>
-      <line
-        x1={selectedPt.x}
-        y1={selectedPt.y}
-        x2={selectedPt.cp1x}
-        y2={selectedPt.cp1y}
-        stroke="#3b82f6"
-        stroke-width="1.5"
-      />
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
-      <circle
-        cx={selectedPt.cp1x}
-        cy={selectedPt.cp1y}
-        r="4.5"
-        fill="#ffffff"
-        stroke="#2563eb"
-        stroke-width="2"
-        class={styles.handleCircle}
-        onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp1', e)}
-      />
-      <line
-        x1={selectedPt.x}
-        y1={selectedPt.y}
-        x2={selectedPt.cp2x}
-        y2={selectedPt.cp2y}
-        stroke="#3b82f6"
-        stroke-width="1.5"
-      />
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
-      <circle
-        cx={selectedPt.cp2x}
-        cy={selectedPt.cp2y}
-        r="4.5"
-        fill="#ffffff"
-        stroke="#2563eb"
-        stroke-width="2"
-        class={styles.handleCircle}
-        onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp2', e)}
-      />
+      <Handle point={selectedPt} kind="cp1" k={k} onDown={onDown} />
+      <Handle point={selectedPt} kind="cp2" k={k} onDown={onDown} />
     </g>
+  );
+}
+
+function Anchor({
+  pt,
+  idx,
+  isSelected,
+  closeTarget,
+  k,
+  onDown,
+}: {
+  pt: BezierPoint;
+  idx: number;
+  isSelected: boolean;
+  closeTarget: boolean;
+  k: number;
+  onDown: (idx: number, e: PointerEvent) => void;
+}) {
+  const half = (isSelected ? 6 : 5) * k;
+  const fill = isSelected ? '#2563eb' : closeTarget ? '#dcfce7' : '#ffffff';
+  return (
+    <rect
+      x={pt.x - half}
+      y={pt.y - half}
+      width={half * 2}
+      height={half * 2}
+      fill={fill}
+      stroke={closeTarget ? '#16a34a' : '#1d4ed8'}
+      stroke-width={(closeTarget ? 3 : 2) * k}
+      class={styles.anchorNode}
+      data-anchor={idx}
+      data-close-target={closeTarget ? '' : undefined}
+      onPointerDown={(e) => onDown(idx, e)}
+    >
+      <title>
+        {closeTarget
+          ? 'Click to close the path'
+          : 'Drag to move. Double-click: curve ⇄ corner point'}
+      </title>
+    </rect>
   );
 }
 
 export function SvgAnchorPoints({
   points,
   selectedPointIndex,
-  onNodeClick,
-  onNodeMouseDown,
+  closableFirst,
+  k,
+  onNodePointerDown,
 }: {
   points: BezierPoint[];
   selectedPointIndex: number | null;
-  onNodeClick: (idx: number, e: MouseEvent) => void;
-  onNodeMouseDown: (idx: number, e: MouseEvent) => void;
+  /** The first point is highlighted when clicking it would close the path. */
+  closableFirst: boolean;
+  k: number;
+  onNodePointerDown: (idx: number, e: PointerEvent) => void;
 }) {
   return (
     <g>
-      {points.map((pt, idx) => {
-        const isSelected = idx === selectedPointIndex;
-        return (
-          // biome-ignore lint/a11y/noStaticElementInteractions: Bezier anchor point interaction
-          <circle
-            key={pt.id}
-            cx={pt.x}
-            cy={pt.y}
-            r={isSelected ? '6.5' : '4.5'}
-            fill={isSelected ? '#3b82f6' : '#ffffff'}
-            stroke={isSelected ? '#1d4ed8' : '#2563eb'}
-            stroke-width={isSelected ? '2.5' : '2'}
-            class={styles.anchorNode}
-            onClick={(e) => onNodeClick(idx, e)}
-            onMouseDown={(e) => onNodeMouseDown(idx, e)}
-          />
-        );
-      })}
+      {points.map((pt, idx) => (
+        <Anchor
+          key={pt.id}
+          pt={pt}
+          idx={idx}
+          isSelected={idx === selectedPointIndex}
+          closeTarget={closableFirst && idx === 0}
+          k={k}
+          onDown={onNodePointerDown}
+        />
+      ))}
     </g>
   );
 }
