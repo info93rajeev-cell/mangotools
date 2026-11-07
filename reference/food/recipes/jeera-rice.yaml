@@ -1,0 +1,49 @@
+# Original BeyondTheAI recipe text. Quantities cross-checked against the sources below.
+id: jeera-rice
+version: 0.1.0
+name: Jeera Rice
+localName: जीरा राइस
+course: rice
+cuisine: North Indian
+diet: vegetarian
+servings: 4
+prepMinutes: 25
+cookMinutes: 20
+ingredients:
+  - { ingredient: basmati-rice, quantity: "200", unit: g }
+  - { ingredient: ghee, quantity: "1", unit: tbsp }
+  - { ingredient: cumin-seeds, quantity: "2", unit: tsp }
+  - { ingredient: bay-leaf, quantity: "1", unit: piece }
+  - { ingredient: salt, quantity: "1", unit: tsp, note: adjust to taste }
+steps:
+  - Rinse the rice in three changes of water until the water runs almost clear, then soak it for 20 minutes and drain well.
+  - Warm the ghee in a heavy pan on medium heat. Add the cumin seeds and the bay leaf and let the seeds crackle for about 30 seconds without browning too far.
+  - Tip in the drained rice and stir gently for a minute so every grain is coated with ghee.
+  - Pour in 500 ml of water, add the salt and bring to a boil.
+  - Lower the heat, cover tightly and cook for 12 to 15 minutes until the water is absorbed and the grains are tender.
+  - Turn off the heat and leave the pan covered for 5 minutes, then loosen the rice with a fork and remove the bay leaf before serving.
+sources:
+  - title: Easy Jeera Rice (Cumin Rice)
+    publisher: Chef Not Required
+    url: https://www.chefnotrequired.com/wprm_print/easy-jeera-rice-cumin-rice
+    accessed: 2026-11-02
+    checks: 1 cup basmati serves 4 as a side; 1 tbsp ghee; 1 tsp cumin; 1 cup rice to 2 cups water.
+  - title: Jeera Rice (Indian Cumin Rice)
+    publisher: Cup of Yum
+    url: https://cupofyum.com/recipes/jeera-rice-indian-cumin-rice
+    accessed: 2026-11-02
+    checks: 1 cup dry basmati for 4 servings; 1 tbsp ghee; 1 bay leaf; 1 tsp cumin; 1 to 2 tsp salt.
+  - title: Jeera Rice
+    publisher: Tarla Dalal (member recipe)
+    url: https://m.tarladalal.com/jeera-rice--by-chandapappa-10505r?amp=1
+    accessed: 2026-11-02
+    checks: 1 cup basmati with 2 tsp cumin, 1 bay leaf and 1.5 tbsp ghee; 1 cup rice to 2 cups water.
+verification:
+  status: source-checked
+  by: Claude (Engineering Office), desk check
+  date: 2026-11-02
+  notes: >-
+    Sources agree that about 1 cup of dry basmati serves 4 and use 1 to 1.5 tbsp ghee and 1 to 2 tsp
+    cumin. 200 g is used for "1 cup": common kitchen references give 185 to 200 g per cup of dry
+    basmati, so this is an assumption, not a measured value. Water: about 2.5 times the rice weight,
+    consistent with the 1 : 2 cup ratio. Not kitchen-tested.

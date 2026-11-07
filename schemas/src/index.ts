@@ -2,6 +2,8 @@ export * from './common.ts';
 export * from './conditions.ts';
 export * from './content.ts';
 export * from './fixture.ts';
+export * from './food.ts';
+export * from './food-menu.ts';
 export * from './manifest.ts';
 export * from './marketplace-fees.ts';
 export * from './page.ts';
