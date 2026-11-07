@@ -164,19 +164,56 @@ function boxMean(src: Float32Array, w: number, h: number, r: number): Float32Arr
   return pass(pass(src, true), false);
 }
 
-/** Difference from the background (0-441) at which a pixel counts as an opaque body. */
-const BODY_FROM = 14;
-const BODY_FULL = 32;
+/**
+ * How much the background itself varies (JPEG noise, texture, grain): the median difference
+ * between a background pixel and the average of the background around it. The limits for
+ * "glass" and "solid" are set from this, so each photo is judged against its own background
+ * instead of fixed numbers.
+ */
+export function backgroundNoise(rgb: Float32Array, alpha: Float32Array, w: number, h: number) {
+  const n = w * h;
+  const m = new Float32Array(n);
+  for (let i = 0; i < n; i++) m[i] = (alpha[i] ?? 0) < 0.05 ? 1 : 0;
+  const r = Math.max(2, Math.round(Math.max(w, h) / 64));
+  const mm = boxMean(m, w, h, r);
+  const means = [0, 1, 2].map((k) => {
+    const ch = new Float32Array(n);
+    for (let i = 0; i < n; i++) ch[i] = (rgb[i * 3 + k] ?? 0) * (m[i] ?? 0);
+    return boxMean(ch, w, h, r);
+  });
+  const diffs: number[] = [];
+  const step = Math.max(1, Math.floor(n / 40000));
+  for (let i = 0; i < n; i += step) {
+    const wgt = mm[i] ?? 0;
+    if (!m[i] || wgt < 0.5) continue;
+    const d = [0, 1, 2].map((k) => (rgb[i * 3 + k] ?? 0) - (means[k]?.[i] ?? 0) / wgt);
+    diffs.push(Math.hypot(d[0] ?? 0, d[1] ?? 0, d[2] ?? 0));
+  }
+  if (diffs.length < 50) return 3;
+  diffs.sort((a, b) => a - b);
+  return diffs[Math.floor(diffs.length / 2)] ?? 3;
+}
+
+/** Colour-difference limits (0-441): below `from` a pixel can be glass, above `full` it is solid. */
+export interface GlassLimits {
+  from: number;
+  full: number;
+}
+
+export function limitsFor(noise: number): GlassLimits {
+  const from = Math.min(40, Math.max(14, 8 + 2.5 * noise));
+  return { from, full: from + 18 + noise };
+}
 
 /** Per small pixel: 0..1, how much the area around it is an opaque body (legs, labels). */
-function solidAreas(small: Small, bg: Float32Array): Float32Array {
+function solidAreas(small: Small, bg: Float32Array, lim: GlassLimits): Float32Array {
   const n = small.w * small.h;
   const body = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     const dr = (small.rgb[i * 3] ?? 0) - (bg[i * 3] ?? 0);
     const dg = (small.rgb[i * 3 + 1] ?? 0) - (bg[i * 3 + 1] ?? 0);
     const db = (small.rgb[i * 3 + 2] ?? 0) - (bg[i * 3 + 2] ?? 0);
-    body[i] = smooth(BODY_FROM, BODY_FULL, Math.hypot(dr, dg, db));
+    body[i] = smooth(lim.from, lim.full, Math.hypot(dr, dg, db));
   }
   const local = boxMean(body, small.w, small.h, Math.max(2, Math.round(small.w / 140)));
   for (let i = 0; i < n; i++) local[i] = smooth(0.55, 0.85, local[i] ?? 0);
@@ -203,12 +240,17 @@ export interface GlassPlan {
   h: number;
   bg: Float32Array;
   solid: Float32Array;
+  limits: GlassLimits;
+  /** Measured background variation; above about 18 the background is busy. */
+  noise: number;
 }
 
 /** `rgb` (0-255, 3 per pixel) and `alpha` (0-1, AI mask) of a small copy of the photo. */
 export function planGlass(rgb: Float32Array, alpha: Float32Array, w: number, h: number): GlassPlan {
   const bg = pushPullBackground(rgb, alpha, w, h);
-  return { w, h, bg, solid: solidAreas({ w, h, rgb, alpha }, bg) };
+  const noise = backgroundNoise(rgb, alpha, w, h);
+  const limits = limitsFor(noise);
+  return { w, h, bg, noise, limits, solid: solidAreas({ w, h, rgb, alpha }, bg, limits) };
 }
 
 /**
@@ -231,6 +273,7 @@ export function glassStrip(
       writeGlassPixel(out, rgba, cut, (r * full.w + x) * 4, {
         b: sampleBilinear(plan.bg, plan.w, plan.h, fx, fy),
         solid: scalarAt(plan.solid, plan.w, plan.h, fx, fy),
+        lim: plan.limits,
       });
     }
   }
@@ -254,7 +297,7 @@ function writeGlassPixel(
   rgba: Uint8ClampedArray,
   cut: Uint8ClampedArray,
   o: number,
-  at: { b: number[]; solid: number },
+  at: { b: number[]; solid: number; lim: GlassLimits },
 ) {
   const a = (cut[o + 3] ?? 0) / 255;
   const r = rgba[o] ?? 0;
@@ -264,8 +307,8 @@ function writeGlassPixel(
   const bgc = at.b[1] ?? 0;
   const bb = at.b[2] ?? 0;
   const d = Math.hypot(r - br, g - bgc, bl - bb);
-  const body = Math.max(smooth(BODY_FROM, BODY_FULL, d), at.solid);
-  const glass = Math.min(1, 0.06 + d / 40);
+  const body = Math.max(smooth(at.lim.from, at.lim.full, d), at.solid);
+  const glass = Math.min(1, 0.06 + d / (at.lim.full * 1.25));
   const alpha = a * (body + (1 - body) * glass);
   const keep = Math.max(alpha, 0.05);
   out[o] = (r - (1 - alpha) * br) / keep;
