@@ -61,7 +61,7 @@ export function TransparencyRow({
 }) {
   return (
     <div class={styles.sliderGroup}>
-      <span class={styles.dimLabel}>Object type (glass keeps see-through parts):</span>
+      <span class={styles.dimLabel}>Matte Mode (Glass keeps see-through parts):</span>
       <div class={styles.bgOptionsRow}>
         <button
           type="button"
@@ -324,23 +324,15 @@ export function PrecisionSection({
         </div>
       </div>
 
-      {/* Glass / Solid was hidden in the collapsed section since Oct 28 and looked removed. */}
+      {/* As on 27 Oct: Matte Mode and Product Shadow are always visible (since 28 Oct they were
+          folded into a collapsed section and looked removed). */}
       <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
-
-      <details class={styles.fineTuneDetails}>
-        <summary class={styles.fineTuneSummary}>
-          <span>⚙️ Product Shadow</span>
-          <span style={{ fontSize: fs(10) }}>▾</span>
-        </summary>
-        <div class={styles.fineTuneBody}>
-          <ProductShadowRow
-            idPrefix={idPrefix}
-            bgRemover={bgRemover}
-            hasFile={hasFile}
-            isExecuting={isExecuting}
-          />
-        </div>
-      </details>
+      <ProductShadowRow
+        idPrefix={idPrefix}
+        bgRemover={bgRemover}
+        hasFile={hasFile}
+        isExecuting={isExecuting}
+      />
     </section>
   );
 }
