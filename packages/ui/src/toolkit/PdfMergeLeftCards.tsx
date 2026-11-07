@@ -25,6 +25,11 @@ function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
           </span>
         }
       />
+      {files.length === 0 ? (
+        <p class={styles.previewEmpty}>
+          Files you add appear here. Move them up or down to set the order, rotate or remove them.
+        </p>
+      ) : null}
       <div class={styles.fileList}>
         <div data-primary-result="" class="visually-hidden">
           <output>{files.length}</output>
@@ -112,7 +117,7 @@ export function PdfMergeLeftCards({ studio }: { studio: MergeStudioState }) {
           onFiles={(list) => void studio.handleAddNativeFiles(list)}
         />
       </section>
-      {studio.files.length > 0 ? <PdfMergeListSection studio={studio} /> : null}
+      <PdfMergeListSection studio={studio} />
       <PdfMergeSettingsSection studio={studio} />
     </div>
   );

@@ -149,10 +149,6 @@ export function validateV2(
   input: LevelingInputV2,
   params: LevelingParamsV2,
 ): Result<ValidatedLevelingV2> {
-  if (params.method === 'height-of-instrument') {
-    return failure('METHOD_UNSUPPORTED', 'method');
-  }
-
   const kResult = validateKConstant(params.kConstant);
   if (!kResult.ok) return kResult;
 

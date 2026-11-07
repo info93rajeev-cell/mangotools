@@ -4,8 +4,9 @@ id: jpg-to-pdf
 slug: jpg-to-pdf
 status: beta
 tier: T3
-version: 0.2.0
+version: 0.2.1
 changelog:
+  - { version: 0.2.1, date: 2026-11-04, type: fixed, summary: "Opens with the sample loaded (your own file replaces it); main button keeps the brand yellow." }
   - { version: 0.2.0, date: 2026-11-04, type: changed, summary: "Rebuilt to the approved reference design: colour icons, larger text and summary tiles." }
   - { version: 0.1.3, date: 2026-11-03, type: fixed, summary: "Rotation and phone (EXIF) orientation now apply to the PDF; page numbers, page background and image quality options now work." }
   - { version: 0.1.2, date: 2026-09-30, type: changed, summary: "Describe limitations without future versions; say free to use; state that processing is local." }

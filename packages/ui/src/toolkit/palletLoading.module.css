@@ -63,6 +63,10 @@
     overflow-x: hidden;
     align-items: stretch;
   }
+  /* Single column: 3D pallet view first, then settings, then results. */
+  .workspaceGrid > [data-pallet-3d-canvas] {
+    order: -1;
+  }
 }
 
 /* SECTION CARDS */

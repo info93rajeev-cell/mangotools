@@ -1,6 +1,8 @@
-import type { Check, WorkingStep } from '@mangotools/core';
+import type { Check } from '@mangotools/core';
 import { add, compare, div, mul, sub, toFixedString } from '@mangotools/engine-numeric';
 import type { LevelingOutputV2 } from './schema.ts';
+import { reduceHeightOfInstrumentRaw } from './strategies/height-of-instrument.ts';
+import { reduceRiseFallRaw } from './strategies/rise-fall.ts';
 import type { ValidatedLevelingV2 } from './validate.ts';
 
 function check(id: string, expected: string, actual: string): LevelingOutputV2['checks'][number] {
@@ -11,95 +13,6 @@ function check(id: string, expected: string, actual: string): LevelingOutputV2['
     expected,
     actual,
   } satisfies Check;
-}
-
-interface BaseRow {
-  station?: string;
-  remarks?: string;
-  bs: string | null;
-  is: string | null;
-  fs: string | null;
-  rise: string | null;
-  fall: string | null;
-  rl: string;
-  isChangePoint: boolean;
-  dist: string | null;
-}
-
-function processFirstRow(
-  row: ValidatedLevelingV2['input']['observations'][number],
-  rl: string,
-): BaseRow {
-  return {
-    station: row.station,
-    remarks: row.remarks,
-    bs: row.bs ?? null,
-    is: row.is ?? null,
-    fs: row.fs ?? null,
-    rise: null,
-    fall: null,
-    rl,
-    isChangePoint: false,
-    dist: row.dist ?? null,
-  };
-}
-
-function computeRiseFall(prevReading: string, incomingReading: string) {
-  const difference = sub(prevReading, incomingReading);
-  const rise = compare(difference, '0') > 0 ? difference : '0';
-  const fall = compare(difference, '0') < 0 ? sub('0', difference) : '0';
-  return { rise, fall };
-}
-
-function reduceRawRows(input: ValidatedLevelingV2['input']) {
-  let rl = input.startRL;
-  let previousReading = input.observations[0]?.bs ?? '0';
-  const working: LevelingOutputV2['working'] = [];
-  const baseRows: BaseRow[] = [];
-  const setupIndices: number[] = [];
-  let currentSetup = 1;
-
-  for (let i = 0; i < input.observations.length; i++) {
-    const row = input.observations[i];
-    if (!row) continue;
-    if (i === 0) {
-      setupIndices.push(0);
-      baseRows.push(processFirstRow(row, rl));
-      continue;
-    }
-
-    setupIndices.push(currentSetup);
-    const incomingReading = row.is ?? row.fs ?? previousReading;
-    const { rise, fall } = computeRiseFall(previousReading, incomingReading);
-    const previousRL = rl;
-    rl = add(rl, sub(rise, fall));
-
-    working.push({
-      ref: `observations.${i}.rl`,
-      formulaKey: 'leveling.working.rl',
-      variables: { previousRL, previousReading, incomingReading, rise, fall },
-      result: rl,
-    } satisfies WorkingStep);
-
-    const isCP = row.bs !== undefined && row.fs !== undefined;
-    baseRows.push({
-      station: row.station,
-      remarks: row.remarks,
-      bs: row.bs ?? null,
-      is: row.is ?? null,
-      fs: row.fs ?? null,
-      rise,
-      fall,
-      rl,
-      isChangePoint: isCP,
-      dist: row.dist ?? null,
-    });
-
-    if (isCP) currentSetup++;
-    previousReading = row.bs ?? row.is ?? incomingReading;
-  }
-
-  return { baseRows, working, endingRL: rl, setupIndices, setupsCount: currentSetup };
 }
 
 function computeCumulative(normalizedDistances: string[]): string[] {
@@ -181,19 +94,56 @@ function computeCorrectionAndRL(i: number, rowRL: string, cfg: AdjConfig) {
   return { corr, adjustedRL };
 }
 
+function buildChecks(
+  method: string,
+  bsFsDelta: string,
+  rlDelta: string,
+  riseFallDelta: string | null,
+): LevelingOutputV2['checks'] {
+  if (method === 'height-of-instrument') {
+    return [check('firstLast', bsFsDelta, rlDelta)];
+  }
+  return [
+    check('riseFall', bsFsDelta, riseFallDelta ?? '0'),
+    check('firstLast', bsFsDelta, rlDelta),
+  ];
+}
+
+function buildAdjConfig(
+  params: ValidatedLevelingV2['params'],
+  input: ValidatedLevelingV2['input'],
+  misclosure: string | null,
+  cumulativeDistances: string[] | undefined,
+  setupIndices: number[],
+  setupsCount: number,
+  lastIndex: number,
+): AdjConfig {
+  return {
+    adjBy: input.closingRL !== undefined ? params.adjBy : 'none',
+    misclosure,
+    startRL: input.startRL,
+    closingRL: input.closingRL,
+    totalDistance: input.totalDistance,
+    cumulativeDistances,
+    setupIndices,
+    setupsCount,
+    lastIndex,
+  };
+}
+
 export function reduceV2(validated: ValidatedLevelingV2): LevelingOutputV2 {
   const { input, params } = validated;
-  const { baseRows, working, endingRL, setupIndices, setupsCount } = reduceRawRows(input);
+  const raw =
+    params.method === 'height-of-instrument'
+      ? reduceHeightOfInstrumentRaw(input)
+      : reduceRiseFallRaw(input);
 
-  const sum = (key: 'bs' | 'fs' | 'rise' | 'fall') =>
-    baseRows.reduce((total, row) => add(total, row[key] ?? '0'), '0');
+  const sum = (key: 'bs' | 'fs') =>
+    raw.baseRows.reduce((total, row) => add(total, row[key] ?? '0'), '0');
   const sumBS = sum('bs');
   const sumFS = sum('fs');
-  const sumRise = sum('rise');
-  const sumFall = sum('fall');
   const bsFsDelta = sub(sumBS, sumFS);
-  const riseFallDelta = sub(sumRise, sumFall);
-  const rlDelta = sub(endingRL, input.startRL);
+  const rlDelta = sub(raw.endingRL, input.startRL);
 
   const cumulativeDistances = input.normalizedDistances
     ? computeCumulative(input.normalizedDistances)
@@ -203,26 +153,23 @@ export function reduceV2(validated: ValidatedLevelingV2): LevelingOutputV2 {
     : null;
 
   const { misclosure, allowableError, closureStatus } = evaluateClosure(
-    endingRL,
+    raw.endingRL,
     input.closingRL,
     params.kConstant,
     input.totalDistance,
   );
 
-  const effectiveAdjBy = input.closingRL !== undefined ? params.adjBy : 'none';
-  const cfg: AdjConfig = {
-    adjBy: effectiveAdjBy,
+  const cfg = buildAdjConfig(
+    params,
+    input,
     misclosure,
-    startRL: input.startRL,
-    closingRL: input.closingRL,
-    totalDistance: input.totalDistance,
     cumulativeDistances,
-    setupIndices,
-    setupsCount,
-    lastIndex: baseRows.length - 1,
-  };
+    raw.setupIndices,
+    raw.setupsCount,
+    raw.baseRows.length - 1,
+  );
 
-  const rows: LevelingOutputV2['rows'] = baseRows.map((row, i) => {
+  const rows: LevelingOutputV2['rows'] = raw.baseRows.map((row, i) => {
     const { corr, adjustedRL } = computeCorrectionAndRL(i, row.rl, cfg);
     return { ...row, corr, adjustedRL };
   });
@@ -230,21 +177,21 @@ export function reduceV2(validated: ValidatedLevelingV2): LevelingOutputV2 {
   return {
     rows,
     startingRL: input.startRL,
-    endingRL,
+    endingRL: raw.endingRL,
     sumBS,
     sumFS,
-    sumRise,
-    sumFall,
+    sumRise: raw.sumRise,
+    sumFall: raw.sumFall,
     bsFsDelta,
-    riseFallDelta,
+    riseFallDelta: raw.riseFallDelta,
     rlDelta,
     closingRL: input.closingRL ?? null,
     misclosure,
-    checks: [check('riseFall', bsFsDelta, riseFallDelta), check('firstLast', bsFsDelta, rlDelta)],
-    working,
+    checks: buildChecks(params.method, bsFsDelta, rlDelta, raw.riseFallDelta),
+    working: raw.working,
     totalDistanceKm,
     allowableError,
     closureStatus,
-    setupsCount,
+    setupsCount: raw.setupsCount,
   };
 }

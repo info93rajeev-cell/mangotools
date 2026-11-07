@@ -132,36 +132,43 @@ export async function performPdfMerge(
   return merged.save();
 }
 
+/** The sample files (ids start with "sample-" so the user's own files can replace them). */
+async function buildSampleFiles(): Promise<MergedFileItem[]> {
+  const samples: MergedFileItem[] = [];
+  for (const [i, meta] of SAMPLE_MERGE_FILES.entries()) {
+    const bytes = await createSamplePdf(
+      meta.name.replace(/\.pdf$/i, ''),
+      meta.pageCount,
+      meta.summary,
+      meta.themeColor,
+    );
+    samples.push({
+      id: `sample-${i}-${meta.name}`,
+      name: meta.name,
+      sizeBytes: bytes.length,
+      pageCount: meta.pageCount,
+      bytes,
+      rotation: 0,
+      themeColor: meta.themeColor,
+    });
+  }
+  return samples;
+}
+
 function useMergeFileCollection(notify?: (msg: string) => void) {
   const [files, setFiles] = useState<MergedFileItem[]>([]);
 
   async function loadSampleFiles() {
-    const samples: MergedFileItem[] = [];
-    for (const [i, meta] of SAMPLE_MERGE_FILES.entries()) {
-      const bytes = await createSamplePdf(
-        meta.name.replace(/\.pdf$/i, ''),
-        meta.pageCount,
-        meta.summary,
-        meta.themeColor,
-      );
-      samples.push({
-        id: `sample-${i}-${meta.name}`,
-        name: meta.name,
-        sizeBytes: bytes.length,
-        pageCount: meta.pageCount,
-        bytes,
-        rotation: 0,
-        themeColor: meta.themeColor,
-      });
-    }
-    setFiles(samples);
+    setFiles(await buildSampleFiles());
     notify?.('Sample documents loaded.');
   }
 
   async function handleAddNativeFiles(fileList: FileList | File[]) {
     const list = Array.from(fileList);
+    // The sample files make way for the user's own.
+    const own = files.filter((f) => !f.id.startsWith('sample-'));
     const room = mergeCapacity(
-      { count: files.length, bytes: files.reduce((n, f) => n + f.sizeBytes, 0) },
+      { count: own.length, bytes: own.reduce((n, f) => n + f.sizeBytes, 0) },
       list,
     );
     if (room.message) notify?.(room.message);
@@ -183,7 +190,9 @@ function useMergeFileCollection(notify?: (msg: string) => void) {
         themeColor: COLOR_PALETTE[(files.length + i) % COLOR_PALETTE.length] || '#ef4444',
       });
     }
-    if (incoming.length > 0) setFiles((prev) => [...prev, ...incoming]);
+    if (incoming.length > 0) {
+      setFiles((prev) => [...prev.filter((f) => !f.id.startsWith('sample-')), ...incoming]);
+    }
   }
 
   return {

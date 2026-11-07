@@ -118,8 +118,11 @@
   background: #f2aa00;
 }
 
+/* The main button keeps the brand yellow even before a file is added (no faded look); it only
+   stops responding, and its shadow drops, until there is something to process. */
 .cta:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  box-shadow: none;
   cursor: not-allowed;
 }
 

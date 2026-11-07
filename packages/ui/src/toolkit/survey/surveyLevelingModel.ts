@@ -2,6 +2,8 @@ import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 
 export const SAMPLE_START_RL = '100.000';
 export const SAMPLE_CLOSING_RL = '99.805';
+export const SAMPLE_K_CONSTANT = '24';
+export const SAMPLE_ADJ_BY: 'none' | 'distance' | 'setup' = 'distance';
 
 export const SAMPLE_ROWS: SurveyLevelingRow[] = [
   { id: 'row-1', station: 'BM-1', bs: '1.500', is: '', fs: '', dist: '0', remarks: 'Start BM' },
@@ -58,7 +60,6 @@ export function formatLevelReading(value: string | null | undefined): string {
   if (num === 0) return '0.000';
   const fixed = num.toFixed(3);
   if (fixed === '0.000') {
-    // Nonzero value smaller than 0.0005 m — preserve decimal precision
     return trimmed;
   }
   return fixed;
@@ -104,6 +105,8 @@ export function buildLevelingRequest(
   startRL: string,
   closingRL: string,
   rows: SurveyLevelingRow[],
+  adjBy: 'none' | 'distance' | 'setup' = 'none',
+  kConstant = '',
 ): { input: Record<string, unknown>; params: Record<string, unknown> } {
   const input: Record<string, unknown> = {
     startRL: startRL.trim(),
@@ -114,11 +117,107 @@ export function buildLevelingRequest(
       if (r.bs.trim()) obs.bs = r.bs.trim();
       if (r.is.trim()) obs.is = r.is.trim();
       if (r.fs.trim()) obs.fs = r.fs.trim();
+      if (r.dist.trim()) obs.dist = r.dist.trim();
       return obs;
     }),
   };
   if (closingRL.trim()) {
     input.closingRL = closingRL.trim();
   }
-  return { input, params: { method: 'rise-fall' } };
+  const params: Record<string, unknown> = {
+    method: 'rise-fall',
+    adjBy,
+  };
+  if (kConstant.trim()) {
+    params.kConstant = kConstant.trim();
+  }
+  return { input, params };
+}
+
+export interface ValidatedLineDistance {
+  isValid: boolean;
+  totalM: number | null;
+  cumDists: number[];
+}
+
+export function computeValidatedDistance(
+  rows: Array<{ dist?: string | null }>,
+): ValidatedLineDistance {
+  if (!rows || rows.length < 2) {
+    return { isValid: false, totalM: null, cumDists: [] };
+  }
+
+  const d0Str = rows[0]?.dist;
+  if (d0Str !== undefined && d0Str !== null && d0Str.trim() !== '') {
+    const d0 = Number(d0Str.trim());
+    if (Number.isNaN(d0) || d0 !== 0) {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+  }
+
+  const cumDists: number[] = [0];
+  let runningTotal = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    const dStr = rows[i]?.dist;
+    if (dStr === undefined || dStr === null || dStr.trim() === '') {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+    const val = Number(dStr.trim());
+    if (Number.isNaN(val) || !Number.isFinite(val) || val < 0) {
+      return { isValid: false, totalM: null, cumDists: [] };
+    }
+    runningTotal = Number((runningTotal + val).toFixed(6));
+    cumDists.push(runningTotal);
+  }
+
+  if (runningTotal <= 0) {
+    return { isValid: false, totalM: null, cumDists: [] };
+  }
+
+  return {
+    isValid: true,
+    totalM: runningTotal,
+    cumDists,
+  };
+}
+
+export function formatMetres(metres: number): string {
+  if (Number.isInteger(metres)) {
+    return `${metres} m`;
+  }
+  const fixed = metres.toFixed(6);
+  const trimmed = fixed.replace(/\.?0+$/, '');
+  if (trimmed === '' || trimmed === '0') {
+    return `${metres} m`;
+  }
+  return `${trimmed} m`;
+}
+
+export function formatMeasuredLineLength(
+  totalM: number | null,
+  totalDistanceKm?: string | null,
+): string {
+  if (totalM === null || totalM <= 0) {
+    return '—';
+  }
+  const mStr = formatMetres(totalM);
+  const km = totalM / 1000;
+  if (Number(km.toFixed(3)) === 0) {
+    return mStr;
+  }
+  const decPart = mStr.replace(/ m$/, '').split('.')[1] || '';
+  const mDecimals = decPart.length;
+  if (mDecimals > 0) {
+    const kmDecimals = Math.max(3, Math.min(9, 3 + mDecimals));
+    const kmFixed = km.toFixed(kmDecimals);
+    const kmTrimmed = kmFixed.replace(/0+$/, '');
+    const kmStr = (kmTrimmed.split('.')[1] || '').length < 3 ? km.toFixed(3) : kmTrimmed;
+    return `${mStr} (${kmStr} km)`;
+  }
+  const kmStr =
+    totalDistanceKm !== undefined && totalDistanceKm !== null && totalDistanceKm.trim() !== ''
+      ? totalDistanceKm.trim()
+      : km.toFixed(3);
+  return `${mStr} (${kmStr} km)`;
 }

@@ -234,10 +234,14 @@ This contract definitively selects a **single unified operation: `survey.levelin
   - `kConstant`: `z.string().optional()` (strictly project-specified allowable error constant $C$ in $\text{mm}/\sqrt{\text{km}}$; no automatic engine default).
 - **Output Schema:**
   - `rows`: array of result rows extending `@1` with:
+    - `hi`: string | null (Height of Instrument collimation elevation in metres for setup rows; null for intermediate/closing rows and under Rise & Fall)
     - `dist`: string | null (incremental distance in metres)
     - `corr`: string | null (formatted correction in mm to 1 decimal place, e.g. `"+0.9"`)
     - `adjustedRL`: string | null (adjusted elevation in metres to 3 decimal places, e.g. `"100.301"`)
   - Top-level metrics extending `@1`:
+    - `sumRise`: string | null (total of rises in metres; null under HI method)
+    - `sumFall`: string | null (total of falls in metres; null under HI method)
+    - `riseFallDelta`: string | null (difference sumRise - sumFall; null under HI method)
     - `totalDistanceKm`: string | null (total leveled distance $K$ in km to 3 decimal places)
     - `allowableError`: string | null (allowable limit in mm to 1 decimal place, e.g. `"9.6"`, or `null` if $C$ absent)
     - `closureStatus`: `z.enum(['pass', 'fail', 'criterion-not-provided', 'distance-not-provided']).nullable()`
@@ -259,13 +263,29 @@ This contract definitively selects a **single unified operation: `survey.levelin
 
 ---
 
-## 9. Explicit Boundaries for Height of Instrument (HI) Method
+## 9. Explicit Boundaries & Schema Resolution for Height of Instrument (HI) Method
 
-1. **Parameter Isolation:** `survey.leveling.reduce@2` declares `method: 'height-of-instrument'` in its parameters schema for API stability, but in PR 2 / PR 3 it strictly returns `SURVEY_LEVELING_METHOD_UNSUPPORTED` until the dedicated HI calculation PR is implemented.
+1. **Parameter Activation:** `survey.leveling.reduce@2` fully supports `method: 'height-of-instrument'` alongside `rise-fall`.
 2. **Collimation Equations:**
-   - At setup $j$ (row $k$ with BS): $\text{HI}_j = \text{RL}_k + \text{BS}_k$.
-   - For stations $m$ observed from setup $j$: $\text{RL}_m = \text{HI}_j - (\text{IS}_m \text{ or } \text{FS}_m)$.
-3. **Checks Distinction:**
-   - Primary HI check: $\sum \text{BS} - \sum \text{FS} = \text{Ending RL} - \text{Starting RL}$.
-   - Standard HI does not compute rises or falls, so intermediate sights are not verified by the two primary deltas.
-   - HI is isolated in its own calculation engine implementation and will not interfere with the Rise & Fall reduction engine.
+   - At setup $j$ (station $k$ with Backsight $\text{BS}_k$): compute collimation elevation $\text{HI}_j = \text{RL}_k + \text{BS}_k$.
+   - For stations $m$ observed from setup $j$: derive station elevation $\text{RL}_m = \text{HI}_j - (\text{IS}_m \text{ or } \text{FS}_m)$.
+   - Change points (row $p$ with incoming $\text{FS}_p$ and outgoing $\text{BS}_p$):
+     - Compute station RL from previous instrument height and incoming foresight: $\text{RL}_p = \text{HI}_{j} - \text{FS}_p$.
+     - Establish new setup collimation height for subsequent observations: $\text{HI}_{j+1} = \text{RL}_p + \text{BS}_p$.
+     - **Strict invariant:** Never compare $\text{FS}_p$ and $\text{BS}_p$ as consecutive staff readings.
+3. **Truthful HI Representation & Checks (Schema Conflict Resolution):**
+   - **No Fabricated Rise/Fall Values:** Standard HI does not compute rises or falls; intermediate sights are not verified by difference checks.
+   - **Row Output (`rows`):**
+     - `hi`: string (metres) on setup rows (station 0 and CP rows where BS is observed); `null` on intermediate and terminal FS-only rows. (For `rise-fall` method, `hi` is always `null`).
+     - `rise`: `null` on all rows under HI method.
+     - `fall`: `null` on all rows under HI method.
+   - **Top-Level Metrics:**
+     - `sumRise`: `null` under HI method.
+     - `sumFall`: `null` under HI method.
+     - `riseFallDelta`: `null` under HI method.
+   - **Arithmetic Checks (`checks`):**
+     - Emits exclusively the first/last check: `id: 'arithmetic-first-last'`, testing $\sum \text{BS} - \sum \text{FS} = \text{Ending RL} - \text{Starting RL}$.
+     - Check `id: 'arithmetic-rise-fall'` is omitted entirely under HI method.
+   - **Working Steps (`working`):**
+     - Setup collimation: `ref: 'observations.k.hi'`, `formulaKey: 'leveling.working.hi.setup'`, `variables: { rl, bs }`, `result: hi`.
+     - Station elevation: `ref: 'observations.m.rl'`, `formulaKey: 'leveling.working.hi.rl'`, `variables: { hi, reading }`, `result: rl`.
