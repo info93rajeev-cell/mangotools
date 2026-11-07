@@ -1,0 +1,73 @@
+id: 002-portion-factors
+operation: food.shopping.consolidate@1
+source: {type: hand-verified, citation: '10 guests. Rice portion 0.5: 10 × 0.5 ÷ 4 = 1.25 → 250 g, ghee
+    18.75 ml. Sabzi portion 1.5: 10 × 1.5 ÷ 4 = 3.75 → potato 1500 g, ghee 18.75 ml, onion and tomato
+    3.75 each, bought as 4. Ghee total 37.5 ml.'}
+input:
+  ingredients:
+  - {id: rice, dimension: mass}
+  - id: ghee
+    dimension: volume
+    allergens: [milk]
+    notFor: [vegan]
+  - id: potato
+    dimension: mass
+    notFor: [jain]
+  - id: onion
+    dimension: count
+    notFor: [jain]
+  - {id: tomato, dimension: count}
+  recipes:
+  - id: plain-rice
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: source-checked}
+    ingredients:
+    - {ingredient: rice, quantity: '200', unit: g}
+    - {ingredient: ghee, quantity: '1', unit: tbsp}
+  - id: potato-sabzi
+    version: 0.1.0
+    servings: 4
+    diet: vegetarian
+    verification: {status: draft}
+    ingredients:
+    - {ingredient: potato, quantity: '400', unit: g}
+    - {ingredient: onion, quantity: '1', unit: piece}
+    - {ingredient: tomato, quantity: '1', unit: piece}
+    - {ingredient: ghee, quantity: '1', unit: tsp}
+  selection:
+  - {recipe: plain-rice, recipeVersion: 0.1.0, portionFactor: '0.5'}
+  - {recipe: potato-sabzi, recipeVersion: 0.1.0, portionFactor: '1.5'}
+  guests: 10
+expected:
+  scale:
+  - {recipe: plain-rice, factor: '1.25'}
+  - {recipe: potato-sabzi, factor: '3.75'}
+  lines:
+  - ingredient: ghee
+    total: '37.5'
+    unit: ml
+    buy: '37.5'
+    usedIn: [plain-rice, potato-sabzi]
+  - ingredient: onion
+    total: '3.75'
+    unit: piece
+    buy: '4'
+    usedIn: [potato-sabzi]
+  - ingredient: potato
+    total: '1500'
+    unit: g
+    buy: '1500'
+    usedIn: [potato-sabzi]
+  - ingredient: rice
+    total: '250'
+    unit: g
+    buy: '250'
+    usedIn: [plain-rice]
+  - ingredient: tomato
+    total: '3.75'
+    unit: piece
+    buy: '4'
+    usedIn: [potato-sabzi]
+  rounded: []

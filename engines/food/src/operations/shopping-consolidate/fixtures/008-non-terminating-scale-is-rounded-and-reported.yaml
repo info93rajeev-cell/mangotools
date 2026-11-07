@@ -1,0 +1,47 @@
+id: 008-non-terminating-scale-is-rounded-and-reported
+operation: food.shopping.consolidate@1
+source: {type: hand-verified, citation: '50 ÷ 3 = 16.666…, written as 16.667 (half-up, 3 decimals) and
+    reported. Rice 100 × 50/3 = 1666.666… → 1666.667. Onion 50/3 → 16.667, bought as 17 (rounded up from
+    the exact value).'}
+input:
+  ingredients:
+  - {id: rice, dimension: mass}
+  - id: ghee
+    dimension: volume
+    allergens: [milk]
+    notFor: [vegan]
+  - id: potato
+    dimension: mass
+    notFor: [jain]
+  - id: onion
+    dimension: count
+    notFor: [jain]
+  - {id: tomato, dimension: count}
+  recipes:
+  - id: three-serving-rice
+    version: 0.1.0
+    servings: 3
+    diet: vegan
+    ingredients:
+    - {ingredient: rice, quantity: '100', unit: g}
+    - {ingredient: onion, quantity: '1', unit: piece}
+  selection:
+  - {recipe: three-serving-rice, recipeVersion: 0.1.0}
+  guests: 50
+expected:
+  scale:
+  - {recipe: three-serving-rice, factor: '16.667'}
+  lines:
+  - ingredient: onion
+    total: '16.667'
+    unit: piece
+    buy: '17'
+    usedIn: [three-serving-rice]
+  - ingredient: rice
+    total: '1666.667'
+    unit: g
+    buy: '1666.667'
+    usedIn: [three-serving-rice]
+  diet: vegan
+  rounded: ['scale:three-serving-rice', 'line:onion', 'line:rice']
+expectedWarnings: [FOOD_VALUES_ROUNDED]
