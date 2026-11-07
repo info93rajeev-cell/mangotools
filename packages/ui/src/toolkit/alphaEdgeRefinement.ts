@@ -190,7 +190,7 @@ function guidedAlpha(
 
 /**
  * Colour-line alpha: project the pixel onto the line from the local background colour B to the
- * local subject colour F. Trusted where F and B clearly differ; otherwise the guided value `q`.
+ * local subject colour F, trusted only where F and B clearly differ. Used to raise `q`, never lower.
  */
 function colourLineAlpha(
   rgba: Uint8ClampedArray,
@@ -207,7 +207,10 @@ function colourLineAlpha(
     len += d * d;
   }
   const conf = smooth(0.15, 0.35, Math.sqrt(len));
-  return conf * clamp01(dot / (len || 1)) + (1 - conf) * q;
+  // Only ever *adds* subject (thin strands the model saw faintly). It never removes: a part of the
+  // subject that happens to resemble the background (moss on a branch against green bokeh) must
+  // keep the model's verdict, not be erased by colour similarity.
+  return Math.max(q, conf * clamp01(dot / (len || 1)));
 }
 
 /** Keep the refined alpha inside the model's own support: no new subject in sure background. */

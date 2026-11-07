@@ -96,4 +96,20 @@ describe('alpha edge refinement', () => {
     expect(out[o] ?? 0).toBeGreaterThan(200);
     expect(out[o + 1] ?? 0).toBeLessThan(60);
   });
+
+  it('never erases a confident subject part that resembles the background', () => {
+    // An orange bird with a narrow strip of green moss below it (like the kingfisher's branch),
+    // against a green/blue background. The model marked the moss as subject.
+    const w = 1024;
+    const h = 48;
+    const MOSS = [40, 170, 60, 255];
+    const ORANGE = [230, 120, 30, 255];
+    const colourAt = (x: number, y: number) => (x < 496 ? ORANGE : x < 512 ? MOSS : stripe(y));
+    const rgba = new Uint8ClampedArray(w * h * 4);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) rgba.set(colourAt(x, y), (y * w + x) * 4);
+    const raw = softMask(w, h, 512, 8);
+    const out = refineCutoutEdges(rgba, raw, w, h);
+    for (const x of [498, 502, 506]) expect(alphaAt(out, w, x, 20)).toBeGreaterThan(0.85);
+  });
 });
