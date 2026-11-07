@@ -1,14 +1,10 @@
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import styles from './businessStudio.module.css';
 import { MarkupCenterCards } from './MarkupCenterCards.tsx';
 import { MarkupLeftCards } from './MarkupLeftCards.tsx';
 import { MarkupRightCards } from './MarkupRightCards.tsx';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
 import { useMarkupCalculator } from './useMarkupCalculator.ts';
 
 const MARKUP_TOUR_STEPS: TourStep[] = [
@@ -40,12 +36,16 @@ const MARKUP_TOUR_STEPS: TourStep[] = [
 ];
 
 export interface MarkupCalculatorStudioLayoutProps {
+  preset: ResolvedPreset;
   notify?: (msg: string) => void;
 }
 
-export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioLayoutProps) {
-  const state = useMarkupCalculator(notify);
-  const [isTourOpen, setIsTourOpen] = useState(() => !isTourCompleted('markup-calculator'));
+export function MarkupCalculatorStudioLayout({
+  preset,
+  notify,
+}: MarkupCalculatorStudioLayoutProps) {
+  const state = useMarkupCalculator(preset, notify);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
@@ -53,12 +53,16 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
     return () => window.removeEventListener('mangotools:open-tour', handleOpen);
   }, []);
 
+  // Loads the preset's own sample (the values its tool fixtures check), so "Try sample" and the
+  // fixtures agree: cost ₹200 at 25% markup.
   const handleSample = () => {
-    state.setCostPrice(500);
-    state.setMarkupPercent(40);
-    state.setQuantity(20);
+    const sample = Object.values(preset.samples)[0]?.input ?? {};
     state.setPricingMode('find_price');
-    notify?.('Sample ₹500 product at 40% markup loaded');
+    state.setCostPrice(Number(sample.cost ?? 200));
+    state.setMarkupPercent(Number(sample.markupPercent ?? 25));
+    state.setAdditionalCost(0);
+    state.setGstPercent(0);
+    notify?.('Sample loaded: ₹200 cost at 25% markup');
   };
 
   const handleReset = () => {
@@ -74,16 +78,11 @@ export function MarkupCalculatorStudioLayout({ notify }: MarkupCalculatorStudioL
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>％</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Markup Calculator</h1>
-            <p class={styles.subtitle}>
-              Convert cost, markup and target margin into a profitable selling price.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>
-          <button type="button" class={styles.pill} onClick={handleSample}>
+          <button type="button" class={styles.pill} onClick={handleSample} data-try-sample="">
             <span>☼ Try Sample</span>
           </button>
           <button type="button" class={styles.pill} onClick={state.copySummary}>

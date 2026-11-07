@@ -1,8 +1,8 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
-import { Button } from '../primitives/Button.tsx';
+import { BgImageSourceCard } from './BgImageSourceCard.tsx';
 import { PrecisionSection } from './ImageBackgroundRemoverPrecision.tsx';
 import styles from './imageBackgroundRemover.module.css';
-import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
+import { SAMPLE_NAME } from './samplePalaceImage.ts';
 import type {
   BgOutputFormat,
   UseImageBackgroundRemoverReturn,
@@ -42,27 +42,22 @@ function UploadSection({
   onSelectFile: (file: File) => void;
   onTrySample: () => void;
 }) {
-  const isExecuting = bgRemover.phase === 'running';
-
   return (
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
-        <span class={styles.sectionTitle}>1. Upload Image</span>
-        <Button variant="ghost" icon="sparkle" onClick={onTrySample} disabled={isExecuting}>
-          Try Sample
-        </Button>
+        <span class={styles.sectionTitle}>1. Image</span>
       </div>
-
-      <UniversalUploadDropzone
+      <BgImageSourceCard
         idPrefix={idPrefix}
         accept={preset.ui.fileAccept ?? 'image/*,image/jpeg,image/png,image/webp'}
-        file={bgRemover.file}
-        thumbnailUrl={bgRemover.imageSrc}
-        dimensions={bgRemover.sourceDims.width ? bgRemover.sourceDims : null}
+        imageUrl={bgRemover.file ? bgRemover.imageSrc : null}
+        fileName={bgRemover.file?.name ?? ''}
+        dims={bgRemover.sourceDims.width ? bgRemover.sourceDims : null}
+        isSample={bgRemover.file?.name === SAMPLE_NAME}
+        sampleUrl="/samples/jaipur-palace.jpg"
         onSelectFile={onSelectFile}
-        onClear={bgRemover.reset}
-        disabled={isExecuting}
-        browseText="Upload Image"
+        onTrySample={onTrySample}
+        disabled={bgRemover.phase === 'running'}
       />
     </section>
   );

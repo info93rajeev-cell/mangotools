@@ -74,6 +74,9 @@ export const EN = {
   'field.helpFor': 'Help for {label}',
   'field.helpContext': 'For {label}',
   'error.title': 'Please check the input',
+  'fullscreen.enter': 'Full screen',
+  'fullscreen.exit': 'Exit full screen',
+  'fullscreen.enterHint': 'Use the whole screen for this tool',
   'disclaimer.title': 'Disclaimer',
   'disclaimer.professional':
     'Results are provided for guidance. Check them against the applicable rules and your professional judgement before relying on them.',

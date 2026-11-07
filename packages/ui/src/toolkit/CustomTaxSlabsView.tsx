@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import type { TaxSlab, TaxSystemType } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -43,7 +44,7 @@ function SlabsHeaderControls({
         style={{
           alignSelf: 'flex-end',
           padding: '6px 10px',
-          color: '#7c3aed',
+          color: 'var(--color-violet-text)',
           borderColor: '#c4b5fd',
         }}
         onClick={() => setIsAddingSlab(!isAddingSlab)}
@@ -173,7 +174,10 @@ function InlineAddSlabForm({
         <button
           type="button"
           class={styles.calculateBtn}
-          style={{ padding: '4px 10px', fontSize: '11px' }}
+          style={{
+            padding: '4px 10px',
+            fontSize: fs(11),
+          }}
           onClick={() => onSave({ minAmount: min, maxAmount: max, rate, taxType: type, notes })}
         >
           Save
@@ -181,7 +185,7 @@ function InlineAddSlabForm({
         <button
           type="button"
           class={styles.ghostActionBtn}
-          style={{ padding: '4px 8px', fontSize: '11px' }}
+          style={{ padding: '4px 8px', fontSize: fs(11) }}
           onClick={onCancel}
         >
           Cancel
@@ -205,13 +209,22 @@ function SlabsTableView({
   return (
     <div class={styles.slabsTableWrapper}>
       <table class={styles.slabsTable} aria-label="Tax Slabs Table">
+        <colgroup>
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '23%' }} />
+          <col style={{ width: '23%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '13%' }} />
+          <col style={{ width: '11%' }} />
+          <col style={{ width: '11%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>#</th>
-            <th>Min Amount ({currencySymbol})</th>
-            <th>Max Amount ({currencySymbol})</th>
+            <th>Min ({currencySymbol})</th>
+            <th>Max ({currencySymbol})</th>
             <th>Rate</th>
-            <th>Tax Type</th>
+            <th>Type</th>
             <th>Notes</th>
             <th style={{ textAlign: 'center' }}>Actions</th>
           </tr>

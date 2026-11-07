@@ -1,15 +1,11 @@
+import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import { AmazonFeeCenterCards } from './AmazonFeeCenterCards.tsx';
 import { AmazonFeeLeftCards } from './AmazonFeeLeftCards.tsx';
 import { AmazonFeeRightCards } from './AmazonFeeRightCards.tsx';
 import styles from './businessStudio.module.css';
-import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
-import { useAmazonFeeEstimator } from './useAmazonFeeEstimator.ts';
+import { ToolOnboardingTour, TourLauncherButton, type TourStep } from './ToolOnboardingTour.tsx';
+import { AMAZON_DEFAULTS, useAmazonFeeEstimator } from './useAmazonFeeEstimator.ts';
 
 const AMAZON_TOUR_STEPS: TourStep[] = [
   {
@@ -46,14 +42,16 @@ const AMAZON_TOUR_STEPS: TourStep[] = [
 ];
 
 export interface AmazonFeeEstimatorStudioLayoutProps {
+  preset: ResolvedPreset;
   notify?: (msg: string) => void;
 }
 
-export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStudioLayoutProps) {
-  const state = useAmazonFeeEstimator(notify);
-  const [isTourOpen, setIsTourOpen] = useState(
-    () => !isTourCompleted('amazon-india-seller-fee-profit-estimator'),
-  );
+export function AmazonFeeEstimatorStudioLayout({
+  preset,
+  notify,
+}: AmazonFeeEstimatorStudioLayoutProps) {
+  const state = useAmazonFeeEstimator(preset, notify);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsTourOpen(true);
@@ -62,14 +60,8 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
   }, []);
 
   const handleSample = () => {
-    state.setSellingPrice(1500);
-    state.setProductPackagingCost(635);
-    state.setReferralFee(120);
-    state.setClosingHandling(125);
-    state.setFeeGst(44.1);
-    state.setAdsReturns(100);
-    state.setFulfilmentMode('fba');
-    notify?.('Sample Amazon product loaded (₹1,500 SP)');
+    state.load(AMAZON_DEFAULTS);
+    notify?.('Sample Amazon product loaded (₹1,500 selling price)');
   };
 
   const handleReset = () => {
@@ -81,17 +73,11 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
       <div class={styles.titleRow}>
         <div class={styles.titleLeft}>
           <div class={styles.heroIcon}>▣</div>
-          <div class={styles.titleTextGroup}>
-            <h1 class={styles.titleHeading}>Amazon India Seller Fee & Profit Estimator</h1>
-            <p class={styles.subtitle}>
-              Manual Amazon fee estimator: input your fee rates, analyse settlement and
-              profitability.
-            </p>
-          </div>
+          {/* Title and summary come from the page header (single H1). */}
         </div>
 
         <div class={styles.topActions}>
-          <button type="button" class={styles.pill} onClick={handleSample}>
+          <button type="button" class={styles.pill} onClick={handleSample} data-try-sample="">
             <span>☼ Try Sample</span>
           </button>
           <button type="button" class={styles.pill} onClick={state.copySummary}>
@@ -115,6 +101,12 @@ export function AmazonFeeEstimatorStudioLayout({ notify }: AmazonFeeEstimatorStu
           <AmazonFeeRightCards state={state} />
         </div>
       </div>
+
+      <p class={styles.warn} style={{ marginTop: '4px' }} data-demo-note="">
+        Demo numbers: the fees and costs filled in are our own example, not Amazon's rates. Amazon
+        may charge differently for your product, so treat the result as an estimate and replace
+        every field with the figures from your Seller Central.
+      </p>
 
       <ToolOnboardingTour
         toolId="amazon-india-seller-fee-profit-estimator"

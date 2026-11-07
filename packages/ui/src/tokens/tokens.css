@@ -8,23 +8,36 @@
 :root {
   color-scheme: light;
 
-  --color-bg: #ffffff;
+  /* Cool navy/blue-slate palette (visual v2, Rajeev's reference): a tinted page so white cards
+     stand off it, navy ink for strong contrast, slate for secondary text. */
+  --color-bg: #f4f7fb;
   --color-surface: #ffffff;
-  --color-surface-subtle: #fafaf9;
-  --color-border: #e7e5e4;
-  --color-border-subtle: #f5f5f4;
-  --color-border-input: #948d87;
-  --color-text: #1c1917;
-  --color-text-muted: #57534e;
-  --color-text-subtle: #78716c;
+  --color-surface-subtle: #f7f9fc;
+  --color-border: #dbe4f0;
+  --color-border-subtle: #edf1f7;
+  --color-border-input: #8391a7;
+  --color-text: #0b1736;
+  --color-text-muted: #475569;
+  --color-text-subtle: #5a6a80;
+  --color-primary: #1665f5;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 6px 16px rgb(30 64 125 / 0.06);
   --color-accent: #ffb000;
   --color-on-accent: #1c1917;
-  --color-accent-text: #b45309;
+  --color-accent-text: #92400e;
   --color-focus: #d97706;
-  --color-success: #15803d;
+  --color-success: #166534;
   --color-warning: #c2410c;
   --color-danger: #b91c1c;
-  --color-info: #1d4ed8;
+  --color-info: #1665f5;
+  /* Studio panels and tints used by inline styles in tool cards (slate in dark, to match the cards). */
+  --color-panel: #ffffff;
+  --color-panel-subtle: #f8fafc;
+  --color-track: #e2e8f0;
+  --color-tint-blue: #eff6ff;
+  --color-tint-green: #dcfce7;
+  --color-tint-red: #fef2f2;
+  --color-violet-text: #6d28d9;
+  --color-sky-text: #0369a1;
 
   --font-sans:
     "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -99,8 +112,8 @@
     --color-bg: #0c0a09;
     --color-surface: #1c1917;
     --color-surface-subtle: #292524;
-    --color-border: #292524;
-    --color-border-subtle: #1c1917;
+    --color-border: #3a3532;
+    --color-border-subtle: #292524;
     --color-border-input: #6b645e;
     --color-text: #fafaf9;
     --color-text-muted: #d6d3d1;
@@ -111,6 +124,16 @@
     --color-warning: #fb923c;
     --color-danger: #f87171;
     --color-info: #60a5fa;
+    --color-primary: #60a5fa;
+    --color-panel: #0f172a;
+    --color-panel-subtle: #1e293b;
+    --color-track: #334155;
+    --color-tint-blue: #172554;
+    --color-tint-green: #052e1c;
+    --color-tint-red: #3b0d0d;
+    --color-violet-text: #c4b5fd;
+    --color-sky-text: #7dd3fc;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
     --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
   }
@@ -121,8 +144,8 @@
   --color-bg: #0c0a09;
   --color-surface: #1c1917;
   --color-surface-subtle: #292524;
-  --color-border: #292524;
-  --color-border-subtle: #1c1917;
+  --color-border: #3a3532;
+  --color-border-subtle: #292524;
   --color-border-input: #6b645e;
   --color-text: #fafaf9;
   --color-text-muted: #d6d3d1;
@@ -133,6 +156,51 @@
   --color-warning: #fb923c;
   --color-danger: #f87171;
   --color-info: #60a5fa;
+  --color-primary: #60a5fa;
+  --color-panel: #0f172a;
+  --color-panel-subtle: #1e293b;
+  --color-track: #334155;
+  --color-tint-blue: #172554;
+  --color-tint-green: #052e1c;
+  --color-tint-red: #3b0d0d;
+  --color-violet-text: #c4b5fd;
+  --color-sky-text: #7dd3fc;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-popover: 0 4px 16px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
   --shadow-dialog: 0 16px 48px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+/* Phones: text below 15px in tool UIs grows halfway towards 15px (9→12, 11→13, 13→14), so small
+   labels stay readable without flattening the hierarchy. Tool styles use
+   calc(<size> + (15px - <size>) * var(--fs-lift, 0)). */
+@media (max-width: 700px) {
+  :root {
+    --fs-lift: 0.5;
+  }
+}
+
+/* Dark pages that use the approved reference studios get a cool navy base, so the navy panels and
+   bright accents of the studio sit on a matching background instead of warm stone. */
+:root[data-theme="dark"]:has([data-ref-look]) {
+  --color-bg: #0a1120;
+  --color-surface: #121b2d;
+  --color-surface-subtle: #18233a;
+  --color-border: #2b3a57;
+  --color-border-subtle: #1d2940;
+  --color-border-input: #4b5d80;
+  --color-text-muted: #d3dbe8;
+  --color-text-subtle: #a6b3c9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):has([data-ref-look]) {
+    --color-bg: #0a1120;
+    --color-surface: #121b2d;
+    --color-surface-subtle: #18233a;
+    --color-border: #2b3a57;
+    --color-border-subtle: #1d2940;
+    --color-border-input: #4b5d80;
+    --color-text-muted: #d3dbe8;
+    --color-text-subtle: #a6b3c9;
+  }
 }

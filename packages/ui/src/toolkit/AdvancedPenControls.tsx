@@ -1,35 +1,15 @@
-import { useRef } from 'preact/hooks';
 import styles from './advancedPenSelection.module.css';
+import { BgImageSourceCard } from './BgImageSourceCard.tsx';
+import { canClosePath } from './penPathEditing.ts';
 import type { ActiveTool, UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts';
 
-function Step1ImageCard({
-  loadFile,
-  runAutoSelect,
-  isProcessing,
-}: {
-  loadFile: (f: File) => Promise<void>;
-  runAutoSelect: () => void;
-  isProcessing: boolean;
-}) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+export const PEN_SAMPLE_URL = '/samples/kingfisher-sample.jpg';
+const ACCEPT = 'image/png,image/jpeg,image/webp,image/bmp';
 
-  const handleFileChange = (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    if (input.files?.[0]) {
-      void loadFile(input.files[0]);
-    }
-  };
-
+function Step1ImageCard({ pen }: { pen: UseAdvancedPenSelectionReturn }) {
+  const status = pen.autoSelectStatus;
   return (
     <div class={styles.controlCard}>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/bmp"
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
-
       <div class={styles.cardHeader}>
         <div class={styles.stepTitleRow}>
           <span class={styles.stepBadge}>1</span>
@@ -37,58 +17,163 @@ function Step1ImageCard({
         </div>
       </div>
 
-      <p class={styles.stepDescription}>
-        Upload an image and click <strong>Auto Select</strong> to detect the main object.
+      <BgImageSourceCard
+        idPrefix="pen"
+        accept={ACCEPT}
+        imageUrl={pen.imageSrc}
+        fileName={pen.fileName}
+        dims={pen.imageDims.width ? pen.imageDims : null}
+        isSample={pen.fileName === 'kingfisher-sample.jpg'}
+        sampleUrl={PEN_SAMPLE_URL}
+        onSelectFile={(f) => void pen.loadFile(f)}
+        onTrySample={() => void pen.loadSample()}
+        disabled={status.busy}
+      />
+
+      <button
+        type="button"
+        class={styles.autoSelectBtn}
+        onClick={() => void pen.runAutoSelect()}
+        disabled={status.busy || !pen.image}
+        aria-busy={status.busy}
+      >
+        <span class={styles.btnIcon}>🪄</span>
+        <span>{status.busy ? 'Selecting…' : 'Auto Select (AI)'}</span>
+      </button>
+
+      <p class={styles.stepDescription} role={status.busy ? 'status' : undefined}>
+        {status.busy
+          ? `${status.message} ${Math.round(status.progress * 100)}%`
+          : 'Auto Select: the on-device AI selects the subject. Then fix any spot with the tools below.'}
       </p>
-
-      <div class={styles.actionButtonGroup}>
-        <button
-          type="button"
-          class={styles.primaryUploadBtn}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <span class={styles.btnIcon}>📤</span>
-          <span>Upload Image</span>
-        </button>
-
-        <button
-          type="button"
-          class={styles.autoSelectBtn}
-          onClick={runAutoSelect}
-          disabled={isProcessing}
-        >
-          <span class={styles.btnIcon}>🪄</span>
-          <span>{isProcessing ? 'Detecting...' : 'Auto Select'}</span>
-        </button>
-      </div>
-
-      <div class={styles.selectWrapper}>
-        <label class={styles.inputLabel} for="object-select">
-          Detected Target:
-        </label>
-        <select id="object-select" class={styles.toolSelect}>
-          <option value="main">Main Subject (Bird / Foreground)</option>
-          <option value="entire">Entire Foreground Object</option>
-          <option value="custom">Custom Pen Path</option>
-        </select>
-      </div>
     </div>
   );
 }
 
-function Step2ToolsCard({
-  activeTool,
-  setActiveTool,
-  smoothCurrentPath,
-  simplifyCurrentPath,
-  resetCurrentPath,
-}: {
-  activeTool: ActiveTool;
-  setActiveTool: (tool: ActiveTool) => void;
-  smoothCurrentPath: () => void;
-  simplifyCurrentPath: () => void;
-  resetCurrentPath: () => void;
-}) {
+const TOOLS: { id: ActiveTool; icon: string; label: string; title: string; extra?: string }[] = [
+  {
+    id: 'pen',
+    icon: '✒️',
+    label: 'Pen Tool',
+    title: 'Pen (P): click to place points, drag to curve',
+  },
+  { id: 'add', icon: '➕', label: 'Add Point', title: 'Add Point: click on the path' },
+  { id: 'delete', icon: '🗑️', label: 'Delete Point', title: 'Delete Point: click a point' },
+  {
+    id: 'brushAdd',
+    icon: '🖌️',
+    label: 'Brush Add',
+    title: 'Brush Add: paint to keep',
+    extra: 'brushAddBtn',
+  },
+  {
+    id: 'brushRemove',
+    icon: '🧹',
+    label: 'Brush Remove',
+    title: 'Brush Remove: paint to erase',
+    extra: 'brushRemoveBtn',
+  },
+  { id: 'pan', icon: '✋', label: 'Hand (Move)', title: 'Hand (H): drag to move the photo' },
+];
+
+function ToolGrid({ pen }: { pen: UseAdvancedPenSelectionReturn }) {
+  return (
+    <div class={styles.toolGrid}>
+      {TOOLS.map((t) => (
+        <button
+          key={t.id}
+          type="button"
+          class={`${styles.gridToolBtn} ${t.extra ? styles[t.extra] : ''} ${
+            pen.activeTool === t.id ? styles.toolActive : ''
+          }`}
+          aria-pressed={pen.activeTool === t.id}
+          onClick={() => pen.setActiveTool(t.id)}
+          title={t.title}
+        >
+          <span class={styles.gridToolIcon}>{t.icon}</span>
+          <span class={styles.gridToolText}>{t.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function BrushSize({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  return (
+    <div class={styles.selectWrapper}>
+      <label class={styles.inputLabel} for="pen-brush-size">
+        Brush size: {value} px
+      </label>
+      <input
+        id="pen-brush-size"
+        type="range"
+        min={4}
+        max={120}
+        step={2}
+        value={value}
+        onInput={(e) => onChange(Number((e.target as HTMLInputElement).value))}
+      />
+    </div>
+  );
+}
+
+function PathActions({ pen }: { pen: UseAdvancedPenSelectionReturn }) {
+  const sel = pen.selectedPointIndex;
+  const point = sel !== null ? pen.path.points[sel] : undefined;
+  const curved =
+    !!point && (point.cp1x !== point.x || point.cp2x !== point.x || point.cp1y !== point.y);
+  return (
+    <div class={styles.pathActionRow}>
+      <button
+        type="button"
+        class={styles.pathPillBtn}
+        onClick={pen.onClosePath}
+        disabled={!canClosePath(pen.path)}
+        title="Close the path (C). The area inside becomes part of the selection."
+      >
+        ◯ Close Path (C)
+      </button>
+      <button
+        type="button"
+        class={styles.pathPillBtn}
+        onClick={() => sel !== null && pen.onToggleCurve(sel)}
+        disabled={!point}
+        title="Selected point: add direction handles (curve) or remove them (corner). Double-click a point does the same."
+      >
+        {curved ? '⌃ Make Corner' : '◠ Make Curve'}
+      </button>
+      <button
+        type="button"
+        class={styles.pathPillBtn}
+        onClick={pen.smoothCurrentPath}
+        disabled={pen.path.points.length < 3}
+        title="Smooth every point of the path"
+      >
+        ≈ Smooth Path
+      </button>
+      <button
+        type="button"
+        class={styles.pathPillBtn}
+        onClick={pen.simplifyCurrentPath}
+        disabled={pen.path.points.length < 5}
+        title="Remove points that are very close together"
+      >
+        ◰ Simplify
+      </button>
+      <button
+        type="button"
+        class={styles.pathPillBtn}
+        onClick={pen.resetCurrentPath}
+        disabled={pen.path.points.length === 0}
+        title="Remove the pen path (AI selection and brush strokes stay)"
+      >
+        ↺ Remove Path
+      </button>
+    </div>
+  );
+}
+
+function Step2ToolsCard({ pen }: { pen: UseAdvancedPenSelectionReturn }) {
   return (
     <div class={styles.controlCard}>
       <div class={styles.cardHeader}>
@@ -97,93 +182,13 @@ function Step2ToolsCard({
           <span class={styles.cardTitle}>Selection Tools</span>
         </div>
       </div>
-
       <p class={styles.stepDescription}>
-        Refine the path with Bezier pen tool, add or remove points, and adjust curves.
+        <strong>Pen</strong>: click around an area, drag to curve, then close the path (click the
+        first point or press C). <strong>Brushes</strong> paint the subject in or out.
       </p>
-
-      <div class={styles.toolGrid}>
-        <button
-          type="button"
-          class={`${styles.gridToolBtn} ${activeTool === 'pen' ? styles.toolActive : ''}`}
-          onClick={() => setActiveTool('pen')}
-          title="Pen Tool (Select & Move Anchors/Handles)"
-        >
-          <span class={styles.gridToolIcon}>✒️</span>
-          <span class={styles.gridToolText}>Pen Tool</span>
-        </button>
-
-        <button
-          type="button"
-          class={`${styles.gridToolBtn} ${activeTool === 'add' ? styles.toolActive : ''}`}
-          onClick={() => setActiveTool('add')}
-          title="Add Point (Click along curve)"
-        >
-          <span class={styles.gridToolIcon}>➕</span>
-          <span class={styles.gridToolText}>Add Point</span>
-        </button>
-
-        <button
-          type="button"
-          class={`${styles.gridToolBtn} ${activeTool === 'delete' ? styles.toolActive : ''}`}
-          onClick={() => setActiveTool('delete')}
-          title="Delete Point (Click node to remove)"
-        >
-          <span class={styles.gridToolIcon}>🗑️</span>
-          <span class={styles.gridToolText}>Delete Point</span>
-        </button>
-
-        <button
-          type="button"
-          class={`${styles.gridToolBtn} ${styles.brushAddBtn} ${
-            activeTool === 'brushAdd' ? styles.toolActive : ''
-          }`}
-          onClick={() => setActiveTool('brushAdd')}
-          title="Brush Add (Expand selection area)"
-        >
-          <span class={styles.gridToolIcon}>🖌️</span>
-          <span class={styles.gridToolText}>Brush Add</span>
-        </button>
-
-        <button
-          type="button"
-          class={`${styles.gridToolBtn} ${styles.brushRemoveBtn} ${
-            activeTool === 'brushRemove' ? styles.toolActive : ''
-          }`}
-          onClick={() => setActiveTool('brushRemove')}
-          title="Brush Remove (Subtract from selection)"
-        >
-          <span class={styles.gridToolIcon}>🧹</span>
-          <span class={styles.gridToolText}>Brush Remove</span>
-        </button>
-      </div>
-
-      <div class={styles.pathActionRow}>
-        <button
-          type="button"
-          class={styles.pathPillBtn}
-          onClick={smoothCurrentPath}
-          title="Smooth out all Bezier control handles"
-        >
-          ≈ Smooth Path
-        </button>
-        <button
-          type="button"
-          class={styles.pathPillBtn}
-          onClick={simplifyCurrentPath}
-          title="Reduce excessive anchor points"
-        >
-          ◰ Simplify Path
-        </button>
-        <button
-          type="button"
-          class={styles.pathPillBtn}
-          onClick={resetCurrentPath}
-          title="Reset path to initial contour"
-        >
-          ↺ Reset Path
-        </button>
-      </div>
+      <ToolGrid pen={pen} />
+      <BrushSize value={pen.brushRadius} onChange={pen.setBrushRadius} />
+      <PathActions pen={pen} />
     </div>
   );
 }
@@ -193,31 +198,10 @@ export interface AdvancedPenControlsProps {
 }
 
 export function AdvancedPenControls({ penSelection }: AdvancedPenControlsProps) {
-  const {
-    activeTool,
-    setActiveTool,
-    runAutoSelect,
-    smoothCurrentPath,
-    simplifyCurrentPath,
-    resetCurrentPath,
-    loadFile,
-    isProcessing,
-  } = penSelection;
-
   return (
     <div class={styles.leftControlsColumn}>
-      <Step1ImageCard
-        loadFile={loadFile}
-        runAutoSelect={runAutoSelect}
-        isProcessing={isProcessing}
-      />
-      <Step2ToolsCard
-        activeTool={activeTool}
-        setActiveTool={setActiveTool}
-        smoothCurrentPath={smoothCurrentPath}
-        simplifyCurrentPath={simplifyCurrentPath}
-        resetCurrentPath={resetCurrentPath}
-      />
+      <Step1ImageCard pen={penSelection} />
+      <Step2ToolsCard pen={penSelection} />
     </div>
   );
 }

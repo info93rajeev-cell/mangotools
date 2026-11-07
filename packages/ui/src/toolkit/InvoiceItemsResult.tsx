@@ -19,7 +19,8 @@ interface ResultItem {
 
 /** Description · HSN · Qty · Unit · Unit price · Amount — the one thing v1's flat result never had. */
 function ItemTable({ preset, items }: { preset: ResolvedPreset; items: ResultItem[] }) {
-  const col = (key: string) => label(preset, `invoice.item.${key}`);
+  // Column headers drop the form's "Item — " prefix so the narrow result table stays readable.
+  const col = (key: string) => label(preset, `invoice.item.${key}`).replace(/^Item — /, '');
   return (
     <ScrollableItemTable caption={label(preset, 'invoice.out.items')}>
       <thead>

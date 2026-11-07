@@ -1,4 +1,5 @@
 import styles from './imageBackgroundRemover.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageBackgroundRemoverReturn } from './useImageBackgroundRemover.ts';
 
 export function ModeSelectorRow({
@@ -60,7 +61,9 @@ export function TransparencyRow({
 }) {
   return (
     <div class={styles.sliderGroup}>
-      <span class={styles.dimLabel}>Matte Mode:</span>
+      <span class={styles.dimLabel}>
+        Matte Mode (Glass keeps see-through parts; Tinted Glass also coloured glass):
+      </span>
       <div class={styles.bgOptionsRow}>
         <button
           type="button"
@@ -78,9 +81,19 @@ export function TransparencyRow({
           data-active={String(bgRemover.transparencyMode === 'glass')}
           onClick={() => bgRemover.setTransparencyMode('glass')}
           disabled={!hasFile || isExecuting}
-          title="Enhanced glass, transparent bottles, veils & reflections"
+          title="Glass parts become see-through, so a new background shows through them; other parts stay solid"
         >
           <span>💎 Glass</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.transparencyMode === 'tinted')}
+          onClick={() => bgRemover.setTransparencyMode('tinted')}
+          disabled={!hasFile || isExecuting}
+          title="Whole product is glass, coloured glass too (amber bottle, red glass): every part is see-through"
+        >
+          <span>🍷 Tinted Glass</span>
         </button>
         <button
           type="button"
@@ -236,7 +249,7 @@ export function BackgroundFillRow({
         <span
           style={{
             display: 'block',
-            fontSize: '9px',
+            fontSize: fs(9),
             color: '#b45309',
             marginTop: '2px',
             lineHeight: '1.2',
@@ -323,21 +336,15 @@ export function PrecisionSection({
         </div>
       </div>
 
-      <details class={styles.fineTuneDetails}>
-        <summary class={styles.fineTuneSummary}>
-          <span>⚙️ Advanced Matte & Shadow</span>
-          <span style={{ fontSize: '10px' }}>▾</span>
-        </summary>
-        <div class={styles.fineTuneBody}>
-          <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
-          <ProductShadowRow
-            idPrefix={idPrefix}
-            bgRemover={bgRemover}
-            hasFile={hasFile}
-            isExecuting={isExecuting}
-          />
-        </div>
-      </details>
+      {/* As on 27 Oct: Matte Mode and Product Shadow are always visible (since 28 Oct they were
+          folded into a collapsed section and looked removed). */}
+      <TransparencyRow bgRemover={bgRemover} hasFile={hasFile} isExecuting={isExecuting} />
+      <ProductShadowRow
+        idPrefix={idPrefix}
+        bgRemover={bgRemover}
+        hasFile={hasFile}
+        isExecuting={isExecuting}
+      />
     </section>
   );
 }

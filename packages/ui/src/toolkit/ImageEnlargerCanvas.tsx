@@ -1,5 +1,6 @@
 import { useRef, useState } from 'preact/hooks';
 import styles from './imageEnlarger.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageEnlargerReturn } from './useImageEnlarger.ts';
 
 export interface ImageEnlargerCanvasProps {
@@ -61,7 +62,15 @@ function StageToolbar({
         >
           −
         </button>
-        <span style={{ fontSize: '10px', minWidth: '35px', textAlign: 'center' }}>{zoom}%</span>
+        <span
+          style={{
+            fontSize: fs(10),
+            minWidth: '35px',
+            textAlign: 'center',
+          }}
+        >
+          {zoom}%
+        </span>
         <button
           type="button"
           class={styles.stageBtn}
@@ -197,7 +206,7 @@ export function ImageEnlargerCanvas({ enlarger }: ImageEnlargerCanvasProps) {
         style={{ cursor: hasImage ? 'ew-resize' : 'default' }}
       >
         {!hasImage ? (
-          <div style={{ color: '#888', fontSize: '12px' }}>
+          <div style={{ color: '#888', fontSize: fs(12) }}>
             Upload a photo or click "Try Sample" to begin
           </div>
         ) : (

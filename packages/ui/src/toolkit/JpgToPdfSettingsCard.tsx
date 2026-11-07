@@ -1,3 +1,9 @@
+import type {
+  ImageQuality,
+  PageBackground,
+  PageExtras,
+  PageNumbering,
+} from './imagePdfPageOptions.ts';
 import styles from './jpgToPdfStudio.module.css';
 import type {
   FitModeOption,
@@ -13,6 +19,8 @@ export function JpgToPdfSettingsCard({
   fitMode,
   margins,
   outputFileName,
+  extras,
+  onSetExtras,
   onSetPageSize,
   onSetOrientation,
   onSetFitMode,
@@ -25,6 +33,8 @@ export function JpgToPdfSettingsCard({
   fitMode: FitModeOption;
   margins: MarginsOption;
   outputFileName: string;
+  extras: PageExtras;
+  onSetExtras: (v: PageExtras) => void;
   onSetPageSize: (v: PageSizeOption) => void;
   onSetOrientation: (v: OrientationOption) => void;
   onSetFitMode: (v: FitModeOption) => void;
@@ -123,7 +133,17 @@ export function JpgToPdfSettingsCard({
           <label for={`${idPrefix}-numbering`} class={styles.fieldLabel}>
             Page numbering
           </label>
-          <select id={`${idPrefix}-numbering`} class={styles.selectInput} defaultValue="none">
+          <select
+            id={`${idPrefix}-numbering`}
+            class={styles.selectInput}
+            value={extras.numbering}
+            onChange={(e) =>
+              onSetExtras({
+                ...extras,
+                numbering: (e.target as HTMLSelectElement).value as PageNumbering,
+              })
+            }
+          >
             <option value="none">None</option>
             <option value="bottom-center">Bottom Center</option>
             <option value="bottom-right">Bottom Right</option>
@@ -134,7 +154,17 @@ export function JpgToPdfSettingsCard({
           <label for={`${idPrefix}-page-bg`} class={styles.fieldLabel}>
             Page background
           </label>
-          <select id={`${idPrefix}-page-bg`} class={styles.selectInput} defaultValue="white">
+          <select
+            id={`${idPrefix}-page-bg`}
+            class={styles.selectInput}
+            value={extras.background}
+            onChange={(e) =>
+              onSetExtras({
+                ...extras,
+                background: (e.target as HTMLSelectElement).value as PageBackground,
+              })
+            }
+          >
             <option value="white">White</option>
             <option value="transparent">Transparent</option>
             <option value="offwhite">Off-white</option>
@@ -145,7 +175,17 @@ export function JpgToPdfSettingsCard({
           <label for={`${idPrefix}-image-quality`} class={styles.fieldLabel}>
             Image quality
           </label>
-          <select id={`${idPrefix}-image-quality`} class={styles.selectInput} defaultValue="high">
+          <select
+            id={`${idPrefix}-image-quality`}
+            class={styles.selectInput}
+            value={extras.quality}
+            onChange={(e) =>
+              onSetExtras({
+                ...extras,
+                quality: (e.target as HTMLSelectElement).value as ImageQuality,
+              })
+            }
+          >
             <option value="high">High (Original quality)</option>
             <option value="medium">Medium (Compressed)</option>
             <option value="low">Low (Smallest size)</option>

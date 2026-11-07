@@ -9,6 +9,7 @@ import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
 import ToolContent from '@mangotools/ui/toolkit/ToolContent.astro';
 import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import { toolHeaderIcon } from '@mangotools/ui/toolkit/toolHeaderIcons.ts';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categoryById, presetFor, toolLinks, toolTitle } from '../lib/site.ts';
 import { breadcrumbList, faqPage, webApplication } from '../lib/structured-data.ts';
@@ -49,14 +50,10 @@ const isCivil = [
 
 <BaseLayout title={toolTitle(tool)} description={tool.seo.description} path={tool.url} template="tool" jsonLd={jsonLd}>
   <PageContainer width="tool">
-    <div class="page">
+    <div class="page" data-fullscreen-root>
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        {['pdf-merge', 'pdf-split', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf', 'gst-calculator', 'seller-profitability-calculator', 'amazon-india-seller-fee-profit-estimator', 'markup-calculator'].includes(tool.slug) ? (
-          <h1 class="visually-hidden">{tool.seo.h1 ?? tool.name}</h1>
-        ) : (
-          <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
-        )}
+        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} icon={toolHeaderIcon(tool.slug)} />
       </div>
       {isCivil ? (
         <div class="civil-page-wrap">
@@ -100,10 +97,14 @@ const isCivil = [
   .page {
     display: grid;
     gap: var(--space-1);
+    min-width: 0;
+    max-width: 100%;
   }
   .top {
     display: grid;
     gap: var(--space-1);
+    min-width: 0;
+    max-width: 100%;
   }
   @media (max-width: 650px) {
     .page {

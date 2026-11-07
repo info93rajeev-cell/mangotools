@@ -3,6 +3,7 @@ import { InlineAlert } from '../primitives/feedback.tsx';
 import styles from './imageCompress.module.css';
 import { resolveImageErrorMessage } from './imageErrorPresentation.ts';
 import { formatImageBytes } from './imageSizeFormat.ts';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageCompressReturn } from './useImageCompress.ts';
 
 export interface ImageCompressResultProps {
@@ -120,7 +121,14 @@ function ReadyCockpit({ compress }: { compress: UseImageCompressReturn }) {
             }}
           />
         ) : (
-          <div style={{ color: 'var(--color-text-muted)', fontSize: '11px' }}>Awaiting Image</div>
+          <div
+            style={{
+              color: 'var(--color-text-muted)',
+              fontSize: fs(11),
+            }}
+          >
+            Awaiting Image
+          </div>
         )}
       </div>
 

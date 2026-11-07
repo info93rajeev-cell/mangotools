@@ -2,20 +2,20 @@ import type { ResolvedPreset } from '@mangotools/schemas';
 import { useEffect, useState } from 'preact/hooks';
 import type { FilePhase } from '../archetypes/useFileTool.ts';
 import { JpgToPdfArrangeCard, JpgToPdfUploadCard } from './JpgToPdfLeftCards.tsx';
-import {
-  JpgToPdfActionCard,
-  JpgToPdfPreviewCard,
-  JpgToPdfSummaryCard,
-} from './JpgToPdfRightCards.tsx';
+import { JpgToPdfPreviewCard } from './JpgToPdfRightCards.tsx';
 import { JpgToPdfSettingsCard } from './JpgToPdfSettingsCard.tsx';
 import styles from './jpgToPdfStudio.module.css';
-import { JpgToPdfIcon } from './PdfToolIcons.tsx';
 import {
-  isTourCompleted,
-  ToolOnboardingTour,
-  TourLauncherButton,
-  type TourStep,
-} from './ToolOnboardingTour.tsx';
+  RefActions,
+  RefCardHead,
+  RefPrivacy,
+  RefStatus,
+  RefTile,
+  RefTopBar,
+} from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
+import refStyles from './pdfRef.module.css';
+import { ToolOnboardingTour, type TourStep } from './ToolOnboardingTour.tsx';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 import { type PdfImageItem, usePdfStudioState } from './usePdfStudioState.ts';
 
@@ -87,58 +87,48 @@ function reorder<T>(arr: T[], from: number, to: number): T[] {
   return next;
 }
 
-function JpgToPdfTopBar({
-  onOpenImages,
-  onLoadSamples,
-  onClearAll,
-  onLaunchTour,
-}: {
-  onOpenImages: () => void;
-  onLoadSamples: () => void;
-  onClearAll: () => void;
-  onLaunchTour: () => void;
-}) {
+function JpgSummary({ s }: { s: ReturnType<typeof usePdfStudioState> }) {
+  const totalBytes = s.images.reduce((acc, img) => acc + img.size, 0);
+  const sizeText = totalBytes > 0 ? (fileMeta(0, totalBytes).split(' • ')[1] ?? '—') : '—';
+  const ready = s.images.length > 0;
   return (
-    <div class={styles.topBar}>
-      <div class={styles.toolHeading}>
-        <div class={styles.toolIconBox}>
-          <JpgToPdfIcon />
-        </div>
-        <div class={styles.titleMeta}>
-          <div class={styles.titleRow}>
-            <h1 class={styles.titleText}>JPG to PDF</h1>
-            <div class={styles.badgePills}>
-              <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
-                ⚡ Instant In-Browser
-              </span>
-              <span class={styles.badgePill}>🔒 100% Private</span>
-              <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>🛡️ No Sign-Up Needed</span>
-            </div>
-          </div>
-          <p class={styles.subtitleText}>
-            Convert one or more JPG images into a single PDF, in the order you choose. Fast, private
-            and easy to use in your browser.
-          </p>
-        </div>
+    <section class={refStyles.card} aria-label="PDF Summary">
+      <RefCardHead
+        icon="files"
+        title="PDF Summary"
+        aside={<RefStatus text={ready ? 'Ready to convert' : 'Add images'} done={ready} />}
+      />
+      <div class={refStyles.tiles}>
+        <RefTile
+          tone="blue"
+          icon="image"
+          label="Images"
+          value={String(s.images.length)}
+          sub="Selected"
+        />
+        <RefTile
+          tone="purple"
+          icon="file-text"
+          label="PDF pages"
+          value={String(s.images.length)}
+          sub="Will be created"
+        />
+        <RefTile
+          tone="green"
+          icon="database"
+          label="Est. size"
+          value={sizeText}
+          sub="After conversion"
+        />
+        <RefTile
+          tone="amber"
+          icon="star"
+          label="Page size"
+          value={s.pageSize.toUpperCase()}
+          sub={s.orientation === 'landscape' ? 'Landscape' : 'Portrait'}
+        />
       </div>
-
-      <div class={styles.topActions}>
-        <button type="button" class={styles.actionBtnGhost} onClick={onOpenImages}>
-          📁 Open Images
-        </button>
-        <button type="button" class={styles.actionBtnGhost} onClick={onLoadSamples}>
-          📑 Load Sample
-        </button>
-        <button
-          type="button"
-          class={`${styles.actionBtnGhost} ${styles.actionBtnDanger}`}
-          onClick={onClearAll}
-        >
-          🗑️ Clear All
-        </button>
-        <TourLauncherButton onClick={onLaunchTour} />
-      </div>
-    </div>
+    </section>
   );
 }
 
@@ -152,8 +142,8 @@ function JpgToPdfWorkbench({
   onCopySummary: () => void;
 }) {
   return (
-    <div class={styles.workbenchGrid}>
-      <div class={styles.column}>
+    <div class={refStyles.layout}>
+      <div class={refStyles.column}>
         <JpgToPdfUploadCard
           idPrefix={props.idPrefix}
           fileInputRef={s.fileInputRef}
@@ -176,6 +166,8 @@ function JpgToPdfWorkbench({
           fitMode={s.fitMode}
           margins={s.margins}
           outputFileName={s.outputFileName}
+          extras={s.extras}
+          onSetExtras={s.setExtras}
           onSetPageSize={s.setPageSize}
           onSetOrientation={s.setOrientation}
           onSetFitMode={s.setFitMode}
@@ -184,19 +176,23 @@ function JpgToPdfWorkbench({
         />
       </div>
 
-      <div class={styles.column}>
-        <JpgToPdfSummaryCard
-          images={s.images}
-          pageSize={s.pageSize}
-          orientation={s.orientation}
-          outputFileName={s.outputFileName}
-        />
-        <JpgToPdfPreviewCard images={s.images} />
-        <JpgToPdfActionCard
-          imagesCount={s.images.length}
-          isCompiling={s.isCompiling}
+      <div class={refStyles.column}>
+        <JpgSummary s={s} />
+        <div class={refStyles.subcard}>
+          <JpgToPdfPreviewCard images={s.images} />
+        </div>
+        <RefPrivacy />
+        <RefActions
+          icon="file-text"
+          label="Create PDF"
+          busyLabel="Creating PDF…"
+          busy={s.isCompiling}
+          disabled={s.images.length === 0}
+          onRun={() => void s.downloadPdf()}
+          downloadLabel="Download PDF"
+          downloadDisabled={s.images.length === 0 || s.isCompiling}
           onDownload={() => void s.downloadPdf()}
-          onCopySummary={onCopySummary}
+          onCopy={onCopySummary}
           onReset={s.clearAll}
         />
       </div>
@@ -208,11 +204,10 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   const s = usePdfStudioState(props.converter, props.notify, props.onPhase);
   const [isTourOpen, setIsTourOpen] = useState(false);
 
+  // Open with the sample images, so the page shows the approved full design straight away; the
+  // user's own images replace them. An image handed over from another tool is kept instead.
   useEffect(() => {
-    if (!isTourCompleted('jpg-to-pdf')) {
-      const timer = setTimeout(() => setIsTourOpen(true), 600);
-      return () => clearTimeout(timer);
-    }
+    if (!props.converter?.file) void s.loadSamples();
   }, []);
 
   useEffect(() => {
@@ -232,12 +227,13 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
   };
 
   return (
-    <div class={styles.studioContainer} data-image-to-pdf-studio="">
-      <JpgToPdfTopBar
-        onOpenImages={() => s.fileInputRef.current?.click()}
-        onLoadSamples={() => void s.loadSamples()}
-        onClearAll={s.clearAll}
-        onLaunchTour={() => setIsTourOpen(true)}
+    <div class={styles.studioContainer} data-image-to-pdf-studio="" data-ref-look="">
+      <RefTopBar
+        badge3="No Sign-Up Needed"
+        openLabel="Open Images"
+        onOpen={() => s.fileInputRef.current?.click()}
+        onLoadSample={() => void s.loadSamples()}
+        onClear={s.clearAll}
       />
 
       <JpgToPdfWorkbench props={props} s={s} onCopySummary={handleCopySummary} />
