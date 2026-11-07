@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'preact/hooks';
-import { SvgAnchorPoints, SvgCalloutBadge, SvgTangentHandles } from './AdvancedPenSvgOverlays.tsx';
+import { SvgAnchorPoints, SvgTangentHandles } from './AdvancedPenSvgOverlays.tsx';
 import styles from './advancedPenSelection.module.css';
 import { findClosestSegment, pathToSvgD } from './bezierPathModel.ts';
 import type { UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts';
@@ -133,6 +133,62 @@ function useCanvasDragHandlers(
   };
 }
 
+type BrushPoint = { x: number; y: number };
+
+/** Brush Add / Brush Remove: collects one stroke per press, in image pixels. */
+function useBrushStroke(
+  penSelection: UseAdvancedPenSelectionReturn,
+  getSvgCoords: (e: MouseEvent) => { x: number; y: number } | null,
+  svgRef: { current: SVGSVGElement | null },
+) {
+  const { activeTool, brushRadius, imageDims, addStroke } = penSelection;
+  // The stroke lives in a ref so fast taps (down + up before a re-render) are never lost;
+  // `live` only drives the on-screen preview.
+  const pointsRef = useRef<BrushPoint[] | null>(null);
+  const [live, setLive] = useState<BrushPoint[] | null>(null);
+  const brushing = activeTool === 'brushAdd' || activeTool === 'brushRemove';
+  const radius = useCallback(() => {
+    const w = svgRef.current?.getBoundingClientRect().width || imageDims.width || 1;
+    return Math.max(1, brushRadius * (imageDims.width / w));
+  }, [brushRadius, imageDims.width, svgRef]);
+
+  const onPointerDown = useCallback(
+    (e: PointerEvent) => {
+      if (!brushing || e.button !== 0 || e.altKey) return;
+      const c = getSvgCoords(e);
+      if (!c) return;
+      e.preventDefault();
+      (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+      pointsRef.current = [c];
+      setLive([c]);
+    },
+    [brushing, getSvgCoords],
+  );
+  const onPointerMove = useCallback(
+    (e: PointerEvent) => {
+      const pts = pointsRef.current;
+      const c = pts ? getSvgCoords(e) : null;
+      if (!pts || !c) return;
+      pts.push(c);
+      setLive([...pts]);
+    },
+    [getSvgCoords],
+  );
+  const onPointerUp = useCallback(() => {
+    const pts = pointsRef.current;
+    if (!pts) return;
+    pointsRef.current = null;
+    addStroke({
+      mode: activeTool === 'brushAdd' ? 'add' : 'remove',
+      radius: radius(),
+      points: pts,
+    });
+    setLive(null);
+  }, [activeTool, addStroke, radius]);
+
+  return { brushing, live, liveRadius: radius(), onPointerDown, onPointerMove, onPointerUp };
+}
+
 export interface AdvancedPenCanvasProps {
   penSelection: UseAdvancedPenSelectionReturn;
 }
@@ -159,6 +215,7 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
     onMovePoint,
     onMoveHandle,
     onInsertPoint,
+    onAppendPoint,
     onDeletePoint,
   } = penSelection;
 
@@ -172,17 +229,24 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
     svgRef,
   );
 
+  const brush = useBrushStroke(penSelection, dragHandlers.getSvgCoords, svgRef);
+
   const handleSvgClick = useCallback(
     (e: MouseEvent) => {
-      if (dragHandlers.draggingTarget || dragHandlers.isDraggingPan) return;
+      if (dragHandlers.draggingTarget || dragHandlers.isDraggingPan || e.altKey) return;
       const coords = dragHandlers.getSvgCoords(e);
-      if (!coords || activeTool !== 'add') return;
+      if (!coords) return;
+      if (activeTool === 'pen') {
+        onAppendPoint(coords.x, coords.y);
+        return;
+      }
+      if (activeTool !== 'add') return;
       const closest = findClosestSegment(path, coords.x, coords.y);
       if (closest && closest.distance < 40) {
         onInsertPoint(closest.segmentIndex, closest.t);
       }
     },
-    [dragHandlers, activeTool, path, onInsertPoint],
+    [dragHandlers, activeTool, path, onInsertPoint, onAppendPoint],
   );
 
   const selectedPt = selectedPointIndex !== null ? path.points[selectedPointIndex] : null;
@@ -221,6 +285,9 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
               transformOrigin: 'center center',
             }}
           >
+            {brush.brushing && !showOriginal && cutoutResult && (
+              <img src={imageSrc} alt="" aria-hidden="true" class={styles.stageGhost} />
+            )}
             {showOriginal ? (
               <img src={imageSrc} alt="Original" class={styles.stageImage} />
             ) : cutoutResult ? (
@@ -229,27 +296,45 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
               <img src={imageSrc} alt="Base" class={styles.stageImage} />
             )}
 
-            {showMask && path.points.length > 0 && (
+            {
               // biome-ignore lint/a11y/useKeyWithClickEvents: Canvas click is handled by mouse coordinates
               <svg
                 ref={svgRef}
                 class={styles.pathOverlaySvg}
                 viewBox={`0 0 ${imageDims.width} ${imageDims.height}`}
                 onClick={handleSvgClick}
+                onPointerDown={brush.onPointerDown}
+                onPointerMove={brush.onPointerMove}
+                onPointerUp={brush.onPointerUp}
+                onPointerCancel={brush.onPointerUp}
+                data-tool={activeTool}
                 role="img"
-                aria-label="Editable vector Bezier path"
+                aria-label="Selection editor: click to add pen points, drag to paint with a brush"
               >
-                <title>Editable vector Bezier path</title>
-                <path
-                  d={pathToSvgD(path)}
-                  class={styles.selectionCurve}
-                  fill="none"
-                  stroke="#2563eb"
-                  stroke-width="2.5"
-                  stroke-dasharray="4 2"
-                />
-                {path.points.length > 10 && <SvgCalloutBadge anchor={path.points[10]} />}
-                {selectedPt && selectedPointIndex !== null && (
+                <title>Selection editor</title>
+                {showMask && path.points.length > 0 && (
+                  <path
+                    d={pathToSvgD(path)}
+                    class={styles.selectionCurve}
+                    fill="none"
+                    stroke="#2563eb"
+                    stroke-width="2.5"
+                    stroke-dasharray="4 2"
+                  />
+                )}
+                {brush.live && (
+                  <polyline
+                    points={brush.live.map((p) => `${p.x},${p.y}`).join(' ')}
+                    fill="none"
+                    stroke={
+                      activeTool === 'brushAdd' ? 'rgba(22,163,74,0.45)' : 'rgba(220,38,38,0.45)'
+                    }
+                    stroke-width={brush.liveRadius * 2}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                )}
+                {showMask && selectedPt && selectedPointIndex !== null && (
                   <SvgTangentHandles
                     selectedPt={selectedPt}
                     selectedPointIndex={selectedPointIndex}
@@ -260,7 +345,7 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
                   />
                 )}
                 <SvgAnchorPoints
-                  points={path.points}
+                  points={showMask ? path.points : []}
                   selectedPointIndex={selectedPointIndex}
                   onNodeClick={(idx, e) => {
                     e.stopPropagation();
@@ -276,7 +361,7 @@ export function AdvancedPenCanvas({ penSelection }: AdvancedPenCanvasProps) {
                   }}
                 />
               </svg>
-            )}
+            }
           </div>
         )}
       </div>

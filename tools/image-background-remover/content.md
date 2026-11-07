@@ -38,7 +38,7 @@ You can download your cutout as a transparent PNG, compact transparent WebP, sol
 
 Yes, but only in **Quick Auto Removal**. That mode runs an AI model (BiRefNet-lite, MIT licence) on your own device. A model is used because removing backgrounds from people, hair, pets and busy scenes without one gives rough edges, and we tested that. The first time you use it, the model files (about 100 MB, or up to 190 MB on browsers without WebGPU) download from this website (beyandtheai.com) itself, and your browser keeps them for later visits. Only the model comes to you; nothing goes back.
 
-**Pen Selection** and its **Auto Select** use no AI. They use classic edge and colour detection, so choose that mode if you prefer no AI at all.
+In **Pen Selection**, **Auto Select** uses the same on-device AI model to make the first selection; the **Pen** and the **Brush Add / Brush Remove** tools use no AI. If you prefer no AI at all, skip Auto Select and draw the selection with the Pen and brushes.
 
 ### Are my images uploaded to any server or remote AI?
 
