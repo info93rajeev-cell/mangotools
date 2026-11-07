@@ -63,7 +63,11 @@ export const surveyStrings = {
   pasteErrNegativeReading: 'Staff reading cannot be negative',
   pasteErrCombination: 'Invalid reading combination: cannot mix IS with BS or FS',
   pasteErrStartBS: 'First station must have Backsight (BS)',
+  pasteErrStartBSOnly:
+    'First observation must be a starting backsight (BS) only, not a change point or foresight',
   pasteErrEndFS: 'Final station must have Foresight (FS)',
+  pasteErrEndFSOnly:
+    'Final observation must be a closing foresight (FS) only, not a change point or backsight',
   pasteErrCP: 'Intermediate change point requires both incoming FS and outgoing BS',
   pasteErrDist: 'Invalid distance: must be a non-negative decimal',
   pasteErrDistZero: 'First station distance must be 0 if provided',

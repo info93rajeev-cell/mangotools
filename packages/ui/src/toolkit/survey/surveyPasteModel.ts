@@ -112,10 +112,9 @@ export function detectHeaderColumns(cells: string[]): {
       matchCount++;
     }
   }
-  const isHeader = matchCount >= 2;
   return {
-    isHeader,
-    mapping: isHeader ? mapping : { station: 0, bs: 1, is: 2, fs: 3, dist: 4, remarks: 5 },
+    isHeader: matchCount >= 2,
+    mapping: matchCount >= 2 ? mapping : { station: 0, bs: 1, is: 2, fs: 3, dist: 4, remarks: 5 },
   };
 }
 
@@ -130,15 +129,11 @@ export function cleanDecimal(raw: string): {
   const uncomma = /^\d{1,3}(,\d{3})+(\.\d+)?$/.test(unquoted)
     ? unquoted.replace(/,/g, '')
     : unquoted;
-  if (!/^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(uncomma)) {
+  if (!/^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(uncomma))
     return { clean: uncomma, isValid: false, isNegative: false };
-  }
   const frac = uncomma.split('.')[1] ?? '';
-  if (frac.length > 6) {
-    return { clean: uncomma, isValid: false, isNegative: false };
-  }
-  const isNegative = uncomma.startsWith('-');
-  return { clean: uncomma, isValid: true, isNegative };
+  if (frac.length > 6) return { clean: uncomma, isValid: false, isNegative: false };
+  return { clean: uncomma, isValid: true, isNegative: uncomma.startsWith('-') };
 }
 
 function mapRowCells(
@@ -164,12 +159,10 @@ function mapRowCells(
 function checkReadingField(val: string): string | null {
   if (!val) return null;
   const d = cleanDecimal(val);
-  if (!d.isValid || d.isNegative) {
-    return d.isNegative
-      ? surveyStrings.pasteErrNegativeReading
-      : surveyStrings.pasteErrInvalidReading;
-  }
-  return null;
+  if (d.isValid && !d.isNegative) return null;
+  return d.isNegative
+    ? surveyStrings.pasteErrNegativeReading
+    : surveyStrings.pasteErrInvalidReading;
 }
 
 function determineRowTag(
@@ -180,19 +173,15 @@ function determineRowTag(
   if (!hasBS && !hasIS && !hasFS) return { tag: 'ERR', err: surveyStrings.pasteErrEmpty };
   if (hasIS && (hasBS || hasFS)) return { tag: 'ERR', err: surveyStrings.pasteErrCombination };
   if (hasBS && hasFS) return { tag: 'CP' };
-  if (hasBS) return { tag: 'BM' };
-  if (hasFS) return { tag: 'FS' };
-  return { tag: 'IS' };
+  return { tag: hasBS ? 'BM' : hasFS ? 'FS' : 'IS' };
 }
 
 function validateRowReadings(row: SurveyLevelingRow): { tag: PasteTag; errors: string[] } {
   const errors: string[] = [];
-  const bsErr = checkReadingField(row.bs);
-  if (bsErr) errors.push(bsErr);
-  const isErr = checkReadingField(row.is);
-  if (isErr) errors.push(isErr);
-  const fsErr = checkReadingField(row.fs);
-  if (fsErr) errors.push(fsErr);
+  for (const val of [row.bs, row.is, row.fs]) {
+    const err = checkReadingField(val);
+    if (err) errors.push(err);
+  }
   if (row.dist) {
     const distCheck = cleanDecimal(row.dist);
     if (!distCheck.isValid || distCheck.isNegative) errors.push(surveyStrings.pasteErrDist);
@@ -207,33 +196,49 @@ function validateRowReadings(row: SurveyLevelingRow): { tag: PasteTag; errors: s
   return { tag: errors.length ? 'ERR' : tag, errors };
 }
 
-function validateSequence(rowDetails: ParsedPasteRow[]): void {
-  const total = rowDetails.length;
-  if (total === 0) return;
-  const first = rowDetails[0];
-  if (first && first.row.bs.trim() === '') {
-    first.errors.push(surveyStrings.pasteErrStartBS);
-    first.tag = 'ERR';
-  }
-  if (first && first.row.dist.trim() !== '' && Number(first.row.dist) > 0) {
+function validateFirstRow(first: ParsedPasteRow): void {
+  const hasBS = first.row.bs.trim() !== '';
+  if (!hasBS) first.errors.push(surveyStrings.pasteErrStartBS);
+  else if (first.row.fs.trim() !== '') first.errors.push(surveyStrings.pasteErrStartBSOnly);
+  if (first.errors.length) first.tag = 'ERR';
+  if (first.row.dist.trim() !== '' && Number(first.row.dist) > 0) {
     first.errors.push(surveyStrings.pasteErrDistZero);
   }
-  const last = rowDetails[total - 1];
-  if (last && last.row.fs.trim() === '') {
-    last.errors.push(surveyStrings.pasteErrEndFS);
-    last.tag = 'ERR';
+}
+
+function validateLastRow(last: ParsedPasteRow): void {
+  const hasFS = last.row.fs.trim() !== '';
+  if (!hasFS) last.errors.push(surveyStrings.pasteErrEndFS);
+  else if (last.row.bs.trim() !== '') last.errors.push(surveyStrings.pasteErrEndFSOnly);
+  if (last.errors.length) last.tag = 'ERR';
+}
+
+function validateInteriorRow(item: ParsedPasteRow): void {
+  const hasBS = item.row.bs.trim() !== '';
+  const hasFS = item.row.fs.trim() !== '';
+  if ((hasBS && !hasFS) || (hasFS && !hasBS && !item.row.is.trim())) {
+    item.errors.push(surveyStrings.pasteErrCP);
+    item.tag = 'ERR';
+  }
+}
+
+function validateSequence(rowDetails: ParsedPasteRow[]): void {
+  const total = rowDetails.length;
+  if (!total) return;
+  const first = rowDetails[0];
+  if (first) validateFirstRow(first);
+  if (total > 1) {
+    const last = rowDetails[total - 1];
+    if (last) validateLastRow(last);
   }
   for (let i = 1; i < total - 1; i++) {
     const item = rowDetails[i];
-    if (item && item.row.bs.trim() !== '' && item.row.fs.trim() === '') {
-      item.errors.push(surveyStrings.pasteErrCP);
-      item.tag = 'ERR';
-    }
+    if (item) validateInteriorRow(item);
   }
 }
 
 function calculateSummary(rowDetails: ParsedPasteRow[]): PasteParseSummary {
-  const summary: PasteParseSummary = {
+  const s: PasteParseSummary = {
     total: rowDetails.length,
     bmCount: 0,
     cpCount: 0,
@@ -242,27 +247,27 @@ function calculateSummary(rowDetails: ParsedPasteRow[]): PasteParseSummary {
     errorCount: 0,
   };
   for (const item of rowDetails) {
-    if (item.errors.length > 0) summary.errorCount++;
-    if (item.tag === 'BM') summary.bmCount++;
-    else if (item.tag === 'CP') summary.cpCount++;
-    else if (item.tag === 'IS') summary.isCount++;
-    else if (item.tag === 'FS') summary.fsCount++;
+    if (item.errors.length) s.errorCount++;
+    if (item.tag === 'BM') s.bmCount++;
+    else if (item.tag === 'CP') s.cpCount++;
+    else if (item.tag === 'IS') s.isCount++;
+    else if (item.tag === 'FS') s.fsCount++;
   }
-  return summary;
+  return s;
 }
+
+const EMPTY_OUTCOME: PasteParseOutcome = {
+  rows: [],
+  rowDetails: [],
+  hasHeader: false,
+  headerLabels: [],
+  summary: { total: 0, bmCount: 0, cpCount: 0, isCount: 0, fsCount: 0, errorCount: 0 },
+  isValid: false,
+};
 
 export function parseSpreadsheetPaste(text: string): PasteParseOutcome {
   const grid = parseGrid(text);
-  if (grid.length === 0) {
-    return {
-      rows: [],
-      rowDetails: [],
-      hasHeader: false,
-      headerLabels: [],
-      summary: { total: 0, bmCount: 0, cpCount: 0, isCount: 0, fsCount: 0, errorCount: 0 },
-      isValid: false,
-    };
-  }
+  if (grid.length === 0) return EMPTY_OUTCOME;
   const { isHeader, mapping } = detectHeaderColumns(grid[0] ?? []);
   const dataRows = isHeader ? grid.slice(1) : grid;
   const rowDetails: ParsedPasteRow[] = [];
@@ -275,15 +280,12 @@ export function parseSpreadsheetPaste(text: string): PasteParseOutcome {
 
   validateSequence(rowDetails);
   const summary = calculateSummary(rowDetails);
-
-  let globalError: string | undefined;
-  if (rowDetails.length < 2) {
-    globalError = surveyStrings.pasteErrMinRows;
-  } else if (rowDetails.length > 50) {
-    globalError = surveyStrings.pasteErrMaxRows;
-  }
-
-  const isValid = !globalError && summary.errorCount === 0 && rowDetails.length >= 2;
+  const globalError =
+    rowDetails.length < 2
+      ? surveyStrings.pasteErrMinRows
+      : rowDetails.length > 50
+        ? surveyStrings.pasteErrMaxRows
+        : undefined;
 
   return {
     rows: rowDetails.map((d) => d.row),
@@ -291,7 +293,7 @@ export function parseSpreadsheetPaste(text: string): PasteParseOutcome {
     hasHeader: isHeader,
     headerLabels: isHeader ? (grid[0] ?? []) : [],
     summary,
-    isValid,
+    isValid: !globalError && summary.errorCount === 0 && rowDetails.length >= 2,
     globalError,
   };
 }

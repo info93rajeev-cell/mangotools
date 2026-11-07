@@ -172,19 +172,14 @@ BM-2\t\t\t2.200\t40\tClosing BM`;
     });
 
     it('parses 4-column paste with blank distance and remarks', () => {
-      const raw = `BM-1\t1.500\t\t
-A\t\t1.200\t
-BM-2\t\t\t2.200`;
-      const outcome = parseSpreadsheetPaste(raw);
+      const outcome = parseSpreadsheetPaste('BM-1\t1.500\t\t\nA\t\t1.200\t\nBM-2\t\t\t2.200');
       expect(outcome.isValid).toBe(true);
       expect(outcome.rows[0]?.dist).toBe('');
       expect(outcome.rows[0]?.remarks).toBe('');
     });
 
     it('preserves exact sub-metre and fine decimal text without corruption', () => {
-      const raw = `BM-1\t0.000400\t\t
-BM-2\t\t\t0.400000`;
-      const outcome = parseSpreadsheetPaste(raw);
+      const outcome = parseSpreadsheetPaste('BM-1\t0.000400\t\t\nBM-2\t\t\t0.400000');
       expect(outcome.isValid).toBe(true);
       expect(outcome.rows[0]?.bs).toBe('0.000400');
       expect(outcome.rows[1]?.fs).toBe('0.400000');
@@ -244,6 +239,52 @@ BM-2\t\t\t2.200`;
       expect(outcome.rowDetails[1]?.errors).toContain(
         'Intermediate change point requires both incoming FS and outgoing BS',
       );
+    });
+
+    it('flags error when first station contains both BS and FS (CP on row 0)', () => {
+      const raw = `CP1\t1.500\t\t1.200\t0\tStart
+A\t\t1.100\t\t20\tInter
+BM-2\t\t\t2.200\t30\tEnd`;
+      const outcome = parseSpreadsheetPaste(raw);
+      expect(outcome.isValid).toBe(false);
+      expect(outcome.rowDetails[0]?.tag).toBe('ERR');
+      expect(outcome.rowDetails[0]?.errors).toContain(
+        'First observation must be a starting backsight (BS) only, not a change point or foresight',
+      );
+    });
+
+    it('flags error when final station contains both FS and BS (CP on final row)', () => {
+      const raw = `BM-1\t1.500\t\t\t0\tStart
+A\t\t1.100\t\t20\tInter
+CP2\t0.800\t\t2.200\t30\tEnd`;
+      const outcome = parseSpreadsheetPaste(raw);
+      expect(outcome.isValid).toBe(false);
+      expect(outcome.rowDetails[2]?.tag).toBe('ERR');
+      expect(outcome.rowDetails[2]?.errors).toContain(
+        'Final observation must be a closing foresight (FS) only, not a change point or backsight',
+      );
+    });
+
+    it('flags error when interior station has FS without BS', () => {
+      const raw = `BM-1\t1.500\t\t\t0\tStart
+Mid\t\t\t1.400\t20\tBroken
+BM-2\t\t\t2.200\t30\tEnd`;
+      const outcome = parseSpreadsheetPaste(raw);
+      expect(outcome.isValid).toBe(false);
+      expect(outcome.rowDetails[1]?.tag).toBe('ERR');
+      expect(outcome.rowDetails[1]?.errors).toContain(
+        'Intermediate change point requires both incoming FS and outgoing BS',
+      );
+    });
+
+    it('flags error when both first and final rows are change points (FS+BS)', () => {
+      const raw = `CP1\t1.500\t\t1.000\t0\tStart
+CP2\t0.800\t\t2.200\t30\tEnd`;
+      const outcome = parseSpreadsheetPaste(raw);
+      expect(outcome.isValid).toBe(false);
+      expect(outcome.rowDetails[0]?.tag).toBe('ERR');
+      expect(outcome.rowDetails[1]?.tag).toBe('ERR');
+      expect(outcome.summary.errorCount).toBe(2);
     });
 
     it('flags global error when fewer than 2 rows provided', () => {

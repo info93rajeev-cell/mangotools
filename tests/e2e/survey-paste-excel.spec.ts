@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { ROOT } from '../../scripts/lib/paths.ts';
 import { bundleTestEntry, publicLibraryEntry } from '../support/library-bundle.ts';
 
@@ -42,6 +42,13 @@ test.beforeEach(async ({ page }) => {
 
 const DEV_SURVEY_URL = 'http://127.0.0.1:4322/_dev/survey-workbench';
 
+async function loadWorkbench(page: Page, width = 1440, height = 900) {
+  await page.setViewportSize({ width, height });
+  await page.goto(DEV_SURVEY_URL);
+  await expect(page.locator('[data-survey-workbench]')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toBeVisible();
+}
+
 const SAMPLE_EXCEL_TSV = `Station\tBS\tIS\tFS\tDist (m)\tRemarks
 BM-A\t1.420\t\t\t0\tStart Bench
 S1\t\t1.150\t\t25\tInter 1
@@ -54,8 +61,7 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
   test('opens paste modal, shows empty state, and cancel preserves existing rows', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(DEV_SURVEY_URL);
+    await loadWorkbench(page);
 
     // Initial table has sample rows
     const initialRows = page.locator('[data-level-book-table] tbody tr');
@@ -92,8 +98,7 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
   test('valid paste with headers and change points updates level book and recalculates', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(DEV_SURVEY_URL);
+    await loadWorkbench(page);
 
     // Open modal
     await page.locator('[data-paste-excel]').click();
@@ -159,9 +164,10 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
     await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('HI (m)');
   });
 
-  test('valid paste without headers positionally maps columns', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(DEV_SURVEY_URL);
+  test('valid paste without headers positionally maps columns and calculates in both methods', async ({
+    page,
+  }) => {
+    await loadWorkbench(page);
 
     await page.locator('[data-paste-excel]').click();
     await expect(page.locator('[data-paste-modal]')).toBeVisible();
@@ -179,38 +185,69 @@ STA-3\t\t\t2.000\t20\tEnd`;
     await expect(mainRows.nth(0).locator('input').nth(0)).toHaveValue('STA-1');
     await expect(mainRows.nth(1).locator('input').nth(0)).toHaveValue('STA-2');
     await expect(mainRows.nth(2).locator('input').nth(0)).toHaveValue('STA-3');
+
+    // Calculate in Rise & Fall mode with distance adjustment
+    await page.locator('[data-calculate-btn]').click();
+    await expect(page.locator('[data-results-table]')).toBeVisible();
+
+    // Switch to Height of Instrument mode and recalculate with setup adjustment
+    await page.locator('[data-method-tab="height-of-instrument"]').click();
+    await page.locator('#survey-adjust-by').selectOption('setup');
+    await page.locator('[data-calculate-btn]').click();
+    await expect(page.locator('[data-results-table]')).toBeVisible();
+    await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('HI (m)');
   });
 
-  test('malformed paste displays row-level errors and blocks replace button', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(DEV_SURVEY_URL);
+  test('invalid paste and sequence errors block replace button and never replace existing rows', async ({
+    page,
+  }) => {
+    await loadWorkbench(page);
+
+    const initialRows = page.locator('[data-level-book-table] tbody tr');
+    await expect(initialRows).toHaveCount(6);
 
     await page.locator('[data-paste-excel]').click();
     await expect(page.locator('[data-paste-modal]')).toBeVisible();
 
-    // Invalid: Row 1 has both IS and BS, Row 2 has negative staff reading
-    const invalidTSV = `Station\tBS\tIS\tFS
-BM-1\t1.500\t1.200\t
-BM-2\t\t\t-2.000`;
-    await page.locator('[data-paste-textarea]').fill(invalidTSV);
-
-    // Error banner appears
-    const errBanner = page.locator('[data-paste-error-banner]');
-    await expect(errBanner).toBeVisible();
-    await expect(errBanner).toContainText('Found errors in 2 row(s)');
-
-    // Replace button is disabled
+    // 1. First row has CP (both BS and FS)
+    const firstRowCP = `CP-Start\t1.500\t\t1.200\t0\tStart CP\nSTA-2\t\t1.100\t\t20\tMid\nBM-2\t\t\t2.200\t30\tEnd`;
+    await page.locator('[data-paste-textarea]').fill(firstRowCP);
+    await expect(page.locator('[data-paste-error-banner]')).toContainText(
+      'Found errors in 1 row(s)',
+    );
+    await expect(
+      page.locator('[data-paste-preview-table] tbody tr').nth(0).locator('td').nth(1),
+    ).toHaveText('ERR');
     await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
 
-    // Clear button clears textarea and resets
-    await page.locator('[data-paste-clear]').click();
-    await expect(page.locator('[data-paste-textarea]')).toHaveValue('');
-    await expect(page.locator('[data-paste-empty-notice]')).toBeVisible();
+    // 2. Final row has CP (both FS and BS)
+    const lastRowCP = `BM-1\t1.500\t\t\t0\tStart\nSTA-2\t\t1.100\t\t20\tMid\nCP-End\t0.800\t\t2.200\t30\tEnd CP`;
+    await page.locator('[data-paste-textarea]').fill(lastRowCP);
+    await expect(page.locator('[data-paste-error-banner]')).toContainText(
+      'Found errors in 1 row(s)',
+    );
+    await expect(
+      page.locator('[data-paste-preview-table] tbody tr').nth(2).locator('td').nth(1),
+    ).toHaveText('ERR');
+    await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
+
+    // 3. Malformed readings: negative staff reading & IS mixed with BS
+    const malformed = `Station\tBS\tIS\tFS\nBM-1\t1.500\t1.200\t\nBM-2\t\t\t-2.000`;
+    await page.locator('[data-paste-textarea]').fill(malformed);
+    await expect(page.locator('[data-paste-error-banner]')).toContainText(
+      'Found errors in 2 row(s)',
+    );
+    await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
+
+    // Cancel modal and verify existing rows are completely unchanged
+    await page.locator('[data-paste-cancel-btn]').click();
+    await expect(page.locator('[data-paste-modal]')).not.toBeVisible();
+    await expect(initialRows).toHaveCount(6);
+    await expect(initialRows.nth(0).locator('input').nth(0)).toHaveValue('BM-1');
   });
 
   test('keyboard access: Escape key closes modal', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(DEV_SURVEY_URL);
+    await loadWorkbench(page);
 
     await page.locator('[data-paste-excel]').click();
     const modal = page.locator('[data-paste-modal]');
@@ -224,8 +261,7 @@ BM-2\t\t\t-2.000`;
   test('mobile layout (360x800) fits screen without horizontal overflow and passes axe audit', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 360, height: 800 });
-    await page.goto(DEV_SURVEY_URL);
+    await loadWorkbench(page, 360, 800);
 
     await page.locator('[data-paste-excel]').click();
     const modal = page.locator('[data-paste-modal]');
