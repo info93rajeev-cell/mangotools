@@ -9,7 +9,6 @@ import {
   refineMatte,
   type TransparencyMode,
 } from './edgeMatteRefinement.ts';
-import { recoverFineStructures } from './guidedDetailRecovery.ts';
 
 /** Above this size the full-resolution buffers risk running a mobile tab out of memory. */
 export const MAX_REFINE_PIXELS = 16_000_000;
@@ -22,17 +21,6 @@ function pixels(src: CanvasImageSource, w: number, h: number): Uint8ClampedArray
   if (!ctx) return null;
   ctx.drawImage(src, 0, 0, w, h);
   return ctx.getImageData(0, 0, w, h).data;
-}
-
-/** Fine-twig recovery on busy backgrounds, written into `cut`'s alpha channel in place. */
-function withFineStructures(orig: Uint8ClampedArray, cut: Uint8ClampedArray, w: number, h: number) {
-  const bg = detectBackgroundFromPerimeter(orig, w, h);
-  if (bg.isUniform) return;
-  const raw = new Float32Array(w * h);
-  for (let i = 0; i < raw.length; i++) raw[i] = (cut[i * 4 + 3] ?? 0) / 255;
-  const structured = recoverFineStructures(raw, orig, w, h, bg);
-  for (let i = 0; i < structured.length; i++)
-    cut[i * 4 + 3] = Math.round((structured[i] ?? 0) * 255);
 }
 
 /**
@@ -49,7 +37,6 @@ export function refineCutoutCanvas(
   const orig = pixels(original, w, h);
   const cut = pixels(cutout, w, h);
   if (!orig || !cut) return null;
-  withFineStructures(orig, cut, w, h);
   const refined = refineCutoutEdges(orig, cut, w, h);
   const c = document.createElement('canvas');
   c.width = w;
@@ -67,15 +54,6 @@ export function refineCutoutCanvas(
  * handles glass. Busy backgrounds get the guided edge refinement with local colour estimation,
  * because a single border colour would tint and erode fine edges such as feathers.
  */
-/** TEMPORARY (PR #300 diagnosis, remove before merge): ?bgdiag=raw | notwig | norefine */
-function diag(): string {
-  try {
-    return new URLSearchParams(window.location.search).get('bgdiag') ?? '';
-  } catch {
-    return '';
-  }
-}
-
 export function refineForBackground(
   ctxOrig: CanvasRenderingContext2D,
   ctxCut: CanvasRenderingContext2D,
@@ -91,12 +69,8 @@ export function refineForBackground(
     return refineMatte(ctxOrig, ctxCut, w, h, feather, mode, input.tolerance);
   }
   const cut = ctxCut.getImageData(0, 0, w, h);
-  const d = diag();
-  if (d === 'raw') return cut;
-  // Fine-twig recovery first (brings back thin parts the model barely saw, such as the branch
-  // under the kingfisher), then refit edges and clean edge colours.
-  if (d !== 'notwig') withFineStructures(orig, cut.data, w, h);
-  if (d === 'norefine') return cut;
+  // No colour-based twig recovery here: on busy backgrounds it pulled in background pixels as a
+  // 20-40px halo. Thin parts the model misses are restored with Pen > Brush Add instead.
   const refined = refineCutoutEdges(orig, cut.data, w, h);
   const alpha = new Float32Array(w * h);
   for (let i = 0; i < alpha.length; i++) alpha[i] = (refined[i * 4 + 3] ?? 0) / 255;
