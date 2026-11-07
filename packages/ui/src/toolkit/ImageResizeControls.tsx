@@ -1,6 +1,7 @@
 import type { ResolvedPreset } from '@mangotools/schemas';
 import { Button } from '../primitives/Button.tsx';
 import styles from './imageResize.module.css';
+import { fs } from './phoneFontSize.ts';
 import { UniversalUploadDropzone } from './UniversalUploadDropzone.tsx';
 import type { ResizeOutputFormat, UseImageResizeReturn } from './useImageResize.ts';
 
@@ -79,7 +80,13 @@ function DimensionsSection({
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>2. Target Dimensions</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
+        <span
+          style={{
+            fontSize: fs(10),
+            color: 'var(--color-accent-text)',
+            fontWeight: 'bold',
+          }}
+        >
           {resize.scalePercent}%
         </span>
       </div>
@@ -214,7 +221,13 @@ function FormatSection({ idPrefix, resize }: { idPrefix: string; resize: UseImag
     <section class={styles.controlSection}>
       <div class={styles.sectionHeader}>
         <span class={styles.sectionTitle}>3. Output Format</span>
-        <span style={{ fontSize: '10px', color: 'var(--color-accent-text)', fontWeight: 'bold' }}>
+        <span
+          style={{
+            fontSize: fs(10),
+            color: 'var(--color-accent-text)',
+            fontWeight: 'bold',
+          }}
+        >
           {resize.outputFormat.toUpperCase()}
         </span>
       </div>

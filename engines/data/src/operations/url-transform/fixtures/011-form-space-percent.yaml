@@ -1,0 +1,6 @@
+id: 011-form-space-percent
+operation: data.url.transform@1
+source: { type: standard, citation: "RFC 3986 §2.1 — a space is the octet 0x20, written %20; + for space is only an application/x-www-form-urlencoded convention (WHATWG URL §5.2)" }
+params: { direction: encode, mode: form, space: percent }
+input: { text: "a b" }
+expected: { text: "a%20b", changedCount: 1 }

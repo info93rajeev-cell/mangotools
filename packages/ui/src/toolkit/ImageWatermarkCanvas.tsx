@@ -114,11 +114,11 @@ export function ImageWatermarkCanvas({
                       y={patternH / 2}
                       fill={watermark.color}
                       opacity={watermark.opacity / 100}
-                      fontSize={watermark.fontSize}
-                      fontFamily="Inter, system-ui, -apple-system, sans-serif"
-                      fontWeight="700"
-                      textAnchor="middle"
-                      dominantBaseline="central"
+                      font-size={watermark.fontSize}
+                      font-family="Inter, system-ui, -apple-system, sans-serif"
+                      font-weight="700"
+                      text-anchor="middle"
+                      dominant-baseline="central"
                     >
                       {overlayText}
                     </text>

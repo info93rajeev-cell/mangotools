@@ -2,13 +2,13 @@
   position: relative;
 }
 .utilities {
-  position: absolute;
-  right: 0;
-  top: -82px;
+  /* In the flow above the workspace: absolutely positioned it covered the page header buttons. */
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
   max-width: 100%;
+  margin-bottom: 8px;
 }
 .utilities a,
 .utilities button {
@@ -19,7 +19,7 @@
   border-radius: 5px;
   background: #fff;
   color: #005be5;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   min-height: 32px;
   padding: 5px 8px;
   text-decoration: none;
@@ -44,7 +44,7 @@
   .utilities a,
   .utilities button {
     min-height: 36px;
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
     padding: 4px 6px;
     min-width: 0;
   }
@@ -57,4 +57,12 @@
   .utilities {
     display: none;
   }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .utilities a,
+:global(:where([data-theme="dark"])) .utilities button {
+  color: #72a6f4;
+  background: #151e33;
+  border: 1px solid #304364;
 }

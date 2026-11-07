@@ -1,0 +1,30 @@
+{
+  "id": "021-error-nonzero-start-distance",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5 point 1 & §8 point 2: Nonzero start station distance fails with SURVEY_LEVELING_START_DISTANCE_NONZERO."
+  },
+  "input": {
+    "startRL": "100.000",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.000",
+        "dist": "10"
+      },
+      {
+        "station": "BM-2",
+        "fs": "1.000",
+        "dist": "30"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_START_DISTANCE_NONZERO",
+    "path": "observations.0.dist"
+  }
+}

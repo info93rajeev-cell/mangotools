@@ -3,14 +3,14 @@ import type { BezierPoint } from './bezierPathModel.ts';
 
 export function SvgCalloutBadge({ anchor }: { anchor: BezierPoint }) {
   return (
-    <g class={styles.calloutGroup} pointerEvents="none">
+    <g class={styles.calloutGroup} pointer-events="none">
       <path
         d={`M ${anchor.x + 90} ${anchor.y - 40} Q ${anchor.x + 40} ${anchor.y - 30} ${anchor.x + 10} ${anchor.y}`}
         fill="none"
         stroke="#ec4899"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        markerEnd="url(#arrowhead)"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        marker-end="url(#arrowhead)"
       />
       <defs>
         <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto">
@@ -25,15 +25,15 @@ export function SvgCalloutBadge({ anchor }: { anchor: BezierPoint }) {
         rx="8"
         fill="#fce7f3"
         stroke="#f472b6"
-        strokeWidth="1.5"
+        stroke-width="1.5"
       />
       <text
         x={anchor.x + 92}
         y={anchor.y - 69}
         fill="#be185d"
-        fontSize="11"
-        fontWeight="700"
-        fontFamily="Inter, sans-serif"
+        font-size="11"
+        font-weight="700"
+        font-family="Inter, sans-serif"
       >
         Editable pen tool path
       </text>
@@ -41,8 +41,8 @@ export function SvgCalloutBadge({ anchor }: { anchor: BezierPoint }) {
         x={anchor.x + 92}
         y={anchor.y - 54}
         fill="#be185d"
-        fontSize="10"
-        fontFamily="Inter, sans-serif"
+        font-size="10"
+        font-family="Inter, sans-serif"
       >
         with anchor points and handles
       </text>
@@ -67,7 +67,7 @@ export function SvgTangentHandles({
         x2={selectedPt.cp1x}
         y2={selectedPt.cp1y}
         stroke="#3b82f6"
-        strokeWidth="1.5"
+        stroke-width="1.5"
       />
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
       <circle
@@ -76,7 +76,7 @@ export function SvgTangentHandles({
         r="4.5"
         fill="#ffffff"
         stroke="#2563eb"
-        strokeWidth="2"
+        stroke-width="2"
         class={styles.handleCircle}
         onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp1', e)}
       />
@@ -86,7 +86,7 @@ export function SvgTangentHandles({
         x2={selectedPt.cp2x}
         y2={selectedPt.cp2y}
         stroke="#3b82f6"
-        strokeWidth="1.5"
+        stroke-width="1.5"
       />
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Control handle manipulation */}
       <circle
@@ -95,7 +95,7 @@ export function SvgTangentHandles({
         r="4.5"
         fill="#ffffff"
         stroke="#2563eb"
-        strokeWidth="2"
+        stroke-width="2"
         class={styles.handleCircle}
         onMouseDown={(e) => onHandleMouseDown(selectedPointIndex, 'cp2', e)}
       />
@@ -127,7 +127,7 @@ export function SvgAnchorPoints({
             r={isSelected ? '6.5' : '4.5'}
             fill={isSelected ? '#3b82f6' : '#ffffff'}
             stroke={isSelected ? '#1d4ed8' : '#2563eb'}
-            strokeWidth={isSelected ? '2.5' : '2'}
+            stroke-width={isSelected ? '2.5' : '2'}
             class={styles.anchorNode}
             onClick={(e) => onNodeClick(idx, e)}
             onMouseDown={(e) => onNodeMouseDown(idx, e)}

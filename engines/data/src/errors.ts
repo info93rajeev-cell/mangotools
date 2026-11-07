@@ -12,6 +12,7 @@ export const messages: Readonly<Record<string, string>> = {
     'The decoded data is not UTF-8 text ({byteLength} bytes). A hex preview is shown instead.',
   DATA_BASE64_NOT_LATIN1: 'This text has characters outside ISO-8859-1. Choose UTF-8 to encode it.',
   DATA_URL_MALFORMED_ESCAPE: 'Malformed percent-escape at position {offset}.',
+  DATA_URL_INVALID_PAIRS: 'The query rows could not be read. Add each parameter again.',
   DATA_URL_INVALID_UTF8: 'The text does not form valid UTF-8 characters.',
   DATA_CSV_EMPTY: 'Paste or type some CSV to convert.',
   DATA_CSV_BOM_REMOVED: 'A byte order mark at the start of the input was removed.',
@@ -28,8 +29,9 @@ export const messages: Readonly<Record<string, string>> = {
   DATA_JSON_TO_CSV_EMPTY_ARRAY: 'The JSON array has no rows to convert.',
   DATA_JSON_TO_CSV_ITEM_NOT_OBJECT: 'Item {item} in the array is not an object.',
   DATA_JSON_TO_CSV_NESTED_VALUE:
-    'The value for "{key}" in item {item} is a nested object or array, which is not supported in this version.',
+    'The value for "{key}" in item {item} is a nested object or array. Flatten it or keep it as JSON text to convert it.',
   DATA_JSON_TO_CSV_NO_COLUMNS: 'The JSON objects have no properties to use as columns.',
+  DATA_JSON_TO_CSV_RECORD_PATH_NOT_FOUND: 'Nothing was found at the record path "{recordPath}".',
   DATA_TIMESTAMP_EMPTY: 'Paste or type a timestamp or date to convert.',
   DATA_TIMESTAMP_INVALID: 'Enter a whole number of seconds or milliseconds, such as 1700000000.',
   DATA_TIMESTAMP_AMBIGUOUS_LENGTH:

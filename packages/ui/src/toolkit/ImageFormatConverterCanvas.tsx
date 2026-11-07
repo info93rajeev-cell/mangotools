@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import styles from './imageFormatConverter.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageFormatConverterReturn } from './useImageFormatConverter.ts';
 
 export interface ImageFormatConverterCanvasProps {
@@ -88,8 +89,21 @@ export function ImageFormatConverterCanvas({
               }}
             >
               <div style={{ fontSize: '32px', marginBottom: '8px' }}>🖼️</div>
-              <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>No Image Loaded</p>
-              <p style={{ margin: '4px 0 0', fontSize: '11px' }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: fs(13),
+                  fontWeight: 'bold',
+                }}
+              >
+                No Image Loaded
+              </p>
+              <p
+                style={{
+                  margin: '4px 0 0',
+                  fontSize: fs(11),
+                }}
+              >
                 Upload an image or click "Try Sample" to begin format conversion
               </p>
             </div>

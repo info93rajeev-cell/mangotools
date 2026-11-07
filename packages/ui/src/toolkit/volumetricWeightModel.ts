@@ -70,13 +70,16 @@ export const SAMPLE_VOLUMETRIC_ITEMS: VolumetricItem[] = [
 ];
 
 export interface VolumetricCalculationResult {
+  /** Display values come from logistics.weight.shipment@1 as decimal strings. */
+  /** Rows left out because a size, weight or quantity is missing or not valid. */
+  skippedRowIds: string[];
   totalPieces: number;
-  totalVolumeM3: number;
+  totalVolumeM3: string;
   totalVolumeCm3: number;
-  totalActualWeightKg: number;
-  totalVolumetricWeightKg: number;
-  chargeableWeightKg: number;
-  governingFactor: 'volumetric' | 'actual';
+  totalActualWeightKg: string;
+  totalVolumetricWeightKg: string;
+  chargeableWeightKg: string;
+  governingFactor: 'volumetric' | 'actual' | 'equal';
   itemCalculations: Array<{
     id: string;
     description: string;
@@ -86,13 +89,13 @@ export interface VolumetricCalculationResult {
     unit: VolumetricUnit;
     quantity: number;
     volumeCm3PerPiece: number;
-    volumeM3PerPiece: number;
-    volumetricWeightKgPerPiece: number;
+    volumeM3PerPiece: string;
+    volumetricWeightKgPerPiece: string;
     rowTotalVolCm3: number;
-    rowTotalVolM3: number;
-    totalVolumetricWeightKg: number;
-    totalActualWeightKg: number;
-    chargeableWeightKg: number;
+    rowTotalVolM3: string;
+    totalVolumetricWeightKg: string;
+    totalActualWeightKg: string;
+    chargeableWeightKg: string;
   }>;
 }
 
@@ -108,73 +111,17 @@ export function convertLengthFromCm(valCm: number, unit: VolumetricUnit): number
   return Math.round(valCm * 10) / 10;
 }
 
-export function computeVolumetricWeight(
-  items: VolumetricItem[],
-  unit: VolumetricUnit,
-  divisor: number,
-): VolumetricCalculationResult {
-  let totalPieces = 0;
-  let totalVolumeCm3 = 0;
-  let totalActualWeightKg = 0;
-  let totalVolumetricWeightKg = 0;
+const positive = (n: number) => Number.isFinite(n) && n > 0;
 
-  const validDivisor = divisor > 0 ? divisor : 6000;
-
-  const itemCalculations = items.map((item) => {
-    const lCm = convertLengthToCm(item.length, unit);
-    const wCm = convertLengthToCm(item.width, unit);
-    const hCm = convertLengthToCm(item.height, unit);
-    const qty = Math.max(1, item.quantity);
-
-    const volPieceCm3 = lCm * wCm * hCm;
-    const volPieceM3 = volPieceCm3 / 1_000_000;
-    const volWeightPieceKg = volPieceCm3 / validDivisor;
-
-    const rowActualKg = item.weightKg * qty;
-    const rowVolWeightKg = volWeightPieceKg * qty;
-    const rowTotalVolCm3 = volPieceCm3 * qty;
-
-    totalPieces += qty;
-    totalVolumeCm3 += rowTotalVolCm3;
-    totalActualWeightKg += rowActualKg;
-    totalVolumetricWeightKg += rowVolWeightKg;
-
-    const roundedRowActualKg = Math.round(rowActualKg * 10) / 10;
-    const roundedRowVolWeightKg = Math.round(rowVolWeightKg * 10) / 10;
-
-    return {
-      id: item.id,
-      description: item.description || 'Package',
-      length: item.length,
-      width: item.width,
-      height: item.height,
-      unit,
-      quantity: qty,
-      volumeCm3PerPiece: Math.round(volPieceCm3),
-      volumeM3PerPiece: Math.round(volPieceM3 * 1000) / 1000,
-      volumetricWeightKgPerPiece: Math.round(volWeightPieceKg * 100) / 100,
-      rowTotalVolCm3: Math.round(rowTotalVolCm3),
-      rowTotalVolM3: Math.round((rowTotalVolCm3 / 1_000_000) * 1000) / 1000,
-      totalVolumetricWeightKg: roundedRowVolWeightKg,
-      totalActualWeightKg: roundedRowActualKg,
-      chargeableWeightKg: Math.max(roundedRowActualKg, roundedRowVolWeightKg),
-    };
-  });
-
-  const roundedActualKg = Math.round(totalActualWeightKg * 10) / 10;
-  const roundedVolumetricKg = Math.round(totalVolumetricWeightKg * 10) / 10;
-  const chargeableWeightKg = Math.max(roundedActualKg, roundedVolumetricKg);
-  const governingFactor = roundedVolumetricKg >= roundedActualKg ? 'volumetric' : 'actual';
-  const totalVolumeM3 = Math.round((totalVolumeCm3 / 1_000_000) * 1000) / 1000;
-
-  return {
-    totalPieces,
-    totalVolumeM3,
-    totalVolumeCm3: Math.round(totalVolumeCm3),
-    totalActualWeightKg: roundedActualKg,
-    totalVolumetricWeightKg: roundedVolumetricKg,
-    chargeableWeightKg,
-    governingFactor,
-    itemCalculations,
-  };
+/** A row counts when all sizes and the weight are above zero and quantity is a whole number of at least 1. */
+export function isUsableItem(item: VolumetricItem): boolean {
+  return (
+    positive(item.length) &&
+    positive(item.width) &&
+    positive(item.height) &&
+    Number.isFinite(item.weightKg) &&
+    item.weightKg > 0 &&
+    Number.isInteger(item.quantity) &&
+    item.quantity >= 1
+  );
 }

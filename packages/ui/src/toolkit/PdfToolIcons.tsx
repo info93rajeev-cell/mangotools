@@ -12,19 +12,19 @@ export function PdfMergeIcon() {
       <title>PDF Merge Icon</title>
       <defs>
         <linearGradient id="mergeGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#c084fc" />
-          <stop offset="1" stopColor="#9333ea" />
+          <stop stop-color="#c084fc" />
+          <stop offset="1" stop-color="#9333ea" />
         </linearGradient>
         <filter id="mergeShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#9333ea" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9333ea" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#mergeShadow)">
         <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#mergeGrad)" />
         <path d="M28 4L40 16H32C29.7909 16 28 14.2091 28 12V4Z" fill="#e9d5ff" />
-        <rect x="13" y="20" width="20" height="3" rx="1.5" fill="#ffffff" fillOpacity="0.95" />
-        <rect x="13" y="26" width="15" height="3" rx="1.5" fill="#ffffff" fillOpacity="0.8" />
-        <rect x="13" y="32" width="10" height="3" rx="1.5" fill="#ffffff" fillOpacity="0.65" />
+        <rect x="13" y="20" width="20" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.95" />
+        <rect x="13" y="26" width="15" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.8" />
+        <rect x="13" y="32" width="10" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.65" />
       </g>
     </svg>
   );
@@ -44,22 +44,22 @@ export function PdfSplitIcon() {
       <title>PDF Split Icon</title>
       <defs>
         <linearGradient id="splitGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#f87171" />
-          <stop offset="1" stopColor="#dc2626" />
+          <stop stop-color="#f87171" />
+          <stop offset="1" stop-color="#dc2626" />
         </linearGradient>
         <filter id="splitShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#dc2626" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#dc2626" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#splitShadow)">
         <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#splitGrad)" />
-        <circle cx="17" cy="28" r="3.5" fill="none" stroke="#ffffff" strokeWidth="2" />
-        <circle cx="29" cy="28" r="3.5" fill="none" stroke="#ffffff" strokeWidth="2" />
+        <circle cx="17" cy="28" r="3.5" fill="none" stroke="#ffffff" stroke-width="2" />
+        <circle cx="29" cy="28" r="3.5" fill="none" stroke="#ffffff" stroke-width="2" />
         <path
           d="M19.5 25.5L26.5 16M26.5 25.5L19.5 16"
           stroke="#ffffff"
-          strokeWidth="2.2"
-          strokeLinecap="round"
+          stroke-width="2.2"
+          stroke-linecap="round"
         />
       </g>
     </svg>
@@ -80,11 +80,11 @@ export function PdfCompressIcon() {
       <title>Compress PDF Icon</title>
       <defs>
         <linearGradient id="compGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#a855f7" />
-          <stop offset="1" stopColor="#7c3aed" />
+          <stop stop-color="#a855f7" />
+          <stop offset="1" stop-color="#7c3aed" />
         </linearGradient>
         <filter id="compShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#7c3aed" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7c3aed" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#compShadow)">
@@ -92,16 +92,16 @@ export function PdfCompressIcon() {
         <path
           d="M23 14V22M23 22L19 18M23 22L27 18"
           stroke="#ffffff"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         />
         <path
           d="M23 32V24M23 24L19 28M23 24L27 28"
           stroke="#ffffff"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         />
       </g>
     </svg>
@@ -122,18 +122,25 @@ export function PdfToWordIcon() {
       <title>PDF to Word Icon</title>
       <defs>
         <linearGradient id="wordGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#60a5fa" />
-          <stop offset="1" stopColor="#2563eb" />
+          <stop stop-color="#60a5fa" />
+          <stop offset="1" stop-color="#2563eb" />
         </linearGradient>
         <filter id="wordShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#2563eb" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#2563eb" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#wordShadow)">
         <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#wordGrad)" />
         <path d="M28 4L40 16H32C29.7909 16 28 14.2091 28 12V4Z" fill="#dbeafe" />
         <rect x="12" y="22" width="16" height="14" rx="3" fill="#1d4ed8" />
-        <text x="16" y="33" fill="#ffffff" fontSize="11" fontWeight="800" fontFamily="sans-serif">
+        <text
+          x="16"
+          y="33"
+          fill="#ffffff"
+          font-size="11"
+          font-weight="800"
+          font-family="sans-serif"
+        >
           W
         </text>
       </g>
@@ -155,17 +162,24 @@ export function WordToPdfIcon() {
       <title>Word to PDF Icon</title>
       <defs>
         <linearGradient id="w2pGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#3b82f6" />
-          <stop offset="1" stopColor="#1d4ed8" />
+          <stop stop-color="#3b82f6" />
+          <stop offset="1" stop-color="#1d4ed8" />
         </linearGradient>
         <filter id="w2pShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#1d4ed8" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1d4ed8" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#w2pShadow)">
         <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#w2pGrad)" />
         <path d="M28 4L40 16H32C29.7909 16 28 14.2091 28 12V4Z" fill="#bfdbfe" />
-        <text x="14" y="30" fill="#ffffff" fontSize="16" fontWeight="900" fontFamily="sans-serif">
+        <text
+          x="14"
+          y="30"
+          fill="#ffffff"
+          font-size="16"
+          font-weight="900"
+          font-family="sans-serif"
+        >
           W
         </text>
       </g>
@@ -194,18 +208,18 @@ export function JpgToPdfIcon() {
           y2="42"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#c084fc" />
-          <stop offset="1" stopColor="#9333ea" />
+          <stop stop-color="#c084fc" />
+          <stop offset="1" stop-color="#9333ea" />
         </linearGradient>
         <filter id="jpg2pdfShadow" x="0" y="2" width="46" height="44" filterUnits="userSpaceOnUse">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#9333ea" floodOpacity="0.25" />
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9333ea" flood-opacity="0.25" />
         </filter>
       </defs>
       <g filter="url(#jpg2pdfShadow)">
         <rect x="6" y="4" width="34" height="38" rx="8" fill="url(#jpg2pdfGrad)" />
         <path d="M28 4L40 16H32C29.7909 16 28 14.2091 28 12V4Z" fill="#e9d5ff" />
         {/* Image inside card */}
-        <rect x="12" y="19" width="22" height="17" rx="3" fill="#ffffff" fillOpacity="0.9" />
+        <rect x="12" y="19" width="22" height="17" rx="3" fill="#ffffff" fill-opacity="0.9" />
         <circle cx="17" cy="24" r="2" fill="#9333ea" />
         <path d="M13 33L19 26L23 30L27 25L33 33H13Z" fill="#c084fc" />
       </g>

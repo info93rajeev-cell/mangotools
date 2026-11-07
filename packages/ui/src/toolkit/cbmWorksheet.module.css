@@ -35,7 +35,7 @@
   border-radius: 6px;
   background: var(--cbm-surface);
   color: var(--cbm-red);
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 500;
 }
 .table {
@@ -72,7 +72,7 @@
   border-bottom: 1px solid var(--cbm-line);
   background: var(--cbm-head);
   color: var(--cbm-ink);
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
   line-height: 1.3;
 }
@@ -84,7 +84,7 @@
 .tableHeader span small {
   display: block;
   color: var(--cbm-muted);
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 400;
 }
 .tableHeader > span:nth-child(2),
@@ -134,7 +134,7 @@
   background: none;
   color: var(--cbm-ink);
   font: inherit;
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   cursor: grab;
   touch-action: none;
 }
@@ -162,7 +162,7 @@
   border: 1px solid var(--cbm-field);
   border-radius: 6px;
   font: inherit;
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   text-align: center;
 }
 .panel .description input {
@@ -184,7 +184,7 @@
 }
 .error {
   color: var(--color-danger);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   margin: 3px 0;
 }
 .cell:has(.error) {
@@ -200,7 +200,7 @@
 .rowVolume {
   justify-content: center;
   color: var(--cbm-ink);
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
@@ -220,7 +220,7 @@
   border-top: 1px solid var(--cbm-line);
   background: var(--cbm-head);
   color: var(--cbm-ink);
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-variant-numeric: tabular-nums;
 }
 .totalRow > * {
@@ -258,7 +258,7 @@
   border-radius: 6px;
   background: var(--cbm-surface);
   color: var(--cbm-blue-text);
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 600;
 }
 .toolbar .duplicate[data-variant] {
@@ -270,14 +270,14 @@
 .count {
   margin: 0 6px 0 auto;
   color: var(--cbm-muted);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
 }
 .tip {
   padding: 7px 10px;
   border-radius: 6px;
   background: color-mix(in srgb, var(--cbm-blue-soft) 70%, var(--cbm-head));
   color: color-mix(in srgb, var(--cbm-muted) 75%, var(--cbm-ink));
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   white-space: nowrap;
 }
 .tip b {
@@ -287,7 +287,7 @@
 .limit {
   margin: 8px 0 0;
   color: var(--cbm-muted);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
 }
 @media (max-width: 700px) {
   .panel {
@@ -384,7 +384,7 @@
     clip-path: none;
     margin-bottom: 3px;
     color: var(--cbm-muted);
-    font-size: 12px;
+    font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   }
   .panel input,
   .panel select {

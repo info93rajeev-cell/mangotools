@@ -1,0 +1,11 @@
+id: 013-nested-as-json-text
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '[{"a":{"b":1},"c":[1,2]}]'
+params: { nested: json }
+expected:
+  headers: [a, c]
+  text: |
+    a,c
+    "{""b"":1}","[1,2]"

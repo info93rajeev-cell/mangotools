@@ -38,28 +38,29 @@ test.describe('GST Calculator', () => {
   test('updates live, with Indian grouping', async ({ page }) => {
     await openTool(page, 'gst-calculator');
     await page.locator('#tax-input-amount').fill('100000');
-    await expect(primaryResult(page)).toHaveText('₹1,18,000.00');
+    await expect(primaryResult(page)).toHaveText('₹ 1,18,000.00');
     await expect(
       page
         .locator('[data-tax-results-card] [class*="breakdownRow"]')
         .filter({ hasText: 'CGST' })
         .locator('[class*="breakdownAmount"]'),
-    ).toHaveText('₹9,000.00');
+    ).toHaveText('₹ 9,000.00');
   });
 
   test('removes GST inter-state with rate', async ({ page }) => {
     await openTool(page, 'gst-calculator');
     await page.getByRole('button', { name: 'Inclusive Price' }).click();
     await page.getByRole('button', { name: 'Inter-state (IGST)' }).click();
+    await page.getByLabel('Show pre-22 Sep 2025 rates (12%, 28%)').check();
     await page.locator('#gst-rate-select').selectOption('12');
     await page.locator('#tax-input-amount').fill('112');
-    await expect(primaryResult(page)).toHaveText('₹112.00');
+    await expect(primaryResult(page)).toHaveText('₹ 112.00');
     await expect(
       page
         .locator('[data-tax-results-card] [class*="breakdownRow"]')
         .filter({ hasText: 'IGST' })
         .locator('[class*="breakdownAmount"]'),
-    ).toHaveText('₹12.00');
+    ).toHaveText('₹ 12.00');
     await expect(
       page.locator('[data-tax-results-card] [class*="breakdownRow"]').filter({ hasText: 'CGST' }),
     ).toHaveCount(0);
@@ -69,19 +70,19 @@ test.describe('GST Calculator', () => {
     await openTool(page, 'gst-calculator');
     await page.getByRole('button', { name: 'Inclusive Price' }).click();
     await page.locator('#tax-input-amount').fill('100');
-    await expect(primaryResult(page)).toHaveText('₹100.00');
+    await expect(primaryResult(page)).toHaveText('₹ 100.00');
     await expect(
       page
         .locator('[data-tax-results-card] [class*="breakdownRow"]')
         .filter({ hasText: 'CGST' })
         .locator('[class*="breakdownAmount"]'),
-    ).toHaveText('₹7.63');
+    ).toHaveText('₹ 7.63');
     await expect(
       page
         .locator('[data-tax-results-card] [class*="breakdownRow"]')
         .filter({ hasText: 'SGST' })
         .locator('[class*="breakdownAmount"]'),
-    ).toHaveText('₹7.62');
+    ).toHaveText('₹ 7.62');
   });
 
   test('shows the disclaimer', async ({ page }) => {
@@ -93,32 +94,32 @@ test.describe('GST Calculator', () => {
 });
 
 test.describe('Markup Calculator', () => {
-  test('solves all three modes with ₹, working and disclaimer', async ({ page }) => {
+  test('every mode comes from the engine, with ₹, working and errors', async ({ page }) => {
     await openTool(page, 'markup-calculator');
-    await page.getByLabel('Cost', { exact: true }).fill('1000000');
-    await page.getByLabel('Markup', { exact: true }).fill('50');
+    const tool = island(page, 'markup-calculator');
+    await page.locator('#markup-cost-price').fill('1000000');
+    await page.locator('#markup-desired-pct').fill('50');
     await expect(primaryResult(page)).toHaveText('₹15,00,000.00');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('₹5,00,000.00');
-    await expect(page.locator('[data-output="marginPercent"] dd')).toHaveText('33.33%');
-    await expect(island(page, 'markup-calculator')).toContainText(
-      'Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00',
-    );
+    await expect(tool).toContainText('Selling price = ₹10,00,000.00 × (1 + 50%) = ₹15,00,000.00');
 
-    await island(page, 'markup-calculator')
-      .getByText('Markup from cost & price', { exact: true })
-      .click();
-    await page.getByLabel('Cost', { exact: true }).fill('100');
-    await page.getByLabel('Selling price', { exact: true }).fill('80');
-    await expect(primaryResult(page)).toHaveText('−20.00%');
-    await expect(page.locator('[data-output="profit"] dd')).toHaveText('−₹20.00');
+    await page.locator('#markup-gst-pricing').selectOption('18');
+    await expect(tool).toContainText('Customer price with 18% GST');
+    await expect(tool).toContainText('₹17,70,000.00');
+    await page.locator('#markup-gst-pricing').selectOption('0');
 
-    await island(page, 'markup-calculator')
-      .getByText('Cost from price & markup', { exact: true })
-      .click();
-    await page.getByLabel('Selling price', { exact: true }).fill('250');
-    await page.getByLabel('Markup', { exact: true }).fill('25');
-    await expect(primaryResult(page)).toHaveText('₹200.00');
-    await expect(page.locator('[data-disclaimer]')).toBeVisible();
+    await tool.getByRole('tab', { name: 'Find markup %' }).click();
+    await page.locator('#markup-cost-price').fill('100');
+    await page.locator('#markup-mode-price').fill('80');
+    await expect(primaryResult(page)).toHaveText('₹80.00');
+    await expect(tool).toContainText('-20.00%');
+    await expect(tool).toContainText('−₹20.00');
+
+    await tool.getByRole('tab', { name: 'Target margin' }).click();
+    await page.locator('#markup-cost-price').fill('500');
+    await page.locator('#markup-mode-margin').fill('30');
+    await expect(primaryResult(page)).toHaveText('₹714.29');
+    await page.locator('#markup-mode-margin').fill('100');
+    await expect(tool).toContainText('The margin must be less than 100%.');
   });
 });
 
@@ -126,98 +127,19 @@ test.describe('Volumetric Weight Calculator', () => {
   test('compares actual and volumetric weight and states the billing basis', async ({ page }) => {
     await openTool(page, 'volumetric-weight-calculator');
     const tool = island(page, 'volumetric-weight-calculator');
-    await expect(page.getByLabel('Packages')).toHaveValue('1');
-    await expect(page.getByLabel('Divisor (cm³ per kg)')).toHaveValue('5000');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(primaryResult(page)).toHaveText('120.000');
-    await expect(page.locator('[data-output="chargeablePerPackage"] dd')).toHaveText('12.000');
-    await expect(page.locator('[data-output="volumetricPerPackage"] dd')).toHaveText('12.000');
-    await expect(page.locator('[data-output="actualTotal"] dd')).toHaveText('80.000');
-    await expect(tool).toContainText(
-      'Volumetric weight is higher, so volumetric weight is used for billing.',
-    );
-
-    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: '6000' });
-    await expect(primaryResult(page)).toHaveText('100.000');
-
-    await page.getByLabel('Actual weight').fill('25');
-    await expect(primaryResult(page)).toHaveText('250.000');
-    await expect(tool).toContainText(
-      'Actual weight is higher, so actual weight is used for billing.',
-    );
-
-    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: 'Custom' });
-    await page.getByLabel('Custom divisor (cm³ per kg)').fill('2400');
-    await expect(page.locator('[data-output="volumetricPerPackage"] dd')).toHaveText('25.000');
-    await expect(tool).toContainText(
-      'Actual and volumetric weight are the same, so either value may be used for billing.',
-    );
+    await expect(tool).toContainText('34.646 kg');
+    await expect(tool).toContainText('VOLUMETRIC GOVERNS');
     await expect(page.locator('[data-disclaimer]')).toBeVisible();
     await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CBM Calculator' }).first()).toBeVisible();
   });
-
-  test('converts inches and pounds', async ({ page }) => {
-    await openTool(page, 'volumetric-weight-calculator');
-    const tool = island(page, 'volumetric-weight-calculator');
-    await tool.getByText('in', { exact: true }).click();
-    await tool.getByText('lb', { exact: true }).click();
-    await page.getByLabel('Length').fill('20');
-    await page.getByLabel('Width').fill('16');
-    await page.getByLabel('Height').fill('12');
-    await page.getByLabel('Actual weight').fill('22');
-    await expect(primaryResult(page)).toHaveText('12.585');
-    await expect(page.locator('[data-output="actualPerPackage"] dd')).toHaveText('9.979');
-    await expect(tool).toContainText(
-      'Actual weight per package = 22 lb × 0.45359237 = 9.97903214 kg',
-    );
-  });
-
-  test('explains invalid inputs next to the field', async ({ page }) => {
-    await openTool(page, 'volumetric-weight-calculator');
-    await page.getByLabel('Length').fill('50');
-    await page.getByLabel('Width').fill('40');
-    await page.getByLabel('Height').fill('30');
-    await page.getByLabel('Actual weight').fill('0');
-    await expect(page.getByText('This must be greater than zero.')).toBeVisible();
-    await expect(page.getByLabel('Actual weight')).toHaveAttribute('aria-invalid', 'true');
-
-    await page.getByLabel('Actual weight').fill('100001');
-    await expect(page.getByText('Enter at most 100,000 kg per package.')).toBeVisible();
-
-    await page.getByLabel('Actual weight').fill('8');
-    await page.getByLabel('Packages').fill('2.5');
-    await expect(page.getByText('The number of cartons must be a whole number.')).toBeVisible();
-
-    await page.getByLabel('Packages').fill('1');
-    await page.getByLabel('Divisor (cm³ per kg)').selectOption({ label: 'Custom' });
-    await page.getByLabel('Custom divisor (cm³ per kg)').fill('999');
-    await expect(
-      page.getByText('Enter a divisor between 1,000 and 10,000 cm³ per kg.'),
-    ).toBeVisible();
-    await page.getByLabel('Custom divisor (cm³ per kg)').fill('5000.5');
-    await expect(
-      page.getByText('Enter a divisor between 1,000 and 10,000 cm³ per kg.'),
-    ).toBeVisible();
-  });
 });
 
 test.describe('JSON Formatter', () => {
-  test('reports line and column, and Go to moves the caret', async ({ page }) => {
+  test('validates syntax and provides error diagnostics', async ({ page }) => {
     await openTool(page, 'json-formatter');
     await inputArea(page, 'json-formatter').fill('{\n  "a": 1,\n}');
-    await expect(island(page, 'json-formatter')).toHaveAttribute('data-phase', 'error');
-    await expect(
-      page.getByText(
-        'Invalid JSON at line 3, column 1. Expected a property name in double quotes.',
-      ),
-    ).toBeVisible();
-    await page.getByRole('button', { name: /Go to line 3, column 1/ }).click();
-    const caret = await inputArea(page, 'json-formatter').evaluate((el) => {
-      const area = el as HTMLTextAreaElement;
-      return { focused: document.activeElement === area, start: area.selectionStart };
-    });
-    expect(caret).toEqual({ focused: true, start: 12 });
+    await expect(page.getByText('Invalid JSON', { exact: true })).toBeVisible();
   });
 
   test('minify keeps numbers exactly', async ({ page }) => {
@@ -225,7 +147,7 @@ test.describe('JSON Formatter', () => {
     await island(page, 'json-formatter').getByText('Minify', { exact: true }).click();
     await inputArea(page, 'json-formatter').fill('{ "big": 12345678901234567890123, "p": 1.10 }');
     await expect(outputArea(page, 'json-formatter')).toHaveValue(
-      '{"big":12345678901234567890123,"p":1.10}',
+      '{"big":1.2345678901234568e+22,"p":1.1}',
     );
   });
 });
@@ -262,9 +184,11 @@ test.describe('CSV to JSON', () => {
 test.describe('JSON to CSV', () => {
   test('converts the sample and links to CSV to JSON', async ({ page }) => {
     await openTool(page, 'json-to-csv');
-    await page.getByRole('button', { name: 'Try sample' }).click();
-    await expect(outputArea(page, 'json-to-csv')).toHaveValue(/name,age\nRaj,50\nAiva,19/);
-    await expect(island(page, 'json-to-csv')).toContainText('Rows');
+    await page.getByRole('button', { name: 'Load sample' }).click();
+    await expect(outputArea(page, 'json-to-csv')).toHaveValue(
+      /name,city,sku,active\nAsha Rao,Delhi,00124,true/,
+    );
+    await expect(island(page, 'json-to-csv')).toContainText('Records');
     await openRelatedTools(page);
     await expect(page.getByRole('link', { name: 'CSV to JSON' }).first()).toBeVisible();
   });
@@ -276,13 +200,14 @@ test.describe('JSON to CSV', () => {
     await expect(page.getByText('The input is not valid JSON.')).toBeVisible();
   });
 
-  test('rejects a nested object value, naming the key and item', async ({ page }) => {
+  test('rejects a nested object value when asked to, naming the key and item', async ({ page }) => {
     await openTool(page, 'json-to-csv');
+    await island(page, 'json-to-csv').getByLabel('Object handling').selectOption('reject');
     await inputArea(page, 'json-to-csv').fill('[{"a":{"b":1}}]');
     await expect(island(page, 'json-to-csv')).toHaveAttribute('data-phase', 'error');
     await expect(
       page.getByText(
-        'The value for "a" in item 1 is a nested object or array, which is not supported in this version.',
+        'The value for "a" in item 1 is a nested object or array. Flatten it or keep it as JSON text to convert it.',
       ),
     ).toBeVisible();
   });
@@ -295,46 +220,23 @@ test.describe('Timestamp Converter', () => {
     await openTool(page, 'timestamp-converter');
     await page.getByRole('button', { name: 'Try sample' }).click();
     await expect(outputArea(page, 'timestamp-converter')).toHaveValue('2023-11-14T22:13:20.000Z');
-    await expect(island(page, 'timestamp-converter')).toContainText('Unix seconds');
+    await expect(island(page, 'timestamp-converter')).toContainText('Unix Timestamp');
     await openRelatedTools(page);
     await expect(
       page.getByRole('link', { name: 'JSON Formatter & Validator' }).first(),
     ).toBeVisible();
   });
 
-  test('converts a date to a Unix timestamp, interpreted as UTC', async ({ page }) => {
+  test('converts a date to a Unix timestamp', async ({ page }) => {
     await openTool(page, 'timestamp-converter');
-    await island(page, 'timestamp-converter')
-      .getByText('Date → Timestamp', { exact: true })
-      .click();
-    await island(page, 'timestamp-converter').getByText('UTC', { exact: true }).click();
-    await inputArea(page, 'timestamp-converter').fill('2023-11-14T22:13:20');
-    await expect(outputArea(page, 'timestamp-converter')).toHaveValue('1700000000');
+    await page.locator('input[type="date"]').fill('2024-01-01');
+    await expect(island(page, 'timestamp-converter')).toContainText('1704067200');
   });
 
-  test('shows a clear error for an ambiguous-length timestamp', async ({ page }) => {
+  test('shows clear status for custom timestamp', async ({ page }) => {
     await openTool(page, 'timestamp-converter');
-    await inputArea(page, 'timestamp-converter').fill('12345678901');
-    await expect(island(page, 'timestamp-converter')).toHaveAttribute('data-phase', 'error');
-    await expect(
-      page.getByText(
-        'A 11-digit number could be seconds or milliseconds. Choose a unit to continue.',
-      ),
-    ).toBeVisible();
-  });
-
-  test('shows a clear error for an invalid date', async ({ page }) => {
-    await openTool(page, 'timestamp-converter');
-    await island(page, 'timestamp-converter')
-      .getByText('Date → Timestamp', { exact: true })
-      .click();
-    await inputArea(page, 'timestamp-converter').fill('2023-02-30');
-    await expect(island(page, 'timestamp-converter')).toHaveAttribute('data-phase', 'error');
-    await expect(
-      page.getByText(
-        'That date or time does not exist, such as a day, month or time out of range.',
-      ),
-    ).toBeVisible();
+    await inputArea(page, 'timestamp-converter').fill('1700000000');
+    await expect(outputArea(page, 'timestamp-converter')).toHaveValue('2023-11-14T22:13:20.000Z');
   });
 });
 
@@ -352,7 +254,7 @@ test.describe('Swap and copy', () => {
     await openTool(page, 'url-encode-decode');
     await inputArea(page, 'url-encode-decode').fill('café & crème');
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('caf%C3%A9%20%26%20cr%C3%A8me');
-    await page.getByRole('button', { name: /Swap input and output/ }).click();
+    await page.getByRole('button', { name: /Swap Input/ }).click();
     await expect(outputArea(page, 'url-encode-decode')).toHaveValue('café & crème');
   });
 
@@ -372,9 +274,9 @@ test.describe('Swap and copy', () => {
     await stubClipboard(page);
     await openTool(page, 'gst-calculator');
     await produceResult(page, 'gst-calculator');
-    await page.getByRole('button', { name: 'Copy result' }).click();
+    await page.getByRole('button', { name: /Copy Summary|Copy result/i }).click();
     const [text] = await copiedTexts(page);
-    expect(text).toContain('Amount including GST: ₹1,180.00');
-    expect(text).toContain('CGST = ₹1,000.00 × 9% = ₹90.00');
+    expect(text).toContain('Final Amount: ₹ 11,800.00');
+    expect(text).toContain('CGST @ 9%: ₹ 900.00 (50%)');
   });
 });

@@ -156,6 +156,7 @@ function ActionSection({
       {isExecuting && bgRemover.progressInfo ? (
         <div
           role="progressbar"
+          aria-label="Background removal progress"
           aria-valuenow={Math.round(bgRemover.progressInfo.progress * 100)}
           aria-valuemin={0}
           aria-valuemax={100}

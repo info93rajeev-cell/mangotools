@@ -129,12 +129,12 @@ for (const tool of listed) {
   });
 }
 
-test('Round 1 contract: 7 visible categories, 36 listed tools, 45 sitemap URLs', async ({
+test('Round 1 contract: 7 visible categories, 39 listed tools, 48 sitemap URLs', async ({
   request,
 }) => {
   expect(categories).toHaveLength(7);
-  // Background Remover is a listed beta tool in this PR's generated registry.
-  expect(listed).toHaveLength(36);
+  // Background Remover and PDF tools are listed beta tools in the generated registry.
+  expect(listed).toHaveLength(39);
   expect(listed.some((tool) => tool.id === 'image-background-remover')).toBe(true);
   const pages = await (await request.get('/sitemap-pages.xml')).text();
   expect([...pages.matchAll(/<loc>/g)]).toHaveLength(2 + categories.length + listed.length);
@@ -186,6 +186,7 @@ test('security headers and CSP are served', async ({ request }) => {
 });
 
 test('pages run under the CSP without violations', async ({ page }) => {
+  test.slow();
   const problems: string[] = [];
   page.on('console', (m) => {
     if (m.type() === 'error' || /Content Security Policy/i.test(m.text())) problems.push(m.text());

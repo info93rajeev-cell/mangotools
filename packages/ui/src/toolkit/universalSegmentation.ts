@@ -1,4 +1,5 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
+import { installChunkedModelFetch } from './chunkedModelFetch.ts';
 import { refineMatte, type TransparencyMode } from './edgeMatteRefinement.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
 import { applyProductShadowAndBackground, type ShadowMode } from './productShadowEngine.ts';
@@ -244,12 +245,20 @@ async function assembleCutoutResult(
   return ok(resultData, warnings);
 }
 
-async function configureTransformersEnv(customHost?: string): Promise<void> {
+/**
+ * The model is served by this site itself, under /models/ (staged by
+ * scripts/models/stage-background-remover-models.ts). Large .onnx files arrive in <25 MiB parts
+ * and are joined in the browser, so nothing is fetched from another host.
+ */
+const MODEL_PATH_PREFIX = '/models/birefnet-lite-512/';
+
+async function configureTransformersEnv(host: string): Promise<void> {
   const { env } = await import('@huggingface/transformers');
   env.allowLocalModels = false;
   env.allowRemoteModels = true;
-  env.remoteHost = customHost || 'https://models.beyandtheai.com/';
-  env.remotePathTemplate = 'birefnet-lite-512/{revision}/';
+  env.remoteHost = host;
+  env.remotePathTemplate = 'models/birefnet-lite-512/{revision}/';
+  installChunkedModelFetch([MODEL_PATH_PREFIX]);
 
   const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
   if (env.backends?.onnx?.wasm) {
@@ -287,21 +296,11 @@ export async function executeUniversalCutout(
   const inputBlob = new Blob([safeBuffer], { type: mime });
 
   try {
-    const rawHost =
-      typeof window !== 'undefined'
-        ? (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string }).__MANGOTOOLS_MODELS_HOST__
-        : undefined;
+    const rawHost = (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string })
+      .__MANGOTOOLS_MODELS_HOST__;
+    const host = rawHost && rawHost !== '/' ? rawHost : `${window.location.origin}/`;
 
-    const isLocalhost =
-      typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
-    const customHost =
-      rawHost === '/' && typeof window !== 'undefined'
-        ? `${window.location.origin}/`
-        : rawHost || (isLocalhost ? `${window.location.origin}/` : undefined);
-
-    await configureTransformersEnv(customHost);
+    await configureTransformersEnv(host);
 
     const { removeBackground } = await import('@bg0/browser');
     const outcome = await removeBackground(inputBlob, {

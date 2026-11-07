@@ -4,8 +4,10 @@ id: image-background-remover
 slug: image-background-remover
 status: beta
 tier: T3
-version: 0.3.0
+version: 0.3.2
 changelog:
+  - { version: 0.3.2, date: 2026-11-07, type: fixed, summary: "Quick Auto Removal now loads its AI model from this website itself (split into parts), so it works on the live site with no other server." }
+  - { version: 0.3.1, date: 2026-11-04, type: fixed, summary: "State clearly on the tool which mode uses an on-device AI model and which uses none." }
   - { version: 0.3.0, date: 2026-10-24, type: fixed, summary: "Universal background remover for objects, products, pets, cars, and portraits via browser-local WebGPU and neural matting." }
   - { version: 0.2.0, date: 2026-10-24, type: fixed, summary: "Add in-browser AI neural segmentation for portraits and passport photos. Preserves face, hair, and clothing." }
   - { version: 0.1.0, date: 2026-10-21, type: added, summary: "First beta: remove image backgrounds to transparent PNG, WebP, or clean PDF, entirely in the browser." }

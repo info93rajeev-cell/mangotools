@@ -3,6 +3,7 @@ import { Icon } from '../../primitives/Icon.tsx';
 import { type Base64Source, countLines } from './base64Studio.ts';
 import { formatBytes } from './csvToJsonResult.ts';
 import styles from './dataStudio.module.css';
+import { InfoTile } from './studioCards.tsx';
 import parts from './studioParts.module.css';
 import type { Base64Studio } from './useBase64Studio.ts';
 
@@ -12,20 +13,6 @@ const SOURCES: { id: Base64Source; label: string; icon: string }[] = [
   { id: 'image', label: 'Image', icon: 'image' },
   { id: 'base64', label: 'Base64 (Auto Detect)', icon: 'search' },
 ];
-
-export function InfoTile(props: { icon: string; tone: string; label: string; value: string }) {
-  return (
-    <div class={parts.sumTile}>
-      <span class={`${parts.tileSm} ${props.tone}`}>
-        <Icon name={props.icon} class={parts.tileIcoSm} />
-      </span>
-      <span class={parts.sumText}>
-        <small>{props.label}</small>
-        <b>{props.value}</b>
-      </span>
-    </div>
-  );
-}
 
 function Drop({ studio, image }: { studio: Base64Studio; image: boolean }) {
   const [over, setOver] = useState(false);

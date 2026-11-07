@@ -1,3 +1,4 @@
+import { fs } from './phoneFontSize.ts';
 import styles from './universalTax.module.css';
 import { formatCurrencyNumber } from './universalTaxEngine.ts';
 import type { UseUniversalTaxReturn } from './useUniversalTax.ts';
@@ -48,7 +49,7 @@ function KpiMetricsGrid({
     <div class={styles.kpiMetricsGrid}>
       <div class={styles.kpiCard}>
         <div class={styles.kpiHeader}>
-          <span style={{ color: '#2563eb' }}>◆</span>
+          <span style={{ color: 'var(--color-primary)' }}>◆</span>
           <span>Taxable</span>
         </div>
         <span class={styles.kpiVal} title={formatCurrencyNumber(taxableAmount, currencySymbol)}>
@@ -210,7 +211,7 @@ export function UniversalTaxResultsCard({ tax }: UniversalTaxResultsCardProps) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '5px',
-            fontSize: '11px',
+            fontSize: fs(11),
             cursor: 'pointer',
           }}
         >

@@ -1,181 +1,202 @@
-import type { JSX } from 'preact';
-import { useRef } from 'preact/hooks';
-import {
-  HeavyBookBanner,
-  PdfMiniThumbnails,
-  PdfSplitDropZone,
-  PdfSplitLoadedRow,
-} from './PdfSplitThumbnails.tsx';
-import styles from './pdfStudio.module.css';
+import { useEffect, useState } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
+import { RefCardHead, RefCheck, RefDrop, RefFileItem } from './PdfRefParts.tsx';
+import { HeavyBookBanner } from './PdfSplitThumbnails.tsx';
+import c from './pdfConvertRef.module.css';
+import { fileMeta } from './pdfFileMeta.ts';
+import { firstPages, usePageThumbs } from './pdfPageThumbs.ts';
+import styles from './pdfRef.module.css';
+import { parseRangeList } from './pdfSplitPlan.ts';
 import type { SplitMode, usePdfSplitStudio } from './usePdfSplitStudio.ts';
 
 type SplitStudioState = ReturnType<typeof usePdfSplitStudio>;
 
-function PdfSplitFileCard({ studio }: { studio: SplitStudioState }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    fileName,
-    totalPages,
-    fileSizeBytes,
-    clearAll,
-    handleAddNativeFile,
-    selectedPage,
-    onSelectPage,
-  } = studio;
-  const mb = (fileSizeBytes / (1024 * 1024)).toFixed(1);
-
-  function onFileInputChange(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
-    const file = e.currentTarget.files?.[0];
-    if (file) void handleAddNativeFile(file);
-  }
-
+function PageStrip({ studio }: { studio: SplitStudioState }) {
+  const shown = Math.min(6, studio.totalPages);
+  const thumbs = usePageThumbs(studio.fileBytes, firstPages(shown, 6), 120);
   return (
-    <div class={styles.card} data-tour="pdf-upload" style={{ padding: '8px 12px' }}>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf"
-        style={{ display: 'none' }}
-        onChange={onFileInputChange}
-      />
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>1</span> PDF File
-        </h2>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
-            type="button"
-            onClick={studio.splitHeavyBookIntoChapters}
-            style={{
-              fontSize: '11px',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #7dd3fc',
-              background: '#f0f9ff',
-              color: '#0369a1',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            📚 1,600-Page Book
-          </button>
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              fontSize: '11px',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              border: '1px solid #bfdbfe',
-              background: '#eff6ff',
-              color: '#1d4ed8',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            {fileName ? 'Change File' : 'Upload PDF'}
-          </button>
-        </div>
-      </div>
-
-      <HeavyBookBanner totalPages={totalPages} />
-
-      {!fileName ? (
-        <PdfSplitDropZone onChoose={() => fileInputRef.current?.click()} />
-      ) : (
-        <PdfSplitLoadedRow fileName={fileName} totalPages={totalPages} mb={mb} onClear={clearAll} />
-      )}
-
-      <PdfMiniThumbnails
-        totalPages={totalPages || 5}
-        selectedPage={selectedPage}
-        onSelectPage={onSelectPage}
-      />
+    <div class={styles.pageStrip}>
+      {Array.from({ length: shown }, (_, i) => i + 1).map((p) => (
+        <button
+          key={p}
+          type="button"
+          class={`${styles.page} ${styles.pageBtn} ${studio.selectedPage === p ? styles.pageFirst : ''} ${thumbs[p - 1] ? styles.pageImg : ''}`}
+          onClick={() => studio.onSelectPage(p)}
+          aria-label={`Page ${p}`}
+        >
+          {thumbs[p - 1] ? (
+            <img src={thumbs[p - 1] ?? undefined} alt="" />
+          ) : (
+            <>
+              <span class={styles.pageHead} />
+              <span class={styles.pageLine} />
+              <span class={styles.pageLine} style={{ width: '80%' }} />
+              <span class={styles.pageLine} style={{ width: '92%' }} />
+            </>
+          )}
+          <span class={styles.pageNum}>{p}</span>
+        </button>
+      ))}
+      {studio.totalPages > shown ? (
+        <span class={styles.pageMore} aria-hidden="true">
+          …
+        </span>
+      ) : null}
     </div>
   );
 }
 
-const SPLIT_MODES = [
-  ['ranges', '📄 Page ranges', 'Split by custom ranges'],
-  ['extract', '📑 Extract pages', 'Pick specific pages'],
-  ['every', '📚 Every page', 'Split single pages'],
-  ['chunks', '📦 Fixed chunks', 'Split by group size'],
-] as const;
+function PdfSplitFileSection({ studio }: { studio: SplitStudioState }) {
+  const { fileName, totalPages, fileSizeBytes, clearAll } = studio;
+  return (
+    <section class={styles.card} data-tour="pdf-upload" aria-label="PDF File">
+      <RefCardHead
+        step={1}
+        title="PDF File"
+        aside={
+          <button type="button" class={styles.btnSmall} onClick={studio.splitHeavyBookIntoChapters}>
+            <Icon name="book-open" />
+            1,600-page book sample
+          </button>
+        }
+      />
+      <HeavyBookBanner totalPages={totalPages} />
+      {fileName ? (
+        <>
+          <div data-primary-result="" class="visually-hidden">
+            <output>{fileName.replace(/\.pdf$/i, '')}-pages-1-1.pdf</output>
+          </div>
+          <RefFileItem
+            name={fileName}
+            meta={fileMeta(totalPages, fileSizeBytes)}
+            actions={{ onRemove: clearAll }}
+          />
+        </>
+      ) : (
+        <RefDrop
+          title="Drag & drop a PDF to split"
+          sub="or click to browse · Max 25 MB · Files stay in your browser"
+          button="Choose PDF File"
+          accept="application/pdf"
+          onFiles={(list) => {
+            const file = list[0];
+            if (file) void studio.handleAddNativeFile(file);
+          }}
+        />
+      )}
+      {totalPages > 0 ? <PageStrip studio={studio} /> : null}
+    </section>
+  );
+}
+
+const SPLIT_MODES: readonly { id: SplitMode; icon: string; title: string; sub: string }[] = [
+  { id: 'ranges', icon: 'file-text', title: 'Page ranges', sub: 'Split by custom ranges' },
+  { id: 'extract', icon: 'file-check', title: 'Extract pages', sub: 'Pick specific pages' },
+  { id: 'every', icon: 'layers', title: 'Every page', sub: 'Split into single pages' },
+  { id: 'chunks', icon: 'box', title: 'Fixed chunks', sub: 'Split by group size' },
+];
+
+function InvalidNote({ tokens, total }: { tokens: string[]; total: number }) {
+  if (tokens.length === 0) return null;
+  return (
+    <p role="alert" class={styles.invalid}>
+      Not used: {tokens.join(', ')} (pages run from 1 to {total}).
+    </p>
+  );
+}
+
+function RangeChip({
+  studio,
+  range,
+}: {
+  studio: SplitStudioState;
+  range: SplitStudioState['ranges'][number];
+}) {
+  const [text, setText] = useState(`${range.start} - ${range.end}`);
+  useEffect(() => setText(`${range.start} - ${range.end}`), [range.start, range.end]);
+  const parsed = parseRangeList(text.replace(/\s/g, ''), studio.totalPages);
+  const bad = parsed.ranges.length !== 1;
+  return (
+    <span class={`${c.chip} ${bad ? c.chipBad : ''}`}>
+      <input
+        aria-label={`Range ${range.start} to ${range.end}`}
+        aria-invalid={bad}
+        value={text}
+        onInput={(e) => {
+          const v = e.currentTarget.value;
+          setText(v);
+          const r = parseRangeList(v.replace(/\s/g, ''), studio.totalPages).ranges;
+          if (r.length === 1 && r[0]) studio.updateRange(range.id, r[0].start, r[0].end);
+        }}
+      />
+      <button
+        type="button"
+        aria-label={`Remove range ${range.start} to ${range.end}`}
+        onClick={() => studio.removeRange(range.id)}
+      >
+        <Icon name="x" />
+      </button>
+    </span>
+  );
+}
+
+/** One chip per output file, as in the reference; each chip is editable. */
+function RangeEditor({ studio }: { studio: SplitStudioState }) {
+  const covered = studio.parts.reduce((n, p) => n + p.pageCount, 0);
+  return (
+    <div>
+      <div class={styles.fieldRow}>
+        <span class={styles.fieldLabel}>Page ranges (e.g. 1-10, 11-20), one output file each</span>
+        <span class={styles.listMeta}>
+          {studio.ranges.length} range{studio.ranges.length === 1 ? '' : 's'} • {covered} pages
+          selected
+        </span>
+      </div>
+      <div class={c.chips}>
+        {studio.ranges.map((r) => (
+          <RangeChip key={r.id} studio={studio} range={r} />
+        ))}
+        <button type="button" class={c.addChip} onClick={studio.addRange}>
+          <Icon name="plus" />
+          Add range
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ModeInputs({ studio }: { studio: SplitStudioState }) {
-  const {
-    mode,
-    ranges,
-    extractInput,
-    setExtractInput,
-    chunkSize,
-    setChunkSize,
-    totalPages,
-    addRange,
-    removeRange,
-  } = studio;
-
-  if (mode === 'ranges') {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: '11.5px',
-            color: '#475569',
-            fontWeight: 600,
-          }}
-        >
-          <span>Page ranges (e.g. 1-12, 13-42)</span>
-          <span>
-            {ranges.length} ranges • {totalPages} pages selected
-          </span>
-        </div>
-        <div class={styles.rangeChipsRow}>
-          {ranges.map((r) => (
-            <span key={r.id} class={styles.rangeChip}>
-              {r.start} – {r.end}
-              <button type="button" class={styles.chipCloseBtn} onClick={() => removeRange(r.id)}>
-                ✕
-              </button>
-            </span>
-          ))}
-          <button type="button" class={styles.addChipBtn} onClick={addRange}>
-            + Add range
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const { mode, totalPages } = studio;
+  if (mode === 'ranges') return <RangeEditor studio={studio} />;
   if (mode === 'extract') {
     return (
-      <div class={styles.inputRow}>
-        <label class={styles.inputLabel} for="split-extract-pages">
+      <div>
+        <label class={styles.fieldLabel} for="split-extract-pages">
           Specific pages to extract
         </label>
         <input
           id="split-extract-pages"
-          class={styles.textInput}
-          value={extractInput}
-          onInput={(e) => setExtractInput(e.currentTarget.value)}
+          class={styles.input}
+          value={studio.extractInput}
+          onInput={(e) => studio.setExtractInput(e.currentTarget.value)}
           placeholder="e.g. 1, 3, 5-10"
         />
+        <InvalidNote tokens={studio.invalidPages} total={totalPages} />
       </div>
     );
   }
   if (mode === 'chunks') {
     return (
-      <div class={styles.inputRow}>
-        <label class={styles.inputLabel} for="split-chunk-size">
+      <div>
+        <label class={styles.fieldLabel} for="split-chunk-size">
           Pages per split file
         </label>
         <input
           id="split-chunk-size"
           type="number"
-          class={styles.textInput}
-          value={chunkSize}
-          onInput={(e) => setChunkSize(Number(e.currentTarget.value) || 1)}
+          class={styles.input}
+          value={studio.chunkSize}
+          onInput={(e) => studio.setChunkSize(Number(e.currentTarget.value) || 1)}
           min={1}
           max={totalPages || 100}
         />
@@ -183,169 +204,64 @@ function ModeInputs({ studio }: { studio: SplitStudioState }) {
     );
   }
   return (
-    <p
-      style={{
-        fontSize: '11.5px',
-        color: '#334155',
-        margin: 0,
-        background: '#f8fafc',
-        padding: '6px 10px',
-        borderRadius: '6px',
-        border: '1px solid #e2e8f0',
-      }}
-    >
-      Extracts all {totalPages} pages into individual separate single-page PDF files.
-    </p>
+    <p class={styles.note}>Every one of the {totalPages} pages becomes its own single-page PDF.</p>
   );
 }
 
-function PdfSplitModesCard({ studio }: { studio: SplitStudioState }) {
-  const { mode, setMode } = studio;
-
+function PdfSplitConfigSection({ studio }: { studio: SplitStudioState }) {
   return (
-    <div class={styles.card} data-tour="pdf-arrange" style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span class={styles.stepNum}>2</span> Split Configuration
-        </h2>
-      </div>
-
-      <div class={styles.splitModesGrid}>
-        {SPLIT_MODES.map(([m, label, sub]) => {
-          const isActive = mode === m;
+    <section class={styles.card} data-tour="pdf-arrange" aria-label="Split Configuration">
+      <RefCardHead step={2} title="Split Configuration" />
+      <div class={styles.modes}>
+        {SPLIT_MODES.map((m) => {
+          const active = studio.mode === m.id;
           return (
             <button
-              key={m}
+              key={m.id}
               type="button"
-              class={`${styles.radioCard} ${isActive ? styles.radioCardActive : ''}`}
-              onClick={() => setMode(m as SplitMode)}
-              style={{
-                textAlign: 'left',
-                padding: '6px 8px',
-                background: isActive ? '#2563eb' : '#ffffff',
-                borderColor: isActive ? '#1d4ed8' : '#e2e8f0',
-              }}
+              aria-pressed={active}
+              class={`${styles.mode} ${active ? styles.modeActive : ''}`}
+              onClick={() => studio.setMode(m.id)}
             >
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: isActive ? '#ffffff' : '#0f172a',
-                }}
-              >
-                {label}
-              </span>
-              <span
-                style={{
-                  fontSize: '9.5px',
-                  color: isActive ? '#dbeafe' : '#64748b',
-                  fontWeight: 500,
-                }}
-              >
-                {sub}
+              <Icon name={m.icon} />
+              <span>
+                <span class={styles.modeTitle}>{m.title}</span>
+                <span class={styles.modeSub}>{m.sub}</span>
               </span>
             </button>
           );
         })}
       </div>
-
       <ModeInputs studio={studio} />
-    </div>
-  );
-}
-
-function PdfSplitOptionsCard({ studio }: { studio: SplitStudioState }) {
-  const {
-    keepBookmarks,
-    setKeepBookmarks,
-    separateFiles,
-    setSeparateFiles,
-    compressOutput,
-    setCompressOutput,
-    pattern,
-    setPattern,
-    downloadAsZip,
-    setDownloadAsZip,
-  } = studio;
-
-  return (
-    <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '8px',
-          fontSize: '11.5px',
-          fontWeight: 600,
-        }}
-      >
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={keepBookmarks}
-            onChange={(e) => setKeepBookmarks(e.currentTarget.checked)}
-          />
-          <span>Keep bookmarks</span>
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={separateFiles}
-            onChange={(e) => setSeparateFiles(e.currentTarget.checked)}
-          />
-          <span>Separate files</span>
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={compressOutput}
-            onChange={(e) => setCompressOutput(e.currentTarget.checked)}
-          />
-          <span>Compress output</span>
-        </label>
-      </div>
-
-      <div class={styles.inputRow}>
-        <label class={styles.inputLabel} for="split-file-pattern" style={{ fontSize: '11px' }}>
-          Output file name pattern
-        </label>
-        <input
-          id="split-file-pattern"
-          class={styles.textInput}
-          value={pattern}
-          onInput={(e) => setPattern(e.currentTarget.value)}
-          placeholder="Audit-Report-2025_Part_{n}"
-          style={{ padding: '6px 10px', fontSize: '12px' }}
+      <div class={styles.splitOptions}>
+        <RefCheck
+          label="Download several files as one ZIP archive"
+          checked={studio.downloadAsZip}
+          onChange={studio.setDownloadAsZip}
         />
+        <div>
+          <label class={styles.fieldLabel} for="split-file-pattern">
+            Output file name pattern
+          </label>
+          <input
+            id="split-file-pattern"
+            class={styles.input}
+            value={studio.pattern}
+            onInput={(e) => studio.setPattern(e.currentTarget.value)}
+            placeholder="Part_{n}"
+          />
+          <span class={c.example}>Example: {studio.parts[0]?.name ?? 'Part_1.pdf'}</span>
+        </div>
       </div>
-
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '11.5px',
-          fontWeight: 600,
-          cursor: 'pointer',
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={downloadAsZip}
-          onChange={(e) => setDownloadAsZip(e.currentTarget.checked)}
-        />
-        <span>Download all files as a ZIP archive</span>
-      </label>
-    </div>
+    </section>
   );
 }
 
 export function PdfSplitLeftCards({ studio }: { studio: SplitStudioState }) {
   return (
-    <div class={styles.leftMergeCol}>
-      <PdfSplitFileCard studio={studio} />
-      <PdfSplitModesCard studio={studio} />
-      <PdfSplitOptionsCard studio={studio} />
+    <div class={styles.column}>
+      <PdfSplitFileSection studio={studio} />
+      <PdfSplitConfigSection studio={studio} />
     </div>
   );
 }

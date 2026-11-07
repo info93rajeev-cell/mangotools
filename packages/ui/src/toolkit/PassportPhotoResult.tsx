@@ -284,6 +284,12 @@ export function PassportPhotoResult({
 
         <SpecsTable passport={passport} outW={outW} outH={outH} />
 
+        {passport.warnings.length > 0 && (
+          <div class={styles.warningBanner} role="status">
+            Transparent areas are filled with white when saving as JPG.
+          </div>
+        )}
+
         <div class={enhanceStyles.readyStatusBadge}>
           <span class={enhanceStyles.greenCheckCircle}>✓</span>
           <div class={enhanceStyles.readyTextGroup}>

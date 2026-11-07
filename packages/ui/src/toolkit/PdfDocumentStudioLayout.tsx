@@ -4,23 +4,19 @@ import { PdfCompressLeftCards } from './PdfCompressLeftCards.tsx';
 import { PdfCompressRightCards } from './PdfCompressRightCards.tsx';
 import { PdfMergeLeftCards } from './PdfMergeLeftCards.tsx';
 import { PdfMergeRightCards } from './PdfMergeRightCards.tsx';
+import { RefTopBar } from './PdfRefParts.tsx';
 import { PdfSplitLeftCards } from './PdfSplitLeftCards.tsx';
 import { PdfSplitRightCards } from './PdfSplitRightCards.tsx';
-import {
-  PdfCompressIcon,
-  PdfMergeIcon,
-  PdfSplitIcon,
-  PdfToWordIcon,
-  WordToPdfIcon,
-} from './PdfToolIcons.tsx';
 import { PdfToWordLeftCards, PdfToWordRightCards } from './PdfToWordCards.tsx';
+import refStyles from './pdfRef.module.css';
 import styles from './pdfStudio.module.css';
 import { getPdfTourSteps, type PdfToolTab } from './pdfTourSteps.ts';
-import { ToolOnboardingTour, TourLauncherButton } from './ToolOnboardingTour.tsx';
+import { ToolOnboardingTour } from './ToolOnboardingTour.tsx';
 import { usePdfCompressStudio } from './usePdfCompressStudio.ts';
-import { usePdfToWordStudio, useWordToPdfStudio } from './usePdfConvertStudio.ts';
 import { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 import { usePdfSplitStudio } from './usePdfSplitStudio.ts';
+import { usePdfToWordStudio } from './usePdfToWordStudio.ts';
+import { useWordToPdfStudio } from './useWordToPdfStudio.ts';
 import { WordToPdfLeftCards, WordToPdfRightCards } from './WordToPdfCards.tsx';
 
 export type { PdfToolTab };
@@ -28,65 +24,6 @@ export type { PdfToolTab };
 export interface PdfDocumentStudioProps {
   toolId?: string;
   notify?: (msg: string) => void;
-}
-
-function ToolHeaderBar({
-  iconNode,
-  title,
-  badge3,
-  openLabel,
-  onOpen,
-  onLoadSample,
-  onClear,
-  onLaunchTour,
-}: {
-  iconNode: JSX.Element;
-  title: string;
-  badge3: string;
-  openLabel?: string;
-  onOpen?: () => void;
-  onLoadSample: () => void;
-  onClear: () => void;
-  onLaunchTour?: () => void;
-}) {
-  return (
-    <div class={styles.topBar}>
-      <div class={styles.toolHeading}>
-        <div class={styles.toolIconBox} role="img" aria-label={title}>
-          {iconNode}
-        </div>
-        <div class={styles.titleMeta}>
-          <div class={styles.titleRow}>
-            <div class={styles.badgePills}>
-              <span class={`${styles.badgePill} ${styles.badgePillAmber}`}>
-                ⚡ Instant In-Browser
-              </span>
-              <span class={styles.badgePill}>🔒 100% Private</span>
-              <span class={`${styles.badgePill} ${styles.badgePillBlue}`}>{badge3}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class={styles.topActions}>
-        {onOpen && (
-          <button type="button" class={styles.actionBtnGhost} onClick={onOpen}>
-            📁 {openLabel ?? 'Open Files'}
-          </button>
-        )}
-        <button type="button" class={styles.actionBtnGhost} onClick={onLoadSample}>
-          📑 Load Sample
-        </button>
-        <button
-          type="button"
-          class={`${styles.actionBtnGhost} ${styles.actionBtnDanger}`}
-          onClick={onClear}
-        >
-          🗑️ Clear All
-        </button>
-        {onLaunchTour && <TourLauncherButton onClick={onLaunchTour} />}
-      </div>
-    </div>
-  );
 }
 
 function resolveInitialPdfTab(toolId?: string): PdfToolTab {
@@ -100,7 +37,6 @@ function resolveInitialPdfTab(toolId?: string): PdfToolTab {
 function RenderPdfMergeView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfMergeStudio>;
   onOpen: () => void;
@@ -108,17 +44,14 @@ function RenderPdfMergeView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfMergeIcon />}
-        title="PDF Merge"
-        badge3="🛡️ No Sign-up Needed"
+      <RefTopBar
+        badge3="No Sign-up Needed"
         openLabel="Open Files"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleFiles}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfMergeLeftCards studio={studio} />
         <PdfMergeRightCards studio={studio} />
       </div>
@@ -129,7 +62,6 @@ function RenderPdfMergeView({
 function RenderPdfSplitView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfSplitStudio>;
   onOpen: () => void;
@@ -137,17 +69,14 @@ function RenderPdfSplitView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfSplitIcon />}
-        title="PDF Split"
-        badge3="🛡️ Zero Server Upload"
+      <RefTopBar
+        badge3="Zero Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleSplit}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfSplitLeftCards studio={studio} />
         <PdfSplitRightCards studio={studio} />
       </div>
@@ -158,7 +87,6 @@ function RenderPdfSplitView({
 function RenderPdfCompressView({
   studio,
   onOpen,
-  onLaunchTour,
 }: {
   studio: ReturnType<typeof usePdfCompressStudio>;
   onOpen: () => void;
@@ -166,17 +94,14 @@ function RenderPdfCompressView({
 }) {
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<PdfCompressIcon />}
-        title="Compress PDF"
-        badge3="🛡️ No Server Upload"
+      <RefTopBar
+        badge3="No Server Upload"
         openLabel="Open PDF"
         onOpen={onOpen}
         onLoadSample={studio.loadSampleCompress}
         onClear={studio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <PdfCompressLeftCards studio={studio} />
         <PdfCompressRightCards studio={studio} />
       </div>
@@ -189,7 +114,6 @@ function RenderPdfConvertView({
   onOpen,
   pdfToWordStudio,
   wordToPdfStudio,
-  onLaunchTour,
 }: {
   activeTab: PdfToolTab;
   onOpen: () => void;
@@ -200,17 +124,14 @@ function RenderPdfConvertView({
   if (activeTab === 'pdfToWord') {
     return (
       <>
-        <ToolHeaderBar
-          iconNode={<PdfToWordIcon />}
-          title="PDF to Word"
-          badge3="🛡️ No Server Upload"
+        <RefTopBar
+          badge3="No Server Upload"
           openLabel="Open Files"
           onOpen={onOpen}
           onLoadSample={pdfToWordStudio.loadSamplePdfToWord}
           onClear={pdfToWordStudio.clearAll}
-          onLaunchTour={onLaunchTour}
         />
-        <div class={styles.studioLayout}>
+        <div class={refStyles.layout}>
           <PdfToWordLeftCards studio={pdfToWordStudio} />
           <PdfToWordRightCards studio={pdfToWordStudio} />
         </div>
@@ -219,17 +140,14 @@ function RenderPdfConvertView({
   }
   return (
     <>
-      <ToolHeaderBar
-        iconNode={<WordToPdfIcon />}
-        title="Word to PDF"
-        badge3="🛡️ No Server Upload"
+      <RefTopBar
+        badge3="No Server Upload"
         openLabel="Open Files"
         onOpen={onOpen}
         onLoadSample={wordToPdfStudio.loadSampleWordDocs}
         onClear={wordToPdfStudio.clearAll}
-        onLaunchTour={onLaunchTour}
       />
-      <div class={styles.studioLayout}>
+      <div class={refStyles.layout}>
         <WordToPdfLeftCards studio={wordToPdfStudio} />
         <WordToPdfRightCards studio={wordToPdfStudio} />
       </div>
@@ -322,18 +240,41 @@ export function PdfDocumentStudioLayout({ toolId, notify }: PdfDocumentStudioPro
     wordToPdf: useWordToPdfStudio(notify),
   };
 
+  // Open with the sample loaded, so the page shows the approved full design straight away. The
+  // sample is built in the browser; the user's own file replaces it.
+  useEffect(() => {
+    const load: Record<PdfToolTab, () => unknown> = {
+      merge: studios.merge.loadSampleFiles,
+      split: studios.split.loadSampleSplit,
+      compress: studios.compress.loadSampleCompress,
+      pdfToWord: studios.pdfToWord.loadSamplePdfToWord,
+      wordToPdf: studios.wordToPdf.loadSampleWordDocs,
+    };
+    void load[activeTab]?.();
+  }, []);
+
   const handleFileChange = (e: JSX.TargetedEvent<HTMLInputElement, Event>) => {
     const list = e.currentTarget.files;
     if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);
   };
 
   return (
-    <div class={styles.studioContainer}>
+    // biome-ignore lint/a11y/noStaticElementInteractions: drop target for files; the Open buttons give keyboard access.
+    <div
+      class={styles.studioContainer}
+      data-ref-look=""
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const list = e.dataTransfer?.files;
+        if (list && list.length > 0) handleNativeFileDispatch(activeTab, list, studios);
+      }}
+    >
       <input
         ref={fileInputRef}
         type="file"
         multiple={activeTab === 'merge' || activeTab === 'wordToPdf'}
-        accept={activeTab === 'wordToPdf' ? '.docx,.doc' : 'application/pdf'}
+        accept={activeTab === 'wordToPdf' ? '.docx' : 'application/pdf'}
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />

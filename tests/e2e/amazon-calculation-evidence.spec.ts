@@ -1,129 +1,104 @@
 import { expect, test } from '@playwright/test';
-import type { AmazonEvidence } from '../support/amazon-evidence.ts';
-import { control, manualFees, openEvidence, truth } from '../support/amazon-evidence.ts';
+import { control, openEvidence } from '../support/amazon-evidence.ts';
+import { primaryResult } from '../support/tool-page.ts';
 
-test('Amazon final evidence: basic and hand-verified manual fee estimate', async ({ page }) => {
+test('Amazon calculation evidence: initial sample default matches engine fixture 023', async ({
+  page,
+}) => {
   const d = await openEvidence(page);
-  expect(await d.verify()).toMatchObject(truth('001-sample'));
-  await expect(page.getByText('No Amazon fees are configured.', { exact: false })).toBeVisible();
-  await expect(page.getByText('Product GST is not modelled.', { exact: false })).toBeVisible();
-  await d.configure(manualFees);
-  expect(await d.verify()).toMatchObject(truth('002-manual-fees'));
-  await page.getByText('Amazon fee breakdown', { exact: true }).first().click();
-  for (const name of ['Referral fee', 'Closing fee'])
-    await expect(
-      page.locator('[data-fee-row]').getByRole('cell', { name, exact: true }),
-    ).toBeVisible();
+
+  // Fixture 023 hand-verified sample:
+  // ₹1,500 SP, ₹600 cost, ₹35 packaging, ₹60 ads, ₹40 returns, ₹120 referral, ₹25 closing, ₹100 weight handling.
+  // 18% fee GST (₹44.10) claimed back as ITC.
+  // Expected: ₹291.19 net profit, 22.91% margin, ₹1,203.27 bank settlement, ₹245.00 fees, ₹1,156.40 break-even.
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+  await expect(page.getByText('Profit margin').locator('..').locator('strong')).toHaveText(
+    '22.91%',
+  );
+  await expect(page.getByText('Bank settlement').locator('..').locator('strong')).toHaveText(
+    '₹1,203.27',
+  );
+  await expect(page.getByText('Amazon fees').locator('..').locator('strong')).toHaveText('₹245.00');
+  await expect(page.getByText('Break-even price').locator('..').locator('strong')).toHaveText(
+    '₹1,156.40',
+  );
+
+  // Verify statement table itemization
+  const statement = page.getByRole('table', { name: 'Statement Table' });
+  await expect(statement).toBeVisible();
+  await expect(statement).toContainText('₹1,500.00'); // Selling price
+  await expect(statement).toContainText('−₹228.81'); // GST inside price
+  await expect(statement).toContainText('−₹600.00'); // Product cost
+  await expect(statement).toContainText('−₹135.00'); // Packaging, ads, returns
+  await expect(statement).toContainText('−₹245.00'); // Amazon fees
+  await expect(statement).toContainText('₹291.19'); // Net profit
+
+  // Verify settlement table itemization
+  const settlement = page.getByRole('table', { name: 'Settlement Table' });
+  await expect(settlement).toBeVisible();
+  await expect(settlement).toContainText('₹1,500.00'); // Selling price
+  await expect(settlement).toContainText('−₹245.00'); // Amazon fees
+  await expect(settlement).toContainText('−₹44.10'); // GST on fees (claim back as ITC)
+  await expect(settlement).toContainText('−₹6.36'); // TCS 0.5%
+  await expect(settlement).toContainText('−₹1.27'); // TDS 0.1%
+  await expect(settlement).toContainText('₹1,203.27'); // Estimated settlement
+
+  d.audit();
 });
-test('Amazon final evidence: GST, withholding and exact collapse invariance', async ({ page }) => {
+
+test('Amazon calculation evidence: unclaimed ITC matches engine fixture 024', async ({ page }) => {
   const d = await openEvidence(page);
-  await d.configure(manualFees);
-  for (const mode of ['gst-inclusive', 'gst-exclusive']) {
-    await d.configure({ productGstRatePercent: '12', sellingPriceTaxMode: mode });
-    await d.verify();
-  }
-  await d.set('productGstRatePercent', '0');
-  await d.verify();
-  await expect(page.getByText('Product GST is not modelled.', { exact: false })).toHaveCount(0);
-  await d.set('closingGstTreatment', 'recoverable');
-  await expect(page.locator('[data-primary-result]')).toHaveCount(0);
-  await expect(control(page, 'marketplaceFeeGstRatePercent')).toHaveValue('');
-  await d.set('marketplaceFeeGstRatePercent', '5');
-  const recovered = await d.verify();
-  await d.set('closingGstTreatment', 'non-recoverable');
-  const taxed = await d.verify();
-  expect(recovered).toMatchObject({
-    economicProfit: '515.00',
-    recoverableMarketplaceFeeGst: '0.50',
-  });
-  expect(taxed).toMatchObject({
-    economicProfit: '514.50',
-    nonRecoverableMarketplaceFeeGst: '0.50',
-  });
-  expect(taxed.estimatedSettlement).toBe(recovered.estimatedSettlement);
-  await d.set('productGstRatePercent', '12');
-  for (const prefix of ['tcs', 'tds'])
-    for (const mode of ['fixed', 'percent']) {
-      await d.configure({ [`${prefix}Mode`]: mode, [`${prefix}Value`]: '2' });
-      if (mode === 'percent')
-        await d.set(
-          `${prefix}PercentageBase`,
-          prefix === 'tcs' ? 'customer-invoice-value' : 'tax-exclusive-revenue',
-        );
-      expect((await d.verify()).economicProfit).toBe(taxed.economicProfit);
-    }
-  await checkCollapse(d);
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  // Uncheck ITC claim: fee GST of ₹44.10 becomes a cost deduction
+  await d.set('claimFeeGstCredit', 'false');
+  await expect(primaryResult(page)).toHaveText('₹247.09');
+  await expect(page.getByText('Profit margin').locator('..').locator('strong')).toHaveText(
+    '19.44%',
+  );
+
+  // Settlement amount is unchanged at ₹1,203.27 because GST is still deducted at settlement
+  await expect(page.getByText('Bank settlement').locator('..').locator('strong')).toHaveText(
+    '₹1,203.27',
+  );
+
+  const statement = page.getByRole('table', { name: 'Statement Table' });
+  await expect(statement).toContainText('GST on fees (not claimed)');
+  await expect(statement).toContainText('−₹44.10');
+  await expect(statement).toContainText('₹247.09');
+
+  // Re-checking ITC credit restores profit to ₹291.19
+  await d.set('claimFeeGstCredit', 'true');
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  d.audit();
 });
-async function checkCollapse(d: AmazonEvidence) {
-  const page = d.page;
+
+test('Amazon calculation evidence: dynamic pricing, loss scenario and break-even', async ({
+  page,
+}) => {
+  const d = await openEvidence(page);
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+
+  // Increase selling price to ₹2,500
+  await d.set('sellingPrice', '2500');
+  await expect(primaryResult(page)).not.toHaveText('…');
+  await expect(primaryResult(page)).not.toHaveText('₹291.19');
+
+  // Lower selling price below total costs to simulate loss
   await d.configure({
-    promotionalDiscount: '10',
-    productGstRatePercent: '12',
-    inventoryWriteOffAmount: '4',
-    inventoryWriteOffApplyReturn: 'true',
+    sellingPrice: '500',
+    productCost: '600',
   });
-  const request = d.request();
-  const result = await d.verify();
-  const sections = [
-    'showProductDetails',
-    'showAmazonFees',
-    'showShipping',
-    'showTaxes',
-    'showAdjustments',
-  ];
-  const entered = { ...d.values };
-  for (const key of sections) await d.set(key, 'false');
-  expect(d.request()).toEqual(request);
-  expect(await d.verify()).toEqual(result);
-  for (const key of sections) await d.set(key, 'true');
-  for (const key of [
-    'promotionalDiscount',
-    'productGstRatePercent',
-    'marketplaceFeeGstRatePercent',
-  ])
-    await expect(control(page, key)).toHaveValue(String(entered[key]));
-}
-for (const [scenario, suffix] of [
-  ['customer-return', 'Return'],
-  ['rto', 'Rto'],
-  ['cancellation', 'Cancellation'],
-]) {
-  test(`Amazon final evidence: ${scenario} recognition and five adjustment effects`, async ({
-    page,
-  }) => {
-    const d = await openEvidence(page);
-    await d.configure({
-      ...manualFees,
-      scenario,
-      productGstRatePercent: '12',
-      otherAdjustmentDirection: 'credit',
-    });
-    for (const [prefix, amount, effects] of [
-      ['returnCharge', '5', 'both'],
-      ['reverseLogistics', '10', 'both'],
-      ['reimbursement', '15', 'settlement'],
-      ['inventoryWriteOff', '40', ''],
-      ['otherAdjustment', '10', 'both'],
-    ]) {
-      await d.configure({ [`${prefix}Amount`]: amount, [`${prefix}Apply${suffix}`]: 'true' });
-      if (effects) await d.set(`${prefix}Effects`, effects);
-    }
-    expect(await d.verify()).toMatchObject({
-      revenueRecognised: '0.00',
-      productCostRecognised: '0.00',
-      productGstLiabilityRecognised: '0.00',
-      marketplaceFeesTotal: '0.00',
-      sellerControlledCostsTotal: '0.00',
-      economicProfit: '-45.00',
-      estimatedSettlement: '10.00',
-      breakEvenSellingPrice: null,
-    });
-    await d.set('scenario', 'successful-sale');
-    expect(await d.verify()).toMatchObject({
-      scenarioEconomicCosts: '0.00',
-      scenarioEconomicCredits: '0.00',
-      scenarioSettlementDeductions: '0.00',
-      scenarioSettlementCredits: '0.00',
-    });
-  });
-}
+  await expect(page.getByText('Estimated loss per sale')).toBeVisible();
+  const lossEl = page.locator('[data-primary-result]');
+  await expect(lossEl).toBeVisible();
+  await expect(lossEl).toContainText('−₹');
+
+  // Reset restores initial profit state
+  await page.getByRole('button', { name: /Reset/i }).click();
+  await expect(primaryResult(page)).toHaveText('₹291.19');
+  await expect(control(page, 'sellingPrice')).toHaveValue('1500');
+
+  d.audit();
+});

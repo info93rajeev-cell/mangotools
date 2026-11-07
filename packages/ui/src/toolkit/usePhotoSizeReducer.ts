@@ -24,7 +24,7 @@ function usePhotoSizeState() {
   const [targetWidth, setTargetWidth] = useState(0);
   const [targetHeight, setTargetHeight] = useState(0);
   const [maxFileSizeKB, setMaxFileSizeKB] = useState<number | undefined>(100);
-  const [allowDimensionReduction, setAllowDimensionReduction] = useState(true);
+  const [allowDimensionReduction, setAllowDimensionReduction] = useState(false);
   const [outputFormat, setOutputFormat] = useState<PhotoSizeOutputFormat>('jpg');
   const [quality, setQuality] = useState(90);
   const [customFileName, setCustomFileName] = useState('');

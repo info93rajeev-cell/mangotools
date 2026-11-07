@@ -1,0 +1,30 @@
+{
+  "id": "016-error-invalid-kconstant",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5 & §8: Non-numeric kConstant fails with SURVEY_LEVELING_INVALID_DECIMAL on path kConstant."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "100.000",
+    "observations": [
+      {
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "fs": "1.000",
+        "dist": "100"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "kConstant": "invalid-constant"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_INVALID_DECIMAL",
+    "path": "kConstant"
+  }
+}

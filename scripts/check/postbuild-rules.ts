@@ -218,6 +218,10 @@ export function headersFile({ scriptHashes, indexable }: HeadersOptions): string
     '/reference/marketplace-fees/*/*',
     '  Cache-Control: public, max-age=31536000, immutable',
     '',
+    // Model files sit under a pinned revision folder and never change in place.
+    '/models/birefnet-lite-512/*',
+    '  Cache-Control: public, max-age=31536000, immutable',
+    '',
     // The production build is also reachable on Cloudflare's *.pages.dev hosts; keep those out of
     // search results so only the canonical domain is indexed.
     ...(indexable
