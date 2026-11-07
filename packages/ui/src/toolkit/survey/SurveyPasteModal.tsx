@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useMemo, useRef, useState } from 'preact/hooks';
+import { useDialogFocusTrap } from './surveyDialogFocus.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
 import type { SurveyLevelingRow } from './surveyLevelingTypes.ts';
 import pm from './surveyPasteModal.module.css';
@@ -28,6 +29,7 @@ function PasteModalHeader({ onClose }: { onClose: () => void }) {
         class={pm.closeBtn}
         onClick={onClose}
         aria-label={surveyStrings.pasteClose}
+        data-paste-close-btn=""
       >
         ✕
       </button>
@@ -215,19 +217,14 @@ export function SurveyPasteModal({ isOpen, onClose, onApply }: SurveyPasteModalP
   const [rawText, setRawText] = useState('');
   const [clipError, setClipError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const timer = setTimeout(() => textareaRef.current?.focus(), 50);
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('keydown', handleKey);
-    };
-  }, [isOpen, onClose]);
+  const { handleClose } = useDialogFocusTrap({
+    isOpen,
+    modalRef,
+    initialFocusRef: textareaRef,
+    onClose,
+  });
 
   const outcome = useMemo(() => parseSpreadsheetPaste(rawText), [rawText]);
 
@@ -249,6 +246,7 @@ export function SurveyPasteModal({ isOpen, onClose, onApply }: SurveyPasteModalP
 
   return (
     <div
+      ref={modalRef}
       class={pm.backdrop}
       role="dialog"
       aria-modal="true"
@@ -256,7 +254,7 @@ export function SurveyPasteModal({ isOpen, onClose, onApply }: SurveyPasteModalP
       data-paste-modal=""
     >
       <div class={pm.modalCard}>
-        <PasteModalHeader onClose={onClose} />
+        <PasteModalHeader onClose={handleClose} />
         <div class={pm.modalBody}>
           <PasteInputSection
             rawText={rawText}
@@ -270,10 +268,10 @@ export function SurveyPasteModal({ isOpen, onClose, onApply }: SurveyPasteModalP
         </div>
         <PasteModalFooter
           isValid={outcome.isValid && outcome.rows.length > 0}
-          onClose={onClose}
+          onClose={handleClose}
           onApply={() => {
             onApply(outcome.rows);
-            onClose();
+            handleClose();
           }}
         />
       </div>

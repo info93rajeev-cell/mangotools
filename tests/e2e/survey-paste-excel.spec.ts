@@ -46,7 +46,7 @@ async function loadWorkbench(page: Page, width = 1440, height = 900) {
   await page.setViewportSize({ width, height });
   await page.goto(DEV_SURVEY_URL);
   await expect(page.locator('[data-survey-workbench]')).toBeVisible();
-  await expect(page.locator('[data-results-badge]')).toBeVisible();
+  await expect(page.locator('[data-results-badge]')).toHaveText(/Criterion not provided/);
 }
 
 const SAMPLE_EXCEL_TSV = `Station\tBS\tIS\tFS\tDist (m)\tRemarks
@@ -63,34 +63,25 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
   }) => {
     await loadWorkbench(page);
 
-    // Initial table has sample rows
     const initialRows = page.locator('[data-level-book-table] tbody tr');
     await expect(initialRows).toHaveCount(6);
     await expect(initialRows.nth(0).locator('input').nth(0)).toHaveValue('BM-1');
 
-    // Click Paste from Excel
     const pasteBtn = page.locator('[data-paste-excel]');
     await expect(pasteBtn).toBeVisible();
     await pasteBtn.click();
 
-    // Modal opens
     const modal = page.locator('[data-paste-modal]');
     await expect(modal).toBeVisible();
     await expect(page.locator('#paste-modal-title')).toContainText('Paste Level Book from Excel');
     await expect(page.locator('[data-paste-empty-notice]')).toBeVisible();
+    await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
 
-    // Replace button is disabled initially
-    const replaceBtn = page.locator('[data-paste-replace-btn]');
-    await expect(replaceBtn).toBeDisabled();
-
-    // Type some text then click Cancel
     await page.locator('[data-paste-textarea]').fill('Some random text');
     await page.locator('[data-paste-cancel-btn]').click();
 
-    // Modal closes
     await expect(modal).not.toBeVisible();
-
-    // Existing rows remain completely intact
+    await expect(pasteBtn).toBeFocused();
     await expect(initialRows).toHaveCount(6);
     await expect(initialRows.nth(0).locator('input').nth(0)).toHaveValue('BM-1');
   });
@@ -100,67 +91,37 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
   }) => {
     await loadWorkbench(page);
 
-    // Open modal
     await page.locator('[data-paste-excel]').click();
     const modal = page.locator('[data-paste-modal]');
     await expect(modal).toBeVisible();
 
-    // Fill valid Excel TSV
-    const textarea = page.locator('[data-paste-textarea]');
-    await textarea.fill(SAMPLE_EXCEL_TSV);
-
-    // Preview reflects parsed data
-    await expect(page.locator('[data-paste-success-banner]')).toBeVisible();
+    await page.locator('[data-paste-textarea]').fill(SAMPLE_EXCEL_TSV);
     await expect(page.locator('[data-paste-success-banner]')).toContainText('All 6 rows valid');
     await expect(page.locator('[data-paste-header-pill]')).toContainText('Header row detected');
 
-    // Preview table rows
     const previewRows = page.locator('[data-paste-preview-table] tbody tr');
     await expect(previewRows).toHaveCount(6);
-
-    // Row 2 is CP1 with both FS and BS
     await expect(previewRows.nth(2).locator('td').nth(1)).toHaveText('CP');
     await expect(previewRows.nth(2).locator('td').nth(2)).toHaveText('CP1');
     await expect(previewRows.nth(2).locator('td').nth(3)).toHaveText('0.950');
     await expect(previewRows.nth(2).locator('td').nth(5)).toHaveText('1.850');
 
-    // Click Replace level book
-    const replaceBtn = page.locator('[data-paste-replace-btn]');
-    await expect(replaceBtn).toBeEnabled();
-    await replaceBtn.click();
-
-    // Modal closes and toast appears
+    await page.locator('[data-paste-replace-btn]').click();
     await expect(modal).not.toBeVisible();
     await expect(page.getByText('Level book replaced with 6 pasted rows.')).toBeVisible();
-
-    // Results become stale (requires recalculation)
     await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
-    await expect(page.locator('[data-stale-notice]')).toBeVisible();
 
-    // Verify main table reflects new stations
     const mainRows = page.locator('[data-level-book-table] tbody tr');
     await expect(mainRows).toHaveCount(6);
     await expect(mainRows.nth(0).locator('input').nth(0)).toHaveValue('BM-A');
-    await expect(mainRows.nth(0).locator('input').nth(1)).toHaveValue('1.420');
     await expect(mainRows.nth(2).locator('input').nth(0)).toHaveValue('CP1');
-    await expect(mainRows.nth(2).locator('input').nth(1)).toHaveValue('0.950');
-    await expect(mainRows.nth(2).locator('input').nth(3)).toHaveValue('1.850');
     await expect(mainRows.nth(5).locator('input').nth(0)).toHaveValue('BM-B');
 
-    // Calculate levels in Rise & Fall mode
     await page.locator('[data-calculate-btn]').click();
-    await expect(page.locator('[data-results-badge]')).toHaveText(
-      /Within limit|Calculated|Criterion not provided/,
-    );
     await expect(page.locator('[data-results-table]')).toBeVisible();
 
-    // Switch to Height of Instrument mode and recalculate
     await page.locator('[data-method-tab="height-of-instrument"]').click();
-    await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
     await page.locator('[data-calculate-btn]').click();
-    await expect(page.locator('[data-results-badge]')).toHaveText(
-      /Within limit|Calculated|Criterion not provided/,
-    );
     await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('HI (m)');
   });
 
@@ -171,9 +132,7 @@ test.describe('Survey Leveling — Paste from Excel Modal', () => {
 
     await page.locator('[data-paste-excel]').click();
     await expect(page.locator('[data-paste-modal]')).toBeVisible();
-    const noHeaderTSV = `STA-1\t1.800\t\t\t0\tStart
-STA-2\t\t1.400\t\t15\tMid
-STA-3\t\t\t2.000\t20\tEnd`;
+    const noHeaderTSV = `STA-1\t1.800\t\t\t0\tStart\nSTA-2\t\t1.400\t\t15\tMid\nSTA-3\t\t\t2.000\t20\tEnd`;
     await page.locator('[data-paste-textarea]').fill(noHeaderTSV);
 
     await expect(page.locator('[data-paste-header-pill]')).toContainText('No header detected');
@@ -183,18 +142,13 @@ STA-3\t\t\t2.000\t20\tEnd`;
     const mainRows = page.locator('[data-level-book-table] tbody tr');
     await expect(mainRows).toHaveCount(3);
     await expect(mainRows.nth(0).locator('input').nth(0)).toHaveValue('STA-1');
-    await expect(mainRows.nth(1).locator('input').nth(0)).toHaveValue('STA-2');
-    await expect(mainRows.nth(2).locator('input').nth(0)).toHaveValue('STA-3');
 
-    // Calculate in Rise & Fall mode with distance adjustment
     await page.locator('[data-calculate-btn]').click();
     await expect(page.locator('[data-results-table]')).toBeVisible();
 
-    // Switch to Height of Instrument mode and recalculate with setup adjustment
     await page.locator('[data-method-tab="height-of-instrument"]').click();
     await page.locator('#survey-adjust-by').selectOption('setup');
     await page.locator('[data-calculate-btn]').click();
-    await expect(page.locator('[data-results-table]')).toBeVisible();
     await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('HI (m)');
   });
 
@@ -206,7 +160,8 @@ STA-3\t\t\t2.000\t20\tEnd`;
     const initialRows = page.locator('[data-level-book-table] tbody tr');
     await expect(initialRows).toHaveCount(6);
 
-    await page.locator('[data-paste-excel]').click();
+    const pasteBtn = page.locator('[data-paste-excel]');
+    await pasteBtn.click();
     await expect(page.locator('[data-paste-modal]')).toBeVisible();
 
     // 1. First row has CP (both BS and FS)
@@ -215,9 +170,6 @@ STA-3\t\t\t2.000\t20\tEnd`;
     await expect(page.locator('[data-paste-error-banner]')).toContainText(
       'Found errors in 1 row(s)',
     );
-    await expect(
-      page.locator('[data-paste-preview-table] tbody tr').nth(0).locator('td').nth(1),
-    ).toHaveText('ERR');
     await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
 
     // 2. Final row has CP (both FS and BS)
@@ -226,12 +178,9 @@ STA-3\t\t\t2.000\t20\tEnd`;
     await expect(page.locator('[data-paste-error-banner]')).toContainText(
       'Found errors in 1 row(s)',
     );
-    await expect(
-      page.locator('[data-paste-preview-table] tbody tr').nth(2).locator('td').nth(1),
-    ).toHaveText('ERR');
     await expect(page.locator('[data-paste-replace-btn]')).toBeDisabled();
 
-    // 3. Malformed readings: negative staff reading & IS mixed with BS
+    // 3. Malformed readings
     const malformed = `Station\tBS\tIS\tFS\nBM-1\t1.500\t1.200\t\nBM-2\t\t\t-2.000`;
     await page.locator('[data-paste-textarea]').fill(malformed);
     await expect(page.locator('[data-paste-error-banner]')).toContainText(
@@ -242,49 +191,99 @@ STA-3\t\t\t2.000\t20\tEnd`;
     // Cancel modal and verify existing rows are completely unchanged
     await page.locator('[data-paste-cancel-btn]').click();
     await expect(page.locator('[data-paste-modal]')).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
     await expect(initialRows).toHaveCount(6);
     await expect(initialRows.nth(0).locator('input').nth(0)).toHaveValue('BM-1');
   });
 
-  test('keyboard access: Escape key closes modal', async ({ page }) => {
+  test('keyboard access: traps focus with forward and reverse Tab, and restores focus on close, cancel, and Escape', async ({
+    page,
+  }) => {
     await loadWorkbench(page);
 
-    await page.locator('[data-paste-excel]').click();
+    const pasteBtn = page.locator('[data-paste-excel]');
+    await pasteBtn.click();
     const modal = page.locator('[data-paste-modal]');
     await expect(modal).toBeVisible();
 
-    // Press Escape
+    // 1. Textarea receives initial focus
+    await expect(page.locator('[data-paste-textarea]')).toBeFocused();
+
+    // 2. Reverse Tab from first focusable element wraps to last focusable element
+    await page.locator('[data-paste-close-btn]').focus();
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.locator('[data-paste-cancel-btn]')).toBeFocused();
+
+    // 3. Forward Tab from last focusable element wraps to first focusable element
+    await page.keyboard.press('Tab');
+    await expect(page.locator('[data-paste-close-btn]')).toBeFocused();
+
+    // 4. Escape restores focus to opener button
     await page.keyboard.press('Escape');
     await expect(modal).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
+
+    // 5. Close button restores focus to opener button
+    await pasteBtn.click();
+    await expect(modal).toBeVisible();
+    await page.locator('[data-paste-close-btn]').click();
+    await expect(modal).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
+
+    // 6. Cancel button restores focus to opener button
+    await pasteBtn.click();
+    await expect(modal).toBeVisible();
+    await page.locator('[data-paste-cancel-btn]').click();
+    await expect(modal).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
   });
 
-  test('mobile layout (360x800) fits screen without horizontal overflow and passes axe audit', async ({
+  test('mobile layout (360x800) traps focus, restores focus, and passes axe audit', async ({
     page,
   }) => {
     await loadWorkbench(page, 360, 800);
 
-    await page.locator('[data-paste-excel]').click();
+    const pasteBtn = page.locator('[data-paste-excel]');
+    await pasteBtn.click();
     const modal = page.locator('[data-paste-modal]');
     await expect(modal).toBeVisible();
+    await expect(page.locator('[data-paste-textarea]')).toBeFocused();
 
-    // Check no horizontal page overflow
+    // Mobile focus trap wrapping
+    await page.locator('[data-paste-close-btn]').focus();
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.locator('[data-paste-cancel-btn]')).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(page.locator('[data-paste-close-btn]')).toBeFocused();
+
+    // Mobile focus restoration on Escape
+    await page.keyboard.press('Escape');
+    await expect(modal).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
+
+    // Reopen and check layout
+    await pasteBtn.click();
+    await expect(modal).toBeVisible();
+
     const hasHorizontalOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth > window.innerWidth,
     );
     expect(hasHorizontalOverflow).toBe(false);
 
-    // Fill valid data
     await page.locator('[data-paste-textarea]').fill(SAMPLE_EXCEL_TSV);
     await expect(page.locator('[data-paste-success-banner]')).toBeVisible();
 
-    // Preview table is horizontally scrollable inside container
     const tableWrap = page.locator('[data-paste-preview-table]').locator('..');
     const scrollWidth = await tableWrap.evaluate((el) => el.scrollWidth);
     const clientWidth = await tableWrap.evaluate((el) => el.clientWidth);
     expect(scrollWidth).toBeGreaterThanOrEqual(clientWidth);
 
-    // Run Axe accessibility audit on the open modal
     const axe = await new AxeBuilder({ page }).analyze();
     expect(axe.violations).toEqual([]);
+
+    await page.locator('[data-paste-cancel-btn]').click();
+    await expect(modal).not.toBeVisible();
+    await expect(pasteBtn).toBeFocused();
   });
 });

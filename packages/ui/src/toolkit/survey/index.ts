@@ -5,6 +5,7 @@ export * from './SurveyPasteModal.tsx';
 export * from './SurveyProfilePlaceholder.tsx';
 export * from './SurveyResultsTable.tsx';
 export * from './SurveySummaryTiles.tsx';
+export * from './surveyDialogFocus.ts';
 export * from './surveyLevelingModel.ts';
 export * from './surveyLevelingStrings.ts';
 export * from './surveyLevelingTypes.ts';
