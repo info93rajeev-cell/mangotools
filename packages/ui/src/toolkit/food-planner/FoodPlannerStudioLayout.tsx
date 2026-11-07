@@ -106,7 +106,7 @@ function PlannerNavBar({
   onSelectSection: (s: PlannerSection) => void;
 }) {
   return (
-    <div class={styles.navPillBar} role="tablist">
+    <div class={styles.navPillBar} role="tablist" style={{ overflowX: 'auto' }}>
       <NavTab
         id="recipes"
         label="Recipes & Menu"
