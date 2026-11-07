@@ -65,7 +65,7 @@ export function refineForBackground(
   const feather = input.feather ?? 2;
   const orig = ctxOrig.getImageData(0, 0, w, h).data;
   const bg = detectBackgroundFromPerimeter(orig, w, h);
-  if (mode === 'glass' || bg.isUniform || w * h > MAX_REFINE_PIXELS) {
+  if (mode === 'glass' || mode === 'tinted' || bg.isUniform || w * h > MAX_REFINE_PIXELS) {
     return refineMatte(ctxOrig, ctxCut, w, h, feather, mode, input.tolerance);
   }
   const cut = ctxCut.getImageData(0, 0, w, h);

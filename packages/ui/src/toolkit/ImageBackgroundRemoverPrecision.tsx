@@ -61,7 +61,9 @@ export function TransparencyRow({
 }) {
   return (
     <div class={styles.sliderGroup}>
-      <span class={styles.dimLabel}>Matte Mode (Glass keeps see-through parts):</span>
+      <span class={styles.dimLabel}>
+        Matte Mode (Glass keeps see-through parts; Tinted Glass also coloured glass):
+      </span>
       <div class={styles.bgOptionsRow}>
         <button
           type="button"
@@ -79,9 +81,19 @@ export function TransparencyRow({
           data-active={String(bgRemover.transparencyMode === 'glass')}
           onClick={() => bgRemover.setTransparencyMode('glass')}
           disabled={!hasFile || isExecuting}
-          title="Enhanced glass, transparent bottles, veils & reflections"
+          title="Clear glass is see-through; coloured parts (fruit, plastic, labels) stay solid"
         >
           <span>💎 Glass</span>
+        </button>
+        <button
+          type="button"
+          class={styles.bgOptBtn}
+          data-active={String(bgRemover.transparencyMode === 'tinted')}
+          onClick={() => bgRemover.setTransparencyMode('tinted')}
+          disabled={!hasFile || isExecuting}
+          title="Whole product is glass, coloured glass too (amber bottle, red glass): every part is see-through"
+        >
+          <span>🍷 Tinted Glass</span>
         </button>
         <button
           type="button"

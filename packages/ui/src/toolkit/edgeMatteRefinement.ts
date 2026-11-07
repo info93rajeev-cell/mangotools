@@ -8,7 +8,11 @@ export interface DetectedBg {
   tolerance: number;
 }
 
-export type TransparencyMode = 'auto' | 'glass' | 'solid';
+/**
+ * glass: clear glass is see-through, coloured or dark parts (fruit, plastic, labels) stay solid.
+ * tinted: every part of a glass-only product is see-through, coloured glass too.
+ */
+export type TransparencyMode = 'auto' | 'glass' | 'tinted' | 'solid';
 
 export function detectBackgroundFromPerimeter(
   ref: Uint8ClampedArray,
@@ -64,6 +68,30 @@ export function detectBackgroundFromPerimeter(
     isUniform: maxDev <= 40,
     tolerance: Math.max(14, Math.min(32, maxDev * 2.0)),
   };
+}
+
+function smooth01(e0: number, e1: number, x: number): number {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
+/**
+ * Clear-glass matte. A pixel close to the background colour is light passing through glass and
+ * gets the transmission alpha; a pixel far from it is an opaque body seen through or next to the
+ * glass (a red plastic boot, a strawberry) and goes solid. In between blends smoothly.
+ */
+export function resolveClearGlassAlpha(
+  a: number,
+  r: number,
+  g: number,
+  b: number,
+  dist: number,
+  tolerance: number,
+): number {
+  const t = resolveGlassAlpha(a, r, g, b, dist, tolerance);
+  if (t === 0) return 0;
+  const body = smooth01(tolerance * 1.5, tolerance * 1.5 + 110, dist);
+  return body + (1 - body) * t;
 }
 
 export function resolveGlassAlpha(
@@ -143,7 +171,8 @@ function refineBoundaryAlpha(
   const dist = Math.hypot(r - bg.r, g - bg.g, b - bg.b);
   const tol = bg.tolerance;
 
-  if (mode === 'glass') return resolveGlassAlpha(a, r, g, b, dist, tol);
+  if (mode === 'glass') return resolveClearGlassAlpha(a, r, g, b, dist, tol);
+  if (mode === 'tinted') return resolveGlassAlpha(a, r, g, b, dist, tol);
   if (dist <= tol) return 0.0;
   if (a >= 0.85) return 1.0;
   if (mode === 'solid') return resolveSolidAlpha(a, dist, tol);
@@ -301,7 +330,7 @@ export function refineMatte(
   }
 
   const structuredAlpha =
-    transparencyMode === 'glass'
+    transparencyMode === 'glass' || transparencyMode === 'tinted'
       ? rawAlpha
       : recoverFineStructures(rawAlpha, origData.data, w, h, bg);
   const refined = refineAlphaMask(structuredAlpha, origData.data, w, h, bg, transparencyMode);
