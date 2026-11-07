@@ -8,6 +8,10 @@ test.describe('JPG to PDF', () => {
 
   test('uploads images, reorders and removes them, then clears the queue', async ({ page }) => {
     await openTool(page, 'jpg-to-pdf');
+    const clearBtn = page.getByRole('button', { name: 'Clear all' });
+    if (await clearBtn.isVisible()) {
+      await clearBtn.click();
+    }
     const [small, wide] = FILE_TOOLS['jpg-to-pdf'].files;
     await fileInput(page).setInputFiles([small, wide]);
     const rows = island(page, 'jpg-to-pdf').getByRole('listitem');
@@ -28,6 +32,10 @@ test.describe('JPG to PDF', () => {
 
   test('converts images and downloads the result with the default name', async ({ page }) => {
     await openTool(page, 'jpg-to-pdf');
+    const clearBtn = page.getByRole('button', { name: 'Clear all' });
+    if (await clearBtn.isVisible()) {
+      await clearBtn.click();
+    }
     const [small, wide] = FILE_TOOLS['jpg-to-pdf'].files;
     await fileInput(page).setInputFiles([small, wide]);
     const downloadPromise = page.waitForEvent('download');
@@ -40,6 +48,10 @@ test.describe('JPG to PDF', () => {
 
   test('normalizes a custom output file name on download', async ({ page }) => {
     await openTool(page, 'jpg-to-pdf');
+    const clearBtn = page.getByRole('button', { name: 'Clear all' });
+    if (await clearBtn.isVisible()) {
+      await clearBtn.click();
+    }
     const [small] = FILE_TOOLS['jpg-to-pdf'].files;
     await fileInput(page).setInputFiles([small]);
     await page.getByLabel('Output file name').fill('  My Photos<>.PDF  ');
