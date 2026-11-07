@@ -77,7 +77,7 @@ function handleModelRoute(
     return true;
   }
 
-  const modelMatch = path.match(/^\/birefnet-lite-512\/[^/]+\/(.+)$/);
+  const modelMatch = path.match(/^\/models\/birefnet-lite-512\/[^/]+\/(.+)$/);
   if (!modelMatch) return false;
 
   const modelFile = join(cacheDir, modelMatch[1]);
