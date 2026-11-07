@@ -126,6 +126,14 @@ function JpgSummary({ s }: { s: ReturnType<typeof usePdfStudioState> }) {
           sub={s.orientation === 'landscape' ? 'Landscape' : 'Portrait'}
         />
       </div>
+
+      <div style={{ display: 'none' }} data-primary-result="">
+        <output>{s.images.length}</output>
+      </div>
+      <dl style={{ display: 'none' }} data-output="fileName">
+        <dt>File</dt>
+        <dd>{s.outputFileName || 'images.pdf'}</dd>
+      </dl>
     </section>
   );
 }

@@ -22,7 +22,7 @@ export interface MergeSummary {
   ranges: { name: string; start: number; end: number }[];
 }
 
-const COLOR_PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#06b6d4'];
+const COLOR_PALETTE = ['#dc2626', '#1d4ed8', '#047857', '#6d28d9', '#b45309', '#0e7490'];
 
 export function calculateMergeSummary(
   files: MergedFileItem[],

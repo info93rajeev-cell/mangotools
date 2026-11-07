@@ -607,7 +607,7 @@ button.swatchActive {
   transition: background 0.15s ease;
 }
 .downloadPngBtn:hover:not(:disabled) {
-  background: #059669;
+  background: #065f46;
 }
 .btnSubtext {
   font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
@@ -797,19 +797,19 @@ button.swatchActive {
 .modeSwitcherBar {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px;
+  gap: 4px;
+  padding: 2px 4px;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   width: fit-content;
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 .modeTabBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  gap: 4px;
+  padding: 4px 10px;
   font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
@@ -865,6 +865,19 @@ button.modeTabActive {
   .modeTabBtn {
     flex: 1 1 auto;
     justify-content: center;
+  }
+
+  @media (max-width: 480px) {
+    .modeSwitcherBar {
+      flex-direction: column;
+    }
+    .modeTabBtn {
+      width: 100%;
+      font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
+      padding: 6px 8px;
+      text-align: center;
+      white-space: normal;
+    }
   }
   .calloutGroup {
     display: none;

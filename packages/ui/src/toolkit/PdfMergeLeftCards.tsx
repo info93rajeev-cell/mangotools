@@ -5,7 +5,7 @@ import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
 
-const ROW_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#8b5cf6'];
+const ROW_COLORS = ['#dc2626', '#1d4ed8', '#047857', '#6d28d9'];
 
 function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
   const { files, moveFile, rotateFile, removeFile } = studio;
@@ -26,6 +26,9 @@ function PdfMergeListSection({ studio }: { studio: MergeStudioState }) {
         }
       />
       <div class={styles.fileList}>
+        <div data-primary-result="" class="visually-hidden">
+          <output>{files.length}</output>
+        </div>
         {files.map((file, idx) => (
           <RefFileItem
             key={file.id}

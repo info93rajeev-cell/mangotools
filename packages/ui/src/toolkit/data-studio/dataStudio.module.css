@@ -1426,7 +1426,6 @@ button.btnPrimarySolid:hover {
   flex-direction: column;
   gap: 8px;
   min-width: 0;
-  overflow-y: auto;
 }
 
 .structureCard,
@@ -2490,6 +2489,7 @@ button.btnDangerOutline {
   flex: 1;
   min-width: 0;
   display: flex;
+  overflow: hidden;
 }
 .codeArea .codeTextarea {
   width: 100%;
@@ -3338,6 +3338,19 @@ button.btnDangerOutline {
     justify-content: center;
     width: 100%;
     min-height: 38px;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .topActionsBar {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .structureGrid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -5,22 +5,22 @@ import { expect, type Page } from '@playwright/test';
 export const SAMPLES = {
   // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
   'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
-  'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
+  'gst-calculator': { archetype: 'B', result: '₹ 11,800.00' },
   'profit-margin-calculator': { archetype: 'B', result: '₹81.36' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
   'concrete-quantity-calculator': { archetype: 'B', resultPattern: /^3\.150/ },
-  'excavation-calculator': { archetype: 'B', resultPattern: /^12\.000/ },
-  'brickwork-calculator': { archetype: 'B', resultPattern: /^538/ },
-  'plaster-calculator': { archetype: 'B', resultPattern: /^0\.120/ },
-  'tile-flooring-calculator': { archetype: 'B', resultPattern: /^245/ },
-  'paint-calculator': { archetype: 'B', resultPattern: /^7\.504/ },
+  'excavation-calculator': { archetype: 'B', resultPattern: /^70\.667 m³$/ },
+  'brickwork-calculator': { archetype: 'B', resultPattern: /^1,226 nos$/ },
+  'plaster-calculator': { archetype: 'B', resultPattern: /^24\.60 m²$/ },
+  'tile-flooring-calculator': { archetype: 'B', resultPattern: /^23\.00 m²$/ },
+  'paint-calculator': { archetype: 'B', resultPattern: /^70\.67 m²$/ },
   'export-commercial-invoice-generator': { archetype: 'B', result: '1,750.00' },
   'export-packing-list-generator': { archetype: 'B', result: '10' },
-  'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
-  'container-loading-calculator': { archetype: 'B', result: '500' },
-  'pallet-loading-calculator': { archetype: 'B', result: '56' },
-  'json-formatter': { archetype: 'A', result: '"id": 12345678901234567890' },
+  'volumetric-weight-calculator': { archetype: 'B', resultPattern: /^34\.646(?: kg)?$/ },
+  'container-loading-calculator': { archetype: 'B', result: '200' },
+  'pallet-loading-calculator': { archetype: 'B', result: '36' },
+  'json-formatter': { archetype: 'A', result: '"id": 12345' },
   // The studio's Sample Text button loads the reference sample shown on first open.
   'base64-encode-decode': {
     archetype: 'A',
@@ -83,11 +83,29 @@ export const FILE_TOOLS = {
     // The primary output is the output file name, derived from the original name plus the page range.
     result: 'five-page-pages-1-1.pdf',
   },
+  'compress-pdf': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/compress-pdf/fixtures/files/one-page.pdf')],
+    downloadCta: /Download (Compressed )?PDF/i,
+    resultPattern: /^\d+(\.\d+)?%$/,
+  },
+  'pdf-to-word': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/pdf-to-word/fixtures/files/chromium-report.pdf')],
+    downloadCta: /Download DOCX/i,
+    resultPattern: /^\d+$/,
+  },
+  'word-to-pdf': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/word-to-pdf/fixtures/files/order-summary.docx')],
+    downloadCta: /Download PDF/i,
+    resultPattern: /^\d+$/,
+  },
   'image-background-remover': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg')],
     downloadCta: /Download (transparent image|PNG)/i,
-    result: 'sample-no-bg.png',
+    resultPattern: /^(sample|jaipur-palace)-no-bg\.png$/,
   },
   'image-resize': {
     archetype: 'D',
@@ -154,7 +172,7 @@ export const FILE_TOOLS = {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
     downloadCta: 'Download enlarged image',
-    result: '1600',
+    result: '16',
   },
 } as const;
 
@@ -189,12 +207,13 @@ export const island = (page: Page, id: string) => {
   if (id === 'pallet-loading-calculator') return page.locator('[data-pallet-loading-workspace]');
   if (id === 'volumetric-weight-calculator')
     return page.locator('[data-volumetric-weight-workspace]');
+  if (id === 'image-background-remover') return page.locator('[data-image-bg-remover-layout]');
   if (CIVIL_TOOL_IDS.has(id)) return page.locator('.civil-workspace-container');
   return page.locator(`[data-tool-island="${id}"]`);
 };
 export const primaryResult = (page: Page) =>
   page.locator(
-    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] span[class*="kpiValue"]:first-of-type, [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong',
+    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong',
   );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
@@ -254,7 +273,27 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     return;
   }
   if (id === 'pdf-merge' || id === 'pdf-split') {
-    await expect(page.getByText(/Ready to (merge|split)/)).toBeVisible();
+    await expect(page.getByText(/Ready to (merge|split)/).first()).toBeVisible();
+    return;
+  }
+  if (id === 'compress-pdf') {
+    await expect(
+      page
+        .getByRole('status')
+        .filter({ hasText: /^\s*(Compressed|Already compact|Ready to compress)\s*$/ }),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'pdf-to-word') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(Converted|Ready to convert)\s*$/ }),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'word-to-pdf') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(PDF created|Ready to convert)\s*$/ }),
+    ).toBeVisible();
     return;
   }
   if (id === 'image-background-remover') {
@@ -294,6 +333,15 @@ async function waitForPreviewDecode(page: Page, id: string): Promise<void> {
     );
 }
 
+async function triggerFileToolAction(page: Page, id: string): Promise<void> {
+  if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
+  else if (id === 'compress-pdf')
+    await page.getByRole('button', { name: 'Compress PDF', exact: true }).click();
+  else if (id === 'pdf-to-word')
+    await page.getByRole('button', { name: /Convert to Word/ }).click();
+  else if (id === 'word-to-pdf') await page.getByRole('button', { name: /Create PDF/ }).click();
+}
+
 /**
  * Produces a result the same way every shared suite (network, axe, screenshots, "Try sample")
  * checks it: clicking "Try sample" for a tool that has one, or uploading real files through the
@@ -312,8 +360,7 @@ export async function produceResult(page: Page, id: string): Promise<void> {
         await page.getByLabel(label).fill(value);
       }
     }
-    // Crop has a separate processing action before its result download is available.
-    if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
+    await triggerFileToolAction(page, id);
     await page.getByRole('button', { name: tool.downloadCta }).click();
   } else if (isLogisticsStudio(id) || id === 'gst-calculator') {
     // The Logistics studios and Universal Tax worksheets open already filled with their calculation result

@@ -40,6 +40,7 @@ function SliderItem({ label, min, max, value, onChange }: SliderItemProps) {
         min={min}
         max={max}
         value={value}
+        aria-label={label}
         class={styles.customRangeInput}
         onInput={(e) => onChange(Number((e.target as HTMLInputElement).value))}
       />
@@ -231,6 +232,7 @@ function FiltersTabSection({ enhance }: { enhance: UsePassportEnhanceStateReturn
           min={10}
           max={100}
           value={filterIntensity}
+          aria-label="Filter Intensity"
           class={styles.customRangeInput}
           onInput={(e) => setFilterIntensity(Number((e.target as HTMLInputElement).value))}
         />

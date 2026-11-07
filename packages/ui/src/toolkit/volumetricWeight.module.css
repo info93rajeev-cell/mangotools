@@ -372,6 +372,13 @@
   }
 }
 
+@media (max-width: 360px) {
+  .kpis {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
 .kpi {
   border: 1px solid #e2e8f0;
   border-radius: 6px;
@@ -403,7 +410,8 @@
 }
 
 .kpi span {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
   text-transform: uppercase;
@@ -524,9 +532,11 @@
 .tableScroll {
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   max-height: 150px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   margin-top: 4px;

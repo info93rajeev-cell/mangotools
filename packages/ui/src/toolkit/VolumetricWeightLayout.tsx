@@ -19,6 +19,121 @@ interface VolumetricWeightLayoutProps {
   onLaunchTour?: () => void;
 }
 
+interface ItemRowProps {
+  item: VolumetricItem;
+  idx: number;
+  canRemove: boolean;
+  onUpdate: (id: string, patch: Partial<VolumetricItem>) => void;
+  onRemove: (id: string) => void;
+  onSelect: (id: string) => void;
+}
+
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Table row inputs
+function VolumetricItemRow({ item, idx, canRemove, onUpdate, onRemove, onSelect }: ItemRowProps) {
+  return (
+    <tr>
+      <td class={styles.rowNum}>{idx + 1}</td>
+      <td>
+        <input
+          type="text"
+          aria-label={`Package ${idx + 1} description`}
+          class={styles.tableInput}
+          value={item.description}
+          placeholder="Description / SKU"
+          onChange={(e) =>
+            onUpdate(item.id, {
+              description: (e.target as HTMLInputElement).value,
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          aria-label={`Package ${idx + 1} length`}
+          class={`${styles.tableInput} ${styles.numInput}`}
+          value={item.length || ''}
+          onChange={(e) =>
+            onUpdate(item.id, {
+              length: Math.max(0, Number((e.target as HTMLInputElement).value)),
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          aria-label={`Package ${idx + 1} width`}
+          class={`${styles.tableInput} ${styles.numInput}`}
+          value={item.width || ''}
+          onChange={(e) =>
+            onUpdate(item.id, {
+              width: Math.max(0, Number((e.target as HTMLInputElement).value)),
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          aria-label={`Package ${idx + 1} height`}
+          class={`${styles.tableInput} ${styles.numInput}`}
+          value={item.height || ''}
+          onChange={(e) =>
+            onUpdate(item.id, {
+              height: Math.max(0, Number((e.target as HTMLInputElement).value)),
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          aria-label={`Package ${idx + 1} weight`}
+          class={`${styles.tableInput} ${styles.numInput}`}
+          value={item.weightKg || ''}
+          onChange={(e) =>
+            onUpdate(item.id, {
+              weightKg: Math.max(0, Number((e.target as HTMLInputElement).value)),
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          aria-label={`Package ${idx + 1} quantity`}
+          class={`${styles.tableInput} ${styles.numInput}`}
+          value={item.quantity}
+          min="1"
+          onChange={(e) =>
+            onUpdate(item.id, {
+              quantity: Math.max(1, Number((e.target as HTMLInputElement).value)),
+            })
+          }
+          onFocus={() => onSelect(item.id)}
+        />
+      </td>
+      <td>
+        <button
+          type="button"
+          class={styles.trashBtn}
+          onClick={() => onRemove(item.id)}
+          disabled={!canRemove}
+          aria-label={`Remove row ${idx + 1}`}
+        >
+          🗑️
+        </button>
+      </td>
+    </tr>
+  );
+}
+
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio volumetric weight layout
 export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeightLayoutProps) {
   const [items, setItems] = useState<VolumetricItem[]>(SAMPLE_VOLUMETRIC_ITEMS);
@@ -179,100 +294,15 @@ export function VolumetricWeightLayout({ preset, onLaunchTour }: VolumetricWeigh
                 </thead>
                 <tbody>
                   {items.map((item, idx) => (
-                    <tr key={item.id}>
-                      <td class={styles.rowNum}>{idx + 1}</td>
-                      <td>
-                        <input
-                          type="text"
-                          class={styles.tableInput}
-                          value={item.description}
-                          placeholder="Description / SKU"
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              description: (e.target as HTMLInputElement).value,
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class={`${styles.tableInput} ${styles.numInput}`}
-                          value={item.length || ''}
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              length: Math.max(0, Number((e.target as HTMLInputElement).value)),
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class={`${styles.tableInput} ${styles.numInput}`}
-                          value={item.width || ''}
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              width: Math.max(0, Number((e.target as HTMLInputElement).value)),
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class={`${styles.tableInput} ${styles.numInput}`}
-                          value={item.height || ''}
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              height: Math.max(0, Number((e.target as HTMLInputElement).value)),
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class={`${styles.tableInput} ${styles.numInput}`}
-                          value={item.weightKg || ''}
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              weightKg: Math.max(0, Number((e.target as HTMLInputElement).value)),
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class={`${styles.tableInput} ${styles.numInput}`}
-                          value={item.quantity}
-                          min="1"
-                          onChange={(e) =>
-                            handleUpdateItem(item.id, {
-                              quantity: Math.max(1, Number((e.target as HTMLInputElement).value)),
-                            })
-                          }
-                          onFocus={() => setSelectedPreviewId(item.id)}
-                        />
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          class={styles.trashBtn}
-                          onClick={() => handleRemoveItem(item.id)}
-                          disabled={items.length <= 1}
-                          aria-label={`Remove row ${idx + 1}`}
-                        >
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
+                    <VolumetricItemRow
+                      key={item.id}
+                      item={item}
+                      idx={idx}
+                      canRemove={items.length > 1}
+                      onUpdate={handleUpdateItem}
+                      onRemove={handleRemoveItem}
+                      onSelect={setSelectedPreviewId}
+                    />
                   ))}
                 </tbody>
               </table>

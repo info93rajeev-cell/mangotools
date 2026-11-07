@@ -82,6 +82,7 @@ function CropTabContent({ passport }: { passport: UsePassportPhotoReturn }) {
             <span class={styles.dimFieldLabel}>Width (px)</span>
             <input
               type="number"
+              aria-label="Photo width"
               class={styles.dimInputNumber}
               value={passport.targetWidth}
               onInput={(e) => passport.setWidth(Number((e.target as HTMLInputElement).value))}
@@ -91,6 +92,7 @@ function CropTabContent({ passport }: { passport: UsePassportPhotoReturn }) {
             <span class={styles.dimFieldLabel}>Height (px)</span>
             <input
               type="number"
+              aria-label="Photo height"
               class={styles.dimInputNumber}
               value={passport.targetHeight}
               onInput={(e) => passport.setHeight(Number((e.target as HTMLInputElement).value))}
@@ -178,6 +180,7 @@ function AdjustTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn 
           type="range"
           min="-30"
           max="30"
+          aria-label="Brightness"
           value={adjustments.brightness}
           class={styles.rangeSlider}
           onInput={(e) => setAdjustment('brightness', Number((e.target as HTMLInputElement).value))}
@@ -193,6 +196,7 @@ function AdjustTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn 
           type="range"
           min="-30"
           max="30"
+          aria-label="Contrast"
           value={adjustments.contrast}
           class={styles.rangeSlider}
           onInput={(e) => setAdjustment('contrast', Number((e.target as HTMLInputElement).value))}
@@ -208,6 +212,7 @@ function AdjustTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn 
           type="range"
           min="-20"
           max="20"
+          aria-label="Saturation"
           value={adjustments.saturation}
           class={styles.rangeSlider}
           onInput={(e) => setAdjustment('saturation', Number((e.target as HTMLInputElement).value))}
@@ -223,6 +228,7 @@ function AdjustTabContent({ enhance }: { enhance: UsePassportEnhanceStateReturn 
           type="range"
           min="0"
           max="10"
+          aria-label="Sharpen"
           value={adjustments.sharpen}
           class={styles.rangeSlider}
           onInput={(e) => setAdjustment('sharpen', Number((e.target as HTMLInputElement).value))}

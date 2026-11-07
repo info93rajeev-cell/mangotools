@@ -261,7 +261,7 @@
   width: 38px;
   height: 44px;
   border-radius: 7px;
-  background: #ef4444;
+  background: #dc2626;
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
@@ -1177,6 +1177,7 @@ fieldset.options {
    own frame, and only the nested boxes (comparison, preview) keep a border. */
 .column {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   align-content: start;
   min-width: 0;
@@ -2128,4 +2129,43 @@ fieldset.options {
   object-fit: cover;
   object-position: top center;
   border-radius: inherit;
+}
+
+@media (max-width: 500px) {
+  .column {
+    padding: 12px 8px;
+  }
+  .column > .subcard,
+  .column > .card.subcard {
+    padding: 12px 8px;
+  }
+  .options,
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .actions .btn {
+    white-space: normal;
+  }
+  .actionRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .actionRow .btn {
+    white-space: normal;
+  }
+  .seg {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .segBtn {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 13px;
+  }
 }

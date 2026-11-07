@@ -77,7 +77,7 @@ test('Amazon fulfilment evidence: mode tabs and scenario comparison', async ({ p
   // Comparison tab shows guidance
   await page
     .locator('[aria-label="Comparison Tabs"]')
-    .getByRole('button', { name: 'Compare' })
+    .getByRole('tab', { name: 'Compare' })
     .click();
   await expect(page.getByText('Fees differ by mode. To compare')).toBeVisible();
 

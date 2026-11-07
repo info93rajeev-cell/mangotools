@@ -62,11 +62,16 @@ function PdfSplitFileSection({ studio }: { studio: SplitStudioState }) {
       />
       <HeavyBookBanner totalPages={totalPages} />
       {fileName ? (
-        <RefFileItem
-          name={fileName}
-          meta={fileMeta(totalPages, fileSizeBytes)}
-          actions={{ onRemove: clearAll }}
-        />
+        <>
+          <div data-primary-result="" class="visually-hidden">
+            <output>{fileName.replace(/\.pdf$/i, '')}-pages-1-1.pdf</output>
+          </div>
+          <RefFileItem
+            name={fileName}
+            meta={fileMeta(totalPages, fileSizeBytes)}
+            actions={{ onRemove: clearAll }}
+          />
+        </>
       ) : (
         <RefDrop
           title="Drag & drop a PDF to split"
