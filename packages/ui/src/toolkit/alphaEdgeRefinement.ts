@@ -60,6 +60,40 @@ function runningMean(
   }
 }
 
+/** Running max (or min) along one row or column, window ±r, clamped at the ends. */
+function extremeLine(
+  src: Float32Array,
+  dst: Float32Array,
+  start: number,
+  step: number,
+  n: number,
+  r: number,
+  pick: (a: number, b: number) => number,
+): void {
+  for (let i = 0; i < n; i++) {
+    let v = src[start + i * step] ?? 0;
+    const lo = Math.max(0, i - r);
+    const hi = Math.min(n - 1, i + r);
+    for (let j = lo; j <= hi; j++) v = pick(v, src[start + j * step] ?? 0);
+    dst[start + i * step] = v;
+  }
+}
+
+function extremeFilter(p: Plane, r: number, pick: (a: number, b: number) => number): Float32Array {
+  const tmp = new Float32Array(p.w * p.h);
+  const out = new Float32Array(p.w * p.h);
+  for (let y = 0; y < p.h; y++) extremeLine(p.data, tmp, y * p.w, 1, p.w, r, pick);
+  for (let x = 0; x < p.w; x++) extremeLine(tmp, out, x, p.w, p.h, r, pick);
+  return out;
+}
+
+/** Local max − min of a plane over a (2r+1)² window: high only where the mask changes fast. */
+export function localRange(src: Plane, r: number): Plane {
+  const max = extremeFilter(src, r, Math.max);
+  const min = extremeFilter(src, r, Math.min);
+  return { w: src.w, h: src.h, data: max.map((v, i) => v - (min[i] ?? 0)) };
+}
+
 const mul = (a: Plane, b: Plane): Plane => ({
   w: a.w,
   h: a.h,
@@ -189,15 +223,11 @@ function guidedAlpha(
 }
 
 /**
- * Colour-line alpha: project the pixel onto the line from the local background colour B to the
- * local subject colour F, trusted only where F and B clearly differ. Used to raise `q`, never lower.
+ * Colour-line lift: project the pixel onto the line from the local background colour B to the
+ * local subject colour F, trusted only where F and B clearly differ (0 otherwise). Used only to
+ * *raise* alpha (thin strands the model saw faintly), never to lower it.
  */
-function colourLineAlpha(
-  rgba: Uint8ClampedArray,
-  o: number,
-  local: (ch: number) => [number, number],
-  q: number,
-): number {
+function colourLift(rgba: Uint8ClampedArray, o: number, local: (ch: number) => [number, number]) {
   let dot = 0;
   let len = 0;
   for (let ch = 0; ch < 3; ch++) {
@@ -206,11 +236,17 @@ function colourLineAlpha(
     dot += ((rgba[o + ch] ?? 0) / 255 - B) * d;
     len += d * d;
   }
-  const conf = smooth(0.15, 0.35, Math.sqrt(len));
-  // Only ever *adds* subject (thin strands the model saw faintly). It never removes: a part of the
-  // subject that happens to resemble the background (moss on a branch against green bokeh) must
-  // keep the model's verdict, not be erased by colour similarity.
-  return Math.max(q, conf * clamp01(dot / (len || 1)));
+  return smooth(0.15, 0.35, Math.sqrt(len)) * clamp01(dot / (len || 1));
+}
+
+/**
+ * Guided refinement (which may also lower alpha) only where the model's mask changes fast — a
+ * real edge (`range` = local max − min). Wide regions the model was unsure about keep its value.
+ */
+function pixelAlpha(raw: number, range: number, sup: number, guided: () => number): number {
+  const edge = smooth(0.2, 0.45, range);
+  if (edge <= 0) return raw;
+  return edge * boundBySupport(guided(), sup) + (1 - edge) * raw;
 }
 
 /** Keep the refined alpha inside the model's own support: no new subject in sure background. */
@@ -245,11 +281,42 @@ function analyse(rgba: Uint8ClampedArray, alpha: Uint8ClampedArray, w: number, h
   // pixels. The window must cover that band on both sides.
   const r = Math.max(4, Math.ceil((3 * Math.max(1, w / 512)) / k));
   const coef = guidedCoefficients(I, a, r);
-  const band = boxMean(a, r * 2);
+  // Refine only where the model's mask actually changes fast (a real edge). Wide regions the model
+  // was unsure about keep the model's own value: that is its judgement, not an edge to snap.
+  const band = localRange(a, r);
   // Where the model is sure (nearby mask all 0 or all 1) the refinement may not add or remove.
   const support = boxMean(a, Math.max(2, Math.round(r / 2)));
   const { fg, bg } = colourEstimates(I, a, r * 2);
   return { k, coef, band, support, fg, bg };
+}
+
+interface Analysis {
+  k: number;
+  coef: Plane[];
+  band: Plane;
+  support: Plane;
+  fg: Plane[];
+  bg: Plane[];
+}
+
+/** Final alpha for one full-resolution pixel. */
+function refinePixel(
+  an: Analysis,
+  rgba: Uint8ClampedArray,
+  raw: number,
+  o: number,
+  x: number,
+  y: number,
+  local: (ch: number) => [number, number],
+): number {
+  const { k } = an;
+  const sup = sampleAt(an.support, x, y, k);
+  const a = pixelAlpha(raw, sampleAt(an.band, x, y, k), sup, () =>
+    guidedAlpha(an.coef, rgba, o, x, y, k),
+  );
+  if (raw <= 0.004 || raw >= 0.996) return a;
+  const lift = smooth(0.1, 0.9, colourLift(rgba, o, local)) * smooth(0, 0.08, sup);
+  return Math.max(a, lift);
 }
 
 /**
@@ -262,24 +329,16 @@ export function refineCutoutEdges(
   w: number,
   h: number,
 ): Uint8ClampedArray {
-  const { k, coef, band, support, fg, bg } = analyse(rgba, alpha, w, h);
+  const an: Analysis = analyse(rgba, alpha, w, h);
   const out = new Uint8ClampedArray(w * h * 4);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const o = (y * w + x) * 4;
-      const raw = (alpha[o + 3] ?? 0) / 255;
-      const bv = sampleAt(band, x, y, k);
       const local = (ch: number): [number, number] => [
-        sampleAt(fg[ch] as Plane, x, y, k),
-        sampleAt(bg[ch] as Plane, x, y, k),
+        sampleAt(an.fg[ch] as Plane, x, y, an.k),
+        sampleAt(an.bg[ch] as Plane, x, y, an.k),
       ];
-      const a =
-        bv > 0.004 && bv < 0.996
-          ? boundBySupport(
-              colourLineAlpha(rgba, o, local, guidedAlpha(coef, rgba, o, x, y, k)),
-              sampleAt(support, x, y, k),
-            )
-          : raw;
+      const a = refinePixel(an, rgba, (alpha[o + 3] ?? 0) / 255, o, x, y, local);
       writePixel(out, rgba, o, a, local);
     }
   }

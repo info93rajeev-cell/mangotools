@@ -90,8 +90,11 @@ describe('alpha edge refinement', () => {
     expect(alphaAt(raw, w, 600, 20)).toBeLessThan(0.3);
     expect(alphaAt(out, w, 600, 20)).toBeGreaterThan(0.9);
     expect(alphaAt(out, w, 601, 20)).toBeGreaterThan(0.9);
-    expect(alphaAt(out, w, 597, 20)).toBeLessThan(0.05);
-    expect(alphaAt(out, w, 604, 20)).toBeLessThan(0.05);
+    // The model's faint halo beside the strand never grows, and stays faint.
+    for (const x of [597, 604]) {
+      expect(alphaAt(out, w, x, 20)).toBeLessThanOrEqual(alphaAt(raw, w, x, 20));
+      expect(alphaAt(out, w, x, 20)).toBeLessThan(0.1);
+    }
     const o = (20 * w + 600) * 4;
     expect(out[o] ?? 0).toBeGreaterThan(200);
     expect(out[o + 1] ?? 0).toBeLessThan(60);
@@ -111,5 +114,15 @@ describe('alpha edge refinement', () => {
     const raw = softMask(w, h, 512, 8);
     const out = refineCutoutEdges(rgba, raw, w, h);
     for (const x of [498, 502, 506]) expect(alphaAt(out, w, x, 20)).toBeGreaterThan(0.85);
+  });
+
+  it('keeps a wide region the model was unsure about exactly as the model left it', () => {
+    const w = 1024;
+    const h = 48;
+    const rgba = scene(w, h, 512);
+    const raw = softMask(w, h, 512, 8);
+    for (let y = 0; y < h; y++) for (let x = 100; x < 400; x++) raw[(y * w + x) * 4 + 3] = 150;
+    const out = refineCutoutEdges(rgba, raw, w, h);
+    for (const x of [150, 250, 350]) expect(alphaAt(out, w, x, 20)).toBeCloseTo(150 / 255, 2);
   });
 });
