@@ -25,7 +25,7 @@ test.describe('GST compact workspace', () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await openTool(page, tool);
 
-    await expect(primaryResult(page)).toHaveText('₹1,180.00');
+    await expect(primaryResult(page)).toHaveText('₹ 11,800.00');
     await expect(island(page, tool).locator('[data-universal-tax-studio]')).toBeVisible();
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
 
@@ -39,7 +39,7 @@ test.describe('GST compact workspace', () => {
     await page.setViewportSize({ width: 360, height: 800 });
     await openTool(page, tool);
 
-    await expect(primaryResult(page)).toHaveText('₹1,180.00');
+    await expect(primaryResult(page)).toHaveText('₹ 11,800.00');
     await expect(page.locator('#tax-input-amount')).toBeVisible();
     await expect(page.locator('#tax-input-qty')).toBeVisible();
 
@@ -52,16 +52,16 @@ test.describe('GST compact workspace', () => {
   test('preserves Add GST results for intra-state and inter-state supplies', async ({ page }) => {
     await openTool(page, tool);
     await page.locator('#tax-input-amount').fill('1000');
-    await expect(primaryResult(page)).toHaveText('₹1,180.00');
-    await expect(kpi(page, 'Taxable')).toHaveText('₹1,000.00');
-    await expect(kpi(page, 'Total tax')).toHaveText('₹180.00');
-    await expect(componentAmount(page, 'CGST')).toHaveText('₹90.00');
-    await expect(componentAmount(page, 'SGST')).toHaveText('₹90.00');
+    await expect(primaryResult(page)).toHaveText('₹ 1,180.00');
+    await expect(kpi(page, 'Taxable')).toHaveText('₹ 1,000.00');
+    await expect(kpi(page, 'Total tax')).toHaveText('₹ 180.00');
+    await expect(componentAmount(page, 'CGST')).toHaveText('₹ 90.00');
+    await expect(componentAmount(page, 'SGST')).toHaveText('₹ 90.00');
 
     await page.getByRole('button', { name: 'Inter-state (IGST)' }).click();
-    await expect(primaryResult(page)).toHaveText('₹1,180.00');
-    await expect(kpi(page, 'Total tax')).toHaveText('₹180.00');
-    await expect(componentAmount(page, 'IGST')).toHaveText('₹180.00');
+    await expect(primaryResult(page)).toHaveText('₹ 1,180.00');
+    await expect(kpi(page, 'Total tax')).toHaveText('₹ 180.00');
+    await expect(componentAmount(page, 'IGST')).toHaveText('₹ 180.00');
     await expect(componentRow(page, 'CGST')).toHaveCount(0);
   });
 
@@ -69,17 +69,17 @@ test.describe('GST compact workspace', () => {
     await openTool(page, tool);
     await page.getByRole('button', { name: 'Inclusive Price' }).click();
     await page.locator('#tax-input-amount').fill('100');
-    await expect(primaryResult(page)).toHaveText('₹100.00');
-    await expect(kpi(page, 'Taxable')).toHaveText('₹84.75');
-    await expect(kpi(page, 'Total tax')).toHaveText('₹15.25');
-    await expect(componentAmount(page, 'CGST')).toHaveText('₹7.63');
-    await expect(componentAmount(page, 'SGST')).toHaveText('₹7.62');
+    await expect(primaryResult(page)).toHaveText('₹ 100.00');
+    await expect(kpi(page, 'Taxable')).toHaveText('₹ 84.75');
+    await expect(kpi(page, 'Total tax')).toHaveText('₹ 15.25');
+    await expect(componentAmount(page, 'CGST')).toHaveText('₹ 7.63');
+    await expect(componentAmount(page, 'SGST')).toHaveText('₹ 7.62');
 
     await page.getByRole('button', { name: 'Inter-state (IGST)' }).click();
-    await expect(primaryResult(page)).toHaveText('₹100.00');
-    await expect(kpi(page, 'Taxable')).toHaveText('₹84.75');
-    await expect(kpi(page, 'Total tax')).toHaveText('₹15.25');
-    await expect(componentAmount(page, 'IGST')).toHaveText('₹15.25');
+    await expect(primaryResult(page)).toHaveText('₹ 100.00');
+    await expect(kpi(page, 'Taxable')).toHaveText('₹ 84.75');
+    await expect(kpi(page, 'Total tax')).toHaveText('₹ 15.25');
+    await expect(componentAmount(page, 'IGST')).toHaveText('₹ 15.25');
     await expect(componentRow(page, 'CGST')).toHaveCount(0);
   });
 
@@ -88,11 +88,10 @@ test.describe('GST compact workspace', () => {
     await page.locator('#tax-input-amount').fill('100');
     const rate = page.locator('#gst-rate-select');
     for (const [value, gross] of [
-      ['0', '₹100.00'],
-      ['5', '₹105.00'],
-      ['12', '₹112.00'],
-      ['18', '₹118.00'],
-      ['28', '₹128.00'],
+      ['0', '₹ 100.00'],
+      ['5', '₹ 105.00'],
+      ['18', '₹ 118.00'],
+      ['40', '₹ 140.00'],
     ]) {
       await rate.selectOption(value);
       await expect(primaryResult(page)).toHaveText(gross);

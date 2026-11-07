@@ -3,16 +3,19 @@ import { useEffect, useState } from 'preact/hooks';
 import { IconButton } from '../primitives/Button.tsx';
 import { t } from '../strings/en.ts';
 
+/** The site is light unless the visitor explicitly chose dark. */
 function getEffectiveTheme(theme: Theme): 'light' | 'dark' {
-  if (theme === 'dark') return 'dark';
-  if (theme === 'light') return 'light';
-  if (
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-color-scheme: dark)').matches
-  ) {
-    return 'dark';
+  return theme === 'dark' ? 'dark' : 'light';
+}
+
+/** Keeps the browser bar colour and native controls in step with the chosen theme. */
+function syncThemeMeta(theme: 'light' | 'dark'): void {
+  const bar = theme === 'dark' ? '#0c0a09' : '#ffffff';
+  for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+    meta.content = bar;
   }
-  return 'light';
+  const scheme = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]');
+  if (scheme) scheme.content = theme;
 }
 
 /** Toggles between Light and Dark theme with immediate visual feedback. */
@@ -33,6 +36,7 @@ export function ThemeToggle() {
     setTheme(nextTheme);
     prefs.setTheme(nextTheme);
     applyTheme(nextTheme);
+    syncThemeMeta(nextTheme);
     track('theme_change', { theme: nextTheme });
   };
 

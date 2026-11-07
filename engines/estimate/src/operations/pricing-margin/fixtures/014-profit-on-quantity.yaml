@@ -1,0 +1,5 @@
+id: 014-profit-on-quantity
+operation: estimate.pricing.margin@1
+source: { type: hand-verified, citation: "500 × 1.40 = 700.00; profit 200.00 × 20 units = 4000.00" }
+input: { solve: price-from-cost-and-markup, cost: "500", markupPercent: "40", quantity: "20" }
+expected: { price: "700.00", profit: "200.00", profitTotal: "4000.00" }

@@ -74,7 +74,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 16px;
@@ -96,7 +96,7 @@
 }
 
 .subtitleText {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: #475569;
   margin: 0;
   line-height: 1.35;
@@ -113,7 +113,7 @@
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   color: #334155;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 8px;
@@ -132,7 +132,7 @@
 }
 
 .actionBtnDanger {
-  color: #dc2626;
+  color: #b91c1c;
   background: #fef2f2;
   border-color: #fecaca;
 }
@@ -165,6 +165,8 @@
   padding: 12px 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .cardHeader {
@@ -190,13 +192,13 @@
   border-radius: 50%;
   background: #2563eb;
   color: #ffffff;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 800;
   flex-shrink: 0;
 }
 
 .cardTitle {
-  font-size: 13.5px;
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
   font-weight: 800;
   color: #0f172a;
   margin: 0;
@@ -206,7 +208,7 @@
 }
 
 .headerPill {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
   background: #f1f5f9;
@@ -242,14 +244,14 @@
 }
 
 .dropzoneHeadline {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
 .dropzoneSub {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
   margin: 0;
 }
@@ -258,7 +260,7 @@
   background: #2563eb;
   color: #ffffff;
   border: none;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 7px 18px;
   border-radius: 8px;
@@ -293,6 +295,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   transition: border-color 0.15s ease;
+  min-width: 0;
 }
 
 .imageRow:hover {
@@ -302,12 +305,12 @@
 .dragHandle {
   color: #94a3b8;
   cursor: grab;
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   user-select: none;
 }
 
 .itemIndex {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 800;
   color: #64748b;
   width: 16px;
@@ -335,7 +338,7 @@
 }
 
 .itemName {
-  font-size: 12.5px;
+  font-size: calc(12.5px + (15px - 12.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
   white-space: nowrap;
@@ -344,7 +347,7 @@
 }
 
 .itemMeta {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -365,7 +368,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -395,7 +398,7 @@
 /* Settings (Card 3) */
 .settingsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -406,7 +409,7 @@
 }
 
 .fieldLabel {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
   display: flex;
@@ -416,7 +419,7 @@
 
 .helpDot {
   color: #ef4444;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 800;
   cursor: help;
 }
@@ -427,7 +430,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 5px 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #0f172a;
   font-weight: 600;
   outline: none;
@@ -445,7 +448,7 @@
 /* 4. PDF SUMMARY CARD (Vibrant Pastels) */
 .summaryGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -479,7 +482,7 @@
 }
 
 .tileIcon {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
 }
 
 .tileVal {
@@ -490,15 +493,15 @@
 }
 
 .tileLabel {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
   line-height: 1.2;
 }
 
 .tileSub {
-  font-size: 9.5px;
-  color: #64748b;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
+  color: #526077;
 }
 
 /* 5. PDF PREVIEW CAROUSEL (Card 5) */
@@ -542,7 +545,7 @@
 }
 
 .sheetName {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #334155;
   max-width: 84px;
@@ -553,7 +556,7 @@
 }
 
 .pageChip {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 800;
   padding: 2px 6px;
   border-radius: 12px;
@@ -593,7 +596,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   color: #166534;
 }
 
@@ -606,7 +609,7 @@
   background: #f59e0b;
   color: #0f172a;
   border: 1px solid #d97706;
-  font-size: 14.5px;
+  font-size: calc(14.5px + (15px - 14.5px) * var(--fs-lift, 0));
   font-weight: 800;
   padding: 10px 16px;
   border-radius: 10px;
@@ -641,7 +644,7 @@
   background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #334155;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 6px 10px;
   border-radius: 8px;
@@ -680,7 +683,7 @@
 }
 
 .accordionPill {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #475569;
   background: #f8fafc;
@@ -705,10 +708,10 @@
     grid-template-columns: 1fr;
   }
   .settingsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .summaryGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -716,6 +719,15 @@
   .settingsGrid,
   .summaryGrid {
     grid-template-columns: 1fr;
+  }
+
+  .imageRow {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .rowActions {
+    margin-left: auto;
   }
 }
 
@@ -820,4 +832,315 @@
 :global([data-theme="dark"]) .accordionPill:hover {
   background: #1e293b;
   color: #ffffff;
+}
+
+/* Phones: a card title keeps its own line; header buttons wrap under it. */
+@media (max-width: 600px) {
+  .cardHeader {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .cardTitle {
+    flex: 1 1 auto;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 700px) {
+  .tileIcon {
+    font-size: 19px;
+  }
+}
+
+.cardTitleIcon {
+  display: inline-grid;
+  color: #1665f5;
+}
+
+.cardTitleIcon {
+  --icon-fill: currentColor;
+  --icon-detail-color: var(--knock, #ffffff);
+}
+
+:global([data-theme="dark"]) .cardTitleIcon {
+  --knock: #182236;
+}
+
+.cardTitleIcon :global(svg) {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.25;
+}
+
+[data-ref-look] .miniBtn {
+  width: 34px;
+  height: 34px;
+}
+
+[data-ref-look] .miniBtn :global(svg) {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* Reference look: the studio sits on the page; inner cards become sections of the column
+   panels, with reference-sized titles, labels and inputs. */
+.studioContainer[data-ref-look],
+:global([data-theme="dark"]) .studioContainer[data-ref-look] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+[data-ref-look] .card,
+:global([data-theme="dark"]) [data-ref-look] .card {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+[data-ref-look] .cardTitle {
+  font-size: 18px;
+  font-weight: 750;
+}
+
+[data-ref-look] .stepBadgeCircle {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+[data-ref-look] .fieldLabel {
+  font-size: calc(13.5px + (15px - 13.5px) * var(--fs-lift, 0));
+  color: #1e293b;
+}
+
+[data-ref-look] .selectInput,
+[data-ref-look] .textInput {
+  min-height: 40px;
+  font-size: 14px;
+  border-color: #d5dfee;
+  border-radius: 8px;
+}
+
+:global([data-theme="dark"]) [data-ref-look] .fieldLabel {
+  color: #dbe4f1;
+}
+
+:global([data-theme="dark"]) [data-ref-look] .selectInput,
+:global([data-theme="dark"]) [data-ref-look] .textInput {
+  background: #0f182a;
+  border-color: #3d5276;
+  color: #f1f5fb;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .topBar {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .titleText {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .badgePill {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .badgePillAmber {
+  color: #f5cfa3;
+  background: #403c12;
+}
+
+:global(:where([data-theme="dark"])) .badgePillBlue {
+  color: #7091ec;
+  background: #12253d;
+  border-color: #304764;
+}
+
+:global(:where([data-theme="dark"])) .subtitleText {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnGhost {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnGhost:hover {
+  color: #dde4f3;
+  background: #182838;
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger {
+  color: #ec8383;
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .actionBtnDanger:hover {
+  color: #ec8383;
+  background: #421313;
+}
+
+:global(:where([data-theme="dark"])) .stepBadgeCircle {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .headerPill {
+  color: #b8c1cf;
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .dropzone[data-dragging="true"],
+:global(:where([data-theme="dark"])) .dropzone:hover {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneHeadline {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .dropzoneSub {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .chooseFilesBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .imageRow {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .imageRow:hover {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .itemIndex {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .miniBtn:hover:not(:disabled) {
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .miniBtnDanger {
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .miniBtnDanger:hover {
+  color: #e76c6c;
+  background: #421313;
+}
+
+:global(:where([data-theme="dark"])) .tileBlue {
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .tilePurple {
+  background: #26113b;
+  border: 1px solid #493064;
+}
+
+:global(:where([data-theme="dark"])) .tileGreen {
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .tileAmber {
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .tileVal {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .tileLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .tileSub {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .sheetName {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .chipBlue {
+  color: #7091ec;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .chipPurple {
+  color: #b377e8;
+  background: #26113b;
+}
+
+:global(:where([data-theme="dark"])) .chipGreen {
+  color: #a7f1c2;
+  background: #123d1f;
+}
+
+:global(:where([data-theme="dark"])) .chipAmber {
+  color: #f5b889;
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .chipPink {
+  color: #ef80ae;
+  background: #3d1229;
+}
+
+:global(:where([data-theme="dark"])) .privacyBox {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .privacyTextBold {
+  color: #c3f1d5;
+}
+
+:global(:where([data-theme="dark"])) .primaryCtaBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .primaryCtaBtn:hover:not(:disabled) {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .secBtnPrimary {
+  background: #12253d;
+  border-color: #304864;
+}
+
+:global(:where([data-theme="dark"])) .secBtnPrimary:hover:not(:disabled) {
+  background: #142944;
+}
+
+:global(:where([data-theme="dark"])) .accordionRow {
+  border-top: 1px solid #304a64;
+}
+
+@media (min-width: 1100px) {
+  .studioContainer[data-ref-look] {
+    zoom: 0.88;
+  }
 }

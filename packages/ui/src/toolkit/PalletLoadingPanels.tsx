@@ -1,5 +1,9 @@
 import styles from './palletLoading.module.css';
-import type { PalletLoadingResult } from './palletLoadingModel.ts';
+import {
+  layerPattern,
+  PALLET_BASE_HEIGHT_CM,
+  type PalletLoadingResult,
+} from './palletLoadingModel.ts';
 
 interface PalletLoadingResultsProps {
   result: PalletLoadingResult;
@@ -14,6 +18,11 @@ export function PalletLoadingResults({ result, showWeightInResults }: PalletLoad
       </div>
 
       <div class={styles.resultsContainer}>
+        {result.issue ? (
+          <p role="alert" class={styles.issue}>
+            {result.issue}
+          </p>
+        ) : null}
         <div class={styles.resultsKpiGrid}>
           <div class={styles.kpiCard}>
             <span class={styles.kpiIcon} aria-hidden="true">
@@ -22,9 +31,7 @@ export function PalletLoadingResults({ result, showWeightInResults }: PalletLoad
             <div class={styles.kpiBody}>
               <span class={styles.kpiLabel}>Boxes per layer</span>
               <span class={styles.kpiValue}>{result.boxesPerLayer}</span>
-              <span class={styles.kpiSub}>
-                ({result.alongLength} × {result.alongWidth})
-              </span>
+              <span class={styles.kpiSub}>{layerPattern(result)}</span>
             </div>
           </div>
 
@@ -44,7 +51,9 @@ export function PalletLoadingResults({ result, showWeightInResults }: PalletLoad
             </span>
             <div class={styles.kpiBody}>
               <span class={styles.kpiLabel}>Total boxes</span>
-              <span class={styles.kpiValue}>{result.totalBoxes}</span>
+              <span class={styles.kpiValue} data-pallet-kpi="total-boxes">
+                {result.totalBoxes}
+              </span>
             </div>
           </div>
 
@@ -73,7 +82,7 @@ export function PalletLoadingResults({ result, showWeightInResults }: PalletLoad
             <span class={styles.kpiLabel}>Pallet dimensions (loaded)</span>
             <span class={styles.kpiSub}>
               L: {result.loadedDimensions.length} cm × W: {result.loadedDimensions.width} cm × H:{' '}
-              {result.loadedDimensions.height} cm
+              {result.loadedDimensions.height} cm (includes a {PALLET_BASE_HEIGHT_CM} cm pallet)
             </span>
           </div>
         </div>

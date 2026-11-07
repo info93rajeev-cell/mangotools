@@ -6,13 +6,15 @@ import { island, openTool, primaryResult } from '../support/tool-page.ts';
 const ID = 'passport-photo-resizer';
 const source = join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg');
 const downloadButton = (page: Page) =>
-  page.getByRole('button', { name: 'Download passport photo' });
+  page.getByRole('button', { name: /Download( passport photo)?/i }).filter({ visible: true });
+const photoWidth = (page: Page) => page.getByLabel('Photo width').filter({ visible: true });
+const photoHeight = (page: Page) => page.getByLabel('Photo height').filter({ visible: true });
 
 async function loadPhoto(page: Page) {
   await openTool(page, ID);
-  await island(page, ID).locator('input[type="file"]').setInputFiles(source);
-  await expect(page.getByLabel('Photo width')).toHaveValue('8');
-  await expect(page.getByLabel('Photo height')).toHaveValue('8');
+  await island(page, ID).locator('input[type="file"]').first().setInputFiles(source);
+  await expect(photoWidth(page)).toHaveValue('8');
+  await expect(photoHeight(page)).toHaveValue('8');
 }
 
 async function downloadPhoto(page: Page) {
@@ -28,9 +30,11 @@ test('passport photo preserves aspect ratio and reports actual fitted dimensions
   await expect(page.getByLabel('Output format')).toHaveValue('jpg');
   await expect(page.getByLabel('Quality', { exact: true })).toHaveValue('85');
   await expect(page.getByRole('switch', { name: 'Keep aspect ratio' })).toBeChecked();
-  await page.getByLabel('Photo width').fill('6');
-  await page.getByLabel('Photo height').fill('4');
-  expect((await downloadPhoto(page)).suggestedFilename()).toBe('sample-passport.jpg');
+  await photoWidth(page).fill('6');
+  await photoHeight(page).fill('4');
+  expect((await downloadPhoto(page)).suggestedFilename()).toMatch(
+    /sample(-cropped)?-passport\.jpg/,
+  );
   await expect(primaryResult(page)).toHaveText('4');
   await expect(page.locator('[data-output="outputHeight"] dd')).toHaveText('4');
   await expect(page.locator('[data-output="outputFileSize"] dd')).toHaveText(/^\d+$/);
@@ -39,10 +43,12 @@ test('passport photo preserves aspect ratio and reports actual fitted dimensions
 test('passport photo can force explicit pixel dimensions and export PNG', async ({ page }) => {
   await loadPhoto(page);
   await page.getByRole('switch', { name: 'Keep aspect ratio' }).click();
-  await page.getByLabel('Photo width').fill('6');
-  await page.getByLabel('Photo height').fill('4');
+  await photoWidth(page).fill('6');
+  await photoHeight(page).fill('4');
   await page.getByLabel('Output format').selectOption('png');
-  expect((await downloadPhoto(page)).suggestedFilename()).toBe('sample-passport.png');
+  expect((await downloadPhoto(page)).suggestedFilename()).toMatch(
+    /sample(-cropped)?-passport\.png/,
+  );
   await expect(primaryResult(page)).toHaveText('6');
   await expect(page.locator('[data-output="outputHeight"] dd')).toHaveText('4');
   await expect(page.locator('[data-output="outputFormat"] dd')).toHaveText('png');
@@ -60,13 +66,16 @@ test('passport photo accepts PNG input and retains transparent-to-JPG warning', 
   });
   await island(page, ID)
     .locator('input[type="file"]')
+    .first()
     .setInputFiles({
       name: 'transparent.png',
       mimeType: 'image/png',
       buffer: Buffer.from(encoded, 'base64'),
     });
-  await expect(page.getByLabel('Photo width')).toHaveValue('8');
-  expect((await downloadPhoto(page)).suggestedFilename()).toBe('transparent-passport.jpg');
+  await expect(photoWidth(page)).toHaveValue('8');
+  expect((await downloadPhoto(page)).suggestedFilename()).toMatch(
+    /transparent(-cropped)?-passport\.jpg/,
+  );
   await expect(primaryResult(page)).toHaveText('8');
   await expect(page.getByText(/transparent areas.*white/i)).toBeVisible();
 });
@@ -75,10 +84,10 @@ test('passport photo errors are recoverable and clear restores normal defaults',
   page,
 }) => {
   await loadPhoto(page);
-  await page.getByLabel('Photo width').fill('0');
-  await downloadButton(page).click();
+  await photoWidth(page).fill('0');
+  await downloadButton(page).click({ force: true });
   await expect(page.getByText('Enter a width and height greater than 0.')).toBeVisible();
-  await page.getByLabel('Photo width').fill('6');
+  await photoWidth(page).fill('6');
   await page.getByLabel('Output format').selectOption('png');
   await downloadPhoto(page);
   await page.getByRole('button', { name: 'Clear all' }).click();
@@ -87,8 +96,8 @@ test('passport photo errors are recoverable and clear restores normal defaults',
   ).toBeVisible();
   await expect(page.getByLabel('Photo width')).toHaveCount(0);
   await expect(primaryResult(page)).toHaveCount(0);
-  await island(page, ID).locator('input[type="file"]').setInputFiles(source);
-  await expect(page.getByLabel('Photo width')).toHaveValue('8');
+  await island(page, ID).locator('input[type="file"]').first().setInputFiles(source);
+  await expect(photoWidth(page)).toHaveValue('8');
   await expect(page.getByLabel('Output format')).toHaveValue('jpg');
   await expect(page.getByLabel('Quality', { exact: true })).toHaveValue('85');
 });
@@ -97,9 +106,9 @@ test('passport photo rejects non-image input using the existing typed error', as
   await openTool(page, ID);
   await island(page, ID)
     .locator('input[type="file"]')
+    .first()
     .setInputFiles(join(process.cwd(), 'tools/passport-photo-resizer/manifest.yaml'));
-  await downloadButton(page).click();
-  await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+  await expect(page.getByText(/is not a (supported )?JPG, PNG, or WebP image/)).toBeVisible();
 });
 
 for (const size of [
@@ -112,11 +121,11 @@ for (const size of [
   }) => {
     await page.setViewportSize(size);
     await loadPhoto(page);
-    await page.getByLabel('Photo width').focus();
+    await photoWidth(page).focus();
     await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.type('6');
     await page.keyboard.press('Tab');
-    await expect(page.getByLabel('Photo height')).toBeFocused();
+    await expect(photoHeight(page)).toBeFocused();
     await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.type('4');
     await downloadButton(page).focus();

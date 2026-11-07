@@ -78,14 +78,14 @@
 }
 
 .actionMainText {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.2;
 }
 
 .actionSubText {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   line-height: 1.2;
 }
@@ -108,7 +108,7 @@
 .samplePillBtn {
   background: transparent;
   border: none;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-primary, #2563eb);
   cursor: pointer;
@@ -158,7 +158,7 @@
   border: 1px solid var(--color-border);
   border-radius: 9999px;
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text);
   cursor: pointer;
@@ -166,8 +166,8 @@
 
 .quickPresetChip[data-active="true"] {
   background: rgba(37, 99, 235, 0.15);
-  border-color: #2563eb;
-  color: #2563eb;
+  border-color: #1d4ed8;
+  color: #1d4ed8;
 }
 
 /* STATE B: ACTIVE STUDIO SINGLE-SCREEN */
@@ -194,7 +194,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
 }
 
@@ -209,7 +209,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text);
   cursor: pointer;
@@ -290,7 +290,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 800;
   z-index: 21;
 }
@@ -300,7 +300,7 @@
   position: absolute;
   top: 10px;
   padding: 3px 8px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   border-radius: 6px;
   color: #ffffff;
@@ -326,7 +326,7 @@
   background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(6px);
   color: #e2e8f0;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   padding: 4px 10px;
   display: flex;
   align-items: center;
@@ -350,7 +350,7 @@
   background: transparent;
   border: none;
   padding: 6px 2px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -381,7 +381,7 @@
 
 .presetGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -403,13 +403,13 @@
 }
 
 .presetCardName {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text);
 }
 
 .presetCardDim {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -423,7 +423,7 @@
 .sliderHeader {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
 }
 
@@ -452,7 +452,7 @@
   border: none;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -463,12 +463,12 @@
 
 .downloadGreenBtn {
   flex: 1.5;
-  background: #22c55e;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -484,7 +484,7 @@
   color: #2563eb;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -519,7 +519,7 @@
   border: none;
   border-radius: 10px;
   padding: 11px 14px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -530,12 +530,12 @@
 
 .shareWhatsAppBtn {
   width: 100%;
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border: none;
   border-radius: 10px;
   padding: 11px 14px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -550,7 +550,7 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   text-align: center;
 }
@@ -675,7 +675,7 @@
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.7);
   color: #ffffff;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 4px;
@@ -702,7 +702,7 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 6px;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
 }
@@ -737,7 +737,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 800;
   cursor: pointer;
 }
@@ -760,7 +760,7 @@
   border: 1px solid rgba(37, 99, 235, 0.25);
   border-radius: 8px;
   padding: 6px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text);
   display: flex;
   align-items: center;
@@ -783,7 +783,7 @@
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-text);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
 }
@@ -828,7 +828,7 @@
   border: none;
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -838,12 +838,12 @@
 }
 
 .shareWhatsAppBtn {
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
   border: none;
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -859,7 +859,7 @@
 }
 
 .sectionMiniTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text);
 }
@@ -884,7 +884,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text);
   cursor: pointer;
@@ -903,7 +903,7 @@
 }
 
 .dimFieldLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -914,7 +914,7 @@
   border-radius: 6px;
   background: var(--color-bg);
   color: var(--color-text);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   box-sizing: border-box;
 }
 
@@ -926,7 +926,7 @@
 
 .bgSwatchesGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -939,7 +939,7 @@
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   cursor: pointer;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text);
 }
 
@@ -962,7 +962,7 @@
   color: #15803d;
   border-radius: 6px;
   padding: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   text-align: center;
   font-weight: 600;
 }
@@ -991,13 +991,13 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 800;
   color: var(--color-text);
 }
 
 .sheetLayoutMeta {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text-muted);
 }
@@ -1013,7 +1013,7 @@
 }
 
 .guidelinesTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 800;
   color: #d97706;
 }
@@ -1022,10 +1022,56 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: var(--color-text);
   display: flex;
   flex-direction: column;
   gap: 2px;
   line-height: 1.4;
+}
+
+:global([data-theme="dark"]) .quickPresetChip[data-active="true"] {
+  color: #bfdbfe;
+  border-color: #60a5fa;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .splitDividerLine {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .applyGoldBtn {
+  color: #854d0e;
+}
+
+:global(:where([data-theme="dark"])) .downloadGreenBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printSheetMiniBtn {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .printDirectBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .shareWhatsAppBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .printDirectBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .shareWhatsAppBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .sheetHintNotice {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .guidelinesTitle {
+  color: #f4b976;
 }

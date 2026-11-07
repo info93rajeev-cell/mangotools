@@ -46,39 +46,42 @@ for (const scheme of ['light', 'dark'] as const) {
     }
     test('/excavation-calculator (circular result state)', async ({ page }) => {
       await gotoReady(page, '/excavation-calculator');
-      await page.getByLabel('Excavation type').selectOption('circular');
-      await page.getByLabel('Diameter').fill('2');
-      await page.getByLabel('Depth').fill('1');
-      await page.getByLabel('Same-size excavations').fill('1');
-      await page.getByLabel('Swell / bulking %').fill('25');
-      await page.getByLabel('Usable truck volume').fill('2');
-      await expect(page.locator('[data-output="truckLoads"] dd')).toHaveText('2');
+      await page.locator('.civil-workspace-container button[data-mode="Circular"]').click();
+      await page.locator('.civil-workspace-container button.calculate').click();
+      await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
+        'data-stale',
+        'false',
+      );
       expect(await seriousViolations(page)).toEqual([]);
     });
-    test('/paint-calculator (roof result state)', async ({ page }) => {
+    test('/paint-calculator (exterior result state)', async ({ page }) => {
       await gotoReady(page, '/paint-calculator');
-      await page.getByLabel('What are you painting?').selectOption('roof');
-      await page.getByLabel('Roof length').fill('10');
-      await page.getByLabel('Roof width').fill('8');
-      await page.getByLabel('Roof pitch angle').fill('30');
-      await page.getByLabel('Same-size areas').fill('1');
-      await expect(page.locator('[data-output="grossAreaM2"] dd')).toHaveText('92.376');
+      await page.locator('.civil-workspace-container button[data-mode="Exterior Walls"]').click();
+      await page.locator('.civil-workspace-container button.calculate').click();
+      await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
+        'data-stale',
+        'false',
+      );
       expect(await seriousViolations(page)).toEqual([]);
     });
-    test('/plaster-calculator (product-yield result state)', async ({ page }) => {
+    test('/plaster-calculator (ceiling result state)', async ({ page }) => {
       await gotoReady(page, '/plaster-calculator');
-      await page.getByRole('button', { name: 'Try sample' }).click();
-      await page.getByLabel('Material estimate').selectOption('bag-yield');
-      await page.getByLabel('Wet yield per bag (from your product)').fill('30');
-      await expect(primaryResult(page)).toHaveText('4');
+      await page.locator('.civil-workspace-container button[data-mode="Ceiling"]').click();
+      await page.locator('.civil-workspace-container button.calculate').click();
+      await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
+        'data-stale',
+        'false',
+      );
       expect(await seriousViolations(page)).toEqual([]);
     });
-    test('/tile-flooring-calculator (coverage-per-box result state)', async ({ page }) => {
+    test('/tile-flooring-calculator (L-shape result state)', async ({ page }) => {
       await gotoReady(page, '/tile-flooring-calculator');
-      await page.getByRole('button', { name: 'Try sample' }).click();
-      await page.getByLabel('Box packing').selectOption('coverage');
-      await page.getByLabel('Coverage per box').fill('1.44');
-      await expect(page.locator('[data-output="boxes"] dd')).toHaveText('16');
+      await page.locator('.civil-workspace-container button[data-mode="L-shape"]').click();
+      await page.locator('.civil-workspace-container button.calculate').click();
+      await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
+        'data-stale',
+        'false',
+      );
       expect(await seriousViolations(page)).toEqual([]);
     });
     test('/gst-calculator (mobile search open)', async ({ page }) => {
@@ -91,8 +94,8 @@ for (const scheme of ['light', 'dark'] as const) {
     });
     test('/gst-calculator (field error state)', async ({ page }) => {
       await gotoReady(page, '/gst-calculator');
-      await page.getByLabel('Amount (₹)').fill('12a');
-      await expect(page.getByLabel('Amount (₹)')).toHaveAttribute('aria-invalid', 'true');
+      await page.locator('#tax-input-amount').fill('0');
+      await expect(page.locator('#tax-input-amount')).toHaveAttribute('aria-invalid', 'true');
       expect(await seriousViolations(page)).toEqual([]);
     });
     test('/image-metadata-remover (file error state)', async ({ page }) => {
@@ -100,9 +103,11 @@ for (const scheme of ['light', 'dark'] as const) {
       const notAnImage = join(process.cwd(), 'tools/image-metadata-remover/manifest.yaml');
       await island(page, 'image-metadata-remover')
         .locator('input[type="file"]')
+        .first()
         .setInputFiles([notAnImage]);
-      await page.getByRole('button', { name: 'Download cleaned image' }).click();
-      await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+      await expect(
+        page.getByRole('alert').getByText(/is not a (supported )?JPG, PNG, or WebP image/),
+      ).toBeVisible();
       expect(await seriousViolations(page)).toEqual([]);
     });
     test('/tools (search with no results)', async ({ page }) => {
@@ -114,7 +119,7 @@ for (const scheme of ['light', 'dark'] as const) {
     test('/json-formatter (error state)', async ({ page }) => {
       await gotoReady(page, '/json-formatter');
       await page.locator('#tool-json-formatter-input').fill('{"a":1,}');
-      await expect(page.locator('[data-tool-island]')).toHaveAttribute('data-phase', 'error');
+      await expect(page.getByText('Invalid JSON', { exact: true })).toBeVisible();
       expect(await seriousViolations(page)).toEqual([]);
     });
   });

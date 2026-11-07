@@ -40,3 +40,10 @@
   border-color: #d4e3ff;
   background: white;
 }
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .actions.actions button:last-child {
+  color: #639cf2;
+  background: #151e33;
+  border-color: #304264;
+}

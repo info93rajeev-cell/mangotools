@@ -128,11 +128,11 @@ const JSON_TO_CSV_STEPS: TourStep[] = [
   },
   {
     id: 'json2csv-step-options',
-    targetSelector: '[class*="toolactions"], [class*="toolbar"]',
+    targetSelector: '[class*="aux"]',
     stepNumber: 2,
-    title: '2. Column Delimiter & Flattening',
+    title: '2. Records, Nesting & Export',
     description:
-      'Select output delimiter (comma, semicolon, tab) and enable nested dot-notation object flattening.',
+      'Pick the record path, how nested objects are handled, the delimiter and header, and the formula guard.',
   },
   {
     id: 'json2csv-step-output',

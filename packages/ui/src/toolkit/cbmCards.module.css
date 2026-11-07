@@ -25,7 +25,7 @@
   box-shadow: var(--cbm-shadow);
   color: var(--cbm-ink);
   font: inherit;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   cursor: pointer;
 }
 .quickActions :global(.icon),
@@ -75,7 +75,9 @@
   .quickActions[data-placement="phone"],
   .quickActions[data-placement="inline"] {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Every quick action plus the "more" menu fit on one row. */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     gap: 8px;
     margin-bottom: 12px;
   }

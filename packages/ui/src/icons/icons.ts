@@ -5,6 +5,7 @@
 import {
   ArrowLeftRight,
   ArrowRight,
+  BadgeCheck,
   Binary,
   BookOpen,
   Box,
@@ -13,6 +14,7 @@ import {
   Briefcase,
   Calendar,
   ChartColumn,
+  ChartPie,
   Check,
   ChefHat,
   ChevronDown,
@@ -29,17 +31,24 @@ import {
   Coins,
   Container,
   Copy,
+  Database,
   Download,
   Ellipsis,
   ExternalLink,
   Eye,
+  FileArchive,
   FileBraces,
+  FileCheck,
+  FileMinus,
   FileOutput,
+  FilePlus,
   FileSpreadsheet,
+  Files,
   FileText,
   FileUp,
   Flame,
   FolderOpen,
+  Funnel,
   Globe,
   GripVertical,
   HardHat,
@@ -71,6 +80,7 @@ import {
   Route,
   Ruler,
   Scale,
+  Scissors,
   Search,
   Settings,
   Settings2,
@@ -95,6 +105,15 @@ import {
 } from 'lucide-static';
 
 const RAW = {
+  scissors: Scissors,
+  database: Database,
+  'file-plus': FilePlus,
+  files: Files,
+  'chart-pie': ChartPie,
+  'file-check': FileCheck,
+  'file-minus': FileMinus,
+  'file-archive': FileArchive,
+  'badge-check': BadgeCheck,
   'book-open': BookOpen,
   'circle-help': CircleHelp,
   link: Link,
@@ -119,6 +138,7 @@ const RAW = {
   ellipsis: Ellipsis,
   'file-output': FileOutput,
   'file-text': FileText,
+  filter: Funnel,
   'file-up': FileUp,
   'grip-vertical': GripVertical,
   'hard-hat': HardHat,
@@ -200,7 +220,10 @@ export function iconSvg(name: string): string {
   const svg = raw
     .replace(/\s+class="[^"]*"/, '')
     .replace(/stroke-width="2"/, 'stroke-width="1.5"')
-    .replace('<svg', '<svg aria-hidden="true" focusable="false"')
+    .replace(
+      '<svg',
+      `<svg aria-hidden="true" focusable="false" data-icon="${name in RAW ? name : 'info'}"`,
+    )
     .replace(/\n\s*/g, ' ')
     .trim();
   cache.set(name, svg);

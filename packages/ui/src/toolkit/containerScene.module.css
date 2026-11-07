@@ -43,7 +43,7 @@
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 @media (max-width: 700px) {
@@ -80,11 +80,11 @@
   justify-content: space-between;
   gap: 6px;
   color: #5069a2;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   margin-top: 6px;
 }
 .visual .artMode {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #005be5;
   border: 0;
   background: transparent;
@@ -99,7 +99,7 @@
   }
   .reference figcaption {
     flex-wrap: wrap;
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   }
   .visual .artMode {
     min-height: 36px;
@@ -109,4 +109,17 @@
 .visual summary {
   min-height: 34px;
   font-size: 16px;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .views button[aria-pressed="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .reference figcaption {
+  color: #94a4ca;
+}
+
+:global(:where([data-theme="dark"])) .visual .artMode {
+  color: #72a6f4;
 }

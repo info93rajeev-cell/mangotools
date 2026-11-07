@@ -3,35 +3,38 @@ import { expect, type Page } from '@playwright/test';
 
 /** Expected results of each tool's preset sample (the same values as the tool fixtures). */
 export const SAMPLES = {
-  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹600.00' },
-  'gst-calculator': { archetype: 'B', result: '₹1,180.00' },
-  'profit-margin-calculator': { archetype: 'B', result: '₹325.00' },
+  // The studio's sample is engine fixture 023 (₹1,500 sale, fees claimed as ITC).
+  'amazon-india-seller-fee-profit-estimator': { archetype: 'B', result: '₹291.19' },
+  'gst-calculator': { archetype: 'B', result: '₹ 11,800.00' },
+  'profit-margin-calculator': { archetype: 'B', result: '₹81.36' },
   'markup-calculator': { archetype: 'B', result: '₹250.00' },
   'cbm-calculator': { archetype: 'B', resultPattern: /^6\.000 m³$/ },
-  'concrete-quantity-calculator': { archetype: 'B', result: '3.150' },
-  'excavation-calculator': { archetype: 'B', result: '12.000' },
-  'brickwork-calculator': { archetype: 'B', result: '538' },
-  'plaster-calculator': { archetype: 'B', result: '0.120' },
-  'tile-flooring-calculator': { archetype: 'B', result: '245' },
-  'paint-calculator': { archetype: 'B', result: '7.504' },
+  'concrete-quantity-calculator': { archetype: 'B', resultPattern: /^3\.150/ },
+  'excavation-calculator': { archetype: 'B', resultPattern: /^70\.667 m³$/ },
+  'brickwork-calculator': { archetype: 'B', resultPattern: /^1,226 nos$/ },
+  'plaster-calculator': { archetype: 'B', resultPattern: /^24\.60 m²$/ },
+  'tile-flooring-calculator': { archetype: 'B', resultPattern: /^23\.00 m²$/ },
+  'paint-calculator': { archetype: 'B', resultPattern: /^70\.67 m²$/ },
   'export-commercial-invoice-generator': { archetype: 'B', result: '1,750.00' },
   'export-packing-list-generator': { archetype: 'B', result: '10' },
-  'volumetric-weight-calculator': { archetype: 'B', result: '120.000' },
-  'container-loading-calculator': { archetype: 'B', result: '500' },
-  'pallet-loading-calculator': { archetype: 'B', result: '56' },
-  'json-formatter': { archetype: 'A', result: '"id": 12345678901234567890' },
+  'volumetric-weight-calculator': { archetype: 'B', resultPattern: /^34\.646(?: kg)?$/ },
+  'container-loading-calculator': { archetype: 'B', result: '200' },
+  'pallet-loading-calculator': { archetype: 'B', result: '36' },
+  'json-formatter': { archetype: 'A', result: '"id": 12345' },
   // The studio's Sample Text button loads the reference sample shown on first open.
   'base64-encode-decode': {
     archetype: 'A',
     result: 'SGVsbG8sIEJleW9uZFRoZUFJISDwn5GLCkJhc2U2NCBlbmNvZGluZyBleGFtcGxlIHdpdGggVW5pY29kZS4K',
   },
+  // The studio's Example URLs button loads the reference example shown on first open.
   'url-encode-decode': {
     archetype: 'A',
-    result: 'price%20range%3D%E2%82%B9500%E2%80%93%E2%82%B91%2C000%20%26%20sort%3Dasc',
+    result: 'https%3A%2F%2Fbeyandtheai.com%2Fsearch%3Fq%3Ddeveloper%20tools\n%26lang%3Den',
   },
   // The studio's Sample CSV button loads the reference sample shown on first open.
   'csv-to-json': { archetype: 'A', result: '"name": "John Doe"' },
-  'json-to-csv': { archetype: 'A', result: 'Raj,50' },
+  // The studio's Load sample button loads the reference records shown on first open.
+  'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
 } as const;
 
@@ -59,7 +62,7 @@ export const FILE_TOOLS = {
       join(process.cwd(), 'tools/pdf-merge/fixtures/files/one-page.pdf'),
       join(process.cwd(), 'tools/pdf-merge/fixtures/files/two-page.pdf'),
     ],
-    downloadCta: 'Download merged PDF',
+    downloadCta: /Download (merged )?PDF/i,
     result: '2',
   },
   'jpg-to-pdf': {
@@ -74,17 +77,35 @@ export const FILE_TOOLS = {
   'pdf-split': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/pdf-split/fixtures/files/five-page.pdf')],
-    downloadCta: 'Download split PDF',
+    downloadCta: /Download (ZIP|PDF)/i,
     // Defaults are startPage=1, endPage=1, always valid for any non-empty PDF (unlike Image Crop's own
     // real-world default, which needed a test-only override to fit the tiny shared sample.jpg fixture).
     // The primary output is the output file name, derived from the original name plus the page range.
     result: 'five-page-pages-1-1.pdf',
   },
+  'compress-pdf': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/compress-pdf/fixtures/files/one-page.pdf')],
+    downloadCta: /Download (Compressed )?PDF/i,
+    resultPattern: /^\d+(\.\d+)?%$/,
+  },
+  'pdf-to-word': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/pdf-to-word/fixtures/files/chromium-report.pdf')],
+    downloadCta: /Download DOCX/i,
+    resultPattern: /^\d+$/,
+  },
+  'word-to-pdf': {
+    archetype: 'D',
+    files: [join(process.cwd(), 'tools/word-to-pdf/fixtures/files/order-summary.docx')],
+    downloadCta: /Download PDF/i,
+    resultPattern: /^\d+$/,
+  },
   'image-background-remover': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg')],
-    downloadCta: 'Download transparent image',
-    result: 'sample-no-bg.png',
+    downloadCta: /Download (transparent image|PNG)/i,
+    resultPattern: /^(sample|jaipur-palace)-no-bg\.png$/,
   },
   'image-resize': {
     archetype: 'D',
@@ -97,7 +118,7 @@ export const FILE_TOOLS = {
   'passport-photo-resizer': {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
-    downloadCta: 'Download passport photo',
+    downloadCta: /Download( passport photo)?/i,
     // Existing 8x8 source dimensions initialize the fields; no official passport size is assumed.
     result: '8',
   },
@@ -151,7 +172,7 @@ export const FILE_TOOLS = {
     archetype: 'D',
     files: [join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg')],
     downloadCta: 'Download enlarged image',
-    result: '1600',
+    result: '16',
   },
 } as const;
 
@@ -160,11 +181,39 @@ export const TOOL_IDS = [...Object.keys(SAMPLES), ...Object.keys(FILE_TOOLS)] as
 
 export const hasSample = (id: string): id is keyof typeof SAMPLES => id in SAMPLES;
 
-export const island = (page: Page, id: string) =>
-  page.locator(id === 'cbm-calculator' ? '[data-cbm-workspace]' : `[data-tool-island="${id}"]`);
+export const CIVIL_TOOL_IDS = new Set([
+  'brickwork-calculator',
+  'concrete-quantity-calculator',
+  'excavation-calculator',
+  'paint-calculator',
+  'plaster-calculator',
+  'tile-flooring-calculator',
+]);
+
+export const isCivilTool = (id: string): boolean => CIVIL_TOOL_IDS.has(id);
+
+export const LOGISTICS_STUDIO_IDS = new Set([
+  'cbm-calculator',
+  'container-loading-calculator',
+  'pallet-loading-calculator',
+  'volumetric-weight-calculator',
+]);
+
+export const isLogisticsStudio = (id: string): boolean => LOGISTICS_STUDIO_IDS.has(id);
+
+export const island = (page: Page, id: string) => {
+  if (id === 'cbm-calculator') return page.locator('[data-cbm-workspace]');
+  if (id === 'container-loading-calculator') return page.locator('[data-container-workspace]');
+  if (id === 'pallet-loading-calculator') return page.locator('[data-pallet-loading-workspace]');
+  if (id === 'volumetric-weight-calculator')
+    return page.locator('[data-volumetric-weight-workspace]');
+  if (id === 'image-background-remover') return page.locator('[data-image-bg-remover-layout]');
+  if (CIVIL_TOOL_IDS.has(id)) return page.locator('.civil-workspace-container');
+  return page.locator(`[data-tool-island="${id}"]`);
+};
 export const primaryResult = (page: Page) =>
   page.locator(
-    '[data-primary-result] output, [data-cbm-total], [data-tax-results-card] span[class*="headlineAmount"]',
+    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong',
   );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
@@ -196,8 +245,69 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(page.locator('[data-cbm-total]')).toBeVisible();
     return;
   }
+  if (id === 'container-loading-calculator') {
+    await expect(
+      page.locator('[data-container-workspace] strong[data-load-kpi="0"]'),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'pallet-loading-calculator') {
+    await expect(
+      page.locator('[data-pallet-loading-workspace] span[class*="kpiValue"]').first(),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'volumetric-weight-calculator') {
+    await expect(
+      page.locator('[data-volumetric-weight-workspace] [class*="chargeableValue"]'),
+    ).toBeVisible();
+    return;
+  }
   if (id === 'gst-calculator') {
     await expect(page.locator('[data-tax-results-card]')).toBeVisible();
+    return;
+  }
+  if (id === 'markup-calculator' || id === 'amazon-india-seller-fee-profit-estimator') {
+    // The studio runs its engine in the worker and shows "…" until the answer arrives.
+    await expect(primaryResult(page)).not.toHaveText('…');
+    return;
+  }
+  if (id === 'pdf-merge' || id === 'pdf-split') {
+    await expect(page.getByText(/Ready to (merge|split)/).first()).toBeVisible();
+    return;
+  }
+  if (id === 'compress-pdf') {
+    await expect(
+      page
+        .getByRole('status')
+        .filter({ hasText: /^\s*(Compressed|Already compact|Ready to compress)\s*$/ }),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'pdf-to-word') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(Converted|Ready to convert)\s*$/ }),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'word-to-pdf') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(PDF created|Ready to convert)\s*$/ }),
+    ).toBeVisible();
+    return;
+  }
+  if (id === 'image-background-remover') {
+    await expect(page.locator('[data-image-bg-remover-layout]')).toBeVisible();
+    return;
+  }
+  if (CIVIL_TOOL_IDS.has(id)) {
+    await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
+      'data-stale',
+      'false',
+    );
+    await expect(
+      page.locator('.civil-workspace-container .kpis .kpi strong').first(),
+    ).toBeVisible();
     return;
   }
   await expect(island(page, id)).toHaveAttribute('data-phase', 'result');
@@ -214,11 +324,22 @@ async function waitForPreviewDecode(page: Page, id: string): Promise<void> {
     id === 'image-crop' ? 'section[aria-label="Visual Crop Canvas"] img' : 'img',
   );
   if ((await preview.count()) === 0) return;
-  await preview.evaluate(
-    (img: HTMLImageElement) =>
-      img.complete ||
-      new Promise((resolve) => img.addEventListener('load', resolve, { once: true })),
-  );
+  await preview
+    .first()
+    .evaluate(
+      (img: HTMLImageElement) =>
+        img.complete ||
+        new Promise((resolve) => img.addEventListener('load', resolve, { once: true })),
+    );
+}
+
+async function triggerFileToolAction(page: Page, id: string): Promise<void> {
+  if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
+  else if (id === 'compress-pdf')
+    await page.getByRole('button', { name: 'Compress PDF', exact: true }).click();
+  else if (id === 'pdf-to-word')
+    await page.getByRole('button', { name: /Convert to Word/ }).click();
+  else if (id === 'word-to-pdf') await page.getByRole('button', { name: /Create PDF/ }).click();
 }
 
 /**
@@ -231,6 +352,7 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     const tool = FILE_TOOLS[id as keyof typeof FILE_TOOLS];
     await island(page, id)
       .locator('input[type="file"]')
+      .first()
       .setInputFiles([...tool.files]);
     await waitForPreviewDecode(page, id);
     if ('fillBeforeDownload' in tool) {
@@ -238,12 +360,15 @@ export async function produceResult(page: Page, id: string): Promise<void> {
         await page.getByLabel(label).fill(value);
       }
     }
-    // Crop has a separate processing action before its result download is available.
-    if (id === 'image-crop') await island(page, id).locator('[data-crop-button]').click();
+    await triggerFileToolAction(page, id);
     await page.getByRole('button', { name: tool.downloadCta }).click();
-  } else if (id === 'cbm-calculator' || id === 'gst-calculator') {
-    // The CBM and Universal Tax worksheets open already filled with their calculation result
+  } else if (isLogisticsStudio(id) || id === 'gst-calculator') {
+    // The Logistics studios and Universal Tax worksheets open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
+  } else if (CIVIL_TOOL_IDS.has(id)) {
+    // Civil workspaces open pre-calculated with default reference values; pressing Calculate performs the calculation.
+    const calc = island(page, id).locator('button.calculate');
+    await calc.click();
   } else {
     // Every sample control carries data-try-sample, whatever its visible label.
     await island(page, id).locator('[data-try-sample]').first().click();

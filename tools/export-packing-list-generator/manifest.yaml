@@ -4,8 +4,9 @@ id: export-packing-list-generator
 slug: export-packing-list-generator
 status: beta
 tier: T2
-version: 0.2.2
+version: 0.2.3
 changelog:
+  - { version: 0.2.3, date: 2026-11-03, type: fixed, summary: "Shorter item-table headers." }
   - { version: 0.2.2, date: 2026-09-30, type: changed, summary: "Remove roadmap wording; cite the official CBIC and DGFT portals; link the logistics calculators." }
   - { version: 0.2.1, date: 2026-09-30, type: changed, summary: "Classify the input as personal data (files, documents or free text the tool may receive). No behaviour change." }
   - { version: 0.2.0, date: 2026-09-28, type: changed, summary: "Supports up to 5 line items per packing list, with a per-item result table; package count and weights stay shipment-level." }

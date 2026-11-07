@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import styles from './imageResize.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageResizeReturn } from './useImageResize.ts';
 
 export interface ImageResizeCanvasProps {
@@ -95,8 +96,8 @@ export function ImageResizeCanvas({ idPrefix: _idPrefix, resize }: ImageResizeCa
               }}
             >
               <div style={{ fontSize: '32px', marginBottom: '8px' }}>🖼️</div>
-              <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>No Image Loaded</p>
-              <p style={{ margin: '4px 0 0', fontSize: '11px' }}>
+              <p style={{ margin: 0, fontSize: fs(13), fontWeight: 'bold' }}>No Image Loaded</p>
+              <p style={{ margin: '4px 0 0', fontSize: fs(11) }}>
                 Upload an image or click "Try Sample" to open the interactive resize studio
               </p>
             </div>

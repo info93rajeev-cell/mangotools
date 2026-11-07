@@ -1,0 +1,23 @@
+id: 011-reference-sample-gst-exclusive
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "Founder reference 02-seller-profitability sample (GST-exclusive): costs 400 + 30 + 70 + 10% x 1000 + 50 + 20 = 670; profit 330; margin 33%; markup 82.5%; monthly 33,000; break-even 570 / 0.9 = 633.33" }
+input:
+  sellingPrice: "1000"
+  priceIncludesGst: "no"
+  productCost: "400"
+  packagingCost: "30"
+  shippingCost: "70"
+  commissionPercent: "10"
+  advertisingCost: "50"
+  otherCost: "20"
+  quantity: "100"
+expected:
+  totalCosts: "670.00"
+  netProfit: "330.00"
+  netMarginPercent: "33.00"
+  markupPercent: "82.50"
+  monthlyProfit: "33000.00"
+  breakEvenPrice: "633.33"
+  productSharePercent: "40.00"
+  fulfillmentSharePercent: "10.00"
+  profitSharePercent: "33.00"

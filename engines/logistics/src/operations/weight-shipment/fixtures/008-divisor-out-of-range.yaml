@@ -1,0 +1,10 @@
+id: 008-divisor-out-of-range
+operation: logistics.weight.shipment@1
+source: { type: regression }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "139"
+  packages:
+    - { length: "30", width: "20", height: "10", quantity: "1", weightPerPiece: "5" }
+expectedError: { code: LOGISTICS_DIVISOR_OUT_OF_RANGE, path: divisor }

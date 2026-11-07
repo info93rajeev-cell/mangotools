@@ -21,9 +21,10 @@
     "@mangotools/runtime": "workspace:*",
     "@mangotools/schemas": "workspace:*",
     "@mediapipe/tasks-vision": "^1.1.1",
-    "onnxruntime-web": "1.22.0-dev.20250409-89f8206ba4",
     "lucide-static": "^1.48.0",
+    "onnxruntime-web": "1.22.0-dev.20250409-89f8206ba4",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "6.5.438",
     "preact": "^10.29.8"
   }
 }

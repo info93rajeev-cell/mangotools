@@ -1,5 +1,5 @@
 'use strict';
-const cfg=window.__CIVIL_CONFIG__||JSON.parse(document.querySelector('#config')?.textContent||'{}'),form=document.querySelector('form');
+const cfg=window.__CIVIL_CONFIG__||JSON.parse(document.querySelector('#config')?.textContent||'{}'),form=document.getElementById('calculator');
 let mode=cfg.initial||cfg.modes[0],previousUnit=cfg.unit,previousWeight='kg';
 const modeValues={};
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
@@ -59,7 +59,7 @@ function openingArea(){const s=q('[data-rows=openings]');if(!s||s.hidden)return 
 function nonnegative(x,message){if(x<0)throw Error(message);return x;}
 function positive(...keys){for(const key of keys)if(val(key)<=0)throw Error('Enter a positive '+document.getElementById(key).closest('label').querySelector('span').textContent+'.');}
 function validate(){
- const fields=qa('form input[type=number]').filter(n=>!n.closest('[hidden]'));
+ const fields=qa('#calculator input[type=number]').filter(n=>!n.closest('[hidden]'));
  for(const n of fields){if(!n.checkValidity()||!Number.isFinite(Number(n.value)))throw Error('Check numeric inputs: '+(n.getAttribute('aria-label')||n.closest('label').querySelector('span').textContent));if(['quantity','faces','coats','wallCount','perBox','spares','layerLimit','primerCoats','plasterFaces'].includes(n.id||n.dataset.key)&&!Number.isInteger(Number(n.value)))throw Error('Counts and coats must be whole numbers.');}
 }
 function brickwork(){
@@ -109,7 +109,7 @@ function paint(){
 function plaster(){
  let area;if(mode==='Custom')area=val('customArea');else if(mode==='Ceiling')area=val('length')*val('width');else if(mode==='Both')area=2*(val('length')+val('width'))*val('height')-openingArea()+val('length')*val('width');else area=(val('length')*val('height')-openingArea())*val('faces');
  if(area<=0)throw Error('Openings must be smaller than the selected surface.');
- area+=val('returns');for(const r of getRows('surfaces'))area+=nonnegative(r.length*r.height-r.deduction,'Surface deduction exceeds face area.')*r.faces;
+ if(mode==='Wall'||mode==='Both')area+=val('returns');for(const r of getRows('surfaces'))area+=nonnegative(r.length*r.height-r.deduction,'Surface deduction exceeds face area.')*r.faces;
  positive('bag','density');const factor=1+val('waste')/100;
  const layers=[[val('layer'),val('sandParts')],[val('secondLayer'),val('secondSand')]].filter(x=>x[0]>0).map(([thickness,sandParts])=>{const wet=area*thickness/1000*factor,dry=wet*val('dryFactor');return{thickness,sandParts,wet,dry,cementKg:dry/(1+sandParts)*val('density'),sand:dry*sandParts/(1+sandParts)};});
  const wet=layers.reduce((a,r)=>a+r.wet,0),dry=layers.reduce((a,r)=>a+r.dry,0),cementKg=layers.reduce((a,r)=>a+r.cementKg,0),sand=layers.reduce((a,r)=>a+r.sand,0),bags=cementKg/val('bag'),cost=ceil(bags)*val('cementRate')+sand*val('sandRate')+area*val('labourRate');
@@ -200,7 +200,9 @@ function calculate(){
  try{validate();const result=applyPricing(calculators[cfg.id]());for(const v of Object.values(result))if(typeof v==='number'&&!Number.isFinite(v))throw Error('Input exceeds the bounded reference range.');render(result);q('.validation').hidden=true;return result;}
  catch(e){q('.validation').hidden=false;q('.validation').textContent=e.message;q('.status').textContent='Check inputs';q('.results').dataset.stale='true';q('.copy').disabled=true;q('.print').disabled=true;return null;}
 }
-function stale(){q('.pricing-total').textContent='Recalculate';q('.pricing').dataset.stale='true';q('.results').dataset.stale='true';q('.status').textContent='Inputs changed';q('.copy').disabled=true;q('.print').disabled=true;}
+let liveTimer=0;
+// Every edit recalculates on its own after a short pause; Calculate still runs it at once.
+function stale(){q('.pricing-total').textContent='Recalculate';q('.pricing').dataset.stale='true';q('.results').dataset.stale='true';q('.status').textContent='Updating…';q('.copy').disabled=true;q('.print').disabled=true;clearTimeout(liveTimer);liveTimer=setTimeout(calculate,350);}
 function saveMode(){modeValues[mode]={};qa('.dimensions input,.dimensions select').forEach(n=>modeValues[mode][n.id]=n.value);}
 qa('[data-mode]').forEach(b=>b.onclick=()=>{saveMode();mode=b.dataset.mode;updateMode();if(cfg.id==='volumetric-weight')q('#divisor').value=mode==='Air Freight'?6000:5000;stale();});
 for(const section of qa('[data-rows]')){

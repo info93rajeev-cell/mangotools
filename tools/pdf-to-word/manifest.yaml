@@ -4,12 +4,17 @@ id: pdf-to-word
 slug: pdf-to-word
 status: beta
 tier: T3
-version: 0.1.0
+version: 0.4.1
 changelog:
+  - { version: 0.4.1, date: 2026-11-04, type: fixed, summary: "Opens with the sample loaded (your own file replaces it); main button keeps the brand yellow." }
+  - { version: 0.4.0, date: 2026-11-04, type: added, summary: "Tables: text that lines up in columns becomes a real Word table, shown in the preview; switch off with Preserve tables." }
+  - { version: 0.3.1, date: 2026-11-04, type: changed, summary: "Real page thumbnails and first-page preview, drawn in your browser. The upload box now states the true size limit (200 MB)." }
+  - { version: 0.3.0, date: 2026-11-04, type: changed, summary: "Reference design: colour icons, larger text, visual preview of the Word file, and a page range to convert only some pages." }
+  - { version: 0.2.0, date: 2026-11-02, type: fixed, summary: "Conversion is now real: the PDF's own text becomes Word headings and paragraphs, instead of placeholder content." }
   - { version: 0.1.0, date: 2026-10-30, type: added, summary: "Initial release: convert PDF documents to editable Microsoft Word DOCX files in browser." }
 name: PDF to Word
 shortName: PDF to Word
-summary: Convert PDF documents to editable Microsoft Word DOCX files entirely in your browser with layout preservation.
+summary: "Turn the text of a PDF into an editable Word DOCX in your browser: headings and paragraphs, no upload."
 archetype: D
 preset: pdf/pdf-to-word
 taxonomy:
@@ -23,7 +28,7 @@ privacy: { dataClass: personal, network: none }
 disclaimer: professional
 seo:
   title: PDF to Word – Convert PDF to DOCX Free Online
-  description: Convert PDF documents to editable Microsoft Word DOCX files right in your browser. Preserves tables, headings, and formatting with zero server upload.
+  description: "Convert the text of a PDF to an editable Word DOCX in your browser. Headings and paragraphs are kept; layout and images are not. No upload."
   primaryKeyword: pdf to word
   secondaryKeywords: [pdf to docx, convert pdf to word, pdf word converter]
 quality:

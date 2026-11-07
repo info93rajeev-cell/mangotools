@@ -200,13 +200,20 @@ function renderSpecialCalculators(props: ArchetypeProps) {
     return <DynamicUniversalTaxLayout notify={notify} />;
   }
   if (toolId === 'profit-margin-calculator') {
-    return <DynamicSellerProfitabilityLayout notify={notify} />;
+    return (
+      <DynamicSellerProfitabilityLayout
+        preset={preset}
+        snapshot={snapshot}
+        store={store}
+        notify={notify}
+      />
+    );
   }
   if (toolId === 'amazon-india-seller-fee-profit-estimator') {
-    return <DynamicAmazonFeeLayout notify={notify} />;
+    return <DynamicAmazonFeeLayout preset={preset} notify={notify} />;
   }
   if (toolId === 'markup-calculator') {
-    return <DynamicMarkupCalculatorLayout notify={notify} />;
+    return <DynamicMarkupCalculatorLayout preset={preset} notify={notify} />;
   }
   if (preset.id === INVOICE_MULTI_ITEM_PRESET_ID) {
     return (

@@ -1,9 +1,28 @@
 # yaml-language-server: $schema=../../generated/schemas/preset.json
 presetVersion: 1
 id: data/json.to-csv
-version: 0.1.0
+version: 0.2.0
 operation: data.json.to-csv@1
-params: {}
+params: { delimiter: comma, header: true, keys: union, nested: flatten, recordPath: '', formulaGuard: false }
+userOptions:
+  delimiter:
+    control: select
+    labelKey: jsonToCsv.option.delimiter
+    order: 10
+    values: { comma: { labelKey: jsonToCsv.delimiter.comma }, semicolon: { labelKey: jsonToCsv.delimiter.semicolon }, tab: { labelKey: jsonToCsv.delimiter.tab }, pipe: { labelKey: jsonToCsv.delimiter.pipe } }
+  header: { control: switch, labelKey: jsonToCsv.option.header, order: 20 }
+  keys:
+    control: select
+    labelKey: jsonToCsv.option.keys
+    order: 30
+    values: { union: { labelKey: jsonToCsv.keys.union }, first: { labelKey: jsonToCsv.keys.first } }
+  nested:
+    control: select
+    labelKey: jsonToCsv.option.nested
+    order: 40
+    values: { flatten: { labelKey: jsonToCsv.nested.flatten }, json: { labelKey: jsonToCsv.nested.json }, reject: { labelKey: jsonToCsv.nested.reject } }
+  formulaGuard: { control: switch, labelKey: jsonToCsv.option.formulaGuard, order: 50 }
+  recordPath: { control: select, labelKey: jsonToCsv.option.recordPath, order: 60, visible: false }
 fields:
   text: { labelKey: jsonToCsv.field.text, kind: text, required: true, order: 10, placeholderKey: jsonToCsv.field.placeholder }
 outputs:
@@ -20,6 +39,48 @@ samples:
           { "name": "Raj", "age": "50" },
           { "name": "Aiva", "age": "19" }
         ]
+  team-records:
+    titleKey: jsonToCsv.sample.teamRecords
+    input:
+      text: |-
+        [
+          {
+            "name": "Asha Rao",
+            "city": "Delhi",
+            "sku": "00124",
+            "active": "true"
+          },
+          {
+            "name": "Ben Li",
+            "city": "Singapore",
+            "sku": "00085",
+            "active": "false"
+          },
+          {
+            "name": "Mira Shah",
+            "city": "Mumbai",
+            "sku": "00941",
+            "active": "true"
+          },
+          {
+            "name": "Evan Cole",
+            "city": "London",
+            "sku": "04102",
+            "active": "true"
+          }
+        ]
+  nested-orders:
+    titleKey: jsonToCsv.sample.nestedOrders
+    input:
+      text: |-
+        {
+          "store": "Pune",
+          "orders": [
+            { "id": "A-101", "customer": { "name": "Ravi", "city": "Pune" }, "items": ["pen", "ink"] },
+            { "id": "A-102", "customer": { "name": "Lena", "city": "Goa" }, "items": ["pad"] }
+          ]
+        }
+    params: { recordPath: orders }
 ui: { archetypes: [A], density: comfortable, compute: live, outputFileName: data.csv, outputMime: text/csv }
 strings:
   en:
@@ -30,3 +91,20 @@ strings:
     jsonToCsv.out.columnCount: Columns
     jsonToCsv.out.headers: Headers
     jsonToCsv.sample.nameAge: Two rows with headers
+    jsonToCsv.sample.teamRecords: Team records with SKU codes
+    jsonToCsv.sample.nestedOrders: Nested orders inside an object
+    jsonToCsv.option.delimiter: Delimiter
+    jsonToCsv.delimiter.comma: Comma (,)
+    jsonToCsv.delimiter.semicolon: Semicolon (;)
+    jsonToCsv.delimiter.tab: Tab
+    jsonToCsv.delimiter.pipe: Pipe (|)
+    jsonToCsv.option.header: Include headers
+    jsonToCsv.option.keys: Columns
+    jsonToCsv.keys.union: Union of keys across all records
+    jsonToCsv.keys.first: First record's keys only
+    jsonToCsv.option.nested: Object handling
+    jsonToCsv.nested.flatten: Flatten with dot paths
+    jsonToCsv.nested.json: Keep as JSON text
+    jsonToCsv.nested.reject: Stop with an error
+    jsonToCsv.option.formulaGuard: Formula guard (=, +, -, @)
+    jsonToCsv.option.recordPath: Record path

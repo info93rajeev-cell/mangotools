@@ -45,7 +45,7 @@
   line-height: 1.2;
 }
 .studioSubtitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
   margin: 2px 0 0 0;
 }
@@ -60,7 +60,7 @@
   align-items: center;
   gap: 4px;
   padding: 5px 9px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   background: #f8fafc;
@@ -78,7 +78,7 @@
   cursor: not-allowed;
 }
 .headerBtnDanger {
-  color: #dc2626;
+  color: #b91c1c;
   border-color: #fecaca;
   background: #fef2f2;
 }
@@ -111,6 +111,7 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    align-items: stretch;
   }
   .studioGrid[data-has-file="true"] > .canvasCenterColumn {
     order: 1;
@@ -169,7 +170,7 @@
   height: 18px;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
 }
 .stepBadge {
@@ -192,12 +193,12 @@
 }
 
 .cardTitle {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
 .stepDescription {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
   line-height: 1.35;
   margin: 0;
@@ -217,7 +218,7 @@
   padding: 7px 10px;
   background: #2563eb;
   color: #ffffff;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   border: none;
   border-radius: 6px;
@@ -235,9 +236,9 @@
   gap: 5px;
   padding: 7px 10px;
   background: #fdf2f8;
-  color: #db2777;
+  color: #be185d;
   border: 1px solid #fbcfe8;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
@@ -252,13 +253,13 @@
   gap: 3px;
 }
 .inputLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
 }
 .toolSelect {
   padding: 5px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border: 1px solid #cbd5e1;
   border-radius: 5px;
   background: #ffffff;
@@ -268,7 +269,7 @@
 /* 2x3 TOOL GRID */
 .toolGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
 }
 .gridToolBtn {
@@ -289,10 +290,10 @@
   border-color: #cbd5e1;
 }
 .gridToolIcon {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
 }
 .gridToolText {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
 }
@@ -320,7 +321,7 @@ button.toolActive .gridToolText {
 .pathPillBtn {
   flex: 1;
   padding: 4px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   background: #f1f5f9;
@@ -362,7 +363,7 @@ button.toolActive .gridToolText {
   gap: 6px;
 }
 .canvasTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -377,14 +378,14 @@ button.toolActive .gridToolText {
   justify-content: center;
   width: 24px;
   height: 24px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   background: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   cursor: pointer;
 }
 .zoomPercentBadge {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   min-width: 36px;
@@ -419,13 +420,13 @@ button.toolActive .gridToolText {
   font-size: 36px;
 }
 .emptyStageTitle {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #1e293b;
   margin: 0;
 }
 .emptyStageSubtitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   margin: 0;
 }
 .bgCheckerboard {
@@ -500,12 +501,12 @@ div.bgBlack {
   align-items: center;
 }
 .sliderTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
 }
 .sliderValueBadge {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #2563eb;
   background: #eff6ff;
@@ -520,7 +521,7 @@ div.bgBlack {
 }
 .bgSwatchRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 5px;
 }
 .bgSwatchBtn {
@@ -569,7 +570,7 @@ button.swatchActive {
   border-radius: 4px;
 }
 .swatchLabel {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
 }
@@ -583,7 +584,7 @@ button.swatchActive {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #334155;
   cursor: pointer;
 }
@@ -595,23 +596,23 @@ button.swatchActive {
   justify-content: center;
   gap: 2px;
   padding: 8px 12px;
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border: none;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
   transition: background 0.15s ease;
 }
 .downloadPngBtn:hover:not(:disabled) {
-  background: #059669;
+  background: #065f46;
 }
 .btnSubtext {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 500;
-  opacity: 0.85;
+  opacity: 1;
 }
 .exportPillsRow {
   display: flex;
@@ -620,7 +621,7 @@ button.swatchActive {
 .secondaryExportBtn {
   flex: 1;
   padding: 5px 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   background: #f1f5f9;
@@ -665,7 +666,7 @@ button.swatchActive {
   gap: 5px;
 }
 .workflowStepTitle {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -719,7 +720,7 @@ button.swatchActive {
 .featherBadgeRight {
   position: absolute;
   bottom: 3px;
-  font-size: 7px;
+  font-size: calc(7px + (15px - 7px) * var(--fs-lift, 0));
   font-weight: 700;
   background: rgba(0, 0, 0, 0.7);
   color: #fff;
@@ -735,7 +736,7 @@ button.swatchActive {
 .workflowStepCaption {
   display: flex;
   flex-direction: column;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #64748b;
   line-height: 1.25;
 }
@@ -743,7 +744,7 @@ button.swatchActive {
   color: #1e293b;
 }
 .stepArrow {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   color: #94a3b8;
   flex-shrink: 0;
 }
@@ -764,10 +765,10 @@ button.swatchActive {
   margin-bottom: 5px;
 }
 .useCasesStar {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
 }
 .useCasesTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #0f172a;
 }
@@ -783,33 +784,33 @@ button.swatchActive {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #334155;
 }
 .checkIcon {
   color: #10b981;
   font-weight: 800;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 /* MODE SWITCHER TABS */
 .modeSwitcherBar {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px;
+  gap: 4px;
+  padding: 2px 4px;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   width: fit-content;
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 .modeTabBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  font-size: 12px;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #475569;
   background: transparent;
@@ -865,6 +866,19 @@ button.modeTabActive {
     flex: 1 1 auto;
     justify-content: center;
   }
+
+  @media (max-width: 480px) {
+    .modeSwitcherBar {
+      flex-direction: column;
+    }
+    .modeTabBtn {
+      width: 100%;
+      font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
+      padding: 6px 8px;
+      text-align: center;
+      white-space: normal;
+    }
+  }
   .calloutGroup {
     display: none;
   }
@@ -881,4 +895,234 @@ button.modeTabActive {
   .canvasStageWrapper {
     min-height: 300px;
   }
+}
+
+:global([data-theme="dark"]) button.toolActive .gridToolText {
+  color: #bfdbfe;
+}
+
+:global([data-theme="dark"]) button.modeTabActive {
+  color: #93c5fd;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .studioHeader {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .headerBrandBadge {
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .studioTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .studioSubtitle {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .headerBtn {
+  color: #c4cedc;
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .headerBtn:hover:not(:disabled) {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .headerBtnDanger {
+  color: #ec8383;
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .headerBtnDanger:hover:not(:disabled) {
+  background: #421313;
+}
+
+:global(:where([data-theme="dark"])) .controlCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .stepDescription {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .primaryUploadBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .autoSelectBtn {
+  color: #ef80ae;
+  background: #3d1229;
+  border: 1px solid #64304d;
+}
+
+:global(:where([data-theme="dark"])) .autoSelectBtn:hover {
+  background: #41132d;
+}
+
+:global(:where([data-theme="dark"])) .inputLabel {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .toolSelect {
+  color: #d4dce9;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .gridToolBtn {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .gridToolBtn:hover {
+  background: #182838;
+  border-color: #36485e;
+}
+
+:global(:where([data-theme="dark"])) .gridToolText {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) button.toolActive {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .brushAddBtn {
+  background: #123d1f;
+  border-color: #306442;
+}
+
+:global(:where([data-theme="dark"])) .brushRemoveBtn {
+  background: #3c1111;
+  border-color: #643030;
+}
+
+:global(:where([data-theme="dark"])) .pathPillBtn {
+  color: #b8c1cf;
+  background: #182838;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .pathPillBtn:hover {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .centerCanvasCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .canvasHeader {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .canvasTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .toolIconBtn {
+  background: #172635;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .zoomPercentBadge {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .emptyStagePlaceholder {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .emptyStageTitle {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .sliderTitle {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .sliderValueBadge {
+  color: #5b8af0;
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .checkboxLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .downloadPngBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .secondaryExportBtn {
+  color: #c4cedc;
+  background: #182838;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .secondaryExportBtn:hover:not(:disabled) {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .workflowSection {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .workflowStepTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .featherSplitBar {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .workflowStepCaption {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .workflowStepCaption strong {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) .useCasesCard {
+  background: #172635;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .useCasesTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .useCasesList li {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .checkIcon {
+  color: #83f4cf;
+}
+
+:global(:where([data-theme="dark"])) .modeSwitcherBar {
+  background: #182838;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn {
+  color: #b8c1cf;
+}
+
+:global(:where([data-theme="dark"])) .modeTabBtn:hover {
+  color: #d4dce9;
+}
+
+:global(:where([data-theme="dark"])) button.modeTabActive {
+  background: #151e33;
 }

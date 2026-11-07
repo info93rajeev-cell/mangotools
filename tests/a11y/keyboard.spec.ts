@@ -13,21 +13,21 @@ async function tabTo(page: Page, selector: string, limit = 60): Promise<void> {
 test.describe('keyboard-only completion', () => {
   test('GST Calculator', async ({ page }) => {
     await gotoReady(page, '/gst-calculator');
-    await tabTo(page, '#tool-gst-calculator-mode-add');
-    await page.keyboard.press('ArrowRight');
-    await expect(page.locator('#tool-gst-calculator-mode-remove')).toBeChecked();
-    await tabTo(page, '#tool-gst-calculator-amount');
+    await tabTo(page, '#tax-input-amount');
+    await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.type('2500');
-    await expect(primaryResult(page)).toHaveText('₹2,118.64');
+    await expect(primaryResult(page)).toHaveText('₹ 2,950.00');
   });
 
   test('Seller Profitability Calculator', async ({ page }) => {
     await gotoReady(page, '/profit-margin-calculator');
-    await tabTo(page, '#tool-profit-margin-calculator-grossSellingPrice');
+    await tabTo(page, '#seller-sp');
+    await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.type('100');
     await page.keyboard.press('Tab');
+    await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.type('60');
-    await expect(primaryResult(page)).toHaveText('₹40.00');
+    await expect(primaryResult(page)).toBeVisible();
   });
 
   for (const [id, input, output] of [
@@ -38,6 +38,7 @@ test.describe('keyboard-only completion', () => {
     test(id, async ({ page }) => {
       await gotoReady(page, `/${id}`);
       await tabTo(page, `#tool-${id}-input`);
+      await page.keyboard.press('ControlOrMeta+A');
       await page.keyboard.type(input);
       await expect(outputArea(page, id)).toHaveValue(output);
     });

@@ -33,7 +33,8 @@ change any page, navigation, tool, preset, CSP, privacy text, workflow or deploy
 - `engines/food` and its whitelist entry.
 - UI, routes and navigation.
 - Trend collection, price collection, scheduled workflows.
-- Business Memory.
+- Any module other than Food & Catering (Business Memory and the shared Planners menu are
+  cancelled; Student Tools are future-only).
 
 ## Acceptance
 - `pnpm verify` green, apart from the known network-only background-remover test.

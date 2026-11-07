@@ -1,0 +1,5 @@
+id: 006-missing-product-cost
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "Product cost is required" }
+input: { sellingPrice: "100" }
+expectedError: { code: ESTIMATE_MISSING_INPUT, path: productCost }

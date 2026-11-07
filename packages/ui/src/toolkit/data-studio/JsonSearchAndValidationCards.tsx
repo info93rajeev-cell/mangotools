@@ -125,6 +125,7 @@ export function SearchInJsonCard({
           <Icon name="sun" class={styles.ico} /> Examples
         </span>
         <select
+          aria-label="Load example"
           class={styles.exampleSelect}
           onChange={(e) => {
             const val = (e.target as HTMLSelectElement).value;

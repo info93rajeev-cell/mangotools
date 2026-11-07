@@ -1,0 +1,13 @@
+id: 003-gst-exclusive-price
+operation: estimate.seller.unit-economics@1
+source: { type: hand-verified, citation: "GST-exclusive price is all revenue: 250 - (100 + 25 + 15) = 110; margin 110 / 250 = 44%; markup 110 / 100 = 110%; payout 250 - 25 = 225 (same figures as estimate.seller.profitability@1 fixture 003)" }
+input: { sellingPrice: "250", priceIncludesGst: "no", gstRatePercent: "18", productCost: "100", shippingCost: "25", otherCost: "15" }
+expected:
+  gstInPrice: "0.00"
+  netRevenue: "250.00"
+  totalCosts: "140.00"
+  netProfit: "110.00"
+  netMarginPercent: "44.00"
+  markupPercent: "110.00"
+  cashSettlement: "225.00"
+  breakEvenPrice: "140.00"
