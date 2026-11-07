@@ -11,9 +11,17 @@
 .empty,
 .loaded {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   min-width: 0;
+}
+/* The button gets its own full-width row, so the name and size never squeeze. */
+.loaded > button {
+  flex: 1 0 100%;
+}
+.empty > .uploadSide {
+  flex: 1 1 120px;
 }
 .sampleBtn {
   display: flex;
@@ -35,8 +43,8 @@
 }
 .sampleThumb,
 .thumb {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
   border-radius: 6px;
   display: block;
@@ -57,7 +65,7 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  flex: 1;
+  flex: 1 1 0;
 }
 .name {
   font-weight: 600;
@@ -70,6 +78,7 @@
 .meta {
   font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
+  line-height: 1.35;
 }
 .primaryBtn,
 .replaceBtn {

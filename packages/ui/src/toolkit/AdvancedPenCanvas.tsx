@@ -19,11 +19,14 @@ function bgClass(bgMode: BgMode): string {
 }
 
 function StageImages({ pen, brushing }: { pen: UseAdvancedPenSelectionReturn; brushing: boolean }) {
-  const { imageSrc, cutoutResult, showOriginal } = pen;
+  const { imageSrc, cutoutResult, showOriginal, path, activeTool } = pen;
   if (!imageSrc) return null;
+  // Show the photo faintly under the cutout while painting or while a pen path is still open,
+  // so you can see where to click next.
+  const drawing = activeTool === 'pen' && path.points.length > 0 && !path.isClosed;
   return (
     <>
-      {brushing && !showOriginal && cutoutResult && (
+      {(brushing || drawing) && !showOriginal && cutoutResult && (
         <img src={imageSrc} alt="" aria-hidden="true" class={styles.stageGhost} />
       )}
       {showOriginal || !cutoutResult ? (
