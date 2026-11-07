@@ -24,14 +24,20 @@ const defaultRun: RunFn = (...args) => {
 const resolveErrorMessage = (code: string): string =>
   (surveyStrings.errors as Record<string, string>)[code] ?? surveyStrings.errors.CALCULATION_ERROR;
 
+const TARGET_INPUTS: Record<string, string> = {
+  startRL: 'survey-startRL',
+  closingRL: 'survey-closeRL',
+  kConstant: 'survey-allowable-const',
+  adjBy: 'survey-adjust-by',
+};
+
 function resolveTargetInputId(path: string): string | null {
-  if (path === 'startRL') return 'survey-startRL';
-  if (path === 'closingRL') return 'survey-closeRL';
-  if (path === 'kConstant') return 'survey-allowable-const';
-  if (path === 'adjBy') return 'survey-adjust-by';
+  if (TARGET_INPUTS[path]) return TARGET_INPUTS[path];
   const m = /^observations\.(\d+)(?:\.(bs|is|fs|dist))?$/.exec(path);
   return m ? `survey-obs-${m[1]}-${m[2] ?? 'bs'}` : null;
 }
+
+type CalcOutcome = Pick<SurveyLevelingState, 'result' | 'phase' | 'errors' | 'cellErrors'>;
 
 async function executeLeveling(
   runFn: RunFn,
@@ -42,12 +48,7 @@ async function executeLeveling(
   kConstant: string,
   method: 'rise-fall' | 'height-of-instrument',
   signal: AbortSignal,
-): Promise<{
-  result: SurveyCalculationOutput | null;
-  phase: SurveyLevelingState['phase'];
-  errors: string[];
-  cellErrors: Record<string, string>;
-}> {
+): Promise<CalcOutcome> {
   const req = buildLevelingRequest(start, close, rows, adjBy, kConstant, method);
   try {
     const outcome = await runFn('survey.leveling.reduce@2', req.input, req.params, signal);
@@ -89,19 +90,18 @@ function updateRowAt(
   return next;
 }
 
+const emptyRow = (id: string): SurveyLevelingRow => ({
+  id,
+  station: '',
+  bs: '',
+  is: '',
+  fs: '',
+  dist: '',
+  remarks: '',
+});
+
 function appendNewRow(prev: SurveyLevelingRow[]): SurveyLevelingRow[] {
-  return [
-    ...prev,
-    {
-      id: `row-${Date.now()}-${prev.length}`,
-      station: '',
-      bs: '',
-      is: '',
-      fs: '',
-      dist: '',
-      remarks: '',
-    },
-  ];
+  return [...prev, emptyRow(`row-${Date.now()}-${prev.length}`)];
 }
 
 function useSurveyRows(onInvalidate: () => void) {
@@ -119,6 +119,10 @@ function useSurveyRows(onInvalidate: () => void) {
     },
     handleRemoveRow: (idx: number) => {
       setRows((p) => (p.length > 2 ? p.filter((_, i) => i !== idx) : p));
+      onInvalidate();
+    },
+    replaceRows: (newRows: SurveyLevelingRow[]) => {
+      setRows(newRows);
       onInvalidate();
     },
   };
@@ -155,9 +159,9 @@ function useSurveyBenchmarks(onInvalidate: () => void) {
   };
 }
 
-const INITIAL_CALC_STATE = {
+const INITIAL_CALC_STATE: CalcOutcome = {
   result: null,
-  phase: 'idle' as const,
+  phase: 'idle',
   errors: [],
   cellErrors: {},
 };
@@ -167,12 +171,7 @@ function useSurveyCalculation(
   bm: ReturnType<typeof useSurveyBenchmarks>,
   rowOps: ReturnType<typeof useSurveyRows>,
 ) {
-  const [calcState, setCalcState] = useState<{
-    result: SurveyCalculationOutput | null;
-    phase: SurveyLevelingState['phase'];
-    errors: string[];
-    cellErrors: Record<string, string>;
-  }>(INITIAL_CALC_STATE);
+  const [calcState, setCalcState] = useState<CalcOutcome>(INITIAL_CALC_STATE);
 
   const abortRef = useRef<AbortController | null>(null);
   const reqIdRef = useRef(0);
@@ -220,10 +219,14 @@ function useSurveyActions(
   rowOps: ReturnType<typeof useSurveyRows>,
   calc: ReturnType<typeof useSurveyCalculation>,
 ) {
-  const loadSample = () => {
+  const resetRun = () => {
     calc.abortRef.current?.abort();
     calc.abortRef.current = null;
     calc.reqIdRef.current++;
+  };
+
+  const loadSample = () => {
+    resetRun();
     bm.setStartRLState(SAMPLE_START_RL);
     bm.setClosingRLState(SAMPLE_CLOSING_RL);
     bm.setKConstantState(SAMPLE_K_CONSTANT);
@@ -240,9 +243,7 @@ function useSurveyActions(
   };
 
   const reset = () => {
-    calc.abortRef.current?.abort();
-    calc.abortRef.current = null;
-    calc.reqIdRef.current++;
+    resetRun();
     bm.setStartRLState('');
     bm.setClosingRLState('');
     bm.setKConstantState('');
@@ -288,6 +289,7 @@ export function useSurveyLeveling(customRun?: RunFn) {
     handleCellChange: rowOps.handleCellChange,
     handleAddRow: rowOps.handleAddRow,
     handleRemoveRow: rowOps.handleRemoveRow,
+    replaceRows: rowOps.replaceRows,
     calculate: () =>
       calc.calculate(bm.startRL, bm.closingRL, rowOps.rows, bm.adjBy, bm.kConstant, bm.method),
     loadSample,

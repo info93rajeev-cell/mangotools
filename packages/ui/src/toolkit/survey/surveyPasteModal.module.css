@@ -1,0 +1,388 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.modalCard {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 12px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--color-text, #0f172a);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-heading, #0b1b3f);
+}
+
+.modalSubtitle {
+  font-size: 13px;
+  color: var(--color-text-muted, #475569);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-muted, #64748b);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+}
+
+.modalBody {
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.inputSec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputSecHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inputLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-heading, #0f172a);
+}
+
+.inputActions {
+  display: flex;
+  gap: 8px;
+}
+
+.miniActionBtn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #cbd5e1);
+  background: var(--color-surface, #f8fafc);
+  color: var(--color-text, #334155);
+  cursor: pointer;
+}
+
+.miniActionBtn:hover {
+  background: #e2e8f0;
+}
+
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: monospace, ui-monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 8px;
+  background: #fdfdfd;
+  color: #0f172a;
+  resize: vertical;
+  min-height: 90px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #1a6ef5;
+  box-shadow: 0 0 0 2px rgba(26, 110, 245, 0.15);
+}
+
+.previewSec {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.bannerSuccess {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.bannerError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.headerInfoPill {
+  font-size: 11.5px;
+  color: #64748b;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.previewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.previewTable th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.previewTable td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+  color: #1e293b;
+}
+
+.previewTable :where(tr:hover) td {
+  background: #f8fafc;
+}
+
+.previewTable :where(tr:last-child) td {
+  border-bottom: none;
+}
+
+.previewTable :where(tr.rowErr) td {
+  background: #fff5f5;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.badgeBM {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badgeCP {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badgeIS {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.badgeFS {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.badgeErr {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.errorText {
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.noDataBox {
+  padding: 24px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  background: #f8fafc;
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #cbd5e1);
+  background: var(--color-surface, #ffffff);
+  color: #334155;
+  cursor: pointer;
+}
+
+.replaceBtn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #1a6ef5;
+  background: #1a6ef5;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.replaceBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dark Mode Overrides */
+:global(:where([data-theme="dark"])) .modalCard {
+  background: #151e33;
+  border-color: #2b3a57;
+  color: #f1f5f9;
+}
+
+:global(:where([data-theme="dark"])) .modalHeader,
+:global(:where([data-theme="dark"])) .modalFooter {
+  border-color: #2b3a57;
+  background: #101827;
+}
+
+:global(:where([data-theme="dark"])) .modalTitle {
+  color: #f1f5f9;
+}
+
+:global(:where([data-theme="dark"])) .modalSubtitle,
+:global(:where([data-theme="dark"])) .headerInfoPill {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .textarea {
+  background: #0b1120;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+:global(:where([data-theme="dark"])) .tableWrap {
+  border-color: #2b3a57;
+}
+
+:global(:where([data-theme="dark"])) .previewTable th {
+  background: #0f172a;
+  color: #cbd5e1;
+  border-bottom-color: #2b3a57;
+}
+
+:global(:where([data-theme="dark"])) .previewTable td {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .previewTable :where(tr:hover) td {
+  background: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .previewTable :where(tr.rowErr) td {
+  background: #451a1a;
+}
+
+:global(:where([data-theme="dark"])) .miniActionBtn,
+:global(:where([data-theme="dark"])) .cancelBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .noDataBox {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .bannerSuccess {
+  background: #052e16;
+  border-color: #166534;
+  color: #86efac;
+}
+
+:global(:where([data-theme="dark"])) .bannerError {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fca5a5;
+}
