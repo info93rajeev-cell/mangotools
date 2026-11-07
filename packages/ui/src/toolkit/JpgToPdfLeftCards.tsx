@@ -1,6 +1,8 @@
 import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
+import { Icon } from '../primitives/Icon.tsx';
 import styles from './jpgToPdfStudio.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { PdfImageItem } from './usePdfStudioState.ts';
 
 export function formatBytes(bytes: number): string {
@@ -150,7 +152,7 @@ function ImageRowItem({
           aria-label={`Move ${item.name} up`}
           title={`Move ${item.name} up`}
         >
-          ↑
+          <Icon name="chevron-up" />
         </button>
         <button
           type="button"
@@ -160,7 +162,7 @@ function ImageRowItem({
           aria-label={`Move ${item.name} down`}
           title={`Move ${item.name} down`}
         >
-          ↓
+          <Icon name="chevron-down" />
         </button>
         <button
           type="button"
@@ -169,7 +171,7 @@ function ImageRowItem({
           aria-label={`Rotate ${item.name}`}
           title={`Rotate ${item.name} 90°`}
         >
-          🔄
+          <Icon name="rotate-ccw" />
         </button>
         <button
           type="button"
@@ -178,7 +180,7 @@ function ImageRowItem({
           aria-label={`Remove ${item.name}`}
           title={`Remove ${item.name}`}
         >
-          🗑️
+          <Icon name="trash-2" />
         </button>
       </div>
     </li>
@@ -218,7 +220,12 @@ export function JpgToPdfArrangeCard({
 
       {images.length === 0 ? (
         <div
-          style={{ padding: '24px 12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}
+          style={{
+            padding: '24px 12px',
+            textAlign: 'center',
+            color: 'var(--color-text-subtle)',
+            fontSize: fs(12),
+          }}
         >
           No images uploaded yet. Choose files above or click <strong>Load Sample</strong> in the
           header.

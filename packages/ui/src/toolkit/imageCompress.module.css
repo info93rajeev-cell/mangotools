@@ -87,7 +87,7 @@
 }
 
 .badgeHint {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   color: var(--color-accent-text);
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);
@@ -114,7 +114,7 @@
   font-size: var(--text-caption);
   font-weight: var(--weight-bold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
@@ -135,7 +135,7 @@
   background: var(--color-surface-subtle);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
 }
 
 .compactDropZone:hover {
@@ -144,7 +144,7 @@
 }
 
 .dropZoneHint {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -156,7 +156,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .activeFileName {
@@ -170,7 +170,7 @@
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 /* PRESETS & INPUTS */
@@ -181,14 +181,14 @@
 }
 
 .dimLabel {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   color: var(--color-text-muted);
 }
 
 .presetRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -197,12 +197,12 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 3px 2px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: var(--weight-medium);
   color: var(--color-text);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
 }
 
 .presetBtn:hover:not(:disabled) {
@@ -235,7 +235,7 @@
   padding: 4px 24px 4px 6px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   background: var(--color-bg);
   color: var(--color-text);
   font-variant-numeric: tabular-nums;
@@ -244,7 +244,7 @@
 .dimUnit {
   position: absolute;
   right: 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   pointer-events: none;
 }
@@ -263,7 +263,7 @@
 }
 
 .qualityValText {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-accent-text);
@@ -283,7 +283,7 @@
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -319,12 +319,12 @@
 }
 
 .formatName {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
 }
 
 .formatDesc {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -340,7 +340,7 @@
   padding: 4px 6px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   background: var(--color-bg);
   color: var(--color-text);
   box-sizing: border-box;
@@ -375,7 +375,7 @@
 .resetLinkBtn {
   background: none;
   border: none;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   cursor: pointer;
   padding: 2px 4px;
@@ -416,7 +416,7 @@
 }
 
 .stageIcon {
-  font-size: 14px;
+  font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
 }
 
 .stageTitle {
@@ -436,7 +436,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   cursor: pointer;
   color: var(--color-text);
 }
@@ -447,7 +447,7 @@
 }
 
 .zoomIndicator {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-variant-numeric: tabular-nums;
   color: var(--color-text-muted);
   min-width: 32px;
@@ -518,7 +518,7 @@
 }
 
 .emptyNoticeHint {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   max-width: 240px;
 }
@@ -532,7 +532,7 @@
 }
 
 .dimensionsBadge {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
   color: var(--color-text);
@@ -543,7 +543,7 @@
 }
 
 .privacyPill {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -574,7 +574,7 @@
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--color-success, #16a34a) 12%, transparent);
   color: var(--color-text);
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
   border: 1px solid color-mix(in srgb, var(--color-success, #16a34a) 30%, transparent);
 }
@@ -599,7 +599,7 @@
 .metricsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .metricsTable tr {
@@ -627,7 +627,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   padding: 2px;
 }
@@ -646,7 +646,7 @@
   font-size: var(--text-ui);
   font-weight: var(--weight-bold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: filter 0.15s ease;
   box-shadow: 0 1px 3px rgba(22, 163, 74, 0.2);
 }
 
@@ -655,7 +655,11 @@
 }
 
 .downloadCtaBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -674,7 +678,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   background: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
@@ -702,4 +706,15 @@
 
 .stageTitleGroup {
   min-width: 0;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global([data-theme="dark"]) .downloadCtaBtn {
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .downloadCtaBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
 }

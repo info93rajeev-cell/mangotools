@@ -1,154 +1,126 @@
-import styles from './pdfStudio.module.css';
+import { Fragment } from 'preact';
+import {
+  RefActions,
+  RefCardHead,
+  RefPaperThumb,
+  RefPrivacy,
+  RefStatus,
+  RefTile,
+} from './PdfRefParts.tsx';
+import { fileMeta } from './pdfFileMeta.ts';
+import styles from './pdfRef.module.css';
 import type { usePdfMergeStudio } from './usePdfMergeStudio.ts';
 
 type MergeStudioState = ReturnType<typeof usePdfMergeStudio>;
 
-function PdfMergeSummaryCard({
-  fileCount,
-  totalPageCount,
-  totalMb,
-  hasBookmarks,
-}: {
-  fileCount: number;
-  totalPageCount: number;
-  totalMb: string;
-  hasBookmarks: boolean;
-}) {
-  return (
-    <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>📋</span> Merge Summary
-        </h2>
-        <span
-          class={styles.badgePill}
-          style={{ background: '#dcfce7', color: '#15803d', borderColor: '#86efac' }}
-        >
-          ✓ Ready to merge
-        </span>
-      </div>
-      <div class={styles.statTilesGrid}>
-        <div class={`${styles.statTile} ${styles.statTileBlue}`}>
-          <span style={{ fontSize: '12px' }}>📄</span>
-          <span class={styles.statVal}>{fileCount}</span>
-          <span class={styles.statLabel}>PDF files</span>
-          <span class={styles.statSub}>Selected</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTilePurple}`}>
-          <span style={{ fontSize: '12px' }}>📑</span>
-          <span class={styles.statVal}>{totalPageCount}</span>
-          <span class={styles.statLabel}>Total pages</span>
-          <span class={styles.statSub}>Across all files</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileGreen}`}>
-          <span style={{ fontSize: '12px' }}>📊</span>
-          <span class={styles.statVal}>{totalMb} MB</span>
-          <span class={styles.statLabel}>Estimated size</span>
-          <span class={styles.statSub}>After merge</span>
-        </div>
-        <div class={`${styles.statTile} ${styles.statTileAmber}`}>
-          <span style={{ fontSize: '12px' }}>🔖</span>
-          <span class={styles.statVal}>{hasBookmarks ? 'Yes' : 'No'}</span>
-          <span class={styles.statLabel}>Bookmarks</span>
-          <span class={styles.statSub}>File names</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+const RANGE_TONES = [styles.rangeRed, styles.rangeBlue, styles.rangeGreen, styles.rangePurple];
 
-function resolveFlowBadgeClass(idx: number): string {
-  if (idx % 4 === 0) return styles.flowBadgeRed;
-  if (idx % 4 === 1) return styles.flowBadgeBlue;
-  if (idx % 4 === 2) return styles.flowBadgeGreen;
-  return styles.flowBadgePurple;
-}
-
-function PdfMergePreviewFlowCard({
+function MergePreview({
   ranges,
-  totalPageCount,
+  total,
+  files,
 }: {
-  ranges: { name: string; start: number; end: number }[];
-  totalPageCount: number;
+  ranges: MergeStudioState['summary']['ranges'];
+  total: number;
+  files: MergeStudioState['files'];
 }) {
   return (
-    <div class={styles.card} style={{ padding: '8px 12px' }}>
-      <div class={styles.cardHeader}>
-        <h2 class={styles.cardTitle}>
-          <span style={{ color: '#2563eb' }}>👁️</span> Merged Document Preview
-        </h2>
-        <span class={styles.headerCounter}>Total pages: {totalPageCount}</span>
-      </div>
-      <div class={styles.flowTimeline}>
+    <section class={`${styles.card} ${styles.subcard}`} aria-label="Merged Document Preview">
+      <RefCardHead
+        icon="eye"
+        title="Merged Document Preview"
+        aside={<span class={styles.listMeta}>Total pages: {total}</span>}
+      />
+      <div class={styles.flow}>
         {ranges.map((r, i) => (
-          <div key={r.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div class={styles.flowCard}>
-              <span class={styles.flowCardTitle} title={r.name}>
-                {r.name.replace(/\.pdf$/i, '')}
-              </span>
-              <div class={styles.flowThumbMock}>
-                <div class={styles.flowMockLine} style={{ width: '85%' }} />
-                <div class={styles.flowMockLine} style={{ width: '65%' }} />
-                <div class={styles.flowMockLine} style={{ width: '75%', opacity: 0.7 }} />
-              </div>
-              <span class={resolveFlowBadgeClass(i)}>
+          <Fragment key={r.name}>
+            <div class={styles.flowItem}>
+              <RefPaperThumb bytes={files[i]?.bytes} rotation={files[i]?.rotation}>
+                <span class={styles.flowName}>{r.name.replace(/\.pdf$/i, '')}</span>
+                <span class={styles.pageLine} />
+                <span class={styles.pageLine} style={{ width: '85%' }} />
+                <span class={styles.pageLine} style={{ width: '92%' }} />
+                <span class={styles.pageLine} style={{ width: '70%' }} />
+              </RefPaperThumb>
+              <span class={`${styles.flowRange} ${RANGE_TONES[i % RANGE_TONES.length]}`}>
                 {r.start} – {r.end}
               </span>
             </div>
-            {i < ranges.length - 1 && <span class={styles.flowPlus}>+</span>}
-          </div>
+            {i < ranges.length - 1 ? (
+              <span class={styles.flowPlus} aria-hidden="true">
+                +
+              </span>
+            ) : null}
+          </Fragment>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
 export function PdfMergeRightCards({ studio }: { studio: MergeStudioState }) {
-  const { files, summary, isProcessing, executeMerge, downloadMerged, copySummary, clearAll } =
-    studio;
-  const totalMb = (summary.totalSizeBytes / (1024 * 1024)).toFixed(1);
-
+  const { files, summary, isProcessing } = studio;
+  const ready = files.length > 1;
   return (
-    <div class={styles.leftMergeCol}>
-      <PdfMergeSummaryCard
-        fileCount={summary.fileCount}
-        totalPageCount={summary.totalPageCount}
-        totalMb={totalMb}
-        hasBookmarks={summary.hasBookmarks}
+    <div class={styles.column}>
+      <section class={styles.card} aria-label="Merge Summary">
+        <RefCardHead
+          icon="files"
+          title="Merge Summary"
+          aside={<RefStatus text={ready ? 'Ready to merge' : 'Add at least 2 PDFs'} done={ready} />}
+        />
+        <div class={styles.tiles}>
+          <RefTile
+            tone="blue"
+            icon="file-text"
+            label="PDF files"
+            value={String(summary.fileCount)}
+            sub="Selected"
+          />
+          <RefTile
+            tone="purple"
+            icon="files"
+            label="Total pages"
+            value={String(summary.totalPageCount)}
+            sub="All files"
+          />
+          <RefTile
+            tone="green"
+            icon="database"
+            label="Est. size"
+            value={
+              summary.totalSizeBytes > 0
+                ? (fileMeta(0, summary.totalSizeBytes).split(' • ')[1] ?? '—')
+                : '—'
+            }
+            sub="After merge"
+          />
+          <RefTile
+            tone="amber"
+            icon="star"
+            label="Bookmarks"
+            value={summary.hasBookmarks ? 'Yes' : 'No'}
+            sub="File names"
+          />
+        </div>
+      </section>
+      {summary.ranges.length > 0 ? (
+        <MergePreview ranges={summary.ranges} total={summary.totalPageCount} files={studio.files} />
+      ) : null}
+      <RefPrivacy />
+      <RefActions
+        icon="files"
+        label="Merge PDFs"
+        busyLabel="Merging PDFs…"
+        busy={isProcessing}
+        disabled={files.length === 0}
+        onRun={() => void studio.executeMerge()}
+        downloadLabel="Download Merged PDF"
+        downloadDisabled={files.length === 0}
+        onDownload={() => void studio.downloadMerged()}
+        onCopy={studio.copySummary}
+        onReset={studio.clearAll}
       />
-      <PdfMergePreviewFlowCard ranges={summary.ranges} totalPageCount={summary.totalPageCount} />
-      <div class={styles.card} data-tour="pdf-action" style={{ padding: '8px 12px' }}>
-        <div class={styles.privacyNotice} style={{ padding: '4px 8px', fontSize: '11px' }}>
-          <span style={{ fontSize: '14px' }}>🔒</span>
-          <span>
-            <strong>Your files stay in your browser</strong> — 100% private client-side processing.
-          </span>
-        </div>
-        <button
-          type="button"
-          class={styles.primaryCtaBtn}
-          disabled={isProcessing || files.length === 0}
-          onClick={() => void executeMerge()}
-        >
-          {isProcessing ? '⏳ Merging PDFs...' : '📄 Merge PDFs →'}
-        </button>
-        <div class={styles.secondaryActionRow}>
-          <button
-            type="button"
-            class={styles.actionBtnPrimaryBlue}
-            onClick={() => void downloadMerged()}
-            disabled={files.length === 0}
-          >
-            📥 Download Merged PDF
-          </button>
-          <button type="button" class={styles.actionBtnNeutral} onClick={copySummary}>
-            📋 Copy Summary
-          </button>
-          <button type="button" class={styles.actionBtnNeutral} onClick={clearAll}>
-            ↻ Reset
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

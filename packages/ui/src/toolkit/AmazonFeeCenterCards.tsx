@@ -2,7 +2,7 @@ import { inr, pct } from './businessFormat.ts';
 import styles from './businessStudio.module.css';
 import type { AmazonFeeEstimatorState, AmazonResult } from './useAmazonFeeEstimator.ts';
 
-const isLoss = (r: AmazonResult | null) => r !== null && r.economicProfit.startsWith('-');
+const isLoss = (r: AmazonResult | null) => Boolean(r?.economicProfit.startsWith('-'));
 
 function Metric(props: {
   ico: string;
@@ -30,7 +30,7 @@ function SummaryMetrics({ r }: { r: AmazonResult }) {
         tone={styles.icoGreen}
         label="Profit margin"
         value={pct(r.profitMarginPercent)}
-        color={isLoss(r) ? '#dc2626' : '#059669'}
+        color={isLoss(r) ? 'var(--color-danger)' : 'var(--color-success)'}
       />
       <Metric
         ico="₹"
@@ -103,7 +103,7 @@ function Row(props: { label: string; value: string; sign?: '−' | ''; muted?: b
   return (
     <tr>
       <td>{props.label}</td>
-      <td style={props.muted ? { color: '#64748b' } : undefined}>
+      <td class={props.muted ? styles.tdMuted : undefined}>
         {props.sign ?? ''}
         {inr(props.value)}
       </td>
@@ -155,9 +155,9 @@ export function AmazonFeeStatementCard({ state }: { state: AmazonFeeEstimatorSta
               muted
             />
           ) : null}
-          <tr style={{ fontWeight: 850, background: '#f0fdf4' }}>
+          <tr class={styles.totalRow}>
             <td>Net profit</td>
-            <td style={{ color: isLoss(r) ? '#dc2626' : '#059669' }}>{inr(r.economicProfit)}</td>
+            <td class={isLoss(r) ? styles.tdLoss : styles.tdGain}>{inr(r.economicProfit)}</td>
           </tr>
         </tbody>
       </table>

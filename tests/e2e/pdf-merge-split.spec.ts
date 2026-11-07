@@ -62,16 +62,20 @@ test.describe('PDF Split', () => {
     expect((await load(await file.path())).getPageCount()).toBe(2);
   });
 
-  test('flags ranges outside the file and splits the valid ones', async ({ page }) => {
+  test('range chips flag pages outside the file and can be removed', async ({ page }) => {
     await gotoReady(page, '/pdf-split');
     await page
       .locator('input[type="file"]')
       .first()
       .setInputFiles(fixture('tools/pdf-split/fixtures/files/five-page.pdf'));
-    const ranges = page.getByLabel(/Page ranges, one output file each/);
-    await expect(ranges).toHaveValue('1-3, 4-5');
-    await ranges.fill('1-2, 3-9');
-    await expect(page.getByText(/Not used: 3-9/)).toBeVisible();
-    await expect(page.getByText('1 file • 2 pages')).toBeVisible();
+    const first = page.getByLabel('Range 1 to 3', { exact: true });
+    const second = page.getByLabel('Range 4 to 5', { exact: true });
+    await expect(first).toHaveValue('1 - 3');
+    await expect(second).toHaveValue('4 - 5');
+    await second.fill('3 - 9');
+    await expect(second).toHaveAttribute('aria-invalid', 'true');
+    await page.getByRole('button', { name: 'Remove range 4 to 5' }).click();
+    await first.fill('1 - 2');
+    await expect(page.getByText(/1 range • 2 pages\s+selected/)).toBeVisible();
   });
 });

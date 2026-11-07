@@ -91,6 +91,7 @@ test.describe('CBM workbench (#219 founder reference)', () => {
       ),
     ).toBeLessThan(16);
     await expect(toolbar(page).getByRole('button')).toHaveText([
+      'Guide',
       '3D visualization',
       'Unit conversion',
       'Print / Save PDF',
@@ -217,7 +218,7 @@ test.describe('CBM workbench (#219 founder reference)', () => {
     await result.getByRole('button', { name: 'Show cost breakdown' }).click();
     await expect(result.getByText('Other charges')).toBeVisible();
     const icons = page.locator('fieldset[data-placement="phone"] button');
-    await expect(icons).toHaveCount(4);
+    await expect(icons).toHaveCount(5);
     for (const icon of await icons.all())
       expect((await icon.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   });

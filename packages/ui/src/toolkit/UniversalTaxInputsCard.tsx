@@ -62,6 +62,7 @@ function AmountQuantityRow({
           step="any"
           class={styles.fieldInput}
           value={amount}
+          aria-invalid={amount <= 0 ? 'true' : undefined}
           onInput={(e) => setAmount(Number((e.target as HTMLInputElement).value) || 0)}
         />
       </div>

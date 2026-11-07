@@ -156,3 +156,79 @@ dd {
     display: none !important;
   }
 }
+
+/* Solid icons (approved reference look). An icon slot opts in by setting --icon-fill: currentColor.
+   Icons with closed shapes are then filled, and their inner lines are drawn in --icon-detail (the
+   slot background, white by default) so they read as cut-outs. Line-only icons (arrows, x, type)
+   are not listed and stay as full-colour lines. Without the opt-in nothing changes. */
+:is(
+  svg[data-icon="file-plus"],
+  svg[data-icon="files"],
+  svg[data-icon="chart-pie"],
+  svg[data-icon="file-check"],
+  svg[data-icon="file-minus"],
+  svg[data-icon="file-archive"],
+  svg[data-icon="badge-check"],
+  svg[data-icon="book-open"],
+  svg[data-icon="circle-help"],
+  svg[data-icon="weight"],
+  svg[data-icon="box"],
+  svg[data-icon="briefcase"],
+  svg[data-icon="circle-alert"],
+  svg[data-icon="circle-check"],
+  svg[data-icon="clipboard-paste"],
+  svg[data-icon="container"],
+  svg[data-icon="copy"],
+  svg[data-icon="file-output"],
+  svg[data-icon="file-text"],
+  svg[data-icon="filter"],
+  svg[data-icon="file-up"],
+  svg[data-icon="image"],
+  svg[data-icon="info"],
+  svg[data-icon="lock"],
+  svg[data-icon="monitor"],
+  svg[data-icon="moon"],
+  svg[data-icon="printer"],
+  svg[data-icon="shield-check"],
+  svg[data-icon="sparkles"],
+  svg[data-icon="trash-2"],
+  svg[data-icon="triangle-alert"],
+  svg[data-icon="globe"],
+  svg[data-icon="eye"],
+  svg[data-icon="calendar"],
+  svg[data-icon="folder-open"],
+  svg[data-icon="file-braces"],
+  svg[data-icon="network"],
+  svg[data-icon="hexagon"],
+  svg[data-icon="circle-x"],
+  svg[data-icon="zap"],
+  svg[data-icon="package"],
+  svg[data-icon="star"],
+  svg[data-icon="clock"],
+  svg[data-icon="file-spreadsheet"],
+  svg[data-icon="layers"],
+  svg[data-icon="square-plus"],
+  svg[data-icon="settings"],
+  svg[data-icon="leaf"],
+  svg[data-icon="hard-hat"],
+  svg[data-icon="search"],
+  svg[data-icon="database"],
+  svg[data-icon="layout-grid"],
+  svg[data-icon="wrench"],
+  svg[data-icon="scissors"]
+) {
+  fill: var(--icon-fill, none);
+  stroke: var(--icon-detail-color, currentColor);
+}
+
+/* The lock shackle, the search handle and the scissor blades are open lines: keep them as strokes. */
+svg[data-icon="lock"] path,
+svg[data-icon="search"] path,
+svg[data-icon="scissors"] * {
+  fill: none;
+  stroke: currentColor;
+}
+
+svg[data-icon="scissors"] circle {
+  fill: var(--icon-fill, none);
+}

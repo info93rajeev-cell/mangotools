@@ -166,11 +166,13 @@ function usePassportActions(
       userInteractedRef.current = true;
       s.setActivePresetId(null);
       s.setTargetWidth(w);
+      if (w > 0 && s.targetHeight > 0) s.setError(null);
     },
     setHeight: (h: number) => {
       userInteractedRef.current = true;
       s.setActivePresetId(null);
       s.setTargetHeight(h);
+      if (h > 0 && s.targetWidth > 0) s.setError(null);
     },
   };
 }

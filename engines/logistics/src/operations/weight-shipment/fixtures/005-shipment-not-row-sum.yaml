@@ -1,0 +1,11 @@
+id: 005-shipment-not-row-sum
+operation: logistics.weight.shipment@1
+source: { type: hand-verified, citation: "Row 1: 10×10×10 = 1,000 cm³ ÷ 5000 = 0.2 kg, actual 20 kg. Row 2: 100×50×50 = 250,000 ÷ 5000 = 50 kg, actual 2 kg. Shipment: volumetric 50.2, actual 22, chargeable = max(22, 50.2) = 50.2, not the per-row sum 20 + 50 = 70 (IATA consignment basis)" }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "5000"
+  packages:
+    - { length: "10", width: "10", height: "10", quantity: "1", weightPerPiece: "20" }
+    - { length: "100", width: "50", height: "50", quantity: "1", weightPerPiece: "2" }
+expected: { volumetricTotal: "50.200", actualTotal: "22.000", chargeableTotal: "50.200", billedOn: volumetric }

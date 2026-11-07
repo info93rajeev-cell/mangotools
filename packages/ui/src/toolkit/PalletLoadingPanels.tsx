@@ -51,7 +51,9 @@ export function PalletLoadingResults({ result, showWeightInResults }: PalletLoad
             </span>
             <div class={styles.kpiBody}>
               <span class={styles.kpiLabel}>Total boxes</span>
-              <span class={styles.kpiValue}>{result.totalBoxes}</span>
+              <span class={styles.kpiValue} data-pallet-kpi="total-boxes">
+                {result.totalBoxes}
+              </span>
             </div>
           </div>
 

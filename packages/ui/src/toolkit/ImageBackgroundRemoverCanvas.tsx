@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import styles from './imageBackgroundRemover.module.css';
+import { fs } from './phoneFontSize.ts';
 import type { UseImageBackgroundRemoverReturn } from './useImageBackgroundRemover.ts';
 
 export interface ImageBackgroundRemoverCanvasProps {
@@ -40,7 +41,7 @@ function BackdropButton({
       onClick={onClick}
       style={{
         padding: '2px 5px',
-        fontSize: '10px',
+        fontSize: fs(10),
         border: '1px solid var(--color-border)',
         borderRadius: '3px',
         background: active ? 'var(--color-accent)' : 'var(--color-bg)',
@@ -61,7 +62,15 @@ function BackdropPicker({
   onBackdropChange: (b: PreviewBackdrop) => void;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginLeft: '4px' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px',
+        marginLeft: '4px',
+        flexWrap: 'wrap',
+      }}
+    >
       <BackdropButton
         active={backdrop === 'checker'}
         title="Checkerboard (Transparent)"
@@ -155,7 +164,7 @@ function StageControls({
 }: StageControlsProps) {
   return (
     <div class={styles.canvasHeader}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
         <span class={styles.canvasTitle}>Visual Stage</span>
         {hasResult && (
           <button
@@ -166,7 +175,7 @@ function StageControls({
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-sm)',
               padding: '2px 6px',
-              fontSize: '10px',
+              fontSize: fs(10),
               fontWeight: 'var(--weight-bold)',
               cursor: 'pointer',
               color: showOriginal ? 'var(--color-accent)' : 'var(--color-text)',

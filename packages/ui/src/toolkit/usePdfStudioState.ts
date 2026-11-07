@@ -115,6 +115,9 @@ function usePdfImages(
 ) {
   const [images, setImages] = useState<PdfImageItem[]>([]);
   const [isCompiling, setIsCompiling] = useState(false);
+  // True while the images shown are the sample; the user's own images then replace them.
+  const sampleShown = useRef(false);
+  const userInteracted = useRef(false);
 
   useEffect(() => {
     if (converter?.file && images.length === 0) {
@@ -134,31 +137,43 @@ function usePdfImages(
   }, [converter?.file]);
 
   const processFiles = async (files: FileList | File[]) => {
+    userInteracted.current = true;
     const valid = await readFiles(files);
     if (valid.length > 0) {
-      setImages((prev) => [...prev, ...valid]);
+      setImages((prev) => (sampleShown.current ? valid : [...prev, ...valid]));
+      sampleShown.current = false;
       onPhase?.('idle');
       notify?.(`Added ${valid.length} image${valid.length > 1 ? 's' : ''}`);
+    } else if (sampleShown.current) {
+      setImages([]);
+      sampleShown.current = false;
+      notify?.('Please select valid image files');
     }
   };
 
-  const loadSamples = async () => {
+  const loadSamples = async (force = false) => {
     try {
       setIsCompiling(true);
       const items = await loadSampleItems();
-      setImages(items);
-      onPhase?.('idle');
-      notify?.('Loaded 5 sample images');
+      if (force || !userInteracted.current) {
+        setImages(items);
+        sampleShown.current = true;
+        userInteracted.current = false;
+        onPhase?.('idle');
+        notify?.('Loaded 5 sample images');
+      }
     } finally {
       setIsCompiling(false);
     }
   };
 
   const clearAll = () => {
+    userInteracted.current = true;
     for (const img of images) {
       if (img.blobUrl.startsWith('blob:')) URL.revokeObjectURL(img.blobUrl);
     }
     setImages([]);
+    sampleShown.current = false;
     onPhase?.('idle');
   };
 

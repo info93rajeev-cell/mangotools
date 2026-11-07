@@ -14,6 +14,7 @@ import {
   createSamplePdf,
   SAMPLE_HEAVY_BOOK_FILE,
   SAMPLE_SPLIT_FILE,
+  type SampleDocMeta,
 } from './samplePdfDocuments.ts';
 
 export type { SplitMode, SplitPartInfo, SplitRange } from './pdfSplitPlan.ts';
@@ -163,6 +164,8 @@ function rangeActions(opts: Options, totalPages: number) {
       opts.setRanges((p) => [...p, { id: `r-${p.length + 1}-${start}`, start, end }]);
     },
     removeRange: (id: string) => opts.setRanges((p) => p.filter((r) => r.id !== id)),
+    updateRange: (id: string, start: number, end: number) =>
+      opts.setRanges((p) => p.map((r) => (r.id === id ? { ...r, start, end } : r))),
   };
 }
 
@@ -196,6 +199,14 @@ function useSplitParts(file: FileState, opts: Options): SplitPartInfo[] {
   );
 }
 
+/** The four parts shown in the approved reference for the 124-page sample. */
+const SAMPLE_SPLIT_RANGES: [number, number][] = [
+  [1, 12],
+  [13, 42],
+  [43, 78],
+  [79, 124],
+];
+
 export function usePdfSplitStudio(notify?: (msg: string) => void) {
   const file = useSplitFileState(notify);
   const opts = usePdfSplitOptions();
@@ -207,13 +218,25 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
     const pages = await file.take(name, bytes);
     if (pages > 0) {
       opts.setRanges(defaultRanges(pages));
+      opts.setPattern(`${name.replace(/\.[^/.]+$/, '')}_Part_{n}`);
       opts.setExtractInput('1');
       notify?.(`Loaded ${name} (${pages} pages)`);
     }
     return pages;
   };
-  const loadSample = async (meta: { name: string; pageCount: number }) =>
-    open(meta.name, await createSamplePdf(meta.name.replace(/\.pdf$/i, ''), meta.pageCount));
+  const loadSample = async (meta: SampleDocMeta, ranges?: [number, number][]) => {
+    const bytes = await createSamplePdf(
+      meta.name.replace(/\.pdf$/i, ''),
+      meta.pageCount,
+      meta.summary,
+      meta.themeColor,
+    );
+    const pages = await open(meta.name, bytes);
+    if (pages > 0 && ranges) {
+      opts.setRanges(ranges.map(([start, end], i) => ({ id: `s${i + 1}`, start, end })));
+    }
+    return pages;
+  };
 
   return {
     ...file,
@@ -228,7 +251,7 @@ export function usePdfSplitStudio(notify?: (msg: string) => void) {
       setSelectedPage(pg);
       if (opts.mode === 'extract') opts.setExtractInput((p) => togglePage(p, pg));
     },
-    loadSampleSplit: () => void loadSample(SAMPLE_SPLIT_FILE),
+    loadSampleSplit: () => void loadSample(SAMPLE_SPLIT_FILE, SAMPLE_SPLIT_RANGES),
     handleAddNativeFile: async (f: File | undefined) => {
       if (f) await open(f.name, new Uint8Array(await f.arrayBuffer()));
     },

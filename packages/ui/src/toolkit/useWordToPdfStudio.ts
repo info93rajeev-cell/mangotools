@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { type DocxContent, readDocx } from './docxReader.ts';
 import { type Margins, type PageSize, renderDocxToPdf } from './docxToPdf.ts';
-import { buildDocxFromBlocks, type DocxBlock } from './docxZipPacker.ts';
+import { buildDocxFromBlocks } from './docxZipPacker.ts';
+import { SAMPLE_WORD_DOCS } from './sampleWordDocs.ts';
 
 export interface WordFile {
   id: string;
@@ -10,34 +11,9 @@ export interface WordFile {
   content: DocxContent;
   pages: number;
   words: number;
+  /** This file laid out on its own with the current settings, for the page previews. */
+  preview: Uint8Array;
 }
-
-const SAMPLE_DOCS: { name: string; blocks: DocxBlock[] }[] = [
-  {
-    name: 'Project-Proposal-Sample.docx',
-    blocks: [
-      { kind: 'h1', text: 'Project Proposal (Sample)' },
-      {
-        kind: 'p',
-        text: 'This sample Word file was generated in your browser to try Word to PDF.',
-      },
-      { kind: 'h2', text: 'Scope' },
-      {
-        kind: 'p',
-        text: 'Design, build and test a stock tracker for two warehouses over eight weeks.',
-      },
-      { kind: 'h2', text: 'Budget' },
-      { kind: 'p', text: 'Fixed price, paid in three milestones: start, beta and handover.' },
-    ],
-  },
-  {
-    name: 'Meeting-Notes-Sample.docx',
-    blocks: [
-      { kind: 'h1', text: 'Meeting Notes (Sample)' },
-      { kind: 'p', text: 'Attendees agreed the delivery dates and the next review in two weeks.' },
-    ],
-  },
-];
 
 function wordCount(c: DocxContent): number {
   return c.paragraphs
@@ -83,6 +59,7 @@ async function readWordFiles(
         content,
         pages: r.pages,
         words: wordCount(content),
+        preview: r.bytes,
       });
     } catch {
       notify?.(`${f.name} could not be read as a Word document.`);
@@ -109,7 +86,7 @@ async function renderGroups(
   return out;
 }
 
-/** Page counts depend on page size and margins, so they are recounted when those change. */
+/** Page counts and previews depend on page size and margins, so they are redone when those change. */
 function useRecountPages(
   files: WordFile[],
   setFiles: (f: WordFile[]) => void,
@@ -119,12 +96,12 @@ function useRecountPages(
   useEffect(() => {
     let current = true;
     void Promise.all(
-      files.map(async (f) => ({
-        ...f,
-        pages: (await renderDocxToPdf([f.content], { pageSize, margins })).pages,
-      })),
+      files.map(async (f) => {
+        const r = await renderDocxToPdf([f.content], { pageSize, margins });
+        return { ...f, pages: r.pages, preview: r.bytes };
+      }),
     ).then((updated) => {
-      if (current && updated.some((f, i) => f.pages !== files[i]?.pages)) setFiles(updated);
+      if (current && updated.length > 0) setFiles(updated);
     });
     return () => {
       current = false;
@@ -139,6 +116,15 @@ export interface Converted {
   replacedChars: number;
 }
 
+async function readAll(fileList: FileList | File[]) {
+  return Promise.all(
+    Array.from(fileList).map(async (f) => ({
+      name: f.name,
+      bytes: new Uint8Array(await f.arrayBuffer()),
+    })),
+  );
+}
+
 export function useWordToPdfStudio(notify?: (msg: string) => void) {
   const [files, setFiles] = useState<WordFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>('A4');
@@ -148,10 +134,15 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
   const [output, setOutput] = useState<Converted[] | null>(null);
   useEffect(() => setOutput(null), [files, pageSize, margins, exportMode]);
   useRecountPages(files, setFiles, pageSize, margins);
-  const add = async (list: { name: string; bytes: Uint8Array }[]) => {
-    const added = await readWordFiles(list, files.length, { pageSize, margins }, notify);
+  // True while the files shown are the sample; the user's own files then replace them.
+  const sampleShown = useRef(false);
+  const add = async (list: { name: string; bytes: Uint8Array }[], sample = false) => {
+    const replace = sampleShown.current || sample;
+    const start = replace ? 0 : files.length;
+    const added = await readWordFiles(list, start, { pageSize, margins }, notify);
     if (added.length > 0) {
-      setFiles((prev) => [...prev, ...added]);
+      setFiles((prev) => (replace ? added : [...prev, ...added]));
+      sampleShown.current = sample;
       notify?.(`Added ${added.length} Word file${added.length === 1 ? '' : 's'}`);
     }
   };
@@ -200,15 +191,10 @@ export function useWordToPdfStudio(notify?: (msg: string) => void) {
       notify?.('Summary copied');
     },
     loadSampleWordDocs: async () =>
-      add(SAMPLE_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) }))),
-    handleAddNativeFiles: async (fileList: FileList | File[]) =>
       add(
-        await Promise.all(
-          Array.from(fileList).map(async (f) => ({
-            name: f.name,
-            bytes: new Uint8Array(await f.arrayBuffer()),
-          })),
-        ),
+        SAMPLE_WORD_DOCS.map((d) => ({ name: d.name, bytes: buildDocxFromBlocks(d.blocks) })),
+        true,
       ),
+    handleAddNativeFiles: async (fileList: FileList | File[]) => add(await readAll(fileList)),
   };
 }

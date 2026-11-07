@@ -99,11 +99,6 @@ export function SellerProfitabilityStudioLayout({
         </p>
       ) : null}
 
-      <p class={styles.warn} data-demo-note="">
-        Demo numbers: the costs and fees filled in are our own example, not any marketplace's rates.
-        Treat the result as an estimate and replace every field with your own figures.
-      </p>
-
       <div class={styles.columns}>
         <div data-tour="profit-inputs">
           <SellerProfitabilityLeftCards state={state} />
@@ -115,6 +110,11 @@ export function SellerProfitabilityStudioLayout({
           <SellerProfitabilityRightCards state={state} />
         </div>
       </div>
+
+      <p class={styles.warn} style={{ marginTop: '4px' }} data-demo-note="">
+        Demo numbers: the costs and fees filled in are our own example, not any marketplace's rates.
+        Treat the result as an estimate and replace every field with your own figures.
+      </p>
 
       <ToolOnboardingTour
         toolId="seller-profitability-calculator"

@@ -6,9 +6,9 @@ import { parseDocumentXml, readDocx, readZipText } from './docxReader.ts';
 import { renderDocxToPdf, sanitise } from './docxToPdf.ts';
 import { buildDocxFromBlocks } from './docxZipPacker.ts';
 import { decodeWithCMap, parseCMap } from './pdfFontDecoder.ts';
-import { extractPdfText, toBlocks } from './pdfTextExtract.ts';
+import { extractPdfText, type PageText, toBlocks } from './pdfTextExtract.ts';
 import { createTextSamplePdf } from './samplePdfDocuments.ts';
-import { docxBlocks, summarise } from './usePdfToWordStudio.ts';
+import { docxBlocks, pickPages, summarise } from './usePdfToWordStudio.ts';
 
 const root = join(__dirname, '../../../..');
 const file = (p: string) => new Uint8Array(readFileSync(join(root, p)));
@@ -34,7 +34,7 @@ describe('PDF text extraction', () => {
   it('joins wrapped lines of a standard-font PDF into paragraphs', async () => {
     const ex = summarise(await extractPdfText(await createTextSamplePdf()));
     expect(ex.pages).toHaveLength(2);
-    expect(ex.headings).toBe(4);
+    expect(ex.headings).toBe(5);
     const para = ex.blocks.find(
       (b) => b.kind === 'p' && b.text.startsWith('The supplier delivers'),
     );
@@ -116,5 +116,68 @@ describe('DOCX reading and PDF output', () => {
   it('sanitises text for the standard fonts', () => {
     expect(sanitise('€ café ₹ नमस्ते')).toEqual({ text: '€ café ? ??????', replaced: 7 });
     expect(parseDocumentXml('<w:body><w:p/></w:body>').paragraphs).toHaveLength(1);
+  });
+});
+
+describe('PDF to Word page range', () => {
+  const pages: PageText[] = [1, 2, 3, 4, 5].map((n) => ({
+    lines: [{ text: `Page ${n}`, size: 12, y: 700 }],
+  }));
+
+  it('keeps every page in "all" mode, whatever the text says', () => {
+    expect(pickPages(pages, 'all', '2').pages).toHaveLength(5);
+  });
+
+  it('keeps only the listed pages and reports items outside the file', () => {
+    const r = pickPages(pages, 'custom', '1-2, 4, 9');
+    expect(r.pages.map((p) => p.lines[0]?.text)).toEqual(['Page 1', 'Page 2', 'Page 4']);
+    expect(r.invalid).toEqual(['9']);
+  });
+
+  it('keeps nothing until pages are entered', () => {
+    expect(pickPages(pages, 'custom', '').pages).toHaveLength(0);
+  });
+});
+
+describe('PDF to Word tables', () => {
+  it('turns text that lines up in columns into a Word table', async () => {
+    const ex = summarise(await extractPdfText(await createTextSamplePdf()));
+    const table = ex.blocks.find((b) => b.kind === 'table');
+    expect(table).toEqual({
+      kind: 'table',
+      rows: [
+        ['Item', 'Description', 'Qty', 'Amount (Rs)'],
+        ['PB-01', 'Corrugated box, 5 ply', '2,000', '48,000'],
+        ['PB-02', 'Bubble wrap roll, 50 m', '120', '21,600'],
+        ['PB-03', 'Packing tape, 48 mm', '600', '9,000'],
+      ],
+    });
+    expect(ex.tables).toBe(1);
+    const docx = new TextDecoder().decode(
+      buildDocxFromBlocks(docxBlocks(ex.blocks, { keepHeadings: true, pageBreaks: true })),
+    );
+    expect(docx).toContain('<w:tbl>');
+    expect(docx).toContain('Corrugated box, 5 ply');
+  });
+
+  it('writes one line per row when tables are switched off', async () => {
+    const ex = summarise(await extractPdfText(await createTextSamplePdf()));
+    const blocks = docxBlocks(ex.blocks, {
+      keepHeadings: true,
+      pageBreaks: true,
+      keepTables: false,
+    });
+    expect(blocks.some((b) => b.kind === 'table')).toBe(false);
+    expect(blocks).toContainEqual({
+      kind: 'p',
+      text: 'PB-01\tCorrugated box, 5 ply\t2,000\t48,000',
+    });
+  });
+
+  it('keeps ordinary paragraphs as paragraphs', async () => {
+    const ex = summarise(
+      await extractPdfText(file('tools/pdf-to-word/fixtures/files/chromium-report.pdf')),
+    );
+    expect(ex.tables).toBe(0);
   });
 });

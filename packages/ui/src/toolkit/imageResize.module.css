@@ -138,7 +138,7 @@
 }
 
 .dropZoneHint {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -156,7 +156,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 3px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .activeFileName {
@@ -170,7 +170,7 @@
 .activeFileMeta {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 .uploadNewBtn {
@@ -182,7 +182,7 @@
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-sm);
   padding: 3px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -208,7 +208,7 @@
 }
 
 .dimLabel {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-semibold);
   color: var(--color-text-muted);
 }
@@ -238,7 +238,7 @@
 .dimSuffix {
   position: absolute;
   right: 6px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   pointer-events: none;
 }
@@ -255,7 +255,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   cursor: pointer;
   user-select: none;
 }
@@ -275,7 +275,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 2px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   text-align: center;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -295,7 +295,7 @@
 /* FORMAT GRID */
 .formatGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -325,17 +325,17 @@
 }
 
 .formatName {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: var(--weight-bold);
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
 .filenameLabel {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   display: flex;
   flex-direction: column;
@@ -345,7 +345,7 @@
 .filenameInput {
   width: 100%;
   padding: 3px 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -389,7 +389,7 @@
 .resetGhostBtn {
   background: transparent;
   border: none;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   cursor: pointer;
   padding: 2px;
@@ -525,7 +525,7 @@
 }
 
 .canvasHint {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -597,7 +597,7 @@
 .metricsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .metricsTable td {
@@ -641,7 +641,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   text-align: center;
   padding-top: 4px;
@@ -659,7 +659,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
 }
 
@@ -684,7 +684,7 @@
 .qualityNumber {
   width: 50px;
   padding: 3px 4px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -704,4 +704,13 @@
 
 .canvasToolbarTitle {
   min-width: 0;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .resizeActionBtn {
+  color: #111827;
+}
+
+:global(:where([data-theme="dark"])) .downloadCtaBtn {
+  color: #ffffff;
 }

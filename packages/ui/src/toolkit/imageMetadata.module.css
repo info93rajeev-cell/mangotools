@@ -64,6 +64,18 @@
   padding: 3px 0;
 }
 
+@media (max-width: 480px) {
+  .loadedStage {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .previewThumbWrap {
+    width: 100%;
+    height: 90px;
+  }
+}
+
 .previewThumbWrap {
   width: 190px;
   height: 75px;
@@ -94,7 +106,7 @@
 }
 
 .signatureFileName {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   white-space: nowrap;
@@ -106,7 +118,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
 }
 
@@ -125,18 +137,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #047857;
 }
 
 .badgeCheckCircle {
   color: #059669;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 .successBadgeSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #065f46;
   line-height: 1.15;
 }
@@ -148,7 +160,7 @@
 }
 
 .compareHeading {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #1e293b);
   margin-bottom: 4px;
@@ -169,7 +181,7 @@
 }
 
 .compareLabel {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   text-transform: uppercase;
@@ -208,7 +220,7 @@
   right: 4px;
   background: rgba(15, 23, 42, 0.78);
   color: #fde68a;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 2px 4px;
   border-radius: 3px;
@@ -225,7 +237,7 @@
   right: 4px;
   background: rgba(15, 23, 42, 0.78);
   color: #86efac;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 2px 4px;
   border-radius: 3px;
@@ -273,7 +285,7 @@
 }
 
 .cardTitle {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #1e293b);
   display: flex;
@@ -293,7 +305,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 7px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text, #334155);
   cursor: pointer;
@@ -314,7 +326,7 @@
   border: 1px solid var(--color-border, #e2e8f0);
   border-radius: 4px;
   padding: 1px 5px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 500;
   color: var(--color-text-muted, #64748b);
   cursor: pointer;
@@ -355,7 +367,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted, #94a3b8);
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   flex-shrink: 0;
 }
 
@@ -369,7 +381,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text, #0f172a);
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 600;
   cursor: pointer;
   flex-shrink: 0;
@@ -384,7 +396,7 @@
 }
 
 .fileName {
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   white-space: nowrap;
@@ -394,7 +406,7 @@
 }
 
 .fileSpecs {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   font-family: var(--font-mono, monospace);
   line-height: 1.2;
@@ -415,9 +427,9 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -433,14 +445,14 @@
 }
 
 .statusBoxTitle {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   line-height: 1.15;
 }
 
 .statusBoxSub {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   color: #166534;
   line-height: 1.15;
 }
@@ -471,7 +483,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding: 0;
   line-height: 1.45;
   border-bottom: 1px dashed var(--color-border-subtle, #f1f5f9);
@@ -494,7 +506,7 @@
   font-weight: 600;
   color: var(--color-text, #0f172a);
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   text-align: right;
   max-width: 55%;
   white-space: nowrap;
@@ -512,12 +524,12 @@
   flex-direction: column;
   gap: 2px;
   color: #1e40af;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   line-height: 1.25;
 }
 
 .infoCalloutIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
   color: #2563eb;
 }
@@ -537,7 +549,7 @@
 }
 
 .subHeadingText {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   line-height: 1.2;
@@ -545,8 +557,15 @@
 
 .formatCardsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
+}
+
+@media (max-width: 360px) {
+  .formatCardsRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 .formatCard {
@@ -585,7 +604,7 @@
   border-radius: 50%;
   background: var(--color-accent, #ffb000);
   color: #0f172a;
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -593,28 +612,30 @@
 }
 
 .formatIcon {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   line-height: 1;
 }
 
 .formatTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   line-height: 1.2;
 }
 
 .formatSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   line-height: 1.15;
 }
 
 .formatNote {
-  font-size: 8px;
+  font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #94a3b8);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   line-height: 1.15;
 }
 
@@ -625,7 +646,7 @@
 }
 
 .fieldLabel {
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: var(--color-text-muted, #475569);
   line-height: 1.15;
@@ -636,7 +657,7 @@
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 4px;
   padding: 2px 5px;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: var(--color-text, #0f172a);
   width: 100%;
   box-sizing: border-box;
@@ -655,7 +676,7 @@
   border: 1px solid #fef08a;
   border-radius: 4px;
   padding: 1px 5px;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #854d0e;
   display: flex;
   align-items: center;
@@ -664,7 +685,7 @@
 }
 
 .warningIcon {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   flex-shrink: 0;
 }
 
@@ -691,7 +712,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -710,7 +731,7 @@
 }
 
 .applyActionBtn[data-applied="true"] {
-  background: #10b981;
+  background: #047857;
   color: #ffffff;
   border-color: #059669;
 }
@@ -721,7 +742,7 @@
   border: 1px solid #166534;
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -741,7 +762,10 @@
 
 .applyActionBtn:disabled,
 .downloadActionBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
   cursor: not-allowed;
 }
 
@@ -751,7 +775,7 @@
   border: none;
   border-radius: 5px;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -775,7 +799,7 @@
 }
 
 .privacySubtext {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
   text-align: center;
   line-height: 1.15;
@@ -795,7 +819,7 @@
 
 .verifMetricsRow {
   display: grid;
-  grid-template-columns: 2.2fr repeat(4, 1fr);
+  grid-template-columns: 2.2fr repeat(4, minmax(0, 1fr));
   gap: 5px;
   align-items: stretch;
 }
@@ -820,9 +844,9 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #15803d;
   color: #ffffff;
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -838,14 +862,14 @@
 }
 
 .verifBannerTitle {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #15803d;
   line-height: 1.15;
 }
 
 .verifBannerSub {
-  font-size: 9px;
+  font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: #166534;
   line-height: 1.15;
 }
@@ -864,7 +888,7 @@
 }
 
 .metricTitle {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -880,7 +904,7 @@
 }
 
 .metricVal {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: var(--color-text, #0f172a);
   font-family: var(--font-mono, monospace);
@@ -890,7 +914,7 @@
 .reductionBadge {
   background: #bbf7d0;
   color: #166534;
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 700;
   padding: 0 3px;
   border-radius: 3px;
@@ -902,14 +926,14 @@
   align-items: center;
   gap: 5px;
   flex-wrap: wrap;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   padding-top: 1px;
 }
 
 .removedLabel {
   font-weight: 600;
   color: var(--color-text-muted, #475569);
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   line-height: 1.2;
 }
 
@@ -924,7 +948,7 @@
   background: #ecfdf5;
   border: 1px solid #a7f3d0;
   color: #15803d;
-  font-size: 9.5px;
+  font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 1px 5px;
   border-radius: 999px;
@@ -935,7 +959,7 @@
 }
 
 .chipCheck {
-  font-size: 8.5px;
+  font-size: calc(8.5px + (15px - 8.5px) * var(--fs-lift, 0));
   font-weight: 800;
 }
 
@@ -959,4 +983,189 @@
   background: rgba(6, 95, 70, 0.3);
   border-color: #065f46;
   color: #6ee7b7;
+}
+
+/* Phones: small status icons were hard to see. */
+@media (max-width: 700px) {
+  .formatIcon {
+    font-size: 16px;
+  }
+
+  .infoCalloutIcon {
+    font-size: 16px;
+  }
+
+  .warningIcon {
+    font-size: 16px;
+  }
+
+  .badgeCheckCircle {
+    font-size: 16px;
+  }
+}
+
+/* Phones: long metadata values wrap inside their column instead of pushing the page sideways. */
+@media (max-width: 700px) {
+  .metaRowsCol,
+  .metaRowItem {
+    min-width: 0;
+  }
+
+  .metaRowItem {
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .metaValueText {
+    max-width: 60%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .formatCard {
+    min-width: 0;
+  }
+
+  .formatCard span {
+    white-space: normal;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .successBadgeTitle {
+  color: #aef8e3;
+}
+
+:global(:where([data-theme="dark"])) .badgeCheckCircle {
+  color: #9df7db;
+}
+
+:global(:where([data-theme="dark"])) .successBadgeSub {
+  color: #bcfae8;
+}
+
+:global(:where([data-theme="dark"])) .compareSection {
+  border-top: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .compareBoxBefore {
+  background: #3b3211;
+}
+
+:global(:where([data-theme="dark"])) .compareBoxAfter {
+  background: #123d1f;
+}
+
+:global(:where([data-theme="dark"])) .studioCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardHeader {
+  border-bottom: 1px solid var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .replaceBtn {
+  background: #151e33;
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .sampleMiniBtn {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardThumbImg {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .cardThumbPlaceholder {
+  border: 1px dashed var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .statusBoxGreen {
+  background: #123f2a;
+  border: 1px solid #30644c;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxTitle {
+  color: #a7f1c2;
+}
+
+:global(:where([data-theme="dark"])) .statusBoxSub {
+  color: #b8f0cd;
+}
+
+:global(:where([data-theme="dark"])) .metaRowItem {
+  border-bottom: 1px dashed var(--color-border-subtle, #304a64);
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutBox {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .infoCalloutIcon {
+  color: #5b8af0;
+}
+
+:global(:where([data-theme="dark"])) .formatCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .formatCard:hover {
+  border-color: var(--color-border-strong, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .checkBadge {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .textInput {
+  border: 1px solid var(--color-border, #36485e);
+}
+
+:global(:where([data-theme="dark"])) .standingWarningBox {
+  color: #f5cfa3;
+  background: #403c12;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn[data-applied="true"] {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .downloadActionBtn {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn:disabled,
+:global(:where([data-theme="dark"])) .downloadActionBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+}
+
+:global(:where([data-theme="dark"])) .primaryActionBtn {
+  color: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .verificationCard {
+  border: 1px solid var(--color-border, #324761);
+}
+
+:global(:where([data-theme="dark"])) .verifBannerIcon {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .reductionBadge {
+  color: #166534;
 }

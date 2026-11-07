@@ -12,7 +12,7 @@
   --color-focus: #005bea;
   color-scheme: light;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   line-height: 1.35;
 }
 .workspace {
@@ -45,7 +45,7 @@
 }
 
 .card p {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   color: var(--color-text-muted);
   margin: 5px 0 0;
 }
@@ -95,7 +95,7 @@
   min-height: 64px;
 }
 .containerChoices small {
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 .containerChoices button[aria-pressed="true"] {
   background: var(--load-blue);
@@ -108,7 +108,7 @@
   background: #f0f6ff;
   padding: 7px;
   margin-top: 8px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   border-radius: 4px;
 }
 .reference summary {
@@ -151,7 +151,7 @@
 }
 .notes,
 .faq {
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
 }
 .notes summary,
 .faq summary {
@@ -200,7 +200,7 @@
 }
 .amountInput span {
   flex: none;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 @media (min-width: 1101px) and (min-height: 821px) {
   .workspace {
@@ -221,6 +221,22 @@
 @media (max-width: 1100px) and (min-width: 701px) {
   .workspace {
     grid-template-columns: 1fr;
+  }
+  /* Single column: placement view / reference image first, then inputs, then results. */
+  .right {
+    display: contents;
+  }
+  .right > * {
+    order: 1;
+  }
+  .right > [data-selected-container] {
+    order: -1;
+  }
+  .left {
+    order: 0;
+  }
+  .error {
+    order: 2;
   }
 }
 @media (max-width: 700px) {
@@ -249,7 +265,7 @@
     gap: 4px;
   }
   .card h2 {
-    font-size: 14px;
+    font-size: calc(14px + (15px - 14px) * var(--fs-lift, 0));
   }
   .worksheet {
     order: 10;
@@ -279,6 +295,9 @@
   .right > details {
     order: 30;
     width: 100%;
+  }
+  .right > [data-selected-container] {
+    order: 1;
   }
   .right > section {
     order: 40;
@@ -336,23 +355,23 @@
     margin: 0;
   }
   .constraints > summary {
-    font-size: 12px;
+    font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   }
   .costInputs p {
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   }
   .costFields {
     margin-top: 6px;
   }
   .costFields label {
-    font-size: 11px;
+    font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   }
   .root .costFields input,
   .root .costFields select {
-    font-size: 13px;
+    font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   }
   .amountInput span {
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   }
   .costFields label:nth-child(2) {
     grid-column: 2;
@@ -366,4 +385,47 @@
   .workspace {
     display: none;
   }
+}
+
+/* Dark: the workspace sets its own light palette; switch it with the theme. */
+:global([data-theme="dark"]) .root {
+  --color-bg: #0f172a;
+  --color-text: #e2e8f0;
+  --color-text-muted: #a5b4d0;
+  --color-border: #334155;
+  --color-border-input: #475569;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-focus: #60a5fa;
+  color-scheme: dark;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .reference {
+  background: #12233d;
+}
+
+:global(:where([data-theme="dark"])) .costInputs {
+  background: linear-gradient(115deg, #12253e, #11233a);
+}
+
+:global(:where([data-theme="dark"])) .costInputs h2 :global(.icon) {
+  color: #639cf2;
+}
+
+:global(:where([data-theme="dark"])) .actions button {
+  color: #639cf2;
+  border-color: #304264;
+}
+
+:global(:where([data-theme="dark"])) .actions .print {
+  color: #171300;
+}
+
+:global(:where([data-theme="dark"])) .amountInput:has(span) {
+  background: #151e33;
 }

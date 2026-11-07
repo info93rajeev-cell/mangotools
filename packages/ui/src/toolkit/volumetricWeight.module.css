@@ -26,7 +26,7 @@
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   color: #166534;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
@@ -62,6 +62,16 @@
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
+  }
+  /* Single column: 3D preview / reference image first, then inputs, then results. */
+  .right {
+    display: contents;
+  }
+  .right > * {
+    order: 1;
+  }
+  .right > :first-child {
+    order: -1;
   }
 }
 
@@ -110,7 +120,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #64748b;
 }
@@ -124,11 +134,11 @@
 }
 
 .unitPill {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #526077;
   padding: 2px 7px;
   border-radius: 4px;
   cursor: pointer;
@@ -155,7 +165,7 @@
   width: 100%;
   min-width: 0;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 @media (min-width: 641px) {
@@ -179,11 +189,11 @@
   .itemsTable th,
   .itemsTable td {
     padding: 3px 2px;
-    font-size: 10px;
+    font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   }
   .tableInput {
     height: 26px;
-    font-size: 10.5px;
+    font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
     padding: 0 2px;
     min-width: 0;
   }
@@ -193,7 +203,7 @@
   background: #f8fafc;
   font-weight: 600;
   color: #475569;
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
 }
 
 .rowNum {
@@ -206,7 +216,7 @@
   width: 100%;
   box-sizing: border-box;
   height: 28px;
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   padding: 0 6px;
@@ -229,7 +239,7 @@
   border: none;
   cursor: pointer;
   padding: 2px;
-  font-size: 13px;
+  font-size: calc(13px + (15px - 13px) * var(--fs-lift, 0));
   opacity: 0.6;
 }
 
@@ -253,7 +263,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
   cursor: pointer;
@@ -275,7 +285,7 @@
 }
 
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: calc(11.5px + (15px - 11.5px) * var(--fs-lift, 0));
   font-weight: 600;
   color: #334155;
 }
@@ -285,7 +295,7 @@
   width: 100%;
   box-sizing: border-box;
   height: 32px;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 0 8px;
@@ -304,7 +314,7 @@
   border: 1px solid #bfdbfe;
   border-radius: 6px;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #1e40af;
   line-height: 1.45;
   display: flex;
@@ -338,14 +348,14 @@
 }
 
 .loadCount {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
 .status {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 600;
-  color: #16a34a;
+  color: #15803d;
   background: #edfff5;
   border: 1px solid #c8f0dc;
   border-radius: 5px;
@@ -369,6 +379,13 @@
 @media (max-width: 700px) {
   .kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 360px) {
+  .kpis {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }
 
@@ -403,8 +420,9 @@
 }
 
 .kpi span {
-  white-space: nowrap;
-  font-size: 10px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -437,7 +455,7 @@
 }
 
 .chargeableLabel {
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
   font-weight: 700;
   color: #1e40af;
   text-transform: uppercase;
@@ -452,7 +470,7 @@
 }
 
 .chargeableSub {
-  font-size: 10.5px;
+  font-size: calc(10.5px + (15px - 10.5px) * var(--fs-lift, 0));
   color: #3b82f6;
 }
 
@@ -463,7 +481,7 @@
 
 .secondary > summary {
   line-height: 1.3;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 650;
   color: #0f172a;
   cursor: pointer;
@@ -488,7 +506,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   margin-top: 4px;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
 }
 
 @media (max-width: 700px) {
@@ -516,7 +534,7 @@
 
 .legend small {
   display: block;
-  font-size: 10px;
+  font-size: calc(10px + (15px - 10px) * var(--fs-lift, 0));
   color: #64748b;
 }
 
@@ -524,9 +542,11 @@
 .tableScroll {
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   max-height: 150px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   margin-top: 4px;
@@ -537,14 +557,14 @@
   width: 100%;
   min-width: 0;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: calc(11px + (15px - 11px) * var(--fs-lift, 0));
 }
 
 @media (max-width: 640px) {
   .detailsTable th,
   .detailsTable td {
     padding: 2px 3px;
-    font-size: 9.5px;
+    font-size: calc(9.5px + (15px - 9.5px) * var(--fs-lift, 0));
   }
 }
 
@@ -630,6 +650,191 @@
   border-radius: 8px;
   background: #fef2f2;
   color: #991b1b;
-  font-size: 12px;
+  font-size: calc(12px + (15px - 12px) * var(--fs-lift, 0));
   font-weight: 600;
+}
+
+/* ---- Dark theme completion: light colours that had no dark override (generated, then checked with axe). ---- */
+:global(:where([data-theme="dark"])) .root {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .privacyBadge {
+  color: #b8f0cd;
+  background: #123d1f;
+  border: 1px solid #306442;
+}
+
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .unitRow {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .unitPillGroup {
+  background: #182838;
+}
+
+:global(:where([data-theme="dark"])) .unitPill {
+  color: #afb9c8;
+}
+
+:global(:where([data-theme="dark"])) .unitPillActive {
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .tableScrollWrap {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .itemsTable th,
+:global(:where([data-theme="dark"])) .itemsTable td {
+  border-bottom: 1px solid #304a64;
+}
+
+:global(:where([data-theme="dark"])) .itemsTable th {
+  color: #b8c1cf;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .rowNum {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tableInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .outlineActionBtn {
+  color: #c4cedc;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .outlineActionBtn:hover {
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #c4cedc;
+}
+
+:global(:where([data-theme="dark"])) .selectInput,
+:global(:where([data-theme="dark"])) .textInput {
+  color: #dde4f3;
+  background: #151e33;
+  border: 1px solid #36485e;
+}
+
+:global(:where([data-theme="dark"])) .divisorCallout {
+  color: #8aa1eb;
+  background: #12253d;
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .calloutTitle {
+  color: #a1b4eb;
+}
+
+:global(:where([data-theme="dark"])) .heading h2 {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .loadCount {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .status {
+  color: #a7f1c2;
+  background: #123e25;
+  border: 1px solid #30644a;
+}
+
+:global(:where([data-theme="dark"])) .status[data-status="actual"] {
+  color: #f4b976;
+  background: #3e3512;
+}
+
+:global(:where([data-theme="dark"])) .kpi {
+  background: #151e33;
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .kpi span {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .kpi strong {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .chargeableCallout {
+  background: linear-gradient(110deg, #12253d, #111c3a);
+  border: 1px solid #304764;
+}
+
+:global(:where([data-theme="dark"])) .chargeableLabel {
+  color: #8aa1eb;
+}
+
+:global(:where([data-theme="dark"])) .chargeableValue {
+  color: #7091ec;
+}
+
+:global(:where([data-theme="dark"])) .secondary > summary {
+  color: #dde4f3;
+}
+
+:global(:where([data-theme="dark"])) .bar {
+  background: #1f2c3c;
+}
+
+:global(:where([data-theme="dark"])) .legend small {
+  color: #a3adbd;
+}
+
+:global(:where([data-theme="dark"])) .tableScroll {
+  border: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .detailsTable th,
+:global(:where([data-theme="dark"])) .detailsTable td {
+  border-bottom: 1px solid #324761;
+}
+
+:global(:where([data-theme="dark"])) .detailsTable thead th {
+  color: #b8c1cf;
+  background: #172635;
+}
+
+:global(:where([data-theme="dark"])) .printBtn {
+  color: #0f1c3f;
+}
+
+:global(:where([data-theme="dark"])) .copyBtn {
+  color: #6092f2;
+  background: #151e33;
+}
+
+:global(:where([data-theme="dark"])) .copyBtn:hover {
+  background: #12253d;
+}
+
+:global(:where([data-theme="dark"])) .skipped {
+  color: #ed9797;
+  background: #3c1111;
+  border: 1px solid #643030;
 }

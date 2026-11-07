@@ -9,6 +9,7 @@ import PageContainer from '@mangotools/ui/layout/PageContainer.astro';
 import Disclaimer from '@mangotools/ui/toolkit/Disclaimer.astro';
 import ToolContent from '@mangotools/ui/toolkit/ToolContent.astro';
 import ToolHeader from '@mangotools/ui/toolkit/ToolHeader.astro';
+import { toolHeaderIcon } from '@mangotools/ui/toolkit/toolHeaderIcons.ts';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categoryById, presetFor, toolLinks, toolTitle } from '../lib/site.ts';
 import { breadcrumbList, faqPage, webApplication } from '../lib/structured-data.ts';
@@ -52,7 +53,7 @@ const isCivil = [
     <div class="page" data-fullscreen-root>
       <div class="top">
         <Breadcrumbs items={crumbs} />
-        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} />
+        <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} icon={toolHeaderIcon(tool.slug)} />
       </div>
       {isCivil ? (
         <div class="civil-page-wrap">

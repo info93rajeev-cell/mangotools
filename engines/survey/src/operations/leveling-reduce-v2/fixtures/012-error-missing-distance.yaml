@@ -1,0 +1,29 @@
+{
+  "id": "012-error-missing-distance",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §8 point 2: Missing distance when adjBy: distance fails with SURVEY_LEVELING_MISSING_DISTANCE."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "99.805",
+    "observations": [
+      {
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "fs": "1.000"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "distance"
+  },
+  "expectedError": {
+    "code": "SURVEY_LEVELING_MISSING_DISTANCE",
+    "path": "observations.1.dist"
+  }
+}
