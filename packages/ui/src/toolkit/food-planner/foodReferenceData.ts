@@ -2,6 +2,7 @@ export { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
 export {
   type ExtendedFoodRecipe,
   getRecipeVerificationInfo,
+  type ImageProvenance,
   RECIPES,
 } from './foodRecipesData.ts';
 

@@ -31,6 +31,13 @@ export interface ExtendedFoodRecipe {
   };
   verified: boolean;
   thumbnailUrl?: string;
+  imageProvenance?: ImageProvenance;
+}
+
+export interface ImageProvenance {
+  type: 'ai-generated' | 'free-source' | 'placeholder';
+  notes: string;
+  license?: string;
 }
 
 export interface RecipeVerificationInfo {
@@ -118,6 +125,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       date: '2026-11-02',
       notes: 'Cross-checked against published sources. Exact proportions.',
     },
+    thumbnailUrl: '/food/recipes/jeera-rice.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'dal-tadka',
@@ -163,6 +175,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       by: 'Claude (Engineering Office)',
       date: '2026-11-02',
       notes: 'Cross-checked against published sources.',
+    },
+    thumbnailUrl: '/food/recipes/dal-tadka.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
     },
   },
   {
@@ -210,6 +227,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       date: '2026-11-02',
       notes: 'Standard dry sabzi proportions.',
     },
+    thumbnailUrl: '/food/recipes/aloo-gobi.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'besan-ladoo',
@@ -234,6 +256,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Remove from heat and let cool to lukewarm temperature.',
       'Mix in powdered sugar (boora/tagar) thoroughly and shape into smooth round ladoos.',
     ],
+    thumbnailUrl: '/food/recipes/besan-ladoo.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'mathri',
@@ -260,6 +287,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Roll into small thick rounds, prick with a fork on both sides.',
       'Deep fry in medium-hot oil on low flame until crisp and pale golden.',
     ],
+    thumbnailUrl: '/food/recipes/mathri.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'shahi-paneer',
@@ -285,6 +317,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Warm ghee in a handi, cook the spiced masala paste until glossy.',
       'Gently fold in fresh paneer cubes and warm milk/cream, simmer 5 minutes on low.',
     ],
+    thumbnailUrl: '/food/recipes/shahi-paneer.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'raita',
@@ -308,6 +345,11 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Whisk fresh chilled curd with salt and roasted cumin powder until smooth.',
       'Garnish with fresh coriander and serve cold alongside rice and curries.',
     ],
+    thumbnailUrl: '/food/recipes/raita.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
   {
     id: 'mixed-veg-salad',
@@ -331,5 +373,10 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Finely dice tomatoes and onions.',
       'Toss with salt, lemon juice, and freshly chopped coriander.',
     ],
+    thumbnailUrl: '/food/recipes/mixed-veg-salad.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes: 'AI-generated food photography thumbnail',
+    },
   },
 ];

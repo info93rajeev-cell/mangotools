@@ -6,6 +6,7 @@ import {
   getRecipeVerificationInfo,
   RECIPES,
 } from './foodReferenceData.ts';
+import { RecipeCardImage } from './RecipeCardImage.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 interface RecipesMenuSectionProps {
@@ -315,12 +316,7 @@ function RecipeGalleryCard({
 
   return (
     <div class={styles.recipeCard}>
-      <div class={styles.recipeImageHolder}>
-        <span>🍽️</span>
-        <button type="button" class={styles.favBtn} title="Favorite">
-          <Icon name="heart" />
-        </button>
-      </div>
+      <RecipeCardImage recipe={recipe} />
       <div class={styles.recipeMeta}>
         <div
           style={{

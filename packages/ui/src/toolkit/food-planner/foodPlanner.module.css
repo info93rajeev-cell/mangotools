@@ -355,21 +355,79 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 .recipeImageHolder {
-  height: 96px;
+  height: 108px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
   position: relative;
   overflow: hidden;
+}
+.recipeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+.recipeCard:hover .recipeImg {
+  transform: scale(1.04);
+}
+.recipePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  text-align: center;
+}
+.placeholderIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+.placeholderBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  padding: 2px 8px;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.placeholderRice {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+.placeholderDal {
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+}
+.placeholderMain {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+}
+.placeholderSide {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+}
+.placeholderSnack {
+  background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+}
+.placeholderDessert {
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+}
+.placeholderDefault {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
 }
 .favBtn {
   position: absolute;
   top: 6px;
   right: 6px;
-  background: rgba(255, 255, 255, 0.85);
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   border: none;
   border-radius: 999px;
   width: 26px;
