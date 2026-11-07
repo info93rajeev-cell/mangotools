@@ -1,15 +1,16 @@
 import { useRef } from 'preact/hooks';
 import styles from './advancedPenSelection.module.css';
 import type { ActiveTool, UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts';
+import type { AutoSelectStatus } from './usePenAutoSelect.ts';
 
 function Step1ImageCard({
   loadFile,
   runAutoSelect,
-  isProcessing,
+  status,
 }: {
   loadFile: (f: File) => Promise<void>;
-  runAutoSelect: () => void;
-  isProcessing: boolean;
+  runAutoSelect: () => Promise<void>;
+  status: AutoSelectStatus;
 }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -38,7 +39,8 @@ function Step1ImageCard({
       </div>
 
       <p class={styles.stepDescription}>
-        Upload an image and click <strong>Auto Select</strong> to detect the main object.
+        Upload an image and click <strong>Auto Select</strong>. The on-device AI selects the
+        subject; then fix any spot with the brushes.
       </p>
 
       <div class={styles.actionButtonGroup}>
@@ -54,24 +56,39 @@ function Step1ImageCard({
         <button
           type="button"
           class={styles.autoSelectBtn}
-          onClick={runAutoSelect}
-          disabled={isProcessing}
+          onClick={() => void runAutoSelect()}
+          disabled={status.busy}
+          aria-busy={status.busy}
         >
           <span class={styles.btnIcon}>🪄</span>
-          <span>{isProcessing ? 'Detecting...' : 'Auto Select'}</span>
+          <span>{status.busy ? 'Selecting…' : 'Auto Select (AI)'}</span>
         </button>
       </div>
 
-      <div class={styles.selectWrapper}>
-        <label class={styles.inputLabel} for="object-select">
-          Detected Target:
-        </label>
-        <select id="object-select" class={styles.toolSelect}>
-          <option value="main">Main Subject (Bird / Foreground)</option>
-          <option value="entire">Entire Foreground Object</option>
-          <option value="custom">Custom Pen Path</option>
-        </select>
-      </div>
+      {status.busy ? (
+        <p class={styles.stepDescription} role="status">
+          {status.message} {Math.round(status.progress * 100)}%
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function BrushSize({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  return (
+    <div class={styles.selectWrapper}>
+      <label class={styles.inputLabel} for="pen-brush-size">
+        Brush size: {value} px
+      </label>
+      <input
+        id="pen-brush-size"
+        type="range"
+        min={4}
+        max={120}
+        step={2}
+        value={value}
+        onInput={(e) => onChange(Number((e.target as HTMLInputElement).value))}
+      />
     </div>
   );
 }
@@ -79,12 +96,16 @@ function Step1ImageCard({
 function Step2ToolsCard({
   activeTool,
   setActiveTool,
+  brushRadius,
+  setBrushRadius,
   smoothCurrentPath,
   simplifyCurrentPath,
   resetCurrentPath,
 }: {
   activeTool: ActiveTool;
   setActiveTool: (tool: ActiveTool) => void;
+  brushRadius: number;
+  setBrushRadius: (r: number) => void;
   smoothCurrentPath: () => void;
   simplifyCurrentPath: () => void;
   resetCurrentPath: () => void;
@@ -99,7 +120,8 @@ function Step2ToolsCard({
       </div>
 
       <p class={styles.stepDescription}>
-        Refine the path with Bezier pen tool, add or remove points, and adjust curves.
+        <strong>Brush Add</strong> paints the subject back in, <strong>Brush Remove</strong> erases
+        leftover background. <strong>Pen</strong>: click corners to add a hard-edged area.
       </p>
 
       <div class={styles.toolGrid}>
@@ -158,6 +180,8 @@ function Step2ToolsCard({
         </button>
       </div>
 
+      <BrushSize value={brushRadius} onChange={setBrushRadius} />
+
       <div class={styles.pathActionRow}>
         <button
           type="button"
@@ -201,19 +225,19 @@ export function AdvancedPenControls({ penSelection }: AdvancedPenControlsProps) 
     simplifyCurrentPath,
     resetCurrentPath,
     loadFile,
-    isProcessing,
+    autoSelectStatus,
+    brushRadius,
+    setBrushRadius,
   } = penSelection;
 
   return (
     <div class={styles.leftControlsColumn}>
-      <Step1ImageCard
-        loadFile={loadFile}
-        runAutoSelect={runAutoSelect}
-        isProcessing={isProcessing}
-      />
+      <Step1ImageCard loadFile={loadFile} runAutoSelect={runAutoSelect} status={autoSelectStatus} />
       <Step2ToolsCard
         activeTool={activeTool}
         setActiveTool={setActiveTool}
+        brushRadius={brushRadius}
+        setBrushRadius={setBrushRadius}
         smoothCurrentPath={smoothCurrentPath}
         simplifyCurrentPath={simplifyCurrentPath}
         resetCurrentPath={resetCurrentPath}

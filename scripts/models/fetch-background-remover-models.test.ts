@@ -200,12 +200,12 @@ describe('Universal Background Remover Model Delivery', () => {
 
   it('7. Universal mode loads the model from this site (same origin, chunked parts)', () => {
     const src = readFileSync(
-      join(ROOT, 'packages/ui/src/toolkit/universalSegmentation.ts'),
+      join(ROOT, 'packages/ui/src/toolkit/onDeviceBackgroundModel.ts'),
       'utf8',
     );
     expect(src).toContain('env.allowLocalModels = false');
     expect(src).toContain('env.allowRemoteModels = true');
-    expect(src).toContain('env.remoteHost = host;');
+    expect(src).toContain('env.remoteHost = modelHost();');
     expect(src).toContain("env.remotePathTemplate = 'models/birefnet-lite-512/{revision}/'");
     expect(src).toContain('installChunkedModelFetch([MODEL_PATH_PREFIX])');
     expect(src).not.toContain('models.beyandtheai.com');

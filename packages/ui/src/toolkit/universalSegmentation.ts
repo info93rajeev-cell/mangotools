@@ -1,8 +1,9 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
-import { installChunkedModelFetch } from './chunkedModelFetch.ts';
-import { refineMatte, type TransparencyMode } from './edgeMatteRefinement.ts';
+import type { TransparencyMode } from './edgeMatteRefinement.ts';
+import { cutoutOnDevice } from './onDeviceBackgroundModel.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
 import { applyProductShadowAndBackground, type ShadowMode } from './productShadowEngine.ts';
+import { refineForBackground } from './refineCutoutImage.ts';
 import type {
   BgFile,
   BgOutputFormat,
@@ -157,15 +158,7 @@ async function createRefinedCanvas(
     if (ctxOrig && ctxCut) {
       ctxOrig.drawImage(origBitmap, 0, 0, w, h);
       ctxCut.drawImage(cutoutBitmap, 0, 0, w, h);
-      const refinedData = refineMatte(
-        ctxOrig,
-        ctxCut,
-        w,
-        h,
-        input.feather ?? 2,
-        input.transparencyMode ?? 'auto',
-        input.tolerance,
-      );
+      const refinedData = refineForBackground(ctxOrig, ctxCut, cOrig, cCut, w, h, input);
       const canvas = document.createElement('canvas');
       canvas.width = w;
       canvas.height = h;
@@ -245,42 +238,6 @@ async function assembleCutoutResult(
   return ok(resultData, warnings);
 }
 
-/**
- * The model is served by this site itself, under /models/ (staged by
- * scripts/models/stage-background-remover-models.ts). Large .onnx files arrive in <25 MiB parts
- * and are joined in the browser, so nothing is fetched from another host.
- */
-const MODEL_PATH_PREFIX = '/models/birefnet-lite-512/';
-
-async function configureTransformersEnv(host: string): Promise<void> {
-  const { env } = await import('@huggingface/transformers');
-  env.allowLocalModels = false;
-  env.allowRemoteModels = true;
-  env.remoteHost = host;
-  env.remotePathTemplate = 'models/birefnet-lite-512/{revision}/';
-  installChunkedModelFetch([MODEL_PATH_PREFIX]);
-
-  const isIsolated = typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated;
-  if (env.backends?.onnx?.wasm) {
-    env.backends.onnx.wasm.wasmPaths = '/wasm/';
-    if (!isIsolated) {
-      env.backends.onnx.wasm.numThreads = 1;
-    }
-  }
-
-  try {
-    const ort = await import('onnxruntime-web');
-    if (ort?.env?.wasm) {
-      ort.env.wasm.wasmPaths = '/wasm/';
-      if (!isIsolated) {
-        ort.env.wasm.numThreads = 1;
-      }
-    }
-  } catch {
-    // ignore
-  }
-}
-
 export async function executeUniversalCutout(
   input: UniversalCutoutInput,
 ): Promise<Result<ImageBackgroundRemoverResultData>> {
@@ -296,24 +253,16 @@ export async function executeUniversalCutout(
   const inputBlob = new Blob([safeBuffer], { type: mime });
 
   try {
-    const rawHost = (window as unknown as { __MANGOTOOLS_MODELS_HOST__?: string })
-      .__MANGOTOOLS_MODELS_HOST__;
-    const host = rawHost && rawHost !== '/' ? rawHost : `${window.location.origin}/`;
-
-    await configureTransformersEnv(host);
-
-    const { removeBackground } = await import('@bg0/browser');
-    const outcome = await removeBackground(inputBlob, {
-      quality: 'quality',
-      onProgress: input.onProgress,
-      signal: input.signal,
+    const cutout = await cutoutOnDevice(inputBlob, {
+      ...(input.onProgress ? { onProgress: input.onProgress } : {}),
+      ...(input.signal ? { signal: input.signal } : {}),
     });
     input.onProgress?.({
       stage: 'finishing',
       progress: 0.96,
       message: 'Compositing shadow & canvas…',
     });
-    return await assembleCutoutResult(input, outcome.blob);
+    return await assembleCutoutResult(input, cutout);
   } catch (e) {
     console.error('Universal cutout execution error:', e);
     return err('IMAGE_BACKGROUND_REMOVAL_FAILED', {

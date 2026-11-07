@@ -4,7 +4,8 @@
  * background compositing, and transparent image export.
  */
 
-import { type BezierPath, drawPathToCanvas, pathToSvgD } from './bezierPathModel.ts';
+import { pathToSvgD } from './bezierPathModel.ts';
+import { buildSelectionMask, type MaskSources } from './selectionMask.ts';
 
 export interface SelectionEdgeSettings {
   featherRadius: number; // 0 to 30 px
@@ -15,7 +16,8 @@ export interface SelectionEdgeSettings {
 
 export interface RenderCutoutOptions {
   image: HTMLImageElement | ImageBitmap;
-  path: BezierPath;
+  /** AI mask, pen path and brush strokes that make up the selection. */
+  sources: MaskSources;
   settings: SelectionEdgeSettings;
   backgroundType: 'transparent' | 'white' | 'black' | 'custom';
   customBgColor?: string;
@@ -30,76 +32,23 @@ export interface RenderCutoutResult {
 }
 
 /**
- * Creates the feathered alpha mask canvas
- */
-function createFeatheredMaskCanvas(
-  path: BezierPath,
-  width: number,
-  height: number,
-  feather: number,
-  expandContract: number,
-): HTMLCanvasElement {
-  // Step 1: Base sharp silhouette
-  const sharpCanvas = document.createElement('canvas');
-  sharpCanvas.width = width;
-  sharpCanvas.height = height;
-  const sharpCtx = sharpCanvas.getContext('2d');
-  if (!sharpCtx) return sharpCanvas;
-
-  sharpCtx.fillStyle = '#ffffff';
-  drawPathToCanvas(sharpCtx, path);
-  sharpCtx.fill();
-
-  // Apply expand / contract
-  if (expandContract !== 0) {
-    const strokeWidth = Math.abs(expandContract) * 2;
-    sharpCtx.lineWidth = strokeWidth;
-    sharpCtx.lineJoin = 'round';
-    sharpCtx.lineCap = 'round';
-
-    if (expandContract > 0) {
-      sharpCtx.strokeStyle = '#ffffff';
-      sharpCtx.stroke();
-    } else {
-      sharpCtx.globalCompositeOperation = 'destination-out';
-      sharpCtx.strokeStyle = '#000000';
-      sharpCtx.stroke();
-      sharpCtx.globalCompositeOperation = 'source-over';
-    }
-  }
-
-  if (feather <= 0) return sharpCanvas;
-
-  // Step 2: Feather mask boundary via CSS blur filter on offscreen canvas
-  const featheredCanvas = document.createElement('canvas');
-  featheredCanvas.width = width;
-  featheredCanvas.height = height;
-  const featherCtx = featheredCanvas.getContext('2d');
-  if (!featherCtx) return sharpCanvas;
-
-  featherCtx.filter = `blur(${feather}px)`;
-  featherCtx.drawImage(sharpCanvas, 0, 0);
-
-  return featheredCanvas;
-}
-
-/**
  * Renders the final cut-out image with the given path, feather, and background settings.
  */
 export async function renderSelectionCutout(
   opts: RenderCutoutOptions,
 ): Promise<RenderCutoutResult> {
-  const { image, path, settings, backgroundType, customBgColor } = opts;
+  const { image, sources, settings, backgroundType, customBgColor } = opts;
+  const path = sources.path;
   const width = image.width;
   const height = image.height;
 
   // 1. Create mask
-  const maskCanvas = createFeatheredMaskCanvas(
-    path,
+  const maskCanvas = buildSelectionMask(
     width,
     height,
-    settings.featherRadius,
+    sources,
     settings.expandContract,
+    settings.featherRadius,
   );
 
   // 2. Create composite output canvas
