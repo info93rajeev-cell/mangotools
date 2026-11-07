@@ -26,6 +26,7 @@ export interface SurveyBenchmarkCardProps {
   calculate: () => void;
   loadSample: () => void;
   reset: () => void;
+  onOpenPasteModal?: () => void;
 }
 
 interface BenchmarkMethodTabsProps {
@@ -121,6 +122,7 @@ export function SurveyBenchmarkCard({
   calculate,
   loadSample,
   reset,
+  onOpenPasteModal,
 }: SurveyBenchmarkCardProps) {
   const startRLError = cellErrors.startRL;
   const closeRLError = cellErrors.closingRL;
@@ -190,8 +192,9 @@ export function SurveyBenchmarkCard({
             <button
               type="button"
               class={sl.miniBtn}
-              disabled
-              title="Clipboard paste arrives in PR 5"
+              onClick={onOpenPasteModal}
+              data-paste-excel=""
+              title={surveyStrings.pasteExcel}
             >
               📋 {surveyStrings.pasteExcel}
             </button>

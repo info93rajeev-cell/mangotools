@@ -2,11 +2,12 @@ import type { RunFn } from '@mangotools/runtime';
 import { useState } from 'preact/hooks';
 import { Toast, useToast } from '../../primitives/feedback.tsx';
 import { SurveyBenchmarkCard } from './SurveyBenchmarkCard.tsx';
+import { SurveyPasteModal } from './SurveyPasteModal.tsx';
 import { SurveyProfilePlaceholder } from './SurveyProfilePlaceholder.tsx';
 import { SurveyResultsCard } from './SurveyResultsCard.tsx';
 import s from './surveyLevelingLayout.module.css';
 import { surveyStrings } from './surveyLevelingStrings.ts';
-import type { SurveyCalculationOutput } from './surveyLevelingTypes.ts';
+import type { SurveyCalculationOutput, SurveyLevelingRow } from './surveyLevelingTypes.ts';
 import { useSurveyLeveling } from './useSurveyLeveling.ts';
 
 export interface SurveyLevelingLayoutProps {
@@ -125,6 +126,12 @@ function SurveyBottomFaq({ method }: { method: 'rise-fall' | 'height-of-instrume
 export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLevelingLayoutProps) {
   const survey = useSurveyLeveling(customRun);
   const [message, notify] = useToast();
+  const [isPasteOpen, setIsPasteOpen] = useState(false);
+
+  const handleApplyPaste = (newRows: SurveyLevelingRow[]) => {
+    survey.replaceRows(newRows);
+    notify(surveyStrings.pasteAppliedToast.replace('{count}', String(newRows.length)));
+  };
 
   const handleCopyBook = async () => {
     if (!survey.result || survey.isStale) return;
@@ -168,6 +175,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
               calculate={survey.calculate}
               loadSample={survey.loadSample}
               reset={survey.reset}
+              onOpenPasteModal={() => setIsPasteOpen(true)}
             />
           </div>
           <div class={s.accordionsSlot} data-survey-accordions-slot="">
@@ -202,6 +210,12 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
       </AccordionCard>
 
       <SurveyBottomFaq method={survey.method} />
+
+      <SurveyPasteModal
+        isOpen={isPasteOpen}
+        onClose={() => setIsPasteOpen(false)}
+        onApply={handleApplyPaste}
+      />
 
       <Toast message={message} />
     </div>

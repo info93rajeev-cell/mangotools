@@ -33,7 +33,46 @@ export const surveyStrings = {
   // Field Readings & Table
   fieldReadings: 'Field readings',
   trySample: 'Try sample',
-  pasteExcel: 'Paste from Excel (Preview — PR 5)',
+  pasteExcel: 'Paste from Excel',
+
+  // Paste from Excel Modal
+  pasteModalTitle: 'Paste Level Book from Excel / Spreadsheet',
+  pasteModalSubtitle:
+    'Paste tab-separated or comma-separated rows copied from Excel, Google Sheets, or CSV.',
+  pasteInputLabel: 'Spreadsheet data (Ctrl+V / ⌘V)',
+  pasteInputPlaceholder:
+    'Paste rows here (e.g. Station, BS, IS, FS, Dist, Remarks)...\nExample:\nBM-1\t1.500\t\t\t0\tStart BM\nA\t\t1.200\t\t30\t\nCP1\t0.800\t\t2.000\t30\tChange point\nBM-2\t\t\t2.200\t40\tClosing BM',
+  pasteFromClipboard: '📋 Paste from clipboard',
+  pasteClear: 'Clear',
+  pasteClose: 'Close modal',
+  pastePreviewTitle: 'Review pasted rows',
+  pasteReplaceBtn: 'Replace level book',
+  pasteCancelBtn: 'Cancel',
+  pasteNoData: 'No rows detected yet. Paste spreadsheet data into the box above.',
+  pasteHeaderDetected: 'Header row detected and mapped automatically',
+  pasteNoHeaderDetected:
+    'No header detected — columns mapped positionally (Station, BS, IS, FS, Dist, Remarks)',
+  pasteValidBanner: 'All {count} rows valid and ready to import.',
+  pasteErrorBanner: 'Found errors in {count} row(s). Correct your data before applying.',
+  pasteAppliedToast: 'Level book replaced with {count} pasted rows.',
+  pasteClipboardError: 'Could not access clipboard. Please paste manually into the text area.',
+
+  // Paste Validation Messages
+  pasteErrEmpty: 'Station has no staff readings (BS, IS, or FS)',
+  pasteErrInvalidReading: 'Invalid decimal reading (max 6 decimal places)',
+  pasteErrNegativeReading: 'Staff reading cannot be negative',
+  pasteErrCombination: 'Invalid reading combination: cannot mix IS with BS or FS',
+  pasteErrStartBS: 'First station must have Backsight (BS)',
+  pasteErrStartBSOnly:
+    'First observation must be a starting backsight (BS) only, not a change point or foresight',
+  pasteErrEndFS: 'Final station must have Foresight (FS)',
+  pasteErrEndFSOnly:
+    'Final observation must be a closing foresight (FS) only, not a change point or backsight',
+  pasteErrCP: 'Intermediate change point requires both incoming FS and outgoing BS',
+  pasteErrDist: 'Invalid distance: must be a non-negative decimal',
+  pasteErrDistZero: 'First station distance must be 0 if provided',
+  pasteErrMinRows: 'At least 2 stations are required for leveling reduction',
+  pasteErrMaxRows: 'Maximum 50 stations allowed per level run',
   colIndex: '#',
   colStation: 'Station',
   colBS: 'BS',
