@@ -240,7 +240,7 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
         badge3="No Sign-Up Needed"
         openLabel="Open Images"
         onOpen={() => s.fileInputRef.current?.click()}
-        onLoadSample={() => void s.loadSamples()}
+        onLoadSample={() => void s.loadSamples(true)}
         onClear={s.clearAll}
       />
 

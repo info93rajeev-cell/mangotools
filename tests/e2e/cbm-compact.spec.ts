@@ -36,8 +36,8 @@ async function checkShell(page: Page, width: number) {
   const optY = (await options.boundingBox())?.y ?? 0;
   const visY = (await visualization.boundingBox())?.y ?? 0;
   const sumY = (await summary(page).boundingBox())?.y ?? 0;
-  expect(optY).toBeLessThan(visY);
-  expect(visY).toBeLessThan(sumY);
+  expect(visY).toBeLessThan(optY);
+  expect(optY).toBeLessThan(sumY);
 }
 
 test.describe('Active CBM shipment workspace', () => {
