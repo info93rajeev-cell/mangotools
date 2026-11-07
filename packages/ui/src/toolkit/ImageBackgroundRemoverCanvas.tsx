@@ -62,7 +62,15 @@ function BackdropPicker({
   onBackdropChange: (b: PreviewBackdrop) => void;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginLeft: '4px' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px',
+        marginLeft: '4px',
+        flexWrap: 'wrap',
+      }}
+    >
       <BackdropButton
         active={backdrop === 'checker'}
         title="Checkerboard (Transparent)"
@@ -156,7 +164,7 @@ function StageControls({
 }: StageControlsProps) {
   return (
     <div class={styles.canvasHeader}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
         <span class={styles.canvasTitle}>Visual Stage</span>
         {hasResult && (
           <button

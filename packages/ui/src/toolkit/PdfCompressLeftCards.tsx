@@ -27,6 +27,13 @@ function PdfCompressFileCard({ studio }: { studio: CompressStudioState }) {
         onChange={onFileInputChange}
       />
       <RefCardHead step={1} title="Add PDF file" />
+      <div data-primary-result="" class="visually-hidden">
+        <output>
+          {studio.result
+            ? `${Math.round(((studio.result.originalBytes - studio.result.compressedBytes) / studio.result.originalBytes) * 100)}%`
+            : ''}
+        </output>
+      </div>
       <button type="button" class={styles.drop} onClick={() => fileInputRef.current?.click()}>
         <Icon name="file-plus" />
         <span class={styles.dropTitle}>

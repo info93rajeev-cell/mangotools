@@ -165,6 +165,8 @@
   padding: 12px 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .cardHeader {
@@ -293,6 +295,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   transition: border-color 0.15s ease;
+  min-width: 0;
 }
 
 .imageRow:hover {
@@ -716,6 +719,15 @@
   .settingsGrid,
   .summaryGrid {
     grid-template-columns: 1fr;
+  }
+
+  .imageRow {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .rowActions {
+    margin-left: auto;
   }
 }
 

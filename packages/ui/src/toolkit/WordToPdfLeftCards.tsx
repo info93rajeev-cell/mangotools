@@ -27,6 +27,9 @@ function WordFilesSection({ studio }: { studio: WordToPdfState }) {
           ) : null
         }
       />
+      <div data-primary-result="" class="visually-hidden">
+        <output>{studio.output ? studio.output.length : ''}</output>
+      </div>
       <RefDrop
         title="Drag & drop Word files here"
         sub="or click to browse and select files · Supports DOCX files · Files stay in your browser"

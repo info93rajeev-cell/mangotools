@@ -894,6 +894,12 @@
     min-height: 40px;
   }
   /* Keeps the related tools card short on phones */
+  .hint {
+    display: none;
+  }
+  .b64OptGrid {
+    gap: 10px;
+  }
   .relatedItem small {
     display: none;
   }

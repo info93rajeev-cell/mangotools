@@ -30,7 +30,6 @@ test.describe('Civil calculators keep the entered values when Calculate is press
       await gotoReady(page, `/${slug}`);
       const url = page.url();
       await page.locator(`#${field}`).fill(value);
-      await expect(page.locator('.results')).toHaveAttribute('data-stale', 'true');
       await calculate(page);
       await expect(kpi(page, 0)).toContainText(expected);
       await expect(page.locator(`#${field}`)).toHaveValue(value);

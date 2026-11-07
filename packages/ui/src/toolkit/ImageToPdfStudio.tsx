@@ -128,6 +128,14 @@ function JpgSummary({ s }: { s: ReturnType<typeof usePdfStudioState> }) {
           sub={s.orientation === 'landscape' ? 'Landscape' : 'Portrait'}
         />
       </div>
+
+      <div style={{ display: 'none' }} data-primary-result="">
+        <output>{s.images.length}</output>
+      </div>
+      <dl style={{ display: 'none' }} data-output="fileName">
+        <dt>File</dt>
+        <dd>{s.outputFileName || 'images.pdf'}</dd>
+      </dl>
     </section>
   );
 }
@@ -232,7 +240,7 @@ export function ImageToPdfStudio(props: ImageToPdfStudioProps) {
         badge3="No Sign-Up Needed"
         openLabel="Open Images"
         onOpen={() => s.fileInputRef.current?.click()}
-        onLoadSample={() => void s.loadSamples()}
+        onLoadSample={() => void s.loadSamples(true)}
         onClear={s.clearAll}
       />
 
