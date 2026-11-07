@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
   type BezierPath,
-  createKingfisherReferencePath,
+  type BezierPoint,
   deletePointById,
   insertPointAt,
   moveHandleCoords,
   movePointCoords,
-  simplifyPath,
-  smoothAllPoints,
 } from './bezierPathModel.ts';
-import { autoDetectForegroundPath } from './classicalAutoSelect.ts';
+import type { BrushStroke } from './selectionMask.ts';
 import {
   type RenderCutoutResult,
   renderSelectionCutout,
   type SelectionEdgeSettings,
 } from './selectionMaskRenderer.ts';
+import { type AutoSelectStatus, useAutoSelect } from './usePenAutoSelect.ts';
+import { usePenSelectionHistory } from './usePenSelectionHistory.ts';
 
 export type ActiveTool = 'pen' | 'add' | 'delete' | 'brushAdd' | 'brushRemove';
 export type BgMode = 'transparent' | 'white' | 'black' | 'custom';
@@ -70,75 +70,9 @@ function usePenImageState(notify: (msg: string) => void) {
   };
 }
 
-function usePenPathHistory(
-  imageDims: { width: number; height: number },
-  notify: (msg: string) => void,
-) {
-  const [path, setPath] = useState<BezierPath>({ points: [], isClosed: false });
-  const [history, setHistory] = useState<BezierPath[]>([]);
-  const [historyIndex, setHistoryIndex] = useState<number>(-1);
-  const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
-
-  const pushHistory = useCallback(
-    (newPath: BezierPath) => {
-      setHistory((prev) => {
-        const upToCurrent = prev.slice(0, historyIndex + 1);
-        return [...upToCurrent.slice(-20), newPath];
-      });
-      setHistoryIndex((prev) => prev + 1);
-      setPath(newPath);
-    },
-    [historyIndex],
-  );
-
-  const undo = useCallback(() => {
-    if (historyIndex > 0) {
-      setHistoryIndex((i) => i - 1);
-      setPath(history[historyIndex - 1]);
-    }
-  }, [history, historyIndex]);
-
-  const redo = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      setHistoryIndex((i) => i + 1);
-      setPath(history[historyIndex + 1]);
-    }
-  }, [history, historyIndex]);
-
-  const smoothCurrentPath = useCallback(() => {
-    pushHistory(smoothAllPoints(path));
-    notify('Selection path smoothed');
-  }, [path, notify, pushHistory]);
-
-  const simplifyCurrentPath = useCallback(() => {
-    pushHistory(simplifyPath(path, 14));
-    notify('Selection path simplified');
-  }, [path, notify, pushHistory]);
-
-  const resetCurrentPath = useCallback(() => {
-    pushHistory(createKingfisherReferencePath(imageDims.width, imageDims.height));
-    notify('Selection path reset to default');
-  }, [imageDims, notify, pushHistory]);
-
-  return {
-    path,
-    setPath,
-    selectedPointIndex,
-    setSelectedPointIndex,
-    pushHistory,
-    undo,
-    redo,
-    canUndo: historyIndex > 0,
-    canRedo: historyIndex < history.length - 1,
-    smoothCurrentPath,
-    simplifyCurrentPath,
-    resetCurrentPath,
-  };
-}
-
 function usePenEdgeAndBgState() {
   const [edgeSettings, setEdgeSettings] = useState<SelectionEdgeSettings>({
-    featherRadius: 5,
+    featherRadius: 2,
     expandContract: 0,
     smoothPath: 0,
     edgeBlur: 0,
@@ -171,6 +105,8 @@ function usePenEdgeAndBgState() {
 function useCutoutRenderer(
   image: HTMLImageElement | null,
   path: BezierPath,
+  strokes: BrushStroke[],
+  aiMask: ImageBitmap | null,
   edgeSettings: SelectionEdgeSettings,
   bgMode: BgMode,
   customColor: string,
@@ -187,7 +123,7 @@ function useCutoutRenderer(
     const timer = setTimeout(() => {
       renderSelectionCutout({
         image,
-        path,
+        sources: { path, strokes, aiMask },
         settings: edgeSettings,
         backgroundType: bgMode,
         customBgColor: customColor,
@@ -206,7 +142,7 @@ function useCutoutRenderer(
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [image, path, edgeSettings, bgMode, customColor]);
+  }, [image, path, strokes, aiMask, edgeSettings, bgMode, customColor]);
 
   const downloadCutout = useCallback(
     (format: 'png' | 'webp' | 'svg') => {
@@ -234,55 +170,53 @@ function useCutoutRenderer(
   return { cutoutResult, isProcessing, downloadCutout };
 }
 
+function newPoint(x: number, y: number): BezierPoint {
+  const rx = Math.round(x);
+  const ry = Math.round(y);
+  const id = `pt_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+  return { id, x: rx, y: ry, cp1x: rx, cp1y: ry, cp2x: rx, cp2y: ry, isSmooth: false };
+}
+
 function usePathPointMutations(
-  pathState: ReturnType<typeof usePenPathHistory>,
+  pathState: ReturnType<typeof usePenSelectionHistory>,
   notify: (msg: string) => void,
 ) {
+  const { path, setPath, pushHistory, setSelectedPointIndex } = pathState;
   const onMovePoint = useCallback(
-    (idx: number, nx: number, ny: number) => {
-      pathState.setPath((prev) => movePointCoords(prev, idx, nx, ny));
-    },
-    [pathState.setPath],
+    (idx: number, nx: number, ny: number) => setPath((prev) => movePointCoords(prev, idx, nx, ny)),
+    [setPath],
   );
-
   const onMoveHandle = useCallback(
-    (idx: number, handle: 'cp1' | 'cp2', nx: number, ny: number) => {
-      pathState.setPath((prev) => moveHandleCoords(prev, idx, handle, nx, ny));
-    },
-    [pathState.setPath],
+    (idx: number, handle: 'cp1' | 'cp2', nx: number, ny: number) =>
+      setPath((prev) => moveHandleCoords(prev, idx, handle, nx, ny)),
+    [setPath],
   );
-
   const onInsertPoint = useCallback(
-    (segIdx: number, t: number) => {
-      pathState.setPath((prev) => {
-        const updated = insertPointAt(prev, segIdx, t);
-        pathState.pushHistory(updated);
-        return updated;
-      });
-    },
-    [pathState.setPath, pathState.pushHistory],
+    (segIdx: number, t: number) => pushHistory(insertPointAt(path, segIdx, t)),
+    [path, pushHistory],
   );
-
+  /** Pen tool: each click adds a corner of a hard-edged area that is added to the selection. */
+  const onAppendPoint = useCallback(
+    (x: number, y: number) => {
+      pushHistory({ points: [...path.points, newPoint(x, y)], isClosed: true });
+      setSelectedPointIndex(path.points.length);
+    },
+    [path, pushHistory, setSelectedPointIndex],
+  );
   const onDeletePoint = useCallback(
     (idx: number) => {
-      pathState.setPath((prev) => {
-        const target = prev.points[idx];
-        if (!target) return prev;
-        const updated = deletePointById(prev, target.id);
-        pathState.pushHistory(updated);
-        return updated;
-      });
-      pathState.setSelectedPointIndex(null);
+      const target = path.points[idx];
+      if (target) pushHistory(deletePointById(path, target.id));
+      setSelectedPointIndex(null);
     },
-    [pathState.setPath, pathState.pushHistory, pathState.setSelectedPointIndex],
+    [path, pushHistory, setSelectedPointIndex],
   );
-
   const clearAll = useCallback(() => {
-    pathState.pushHistory({ points: [], isClosed: false });
+    pathState.setAiMask(null);
     notify('Selection cleared');
-  }, [pathState.pushHistory, notify]);
+  }, [pathState.setAiMask, notify]);
 
-  return { onMovePoint, onMoveHandle, onInsertPoint, onDeletePoint, clearAll };
+  return { onMovePoint, onMoveHandle, onInsertPoint, onAppendPoint, onDeletePoint, clearAll };
 }
 
 export interface UseAdvancedPenSelectionReturn {
@@ -291,6 +225,13 @@ export interface UseAdvancedPenSelectionReturn {
   fileName: string;
   imageDims: { width: number; height: number };
   path: BezierPath;
+  strokes: BrushStroke[];
+  aiMask: ImageBitmap | null;
+  autoSelectStatus: AutoSelectStatus;
+  brushRadius: number;
+  setBrushRadius: (r: number) => void;
+  addStroke: (stroke: BrushStroke) => void;
+  onAppendPoint: (x: number, y: number) => void;
   selectedPointIndex: number | null;
   activeTool: ActiveTool;
   edgeSettings: SelectionEdgeSettings;
@@ -317,7 +258,7 @@ export interface UseAdvancedPenSelectionReturn {
   ) => void;
   loadFile: (file: File) => Promise<void>;
   loadSample: () => Promise<void>;
-  runAutoSelect: () => void;
+  runAutoSelect: () => Promise<void>;
   smoothCurrentPath: () => void;
   simplifyCurrentPath: () => void;
   resetCurrentPath: () => void;
@@ -335,13 +276,16 @@ export function useAdvancedPenSelection(
   notify: (msg: string) => void,
 ): UseAdvancedPenSelectionReturn {
   const imgState = usePenImageState(notify);
-  const pathState = usePenPathHistory(imgState.imageDims, notify);
+  const pathState = usePenSelectionHistory(imgState.imageDims, notify);
   const edgeState = usePenEdgeAndBgState();
   const [activeTool, setActiveTool] = useState<ActiveTool>('pen');
+  const [brushRadius, setBrushRadius] = useState<number>(24);
 
   const { cutoutResult, isProcessing, downloadCutout } = useCutoutRenderer(
     imgState.image,
     pathState.path,
+    pathState.strokes,
+    pathState.aiMask,
     edgeState.edgeSettings,
     edgeState.bgMode,
     edgeState.customColor,
@@ -350,6 +294,16 @@ export function useAdvancedPenSelection(
   );
 
   const mutations = usePathPointMutations(pathState, notify);
+  const auto = useAutoSelect(imgState.image, pathState, notify);
+  const { resetSelection } = pathState;
+
+  const loadFile = useCallback(
+    async (file: File) => {
+      resetSelection();
+      await imgState.loadFile(file);
+    },
+    [imgState.loadFile, resetSelection],
+  );
 
   const loadSample = useCallback(async () => {
     const img = new Image();
@@ -357,33 +311,27 @@ export function useAdvancedPenSelection(
       imgState.setImage(img);
       imgState.setImageSrc('/samples/kingfisher-sample.jpg');
       imgState.setFileName('kingfisher-sample.jpg');
-      const w = img.naturalWidth || 1200;
-      const h = img.naturalHeight || 900;
-      imgState.setImageDims({ width: w, height: h });
-      pathState.pushHistory(createKingfisherReferencePath(w, h));
-      pathState.setSelectedPointIndex(3);
-      notify('Sample Kingfisher image loaded');
+      imgState.setImageDims({ width: img.naturalWidth || 1200, height: img.naturalHeight || 900 });
+      resetSelection();
+      notify('Sample loaded — click Auto Select to select the bird.');
     };
     img.src = '/samples/kingfisher-sample.jpg';
-  }, [imgState, pathState, notify]);
-
-  const runAutoSelect = useCallback(() => {
-    if (!imgState.image) return;
-    pathState.pushHistory(autoDetectForegroundPath(imgState.image));
-    notify('Auto selection path generated');
-  }, [imgState.image, pathState.pushHistory, notify]);
+  }, [imgState, resetSelection, notify]);
 
   return {
     ...imgState,
     ...pathState,
     ...edgeState,
     ...mutations,
+    ...auto,
+    loadFile,
     loadSample,
     activeTool,
     setActiveTool,
+    brushRadius,
+    setBrushRadius,
     cutoutResult,
     isProcessing,
-    runAutoSelect,
     downloadCutout,
   };
 }
