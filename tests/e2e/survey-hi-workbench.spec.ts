@@ -156,6 +156,21 @@ for (const vp of viewports) {
     );
     expect(hasHorizontalOverflow).toBe(false);
 
+    // Return page to scroll position 0 and wait for sticky header to settle
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      window.scrollTo(0, 0);
+    });
+    await page.waitForTimeout(350);
+
+    // Confirm header settled at the top of the page
+    const headerBox = await page.locator('.site-header').boundingBox();
+    if (headerBox) {
+      expect(headerBox.y).toBe(0);
+    }
+
     // Capture screenshots
     const shotPath = `tests/artifacts/screenshots/survey-hi-workbench-${vp.name}-${vp.width}.png`;
     await page.screenshot({ path: shotPath, fullPage: true });
@@ -487,6 +502,21 @@ test('Dark mode theme support and zero axe violations', async ({ page }) => {
   // Run Axe accessibility audit in dark mode (contrast, roles, etc.)
   const axe = await new AxeBuilder({ page }).analyze();
   expect(axe.violations).toEqual([]);
+
+  // Return page to scroll position 0 and wait for sticky header to settle
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    window.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(350);
+
+  // Confirm header settled at the top of the page
+  const headerBoxDark = await page.locator('.site-header').boundingBox();
+  if (headerBoxDark) {
+    expect(headerBoxDark.y).toBe(0);
+  }
 
   // Capture dark mode screenshot
   const shotPath = 'tests/artifacts/screenshots/survey-hi-workbench-desktop-1440-dark.png';
