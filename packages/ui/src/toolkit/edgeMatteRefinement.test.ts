@@ -66,21 +66,6 @@ describe('edgeMatteRefinement', () => {
     expect(refined[1]).toBe(1.0);
   });
 
-  it('clear glass mode keeps coloured bodies solid and clear glass see-through', () => {
-    const bg = { r: 200, g: 200, b: 225, isUniform: false, tolerance: 20 };
-    const px = (r: number, g: number, b: number) => new Uint8ClampedArray([r, g, b, 255]);
-    const one = (ref: Uint8ClampedArray, mode: 'glass' | 'tinted') =>
-      refineAlphaMask(new Float32Array([1]), ref, 1, 1, bg, mode)[0] ?? -1;
-    const redPlastic = px(240, 90, 90);
-    const clearGlass = px(190, 190, 205);
-    // A red boot next to the glass stays solid in Glass mode, but turns see-through in Tinted.
-    expect(one(redPlastic, 'glass')).toBeGreaterThan(0.97);
-    expect(one(redPlastic, 'tinted')).toBeLessThan(0.7);
-    // Clear glass (close to the background colour) stays see-through in both.
-    expect(one(clearGlass, 'glass')).toBeLessThan(0.5);
-    expect(one(clearGlass, 'glass')).toBeCloseTo(one(clearGlass, 'tinted'), 1);
-  });
-
   it('refineAlphaMask in auto mode preserves solid foreground objects without fading', () => {
     const w = 2;
     const h = 2;

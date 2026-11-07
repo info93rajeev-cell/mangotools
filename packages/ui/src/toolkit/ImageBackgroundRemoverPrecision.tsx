@@ -81,7 +81,7 @@ export function TransparencyRow({
           data-active={String(bgRemover.transparencyMode === 'glass')}
           onClick={() => bgRemover.setTransparencyMode('glass')}
           disabled={!hasFile || isExecuting}
-          title="Clear glass is see-through; coloured parts (fruit, plastic, labels) stay solid"
+          title="Glass parts become see-through, so a new background shows through them; other parts stay solid"
         >
           <span>💎 Glass</span>
         </button>

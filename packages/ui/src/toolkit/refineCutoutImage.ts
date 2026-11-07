@@ -9,6 +9,7 @@ import {
   refineMatte,
   type TransparencyMode,
 } from './edgeMatteRefinement.ts';
+import { glassMatte } from './glassMatte.ts';
 
 /** Above this size the full-resolution buffers risk running a mobile tab out of memory. */
 export const MAX_REFINE_PIXELS = 16_000_000;
@@ -64,8 +65,15 @@ export function refineForBackground(
   const mode = input.transparencyMode ?? 'auto';
   const feather = input.feather ?? 2;
   const orig = ctxOrig.getImageData(0, 0, w, h).data;
+  if (mode === 'glass') {
+    // Glass parts see-through against the background rebuilt behind them; the rest solid.
+    const cutGlass = ctxCut.getImageData(0, 0, w, h);
+    const out = ctxCut.createImageData(w, h);
+    out.data.set(glassMatte(orig, cutGlass.data, w, h));
+    return out;
+  }
   const bg = detectBackgroundFromPerimeter(orig, w, h);
-  if (mode === 'glass' || mode === 'tinted' || bg.isUniform || w * h > MAX_REFINE_PIXELS) {
+  if (mode === 'tinted' || bg.isUniform || w * h > MAX_REFINE_PIXELS) {
     return refineMatte(ctxOrig, ctxCut, w, h, feather, mode, input.tolerance);
   }
   const cut = ctxCut.getImageData(0, 0, w, h);
