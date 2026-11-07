@@ -15,7 +15,7 @@ function canvas2d(w: number, h: number) {
   return ctx ? { c, ctx } : null;
 }
 
-type Source = ImageBitmap | HTMLCanvasElement;
+export type Source = ImageBitmap | HTMLCanvasElement;
 
 function smallCopy(orig: Source, cut: Source, w: number, h: number) {
   const f = Math.max(1, Math.ceil(Math.max(w, h) / WORK_SIDE));
@@ -42,7 +42,7 @@ function smallCopy(orig: Source, cut: Source, w: number, h: number) {
 }
 
 /** Draws rows y0..y0+rows (in output pixels) of a source that may be a different size. */
-function drawRows(
+export function drawRows(
   ctx: CanvasRenderingContext2D,
   src: Source,
   w: number,

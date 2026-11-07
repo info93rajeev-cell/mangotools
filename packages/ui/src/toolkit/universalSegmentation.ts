@@ -1,10 +1,10 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
 import type { TransparencyMode } from './edgeMatteRefinement.ts';
-import { glassCutoutCanvas } from './glassCutoutCanvas.ts';
 import { cutoutOnDevice } from './onDeviceBackgroundModel.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
 import { applyProductShadowAndBackground, type ShadowMode } from './productShadowEngine.ts';
 import { refineForBackground } from './refineCutoutImage.ts';
+import { REFINE_LIMIT_PIXELS, refineLargeCutout } from './refineLargeCutout.ts';
 import type {
   BgFile,
   BgOutputFormat,
@@ -131,7 +131,8 @@ function decodeOriginal(input: UniversalCutoutInput): Promise<ImageBitmap> {
   return createImageBitmap(new Blob([buf], { type: resolveMime(input.file.name) }));
 }
 
-async function glassCanvas(
+/** Glass at any size, and Auto / Solid / Tinted on photos over 16 MP (refineLargeCutout). */
+async function largeOrGlassCanvas(
   input: UniversalCutoutInput,
   cutoutBitmap: ImageBitmap,
   w: number,
@@ -139,11 +140,11 @@ async function glassCanvas(
 ): Promise<RefinedCanvasBundle | null> {
   try {
     const orig = await decodeOriginal(input);
-    const canvas = glassCutoutCanvas(orig, cutoutBitmap, w, h);
+    const canvas = refineLargeCutout(orig, cutoutBitmap, w, h, input);
     if (!canvas) return null;
     // The original is kept for the Cast shadow only when it fits in memory comfortably.
     let origCanvas: HTMLCanvasElement | null = null;
-    if (w * h <= 16_000_000) {
+    if (w * h <= REFINE_LIMIT_PIXELS) {
       origCanvas = document.createElement('canvas');
       origCanvas.width = w;
       origCanvas.height = h;
@@ -151,7 +152,7 @@ async function glassCanvas(
     }
     return { canvas, origCanvas };
   } catch (e) {
-    console.error('glass matte failed:', e);
+    console.error('matte refinement failed:', e);
     return null;
   }
 }
@@ -163,14 +164,14 @@ async function createRefinedCanvas(
   const w = cutoutBitmap.width;
   const h = cutoutBitmap.height;
 
-  // Glass works a strip at a time, so it runs at full size even on 24 MP+ camera photos.
-  if (input.transparencyMode === 'glass') {
-    const glass = await glassCanvas(input, cutoutBitmap, w, h);
-    if (glass) return glass;
+  // Glass works a strip at a time; photos over 16 MP are refined on a 12 MP copy and merged.
+  if (input.transparencyMode === 'glass' || w * h > REFINE_LIMIT_PIXELS) {
+    const refined = await largeOrGlassCanvas(input, cutoutBitmap, w, h);
+    if (refined) return refined;
   }
 
-  // Ultra-high resolution guard (>16 MP): prevent browser tab OOM crashes
-  if (w * h > 16_000_000) {
+  // Last-resort guard (>16 MP and the strip path failed): keep the model's cutout as it is.
+  if (w * h > REFINE_LIMIT_PIXELS) {
     const fallbackCanvas = document.createElement('canvas');
     fallbackCanvas.width = w;
     fallbackCanvas.height = h;
