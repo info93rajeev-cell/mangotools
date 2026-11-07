@@ -4,7 +4,11 @@ import { SvgAnchorPoints, SvgTangentHandles } from './AdvancedPenSvgOverlays.tsx
 import styles from './advancedPenSelection.module.css';
 import { pathToSvgD } from './bezierPathModel.ts';
 import { canClosePath } from './penPathEditing.ts';
-import type { BgMode, UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts';
+import type {
+  ActiveTool,
+  BgMode,
+  UseAdvancedPenSelectionReturn,
+} from './useAdvancedPenSelection.ts';
 import { usePenStageInput, useStageScale } from './usePenStageInput.ts';
 
 export interface AdvancedPenCanvasProps {
@@ -46,6 +50,12 @@ function EmptyStage() {
       <p class={styles.emptyStageSubtitle}>Upload an image or try the sample in step 1</p>
     </div>
   );
+}
+
+function brushStrokeColor(tool: ActiveTool): string {
+  if (tool === 'brushGlass') return 'rgba(14,165,233,0.45)';
+  if (tool === 'brushAdd') return 'rgba(22,163,74,0.45)';
+  return 'rgba(220,38,38,0.45)';
 }
 
 // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Studio canvas view
@@ -112,9 +122,7 @@ export function AdvancedPenCanvas({ penSelection: pen }: AdvancedPenCanvasProps)
                 <polyline
                   points={live.map((p) => `${p.x},${p.y}`).join(' ')}
                   fill="none"
-                  stroke={
-                    activeTool === 'brushAdd' ? 'rgba(22,163,74,0.45)' : 'rgba(220,38,38,0.45)'
-                  }
+                  stroke={brushStrokeColor(activeTool)}
                   stroke-width={input.brush.liveRadius * 2}
                   stroke-linecap="round"
                   stroke-linejoin="round"

@@ -14,6 +14,26 @@ import { glassMatte } from './glassMatte.ts';
 /** Above this size the full-resolution buffers risk running a mobile tab out of memory. */
 export const MAX_REFINE_PIXELS = 16_000_000;
 
+/** Hardens alpha for solid mode: < 0.15 -> 0, > 0.6 -> 1, linear in between. */
+export function hardenSolidAlpha(a: number): number {
+  if (a <= 0.15) return 0;
+  if (a >= 0.6) return 1;
+  return (a - 0.15) / (0.6 - 0.15);
+}
+
+/** Processes alphas according to transparency mode. */
+export function hardenCutoutAlpha(
+  alphas: Float32Array,
+  mode: TransparencyMode | undefined,
+): Float32Array {
+  if (mode !== 'solid') return new Float32Array(alphas);
+  const out = new Float32Array(alphas.length);
+  for (let i = 0; i < alphas.length; i++) {
+    out[i] = hardenSolidAlpha(alphas[i] ?? 0);
+  }
+  return out;
+}
+
 function pixels(src: CanvasImageSource, w: number, h: number): Uint8ClampedArray | null {
   const c = document.createElement('canvas');
   c.width = w;
@@ -79,9 +99,10 @@ export function refineForBackground(
   // No colour-based twig recovery here: on busy backgrounds it pulled in background pixels as a
   // 20-40px halo. Thin parts the model misses are restored with Pen > Brush Add instead.
   const refined = refineCutoutEdges(orig, cut.data, w, h);
-  const alpha = new Float32Array(w * h);
-  for (let i = 0; i < alpha.length; i++) alpha[i] = (refined[i * 4 + 3] ?? 0) / 255;
-  const soft = applySubpixelSmoothing(alpha, w, h, feather);
+  const rawAlpha = new Float32Array(w * h);
+  for (let i = 0; i < rawAlpha.length; i++) rawAlpha[i] = (refined[i * 4 + 3] ?? 0) / 255;
+  const hardened = hardenCutoutAlpha(rawAlpha, mode);
+  const soft = applySubpixelSmoothing(hardened, w, h, feather);
   for (let i = 0; i < soft.length; i++) refined[i * 4 + 3] = Math.round((soft[i] ?? 0) * 255);
   const out = ctxCut.createImageData(w, h);
   out.data.set(refined);

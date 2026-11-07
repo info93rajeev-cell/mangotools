@@ -5,7 +5,8 @@
  */
 
 import { pathToSvgD } from './bezierPathModel.ts';
-import { buildSelectionMask, type MaskSources } from './selectionMask.ts';
+import { applyGlassPassToCanvas } from './selectionGlassCanvas.ts';
+import { buildSelectionMask, composeGlassMask, type MaskSources } from './selectionMask.ts';
 
 export interface SelectionEdgeSettings {
   featherRadius: number; // 0 to 30 px
@@ -64,6 +65,12 @@ export async function renderSelectionCutout(
   // Keep foreground original pixels intact through alpha mask
   ctx.globalCompositeOperation = 'source-in';
   ctx.drawImage(image, 0, 0);
+
+  // If glass strokes exist, apply the glass pass (makes glass see-through and decontaminated)
+  const glassMaskCanvas = composeGlassMask(width, height, sources.strokes);
+  if (glassMaskCanvas) {
+    applyGlassPassToCanvas(outCanvas, image, maskCanvas, glassMaskCanvas);
+  }
 
   // If a solid or custom background is selected, composite it behind the cutout
   if (backgroundType !== 'transparent') {

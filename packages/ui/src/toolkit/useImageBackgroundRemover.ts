@@ -359,12 +359,6 @@ export function useImageBackgroundRemover(
     };
   }, []);
 
-  useEffect(() => {
-    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate, userInteractedRef, true);
-    }
-  }, []);
-
   const actions = useBgActions(s, invalidate, preset, toolId, onPhase, notify, userInteractedRef);
 
   return {

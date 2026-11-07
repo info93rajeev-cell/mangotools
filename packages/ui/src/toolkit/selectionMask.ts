@@ -11,7 +11,7 @@
 import { type BezierPath, drawPathToCanvas } from './bezierPathModel.ts';
 
 export interface BrushStroke {
-  mode: 'add' | 'remove';
+  mode: 'add' | 'remove' | 'glass' | 'unglass';
   /** Brush radius in image pixels. */
   radius: number;
   points: { x: number; y: number }[];
@@ -35,8 +35,9 @@ function canvas2d(width: number, height: number): [HTMLCanvasElement, CanvasRend
 export function drawStroke(ctx: CanvasRenderingContext2D, stroke: BrushStroke): void {
   const [first, ...rest] = stroke.points;
   if (!first) return;
+  if (stroke.mode === 'unglass') return;
   ctx.save();
-  ctx.globalCompositeOperation = stroke.mode === 'add' ? 'source-over' : 'destination-out';
+  ctx.globalCompositeOperation = stroke.mode === 'remove' ? 'destination-out' : 'source-over';
   ctx.strokeStyle = '#ffffff';
   ctx.fillStyle = '#ffffff';
   ctx.lineWidth = stroke.radius * 2;
@@ -60,9 +61,13 @@ export function isFillablePath(path: MaskSources['path']): boolean {
   return path.isClosed && path.points.length >= 3;
 }
 
-/** True when nothing has been selected yet (no AI mask, no closed path, no added strokes). */
+/** True when nothing has been selected yet (no AI mask, no closed path, no added/glass strokes). */
 export function isEmptySelection(src: MaskSources): boolean {
-  return !src.aiMask && !isFillablePath(src.path) && !src.strokes.some((s) => s.mode === 'add');
+  return (
+    !src.aiMask &&
+    !isFillablePath(src.path) &&
+    !src.strokes.some((s) => s.mode === 'add' || s.mode === 'glass')
+  );
 }
 
 /** True when there is nothing to show yet, so the stage should show the photo itself. */
@@ -85,6 +90,49 @@ export function composeSelectionMask(width: number, height: number, src: MaskSou
     ctx.fill();
   }
   for (const stroke of src.strokes) drawStroke(ctx, stroke);
+  return c;
+}
+
+function renderGlassStroke(ctx: CanvasRenderingContext2D, stroke: BrushStroke): void {
+  const [first, ...rest] = stroke.points;
+  if (!first) return;
+  ctx.save();
+  ctx.globalCompositeOperation = stroke.mode === 'glass' ? 'source-over' : 'destination-out';
+  ctx.strokeStyle = '#ffffff';
+  ctx.fillStyle = '#ffffff';
+  ctx.lineWidth = stroke.radius * 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  if (rest.length === 0) {
+    ctx.beginPath();
+    ctx.arc(first.x, first.y, stroke.radius, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(first.x, first.y);
+    for (const p of rest) ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/** Draws only glass (source-over) and unglass (destination-out) strokes. Returns null when none. */
+export function composeGlassMask(
+  width: number,
+  height: number,
+  strokes: readonly BrushStroke[],
+): HTMLCanvasElement | null {
+  const hasGlass = strokes.some((s) => s.mode === 'glass');
+  if (!hasGlass) return null;
+  if (typeof document === 'undefined') {
+    return { width, height } as unknown as HTMLCanvasElement;
+  }
+  const [c, ctx] = canvas2d(width, height);
+  for (const stroke of strokes) {
+    if (stroke.mode === 'glass' || stroke.mode === 'unglass') {
+      renderGlassStroke(ctx, stroke);
+    }
+  }
   return c;
 }
 

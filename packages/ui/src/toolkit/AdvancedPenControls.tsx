@@ -73,6 +73,12 @@ const TOOLS: { id: ActiveTool; icon: string; label: string; title: string; extra
     title: 'Brush Remove: paint to erase',
     extra: 'brushRemoveBtn',
   },
+  {
+    id: 'brushGlass',
+    icon: '💎',
+    label: 'Glass Brush',
+    title: 'Glass Brush (G): paint over glass parts to make them see-through. Hold Alt to unmark.',
+  },
   { id: 'pan', icon: '✋', label: 'Hand (Move)', title: 'Hand (H): drag to move the photo' },
 ];
 

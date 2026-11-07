@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { type BrushStroke, hasNoEdits, isEmptySelection } from './selectionMask.ts';
+import {
+  type BrushStroke,
+  composeGlassMask,
+  hasNoEdits,
+  isEmptySelection,
+} from './selectionMask.ts';
 
 const noPath = { points: [], isClosed: false };
 const stroke = (mode: BrushStroke['mode']): BrushStroke => ({
@@ -40,5 +45,21 @@ describe('selection state', () => {
     const src = { path: noPath, strokes: [stroke('add')], aiMask: null };
     expect(isEmptySelection(src)).toBe(false);
     expect(hasNoEdits(src)).toBe(false);
+  });
+
+  it('Glass stroke adds to selection and composeGlassMask returns a mask', () => {
+    const src = { path: noPath, strokes: [stroke('glass')], aiMask: null };
+    expect(isEmptySelection(src)).toBe(false);
+    expect(hasNoEdits(src)).toBe(false);
+    const mask = composeGlassMask(100, 100, src.strokes);
+    expect(mask).not.toBeNull();
+  });
+
+  it('unglass stroke does not change selection and composeGlassMask is null without glass strokes', () => {
+    const src = { path: noPath, strokes: [stroke('unglass')], aiMask: null };
+    expect(isEmptySelection(src)).toBe(true);
+    expect(hasNoEdits(src)).toBe(false);
+    const mask = composeGlassMask(100, 100, src.strokes);
+    expect(mask).toBeNull();
   });
 });

@@ -44,7 +44,9 @@ Yes, but only in **Quick Auto Removal**. That mode runs an AI model (BiRefNet-li
 
 **Pen tool, step by step.** Click to place points around the area; click and drag while placing a point to make a curve. The path stays open until you close it: click the green first point, press **C**, or use **Close Path**. Only then does the area inside join the selection. Drag a point to move it, and drag its round handles to bend the curve. Double-click a point (or use **Make Curve / Make Corner**) to switch between a curve point and a corner. Use the **✋ Hand** tool (or hold **Space**) to move the photo while zoomed in.
 
-In **Pen Selection**, **Auto Select** uses the same on-device AI model to make the first selection; the **Pen** and the **Brush Add / Brush Remove** tools use no AI. If you prefer no AI at all, skip Auto Select and draw the selection with the Pen and brushes.
+**Glass Brush.** Select the **Glass Brush** (icon 💎 or key **G**) to paint over glass sections such as bottles, lenses, or bulbs. Only painted areas turn see-through, letting the new background show through while liquid, reflections, and opaque parts stay solid. Hold **Alt** while painting with the Glass Brush to unmark glass and return that area to solid without removing it from the selection.
+
+In **Pen Selection**, **Auto Select** uses the same on-device AI model to make the first selection; the **Pen**, **Brush Add / Brush Remove**, and **Glass Brush** tools use no AI. If you prefer no AI at all, skip Auto Select and draw the selection with the Pen and brushes.
 
 ### Are my images uploaded to any server or remote AI?
 

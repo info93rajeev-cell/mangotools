@@ -64,6 +64,7 @@ function keyAction(
   }
   if (key === 'h' || key === 'H') return () => pen.setActiveTool('pan');
   if (key === 'p' || key === 'P') return () => pen.setActiveTool('pen');
+  if (key === 'g' || key === 'G') return () => pen.setActiveTool('brushGlass');
   return null;
 }
 

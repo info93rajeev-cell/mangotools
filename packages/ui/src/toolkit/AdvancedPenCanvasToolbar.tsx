@@ -88,6 +88,7 @@ const TOOL_HINTS: Partial<Record<ActiveTool, string>> = {
   delete: 'Delete Point: click a point to remove it (or select it and press Delete).',
   brushAdd: 'Brush Add: paint over parts of the subject to keep them.',
   brushRemove: 'Brush Remove: paint over leftover background to erase it.',
+  brushGlass: 'Glass Brush: paint over glass parts to make them see-through. Hold Alt to unmark.',
 };
 
 export function StageHint({ activeTool, path }: { activeTool: ActiveTool; path: BezierPath }) {

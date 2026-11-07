@@ -303,16 +303,36 @@ function writeGlassPixel(
   const r = rgba[o] ?? 0;
   const g = rgba[o + 1] ?? 0;
   const bl = rgba[o + 2] ?? 0;
-  const br = at.b[0] ?? 0;
-  const bgc = at.b[1] ?? 0;
-  const bb = at.b[2] ?? 0;
+  const res = glassPixel([r, g, bl], at.b, a, at.lim, at.solid);
+  out[o] = res[0];
+  out[o + 1] = res[1];
+  out[o + 2] = res[2];
+  out[o + 3] = res[3];
+}
+
+/** Computes decontaminated RGB and alpha for a single pixel. */
+export function glassPixel(
+  rgb: [number, number, number] | number[],
+  bg: [number, number, number] | number[],
+  aiAlpha: number,
+  limits: GlassLimits,
+  solidWeight = 0,
+): [number, number, number, number] {
+  const r = rgb[0] ?? 0;
+  const g = rgb[1] ?? 0;
+  const bl = rgb[2] ?? 0;
+  const br = bg[0] ?? 0;
+  const bgc = bg[1] ?? 0;
+  const bb = bg[2] ?? 0;
   const d = Math.hypot(r - br, g - bgc, bl - bb);
-  const body = Math.max(smooth(at.lim.from, at.lim.full, d), at.solid);
-  const glass = Math.min(1, 0.06 + d / (at.lim.full * 1.25));
-  const alpha = a * (body + (1 - body) * glass);
+  const body = Math.max(smooth(limits.from, limits.full, d), solidWeight);
+  const glass = Math.min(1, 0.06 + d / (limits.full * 1.25));
+  const alpha = aiAlpha * (body + (1 - body) * glass);
   const keep = Math.max(alpha, 0.05);
-  out[o] = (r - (1 - alpha) * br) / keep;
-  out[o + 1] = (g - (1 - alpha) * bgc) / keep;
-  out[o + 2] = (bl - (1 - alpha) * bb) / keep;
-  out[o + 3] = Math.round(alpha * 255);
+  return [
+    Math.round((r - (1 - alpha) * br) / keep),
+    Math.round((g - (1 - alpha) * bgc) / keep),
+    Math.round((bl - (1 - alpha) * bb) / keep),
+    Math.round(alpha * 255),
+  ];
 }

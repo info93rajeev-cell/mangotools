@@ -10,7 +10,14 @@ import { type AutoSelectStatus, useAutoSelect } from './usePenAutoSelect.ts';
 import { usePenPathMutations } from './usePenPathMutations.ts';
 import { usePenSelectionHistory } from './usePenSelectionHistory.ts';
 
-export type ActiveTool = 'pen' | 'add' | 'delete' | 'brushAdd' | 'brushRemove' | 'pan';
+export type ActiveTool =
+  | 'pen'
+  | 'add'
+  | 'delete'
+  | 'brushAdd'
+  | 'brushRemove'
+  | 'brushGlass'
+  | 'pan';
 export type BgMode = 'transparent' | 'white' | 'black' | 'custom';
 
 function usePenImageState(notify: (msg: string) => void) {

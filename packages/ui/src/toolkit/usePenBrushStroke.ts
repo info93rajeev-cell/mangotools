@@ -3,7 +3,7 @@ import type { UseAdvancedPenSelectionReturn } from './useAdvancedPenSelection.ts
 
 export type StagePoint = { x: number; y: number };
 
-/** Brush Add / Brush Remove: collects one stroke per press, in image pixels. */
+/** Brush Add / Brush Remove / Glass Brush: collects one stroke per press, in image pixels. */
 export function usePenBrushStroke(
   penSelection: UseAdvancedPenSelectionReturn,
   toImage: (e: PointerEvent) => StagePoint | null,
@@ -13,14 +13,17 @@ export function usePenBrushStroke(
   // The stroke lives in a ref so fast taps (down + up before a re-render) are never lost;
   // `live` only drives the on-screen preview.
   const pointsRef = useRef<StagePoint[] | null>(null);
+  const altKeyRef = useRef(false);
   const [live, setLive] = useState<StagePoint[] | null>(null);
-  const brushing = activeTool === 'brushAdd' || activeTool === 'brushRemove';
+  const brushing =
+    activeTool === 'brushAdd' || activeTool === 'brushRemove' || activeTool === 'brushGlass';
   const radius = Math.max(1, brushRadius * k);
 
   const start = useCallback(
     (e: PointerEvent) => {
       const c = toImage(e);
       if (!c) return false;
+      altKeyRef.current = e.altKey;
       pointsRef.current = [c];
       setLive([c]);
       return true;
@@ -42,7 +45,15 @@ export function usePenBrushStroke(
     const pts = pointsRef.current;
     if (!pts) return;
     pointsRef.current = null;
-    addStroke({ mode: activeTool === 'brushAdd' ? 'add' : 'remove', radius, points: pts });
+    let mode: 'add' | 'remove' | 'glass' | 'unglass';
+    if (activeTool === 'brushGlass') {
+      mode = altKeyRef.current ? 'unglass' : 'glass';
+    } else if (activeTool === 'brushAdd') {
+      mode = 'add';
+    } else {
+      mode = 'remove';
+    }
+    addStroke({ mode, radius, points: pts });
     setLive(null);
   }, [activeTool, addStroke, radius]);
 

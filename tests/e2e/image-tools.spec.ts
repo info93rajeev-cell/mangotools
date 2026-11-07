@@ -352,6 +352,24 @@ test.describe('Background Remover', () => {
   const sample = join(process.cwd(), 'tools/image-background-remover/fixtures/files/sample.jpg');
   const preview = (page: Page) => island(page, 'image-background-remover').locator('img');
 
+  test('opens empty with upload button and sample button, then loads sample on click', async ({
+    page,
+  }) => {
+    await openTool(page, 'image-background-remover');
+    // Opens empty: upload button is visible, no image preloaded
+    const emptyCard = page.locator('[data-image-source="empty"]');
+    await expect(emptyCard).toBeVisible();
+    await expect(emptyCard.getByRole('button', { name: 'Upload Image' })).toBeVisible();
+    const trySampleBtn = emptyCard.getByRole('button', { name: 'Try sample' });
+    await expect(trySampleBtn).toBeVisible();
+    // Clicking "Try sample" loads the sample
+    await trySampleBtn.click();
+    await expect(page.locator('[data-image-source="loaded"]')).toBeVisible();
+    await expect(
+      page.locator('[data-image-source="loaded"]').getByText('Sample photo'),
+    ).toBeVisible();
+  });
+
   test('selecting an image previews it and exposes tolerance and feather controls', async ({
     page,
   }) => {
