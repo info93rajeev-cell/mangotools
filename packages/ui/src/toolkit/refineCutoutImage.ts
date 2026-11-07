@@ -67,6 +67,15 @@ export function refineCutoutCanvas(
  * handles glass. Busy backgrounds get the guided edge refinement with local colour estimation,
  * because a single border colour would tint and erode fine edges such as feathers.
  */
+/** TEMPORARY (PR #300 diagnosis, remove before merge): ?bgdiag=raw | notwig | norefine */
+function diag(): string {
+  try {
+    return new URLSearchParams(window.location.search).get('bgdiag') ?? '';
+  } catch {
+    return '';
+  }
+}
+
 export function refineForBackground(
   ctxOrig: CanvasRenderingContext2D,
   ctxCut: CanvasRenderingContext2D,
@@ -82,9 +91,12 @@ export function refineForBackground(
     return refineMatte(ctxOrig, ctxCut, w, h, feather, mode, input.tolerance);
   }
   const cut = ctxCut.getImageData(0, 0, w, h);
+  const d = diag();
+  if (d === 'raw') return cut;
   // Fine-twig recovery first (brings back thin parts the model barely saw, such as the branch
   // under the kingfisher), then refit edges and clean edge colours.
-  withFineStructures(orig, cut.data, w, h);
+  if (d !== 'notwig') withFineStructures(orig, cut.data, w, h);
+  if (d === 'norefine') return cut;
   const refined = refineCutoutEdges(orig, cut.data, w, h);
   const alpha = new Float32Array(w * h);
   for (let i = 0; i < alpha.length; i++) alpha[i] = (refined[i * 4 + 3] ?? 0) / 255;
