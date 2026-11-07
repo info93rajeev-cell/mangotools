@@ -11,7 +11,7 @@
  *    PNG shows the new background through the glass, not the old one.
  */
 
-const WORK_SIDE = 512;
+export const WORK_SIDE = 512;
 
 function smooth(e0: number, e1: number, x: number): number {
   const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
@@ -197,10 +197,47 @@ function scalarAt(a: Float32Array, w: number, h: number, fx: number, fy: number)
   return top * (1 - ty) + bot * ty;
 }
 
+/** Background and solid-area maps, computed once on a small copy of the photo. */
+export interface GlassPlan {
+  w: number;
+  h: number;
+  bg: Float32Array;
+  solid: Float32Array;
+}
+
+/** `rgb` (0-255, 3 per pixel) and `alpha` (0-1, AI mask) of a small copy of the photo. */
+export function planGlass(rgb: Float32Array, alpha: Float32Array, w: number, h: number): GlassPlan {
+  const bg = pushPullBackground(rgb, alpha, w, h);
+  return { w, h, bg, solid: solidAreas({ w, h, rgb, alpha }, bg) };
+}
+
 /**
- * Returns RGBA: glass see-through, other parts solid, background colour removed from glass.
- * `cut` is the AI cutout (its alpha says what belongs to the subject).
+ * Glass matte for rows y0 .. y0 + rows of a full-size photo, so very large photos can be
+ * processed a strip at a time. `rgba` and `cut` hold just those rows.
  */
+export function glassStrip(
+  plan: GlassPlan,
+  rgba: Uint8ClampedArray,
+  cut: Uint8ClampedArray,
+  full: { w: number; h: number; y0: number; rows: number },
+): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(full.w * full.rows * 4);
+  const sx = plan.w / full.w;
+  const sy = plan.h / full.h;
+  for (let r = 0; r < full.rows; r++) {
+    const fy = (full.y0 + r + 0.5) * sy - 0.5;
+    for (let x = 0; x < full.w; x++) {
+      const fx = (x + 0.5) * sx - 0.5;
+      writeGlassPixel(out, rgba, cut, (r * full.w + x) * 4, {
+        b: sampleBilinear(plan.bg, plan.w, plan.h, fx, fy),
+        solid: scalarAt(plan.solid, plan.w, plan.h, fx, fy),
+      });
+    }
+  }
+  return out;
+}
+
+/** Whole-image version: glass see-through, other parts solid, old background colour removed. */
 export function glassMatte(
   rgba: Uint8ClampedArray,
   cut: Uint8ClampedArray,
@@ -208,22 +245,8 @@ export function glassMatte(
   h: number,
 ): Uint8ClampedArray {
   const small = shrink(rgba, cut, w, h);
-  const bg = pushPullBackground(small.rgb, small.alpha, small.w, small.h);
-  const solid = solidAreas(small, bg);
-  const out = new Uint8ClampedArray(w * h * 4);
-  const sx = small.w / w;
-  const sy = small.h / h;
-  for (let y = 0; y < h; y++) {
-    const fy = (y + 0.5) * sy - 0.5;
-    for (let x = 0; x < w; x++) {
-      const fx = (x + 0.5) * sx - 0.5;
-      writeGlassPixel(out, rgba, cut, (y * w + x) * 4, {
-        b: sampleBilinear(bg, small.w, small.h, fx, fy),
-        solid: scalarAt(solid, small.w, small.h, fx, fy),
-      });
-    }
-  }
-  return out;
+  const plan = planGlass(small.rgb, small.alpha, small.w, small.h);
+  return glassStrip(plan, rgba, cut, { w, h, y0: 0, rows: h });
 }
 
 function writeGlassPixel(

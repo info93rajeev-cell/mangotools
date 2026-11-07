@@ -65,11 +65,10 @@ export function refineForBackground(
   const mode = input.transparencyMode ?? 'auto';
   const feather = input.feather ?? 2;
   const orig = ctxOrig.getImageData(0, 0, w, h).data;
+  // Glass normally runs earlier (glassCutoutCanvas); this is the same matte as a fallback.
   if (mode === 'glass') {
-    // Glass parts see-through against the background rebuilt behind them; the rest solid.
-    const cutGlass = ctxCut.getImageData(0, 0, w, h);
     const out = ctxCut.createImageData(w, h);
-    out.data.set(glassMatte(orig, cutGlass.data, w, h));
+    out.data.set(glassMatte(orig, ctxCut.getImageData(0, 0, w, h).data, w, h));
     return out;
   }
   const bg = detectBackgroundFromPerimeter(orig, w, h);

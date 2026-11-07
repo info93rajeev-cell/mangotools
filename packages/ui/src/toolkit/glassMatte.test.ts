@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { glassMatte } from './glassMatte.ts';
+import { glassMatte, glassStrip, planGlass } from './glassMatte.ts';
 
 const W = 160;
 const H = 100;
@@ -73,5 +73,27 @@ describe('glassMatte', () => {
     // so on a new background only the glass itself (not the lavender wall) is drawn.
     expect(out[o] ?? 0).toBeLessThan((rgba[o] ?? 0) - 10);
     expect(out[o + 2] ?? 0).toBeLessThan((rgba[o + 2] ?? 0) - 10);
+  });
+
+  it('strip-by-strip processing (for very large photos) gives the same result', () => {
+    const rgb = new Float32Array(W * H * 3);
+    const alpha = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) {
+      for (let k = 0; k < 3; k++) rgb[i * 3 + k] = rgba[i * 4 + k] ?? 0;
+      alpha[i] = (cut[i * 4 + 3] ?? 0) / 255;
+    }
+    const plan = planGlass(rgb, alpha, W, H);
+    const whole = glassStrip(plan, rgba, cut, { w: W, h: H, y0: 0, rows: H });
+    const rows = 7;
+    for (let y0 = 0; y0 < H; y0 += rows) {
+      const n = Math.min(rows, H - y0);
+      const part = glassStrip(
+        plan,
+        rgba.subarray(y0 * W * 4, (y0 + n) * W * 4),
+        cut.subarray(y0 * W * 4, (y0 + n) * W * 4),
+        { w: W, h: H, y0, rows: n },
+      );
+      expect(Array.from(part)).toEqual(Array.from(whole.subarray(y0 * W * 4, (y0 + n) * W * 4)));
+    }
   });
 });

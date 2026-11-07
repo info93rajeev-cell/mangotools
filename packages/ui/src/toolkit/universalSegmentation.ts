@@ -1,5 +1,6 @@
 import { err, type OpWarning, ok, type Result, warning } from '@mangotools/core';
 import type { TransparencyMode } from './edgeMatteRefinement.ts';
+import { glassCutoutCanvas } from './glassCutoutCanvas.ts';
 import { cutoutOnDevice } from './onDeviceBackgroundModel.ts';
 import { convertCutoutToPdf } from './personSegmentation.ts';
 import { applyProductShadowAndBackground, type ShadowMode } from './productShadowEngine.ts';
@@ -121,12 +122,52 @@ interface RefinedCanvasBundle {
   origCanvas: HTMLCanvasElement | null;
 }
 
+function decodeOriginal(input: UniversalCutoutInput): Promise<ImageBitmap> {
+  const bytes = input.file.bytes;
+  const buf = bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
+  return createImageBitmap(new Blob([buf], { type: resolveMime(input.file.name) }));
+}
+
+async function glassCanvas(
+  input: UniversalCutoutInput,
+  cutoutBitmap: ImageBitmap,
+  w: number,
+  h: number,
+): Promise<RefinedCanvasBundle | null> {
+  try {
+    const orig = await decodeOriginal(input);
+    const canvas = glassCutoutCanvas(orig, cutoutBitmap, w, h);
+    if (!canvas) return null;
+    // The original is kept for the Cast shadow only when it fits in memory comfortably.
+    let origCanvas: HTMLCanvasElement | null = null;
+    if (w * h <= 16_000_000) {
+      origCanvas = document.createElement('canvas');
+      origCanvas.width = w;
+      origCanvas.height = h;
+      origCanvas.getContext('2d')?.drawImage(orig, 0, 0, w, h);
+    }
+    return { canvas, origCanvas };
+  } catch (e) {
+    console.error('glass matte failed:', e);
+    return null;
+  }
+}
+
 async function createRefinedCanvas(
   input: UniversalCutoutInput,
   cutoutBitmap: ImageBitmap,
 ): Promise<RefinedCanvasBundle> {
   const w = cutoutBitmap.width;
   const h = cutoutBitmap.height;
+
+  // Glass works a strip at a time, so it runs at full size even on 24 MP+ camera photos.
+  if (input.transparencyMode === 'glass') {
+    const glass = await glassCanvas(input, cutoutBitmap, w, h);
+    if (glass) return glass;
+  }
 
   // Ultra-high resolution guard (>16 MP): prevent browser tab OOM crashes
   if (w * h > 16_000_000) {
