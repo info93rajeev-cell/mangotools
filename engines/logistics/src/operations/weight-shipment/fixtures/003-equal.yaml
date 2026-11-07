@@ -1,0 +1,10 @@
+id: 003-equal
+operation: logistics.weight.shipment@1
+source: { type: hand-verified, citation: "50×40×30 = 60,000 cm³ ÷ 5000 = 12 kg; actual 12 kg; both equal" }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "5000"
+  packages:
+    - { length: "50", width: "40", height: "30", quantity: "1", weightPerPiece: "12" }
+expected: { volumetricTotal: "12.000", actualTotal: "12.000", chargeableTotal: "12.000", billedOn: equal }

@@ -1,0 +1,74 @@
+{
+  "id": "017-unadjusted-closed-line",
+  "operation": "survey.leveling.reduce@2",
+  "source": {
+    "type": "hand-verified",
+    "citation": "TASK-010C §5 & §6: Closed line with adjBy: none calculates misclosure and allowable error while leaving row adjustments null."
+  },
+  "input": {
+    "startRL": "100.000",
+    "closingRL": "100.005",
+    "observations": [
+      {
+        "station": "BM-1",
+        "bs": "1.000",
+        "dist": "0"
+      },
+      {
+        "station": "BM-2",
+        "fs": "1.000",
+        "dist": "100"
+      }
+    ]
+  },
+  "params": {
+    "method": "rise-fall",
+    "adjBy": "none",
+    "kConstant": "12"
+  },
+  "expected": {
+    "startingRL": "100",
+    "endingRL": "100",
+    "sumBS": "1",
+    "sumFS": "1",
+    "sumRise": "0",
+    "sumFall": "0",
+    "bsFsDelta": "0",
+    "riseFallDelta": "0",
+    "rlDelta": "0",
+    "closingRL": "100.005",
+    "misclosure": "-0.005",
+    "totalDistanceKm": "0.100",
+    "allowableError": "3.8",
+    "closureStatus": "fail",
+    "setupsCount": 1,
+    "rows": [
+      {
+        "station": "BM-1",
+        "bs": "1",
+        "is": null,
+        "fs": null,
+        "rise": null,
+        "fall": null,
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "0",
+        "corr": null,
+        "adjustedRL": null
+      },
+      {
+        "station": "BM-2",
+        "bs": null,
+        "is": null,
+        "fs": "1",
+        "rise": "0",
+        "fall": "0",
+        "rl": "100",
+        "isChangePoint": false,
+        "dist": "100",
+        "corr": null,
+        "adjustedRL": null
+      }
+    ]
+  }
+}

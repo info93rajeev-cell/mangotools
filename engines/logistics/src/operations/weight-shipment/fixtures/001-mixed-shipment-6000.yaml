@@ -1,0 +1,20 @@
+id: 001-mixed-shipment-6000
+operation: logistics.weight.shipment@1
+source: { type: hand-verified, citation: "60×40×40 = 96,000 cm³ ÷ 6000 = 16 kg ×1; 50×30×30 = 45,000 ÷ 6000 = 7.5 ×2 = 15; 35×25×5 = 4,375 ÷ 6000 = 0.7291666… ×5 = 3.6458333…; volumetric 34.6458333 → 34.646; actual 12 + 16 + 2.5 = 30.5; chargeable = max = 34.646 (volumetric); volume 207,875 cm³ = 0.208 m³; 8 pieces" }
+input:
+  unit: cm
+  weightUnit: kg
+  divisor: "6000"
+  packages:
+    - { length: "60", width: "40", height: "40", quantity: "1", weightPerPiece: "12" }
+    - { length: "50", width: "30", height: "30", quantity: "2", weightPerPiece: "8" }
+    - { length: "35", width: "25", height: "5", quantity: "5", weightPerPiece: "0.5" }
+expected:
+  totalPieces: "8"
+  totalVolumeCm3: "207875"
+  totalVolumeM3: "0.208"
+  volumetricTotal: "34.646"
+  actualTotal: "30.500"
+  chargeableTotal: "34.646"
+  billedOn: volumetric
+  divisor: "6000"

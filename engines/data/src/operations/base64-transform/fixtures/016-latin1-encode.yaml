@@ -1,0 +1,6 @@
+id: 016-latin1-encode
+operation: data.base64.transform@1
+source: { type: standard, citation: "ISO/IEC 8859-1 maps é to byte 0xE9; RFC 4648 §4 encodes the single byte 0xE9 as 6Q==" }
+params: { direction: encode, charset: latin1 }
+input: { text: "é" }
+expected: { text: "6Q==", byteLength: 1, isUtf8: true }

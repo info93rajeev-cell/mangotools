@@ -1,0 +1,10 @@
+id: 015-record-path-not-found-error
+operation: data.json.to-csv@1
+source: { type: synthetic }
+input:
+  text: '{"data":[{"a":1}]}'
+params: { recordPath: rows }
+expectedError:
+  code: DATA_JSON_TO_CSV_RECORD_PATH_NOT_FOUND
+  path: recordPath
+  details: { recordPath: rows }
