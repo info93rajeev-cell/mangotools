@@ -5,7 +5,7 @@ example: 001-six-station-level-run
 
 ## How to use
 
-1. In Level Book & Benchmarks, enter your Starting Benchmark RL in metres (e.g. 100.000). If you are running a closed loop or closing on a known benchmark, enter the Known Closing BM RL; for an open traverse run, leave it blank.
+1. In Level Book & Benchmarks, enter your Starting Benchmark RL in metres (e.g. 100.000). If you are running a closed loop or closing on a known benchmark, enter the Known Closing BM RL; for an open leveling line, leave it blank.
 2. Select your reduction method using the method tabs: **Rise & Fall** or **Height of Instrument** (Collimation method).
 3. Optionally enter an Allowable Error Constant $C$ in $\text{mm}/\sqrt{\text{km}}$ (such as 12, 24, or 100) and choose an Adjustment Method: **Don't adjust** (raw reduction), **Distance-proportional**, or **Setup-proportional**.
 4. In Field Readings, enter your observed staff readings: Backsight (BS), Intermediate Sight (IS), Foresight (FS), incremental station Distance in metres, and Station names/Remarks.

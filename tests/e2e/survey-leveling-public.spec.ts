@@ -83,6 +83,37 @@ test.describe('Public Tool — Survey Leveling Calculator', () => {
     );
     await expect(unitSelect.locator('option[value="mm"]')).toHaveText('mm (preview only)');
 
+    // Ensure one coherent set of information sections on public page (no duplicates from workbench)
+    await expect(page.locator('[data-bottom-faq]')).toHaveCount(0);
+    await expect(
+      page
+        .locator('[data-survey-workbench]')
+        .locator(
+          'button:has-text("Disclaimer"), button:has-text("How to use"), button:has-text("FAQ"), button:has-text("Reduction method")',
+        ),
+    ).toHaveCount(0);
+
+    // Site tool information sections appear exactly once
+    const disclaimer = page.locator('[data-disclaimer]');
+    await expect(disclaimer).toHaveCount(1);
+    await expect(disclaimer.locator('summary')).toContainText('Disclaimer');
+
+    const howToUse = page.locator('#how-to-use');
+    await expect(howToUse).toHaveCount(1);
+    await expect(howToUse.locator('> summary')).toContainText('How to use');
+    await expect(howToUse).toContainText('open leveling line');
+    await expect(howToUse).not.toContainText('open traverse run');
+
+    const methodSec = page.locator('#method');
+    await expect(methodSec).toHaveCount(1);
+    await expect(methodSec.locator('> summary')).toContainText('Method');
+    await expect(methodSec).toContainText('Rise & Fall Method');
+    await expect(methodSec).toContainText('Height of Instrument');
+
+    const faqSec = page.locator('#faq');
+    await expect(faqSec).toHaveCount(1);
+    await expect(faqSec.locator('> summary')).toContainText('FAQ');
+
     // Site footer
     await expect(page.locator('footer.site-foot, footer[class*="footer"]')).toBeVisible();
   });
@@ -101,12 +132,6 @@ test.describe('Public Tool — Survey Leveling Calculator', () => {
     await expect(page.locator('[data-results-table] th:has-text("Rise")')).toBeVisible();
     await expect(page.locator('[data-results-table] th:has-text("Fall")')).toBeVisible();
     await expect(page.locator('[data-arithmetic-checks] li')).toHaveCount(3);
-    // Method accordion describes Rise & Fall
-    const methodAcc = page.locator('[data-bottom-faq]').getByRole('button', { name: /Method/ });
-    await methodAcc.click();
-    await expect(page.locator('[data-method-accordion-desc]')).toContainText(
-      'Rise & Fall reduction method',
-    );
 
     // Switch to Height of Instrument
     const hiTab = page.locator('[data-method-tab="height-of-instrument"]');
@@ -117,9 +142,6 @@ test.describe('Public Tool — Survey Leveling Calculator', () => {
     await page.locator('[data-calculate-btn]').click();
     await expect(page.locator('[data-results-table] th:has-text("HI (m)")')).toBeVisible();
     await expect(page.locator('[data-arithmetic-checks] li')).toHaveCount(2);
-    await expect(page.locator('[data-method-accordion-desc]')).toContainText(
-      'Height of Instrument',
-    );
   });
 
   test('3. verifies Excel paste modal, replace flow, copy level book and print actions', async ({

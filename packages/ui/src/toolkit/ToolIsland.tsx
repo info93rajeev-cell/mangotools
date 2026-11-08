@@ -202,7 +202,7 @@ function ToolIslandView(props: ToolIslandViewProps) {
 function renderSpecialCalculators(props: ArchetypeProps) {
   const { toolId, preset, idPrefix, snapshot, store, notify } = props;
   if (toolId === 'survey-leveling-calculator') {
-    return <DynamicSurveyLevelingLayout />;
+    return <DynamicSurveyLevelingLayout showBottomFaq={false} />;
   }
   if (toolId === 'food-planner') {
     return <DynamicFoodPlannerLayout notify={notify} />;
