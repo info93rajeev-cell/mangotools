@@ -129,12 +129,12 @@ for (const tool of listed) {
   });
 }
 
-test('Round 1 contract: 8 visible categories, 40 listed tools, 50 sitemap URLs', async ({
+test('Round 1 contract: 9 visible categories, 41 listed tools, 52 sitemap URLs', async ({
   request,
 }) => {
-  expect(categories).toHaveLength(8);
-  // Background Remover, PDF tools and Food Planner are listed beta tools in the generated registry.
-  expect(listed).toHaveLength(40);
+  expect(categories).toHaveLength(9);
+  // Background Remover, PDF tools, Food Planner and Survey Leveling Calculator are listed beta tools in the generated registry.
+  expect(listed).toHaveLength(41);
   expect(listed.some((tool) => tool.id === 'image-background-remover')).toBe(true);
   const pages = await (await request.get('/sitemap-pages.xml')).text();
   expect([...pages.matchAll(/<loc>/g)]).toHaveLength(2 + categories.length + listed.length);
