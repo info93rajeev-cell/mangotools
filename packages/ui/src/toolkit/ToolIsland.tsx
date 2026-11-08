@@ -26,6 +26,7 @@ import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
 import { DynamicMarkupCalculatorLayout } from './DynamicMarkupCalculatorLayout.tsx';
 import { DynamicPdfDocumentLayout } from './DynamicPdfDocumentLayout.tsx';
 import { DynamicSellerProfitabilityLayout } from './DynamicSellerProfitabilityLayout.tsx';
+import { DynamicSurveyLevelingLayout } from './DynamicSurveyLevelingLayout.tsx';
 import { DynamicUniversalTaxLayout } from './DynamicUniversalTaxLayout.tsx';
 import { renderDataStudioLayout } from './data-studio/dataStudioDispatch.tsx';
 import { InvoiceItemsLayout } from './InvoiceItemsLayout.tsx';
@@ -62,6 +63,7 @@ const PDF_STUDIO_TOOL_IDS = new Set([
   'word-to-pdf',
 ]);
 const FOOD_STUDIO_TOOL_IDS = new Set(['food-planner']);
+const SURVEY_STUDIO_TOOL_IDS = new Set(['survey-leveling-calculator']);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -148,7 +150,8 @@ const isStandardCalculator = (
   presetId !== INVOICE_MULTI_ITEM_PRESET_ID &&
   presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID &&
   !BUSINESS_STUDIO_TOOL_IDS.has(toolId ?? '') &&
-  !FOOD_STUDIO_TOOL_IDS.has(toolId ?? '');
+  !FOOD_STUDIO_TOOL_IDS.has(toolId ?? '') &&
+  !SURVEY_STUDIO_TOOL_IDS.has(toolId ?? '');
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -174,8 +177,13 @@ function ToolIslandView(props: ToolIslandViewProps) {
   const isDataStudio = DATA_STUDIO_TOOL_IDS.has(toolId);
   const isPdfStudio = PDF_STUDIO_TOOL_IDS.has(toolId);
   const isFoodStudio = FOOD_STUDIO_TOOL_IDS.has(toolId);
+  const isSurveyStudio = SURVEY_STUDIO_TOOL_IDS.has(toolId);
   const isCustomStudio =
-    isDataStudio || BUSINESS_STUDIO_TOOL_IDS.has(toolId) || isPdfStudio || isFoodStudio;
+    isDataStudio ||
+    BUSINESS_STUDIO_TOOL_IDS.has(toolId) ||
+    isPdfStudio ||
+    isFoodStudio ||
+    isSurveyStudio;
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       {standardCalculator || isCustomStudio ? null : (
@@ -193,6 +201,9 @@ function ToolIslandView(props: ToolIslandViewProps) {
 
 function renderSpecialCalculators(props: ArchetypeProps) {
   const { toolId, preset, idPrefix, snapshot, store, notify } = props;
+  if (toolId === 'survey-leveling-calculator') {
+    return <DynamicSurveyLevelingLayout />;
+  }
   if (toolId === 'food-planner') {
     return <DynamicFoodPlannerLayout notify={notify} />;
   }

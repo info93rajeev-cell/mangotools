@@ -37,6 +37,10 @@ export const SAMPLES = {
   'json-to-csv': { archetype: 'A', result: 'Asha Rao,Delhi,00124,true' },
   'timestamp-converter': { archetype: 'A', result: '2023-11-14T22:13:20.000Z' },
   'food-planner': { archetype: 'B', resultPattern: /Food Planner|Diwali Feast/ },
+  'survey-leveling-calculator': {
+    archetype: 'B',
+    resultPattern: /Level Book|Criterion not provided|Calculated/,
+  },
 } as const;
 
 /**
@@ -214,7 +218,7 @@ export const island = (page: Page, id: string) => {
 };
 export const primaryResult = (page: Page) =>
   page.locator(
-    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong, [data-tool-island="food-planner"]',
+    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong, [data-tool-island="food-planner"], [data-tool-island="survey-leveling-calculator"]',
   );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
@@ -239,6 +243,34 @@ export async function openRelatedTools(page: Page): Promise<void> {
   if (await summary.isVisible()) await summary.click();
   else await page.getByRole('button', { name: 'Related tools' }).first().click();
   await expect(related).toHaveAttribute('open');
+}
+
+async function waitForPdfResult(page: Page, id: string): Promise<boolean> {
+  if (id === 'pdf-merge' || id === 'pdf-split') {
+    await expect(page.getByText(/Ready to (merge|split)/).first()).toBeVisible();
+    return true;
+  }
+  if (id === 'compress-pdf') {
+    await expect(
+      page
+        .getByRole('status')
+        .filter({ hasText: /^\s*(Compressed|Already compact|Ready to compress)\s*$/ }),
+    ).toBeVisible();
+    return true;
+  }
+  if (id === 'pdf-to-word') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(Converted|Ready to convert)\s*$/ }),
+    ).toBeVisible();
+    return true;
+  }
+  if (id === 'word-to-pdf') {
+    await expect(
+      page.getByRole('status').filter({ hasText: /^\s*(PDF created|Ready to convert)\s*$/ }),
+    ).toBeVisible();
+    return true;
+  }
+  return false;
 }
 
 export async function waitForResult(page: Page, id: string): Promise<void> {
@@ -273,28 +305,7 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(primaryResult(page)).not.toHaveText('…');
     return;
   }
-  if (id === 'pdf-merge' || id === 'pdf-split') {
-    await expect(page.getByText(/Ready to (merge|split)/).first()).toBeVisible();
-    return;
-  }
-  if (id === 'compress-pdf') {
-    await expect(
-      page
-        .getByRole('status')
-        .filter({ hasText: /^\s*(Compressed|Already compact|Ready to compress)\s*$/ }),
-    ).toBeVisible();
-    return;
-  }
-  if (id === 'pdf-to-word') {
-    await expect(
-      page.getByRole('status').filter({ hasText: /^\s*(Converted|Ready to convert)\s*$/ }),
-    ).toBeVisible();
-    return;
-  }
-  if (id === 'word-to-pdf') {
-    await expect(
-      page.getByRole('status').filter({ hasText: /^\s*(PDF created|Ready to convert)\s*$/ }),
-    ).toBeVisible();
+  if (await waitForPdfResult(page, id)) {
     return;
   }
   if (id === 'image-background-remover') {
@@ -303,6 +314,11 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
   }
   if (id === 'food-planner') {
     await expect(page.locator('[data-tool-island="food-planner"]')).toBeVisible();
+    return;
+  }
+  if (id === 'survey-leveling-calculator') {
+    await expect(page.locator('[data-tool-island="survey-leveling-calculator"]')).toBeVisible();
+    await expect(page.locator('[data-survey-workbench]')).toBeVisible();
     return;
   }
   if (CIVIL_TOOL_IDS.has(id)) {
@@ -367,8 +383,13 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     }
     await triggerFileToolAction(page, id);
     await page.getByRole('button', { name: tool.downloadCta }).click();
-  } else if (isLogisticsStudio(id) || id === 'gst-calculator' || id === 'food-planner') {
-    // The Logistics studios, Universal Tax worksheets and Food Planner open already filled with their calculation result
+  } else if (
+    isLogisticsStudio(id) ||
+    id === 'gst-calculator' ||
+    id === 'food-planner' ||
+    id === 'survey-leveling-calculator'
+  ) {
+    // The Logistics studios, Universal Tax worksheets, Food Planner and Survey Leveling open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
   } else if (CIVIL_TOOL_IDS.has(id)) {
     // Civil workspaces open pre-calculated with default reference values; pressing Calculate performs the calculation.

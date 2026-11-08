@@ -79,7 +79,7 @@ for (const vp of viewports) {
     // Verify Breadcrumbs and Title with real site shell
     await expect(page.locator('h1')).toHaveText('Rise & Fall Leveling Calculator');
     await expect(page.getByText('Home')).toBeVisible();
-    await expect(page.getByText('Surveying')).toBeVisible();
+    await expect(page.locator('nav.crumbs').getByText('Surveying')).toBeVisible();
 
     // On initial mount, allowable constant C has no automatic default -> Criterion not provided
     const resultsBadge = page.locator('[data-results-badge]');

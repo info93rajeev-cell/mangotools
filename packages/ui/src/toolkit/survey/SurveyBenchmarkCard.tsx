@@ -152,7 +152,7 @@ export function SurveyBenchmarkCard({
             aria-label={surveyStrings.readingUnit}
             value="m"
             disabled
-            title="Metres boundary in PR 1"
+            title={surveyStrings.unitMetresTooltip}
           >
             <option value="m">{surveyStrings.unitMetres}</option>
             <option value="mm">{surveyStrings.unitMillimetres}</option>
