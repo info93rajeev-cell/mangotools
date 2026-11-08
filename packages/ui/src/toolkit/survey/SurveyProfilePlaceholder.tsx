@@ -14,20 +14,16 @@ import s from './surveyProfile.module.css';
 const formatDistLabel = (d: number): string =>
   `${Number.isInteger(d) ? d : d.toFixed(6).replace(/\.?0+$/, '') || d}m`;
 
-function computePointT(
-  index: number,
-  totalRows: number,
-  hasValidatedDist: boolean,
-  cumDists: number[],
-  totalM: number,
-): number {
-  if (hasValidatedDist && totalM > 0) {
-    if (index === 0) return 0;
-    if (index === totalRows - 1) return 1.0;
-    return Math.max(0, Math.min(1, cumDists[index] / totalM));
-  }
-  return totalRows > 1 ? index / (totalRows - 1) : 0.5;
-}
+const computePointT = (i: number, len: number, valid: boolean, cum: number[], m: number) =>
+  valid && m > 0
+    ? i === 0
+      ? 0
+      : i === len - 1
+        ? 1
+        : Math.max(0, Math.min(1, cum[i] / m))
+    : len > 1
+      ? i / (len - 1)
+      : 0.5;
 
 function computeProfileGeometry(
   rows: SurveyReducedRow[],
@@ -36,7 +32,7 @@ function computeProfileGeometry(
   padding: { l: number; r: number; t: number; b: number },
   validatedDist: ValidatedLineDistance,
 ) {
-  const ys = rows.map((r) => Number(r.rl));
+  const ys = rows.map((r) => (r.adjustedRL != null ? Number(r.adjustedRL) : Number(r.rl)));
   let mn = Math.min(...ys);
   let mx = Math.max(...ys);
   const pad = Math.max((mx - mn) * 0.25, 0.1);
@@ -53,14 +49,15 @@ function computeProfileGeometry(
 
   const points: ProfilePoint[] = rows.map((r, i) => {
     const t = computePointT(i, rows.length, hasValidatedDist, cumDists, totalM);
+    const rlVal = r.adjustedRL != null ? Number(r.adjustedRL) : Number(r.rl);
     return {
       x: X(t),
-      y: Y(Number(r.rl)),
+      y: Y(rlVal),
       station: r.station || `P-${i + 1}`,
       distLabel: hasValidatedDist ? formatDistLabel(cumDists[i]) : undefined,
       isBM: i === 0 || i === rows.length - 1,
       isCP: r.isChangePoint,
-      rl: Number(r.rl),
+      rl: rlVal,
     };
   });
 
@@ -227,14 +224,16 @@ function ProfileSvgChart({
 
 export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePlaceholderProps) {
   const rows = result?.rows ?? [];
+  const hasAdj = rows.some((r) => r.adjustedRL !== null && r.adjustedRL !== undefined);
   const validatedDist = computeValidatedDistance(rows);
   const geo =
     rows.length > 0
       ? computeProfileGeometry(rows, 640, 175, { l: 46, r: 16, t: 16, b: 34 }, validatedDist)
       : null;
 
-  const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
-  const lowest = geo ? `${Math.min(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';
+  const rls = rows.map((r) => (r.adjustedRL != null ? Number(r.adjustedRL) : Number(r.rl)));
+  const highest = geo ? `${Math.max(...rls).toFixed(3)} m` : '—';
+  const lowest = geo ? `${Math.min(...rls).toFixed(3)} m` : '—';
   const lineLength = formatMeasuredLineLength(validatedDist.totalM, result?.totalDistanceKm);
 
   return (
@@ -246,7 +245,9 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
             <path d="M3 21h18" />
           </svg>
         </div>
-        <h2 class={s.cardTitle}>{surveyStrings.profileTitle}</h2>
+        <h2 class={s.cardTitle}>
+          {hasAdj ? surveyStrings.profileTitleAdjusted : surveyStrings.profileTitle}
+        </h2>
         <span class={s.cardHeadRight}>
           {geo?.hasValidatedDist ? 'Proportional distance profile' : 'Illustrative, not to scale'}
         </span>
@@ -268,11 +269,15 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
 
         <div class={s.chipsGrid}>
           <div class={s.chip}>
-            <span class={s.chipLabel}>{surveyStrings.profileHighestRL}</span>
+            <span class={s.chipLabel}>
+              {hasAdj ? surveyStrings.profileHighestRLAdjusted : surveyStrings.profileHighestRL}
+            </span>
             <b class={s.chipValue}>{highest}</b>
           </div>
           <div class={s.chip}>
-            <span class={s.chipLabel}>{surveyStrings.profileLowestRL}</span>
+            <span class={s.chipLabel}>
+              {hasAdj ? surveyStrings.profileLowestRLAdjusted : surveyStrings.profileLowestRL}
+            </span>
             <b class={s.chipValue}>{lowest}</b>
           </div>
           <div class={s.chip}>
