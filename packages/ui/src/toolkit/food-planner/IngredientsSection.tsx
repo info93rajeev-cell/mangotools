@@ -4,6 +4,7 @@ import {
   IngredientsMainPanel,
   type UseIngredientsFilterStateReturn,
 } from './IngredientsMainPanel.tsx';
+import { IngredientsMobileView } from './IngredientsMobileView.tsx';
 import { getCategoryGroup, IngredientsSidebar } from './IngredientsSidebarComponents.tsx';
 import type { IngredientsPagination } from './IngredientsTableComponents.tsx';
 import { extractIngredientLines, type IngredientLineItem } from './ingredientsUtils.ts';
@@ -50,26 +51,34 @@ export function IngredientsSection({ planner }: IngredientsSectionProps) {
   );
 
   return (
-    <div class={styles.layoutGrid}>
-      <IngredientsMainPanel
-        recipeCount={selectedRecipes.length}
-        guests={setup.guests}
-        filterState={filterState}
-        error={consolidateError}
-        isLoading={isLoadingConsolidated}
-        pagedLines={pagedLines}
-        pagination={pagination}
-        onBrowse={() => setActiveSection('recipes')}
-      />
+    <>
+      <div class={styles.desktopOnly}>
+        <div class={styles.layoutGrid}>
+          <IngredientsMainPanel
+            recipeCount={selectedRecipes.length}
+            guests={setup.guests}
+            filterState={filterState}
+            error={consolidateError}
+            isLoading={isLoadingConsolidated}
+            pagedLines={pagedLines}
+            pagination={pagination}
+            onBrowse={() => setActiveSection('recipes')}
+          />
 
-      <IngredientsSidebar
-        lines={filterState.lines}
-        recipesCount={selectedRecipes.length}
-        guests={setup.guests}
-        onClearAll={clearAllRecipes}
-        onContinue={() => setActiveSection('shopping')}
-      />
-    </div>
+          <IngredientsSidebar
+            lines={filterState.lines}
+            recipesCount={selectedRecipes.length}
+            guests={setup.guests}
+            onClearAll={clearAllRecipes}
+            onContinue={() => setActiveSection('shopping')}
+          />
+        </div>
+      </div>
+
+      <div class={styles.mobileOnly}>
+        <IngredientsMobileView planner={planner} items={filterState.lines} />
+      </div>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'preact/hooks';
+import { CostEstimationMobileView } from './CostEstimationMobileView.tsx';
 import {
   CostEmptyState,
   CostLeftPanel,
@@ -48,34 +49,49 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
   }
 
   return (
-    <div class={styles.layoutGrid}>
-      <CostLeftPanel
-        costError={costError}
-        isLoadingCost={isLoadingCost}
-        recipeCosts={recipeCosts}
-        priceMode={priceMode}
-        onSetPriceMode={setPriceMode}
-        selectAll={selectAll}
-        selectedDishes={selectedDishes}
-        onToggleSelectAll={toggleSelectAll}
-        onToggleDish={toggleDish}
-        onManageMenu={() => setActiveSection('recipes')}
-        otherCosts={otherCosts}
-        totalOtherCost={totalOtherCost}
-        onUpdateOtherCost={updateOtherCost}
-      />
+    <>
+      <div class={styles.desktopOnly}>
+        <div class={styles.layoutGrid}>
+          <CostLeftPanel
+            costError={costError}
+            isLoadingCost={isLoadingCost}
+            recipeCosts={recipeCosts}
+            priceMode={priceMode}
+            onSetPriceMode={setPriceMode}
+            selectAll={selectAll}
+            selectedDishes={selectedDishes}
+            onToggleSelectAll={toggleSelectAll}
+            onToggleDish={toggleDish}
+            onManageMenu={() => setActiveSection('recipes')}
+            otherCosts={otherCosts}
+            totalOtherCost={totalOtherCost}
+            onUpdateOtherCost={updateOtherCost}
+          />
 
-      <CostRightPanel
-        costData={costData}
-        totalOtherCost={totalOtherCost}
-        guests={setup.guests}
-        dishesCount={selectedRecipes.length}
-        targetBudget={targetBudget}
-        onSetTargetBudget={setTargetBudget}
-        recipeCosts={recipeCosts}
-        onContinue={() => setActiveSection('schedule')}
-      />
-    </div>
+          <CostRightPanel
+            costData={costData}
+            totalOtherCost={totalOtherCost}
+            guests={setup.guests}
+            dishesCount={selectedRecipes.length}
+            targetBudget={targetBudget}
+            onSetTargetBudget={setTargetBudget}
+            recipeCosts={recipeCosts}
+            onContinue={() => setActiveSection('schedule')}
+          />
+        </div>
+      </div>
+
+      <div class={styles.mobileOnly}>
+        <CostEstimationMobileView
+          planner={planner}
+          recipeCosts={recipeCosts}
+          totalIngredientCost={costData.totalIngredientCost}
+          totalOtherCost={totalOtherCost}
+          totalMenuCost={costData.totalMenuCost}
+          costPerServing={costData.costPerServing}
+        />
+      </div>
+    </>
   );
 }
 

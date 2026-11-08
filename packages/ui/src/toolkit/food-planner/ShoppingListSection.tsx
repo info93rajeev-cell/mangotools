@@ -3,6 +3,7 @@ import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import { AISLE_DISPLAY_MAP } from './foodReferenceData.ts';
 import { GroceryDiscoveryCard } from './ShoppingListComponents.tsx';
+import { ShoppingListMobileView } from './ShoppingListMobileView.tsx';
 import { ShoppingMainPanel } from './ShoppingTableComponents.tsx';
 import { type ShoppingLineItem, useGroupedShoppingItems } from './shoppingListUtils.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
@@ -12,72 +13,109 @@ interface ShoppingListSectionProps {
 }
 
 export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
-  const {
-    setup,
-    selectedRecipes,
-    portionFactors,
-    engineConsolidated,
-    isLoadingConsolidated,
-    consolidateError,
-    boughtItems,
-    toggleBoughtItem,
-    setActiveSection,
-  } = planner;
+  const state = useShoppingListState(planner);
 
+  return (
+    <>
+      <div class={styles.desktopOnly}>
+        <ShoppingDesktopGrid planner={planner} state={state} />
+      </div>
+
+      <div class={styles.mobileOnly}>
+        <ShoppingListMobileView
+          planner={planner}
+          items={state.shoppingItems}
+          boughtMap={planner.boughtItems}
+          onToggleBought={planner.toggleBoughtItem}
+        />
+      </div>
+    </>
+  );
+}
+
+function useShoppingListState(planner: UseFoodPlannerReturn) {
   const [groupBy, setGroupBy] = useState<'category' | 'shop' | 'all'>('category');
   const [combineSimilar, setCombineSimilar] = useState<boolean>(true);
-  const [groceryQuery, setGroceryQuery] = useState(setup.location || 'Delhi');
+  const [groceryQuery, setGroceryQuery] = useState(planner.setup.location || 'Delhi');
   const { manualQuantities, handleAdjustQuantity } = useShoppingQuantities();
 
-  const { shoppingItems, groupedItems, totalItems, inListCount, toBuyCount } =
-    useGroupedShoppingItems(
-      engineConsolidated,
-      selectedRecipes,
-      portionFactors,
-      setup.guests,
-      setup.servingsPerGuest,
-      boughtItems,
-    );
-
-  const totalCost = useMemo(
-    () => shoppingItems.reduce((sum, item) => sum + item.estCost, 0),
-    [shoppingItems],
+  const grouped = useGroupedShoppingItems(
+    planner.engineConsolidated,
+    planner.selectedRecipes,
+    planner.portionFactors,
+    planner.setup.guests,
+    planner.setup.servingsPerGuest,
+    planner.boughtItems,
   );
 
-  const pagination = useShoppingPagination(shoppingItems.length);
-  const pagedItems = shoppingItems.slice(
+  const totalCost = useMemo(
+    () => grouped.shoppingItems.reduce((sum, item) => sum + item.estCost, 0),
+    [grouped.shoppingItems],
+  );
+
+  const pagination = useShoppingPagination(grouped.shoppingItems.length);
+  const pagedItems = grouped.shoppingItems.slice(
     (pagination.page - 1) * pagination.pageSize,
     pagination.page * pagination.pageSize,
   );
 
+  return {
+    groupBy,
+    setGroupBy,
+    combineSimilar,
+    setCombineSimilar,
+    groceryQuery,
+    setGroceryQuery,
+    manualQuantities,
+    handleAdjustQuantity,
+    ...grouped,
+    totalCost,
+    pagination,
+    pagedItems,
+  };
+}
+
+interface ShoppingDesktopGridProps {
+  planner: UseFoodPlannerReturn;
+  state: ReturnType<typeof useShoppingListState>;
+}
+
+function ShoppingDesktopGrid({ planner, state }: ShoppingDesktopGridProps) {
+  const {
+    selectedRecipes,
+    consolidateError,
+    isLoadingConsolidated,
+    toggleBoughtItem,
+    setActiveSection,
+  } = planner;
   return (
     <div class={styles.layoutGrid}>
       <ShoppingMainPanel
-        totalItems={totalItems}
+        totalItems={state.totalItems}
         recipeCount={selectedRecipes.length}
-        groupBy={groupBy}
-        onSetGroupBy={setGroupBy}
-        combineSimilar={combineSimilar}
-        onToggleCombine={setCombineSimilar}
+        groupBy={state.groupBy}
+        onSetGroupBy={state.setGroupBy}
+        combineSimilar={state.combineSimilar}
+        onToggleCombine={state.setCombineSimilar}
         error={consolidateError}
         isLoading={isLoadingConsolidated}
-        pagedItems={pagedItems}
-        shoppingItemsCount={shoppingItems.length}
-        manualQuantities={manualQuantities}
-        onAdjustQuantity={handleAdjustQuantity}
+        pagedItems={state.pagedItems}
+        shoppingItemsCount={state.shoppingItems.length}
+        manualQuantities={state.manualQuantities}
+        onAdjustQuantity={state.handleAdjustQuantity}
         onToggleBought={toggleBoughtItem}
-        pagination={pagination}
+        pagination={state.pagination}
         onBrowse={() => setActiveSection('recipes')}
       />
 
       <ShoppingSidebar
-        totalItems={totalItems}
-        toBuyCount={toBuyCount}
-        inListCount={inListCount}
-        groupedItems={groupedItems}
-        totalCost={totalCost}
-        groceryQuery={groceryQuery}
-        onChangeLocation={setGroceryQuery}
+        totalItems={state.totalItems}
+        toBuyCount={state.toBuyCount}
+        inListCount={state.inListCount}
+        groupedItems={state.groupedItems}
+        totalCost={state.totalCost}
+        groceryQuery={state.groceryQuery}
+        onChangeLocation={state.setGroceryQuery}
         onContinue={() => setActiveSection('cost')}
       />
     </div>

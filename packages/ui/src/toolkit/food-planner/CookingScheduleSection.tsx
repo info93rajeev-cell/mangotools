@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
+import { CookingScheduleMobileView } from './CookingScheduleMobileView.tsx';
 import {
   CapacityNotice,
   formatTimeSpan,
@@ -57,43 +58,51 @@ export function CookingScheduleSection({ planner }: CookingScheduleSectionProps)
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <ScheduleAlerts error={scheduleError} isLoading={isLoadingSchedule} />
-      <div class={styles.layoutGrid}>
-        <div class={styles.card}>
-          <ScheduleHeader
+    <>
+      <div class={styles.desktopOnly}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <ScheduleAlerts error={scheduleError} isLoading={isLoadingSchedule} />
+          <div class={styles.layoutGrid}>
+            <div class={styles.card}>
+              <ScheduleHeader
+                tasksCount={tasks.length}
+                mealTime={mealTime}
+                burners={burners}
+                onSetMealTime={setMealTime}
+                onSetBurners={setBurners}
+              />
+              <CapacityNotice />
+              <SchedulePhaseList
+                groupedTasks={groupedTasks}
+                expandedPhases={expandedPhases}
+                onTogglePhase={togglePhase}
+                onToggleTask={toggleTaskCompleted}
+              />
+            </div>
+
+            <ScheduleSummaryCard
+              tasksCount={tasks.length}
+              timeSpanStr={timeSpanStr}
+              burners={burners}
+              mealTime={mealTime}
+              selectedRecipes={selectedRecipes}
+              tasks={tasks}
+            />
+          </div>
+
+          <PlanTotalsFooter
             tasksCount={tasks.length}
+            timeSpanStr={timeSpanStr}
+            guests={setup.guests}
             mealTime={mealTime}
-            burners={burners}
-            onSetMealTime={setMealTime}
-            onSetBurners={setBurners}
-          />
-          <CapacityNotice />
-          <SchedulePhaseList
-            groupedTasks={groupedTasks}
-            expandedPhases={expandedPhases}
-            onTogglePhase={togglePhase}
-            onToggleTask={toggleTaskCompleted}
           />
         </div>
-
-        <ScheduleSummaryCard
-          tasksCount={tasks.length}
-          timeSpanStr={timeSpanStr}
-          burners={burners}
-          mealTime={mealTime}
-          selectedRecipes={selectedRecipes}
-          tasks={tasks}
-        />
       </div>
 
-      <PlanTotalsFooter
-        tasksCount={tasks.length}
-        timeSpanStr={timeSpanStr}
-        guests={setup.guests}
-        mealTime={mealTime}
-      />
-    </div>
+      <div class={styles.mobileOnly}>
+        <CookingScheduleMobileView planner={planner} />
+      </div>
+    </>
   );
 }
 

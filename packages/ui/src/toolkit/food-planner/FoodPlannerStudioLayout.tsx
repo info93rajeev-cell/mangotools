@@ -28,11 +28,13 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
       <PlannerBreadcrumbs />
       <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={handleShare} />
       <PlannerNavBar activeSection={activeSection} onSelectSection={setActiveSection} />
-      <PlanSetupCard
-        setup={setup}
-        onSetSetup={setSetup}
-        onUpdate={() => notify?.(`Plan updated for ${setup.guests} guests (${setup.occasion})`)}
-      />
+      <div class={styles.desktopOnly}>
+        <PlanSetupCard
+          setup={setup}
+          onSetSetup={setSetup}
+          onUpdate={() => notify?.(`Plan updated for ${setup.guests} guests (${setup.occasion})`)}
+        />
+      </div>
 
       {activeSection === 'recipes' && <RecipesMenuSection planner={planner} />}
       {activeSection === 'ingredients' && <IngredientsSection planner={planner} />}
@@ -110,6 +112,7 @@ function PlannerNavBar({
       <NavTab
         id="recipes"
         label="Recipes & Menu"
+        mobileLabel="Recipes"
         icon="utensils"
         active={activeSection === 'recipes'}
         onClick={() => onSelectSection('recipes')}
@@ -117,6 +120,7 @@ function PlannerNavBar({
       <NavTab
         id="ingredients"
         label="Ingredients"
+        mobileLabel="Ingredients"
         icon="leaf"
         active={activeSection === 'ingredients'}
         onClick={() => onSelectSection('ingredients')}
@@ -124,6 +128,7 @@ function PlannerNavBar({
       <NavTab
         id="shopping"
         label="Shopping List"
+        mobileLabel="Shopping"
         icon="shopping-cart"
         active={activeSection === 'shopping'}
         onClick={() => onSelectSection('shopping')}
@@ -131,6 +136,7 @@ function PlannerNavBar({
       <NavTab
         id="cost"
         label="Cost Estimation"
+        mobileLabel="Cost"
         icon="coins"
         active={activeSection === 'cost'}
         onClick={() => onSelectSection('cost')}
@@ -138,6 +144,7 @@ function PlannerNavBar({
       <NavTab
         id="schedule"
         label="Cooking Schedule"
+        mobileLabel="Cooking Schedule"
         icon="calendar"
         active={activeSection === 'schedule'}
         onClick={() => onSelectSection('schedule')}
@@ -251,12 +258,14 @@ function PlanSetupCard({
 function NavTab({
   id: _id,
   label,
+  mobileLabel,
   icon,
   active,
   onClick,
 }: {
   id: PlannerSection;
   label: string;
+  mobileLabel?: string;
   icon: string;
   active: boolean;
   onClick: () => void;
@@ -270,7 +279,8 @@ function NavTab({
       onClick={onClick}
     >
       <Icon name={icon} />
-      <span>{label}</span>
+      <span class={styles.desktopTabLabel}>{label}</span>
+      {mobileLabel && <span class={styles.mobileTabLabel}>{mobileLabel}</span>}
     </button>
   );
 }

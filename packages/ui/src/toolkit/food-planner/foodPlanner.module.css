@@ -1205,3 +1205,45 @@
   color: #854d0e;
   margin: 12px 0;
 }
+
+/* ==========================================================================
+   Desktop / Mobile View Switching
+   ========================================================================== */
+
+.desktopOnly {
+  display: block;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+.desktopTabLabel {
+  display: inline;
+}
+
+.mobileTabLabel {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: block;
+  }
+
+  .desktopTabLabel {
+    display: none;
+  }
+
+  .mobileTabLabel {
+    display: inline;
+  }
+
+  .topHeader .headerActions {
+    display: none;
+  }
+}
