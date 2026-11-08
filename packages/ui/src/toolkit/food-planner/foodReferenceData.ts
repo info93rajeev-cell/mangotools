@@ -1,5 +1,6 @@
 export { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
 export {
+  CATALOG_GALLERY_RECIPES,
   type ExtendedFoodRecipe,
   getRecipeVerificationInfo,
   type ImageProvenance,

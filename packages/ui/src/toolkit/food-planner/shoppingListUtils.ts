@@ -4,6 +4,7 @@ import {
   type ExtendedFoodRecipe,
   REFERENCE_PRICES,
 } from './foodReferenceData.ts';
+import { getIngredientThumbnail } from './ingredientsUtils.ts';
 
 export interface ShoppingLineItem {
   id: string;
@@ -15,6 +16,7 @@ export interface ShoppingLineItem {
   estCost: number;
   storeType: string;
   isBought: boolean;
+  thumbnailUrl?: string;
 }
 
 export function buildShoppingItems(
@@ -96,6 +98,7 @@ export function buildShoppingItems(
       estCost: Math.round(estCost),
       storeType: getStoreTypeForAisle(cat?.aisle ?? 'other'),
       isBought: !!boughtItems[l.ingredient],
+      thumbnailUrl: getIngredientThumbnail(l.ingredient),
     };
   });
 }

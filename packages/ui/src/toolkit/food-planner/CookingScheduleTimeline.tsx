@@ -14,6 +14,7 @@ export interface ScheduleTaskItem {
 
 export function PhaseGroupCard({
   title,
+  phaseKey: _phaseKey,
   tasks,
   isExpanded,
   onToggle,
@@ -29,7 +30,7 @@ export function PhaseGroupCard({
   const totalMinutes = tasks.reduce((sum, t) => sum + t.durationMinutes, 0);
 
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div style={{ marginBottom: '12px' }}>
       <button
         type="button"
         class={styles.phaseHeader}
@@ -41,64 +42,115 @@ export function PhaseGroupCard({
           {title}
         </span>
         <span class={styles.phaseTag}>
-          {tasks.length} tasks · {totalMinutes}m
+          {tasks.length} tasks • {totalMinutes} min
         </span>
       </button>
 
       {isExpanded && tasks.length > 0 && (
-        <div
-          style={{ border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px' }}
-        >
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              class={styles.taskRow}
-              style={{ background: task.isCompleted ? '#f8fafc' : '#ffffff' }}
-            >
-              <div class={styles.taskInfo}>
-                <input
-                  type="checkbox"
-                  aria-label={`Mark task completed: ${task.name}`}
-                  checked={task.isCompleted}
-                  onChange={() => onToggleTask(task.id)}
-                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                />
-                <div>
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      display: 'block',
-                      textDecoration: task.isCompleted ? 'line-through' : 'none',
-                    }}
-                  >
-                    {task.name}
-                  </span>
-                  <span style={{ fontSize: '11.5px', color: '#475569' }}>{task.recipeName}</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span class={styles.taskTime}>
-                  <Icon name="clock" /> {task.startTime} ({task.durationMinutes}m)
-                </span>
-                <span
-                  class={styles.badge}
-                  style={{
-                    background: task.priority === 'High' ? '#fee2e2' : '#f1f5f9',
-                    color: task.priority === 'High' ? '#b91c1c' : '#475569',
-                  }}
-                >
-                  {task.priority}
-                </span>
-                {task.isCompleted && (
-                  <span class={`${styles.badge} ${styles.badgeVerified}`}>✓ Done</span>
-                )}
-              </div>
-            </div>
-          ))}
+        <div class={styles.tableWrapper} style={{ borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          <table class={styles.table} aria-label={`Schedule Table for ${title}`}>
+            <thead>
+              <tr>
+                <th style={{ width: '28px' }}>#</th>
+                <th style={{ width: '28px' }}></th>
+                <th>Task / Preparation</th>
+                <th>Start Time</th>
+                <th>Duration</th>
+                <th>Recipe (Dish)</th>
+                <th>Priority</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map((task, idx) => (
+                <ScheduleTableRow key={task.id} task={task} idx={idx} onToggleTask={onToggleTask} />
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
+  );
+}
+
+function ScheduleStatusBadge({ status }: { status: 'completed' | 'progress' | 'pending' }) {
+  if (status === 'completed') {
+    return <span class={styles.statusPillCompleted}>✓ Completed</span>;
+  }
+  if (status === 'progress') {
+    return <span class={styles.statusPillProgress}>🔄 In Progress</span>;
+  }
+  return <span class={styles.statusPillPending}>⭕ Pending</span>;
+}
+
+function ScheduleTableRow({
+  task,
+  idx,
+  onToggleTask,
+}: {
+  task: ScheduleTaskItem;
+  idx: number;
+  onToggleTask: (id: string) => void;
+}) {
+  const status = task.isCompleted ? 'completed' : idx === 0 ? 'progress' : 'pending';
+  const isHigh = task.priority === 'High';
+
+  return (
+    <tr style={{ background: task.isCompleted ? '#f8fafc' : 'transparent' }}>
+      <td style={{ color: '#64748b', fontSize: '12px' }}>{idx + 1}</td>
+      <td>
+        <input
+          type="checkbox"
+          aria-label={`Mark task completed: ${task.name}`}
+          checked={task.isCompleted}
+          onChange={() => onToggleTask(task.id)}
+          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+        />
+      </td>
+      <td>
+        <strong
+          style={{
+            fontSize: '13px',
+            display: 'block',
+            textDecoration: task.isCompleted ? 'line-through' : 'none',
+            color: task.isCompleted ? '#94a3b8' : '#0f172a',
+          }}
+        >
+          {task.name}
+        </strong>
+      </td>
+      <td style={{ whiteSpace: 'nowrap' }}>
+        <span class={styles.taskTime}>
+          <Icon name="clock" /> {task.startTime}
+        </span>
+      </td>
+      <td style={{ color: '#475569', fontSize: '12.5px', whiteSpace: 'nowrap' }}>
+        {task.durationMinutes} min
+      </td>
+      <td>
+        <span
+          class={styles.badge}
+          style={{ background: '#f1f5f9', color: '#334155', fontSize: '11px' }}
+        >
+          {task.recipeName}
+        </span>
+      </td>
+      <td>
+        <span
+          class={styles.badge}
+          style={{
+            background: isHigh ? '#fee2e2' : '#f1f5f9',
+            color: isHigh ? '#b91c1c' : '#475569',
+            fontWeight: 600,
+          }}
+        >
+          {task.priority}
+        </span>
+      </td>
+      <td>
+        <ScheduleStatusBadge status={status} />
+      </td>
+    </tr>
   );
 }
 
@@ -116,7 +168,7 @@ export function SchedulePhaseList({
   return (
     <>
       <PhaseGroupCard
-        title="Early Prep (Setup, cleaning, basic preparation)"
+        title="🧹 Early Prep (Setup, cleaning, basic preparation)"
         phaseKey="early-prep"
         tasks={groupedTasks['early-prep'] ?? []}
         isExpanded={expandedPhases['early-prep'] !== false}
@@ -124,7 +176,7 @@ export function SchedulePhaseList({
         onToggleTask={onToggleTask}
       />
       <PhaseGroupCard
-        title="Dough & Soaking (Mixing, kneading, pre-cooking)"
+        title="🥣 Dough & Soaking (Mixing, kneading, pre-cooking)"
         phaseKey="dough-soak"
         tasks={groupedTasks['dough-soak'] ?? []}
         isExpanded={expandedPhases['dough-soak'] !== false}
@@ -132,7 +184,7 @@ export function SchedulePhaseList({
         onToggleTask={onToggleTask}
       />
       <PhaseGroupCard
-        title="Cooking (Main dishes & gravies)"
+        title="🍲 Cooking (Main dishes & gravies)"
         phaseKey="cooking"
         tasks={groupedTasks.cooking ?? []}
         isExpanded={expandedPhases.cooking !== false}
@@ -140,7 +192,7 @@ export function SchedulePhaseList({
         onToggleTask={onToggleTask}
       />
       <PhaseGroupCard
-        title="Frying (Snacks & savouries)"
+        title="🍳 Frying (Snacks & savouries)"
         phaseKey="frying"
         tasks={groupedTasks.frying ?? []}
         isExpanded={expandedPhases.frying !== false}
@@ -148,7 +200,7 @@ export function SchedulePhaseList({
         onToggleTask={onToggleTask}
       />
       <PhaseGroupCard
-        title="Final Assembly / Serving (Finishing, plating & service)"
+        title="🍽️ Final Assembly / Serving (Finishing, plating & service)"
         phaseKey="assembly"
         tasks={groupedTasks.assembly ?? []}
         isExpanded={expandedPhases.assembly !== false}

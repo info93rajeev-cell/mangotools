@@ -51,7 +51,7 @@ const isCivil = [
 <BaseLayout title={toolTitle(tool)} description={tool.seo.description} path={tool.url} template="tool" jsonLd={jsonLd}>
   <PageContainer width="tool">
     <div class="page" data-fullscreen-root>
-      <div class="top">
+      <div class="top" class:list={{ 'food-planner-seo-header': tool.slug === 'food-planner' }}>
         <Breadcrumbs items={crumbs} />
         <ToolHeader name={tool.seo.h1 ?? tool.name} summary={tool.summary} processing={tool.processing} icon={toolHeaderIcon(tool.slug)} />
       </div>
@@ -105,6 +105,9 @@ const isCivil = [
     gap: var(--space-1);
     min-width: 0;
     max-width: 100%;
+  }
+  .food-planner-seo-header {
+    display: none;
   }
   @media (max-width: 650px) {
     .page {

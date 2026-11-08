@@ -1,52 +1,21 @@
-export interface ExtendedFoodRecipe {
-  id: string;
-  version: string;
-  name: string;
-  localName?: string;
-  course: 'main' | 'rice' | 'bread' | 'dal' | 'side' | 'snack' | 'dessert' | 'drink';
-  cuisine: string;
-  diet: 'vegetarian' | 'vegan' | 'jain' | 'eggetarian' | 'non-vegetarian';
-  servings: number;
-  prepMinutes: number;
-  cookMinutes: number;
-  ingredients: Array<{
-    ingredient: string;
-    quantity: string;
-    unit: 'g' | 'kg' | 'ml' | 'l' | 'tsp' | 'tbsp' | 'cup' | 'piece';
-    note?: string;
-  }>;
-  steps: string[];
-  sources?: Array<{
-    title: string;
-    publisher: string;
-    url: string;
-    accessed: string;
-    checks: string;
-  }>;
-  verification?: {
-    status: 'draft' | 'source-checked' | 'kitchen-tested' | 'approved';
-    by: string;
-    date: string;
-    notes: string;
-  };
-  verified: boolean;
-  thumbnailUrl?: string;
-  imageProvenance?: ImageProvenance;
-}
+import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
+import type {
+  ExtendedFoodRecipe,
+  ImageProvenance,
+  RecipeVerificationInfo,
+} from './foodRecipesTypes.ts';
 
-export interface ImageProvenance {
-  type: 'ai-generated' | 'free-source' | 'placeholder';
-  notes: string;
-  license?: string;
-}
-
-export interface RecipeVerificationInfo {
-  label: string;
-  badgeClass: 'badgeVerified' | 'badgePrototype';
-  title: string;
-}
+export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
+export { CATALOG_AWAITING_RECIPES };
 
 export function getRecipeVerificationInfo(recipe: ExtendedFoodRecipe): RecipeVerificationInfo {
+  if (recipe.awaitingData) {
+    return {
+      label: 'Awaiting Data',
+      badgeClass: 'badgePrototype',
+      title: 'Recipe awaiting documented cooking trials',
+    };
+  }
   const status = recipe.verification?.status;
   if (status === 'approved') {
     return {
@@ -387,4 +356,9 @@ export const RECIPES: ExtendedFoodRecipe[] = [
         'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
+];
+
+export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
+  ...RECIPES,
+  ...CATALOG_AWAITING_RECIPES,
 ];

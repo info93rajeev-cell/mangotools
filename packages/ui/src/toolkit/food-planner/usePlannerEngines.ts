@@ -42,7 +42,7 @@ export function useShoppingEngine(
         recipes: selectedRecipes,
         selection,
         guests: setup.guests,
-        servingsPerGuest: setup.servingsPerGuest,
+        servingsPerGuest: String(setup.servingsPerGuest ?? '1'),
       },
       { diet: setup.diet, dietPolicy: setup.dietPolicy },
       controller.signal,
@@ -96,7 +96,7 @@ export function useCostEngine(
     const controller = new AbortController();
     let active = true;
     const cons = engineConsolidated as {
-      lines?: Array<{ ingredient: string; buy: string; unit: string }>;
+      lines?: Array<{ ingredient: string; buy: string; unit: string; total?: string }>;
     } | null;
     if (!cons?.lines || cons.lines.length === 0) {
       setEngineCost(null);
@@ -106,11 +106,17 @@ export function useCostEngine(
     }
     setIsLoading(true);
     setError(null);
+    const cleanLines = cons.lines.map((l) => ({
+      ingredient: l.ingredient,
+      buy: String(l.buy),
+      unit: l.unit as 'g' | 'ml' | 'piece',
+      ...(l.total ? { total: String(l.total) } : {}),
+    }));
     run(
       'food.cost.estimate@1',
       {
         guests,
-        lines: cons.lines,
+        lines: cleanLines,
         prices: REFERENCE_PRICES,
         budgetInr: targetBudget || undefined,
       },

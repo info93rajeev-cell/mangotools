@@ -164,45 +164,83 @@ function ScheduleHeader({
     <div class={styles.cardHeader}>
       <div class={styles.cardTitleGroup}>
         <h2 class={styles.cardTitle}>
-          <Icon name="calendar" /> Cooking Schedule ({tasksCount} tasks)
+          <Icon name="calendar" /> D5 · Cooking Schedule ({tasksCount} tasks)
         </h2>
         <p class={styles.cardSubtitle}>
-          A backward-scheduled preparation plan for serving at {mealTime}.
+          Backward-scheduled preparation timeline for serving at {mealTime}.
         </p>
       </div>
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <label
-          for="schedule-meal-time"
-          style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          class={styles.actionBtn}
+          style={{ padding: '4px 10px', fontSize: '12px' }}
         >
-          Meal Time:
-        </label>
-        <input
-          id="schedule-meal-time"
-          type="time"
-          class={styles.textInput}
-          style={{ height: '34px', width: '110px', fontSize: '12.5px' }}
-          value={mealTime}
-          onChange={(e) => onSetMealTime((e.target as HTMLInputElement).value)}
-        />
-        <label
-          for="schedule-burners"
-          style={{ fontSize: '12px', fontWeight: 600, color: '#475569', marginLeft: '6px' }}
-        >
-          Burners:
-        </label>
+          <Icon name="filter" /> Filter
+        </button>
         <select
-          id="schedule-burners"
-          class={styles.selectInput}
-          style={{ height: '34px', width: '70px', fontSize: '12.5px' }}
-          value={burners}
-          onChange={(e) => onSetBurners(Number((e.target as HTMLSelectElement).value) || 2)}
+          class={styles.pageSizeSelect}
+          style={{ height: '32px', fontSize: '12px', padding: '0 6px' }}
+          aria-label="Sort schedule tasks"
         >
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="6">6</option>
+          <option value="start-time">Sort: Start Time ∨</option>
+          <option value="duration">Sort: Duration</option>
+          <option value="priority">Sort: Priority</option>
         </select>
+        <button
+          type="button"
+          class={styles.actionBtn}
+          style={{ padding: '4px 10px', fontSize: '12px' }}
+        >
+          <Icon name="sliders-horizontal" /> Manage Tasks
+        </button>
+        <button
+          type="button"
+          class={styles.actionBtn}
+          style={{
+            padding: '4px 10px',
+            fontSize: '12px',
+            background: '#1e3a8a',
+            color: '#fff',
+            borderColor: '#1e3a8a',
+          }}
+        >
+          <Icon name="plus" /> Add Task
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '4px' }}>
+          <label
+            for="schedule-meal-time"
+            style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}
+          >
+            Meal:
+          </label>
+          <input
+            id="schedule-meal-time"
+            type="time"
+            class={styles.textInput}
+            style={{ height: '32px', width: '90px', fontSize: '12px', padding: '0 4px' }}
+            value={mealTime}
+            onChange={(e) => onSetMealTime((e.target as HTMLInputElement).value)}
+          />
+          <label
+            for="schedule-burners"
+            style={{ fontSize: '12px', fontWeight: 600, color: '#475569', marginLeft: '4px' }}
+          >
+            Burners:
+          </label>
+          <select
+            id="schedule-burners"
+            class={styles.selectInput}
+            style={{ height: '32px', width: '56px', fontSize: '12px', padding: '0 4px' }}
+            value={burners}
+            onChange={(e) => onSetBurners(Number((e.target as HTMLSelectElement).value) || 2)}
+          >
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+          </select>
+        </div>
       </div>
     </div>
   );
