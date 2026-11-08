@@ -125,7 +125,7 @@
 .mobileNavPillsRow {
   display: flex;
   gap: 8px;
-  overflow-x: auto;
+  flex-wrap: wrap;
   padding: 2px 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;

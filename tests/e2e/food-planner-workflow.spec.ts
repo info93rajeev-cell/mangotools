@@ -78,6 +78,15 @@ for (const width of [360, 390, 430, 1600]) {
       ).toBe(true);
       expect(
         await page
+          .locator('main button:visible')
+          .evaluateAll((buttons) =>
+            buttons
+              .filter((button) => button.getBoundingClientRect().right > innerWidth + 0.5)
+              .map((button) => button.textContent?.trim()),
+          ),
+      ).toEqual([]);
+      expect(
+        await page
           .locator('img:visible')
           .evaluateAll((images) =>
             images.every(
