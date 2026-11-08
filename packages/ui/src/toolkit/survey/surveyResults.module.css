@@ -390,6 +390,19 @@
   .tilesGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .resultsTable {
+    table-layout: fixed;
+    font-size: 10.5px;
+  }
+  .resultsTable th,
+  .resultsTable tr td {
+    padding: 5px 2px;
+    overflow-wrap: anywhere;
+  }
+  .resultsTable th:nth-child(2),
+  .resultsTable tr td:nth-child(2) {
+    display: none;
+  }
   .outputActions {
     grid-template-columns: minmax(0, 1fr);
   }

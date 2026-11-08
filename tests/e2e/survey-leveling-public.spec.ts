@@ -201,6 +201,38 @@ test.describe('Public Tool — Survey Leveling Calculator', () => {
     expect(axeResults.violations).toEqual([]);
   });
 
+  test('workbench fills desktop and preserves the small-screen reading order', async ({ page }) => {
+    await loadPublicTool(page, 1920, 1080);
+    const desktop = await page.locator('[data-survey-workbench]').boundingBox();
+    expect(desktop).not.toBeNull();
+    expect(desktop?.x).toBeLessThanOrEqual(36);
+    expect(desktop?.width).toBeGreaterThanOrEqual(1840);
+
+    for (const width of [740, 360]) {
+      await page.setViewportSize({ width, height: 900 });
+      const visual = await page.locator('[data-survey-visual-slot]').boundingBox();
+      const inputs = await page.locator('[data-survey-inputs-slot]').boundingBox();
+      const calculate = await page.locator('[data-calculate-btn]').boundingBox();
+      const results = await page.locator('[data-survey-results-slot]').boundingBox();
+      if (!visual || !inputs || !calculate || !results) {
+        throw new Error('Survey layout slot is missing');
+      }
+      expect(visual.y + visual.height).toBeLessThan(inputs.y);
+      expect(inputs.y).toBeLessThan(calculate.y);
+      expect(calculate.y + calculate.height).toBeLessThan(results.y);
+      expect(visual.width).toBeGreaterThan(width * 0.9);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      if (width === 360) {
+        const table = await page.locator('[data-results-table]').boundingBox();
+        const adjusted = await page.locator('[data-results-table] th:last-child').boundingBox();
+        if (!table || !adjusted) throw new Error('Adjusted RL column is missing');
+        expect(adjusted.x + adjusted.width).toBeLessThanOrEqual(table.x + table.width + 1);
+      }
+    }
+  });
+
   test('5. captures desktop, dark, landscape, and mobile screenshots', async ({ page }) => {
     const settleAndCapture = async (name: string) => {
       await page.evaluate(() => {
@@ -223,6 +255,10 @@ test.describe('Public Tool — Survey Leveling Calculator', () => {
         fullPage: true,
       });
     };
+
+    // Wide desktop (1920x1080)
+    await loadPublicTool(page, 1920, 1080);
+    await settleAndCapture('survey-leveling-public-desktop-1920');
 
     // Desktop light (1440x900)
     await loadPublicTool(page, 1440, 900);
