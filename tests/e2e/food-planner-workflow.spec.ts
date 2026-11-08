@@ -67,6 +67,8 @@ for (const width of [360, 390, 430, 1600]) {
   test(`all five screens fit ${width}px and load their images`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width === 1600 ? 900 : 844 });
     await openTool(page, 'food-planner');
+    await page.getByRole('tab').first().waitFor();
+    await expect(page.locator('[data-fullscreen-toggle]')).toBeInViewport();
     for (let index = 0; index < 5; index++) {
       await page.getByRole('tab').nth(index).click();
       await expect(page.getByRole('tab').nth(index)).toHaveAttribute('aria-selected', 'true');
