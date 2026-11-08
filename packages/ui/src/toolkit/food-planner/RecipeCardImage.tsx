@@ -67,7 +67,7 @@ export function RecipeCardImage({ recipe }: RecipeCardImageProps) {
           onError={() => setImgFailed(true)}
           title={
             recipe.imageProvenance?.type === 'ai-generated'
-              ? `${recipe.name} (AI-generated food photo)`
+              ? `${recipe.name} (AI-generated visual preview)`
               : recipe.name
           }
         />

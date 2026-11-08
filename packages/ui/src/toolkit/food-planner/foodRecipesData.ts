@@ -128,7 +128,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/jeera-rice.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -179,7 +180,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/dal-tadka.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -230,7 +232,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/aloo-gobi.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -259,7 +262,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/besan-ladoo.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -290,7 +294,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/mathri.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -320,7 +325,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/shahi-paneer.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -348,7 +354,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/raita.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -376,7 +383,8 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     thumbnailUrl: '/food/recipes/mixed-veg-salad.jpg',
     imageProvenance: {
       type: 'ai-generated',
-      notes: 'AI-generated food photography thumbnail',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
 ];
