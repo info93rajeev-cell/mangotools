@@ -4,35 +4,15 @@ import {
   type ValidatedLineDistance,
 } from './surveyLevelingModel.ts';
 import { surveyStrings } from './surveyLevelingStrings.ts';
-import type { SurveyCalculationOutput, SurveyReducedRow } from './surveyLevelingTypes.ts';
+import type {
+  ProfilePoint,
+  SurveyProfilePlaceholderProps,
+  SurveyReducedRow,
+} from './surveyLevelingTypes.ts';
 import s from './surveyProfile.module.css';
 
-export interface SurveyProfilePlaceholderProps {
-  result: SurveyCalculationOutput | null;
-  closingRL?: string;
-}
-
-interface ProfilePoint {
-  x: number;
-  y: number;
-  station: string;
-  distLabel?: string;
-  isBM: boolean;
-  isCP: boolean;
-  rl: number;
-}
-
-function formatDistLabel(d: number): string {
-  if (Number.isInteger(d)) {
-    return `${d}m`;
-  }
-  const fixed = d.toFixed(6);
-  const trimmed = fixed.replace(/\.?0+$/, '');
-  if (trimmed === '' || trimmed === '0') {
-    return `${d}m`;
-  }
-  return `${trimmed}m`;
-}
+const formatDistLabel = (d: number): string =>
+  `${Number.isInteger(d) ? d : d.toFixed(6).replace(/\.?0+$/, '') || d}m`;
 
 function computePointT(
   index: number,
@@ -168,15 +148,15 @@ function ProfileSvgPoints({ points, H, b }: { points: ProfilePoint[]; H: number;
             <circle
               cx={pt.x}
               cy={pt.y}
-              r={pt.isBM || pt.isCP ? 5 : 4}
+              r={pt.isBM || pt.isCP ? 4.5 : 3.5}
               fill={dotFill}
               stroke={dotStroke}
               stroke-width="2"
             />
             <text
               x={pt.x}
-              y={pt.distLabel ? H - b + 14 : H - b + 18}
-              font-size="10.5"
+              y={pt.distLabel ? H - b + 12 : H - b + 16}
+              font-size="10"
               fill="var(--chart-text, #334155)"
               text-anchor="middle"
               font-weight="600"
@@ -186,8 +166,8 @@ function ProfileSvgPoints({ points, H, b }: { points: ProfilePoint[]; H: number;
             {pt.distLabel ? (
               <text
                 x={pt.x}
-                y={H - b + 26}
-                font-size="9"
+                y={H - b + 23}
+                font-size="8.5"
                 fill="var(--chart-text-muted, #64748b)"
                 text-anchor="middle"
               >
@@ -215,8 +195,8 @@ function ProfileSvgChart({
   Y: (v: number) => number;
 }) {
   const W = 640;
-  const H = 210;
-  const p = { l: 46, r: 16, t: 22, b: 40 };
+  const H = 175;
+  const p = { l: 46, r: 16, t: 16, b: 34 };
 
   const gridLevels = [0, 1, 2, 3].map((k) => {
     const val = mn + ((mx - mn) * k) / 3;
@@ -250,7 +230,7 @@ export function SurveyProfilePlaceholder({ result, closingRL }: SurveyProfilePla
   const validatedDist = computeValidatedDistance(rows);
   const geo =
     rows.length > 0
-      ? computeProfileGeometry(rows, 640, 210, { l: 46, r: 16, t: 22, b: 40 }, validatedDist)
+      ? computeProfileGeometry(rows, 640, 175, { l: 46, r: 16, t: 16, b: 34 }, validatedDist)
       : null;
 
   const highest = geo ? `${Math.max(...rows.map((r) => Number(r.rl))).toFixed(3)} m` : '—';

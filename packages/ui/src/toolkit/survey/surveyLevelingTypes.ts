@@ -68,3 +68,18 @@ export interface SurveyLevelingState {
   errors: string[];
   cellErrors: Record<string, string>;
 }
+
+export interface ProfilePoint {
+  x: number;
+  y: number;
+  station: string;
+  distLabel?: string;
+  isBM: boolean;
+  isCP: boolean;
+  rl: number;
+}
+
+export interface SurveyProfilePlaceholderProps {
+  result: SurveyCalculationOutput | null;
+  closingRL?: string;
+}
