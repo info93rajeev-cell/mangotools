@@ -11,6 +11,7 @@
 .cardHead {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 12px 16px 10px;
   border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
