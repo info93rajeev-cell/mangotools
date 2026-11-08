@@ -15,7 +15,9 @@ export const surveyStrings = {
   levelBookTitle: 'Level Book & Benchmarks',
   readingUnit: 'Reading unit',
   unitMetres: 'm',
-  unitMillimetres: 'mm (Preview)',
+  unitMillimetres: 'mm (preview only)',
+  unitMetresTooltip:
+    'Reading unit: Metres (standard surveying unit; mm input is preview-only in this release)',
   tabRiseFall: 'Rise & Fall',
   tabHI: 'Height of Instrument',
   startRL: 'Starting BM RL',

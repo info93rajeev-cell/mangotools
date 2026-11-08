@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: survey-leveling-calculator
+slug: survey-leveling-calculator
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-11-08, type: added, summary: "Initial release of Survey Leveling Calculator with Rise & Fall, Height of Instrument, Excel paste, and closure adjustments." }
+name: Survey Leveling Calculator
+shortName: Leveling Calculator
+summary: "Reduce differential level books using Rise & Fall or Height of Instrument methods with arithmetic checks, line adjustments and Excel paste."
+archetype: B
+preset: survey/leveling-calculator
+sample: six-station-level-run
+taxonomy:
+  category: surveying
+  professions: [land-surveyors, civil-engineers, civil-engineering-students]
+  tags: [surveying, leveling, construction]
+  synonyms: [rise and fall calculator, height of instrument calculator, hi leveling, level book reduction, collimation method, differential leveling]
+capabilities: { print: true, share: true }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: "Survey Leveling Calculator – Rise & Fall and HI Reduction"
+  description: "Free online Survey Leveling Calculator for Rise & Fall and Height of Instrument methods. Reduce level books with arithmetic checks and Excel paste in browser."
+  primaryKeyword: "survey leveling calculator"
+  secondaryKeywords: ["rise and fall calculator", "height of instrument calculator", "level book reduction", "collimation method"]
+  h1: "Survey Leveling Calculator"
+quality:
+  verifiedAgainst:
+    - { citation: "TASK-010C §6 and surveying textbook differential leveling reductions", locator: "engines/survey/src/operations/leveling-reduce-v2/fixtures/001-approved-six-station-distance-adjust.yaml" }
+    - { citation: "Exact decimal collimation and rise & fall arithmetic verification", locator: "engines/survey/src/operations/leveling-reduce-v2/reduce.ts" }
+  lastVerified: 2026-11-08
