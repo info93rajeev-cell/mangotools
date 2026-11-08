@@ -27,6 +27,7 @@ export function PhaseGroupCard({
   onToggle: () => void;
   onToggleTask: (id: string) => void;
 }) {
+  if (!tasks.length) return null;
   const totalMinutes = tasks.reduce((sum, t) => sum + t.durationMinutes, 0);
 
   return (
@@ -92,7 +93,7 @@ function ScheduleTableRow({
   idx: number;
   onToggleTask: (id: string) => void;
 }) {
-  const status = task.isCompleted ? 'completed' : idx === 0 ? 'progress' : 'pending';
+  const status = task.isCompleted ? 'completed' : 'pending';
   const isHigh = task.priority === 'High';
 
   return (

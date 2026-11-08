@@ -19,15 +19,9 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
     setup,
     selectedRecipes,
     engineCost,
-    isLoadingCost,
-    costError,
     otherCosts,
     updateOtherCost,
     totalOtherCost,
-    targetBudget,
-    setTargetBudget,
-    priceMode,
-    setPriceMode,
     setActiveSection,
   } = planner;
 
@@ -40,8 +34,15 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
   );
 
   const recipeCosts = useMemo(
-    () => calculateRecipeCosts(selectedRecipes, setup.guests, totalOtherCost),
-    [selectedRecipes, setup.guests, totalOtherCost],
+    () =>
+      calculateRecipeCosts(
+        selectedRecipes,
+        setup.guests,
+        totalOtherCost,
+        engineCost,
+        planner.portionFactors,
+      ),
+    [selectedRecipes, setup.guests, totalOtherCost, engineCost, planner.portionFactors],
   );
 
   if (selectedRecipes.length === 0) {
@@ -53,11 +54,11 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
       <div class={styles.desktopOnly}>
         <div class={styles.layoutGrid}>
           <CostLeftPanel
-            costError={costError}
-            isLoadingCost={isLoadingCost}
+            costError={planner.costError}
+            isLoadingCost={planner.isLoadingCost}
             recipeCosts={recipeCosts}
-            priceMode={priceMode}
-            onSetPriceMode={setPriceMode}
+            priceMode={planner.priceMode}
+            onSetPriceMode={planner.setPriceMode}
             selectAll={selectAll}
             selectedDishes={selectedDishes}
             onToggleSelectAll={toggleSelectAll}
@@ -73,8 +74,8 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
             totalOtherCost={totalOtherCost}
             guests={setup.guests}
             dishesCount={selectedRecipes.length}
-            targetBudget={targetBudget}
-            onSetTargetBudget={setTargetBudget}
+            targetBudget={planner.targetBudget}
+            onSetTargetBudget={planner.setTargetBudget}
             recipeCosts={recipeCosts}
             onContinue={() => setActiveSection('schedule')}
           />
@@ -96,24 +97,23 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
 }
 
 function useCostDishSelection(selectedRecipes: { id: string }[]) {
-  const [selectAll, setSelectAll] = useState(true);
-  const [selectedDishes, setSelectedDishes] = useState<Set<string>>(
-    () => new Set(selectedRecipes.map((r) => r.id)),
+  const [excluded, setExcluded] = useState<Set<string>>(() => new Set());
+  const selectedDishes = new Set(
+    selectedRecipes.filter((recipe) => !excluded.has(recipe.id)).map((recipe) => recipe.id),
   );
-
-  const toggleDish = (id: string) => {
-    setSelectedDishes((prev) => {
+  const toggleDish = (id: string) =>
+    setExcluded((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+  const toggleSelectAll = (checked: boolean) =>
+    setExcluded(checked ? new Set() : new Set(selectedRecipes.map((recipe) => recipe.id)));
+  return {
+    selectAll: selectedDishes.size === selectedRecipes.length,
+    selectedDishes,
+    toggleDish,
+    toggleSelectAll,
   };
-
-  const toggleSelectAll = (checked: boolean) => {
-    setSelectAll(checked);
-    setSelectedDishes(checked ? new Set(selectedRecipes.map((r) => r.id)) : new Set());
-  };
-
-  return { selectAll, selectedDishes, toggleDish, toggleSelectAll };
 }

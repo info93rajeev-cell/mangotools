@@ -1,6 +1,7 @@
 import { useMemo } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import type { IngredientLineItem } from './ingredientsUtils.ts';
 
 export const AISLE_GROUP_MAP: Record<string, 'dry' | 'produce' | 'dairy' | 'spice' | 'other'> = {
@@ -29,16 +30,18 @@ export function IngredientsSidebar({
   lines,
   recipesCount,
   guests,
+  onAdd,
   onClearAll,
   onContinue,
 }: {
   lines: IngredientLineItem[];
   recipesCount: number;
   guests: number;
+  onAdd: () => void;
   onClearAll: () => void;
   onContinue: () => void;
 }) {
-  const totalWeightKg = (lines.length * 0.68).toFixed(2);
+  const totalWeightKg = ingredientMass(lines);
 
   return (
     <div class={styles.card}>
@@ -75,12 +78,12 @@ export function IngredientsSidebar({
           }}
         >
           <span style={{ fontSize: '11.5px', color: '#1e40af', fontWeight: 600 }}>
-            ⚖️ Total Weight
+            ⚖️ {t.massIngredients}
           </span>
           <strong
             style={{ fontSize: '18px', display: 'block', color: '#1e3a8a', marginTop: '2px' }}
           >
-            ~{totalWeightKg} kg
+            {totalWeightKg} kg
           </strong>
         </div>
         <div
@@ -122,16 +125,26 @@ export function IngredientsSidebar({
           Quick Actions
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <button type="button" class={styles.actionBtn} style={{ justifyContent: 'center' }}>
+          <button
+            type="button"
+            class={styles.actionBtn}
+            style={{ justifyContent: 'center' }}
+            onClick={onAdd}
+          >
             <Icon name="plus" /> Add Ingredient
-          </button>
-          <button type="button" class={styles.actionBtn} style={{ justifyContent: 'center' }}>
-            <Icon name="shuffle" /> Merge Similar
           </button>
           <button
             type="button"
             class={styles.actionBtn}
-            style={{ justifyContent: 'center', color: '#ef4444' }}
+            style={{ justifyContent: 'center' }}
+            disabled
+          >
+            <Icon name="shuffle" /> {t.autoMerged}
+          </button>
+          <button
+            type="button"
+            class={styles.actionBtn}
+            style={{ justifyContent: 'center', color: '#b91c1c' }}
             onClick={onClearAll}
           >
             <Icon name="trash-2" /> Clear All
@@ -153,7 +166,7 @@ function DonutCategoryBreakdown({ lines }: { lines: IngredientLineItem[] }) {
       { name: 'Dry', count: c.dry, color: '#f59e0b' },
       { name: 'Produce', count: c.produce, color: '#22c55e' },
       { name: 'Dairy', count: c.dairy, color: '#0284c7' },
-      { name: 'Spices', count: c.spice, color: '#ef4444' },
+      { name: 'Spices', count: c.spice, color: '#b91c1c' },
       { name: 'Other', count: c.other, color: '#8b5cf6' },
     ];
   }, [lines]);
@@ -193,10 +206,12 @@ function DonutCategoryBreakdown({ lines }: { lines: IngredientLineItem[] }) {
                 cy="50"
                 r={radius}
                 fill="transparent"
-                stroke={s.color}
-                strokeWidth="14"
-                strokeDasharray={s.strokeDasharray}
-                strokeDashoffset={s.strokeDashoffset}
+                style={{
+                  stroke: s.color,
+                  strokeWidth: 14,
+                  strokeDasharray: s.strokeDasharray,
+                  strokeDashoffset: s.strokeDashoffset,
+                }}
               />
             ))}
           </svg>
@@ -219,4 +234,20 @@ function DonutCategoryBreakdown({ lines }: { lines: IngredientLineItem[] }) {
       </div>
     </div>
   );
+}
+
+function ingredientMass(lines: IngredientLineItem[]) {
+  const totalWeightKg = lines
+    .reduce(
+      (sum, line) =>
+        sum +
+        (line.unit === 'kg'
+          ? Number(line.quantity)
+          : line.unit === 'g'
+            ? Number(line.quantity) / 1000
+            : 0),
+      0,
+    )
+    .toFixed(2);
+  return totalWeightKg;
 }

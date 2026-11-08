@@ -255,7 +255,7 @@
 /* Two-Column Studio Layout Grid */
 .layoutGrid {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
+  grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
   gap: 20px;
   align-items: start;
   max-width: 100%;
@@ -1245,5 +1245,73 @@
 
   .topHeader .headerActions {
     display: none;
+  }
+}
+
+/* The studio owns its single title; the host retains its guide action. */
+:global(main:has([data-tool-island="food-planner"]) .tool-header) {
+  display: none;
+}
+.container .navPillActive,
+.container .navPillActive:hover {
+  background: linear-gradient(135deg, #ffe600, #ffc400);
+  color: #10104b;
+}
+@media (min-width: 1100px) {
+  .planSetupCard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .planSetupHeader {
+    min-width: 150px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .planSetupControls {
+    flex: 1;
+    min-width: 0;
+  }
+  .table th,
+  .table td {
+    padding: 6px 8px;
+  }
+}
+@media (max-width: 860px) {
+  .topHeader {
+    gap: 0;
+  }
+  .navPillBar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px;
+    padding: 4px;
+  }
+  .navPill {
+    min-width: 0;
+    padding: 8px 2px;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    white-space: normal;
+    line-height: 1.2;
+    min-height: 54px;
+  }
+}
+
+.otherCostsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 1100px) {
+  .otherCostsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .recipesLayoutGrid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   }
 }

@@ -299,3 +299,27 @@ Phase-1 private-package change record: dedicated Container Loading UI implementa
 #226 locked-reference correction: `container-reference-sample.png` is a direct crop (726,236)–(1244,443) of the founder-supplied “BeyondTheAI Container Loading Calculator UI 21-10-26.jpeg”. No replacement illustration was generated. Only the untouched numeric sample uses it; a visible sample label separates it from calculated results, and edits or the calculated-placement control show the real placement renderer. The model, controller and engine arithmetic are unchanged.
 
 `SharedToolBottom` owns the reusable five-pill Logistics disclosure strip. `SiteFooterContent` serves only the local workspace preview. The production `SiteFooter.astro` and the common tool-page shortcut system remain exactly as merged in #229; this change does not alter CBM activation or add a second production footer. Desktop controls retain reference scale and the page scrolls naturally at a 768px viewport; no shrink-to-fit or blank-height reservation remains. The footer follows the completed supporting panels and disclosure strip.
+
+
+### Food Planner corrections — PR #311 (2026-11-09)
+
+Continues the approved Antigravity five-screen implementation. Desktop and mobile now share
+consolidated requirements, entered prices and pantry amounts, shopping checkmarks and real
+engine-generated task completion. Pantry amounts reduce the buy quantity before cost estimation;
+quantity edits are absolute requirements in the displayed unit and remain active for the session.
+Cost totals use engine decimal results, with integer-paise allocation between dishes. Shared
+ingredients follow recipe quantity weights; extra ingredients are split equally. Money rounding
+remainders are retained so the dish totals reconcile with the menu total. Serving quantities are
+labelled as servings rather than invented finished weights.
+
+All five tabs fit 360–430 px screens. Duplicate visible headers, clipped optional-cost inputs,
+static stock/cost/progress figures and unrelated prepared-dish ingredient thumbnails are corrected.
+Schedule sorting, pending filtering, completion and additional session tasks are interactive;
+additional tasks use the entered times and do not claim automatic kitchen-capacity allocation.
+The engine still estimates preparation/cooking phases; empty stages are hidden. Reference recipe
+coverage and source/prototype labels remain unchanged. Custom recipe authoring and custom
+ingredient categories are outside the existing schema contract; the UI states this limitation.
+
+No engine/schema changes or dependencies. Regression tests cover exact cost allocation and timeline
+mapping; browser tests cover the connected stock/price/purchase/task flow and all five views at
+360/390/430/1600 px. Screenshots are saved as test artifacts.

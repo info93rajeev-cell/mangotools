@@ -31,6 +31,7 @@ export function IngredientsMainPanel({
   isLoading,
   pagedLines,
   pagination,
+  onEditItem,
   onBrowse,
 }: {
   recipeCount: number;
@@ -40,6 +41,7 @@ export function IngredientsMainPanel({
   isLoading: boolean;
   pagedLines: IngredientLineItem[];
   pagination: IngredientsPagination;
+  onEditItem: (id: string) => void;
   onBrowse: () => void;
 }) {
   const {
@@ -90,6 +92,7 @@ export function IngredientsMainPanel({
             manualQuantities={manualQuantities}
             onAdjustQuantity={handleAdjustQuantity}
             onDeleteItem={handleDeleteItem}
+            onEditItem={onEditItem}
           />
 
           <IngredientsPaginationBar
@@ -157,6 +160,7 @@ function IngredientsPanelHeader({
           <input
             type="checkbox"
             checked={autoMerge}
+            disabled
             onChange={(e) => onToggleAutoMerge((e.target as HTMLInputElement).checked)}
           />
           <span>Auto Merge</span>

@@ -18,12 +18,14 @@ export function IngredientsTable({
   guests,
   manualQuantities,
   onAdjustQuantity,
+  onEditItem,
   onDeleteItem,
 }: {
   lines: IngredientLineItem[];
   guests: number;
   manualQuantities: Record<string, number>;
   onAdjustQuantity: (id: string, currentVal: number, delta: number) => void;
+  onEditItem: (id: string) => void;
   onDeleteItem: (id: string) => void;
 }) {
   if (lines.length === 0) {
@@ -56,6 +58,7 @@ export function IngredientsTable({
               idx={idx}
               manualVal={manualQuantities[item.id]}
               onAdjustQuantity={onAdjustQuantity}
+              onEditItem={onEditItem}
               onDeleteItem={onDeleteItem}
             />
           ))}
@@ -70,12 +73,14 @@ function IngredientTableRow({
   idx,
   manualVal,
   onAdjustQuantity,
+  onEditItem,
   onDeleteItem,
 }: {
   item: IngredientLineItem;
   idx: number;
   manualVal?: number;
   onAdjustQuantity: (id: string, currentVal: number, delta: number) => void;
+  onEditItem: (id: string) => void;
   onDeleteItem: (id: string) => void;
 }) {
   const rawVal = Number.parseFloat(item.quantity) || 1;
@@ -137,8 +142,6 @@ function IngredientTableRow({
             aria-label={`Unit for ${item.name}`}
           >
             <option value={item.unit}>{item.unit}</option>
-            {item.unit === 'g' && <option value="kg">kg</option>}
-            {item.unit === 'ml' && <option value="L">L</option>}
           </select>
         </div>
       </td>
@@ -168,6 +171,7 @@ function IngredientTableRow({
               cursor: 'pointer',
               color: '#64748b',
             }}
+            onClick={() => onEditItem(item.id)}
             title="Edit ingredient"
             aria-label={`Edit ${item.name}`}
           >

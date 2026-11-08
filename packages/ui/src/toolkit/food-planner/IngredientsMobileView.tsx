@@ -1,309 +1,355 @@
 import { useState } from 'preact/hooks';
-import { Icon } from '../../primitives/Icon.tsx';
-import mobileStyles from './foodPlannerMobile.module.css';
-import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
-import { FALLBACK_MOBILE_INGREDIENTS, MobileIngredientsTable } from './IngredientsMobileTable.tsx';
-import type { IngredientLineItem } from './ingredientsUtils.ts';
+import s from './foodPlannerMobile.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
+import { AISLE_DISPLAY_MAP, CATALOG_INGREDIENTS } from './foodReferenceData.ts';
+import {
+  formatDisplayQty,
+  formatDisplayUnit,
+  type IngredientLineItem,
+} from './ingredientsUtils.ts';
+import {
+  MobileMetric,
+  MobilePagination,
+  MobilePlanSetup,
+  MobileSectionHeader,
+} from './MobilePlanSetup.tsx';
+import { priceBasis } from './plannerPrices.ts';
+import { money } from './plannerResults.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
-interface IngredientsMobileViewProps {
+export function IngredientsMobileView({
+  planner,
+  items,
+}: {
   planner: UseFoodPlannerReturn;
   items: IngredientLineItem[];
-}
-
-export function IngredientsMobileView({ planner, items }: IngredientsMobileViewProps) {
-  const { setup, setSetup } = planner;
-  const [filterCat, setFilterCat] = useState<'all' | 'veg' | 'grain' | 'dairy'>('all');
+}) {
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const displayItems = items.length > 0 ? items : FALLBACK_MOBILE_INGREDIENTS;
-
-  return (
-    <div class={mobileStyles.mobileContainer}>
-      <MobileIngredientsHeader />
-      <MobileIngredientsSetupCard setup={setup} setSetup={setSetup} />
-      <MobileIngredientsSearch search={search} onSearch={setSearch} />
-      <MobileIngredientsFilterPills active={filterCat} onSelect={setFilterCat} />
-      <MobileIngredientsTable items={displayItems} />
-      <MobileIngredientsSummary totalCount={displayItems.length} />
-      <MobileIngredientsActions />
-    </div>
+  const [category, setCategory] = useState('all');
+  const [editing, setEditing] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const visible = items.filter(
+    (item) =>
+      (category === 'all' || item.aisle === category) &&
+      item.name.toLowerCase().includes(search.toLowerCase()),
   );
-}
-
-function MobileIngredientsHeader() {
+  const pages = Math.max(1, Math.ceil(visible.length / 8));
+  const currentPage = Math.min(page, pages);
+  const paged = visible.slice((currentPage - 1) * 8, currentPage * 8);
   return (
-    <div class={mobileStyles.mobileSectionHeader}>
-      <div class={mobileStyles.mobileSectionHeaderIcon}>
-        <Icon name="leaf" />
-      </div>
-      <div>
-        <h3 class={mobileStyles.mobileSectionHeaderTitle}>Ingredients</h3>
-        <p class={mobileStyles.mobileSectionHeaderSub}>
-          Manage, add and organize ingredients with units, price and stock.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function MobileIngredientsSetupCard({
-  setup,
-  setSetup,
-}: {
-  setup: UseFoodPlannerReturn['setup'];
-  setSetup: UseFoodPlannerReturn['setSetup'];
-}) {
-  return (
-    <div class={mobileStyles.mobileSetupCard}>
-      <div class={mobileStyles.mobileSetupTitle}>
-        <Icon name="calendar" />
-        <span>Plan Setup</span>
-      </div>
-      <div class={mobileStyles.mobileSetupGrid}>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-ing-loc">
-            <Icon name="map-pin" /> Location
-          </label>
-          <select
-            id="mob-ing-loc"
-            class={mobileStyles.mobileSelect}
-            value={setup.location}
-            onChange={(e) =>
-              setSetup({ ...setup, location: (e.target as HTMLSelectElement).value })
-            }
-          >
-            {LOCATIONS.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-ing-occ">
-            <Icon name="flame" /> Occasion
-          </label>
-          <select
-            id="mob-ing-occ"
-            class={mobileStyles.mobileSelect}
-            value={setup.occasion}
-            onChange={(e) =>
-              setSetup({ ...setup, occasion: (e.target as HTMLSelectElement).value })
-            }
-          >
-            {OCCASIONS.map((occ) => (
-              <option key={occ} value={occ}>
-                {occ}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-ing-pt">
-            <Icon name="layers" /> Planning Type
-          </label>
-          <select
-            id="mob-ing-pt"
-            class={mobileStyles.mobileSelect}
-            value={setup.planningType}
-            onChange={(e) =>
-              setSetup({ ...setup, planningType: (e.target as HTMLSelectElement).value })
-            }
-          >
-            {PLANNING_TYPES.map((pt) => (
-              <option key={pt} value={pt}>
-                {pt}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-ing-guests">
-            <Icon name="users" /> People / Servings
-          </label>
-          <select
-            id="mob-ing-guests"
-            class={mobileStyles.mobileSelect}
-            value={setup.guests}
-            onChange={(e) =>
-              setSetup({ ...setup, guests: Number((e.target as HTMLSelectElement).value) || 20 })
-            }
-          >
-            <option value="10">20</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
-      <button type="button" class={mobileStyles.mobileUpdateBtn}>
-        <Icon name="rotate-ccw" /> Update Ingredients
-      </button>
-    </div>
-  );
-}
-
-function MobileIngredientsSearch({
-  search,
-  onSearch,
-}: {
-  search: string;
-  onSearch: (s: string) => void;
-}) {
-  return (
-    <div style={{ display: 'flex', gap: '8px' }}>
-      <div style={{ flex: 1, position: 'relative' }}>
+    <div class={s.mobileContainer} data-testid="mobile-ingredients">
+      <MobileSectionHeader title={t.ingredients} intro={t.ingredientsIntro} icon="leaf" />
+      <MobilePlanSetup planner={planner} id="mobile-ingredients" />
+      <div class={s.mobileDualActions}>
         <input
-          type="text"
-          placeholder="Search ingredients..."
+          class={s.mobileSelect}
+          type="search"
+          aria-label={t.searchIngredients}
+          placeholder={t.searchIngredients}
           value={search}
-          onInput={(e) => onSearch((e.target as HTMLInputElement).value)}
-          style={{
-            width: '100%',
-            padding: '8px 12px 8px 32px',
-            border: '1px solid #cbd5e1',
-            borderRadius: '8px',
-            fontSize: '13px',
-            boxSizing: 'border-box',
+          onInput={(e) => {
+            setSearch(e.currentTarget.value);
+            setPage(1);
           }}
         />
-        <span style={{ position: 'absolute', left: '10px', top: '8px', color: '#94a3b8' }}>🔍</span>
+        <button type="button" class={s.mobileSecondaryBtn} onClick={() => setAdding(!adding)}>
+          {t.addIngredient}
+        </button>
+      </div>
+      {adding && <AddIngredient planner={planner} onClose={() => setAdding(false)} />}
+      <IngredientCategories
+        items={items}
+        category={category}
+        onSelect={(key) => {
+          setCategory(key);
+          setPage(1);
+        }}
+      />
+      <section class={s.mobileCard}>
+        {paged.map((item) => (
+          <div key={item.id}>
+            <div class={s.mobileDishItem}>
+              <img class={s.mobileDishThumb} src={item.thumbnailUrl} alt="" />
+              <div class={s.mobileDishInfo}>
+                <strong>{item.name}</strong>
+                <div>
+                  {t.required}: {item.quantity} {item.unit}
+                </div>
+                <small>{priceLabel(item.id, planner)}</small>
+              </div>
+              <span>{stockLabel(item, planner)}</span>
+              <button
+                type="button"
+                class={s.mobileEditBtn}
+                aria-label={`${t.edit}: ${item.name}`}
+                onClick={() => setEditing(editing === item.id ? null : item.id)}
+              >
+                {t.edit}
+              </button>
+            </div>
+            {editing === item.id && (
+              <IngredientEditor
+                key={item.id}
+                item={item}
+                planner={planner}
+                onClose={() => setEditing(null)}
+              />
+            )}
+          </div>
+        ))}
+        {!visible.length && <p>{t.noIngredients}</p>}
+      </section>
+      <MobilePagination page={currentPage} pages={pages} setPage={setPage} />
+      <InventorySummary planner={planner} items={items} />
+      <div class={s.mobileDualActions}>
+        <button
+          type="button"
+          class={s.mobilePrimaryBtn}
+          onClick={() => setEditing(paged[0]?.id ?? null)}
+        >
+          {t.updateStock}
+        </button>
+        <button
+          type="button"
+          class={s.mobileSecondaryBtn}
+          onClick={() => exportInventory(items, planner)}
+        >
+          {t.export}
+        </button>
       </div>
       <button
         type="button"
-        style={{
-          padding: '8px 12px',
-          background: '#ffffff',
-          border: '1px solid #bfdbfe',
-          color: '#1d4ed8',
-          borderRadius: '8px',
-          fontSize: '12.5px',
-          fontWeight: 600,
-          whiteSpace: 'nowrap',
-          cursor: 'pointer',
+        class={s.mobileSecondaryBtn}
+        onClick={() => planner.setActiveSection('shopping')}
+      >
+        {t.shopping}
+      </button>
+    </div>
+  );
+}
+
+function displayFactor(unit: string): number {
+  return unit === 'kg' || unit === 'L' ? 1000 : 1;
+}
+function stockLabel(item: IngredientLineItem, planner: UseFoodPlannerReturn): string {
+  const stock = planner.stockQuantities[item.id];
+  if (stock === undefined) return t.stockUnknown;
+  const base = item.unit === 'kg' ? 'g' : item.unit === 'L' ? 'ml' : item.unit;
+  return `${formatDisplayQty(Number(stock), base)} ${formatDisplayUnit(Number(stock), base)}`;
+}
+function priceLabel(id: string, planner: UseFoodPlannerReturn): string {
+  const price = priceBasis(id, planner.priceMode);
+  const value = planner.userPrices[id] ?? ('priceInr' in price ? price.priceInr : undefined);
+  return value === undefined ? '—' : `${money(value)} / ${price.per} ${price.unit}`;
+}
+
+export function IngredientEditor({
+  item,
+  planner,
+  onClose,
+}: {
+  item: IngredientLineItem;
+  planner: UseFoodPlannerReturn;
+  onClose: () => void;
+}) {
+  const [quantity, setQuantity] = useState(item.quantity);
+  const [stock, setStock] = useState(
+    planner.stockQuantities[item.id] === undefined
+      ? ''
+      : String(Number(planner.stockQuantities[item.id]) / displayFactor(item.unit)),
+  );
+  const [price, setPrice] = useState(planner.userPrices[item.id] ?? '');
+  const [error, setError] = useState('');
+  const save = () => {
+    if (
+      ![quantity, stock, price].every(
+        (v) =>
+          v === '' ||
+          (/^(?:0|[1-9]\d*)(\.\d{1,6})?$/.test(v) &&
+            Number.isFinite(Number(v)) &&
+            Number(v) <= 1_000_000_000),
+      ) ||
+      quantity === ''
+    ) {
+      setError(t.amountError);
+      return;
+    }
+    planner.setIngredientQuantities((prev) => ({
+      ...prev,
+      [item.id]: String(Number(quantity) * displayFactor(item.unit)),
+    }));
+    planner.setStockQuantities((prev) => {
+      const next = { ...prev };
+      if (stock === '') delete next[item.id];
+      else next[item.id] = String(Number(stock) * displayFactor(item.unit));
+      return next;
+    });
+    planner.setUserPrices((prev) => {
+      const next = { ...prev };
+      if (price === '') delete next[item.id];
+      else next[item.id] = price;
+      return next;
+    });
+    onClose();
+  };
+  return (
+    <fieldset class={s.mobileSetupCard} aria-label={`${t.inventoryEdit}: ${item.name}`}>
+      <label>
+        {t.required} ({item.unit})
+        <input
+          class={s.mobileSelect}
+          inputMode="decimal"
+          value={quantity}
+          onInput={(e) => setQuantity(e.currentTarget.value)}
+        />
+      </label>
+      <label>
+        {t.stockAmount}
+        <input
+          class={s.mobileSelect}
+          inputMode="decimal"
+          value={stock}
+          onInput={(e) => setStock(e.currentTarget.value)}
+        />
+      </label>
+      <label>
+        {t.priceAmount} (₹ / {priceBasis(item.id, planner.priceMode).per}{' '}
+        {priceBasis(item.id, planner.priceMode).unit})
+        <input
+          class={s.mobileSelect}
+          inputMode="decimal"
+          value={price}
+          onInput={(e) => setPrice(e.currentTarget.value)}
+        />
+      </label>
+      {error && <p role="alert">{error}</p>}
+      <div class={s.mobileDualActions}>
+        <button type="button" class={s.mobilePrimaryBtn} onClick={save}>
+          {t.save}
+        </button>
+        <button type="button" class={s.mobileSecondaryBtn} onClick={onClose}>
+          {t.cancel}
+        </button>
+      </div>
+    </fieldset>
+  );
+}
+
+export function AddIngredient({
+  planner,
+  onClose,
+}: {
+  planner: UseFoodPlannerReturn;
+  onClose: () => void;
+}) {
+  const lines =
+    (planner.engineConsolidated as { lines?: Array<{ ingredient: string }> } | null)?.lines ?? [];
+  const available = CATALOG_INGREDIENTS.filter(
+    (item) => !lines.some((line) => line.ingredient === item.id),
+  );
+  const [id, setId] = useState(available[0]?.id ?? '');
+  return (
+    <section class={s.mobileSetupCard}>
+      <label>
+        {t.selectIngredient}
+        <select class={s.mobileSelect} value={id} onChange={(e) => setId(e.currentTarget.value)}>
+          {available.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <button
+        type="button"
+        class={s.mobilePrimaryBtn}
+        disabled={!id}
+        onClick={() => {
+          planner.setIngredientQuantities((prev) => ({ ...prev, [id]: prev[id] ?? '1' }));
+          onClose();
         }}
       >
-        + Add Ingredient
+        {t.add}
       </button>
-    </div>
+    </section>
   );
 }
 
-function MobileIngredientsFilterPills({
-  active,
+function exportInventory(items: IngredientLineItem[], planner: UseFoodPlannerReturn) {
+  const rows = [
+    [t.ingredients, t.required, t.amount, t.stock, t.price],
+    ...items.map((item) => [
+      item.name,
+      item.quantity,
+      item.unit,
+      stockLabel(item, planner),
+      priceLabel(item.id, planner),
+    ]),
+  ];
+  const csv = rows
+    .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
+    .join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'food-planner-inventory.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function InventorySummary({
+  planner,
+  items,
+}: {
+  planner: UseFoodPlannerReturn;
+  items: IngredientLineItem[];
+}) {
+  const known = items.filter((item) => planner.stockQuantities[item.id] !== undefined).length;
+  const low = items.filter(
+    (item) =>
+      planner.stockQuantities[item.id] !== undefined &&
+      Number(planner.stockQuantities[item.id]) < Number(item.quantity) * displayFactor(item.unit),
+  ).length;
+  return (
+    <section class={s.mobileCard}>
+      <div class={s.mobileSummary2x2}>
+        <MobileMetric label={t.totalItems} value={items.length} icon="clipboard" />
+        <MobileMetric label={t.lowStock} value={low} icon="shopping-cart" />
+        <MobileMetric label={t.knownStock} value={known} icon="check-circle" />
+        <MobileMetric label={t.stockUnknown} value={items.length - known} icon="info" />
+      </div>
+      <p class={s.mobileCardSubtitle}>{t.stockHint}</p>
+    </section>
+  );
+}
+
+function IngredientCategories({
+  items,
+  category,
   onSelect,
 }: {
-  active: string;
-  onSelect: (c: 'all' | 'veg' | 'grain' | 'dairy') => void;
+  items: IngredientLineItem[];
+  category: string;
+  onSelect: (key: string) => void;
 }) {
+  const categories = [...new Set(items.map((item) => item.aisle))];
   return (
-    <div class={mobileStyles.mobileNavPillsRow}>
-      <button
-        type="button"
-        class={`${mobileStyles.mobileNavPill} ${active === 'all' ? mobileStyles.mobileNavPillActive : ''}`}
-        onClick={() => onSelect('all')}
-      >
-        All (28)
-      </button>
-      <button
-        type="button"
-        class={`${mobileStyles.mobileNavPill} ${active === 'veg' ? mobileStyles.mobileNavPillActive : ''}`}
-        onClick={() => onSelect('veg')}
-      >
-        🥬 Vegetables (8)
-      </button>
-      <button
-        type="button"
-        class={`${mobileStyles.mobileNavPill} ${active === 'grain' ? mobileStyles.mobileNavPillActive : ''}`}
-        onClick={() => onSelect('grain')}
-      >
-        🌾 Grains (4)
-      </button>
-      <button
-        type="button"
-        class={`${mobileStyles.mobileNavPill} ${active === 'dairy' ? mobileStyles.mobileNavPillActive : ''}`}
-        onClick={() => onSelect('dairy')}
-      >
-        🥛 Dairy (3)
-      </button>
-    </div>
-  );
-}
-
-function MobileIngredientsSummary({ totalCount }: { totalCount: number }) {
-  return (
-    <div class={mobileStyles.mobileMetricsRow}>
-      <div
-        class={mobileStyles.mobileMetricBox}
-        style={{ background: '#fffbeb', borderColor: '#fef3c7' }}
-      >
-        <Icon name="calendar" />
-        <span class={mobileStyles.mobileMetricLabel}>Total Items</span>
-        <span class={mobileStyles.mobileMetricValue}>{totalCount}</span>
-      </div>
-      <div
-        class={mobileStyles.mobileMetricBox}
-        style={{ background: '#fee2e2', borderColor: '#fecaca' }}
-      >
-        <Icon name="shopping-cart" />
-        <span class={mobileStyles.mobileMetricLabel} style={{ color: '#b91c1c' }}>
-          Low Stock
-        </span>
-        <span class={mobileStyles.mobileMetricValue} style={{ color: '#b91c1c' }}>
-          3
-        </span>
-      </div>
-      <div
-        class={mobileStyles.mobileMetricBox}
-        style={{ background: '#dcfce7', borderColor: '#bbf7d0' }}
-      >
-        <Icon name="check-circle" />
-        <span class={mobileStyles.mobileMetricLabel} style={{ color: '#15803d' }}>
-          In Stock
-        </span>
-        <span class={mobileStyles.mobileMetricValue} style={{ color: '#15803d' }}>
-          22
-        </span>
-      </div>
-      <div
-        class={mobileStyles.mobileMetricBox}
-        style={{ background: '#fef9c3', borderColor: '#fef08a' }}
-      >
-        <Icon name="coins" />
-        <span class={mobileStyles.mobileMetricLabel} style={{ color: '#854d0e' }}>
-          Est. Value
-        </span>
-        <span class={mobileStyles.mobileMetricValue} style={{ color: '#854d0e' }}>
-          ₹3,460
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function MobileIngredientsActions() {
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-      <button
-        type="button"
-        class={mobileStyles.mobilePrimaryBtn}
-        style={{ fontSize: '11.5px', padding: '8px 4px' }}
-      >
-        <Icon name="rotate-ccw" /> Update Stock
-      </button>
-      <button
-        type="button"
-        class={mobileStyles.mobileSecondaryBtn}
-        style={{ fontSize: '11.5px', padding: '8px 4px' }}
-      >
-        <Icon name="upload" /> Import / Export
-      </button>
-      <button
-        type="button"
-        class={mobileStyles.mobileSecondaryBtn}
-        style={{ fontSize: '11.5px', padding: '8px 4px' }}
-      >
-        <Icon name="layers" /> Add Category
-      </button>
+    <div class={s.mobileNavPillsRow}>
+      {['all', ...categories].map((key) => (
+        <button
+          type="button"
+          key={key}
+          class={`${s.mobileNavPill} ${category === key ? s.mobileNavPillActive : ''}`}
+          aria-pressed={category === key}
+          onClick={() => {
+            onSelect(key);
+          }}
+        >
+          {key === 'all' ? t.all : (AISLE_DISPLAY_MAP[key] ?? key)} (
+          {key === 'all' ? items.length : items.filter((item) => item.aisle === key).length})
+        </button>
+      ))}
     </div>
   );
 }

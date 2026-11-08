@@ -4,7 +4,11 @@ import {
   IngredientsMainPanel,
   type UseIngredientsFilterStateReturn,
 } from './IngredientsMainPanel.tsx';
-import { IngredientsMobileView } from './IngredientsMobileView.tsx';
+import {
+  AddIngredient,
+  IngredientEditor,
+  IngredientsMobileView,
+} from './IngredientsMobileView.tsx';
 import { getCategoryGroup, IngredientsSidebar } from './IngredientsSidebarComponents.tsx';
 import type { IngredientsPagination } from './IngredientsTableComponents.tsx';
 import { extractIngredientLines, type IngredientLineItem } from './ingredientsUtils.ts';
@@ -42,8 +46,11 @@ export function IngredientsSection({ planner }: IngredientsSectionProps) {
     selectedRecipes,
     setup.guests,
     setup.servingsPerGuest,
+    planner,
   );
 
+  const [editing, setEditing] = useState<string | null>(null);
+  const editedItem = filterState.lines.find((item) => item.id === editing);
   const pagination = useIngredientsPagination(filterState.filteredLines.length);
   const pagedLines = filterState.filteredLines.slice(
     (pagination.page - 1) * pagination.pageSize,
@@ -62,16 +69,31 @@ export function IngredientsSection({ planner }: IngredientsSectionProps) {
             isLoading={isLoadingConsolidated}
             pagedLines={pagedLines}
             pagination={pagination}
+            onEditItem={setEditing}
             onBrowse={() => setActiveSection('recipes')}
           />
 
-          <IngredientsSidebar
-            lines={filterState.lines}
-            recipesCount={selectedRecipes.length}
-            guests={setup.guests}
-            onClearAll={clearAllRecipes}
-            onContinue={() => setActiveSection('shopping')}
-          />
+          <div>
+            <IngredientsSidebar
+              lines={filterState.lines}
+              recipesCount={selectedRecipes.length}
+              guests={setup.guests}
+              onAdd={() => setEditing('add')}
+              onClearAll={clearAllRecipes}
+              onContinue={() => setActiveSection('shopping')}
+            />
+            {editing === 'add' && (
+              <AddIngredient planner={planner} onClose={() => setEditing(null)} />
+            )}
+            {editedItem && (
+              <IngredientEditor
+                key={editedItem.id}
+                item={editedItem}
+                planner={planner}
+                onClose={() => setEditing(null)}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -87,12 +109,12 @@ function useIngredientsFilterState(
   selectedRecipes: Parameters<typeof extractIngredientLines>[1],
   guests: number,
   servingsPerGuest: number = 1,
+  planner: UseFoodPlannerReturn,
 ): UseIngredientsFilterStateReturn {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [filterText, setFilterText] = useState<string>('');
   const [autoMerge, setAutoMerge] = useState<boolean>(true);
-  const [manualQuantities, setManualQuantities] = useState<Record<string, number>>({});
-  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const manualQuantities: Record<string, number> = {};
 
   const lines = useMemo(() => {
     const rawLines = extractIngredientLines(
@@ -101,8 +123,8 @@ function useIngredientsFilterState(
       guests,
       servingsPerGuest,
     );
-    return rawLines.filter((l) => !deletedIds.has(l.id));
-  }, [engineConsolidated, selectedRecipes, guests, servingsPerGuest, deletedIds]);
+    return rawLines;
+  }, [engineConsolidated, selectedRecipes, guests, servingsPerGuest]);
 
   const filteredLines = useMemo(
     () => lines.filter((l) => matchesIngredient(l, filterText, activeCategory)),
@@ -110,15 +132,16 @@ function useIngredientsFilterState(
   );
 
   const handleAdjustQuantity = (id: string, currentVal: number, delta: number) => {
-    setManualQuantities((prev) => {
-      const existing = prev[id] ?? currentVal;
-      const nextVal = Math.max(0.1, Number((existing + delta).toFixed(2)));
-      return { ...prev, [id]: nextVal };
-    });
+    const item = lines.find((line) => line.id === id);
+    const factor = item?.unit === 'kg' || item?.unit === 'L' ? 1000 : 1;
+    planner.setIngredientQuantities((prev) => ({
+      ...prev,
+      [id]: String(Math.max(0, currentVal + delta) * factor),
+    }));
   };
 
   const handleDeleteItem = (id: string) => {
-    setDeletedIds((prev) => new Set([...prev, id]));
+    planner.setIngredientQuantities((prev) => ({ ...prev, [id]: '0' }));
   };
 
   return {

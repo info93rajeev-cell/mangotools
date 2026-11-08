@@ -1,276 +1,148 @@
+import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
-import { Icon } from '../../primitives/Icon.tsx';
-import {
-  MobileRecipeReadinessCard,
-  MobileScheduleSummaryGrid,
-} from './CookingScheduleMobileComponents.tsx';
-import { type MobileStageGroup, STATIC_MOBILE_STAGE_GROUPS } from './CookingScheduleMobileData.ts';
-import mobileStyles from './foodPlannerMobile.module.css';
-import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
+import { formatTimeSpan } from './CookingScheduleSummary.tsx';
+import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
+import s from './foodPlannerMobile.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
+import { MobileMetric, MobilePlanSetup, MobileSectionHeader } from './MobilePlanSetup.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
-interface CookingScheduleMobileViewProps {
+export function CookingScheduleMobileView({
+  planner,
+  tasks,
+  visible,
+  controls,
+}: {
   planner: UseFoodPlannerReturn;
-}
-
-export function CookingScheduleMobileView({ planner }: CookingScheduleMobileViewProps) {
-  const { setup, setSetup } = planner;
-  const [expandedGroup, setExpandedGroup] = useState<string>('Early Prep');
-
-  return (
-    <div class={mobileStyles.mobileContainer}>
-      <MobileScheduleHeader />
-      <MobileScheduleSetupCard setup={setup} setSetup={setSetup} />
-
-      <MobileScheduleTasksCard
-        groups={STATIC_MOBILE_STAGE_GROUPS}
-        expandedGroup={expandedGroup}
-        onToggleGroup={(name) => setExpandedGroup(expandedGroup === name ? '' : name)}
-        onCollapseAll={() => setExpandedGroup(expandedGroup ? '' : 'Early Prep')}
-      />
-
-      <MobileScheduleSummaryGrid />
-      <MobileRecipeReadinessCard />
-    </div>
-  );
-}
-
-function MobileScheduleHeader() {
-  return (
-    <div class={mobileStyles.mobileSectionHeader}>
-      <div class={mobileStyles.mobileSectionHeaderIcon}>
-        <Icon name="calendar" />
-      </div>
-      <div>
-        <h3 class={mobileStyles.mobileSectionHeaderTitle}>Cooking Schedule</h3>
-        <p class={mobileStyles.mobileSectionHeaderSub}>
-          Time-based cooking plan with prep, cooking, frying and serving schedule.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function MobileScheduleSetupCard({
-  setup,
-  setSetup,
-}: {
-  setup: UseFoodPlannerReturn['setup'];
-  setSetup: UseFoodPlannerReturn['setSetup'];
+  tasks: ScheduleTaskItem[];
+  visible: ScheduleTaskItem[];
+  controls: ComponentChildren;
 }) {
+  const [closed, setClosed] = useState<Record<string, boolean>>({ cooking: true });
+  const phases = [
+    ['early-prep', t.earlyPrep],
+    ['cooking', t.cooking],
+    ['assembly', t.assembly],
+  ];
+  const minutes = tasks.reduce((sum, task) => sum + task.durationMinutes, 0);
+  const allClosed = phases.every(([key]) => closed[key ?? '']);
   return (
-    <div class={mobileStyles.mobileSetupCard}>
-      <div class={mobileStyles.mobileSetupTitle}>
-        <Icon name="calendar" />
-        <span>Plan Setup</span>
-      </div>
-      <div class={mobileStyles.mobileSetupGrid}>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-sched-loc">
-            <Icon name="map-pin" /> Location
-          </label>
-          <select
-            id="mob-sched-loc"
-            class={mobileStyles.mobileSelect}
-            value={setup.location}
-            onChange={(e) =>
-              setSetup({ ...setup, location: (e.target as HTMLSelectElement).value })
-            }
+    <div class={s.mobileContainer} data-testid="mobile-schedule">
+      <MobileSectionHeader title={t.schedule} intro={t.scheduleIntro} icon="calendar" />
+      <MobilePlanSetup planner={planner} id="mobile-schedule" />
+      {controls}
+      {planner.isLoadingSchedule && <p role="status">{t.calculating}</p>}
+      {planner.scheduleError && <p role="alert">{planner.scheduleError}</p>}
+      <section class={s.mobileCard}>
+        <div class={s.mobileCardHeader}>
+          <h4 class={s.mobileCardTitle}>
+            {t.schedule} ({tasks.length} {t.tasks})
+          </h4>
+          <button
+            type="button"
+            class={s.mobileEditBtn}
+            onClick={() => setClosed(Object.fromEntries(phases.map(([key]) => [key, !allClosed])))}
           >
-            {LOCATIONS.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
+            {allClosed ? t.expand : t.collapse}
+          </button>
         </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-sched-occ">
-            <Icon name="flame" /> Occasion
-          </label>
-          <select
-            id="mob-sched-occ"
-            class={mobileStyles.mobileSelect}
-            value={setup.occasion}
-            onChange={(e) =>
-              setSetup({ ...setup, occasion: (e.target as HTMLSelectElement).value })
-            }
-          >
-            {OCCASIONS.map((occ) => (
-              <option key={occ} value={occ}>
-                {occ}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-sched-pt">
-            <Icon name="layers" /> Planning Type
-          </label>
-          <select
-            id="mob-sched-pt"
-            class={mobileStyles.mobileSelect}
-            value={setup.planningType}
-            onChange={(e) =>
-              setSetup({ ...setup, planningType: (e.target as HTMLSelectElement).value })
-            }
-          >
-            {PLANNING_TYPES.map((pt) => (
-              <option key={pt} value={pt}>
-                {pt}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div class={mobileStyles.mobileSetupField}>
-          <label class={mobileStyles.mobileFieldLabel} for="mob-sched-guests">
-            <Icon name="users" /> People / Servings
-          </label>
-          <select
-            id="mob-sched-guests"
-            class={mobileStyles.mobileSelect}
-            value={setup.guests}
-            onChange={(e) =>
-              setSetup({ ...setup, guests: Number((e.target as HTMLSelectElement).value) || 20 })
-            }
-          >
-            <option value="10">20</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
-      <button type="button" class={mobileStyles.mobileUpdateBtn}>
-        <Icon name="rotate-ccw" /> Update Plan
-      </button>
-    </div>
-  );
-}
-
-function MobileScheduleTasksCard({
-  groups,
-  expandedGroup,
-  onToggleGroup,
-  onCollapseAll,
-}: {
-  groups: MobileStageGroup[];
-  expandedGroup: string;
-  onToggleGroup: (name: string) => void;
-  onCollapseAll: () => void;
-}) {
-  return (
-    <div class={mobileStyles.mobileCard}>
-      <div class={mobileStyles.mobileCardHeader}>
-        <div>
-          <h4 class={mobileStyles.mobileCardTitle}>Cooking Schedule (8 tasks)</h4>
-          <p class={mobileStyles.mobileCardSubtitle}>
-            Step-by-step time plan to prepare all selected recipes.
-          </p>
-        </div>
-        <button type="button" class={mobileStyles.mobileEditBtn} onClick={onCollapseAll}>
-          {expandedGroup ? '▲ Collapse All' : '▼ Expand All'}
-        </button>
-      </div>
-
-      <div>
-        {groups.map((grp) => (
-          <MobileStageAccordion
-            key={grp.name}
-            grp={grp}
-            isExpanded={expandedGroup === grp.name}
-            onToggle={() => onToggleGroup(grp.name)}
+        {phases.map(([key = '', title]) => (
+          <TaskGroup
+            key={key}
+            title={title ?? ''}
+            tasks={visible.filter((task) => task.phase === key)}
+            closed={!!closed[key]}
+            toggle={() => setClosed({ ...closed, [key]: !closed[key] })}
+            planner={planner}
           />
         ))}
-      </div>
+        <p class={s.mobileCardSubtitle}>{t.scheduleNote}</p>
+      </section>
+      <section class={s.mobileCard}>
+        <h4 class={s.mobileCardTitle}>{t.scheduleSummary}</h4>
+        <div class={s.mobileSummary2x2}>
+          <MobileMetric label={t.totalTasks} value={tasks.length} icon="clipboard" />
+          <MobileMetric label={t.activePrep} value={formatTimeSpan(minutes)} icon="clock" />
+          <MobileMetric label={t.servingTime} value={planner.mealTime} icon="utensils" />
+          <MobileMetric label={t.buffer} value="10 min" icon="clock" />
+        </div>
+        <label>
+          {t.servingTime}
+          <input
+            type="time"
+            value={planner.mealTime}
+            onChange={(e) => planner.setMealTime(e.currentTarget.value)}
+          />
+        </label>
+      </section>
+      <section class={s.mobileCard}>
+        <h4 class={s.mobileCardTitle}>{t.readiness}</h4>
+        {planner.selectedRecipes.map((recipe) => {
+          const related = tasks.filter((task) => task.recipeName === recipe.name);
+          const done = related.filter((task) => task.isCompleted).length;
+          const percent = related.length ? Math.round((done / related.length) * 100) : 0;
+          return (
+            <div class={s.mobileDishItem} key={recipe.id}>
+              <img class={s.mobileDishThumb} src={recipe.thumbnailUrl} alt="" />
+              <div class={s.mobileDishInfo}>
+                <p class={s.mobileDishName}>{recipe.name}</p>
+                <progress max={100} value={percent} aria-label={`${recipe.name} ${t.readiness}`} />
+              </div>
+              <strong>{percent}%</strong>
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 }
 
-function MobileStageAccordion({
-  grp,
-  isExpanded,
-  onToggle,
+function TaskGroup({
+  title,
+  tasks,
+  closed,
+  toggle,
+  planner,
 }: {
-  grp: MobileStageGroup;
-  isExpanded: boolean;
-  onToggle: () => void;
+  title: string;
+  tasks: ScheduleTaskItem[];
+  closed: boolean;
+  toggle: () => void;
+  planner: UseFoodPlannerReturn;
 }) {
+  if (!tasks.length) return null;
   return (
-    <div class={mobileStyles.mobileAccordionGroup}>
+    <div class={s.mobileAccordionGroup}>
       <button
         type="button"
-        class={mobileStyles.mobileAccordionHeader}
-        style={{ width: '100%', border: 'none', textAlign: 'left' }}
-        onClick={onToggle}
+        class={s.mobileAccordionHeader}
+        aria-expanded={!closed}
+        onClick={toggle}
       >
-        <div class={mobileStyles.mobileAccordionHeaderLeft}>
-          <Icon name={grp.icon} />
-          <span>{grp.name}</span>
-        </div>
-        <div class={mobileStyles.mobileAccordionHeaderRight}>
-          <span>
-            {grp.count} tasks · {grp.time}
-          </span>
-          <span>{isExpanded ? '▲' : '▼'}</span>
-        </div>
+        <span>{title}</span>
+        <span>
+          {tasks.length} {t.tasks} ·{' '}
+          {formatTimeSpan(tasks.reduce((n, task) => n + task.durationMinutes, 0))}
+        </span>
       </button>
-
-      {isExpanded && (
-        <div class={mobileStyles.mobileAccordionBody}>
-          {grp.tasks.map((task) => (
-            <div
-              key={task.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 0',
-                borderBottom: '1px solid #f1f5f9',
-                fontSize: '12px',
-              }}
-            >
-              <input type="checkbox" checked={task.isDone} readOnly />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <strong style={{ fontSize: '13px', color: '#0f172a' }}>{task.name}</strong>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginTop: '2px',
-                    color: '#64748b',
-                  }}
-                >
-                  <span>🕒 {task.time}</span>
-                  <span>⏳ {task.duration}</span>
-                  <span>🍲 {task.recipe}</span>
-                </div>
+      {!closed && (
+        <div class={s.mobileAccordionBody}>
+          {tasks.map((task) => (
+            <label class={s.mobileDishItem} key={task.id}>
+              <input
+                type="checkbox"
+                checked={task.isCompleted}
+                onChange={() => planner.toggleTaskCompleted(task.id)}
+                aria-label={`${task.name} ${t.done}`}
+              />
+              <div class={s.mobileDishInfo}>
+                <p class={s.mobileDishName}>{task.name}</p>
+                <span>
+                  {task.startTime} · {task.durationMinutes} min · {task.recipeName}
+                </span>
               </div>
-              <span
-                style={{
-                  background: task.priority === 'High' ? '#fee2e2' : '#fef3c7',
-                  color: task.priority === 'High' ? '#b91c1c' : '#92400e',
-                  fontSize: '10.5px',
-                  fontWeight: 700,
-                  padding: '2px 6px',
-                  borderRadius: '6px',
-                }}
-              >
-                {task.priority}
-              </span>
-              <span
-                style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  fontSize: '10.5px',
-                  fontWeight: 700,
-                  padding: '2px 6px',
-                  borderRadius: '6px',
-                }}
-              >
-                {task.isDone ? '✓ Done' : 'Pending'}
-              </span>
-            </div>
+              <span>{task.isCompleted ? t.done : t.pending}</span>
+            </label>
           ))}
         </div>
       )}

@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 
 export function formatTimeSpan(minutes: number): string {
   const h = Math.floor(minutes / 60);
@@ -15,10 +16,7 @@ export function CapacityNotice() {
       style={{ background: '#f8fafc', borderColor: '#e2e8f0', color: '#475569' }}
     >
       <Icon name="info" />
-      <span>
-        Timings are deterministic model estimates backward scheduled from serving time minus 10m
-        rest. Burner allocations prevent bottleneck overlaps.
-      </span>
+      <span>{t.capacityHint}</span>
     </div>
   );
 }
@@ -88,7 +86,7 @@ export function ScheduleSummaryCard({
         >
           <span style={{ color: '#475569' }}>Parallel Tasks Max:</span>
           <strong>
-            {burners > 2 ? '2' : '1'} (Burners: {burners})
+            {maximumParallel(tasks)} (Burners: {burners})
           </strong>
         </div>
         <div
@@ -104,7 +102,7 @@ export function ScheduleSummaryCard({
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
           <span style={{ color: '#475569' }}>Buffer Time:</span>
-          <strong>30 min</strong>
+          <strong>10 min</strong>
         </div>
       </div>
 
@@ -155,11 +153,13 @@ export function PlanTotalsFooter({
   tasksCount,
   timeSpanStr,
   guests: _guests,
+  tasks,
   mealTime,
 }: {
   tasksCount: number;
   timeSpanStr: string;
   guests: number;
+  tasks: ScheduleTaskItem[];
   mealTime: string;
 }) {
   return (
@@ -192,7 +192,10 @@ export function PlanTotalsFooter({
       </span>
       <span>|</span>
       <span>
-        Cooking Window: <strong>6:30 AM — 4:30 PM</strong>
+        Cooking Window:{' '}
+        <strong>
+          {tasks.map((task) => task.startTime).sort()[0] ?? '—'} — {mealTime}
+        </strong>
       </span>
       <span>|</span>
       <span>
@@ -200,4 +203,24 @@ export function PlanTotalsFooter({
       </span>
     </div>
   );
+}
+
+function maximumParallel(tasks: ScheduleTaskItem[]): number {
+  const events = tasks
+    .flatMap((task) => {
+      const [hours = 0, minutes = 0] = task.startTime.split(':').map(Number);
+      const start = hours * 60 + minutes;
+      return [
+        { time: start, delta: 1 },
+        { time: start + task.durationMinutes, delta: -1 },
+      ];
+    })
+    .sort((a, b) => a.time - b.time || a.delta - b.delta);
+  let active = 0;
+  let maximum = 0;
+  for (const event of events) {
+    active += event.delta;
+    maximum = Math.max(maximum, active);
+  }
+  return maximum;
 }

@@ -2,6 +2,7 @@ import { Icon } from '../../primitives/Icon.tsx';
 import { CookingScheduleSection } from './CookingScheduleSection.tsx';
 import { CostEstimationSection } from './CostEstimationSection.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
 import { RecipesMenuSection } from './RecipesMenuSection.tsx';
@@ -16,17 +17,28 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
   const planner = useFoodPlanner();
   const { activeSection, setActiveSection, setup, setSetup, loadSamplePlan } = planner;
 
-  const handleShare = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      void navigator.clipboard.writeText(window.location.href);
-      notify?.('Plan link copied to clipboard!');
+  const handleShare = async () => {
+    const text = [
+      t.recipes,
+      `${t.guests}: ${setup.guests}`,
+      setup.location,
+      setup.occasion,
+      ...planner.selectedRecipes.map(
+        (recipe) =>
+          `${recipe.name}: ${setup.guests * (planner.portionFactors[recipe.id] ?? 1)} ${t.servings}`,
+      ),
+    ].join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      notify?.(t.shared);
+    } catch {
+      notify?.(t.shareError);
     }
   };
 
   return (
     <div class={styles.container}>
-      <PlannerBreadcrumbs />
-      <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={handleShare} />
+      <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={() => void handleShare()} />
       <PlannerNavBar activeSection={activeSection} onSelectSection={setActiveSection} />
       <div class={styles.desktopOnly}>
         <PlanSetupCard
@@ -45,22 +57,6 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
   );
 }
 
-function PlannerBreadcrumbs() {
-  return (
-    <nav class={styles.breadcrumb} aria-label="Breadcrumb">
-      <a href="/" class={styles.breadcrumbLink}>
-        Home
-      </a>
-      <span class={styles.breadcrumbSep}>&gt;</span>
-      <a href="/food-and-catering" class={styles.breadcrumbLink}>
-        Food &amp; Catering
-      </a>
-      <span class={styles.breadcrumbSep}>&gt;</span>
-      <span class={styles.breadcrumbActive}>Food Planner</span>
-    </nav>
-  );
-}
-
 function PlannerTopHeader({
   onLoadSample,
   onShare,
@@ -76,9 +72,17 @@ function PlannerTopHeader({
             <Icon name="chef-hat" />
           </div>
           <h2 class={styles.toolTitle}>Food Planner</h2>
-          <span class={styles.guidePill}>
+          <button
+            type="button"
+            class={styles.guidePill}
+            onClick={() =>
+              document
+                .querySelector<HTMLButtonElement>('.tool-header [data-guide-trigger]')
+                ?.click()
+            }
+          >
             <Icon name="lightbulb" /> Guide
-          </span>
+          </button>
         </div>
         <p class={styles.toolSubtitle}>
           Plan recipes, calculate quantities, create ingredient lists, estimate cost and schedule

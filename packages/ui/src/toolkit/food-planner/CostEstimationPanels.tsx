@@ -8,6 +8,10 @@ import {
   type RecipeCostItem,
 } from './CostOtherExpensesCard.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
+import type { ExtendedFoodRecipe } from './foodRecipesTypes.ts';
+import { exportCostRows } from './plannerExport.ts';
+import { allocateRecipeCosts, majorUnits, minorUnits } from './plannerResults.ts';
 import type { OtherCostItem } from './useFoodPlanner.ts';
 
 export function CostLeftPanel(props: {
@@ -144,7 +148,8 @@ function CostAlerts({ error, isLoading }: { error: string | null; isLoading: boo
             fontSize: '13px',
           }}
         >
-          <strong>⚠️ Cost Calculation Note:</strong> {error}. Displaying reference estimates.
+          <strong>⚠️ Cost Calculation Note:</strong> {error}. Results are unavailable. Check your
+          inputs.
         </div>
       )}
       {isLoading && (
@@ -290,10 +295,10 @@ function MenuCostTable({
                   </td>
                   <td>{dish.servings}</td>
                   <td>{dish.totalQty}</td>
-                  <td>₹{dish.ingCost.toLocaleString('en-IN')}.00</td>
-                  <td style={{ color: '#64748b' }}>₹{dish.otherCost}.00</td>
+                  <td>₹{dish.ingCost.toFixed(2)}</td>
+                  <td style={{ color: '#64748b' }}>₹{dish.otherCost.toFixed(2)}</td>
                   <td style={{ textAlign: 'right', fontWeight: 700, color: '#1e3a8a' }}>
-                    ₹{dish.totalDish.toLocaleString('en-IN')}.00
+                    ₹{dish.totalDish.toFixed(2)}
                   </td>
                 </tr>
               ))
@@ -301,55 +306,38 @@ function MenuCostTable({
           </tbody>
         </table>
       </div>
+      <p class={styles.cardSubtitle}>{t.selectionHint}</p>
+      <button
+        type="button"
+        class={styles.actionBtn}
+        disabled={selectedDishes.size === 0}
+        onClick={() => exportCostRows(recipeCosts.filter((dish) => selectedDishes.has(dish.id)))}
+      >
+        {t.exportSelected}
+      </button>
     </div>
   );
 }
 
 export function calculateCostData(engineCost: unknown, guests: number, totalOtherCost: number) {
   const raw = engineCost as { totalCostInr?: string } | null;
-  const ingredientCost = raw?.totalCostInr ? Number.parseFloat(raw.totalCostInr) : 1672;
-  const totalMenuCost = ingredientCost + totalOtherCost;
-  const costPerServing = guests > 0 ? (totalMenuCost / guests).toFixed(2) : '102.50';
-
+  const ingredient = minorUnits(raw?.totalCostInr ?? '0');
+  const total = ingredient + minorUnits(totalOtherCost);
+  const count = BigInt(Math.max(1, guests));
+  const perGuest = (total * 2n + count) / (2n * count);
   return {
-    totalIngredientCost: Math.round(ingredientCost),
-    totalMenuCost: Math.round(totalMenuCost),
-    costPerServing,
+    totalIngredientCost: majorUnits(ingredient),
+    totalMenuCost: majorUnits(total),
+    costPerServing: majorUnits(perGuest).toFixed(2),
   };
 }
 
 export function calculateRecipeCosts(
-  selectedRecipes: Array<{ id: string; name: string; ingredients: unknown[] }>,
+  recipes: ExtendedFoodRecipe[],
   guests: number,
-  totalOtherCost: number,
+  otherCost: number,
+  engineCost?: unknown,
+  factors: Record<string, number> = {},
 ): RecipeCostItem[] {
-  const totalDishes = selectedRecipes.length || 1;
-  const perDishOther = totalOtherCost / totalDishes;
-
-  const baseWeights: Record<string, number> = {
-    'besan-ladoo': 280,
-    mathri: 210,
-    'shahi-paneer': 520,
-    'dal-tadka': 240,
-    'jeera-rice': 190,
-    'aloo-gobi': 232,
-    raita: 120,
-    'mixed-veg-salad': 80,
-  };
-
-  return selectedRecipes.map((recipe, idx) => {
-    const rawIng = baseWeights[recipe.id] ?? 200;
-    const ingCost = Math.round(rawIng * (guests / 20));
-    const totalDish = Math.round(ingCost + perDishOther);
-    return {
-      id: recipe.id,
-      num: idx + 1,
-      name: recipe.name,
-      servings: guests,
-      totalQty: `${(guests * 0.12 + 0.6).toFixed(2)} kg`,
-      ingCost,
-      otherCost: Math.round(perDishOther),
-      totalDish,
-    };
-  });
+  return allocateRecipeCosts(recipes, guests, otherCost, engineCost, factors);
 }

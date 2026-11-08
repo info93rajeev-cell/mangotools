@@ -1,5 +1,6 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { type ExtendedFoodRecipe, getRecipeVerificationInfo } from './foodReferenceData.ts';
 
 export function SelectedMenuPanel({
@@ -90,7 +91,7 @@ function SelectedMenuRow({
   onSetPortion: (id: string, factor: number) => void;
   onRemove: (id: string) => void;
 }) {
-  const approxPieces = Math.round(guests * factor * 2);
+  const plannedServings = guests * factor;
   const verInfo = getRecipeVerificationInfo(recipe);
 
   return (
@@ -129,7 +130,7 @@ function SelectedMenuRow({
           >
             -
           </button>
-          <span class={styles.stepperVal}>{approxPieces}</span>
+          <span class={styles.stepperVal}>{plannedServings}</span>
           <button
             type="button"
             class={styles.stepperBtn}
@@ -146,8 +147,6 @@ function SelectedMenuRow({
           style={{ height: '26px', fontSize: '11.5px', padding: '0 4px' }}
           aria-label={`Unit for ${recipe.name}`}
         >
-          <option value="pieces">pieces</option>
-          <option value="kg">kg</option>
           <option value="servings">servings</option>
         </select>
       </td>
@@ -244,7 +243,6 @@ function PlanSummaryBanner({
   const hrs = Math.floor(totalMinutes / 60);
   const mins = totalMinutes % 60;
   const prepTimeStr = hrs === 0 ? `${mins} min` : `~${hrs} hr ${mins} min`;
-  const weightStr = (selectedRecipes.length * (guests * 0.12) + 0.5).toFixed(2);
 
   return (
     <div class={styles.diwaliCard}>
@@ -276,9 +274,11 @@ function PlanSummaryBanner({
         </div>
         <div class={styles.statItem}>
           <span class={styles.statLabel}>
-            <Icon name="scale" /> Total Qty
+            <Icon name="scale" /> {t.baseServings}
           </span>
-          <span class={styles.statValue}>~{weightStr} kg</span>
+          <span class={styles.statValue}>
+            {guests} {t.servings}
+          </span>
         </div>
         <div class={styles.statItem}>
           <span class={styles.statLabel}>

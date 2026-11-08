@@ -16,18 +16,7 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [favorites, setFavorites] = useState<Set<string>>(
-    () => new Set(['besan-ladoo', 'shahi-paneer']),
-  );
-
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+  const { favorites, toggleFavorite } = planner;
 
   const filteredRecipes = useMemo(
     () =>
@@ -114,7 +103,7 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
   } = planner;
 
   return (
-    <div class={styles.layoutGrid}>
+    <div class={`${styles.layoutGrid} ${styles.recipesLayoutGrid}`}>
       <RecipeGalleryPanel
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}

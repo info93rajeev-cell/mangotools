@@ -85,6 +85,7 @@ export function ShoppingMainPanel({
             <input
               type="checkbox"
               checked={combineSimilar}
+              disabled
               onChange={(e) => onToggleCombine((e.target as HTMLInputElement).checked)}
             />
             <span>Combine Similar</span>
@@ -236,8 +237,6 @@ function ShoppingTableRow({
           aria-label={`Unit for ${item.name}`}
         >
           <option value={item.unit}>{item.unit}</option>
-          {item.unit === 'g' && <option value="kg">kg</option>}
-          {item.unit === 'ml' && <option value="L">L</option>}
         </select>
       </td>
       <td style={{ color: '#475569', fontSize: '12px' }}>{item.priceLabel}</td>
