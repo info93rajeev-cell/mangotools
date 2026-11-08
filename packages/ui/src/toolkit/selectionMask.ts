@@ -124,9 +124,6 @@ export function composeGlassMask(
 ): HTMLCanvasElement | null {
   const hasGlass = strokes.some((s) => s.mode === 'glass');
   if (!hasGlass) return null;
-  if (typeof document === 'undefined') {
-    return { width, height } as unknown as HTMLCanvasElement;
-  }
   const [c, ctx] = canvas2d(width, height);
   for (const stroke of strokes) {
     if (stroke.mode === 'glass' || stroke.mode === 'unglass') {

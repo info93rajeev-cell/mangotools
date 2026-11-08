@@ -107,7 +107,69 @@ export function buildGlassPlanForSelection(
   return planGlass(small.rgb, small.alpha, sw, sh);
 }
 
-/** Processes rows y0..y0+rows of a cutout given photo, selection mask, and glass brush mask. */
+function blendGlassPixel(
+  orig: [number, number, number],
+  selA: number,
+  g: number,
+  plan: GlassPlan,
+  fx: number,
+  fy: number,
+): [number, number, number, number] {
+  const bg = sampleBilinear(plan.bg, plan.w, plan.h, fx, fy);
+  const [dr, dg, db, da] = glassPixel(orig, bg, selA, plan.limits, 0);
+  const glassA = da / 255;
+  const finalA = lerp(selA, Math.min(selA, glassA), g);
+  return [
+    Math.round(lerp(orig[0], dr, g)),
+    Math.round(lerp(orig[1], dg, g)),
+    Math.round(lerp(orig[2], db, g)),
+    Math.round(finalA * 255),
+  ];
+}
+
+interface StripRowContext {
+  photo: Uint8ClampedArray;
+  selMask: Uint8ClampedArray;
+  glassMask: Uint8ClampedArray;
+  out: Uint8ClampedArray;
+  plan: GlassPlan;
+  w: number;
+  sx: number;
+  fy: number;
+  localStrip: boolean;
+  y: number;
+}
+
+function processRowPixel(ctx: StripRowContext, r: number, x: number) {
+  const outIdx = (r * ctx.w + x) * 4;
+  const srcIdx = ctx.localStrip ? outIdx : (ctx.y * ctx.w + x) * 4;
+
+  const g = (ctx.glassMask[srcIdx + 3] ?? 0) / 255;
+  const selA = (ctx.selMask[srcIdx + 3] ?? 0) / 255;
+  const origR = ctx.photo[srcIdx] ?? 0;
+  const origG = ctx.photo[srcIdx + 1] ?? 0;
+  const origB = ctx.photo[srcIdx + 2] ?? 0;
+
+  if (g <= 0 || selA <= 0) {
+    ctx.out[outIdx] = origR;
+    ctx.out[outIdx + 1] = origG;
+    ctx.out[outIdx + 2] = origB;
+    ctx.out[outIdx + 3] = Math.round(selA * 255);
+    return;
+  }
+
+  const fx = (x + 0.5) * ctx.sx - 0.5;
+  const [cr, cg, cb, ca] = blendGlassPixel([origR, origG, origB], selA, g, ctx.plan, fx, ctx.fy);
+  ctx.out[outIdx] = cr;
+  ctx.out[outIdx + 1] = cg;
+  ctx.out[outIdx + 2] = cb;
+  ctx.out[outIdx + 3] = ca;
+}
+
+/** Processes rows y0..y0+rows of a cutout given photo, selection mask, and glass brush mask.
+ * When localStrip is true (the default in canvas strip processing), photo, selMask, and glassMask
+ * contain only the `rows` slice (index `r * w + x`). When false, they index into full-size buffers.
+ */
 export function applySelectionGlassStrip(
   photo: Uint8ClampedArray,
   selMask: Uint8ClampedArray,
@@ -117,6 +179,7 @@ export function applySelectionGlassStrip(
   y0: number,
   rows: number,
   sharedPlan?: GlassPlan,
+  localStrip = false,
 ): Uint8ClampedArray {
   const plan = sharedPlan ?? buildGlassPlanForSelection(photo, selMask, w, h);
   const out = new Uint8ClampedArray(w * rows * 4);
@@ -126,34 +189,20 @@ export function applySelectionGlassStrip(
   for (let r = 0; r < rows; r++) {
     const y = y0 + r;
     const fy = (y + 0.5) * sy - 0.5;
+    const rowCtx: StripRowContext = {
+      photo,
+      selMask,
+      glassMask,
+      out,
+      plan,
+      w,
+      sx,
+      fy,
+      localStrip,
+      y,
+    };
     for (let x = 0; x < w; x++) {
-      const fullIdx = (y * w + x) * 4;
-      const outIdx = (r * w + x) * 4;
-
-      const g = (glassMask[fullIdx + 3] ?? 0) / 255;
-      const selA = (selMask[fullIdx + 3] ?? 0) / 255;
-      const origR = photo[fullIdx] ?? 0;
-      const origG = photo[fullIdx + 1] ?? 0;
-      const origB = photo[fullIdx + 2] ?? 0;
-
-      if (g <= 0 || selA <= 0) {
-        out[outIdx] = origR;
-        out[outIdx + 1] = origG;
-        out[outIdx + 2] = origB;
-        out[outIdx + 3] = Math.round(selA * 255);
-        continue;
-      }
-
-      const fx = (x + 0.5) * sx - 0.5;
-      const bg = sampleBilinear(plan.bg, plan.w, plan.h, fx, fy);
-      const [dr, dg, db, da] = glassPixel([origR, origG, origB], bg, selA, plan.limits, 0);
-
-      const glassA = da / 255;
-      const finalA = lerp(selA, Math.min(selA, glassA), g);
-      out[outIdx] = Math.round(lerp(origR, dr, g));
-      out[outIdx + 1] = Math.round(lerp(origG, dg, g));
-      out[outIdx + 2] = Math.round(lerp(origB, db, g));
-      out[outIdx + 3] = Math.round(finalA * 255);
+      processRowPixel(rowCtx, r, x);
     }
   }
 

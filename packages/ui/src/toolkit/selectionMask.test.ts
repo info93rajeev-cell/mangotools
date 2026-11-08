@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   type BrushStroke,
   composeGlassMask,
@@ -14,6 +14,36 @@ const stroke = (mode: BrushStroke['mode']): BrushStroke => ({
 });
 
 describe('selection state', () => {
+  beforeEach(() => {
+    // Stub document for canvas creation in pure Node/Vitest test environment
+    if (typeof globalThis.document === 'undefined') {
+      const mockCanvas = {
+        width: 0,
+        height: 0,
+        getContext: () => ({
+          save: () => {},
+          restore: () => {},
+          beginPath: () => {},
+          arc: () => {},
+          fill: () => {},
+          moveTo: () => {},
+          lineTo: () => {},
+          stroke: () => {},
+          drawImage: () => {},
+          fillRect: () => {},
+        }),
+      };
+      // @ts-expect-error test-only document stub
+      globalThis.document = {
+        createElement: (tag: string) => (tag === 'canvas' ? { ...mockCanvas } : {}),
+      };
+    }
+  });
+
+  afterEach(() => {
+    // Clean up if needed
+  });
+
   it('a freshly loaded photo has no edits, so the stage shows the photo', () => {
     expect(hasNoEdits({ path: noPath, strokes: [], aiMask: null })).toBe(true);
   });
