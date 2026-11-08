@@ -8,6 +8,7 @@ import s from './surveyResults.module.css';
 export interface SurveyResultsCardProps {
   result: SurveyCalculationOutput | null;
   phase: SurveyLevelingState['phase'];
+  method?: 'rise-fall' | 'height-of-instrument';
   isStale?: boolean;
   closingRLInput: string;
   onCopyBook: () => void;
@@ -56,6 +57,7 @@ function resolveResultsBadge(
 export function SurveyResultsCard({
   result,
   phase,
+  method = 'rise-fall',
   isStale,
   closingRLInput,
   onCopyBook,
@@ -97,9 +99,14 @@ export function SurveyResultsCard({
 
         <SurveySummaryTiles result={isStale ? null : result} closingRLInput={closingRLInput} />
 
-        {!isStale && result ? <SurveyArithmeticChecks result={result} /> : null}
+        {!isStale && result ? <SurveyArithmeticChecks result={result} method={method} /> : null}
 
-        <SurveyResultsTable result={result} isStale={isStale} onCopyBook={onCopyBook} />
+        <SurveyResultsTable
+          result={result}
+          method={method}
+          isStale={isStale}
+          onCopyBook={onCopyBook}
+        />
       </div>
     </div>
   );

@@ -17,30 +17,27 @@ import type {
 } from './surveyLevelingTypes.ts';
 
 const defaultRun: RunFn = (...args) => {
-  if (typeof window !== 'undefined' && (window as unknown as { __customRun?: RunFn }).__customRun) {
-    return (window as unknown as { __customRun: RunFn }).__customRun(...args);
-  }
-  return getWorkerHost().run(...args);
+  const win = typeof window !== 'undefined' ? (window as unknown as { __customRun?: RunFn }) : null;
+  return win?.__customRun ? win.__customRun(...args) : getWorkerHost().run(...args);
 };
 
-function resolveErrorMessage(code: string): string {
-  const errMap = surveyStrings.errors as Record<string, string>;
-  return errMap[code] ?? errMap.CALCULATION_ERROR;
-}
+const resolveErrorMessage = (code: string): string =>
+  (surveyStrings.errors as Record<string, string>)[code] ?? surveyStrings.errors.CALCULATION_ERROR;
+
+const TARGET_INPUTS: Record<string, string> = {
+  startRL: 'survey-startRL',
+  closingRL: 'survey-closeRL',
+  kConstant: 'survey-allowable-const',
+  adjBy: 'survey-adjust-by',
+};
 
 function resolveTargetInputId(path: string): string | null {
-  if (path === 'startRL') return 'survey-startRL';
-  if (path === 'closingRL') return 'survey-closeRL';
-  if (path === 'kConstant') return 'survey-allowable-const';
-  if (path === 'adjBy') return 'survey-adjust-by';
-  const obsMatch = /^observations\.(\d+)(?:\.(bs|is|fs|dist))?$/.exec(path);
-  if (obsMatch) {
-    const idx = obsMatch[1];
-    const key = obsMatch[2] ?? 'bs';
-    return `survey-obs-${idx}-${key}`;
-  }
-  return null;
+  if (TARGET_INPUTS[path]) return TARGET_INPUTS[path];
+  const m = /^observations\.(\d+)(?:\.(bs|is|fs|dist))?$/.exec(path);
+  return m ? `survey-obs-${m[1]}-${m[2] ?? 'bs'}` : null;
 }
+
+type CalcOutcome = Pick<SurveyLevelingState, 'result' | 'phase' | 'errors' | 'cellErrors'>;
 
 async function executeLeveling(
   runFn: RunFn,
@@ -49,14 +46,10 @@ async function executeLeveling(
   rows: SurveyLevelingRow[],
   adjBy: 'none' | 'distance' | 'setup',
   kConstant: string,
+  method: 'rise-fall' | 'height-of-instrument',
   signal: AbortSignal,
-): Promise<{
-  result: SurveyCalculationOutput | null;
-  phase: SurveyLevelingState['phase'];
-  errors: string[];
-  cellErrors: Record<string, string>;
-}> {
-  const req = buildLevelingRequest(start, close, rows, adjBy, kConstant);
+): Promise<CalcOutcome> {
+  const req = buildLevelingRequest(start, close, rows, adjBy, kConstant, method);
   try {
     const outcome = await runFn('survey.leveling.reduce@2', req.input, req.params, signal);
     if (signal.aborted) return { result: null, phase: 'idle', errors: [], cellErrors: {} };
@@ -81,12 +74,8 @@ async function executeLeveling(
     };
   } catch {
     if (signal.aborted) return { result: null, phase: 'idle', errors: [], cellErrors: {} };
-    return {
-      result: null,
-      phase: 'error',
-      errors: [surveyStrings.errors.CALCULATION_ERROR],
-      cellErrors: {},
-    };
+    const err = surveyStrings.errors.CALCULATION_ERROR;
+    return { result: null, phase: 'error', errors: [err], cellErrors: {} };
   }
 }
 
@@ -101,19 +90,18 @@ function updateRowAt(
   return next;
 }
 
+const emptyRow = (id: string): SurveyLevelingRow => ({
+  id,
+  station: '',
+  bs: '',
+  is: '',
+  fs: '',
+  dist: '',
+  remarks: '',
+});
+
 function appendNewRow(prev: SurveyLevelingRow[]): SurveyLevelingRow[] {
-  return [
-    ...prev,
-    {
-      id: `row-${Date.now()}-${prev.length}`,
-      station: '',
-      bs: '',
-      is: '',
-      fs: '',
-      dist: '',
-      remarks: '',
-    },
-  ];
+  return [...prev, emptyRow(`row-${Date.now()}-${prev.length}`)];
 }
 
 function useSurveyRows(onInvalidate: () => void) {
@@ -133,45 +121,47 @@ function useSurveyRows(onInvalidate: () => void) {
       setRows((p) => (p.length > 2 ? p.filter((_, i) => i !== idx) : p));
       onInvalidate();
     },
+    replaceRows: (newRows: SurveyLevelingRow[]) => {
+      setRows(newRows);
+      onInvalidate();
+    },
   };
 }
 
 function useSurveyBenchmarks(onInvalidate: () => void) {
+  const [method, setMethodState] = useState<'rise-fall' | 'height-of-instrument'>('rise-fall');
   const [startRL, setStartRLState] = useState(SAMPLE_START_RL);
   const [closingRL, setClosingRLState] = useState(SAMPLE_CLOSING_RL);
   const [kConstant, setKConstantState] = useState('');
   const [adjBy, setAdjByState] = useState<'none' | 'distance' | 'setup'>('none');
+  const setWithInv =
+    <T>(setter: (v: T) => void) =>
+    (val: T) => {
+      setter(val);
+      onInvalidate();
+    };
   return {
+    method,
     startRL,
     closingRL,
     kConstant,
     adjBy,
+    setMethodState,
     setStartRLState,
     setClosingRLState,
     setKConstantState,
     setAdjByState,
-    setStartRL: (val: string) => {
-      setStartRLState(val);
-      onInvalidate();
-    },
-    setClosingRL: (val: string) => {
-      setClosingRLState(val);
-      onInvalidate();
-    },
-    setKConstant: (val: string) => {
-      setKConstantState(val);
-      onInvalidate();
-    },
-    setAdjBy: (val: 'none' | 'distance' | 'setup') => {
-      setAdjByState(val);
-      onInvalidate();
-    },
+    setMethod: setWithInv(setMethodState),
+    setStartRL: setWithInv(setStartRLState),
+    setClosingRL: setWithInv(setClosingRLState),
+    setKConstant: setWithInv(setKConstantState),
+    setAdjBy: setWithInv(setAdjByState),
   };
 }
 
-const INITIAL_CALC_STATE = {
+const INITIAL_CALC_STATE: CalcOutcome = {
   result: null,
-  phase: 'idle' as const,
+  phase: 'idle',
   errors: [],
   cellErrors: {},
 };
@@ -181,12 +171,7 @@ function useSurveyCalculation(
   bm: ReturnType<typeof useSurveyBenchmarks>,
   rowOps: ReturnType<typeof useSurveyRows>,
 ) {
-  const [calcState, setCalcState] = useState<{
-    result: SurveyCalculationOutput | null;
-    phase: SurveyLevelingState['phase'];
-    errors: string[];
-    cellErrors: Record<string, string>;
-  }>(INITIAL_CALC_STATE);
+  const [calcState, setCalcState] = useState<CalcOutcome>(INITIAL_CALC_STATE);
 
   const abortRef = useRef<AbortController | null>(null);
   const reqIdRef = useRef(0);
@@ -213,13 +198,14 @@ function useSurveyCalculation(
     r = rowOps.rows,
     a = bm.adjBy,
     k = bm.kConstant,
+    m = bm.method,
   ) => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     const currentReqId = ++reqIdRef.current;
     setCalcState((prev) => ({ ...prev, phase: 'calculating' }));
-    const outcome = await executeLeveling(runFn, s, c, r, a, k, ctrl.signal);
+    const outcome = await executeLeveling(runFn, s, c, r, a, k, m, ctrl.signal);
     if (!ctrl.signal.aborted && currentReqId === reqIdRef.current) {
       setCalcState(outcome);
     }
@@ -228,18 +214,19 @@ function useSurveyCalculation(
   return { calcState, setCalcState, abortRef, reqIdRef, invalidate, calculate };
 }
 
-export function useSurveyLeveling(customRun?: RunFn) {
-  const runFn = customRun ?? defaultRun;
-  const invRef = useRef<() => void>(() => {});
-  const bm = useSurveyBenchmarks(() => invRef.current());
-  const rowOps = useSurveyRows(() => invRef.current());
-  const calc = useSurveyCalculation(runFn, bm, rowOps);
-  invRef.current = calc.invalidate;
-
-  const loadSample = () => {
+function useSurveyActions(
+  bm: ReturnType<typeof useSurveyBenchmarks>,
+  rowOps: ReturnType<typeof useSurveyRows>,
+  calc: ReturnType<typeof useSurveyCalculation>,
+) {
+  const resetRun = () => {
     calc.abortRef.current?.abort();
     calc.abortRef.current = null;
     calc.reqIdRef.current++;
+  };
+
+  const loadSample = () => {
+    resetRun();
     bm.setStartRLState(SAMPLE_START_RL);
     bm.setClosingRLState(SAMPLE_CLOSING_RL);
     bm.setKConstantState(SAMPLE_K_CONSTANT);
@@ -251,13 +238,12 @@ export function useSurveyLeveling(customRun?: RunFn) {
       SAMPLE_ROWS,
       SAMPLE_ADJ_BY,
       SAMPLE_K_CONSTANT,
+      bm.method,
     );
   };
 
   const reset = () => {
-    calc.abortRef.current?.abort();
-    calc.abortRef.current = null;
-    calc.reqIdRef.current++;
+    resetRun();
     bm.setStartRLState('');
     bm.setClosingRLState('');
     bm.setKConstantState('');
@@ -266,12 +252,26 @@ export function useSurveyLeveling(customRun?: RunFn) {
     calc.setCalcState(INITIAL_CALC_STATE);
   };
 
+  return { loadSample, reset };
+}
+
+export function useSurveyLeveling(customRun?: RunFn) {
+  const runFn = customRun ?? defaultRun;
+  const invRef = useRef<() => void>(() => {});
+  const bm = useSurveyBenchmarks(() => invRef.current());
+  const rowOps = useSurveyRows(() => invRef.current());
+  const calc = useSurveyCalculation(runFn, bm, rowOps);
+  invRef.current = calc.invalidate;
+  const { loadSample, reset } = useSurveyActions(bm, rowOps, calc);
+
   useEffect(() => {
     void calc.calculate();
     return () => calc.abortRef.current?.abort();
   }, []);
 
   return {
+    method: bm.method,
+    setMethod: bm.setMethod,
     startRL: bm.startRL,
     setStartRL: bm.setStartRL,
     closingRL: bm.closingRL,
@@ -289,7 +289,9 @@ export function useSurveyLeveling(customRun?: RunFn) {
     handleCellChange: rowOps.handleCellChange,
     handleAddRow: rowOps.handleAddRow,
     handleRemoveRow: rowOps.handleRemoveRow,
-    calculate: () => calc.calculate(bm.startRL, bm.closingRL, rowOps.rows, bm.adjBy, bm.kConstant),
+    replaceRows: rowOps.replaceRows,
+    calculate: () =>
+      calc.calculate(bm.startRL, bm.closingRL, rowOps.rows, bm.adjBy, bm.kConstant, bm.method),
     loadSample,
     reset,
   };
