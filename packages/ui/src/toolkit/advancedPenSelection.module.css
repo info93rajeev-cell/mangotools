@@ -113,7 +113,18 @@
     min-width: 0;
     align-items: stretch;
   }
-  .studioGrid[data-has-file="true"] > .canvasCenterColumn {
+  /* When no photo is loaded, Image & Selection (left column) stays first above the empty canvas */
+  .studioGrid > .leftControlsColumn {
+    order: 1;
+  }
+  .studioGrid > .centerCanvasCard {
+    order: 2;
+  }
+  .studioGrid > .rightControlsColumn {
+    order: 3;
+  }
+  /* Once a photo is loaded, the canvas moves to the top so the user can see their work immediately */
+  .studioGrid[data-has-file="true"] > .centerCanvasCard {
     order: 1;
   }
   .studioGrid[data-has-file="true"] > .leftControlsColumn {
