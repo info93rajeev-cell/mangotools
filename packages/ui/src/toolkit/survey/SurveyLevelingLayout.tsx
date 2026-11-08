@@ -13,6 +13,7 @@ import { useSurveyLeveling } from './useSurveyLeveling.ts';
 export interface SurveyLevelingLayoutProps {
   customRun?: RunFn;
   showHeader?: boolean;
+  showBottomFaq?: boolean;
 }
 
 function AccordionCard({ title, children }: { title: string; children: preact.ComponentChildren }) {
@@ -123,7 +124,11 @@ function SurveyBottomFaq({ method }: { method: 'rise-fall' | 'height-of-instrume
   );
 }
 
-export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLevelingLayoutProps) {
+export function SurveyLevelingLayout({
+  customRun,
+  showHeader = false,
+  showBottomFaq = true,
+}: SurveyLevelingLayoutProps) {
   const survey = useSurveyLeveling(customRun);
   const [message, notify] = useToast();
   const [isPasteOpen, setIsPasteOpen] = useState(false);
@@ -209,7 +214,7 @@ export function SurveyLevelingLayout({ customRun, showHeader = false }: SurveyLe
         {surveyStrings.accWarningsBody}
       </AccordionCard>
 
-      <SurveyBottomFaq method={survey.method} />
+      {showBottomFaq && <SurveyBottomFaq method={survey.method} />}
 
       <SurveyPasteModal
         isOpen={isPasteOpen}

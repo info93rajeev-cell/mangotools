@@ -56,6 +56,7 @@ describe('privacy.dataClass classification', () => {
       'pdf-to-word',
       'photo-size-reducer',
       'signature-resizer',
+      'survey-leveling-calculator',
       'url-encode-decode',
       'word-to-pdf',
     ];

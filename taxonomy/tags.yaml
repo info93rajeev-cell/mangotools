@@ -34,3 +34,5 @@ tags:
   - { id: food, label: Food }
   - { id: catering, label: Catering }
   - { id: recipes, label: Recipes }
+  - { id: surveying, label: Surveying }
+  - { id: leveling, label: Leveling }

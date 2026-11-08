@@ -1,0 +1,31 @@
+id: 001-six-station-level-run
+preset: survey/leveling-calculator
+source:
+  type: hand-verified
+  citation: "TASK-010C §6 worked table with distance-proportional adjustment, C=24 mm/sqrt(km)"
+input:
+  startRL: "100.000"
+  closingRL: "99.805"
+  observations:
+    - { station: BM-1, bs: "1.500", dist: "0", remarks: Start BM }
+    - { station: A, is: "1.200", dist: "30" }
+    - { station: CP1, fs: "2.000", bs: "0.800", dist: "30", remarks: Change point }
+    - { station: B, is: "1.100", dist: "25" }
+    - { station: CP2, fs: "0.600", bs: "2.300", dist: "35", remarks: Change point }
+    - { station: BM-2, fs: "2.200", dist: "40", remarks: Closing BM }
+expected:
+  startingRL: "100"
+  endingRL: "99.8"
+  sumBS: "4.6"
+  sumFS: "4.8"
+  sumRise: "0.9"
+  sumFall: "1.1"
+  bsFsDelta: "-0.2"
+  riseFallDelta: "-0.2"
+  rlDelta: "-0.2"
+  closingRL: "99.805"
+  misclosure: "-0.005"
+  totalDistanceKm: "0.160"
+  allowableError: "9.6"
+  closureStatus: "pass"
+  setupsCount: 3
