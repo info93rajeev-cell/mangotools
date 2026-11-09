@@ -65,13 +65,7 @@ for (const vp of viewports) {
     const hiTab = page.locator('[data-method-tab="height-of-instrument"]');
     await hiTab.click();
 
-    // Verify invalidation on method switch -> stale notice
-    await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
-    await expect(page.locator('[data-stale-notice]')).toBeVisible();
-    await expect(page.locator('[data-results-table]')).not.toBeVisible();
-
-    // Recalculate levels using Height of Instrument
-    await page.locator('[data-calculate-btn]').click();
+    // Switching methods calculates the matching profile and table immediately.
 
     // Verify badge: Within limit
     await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
@@ -185,7 +179,7 @@ for (const vp of viewports) {
   });
 }
 
-test('Method switching and stale invalidation', async ({ page }) => {
+test('Method switching restores the matching graph and results', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('http://127.0.0.1:4322/_dev/survey-workbench');
 
@@ -199,23 +193,15 @@ test('Method switching and stale invalidation', async ({ page }) => {
 
   // Switch to HI
   await page.locator('[data-method-tab="height-of-instrument"]').click();
-  await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
-  await expect(page.locator('[data-results-table]')).not.toBeVisible();
-
-  // Recalculate in HI mode
-  await page.locator('[data-calculate-btn]').click();
   await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
   await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('HI (m)');
+  await expect(page.getByRole('img', { name: 'Level profile chart' })).toBeVisible();
 
   // Switch back to RF
   await page.locator('[data-method-tab="rise-fall"]').click();
-  await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
-  await expect(page.locator('[data-results-table]')).not.toBeVisible();
-
-  // Recalculate in RF mode
-  await page.locator('[data-calculate-btn]').click();
   await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
   await expect(page.locator('[data-results-table] thead th').nth(2)).toHaveText('Rise');
+  await expect(page.getByRole('img', { name: 'Level profile chart' })).toBeVisible();
 });
 
 test('Copy level book in HI mode writes HI column TSV', async ({ page }) => {
@@ -493,10 +479,8 @@ test('Dark mode theme support and zero axe violations', async ({ page }) => {
   await page.locator('[data-try-sample]').click();
   await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 
-  // Switch to HI mode and recalculate
+  // Switch to HI mode
   await page.locator('[data-method-tab="height-of-instrument"]').click();
-  await expect(page.locator('[data-results-badge]')).toHaveText('Recalculate required');
-  await page.locator('[data-calculate-btn]').click();
   await expect(page.locator('[data-results-badge]')).toHaveText(/Within limit/);
 
   // Run Axe accessibility audit in dark mode (contrast, roles, etc.)
