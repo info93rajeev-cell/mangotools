@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { openTool } from '../support/tool-page.ts';
 
 const sizes = [
@@ -31,6 +31,7 @@ for (const size of sizes) {
         ),
       ).toBeVisible({ visible: size.layout === 'portrait' });
       await expect(page.locator('[data-fullscreen-toggle]')).toBeInViewport();
+      await expectReadableReadiness(page, size.layout, index);
       await page.waitForTimeout(500);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
@@ -41,4 +42,19 @@ for (const size of sizes) {
       });
     }
   });
+}
+
+async function expectReadableReadiness(page: Page, layout: string, index: number) {
+  if (layout !== 'portrait' || index !== 4) return;
+  const names = page
+    .getByTestId('mobile-schedule')
+    .getByRole('progressbar')
+    .locator('..')
+    .locator('p');
+  expect(await names.count()).toBeGreaterThan(0);
+  for (const name of await names.all()) {
+    expect(await name.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(
+      100,
+    );
+  }
 }

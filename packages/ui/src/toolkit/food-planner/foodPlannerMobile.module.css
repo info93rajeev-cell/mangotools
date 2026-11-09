@@ -826,3 +826,13 @@
   padding: 4px 10px;
   font-weight: 700;
 }
+
+/* Keep schedule names above task details and full-width progress bars. */
+.mobileContainer[data-testid="mobile-schedule"] .mobileDishInfo {
+  display: block;
+}
+.mobileContainer[data-testid="mobile-schedule"] .mobileDishName {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  margin-bottom: 4px;
+}
