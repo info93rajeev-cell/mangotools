@@ -1,29 +1,33 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { AISLE_DISPLAY_MAP, CATALOG_INGREDIENTS } from './foodReferenceData.ts';
+import { InventoryCategories, InventoryTransfer } from './InventoryTransfer.tsx';
 import {
   formatDisplayQty,
   formatDisplayUnit,
   type IngredientLineItem,
 } from './ingredientsUtils.ts';
-import {
-  MobileMetric,
-  MobilePagination,
-  MobilePlanSetup,
-  MobileSectionHeader,
-} from './MobilePlanSetup.tsx';
+import { inventoryValue } from './inventoryValue.ts';
+import { MobileMetric, MobilePagination, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { priceBasis } from './plannerPrices.ts';
 import { money } from './plannerResults.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 export function IngredientsMobileView({
   planner,
-  items,
+  items: rawItems,
 }: {
   planner: UseFoodPlannerReturn;
   items: IngredientLineItem[];
 }) {
+  const items = rawItems.map((item) => ({
+    ...item,
+    aisle: planner.ingredientCategories[item.id] ?? item.aisle,
+  }));
+  const [transfer, setTransfer] = useState(false);
+  const [categories, setCategories] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
@@ -39,8 +43,7 @@ export function IngredientsMobileView({
   const paged = visible.slice((currentPage - 1) * 8, currentPage * 8);
   return (
     <div class={s.mobileContainer} data-testid="mobile-ingredients">
-      <MobileSectionHeader title={t.ingredients} intro={t.ingredientsIntro} icon="leaf" />
-      <MobilePlanSetup planner={planner} id="mobile-ingredients" />
+      <MobilePlanHeader planner={planner} section="ingredients" />
       <div class={s.mobileDualActions}>
         <input
           class={s.mobileSelect}
@@ -67,17 +70,24 @@ export function IngredientsMobileView({
         }}
       />
       <section class={s.mobileCard}>
+        <div class={s.mobileInventoryHeader}>
+          <strong>
+            {t.ingredients} ({items.length})
+          </strong>
+          <span>{t.price}</span>
+          <span>{t.stock}</span>
+        </div>
         {paged.map((item) => (
           <div key={item.id}>
-            <div class={s.mobileDishItem}>
+            <div class={`${s.mobileDishItem} ${s.mobileInventoryRow}`}>
               <img class={s.mobileDishThumb} src={item.thumbnailUrl} alt="" />
               <div class={s.mobileDishInfo}>
                 <strong>{item.name}</strong>
                 <div>
                   {t.required}: {item.quantity} {item.unit}
                 </div>
-                <small>{priceLabel(item.id, planner)}</small>
               </div>
+              <span class={s.mobileInventoryPrice}>{priceLabel(item.id, planner)}</span>
               <span>{stockLabel(item, planner)}</span>
               <button
                 type="button"
@@ -85,7 +95,7 @@ export function IngredientsMobileView({
                 aria-label={`${t.edit}: ${item.name}`}
                 onClick={() => setEditing(editing === item.id ? null : item.id)}
               >
-                {t.edit}
+                <Icon name="pencil" />
               </button>
             </div>
             {editing === item.id && (
@@ -102,7 +112,7 @@ export function IngredientsMobileView({
       </section>
       <MobilePagination page={currentPage} pages={pages} setPage={setPage} />
       <InventorySummary planner={planner} items={items} />
-      <div class={s.mobileDualActions}>
+      <div class={s.mobileInventoryActions}>
         <button
           type="button"
           class={s.mobilePrimaryBtn}
@@ -110,21 +120,19 @@ export function IngredientsMobileView({
         >
           {t.updateStock}
         </button>
+        <button type="button" class={s.mobileSecondaryBtn} onClick={() => setTransfer(!transfer)}>
+          {t.importExport}
+        </button>
         <button
           type="button"
           class={s.mobileSecondaryBtn}
-          onClick={() => exportInventory(items, planner)}
+          onClick={() => setCategories(!categories)}
         >
-          {t.export}
+          {t.addCategory}
         </button>
       </div>
-      <button
-        type="button"
-        class={s.mobileSecondaryBtn}
-        onClick={() => planner.setActiveSection('shopping')}
-      >
-        {t.shopping}
-      </button>
+      {transfer && <InventoryTransfer items={items} planner={planner} />}
+      {categories && <InventoryCategories items={items} planner={planner} />}
     </div>
   );
 }
@@ -276,28 +284,6 @@ export function AddIngredient({
   );
 }
 
-function exportInventory(items: IngredientLineItem[], planner: UseFoodPlannerReturn) {
-  const rows = [
-    [t.ingredients, t.required, t.amount, t.stock, t.price],
-    ...items.map((item) => [
-      item.name,
-      item.quantity,
-      item.unit,
-      stockLabel(item, planner),
-      priceLabel(item.id, planner),
-    ]),
-  ];
-  const csv = rows
-    .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
-    .join('\r\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'food-planner-inventory.csv';
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
 function InventorySummary({
   planner,
   items,
@@ -314,10 +300,10 @@ function InventorySummary({
   return (
     <section class={s.mobileCard}>
       <div class={s.mobileSummary2x2}>
-        <MobileMetric label={t.totalItems} value={items.length} icon="clipboard" />
+        <MobileMetric label={t.totalItems} value={items.length} icon="clipboard-paste" />
         <MobileMetric label={t.lowStock} value={low} icon="shopping-cart" />
-        <MobileMetric label={t.knownStock} value={known} icon="check-circle" />
-        <MobileMetric label={t.stockUnknown} value={items.length - known} icon="info" />
+        <MobileMetric label={t.knownStock} value={known} icon="circle-check" />
+        <MobileMetric label={t.value} value={money(inventoryValue(items, planner))} icon="coins" />
       </div>
       <p class={s.mobileCardSubtitle}>{t.stockHint}</p>
     </section>
@@ -333,23 +319,33 @@ function IngredientCategories({
   category: string;
   onSelect: (key: string) => void;
 }) {
-  const categories = [...new Set(items.map((item) => item.aisle))];
+  const priority = ['vegetables', 'grains', 'dairy'];
+  const categories = [...new Set(items.map((item) => item.aisle))].sort(
+    (a, b) =>
+      (priority.includes(a) ? priority.indexOf(a) : 9) -
+      (priority.includes(b) ? priority.indexOf(b) : 9),
+  );
+  const button = (key: string) => (
+    <button
+      type="button"
+      key={key}
+      class={`${s.mobileNavPill} ${category === key ? s.mobileNavPillActive : ''}`}
+      aria-pressed={category === key}
+      onClick={() => onSelect(key)}
+    >
+      {key === 'all' ? t.all : (AISLE_DISPLAY_MAP[key] ?? key)} (
+      {key === 'all' ? items.length : items.filter((item) => item.aisle === key).length})
+    </button>
+  );
   return (
     <div class={s.mobileNavPillsRow}>
-      {['all', ...categories].map((key) => (
-        <button
-          type="button"
-          key={key}
-          class={`${s.mobileNavPill} ${category === key ? s.mobileNavPillActive : ''}`}
-          aria-pressed={category === key}
-          onClick={() => {
-            onSelect(key);
-          }}
-        >
-          {key === 'all' ? t.all : (AISLE_DISPLAY_MAP[key] ?? key)} (
-          {key === 'all' ? items.length : items.filter((item) => item.aisle === key).length})
-        </button>
-      ))}
+      {['all', ...categories.slice(0, 3)].map(button)}
+      {categories.length > 3 && (
+        <details class={s.mobileCategoryMore}>
+          <summary>{t.more}</summary>
+          <div>{categories.slice(3).map(button)}</div>
+        </details>
+      )}
     </div>
   );
 }

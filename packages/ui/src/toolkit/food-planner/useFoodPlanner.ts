@@ -1,7 +1,7 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
-import { RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
+import { type ExtendedFoodRecipe, RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
 import { sumMoney } from './plannerResults.ts';
 import { usePlannerEngines, workerRun } from './usePlannerEngines.ts';
 
@@ -56,6 +56,8 @@ const DEFAULT_OTHER_COSTS: OtherCostItem[] = [
 ];
 
 function usePlannerSelection() {
+  const [personalRecipes, setPersonalRecipes] = useState<ExtendedFoodRecipe[]>([]);
+  const allRecipes = useMemo(() => [...RECIPES, ...personalRecipes], [personalRecipes]);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(
     () => new Set(SAMPLE_PLAN.selectedDishes),
   );
@@ -72,8 +74,8 @@ function usePlannerSelection() {
   const [portionFactors, setPortionFactors] = useState<Record<string, number>>({});
 
   const selectedRecipes = useMemo(
-    () => RECIPES.filter((r) => selectedRecipeIds.has(r.id)),
-    [selectedRecipeIds],
+    () => allRecipes.filter((r) => selectedRecipeIds.has(r.id)),
+    [selectedRecipeIds, allRecipes],
   );
 
   const toggleRecipe = useCallback((id: string) => {
@@ -92,6 +94,8 @@ function usePlannerSelection() {
   const clearAllRecipes = useCallback(() => setSelectedRecipeIds(new Set()), []);
 
   return {
+    personalRecipes,
+    setPersonalRecipes,
     favorites,
     toggleFavorite,
     selectedRecipeIds,
@@ -171,6 +175,7 @@ export function useFoodPlanner(run: RunFn = workerRun) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCourse, setActiveCourse] = useState<string>('all');
   const [combineSimilar, setCombineSimilar] = useState<boolean>(true);
+  const [ingredientCategories, setIngredientCategories] = useState<Record<string, string>>({});
   const [stockQuantities, setStockQuantities] = useState<Record<string, string>>({});
   const [ingredientQuantities, setIngredientQuantities] = useState<Record<string, string>>({});
 
@@ -208,6 +213,8 @@ export function useFoodPlanner(run: RunFn = workerRun) {
   }, [selection, checklist, costs]);
 
   return {
+    ingredientCategories,
+    setIngredientCategories,
     stockQuantities,
     setStockQuantities,
     ingredientQuantities,

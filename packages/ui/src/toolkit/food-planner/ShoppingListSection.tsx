@@ -30,7 +30,6 @@ export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
       <div class={styles.mobileOnly}>
         <ShoppingListMobileView
           planner={planner}
-          items={state.shoppingItems}
           boughtMap={planner.boughtItems}
           onToggleBought={planner.toggleBoughtItem}
         />
@@ -55,6 +54,7 @@ function useShoppingListState(planner: UseFoodPlannerReturn) {
     planner.engineCost,
     planner.priceMode,
     planner.userPrices,
+    planner.ingredientCategories,
   );
 
   const totalCost = useMemo(() => ingredientTotal(planner.engineCost), [planner.engineCost]);

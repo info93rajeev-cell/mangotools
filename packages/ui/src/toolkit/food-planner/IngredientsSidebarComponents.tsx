@@ -139,7 +139,7 @@ export function IngredientsSidebar({
             style={{ justifyContent: 'center' }}
             disabled
           >
-            <Icon name="shuffle" /> {t.autoMerged}
+            <Icon name="arrow-left-right" /> {t.autoMerged}
           </button>
           <button
             type="button"

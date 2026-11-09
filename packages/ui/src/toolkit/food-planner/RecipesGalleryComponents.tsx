@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
-import type { ExtendedFoodRecipe } from './foodReferenceData.ts';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
+import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
 import { RecipeCardImage } from './RecipeCardImage.tsx';
 
 export function matchesCourseFilter(recipeCourse: string, activeCourse: string): boolean {
@@ -11,7 +12,7 @@ export function matchesCourseFilter(recipeCourse: string, activeCourse: string):
     return recipeCourse === 'main' || recipeCourse === 'dal' || recipeCourse === 'rice';
   }
   if (activeCourse === 'beverages') {
-    return recipeCourse === 'drink' || recipeCourse === 'side';
+    return recipeCourse === 'drink';
   }
   return recipeCourse === activeCourse;
 }
@@ -34,6 +35,7 @@ export function matchesRecipeFilter(
 }
 
 export interface RecipeGalleryPanelProps {
+  catalogRecipes?: ExtendedFoodRecipe[];
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   activeCourse: string;
@@ -52,6 +54,7 @@ export interface RecipeGalleryPanelProps {
 }
 
 export function RecipeGalleryPanel({
+  catalogRecipes = CATALOG_GALLERY_RECIPES,
   searchQuery,
   setSearchQuery,
   activeCourse,
@@ -77,6 +80,15 @@ export function RecipeGalleryPanel({
 
   return (
     <div class={styles.card}>
+      <header class={styles.cardHeader}>
+        <div>
+          <h2 class={styles.cardTitle}>
+            <Icon name="book-open" />
+            {t.gallery} ({filteredRecipes.length})
+          </h2>
+          <p class={styles.cardSubtitle}>{t.galleryIntro}</p>
+        </div>
+      </header>
       <div class={styles.gallerySearchRow}>
         <span class={styles.gallerySearchIcon}>
           <Icon name="search" />
@@ -95,6 +107,7 @@ export function RecipeGalleryPanel({
       </div>
 
       <CourseFilterBar
+        catalogRecipes={catalogRecipes}
         activeCourse={activeCourse}
         favoritesOnly={favoritesOnly}
         favoritesCount={favorites.size}
@@ -210,18 +223,22 @@ function GalleryPaginationBar({
 }
 
 function CourseFilterBar({
+  catalogRecipes,
   activeCourse,
   favoritesOnly,
   favoritesCount,
   onSelect,
   onSelectFavorites,
 }: {
+  catalogRecipes: ExtendedFoodRecipe[];
   activeCourse: string;
   favoritesOnly: boolean;
   favoritesCount: number;
   onSelect: (c: string) => void;
   onSelectFavorites: () => void;
 }) {
+  const count = (course: string) =>
+    catalogRecipes.filter((recipe) => matchesCourseFilter(recipe.course, course)).length;
   return (
     <div class={styles.cardHeader} style={{ marginBottom: '14px', alignItems: 'center' }}>
       <div class={styles.filterBar} style={{ margin: 0 }}>
@@ -230,35 +247,35 @@ function CourseFilterBar({
           class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'all' ? styles.filterPillActive : ''}`}
           onClick={() => onSelect('all')}
         >
-          All (18)
+          {t.all} ({catalogRecipes.length})
         </button>
         <button
           type="button"
           class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'sweets' ? styles.filterPillActive : ''}`}
           onClick={() => onSelect('sweets')}
         >
-          🧁 Sweets (6)
+          🧁 {t.sweets} ({count('sweets')})
         </button>
         <button
           type="button"
           class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'snacks' ? styles.filterPillActive : ''}`}
           onClick={() => onSelect('snacks')}
         >
-          🥟 Snacks (4)
+          🥟 {t.snacks} ({count('snacks')})
         </button>
         <button
           type="button"
           class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'main' ? styles.filterPillActive : ''}`}
           onClick={() => onSelect('main')}
         >
-          🍲 Main Course (4)
+          🍲 {t.mainCourse} ({count('main')})
         </button>
         <button
           type="button"
           class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'beverages' ? styles.filterPillActive : ''}`}
           onClick={() => onSelect('beverages')}
         >
-          ☕ Beverages (2)
+          ☕ {t.beverages} ({count('beverages')})
         </button>
         <button
           type="button"
@@ -319,6 +336,7 @@ function RecipeGalleryCard({
           }}
           title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
           aria-label={`Favorite ${recipe.name}`}
+          aria-pressed={isFavorited}
         >
           <Icon name="heart" />
         </button>
@@ -330,7 +348,10 @@ function RecipeGalleryCard({
         <div class={styles.recipeInfoRow}>
           <span>⏱ {recipe.prepMinutes + recipe.cookMinutes} min</span>
           <span>•</span>
-          <span>👥 {recipe.servings * 5}</span>
+          <span title={t.baseServings}>
+            👥 {recipe.servings}
+            <span class="sr-only"> {t.baseServings}</span>
+          </span>
         </div>
       </div>
       {isAwaiting ? (

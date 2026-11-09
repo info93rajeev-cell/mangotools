@@ -323,3 +323,12 @@ ingredient categories are outside the existing schema contract; the UI states th
 No engine/schema changes or dependencies. Regression tests cover exact cost allocation and timeline
 mapping; browser tests cover the connected stock/price/purchase/task flow and all five views at
 360/390/430/1600 px. Screenshots are saved as test artifacts.
+
+### Food Planner reference completion follow-up (9 November 2026)
+Portrait reference widths (941/952 px) now use the dedicated mobile views. Reference comparisons capture the ten original viewport sizes alongside the existing 360/390/430/1600 responsive checks. Navy panels, table density, grouped mobile setup, course badges, wide portrait summaries and cost details follow the approved composition. Related tools remains a working disclosure even when no other food tool exists.
+My Recipes supports up to ten session recipes using catalog ingredients, entered base servings, timings and original instructions. These are personal unverified recipes, not additions to the source-checked catalog. Editing or deleting updates the shared engine selection; the recipe gallery reports real base servings rather than multiplying by five. Duplicate inert favorite overlays were removed.
+Inventory CSV can be pasted or opened from a local file, validated atomically, exported with catalog IDs/base units, and re-imported. Custom category labels reach ingredients and shopping; stock values use exact pack-based arithmetic and preserve zero prices. Malformed/duplicate/unknown rows are rejected before updates. Nothing is uploaded or persisted across reloads. Existing recipe verification labels, engine fixtures and schedule estimation limits remain unchanged.
+
+The final portrait pass uses compact ingredient price/stock columns, a More menu for additional categories and a single action row. Mobile shopping groups canonical aisles into the five approved presentation groups without changing the underlying engine data. In Stock filters actual pantry coverage, including fully stocked zero-buy lines; shopping-list checkmarks remain separate. The mobile other-cost summary opens a real editor instead of showing all entry fields by default.
+
+Schedule task details and readiness bars keep recipe names on a separate visible line at portrait widths; reference viewport checks guard against flex compression hiding those labels.

@@ -33,7 +33,7 @@ export function ScheduleSummaryCard({
   timeSpanStr: string;
   burners: number;
   mealTime: string;
-  selectedRecipes: Array<{ id: string; name: string }>;
+  selectedRecipes: Array<{ id: string; name: string; thumbnailUrl?: string }>;
   tasks: ScheduleTaskItem[];
 }) {
   const recipeProgress = selectedRecipes.map((r) => {
@@ -42,7 +42,7 @@ export function ScheduleSummaryCard({
     );
     const completed = dishTasks.filter((t) => t.isCompleted).length;
     const pct = dishTasks.length > 0 ? Math.round((completed / dishTasks.length) * 100) : 0;
-    return { id: r.id, name: r.name, percent: pct };
+    return { id: r.id, name: r.name, thumbnailUrl: r.thumbnailUrl, percent: pct };
   });
 
   return (
@@ -116,12 +116,12 @@ export function ScheduleSummaryCard({
               <div class={styles.breakdownRow}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <img
-                    src={`/food/recipes/${r.id}.jpg`}
+                    src={r.thumbnailUrl ?? '/food/recipes/personal-placeholder.svg'}
                     alt=""
                     class={styles.tableThumb}
                     style={{ width: '24px', height: '24px' }}
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/food/recipes/besan-ladoo.jpg';
+                      (e.target as HTMLImageElement).src = '/food/recipes/personal-placeholder.svg';
                     }}
                   />
                   <span style={{ fontWeight: 600, fontSize: '12.5px' }}>{r.name}</span>

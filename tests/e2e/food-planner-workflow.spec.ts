@@ -25,7 +25,7 @@ test('mobile plan quantities, prices, purchases and task completion stay connect
   await expect(ingredients).toContainText('Required: 2.00 kg');
   await page.getByRole('tab').nth(2).click();
   const shopping = page.getByTestId('mobile-shopping');
-  await shopping.getByRole('button', { name: /^Grains & Rice/ }).click();
+  await shopping.getByRole('button', { name: /^Pulses & Grains/ }).click();
   const rice = shopping.locator('[class*="mobileDishItem"]').filter({ hasText: /Basmati rice/i });
   await expect(rice).toContainText('1.50 kg');
   await expect(rice).toContainText('₹150.00');
@@ -45,7 +45,7 @@ test('mobile plan quantities, prices, purchases and task completion stay connect
       .last(),
   ).toHaveText(shoppingTotal);
   await page.getByRole('tab').nth(2).click();
-  await shopping.getByRole('button', { name: /^Grains & Rice/ }).click();
+  await shopping.getByRole('button', { name: /^Pulses & Grains/ }).click();
   await rice.getByRole('button').click();
   await expect(rice.getByRole('button')).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('tab').nth(4).click();

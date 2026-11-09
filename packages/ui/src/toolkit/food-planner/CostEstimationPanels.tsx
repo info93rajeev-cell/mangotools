@@ -83,11 +83,14 @@ export function CostRightPanel(props: {
         dishesCount={props.dishesCount}
       />
 
-      <BudgetTargetCard
-        budget={props.targetBudget}
-        totalCost={props.costData.totalMenuCost}
-        onSetBudget={props.onSetTargetBudget}
-      />
+      <details>
+        <summary>{t.targetBudget}</summary>
+        <BudgetTargetCard
+          budget={props.targetBudget}
+          totalCost={props.costData.totalMenuCost}
+          onSetBudget={props.onSetTargetBudget}
+        />
+      </details>
 
       <CostInsightsCard
         costPerServing={props.costData.costPerServing}

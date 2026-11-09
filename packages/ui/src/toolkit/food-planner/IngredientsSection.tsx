@@ -123,8 +123,11 @@ function useIngredientsFilterState(
       guests,
       servingsPerGuest,
     );
-    return rawLines;
-  }, [engineConsolidated, selectedRecipes, guests, servingsPerGuest]);
+    return rawLines.map((item) => ({
+      ...item,
+      aisle: planner.ingredientCategories[item.id] ?? item.aisle,
+    }));
+  }, [engineConsolidated, selectedRecipes, guests, servingsPerGuest, planner.ingredientCategories]);
 
   const filteredLines = useMemo(
     () => lines.filter((l) => matchesIngredient(l, filterText, activeCategory)),

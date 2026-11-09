@@ -84,7 +84,7 @@ const SECTION_ICONS: Record<string, string> = {
     ))
   }
   {
-    related.length > 0 ? (
+    related.length > 0 || Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") === "/food-planner" ? (
       <details
         id="related-tools"
         class="content-disclosure"
@@ -96,6 +96,7 @@ const SECTION_ICONS: Record<string, string> = {
           <h2 id="related-tools-title">{t('related.title')}</h2>
         </summary>
         <div class="content-body">
+          {related.length === 0 && <a href="/tools">{t("site.allTools")}</a>}
           <CardGrid>
             {related.map((tool) => (
               <li>
