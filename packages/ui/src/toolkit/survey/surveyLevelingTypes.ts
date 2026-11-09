@@ -17,6 +17,7 @@ export interface SurveyReducedRow {
   bs: string | null;
   is: string | null;
   fs: string | null;
+  hi?: string | null;
   rise: string | null;
   fall: string | null;
   rl: string;
@@ -41,10 +42,10 @@ export interface SurveyCalculationOutput {
   endingRL: string;
   sumBS: string;
   sumFS: string;
-  sumRise: string;
-  sumFall: string;
+  sumRise: string | null;
+  sumFall: string | null;
   bsFsDelta: string;
-  riseFallDelta: string;
+  riseFallDelta: string | null;
   rlDelta: string;
   closingRL: string | null;
   misclosure: string | null;
@@ -56,6 +57,7 @@ export interface SurveyCalculationOutput {
 }
 
 export interface SurveyLevelingState {
+  method: 'rise-fall' | 'height-of-instrument';
   startRL: string;
   closingRL: string;
   kConstant: string;
@@ -65,4 +67,19 @@ export interface SurveyLevelingState {
   phase: 'idle' | 'calculating' | 'result' | 'error' | 'stale';
   errors: string[];
   cellErrors: Record<string, string>;
+}
+
+export interface ProfilePoint {
+  x: number;
+  y: number;
+  station: string;
+  distLabel?: string;
+  isBM: boolean;
+  isCP: boolean;
+  rl: number;
+}
+
+export interface SurveyProfilePlaceholderProps {
+  result: SurveyCalculationOutput | null;
+  closingRL?: string;
 }

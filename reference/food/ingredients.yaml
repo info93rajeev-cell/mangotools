@@ -1,0 +1,49 @@
+# Food Planner ingredient catalogue (TASK-FP-001). Data only, validated by schemas/src/food.ts.
+# A recipe line must use a unit of the ingredient's dimension; quantities are never converted
+# between mass, volume and count.
+version: 0.1.0
+updated: 2026-11-02
+ingredients:
+  - { id: basmati-rice, name: Basmati rice, aliases: [basmati chawal], dimension: mass, aisle: grains }
+  - { id: toor-dal, name: Toor dal (split pigeon peas), aliases: [arhar dal, tuvar dal], dimension: mass, aisle: pulses }
+  - { id: potato, name: Potato, aliases: [aloo], dimension: mass, aisle: vegetables, notFor: [jain] }
+  - { id: cauliflower, name: Cauliflower florets, aliases: [gobi, phool gobhi], dimension: mass, aisle: vegetables }
+  - id: onion
+    name: Onion
+    aliases: [pyaz, kanda]
+    dimension: count
+    aisle: vegetables
+    notFor: [jain]
+    pieceNote: medium onion
+  - { id: tomato, name: Tomato, aliases: [tamatar], dimension: count, aisle: vegetables, pieceNote: medium tomato }
+  - id: garlic
+    name: Garlic clove
+    aliases: [lehsun]
+    dimension: count
+    aisle: vegetables
+    notFor: [jain]
+    pieceNote: one peeled clove
+  - id: ginger-garlic-paste
+    name: Ginger-garlic paste
+    dimension: volume
+    aisle: vegetables
+    notFor: [jain]
+  - { id: coriander-leaves, name: "Coriander leaves, chopped", aliases: [dhania patta], dimension: volume, aisle: herbs }
+  - { id: bay-leaf, name: Bay leaf, aliases: [tej patta], dimension: count, aisle: spices, pieceNote: one dried leaf }
+  - { id: dried-red-chilli, name: Dried red chilli, aliases: [sookhi lal mirch], dimension: count, aisle: spices, pieceNote: one whole chilli }
+  - { id: cumin-seeds, name: Cumin seeds, aliases: [jeera], dimension: volume, aisle: spices }
+  - { id: turmeric-powder, name: Turmeric powder, aliases: [haldi], dimension: volume, aisle: spices }
+  - { id: red-chilli-powder, name: Red chilli powder, aliases: [lal mirch powder], dimension: volume, aisle: spices }
+  - { id: coriander-powder, name: Coriander powder, aliases: [dhania powder], dimension: volume, aisle: spices }
+  - { id: garam-masala, name: Garam masala, dimension: volume, aisle: spices }
+  - { id: amchur, name: Dry mango powder, aliases: [amchur, aamchur], dimension: volume, aisle: spices }
+  # Compounded asafoetida sold in India is usually blended with wheat flour; check the pack.
+  - id: asafoetida
+    name: Asafoetida (compounded)
+    aliases: [hing]
+    dimension: volume
+    aisle: spices
+    allergens: [gluten-cereals]
+  - { id: salt, name: Salt, aliases: [namak], dimension: volume, aisle: spices }
+  - { id: ghee, name: Ghee, dimension: volume, aisle: dairy, allergens: [milk], notFor: [vegan] }
+  - { id: cooking-oil, name: Cooking oil (neutral), aliases: [refined oil], dimension: volume, aisle: oils-fats }

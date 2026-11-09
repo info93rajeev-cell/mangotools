@@ -284,4 +284,153 @@ describe('Survey Leveling Model', () => {
     expect(formatMeasuredLineLength(0.0004)).not.toBe('0 m');
     expect(formatMeasuredLineLength(0.4)).not.toBe('0 m');
   });
+
+  it('builds canonical engine request with height-of-instrument method parameter', () => {
+    const rows = createInitialRows();
+    rows[0].bs = '1.500';
+    rows[1].fs = '2.000';
+    const req = buildLevelingRequest(
+      '100.000',
+      '99.805',
+      rows,
+      'distance',
+      '24',
+      'height-of-instrument',
+    );
+    expect(req.params.method).toBe('height-of-instrument');
+    expect(req.params.adjBy).toBe('distance');
+    expect(req.params.kConstant).toBe('24');
+  });
+
+  it('executes sample rows against survey.leveling.reduce@2 with height-of-instrument method', async () => {
+    const reqHI = buildLevelingRequest(
+      SAMPLE_START_RL,
+      SAMPLE_CLOSING_RL,
+      SAMPLE_ROWS,
+      SAMPLE_ADJ_BY,
+      SAMPLE_K_CONSTANT,
+      'height-of-instrument',
+    );
+    const resultHI = await executeOperation(
+      levelingReduceV2,
+      reqHI.input,
+      reqHI.params,
+      createTestContext(),
+    );
+
+    expect(resultHI.ok).toBe(true);
+    if (!resultHI.ok) return;
+
+    const valHI = resultHI.value as unknown as {
+      totalDistanceKm: string | null;
+      allowableError: string | null;
+      closureStatus: string | null;
+      setupsCount: number;
+      misclosure: string | null;
+      sumBS: string;
+      sumFS: string;
+      sumRise: string | null;
+      sumFall: string | null;
+      riseFallDelta: string | null;
+      bsFsDelta: string;
+      rlDelta: string;
+      checks: Array<{ id: string; status: string }>;
+      rows: Array<{
+        station?: string;
+        hi: string | null;
+        rl: string;
+        corr: string | null;
+        adjustedRL: string | null;
+      }>;
+    };
+
+    // Truthful HI output checks: Rise/Fall deltas are null
+    expect(valHI.sumRise).toBeNull();
+    expect(valHI.sumFall).toBeNull();
+    expect(valHI.riseFallDelta).toBeNull();
+    expect(valHI.bsFsDelta).toBe('-0.2');
+    expect(valHI.rlDelta).toBe('-0.2');
+
+    // Only arithmetic-first-last check exists; NO arithmetic-rise-fall check
+    expect(valHI.checks).toHaveLength(1);
+    expect(valHI.checks[0].id).toBe('arithmetic-first-last');
+    expect(valHI.checks[0].status).toBe('pass');
+
+    // HI per setup row
+    expect(valHI.rows[0].hi).toBe('101.5');
+    expect(valHI.rows[1].hi).toBeNull();
+    expect(valHI.rows[2].hi).toBe('100.3');
+    expect(valHI.rows[3].hi).toBeNull();
+    expect(valHI.rows[4].hi).toBe('102');
+    expect(valHI.rows[5].hi).toBeNull();
+
+    // Raw RLs are identical to Rise & Fall
+    expect(valHI.rows[0].rl).toBe('100');
+    expect(valHI.rows[1].rl).toBe('100.3');
+    expect(valHI.rows[2].rl).toBe('99.5');
+    expect(valHI.rows[3].rl).toBe('99.2');
+    expect(valHI.rows[4].rl).toBe('99.7');
+    expect(valHI.rows[5].rl).toBe('99.8');
+
+    // Closures and corrections
+    expect(valHI.misclosure).toBe('-0.005');
+    expect(valHI.allowableError).toBe('9.6');
+    expect(valHI.closureStatus).toBe('pass');
+    expect(valHI.rows[5].adjustedRL).toBe('99.805');
+  });
+
+  it('verifies Height of Instrument and Rise & Fall produce identical raw and adjusted RLs', async () => {
+    const reqRF = buildLevelingRequest(
+      SAMPLE_START_RL,
+      SAMPLE_CLOSING_RL,
+      SAMPLE_ROWS,
+      SAMPLE_ADJ_BY,
+      SAMPLE_K_CONSTANT,
+      'rise-fall',
+    );
+    const reqHI = buildLevelingRequest(
+      SAMPLE_START_RL,
+      SAMPLE_CLOSING_RL,
+      SAMPLE_ROWS,
+      SAMPLE_ADJ_BY,
+      SAMPLE_K_CONSTANT,
+      'height-of-instrument',
+    );
+    const resRF = await executeOperation(
+      levelingReduceV2,
+      reqRF.input,
+      reqRF.params,
+      createTestContext(),
+    );
+    const resHI = await executeOperation(
+      levelingReduceV2,
+      reqHI.input,
+      reqHI.params,
+      createTestContext(),
+    );
+
+    expect(resRF.ok).toBe(true);
+    expect(resHI.ok).toBe(true);
+    if (!resRF.ok || !resHI.ok) return;
+
+    const valRF = resRF.value as {
+      misclosure: string | null;
+      allowableError: string | null;
+      closureStatus: string | null;
+      rows: Array<{ rl: string; corr: string | null; adjustedRL: string | null }>;
+    };
+    const valHI = resHI.value as {
+      misclosure: string | null;
+      allowableError: string | null;
+      closureStatus: string | null;
+      rows: Array<{ rl: string; corr: string | null; adjustedRL: string | null }>;
+    };
+
+    expect(valHI.rows.map((r) => r.rl)).toEqual(valRF.rows.map((r) => r.rl));
+    expect(valHI.rows.map((r) => r.corr)).toEqual(valRF.rows.map((r) => r.corr));
+    expect(valHI.rows.map((r) => r.adjustedRL)).toEqual(valRF.rows.map((r) => r.adjustedRL));
+    expect(valHI.misclosure).toBe(valRF.misclosure);
+    expect(valHI.allowableError).toBe(valRF.allowableError);
+    expect(valHI.closureStatus).toBe(valRF.closureStatus);
+  });
 });

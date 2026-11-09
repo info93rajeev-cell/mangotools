@@ -9,6 +9,19 @@ categories:
     seo:
       title: Surveying Calculators – Leveling & Traverse Tools
       description: Free surveying calculators for leveling and traverse adjustment. Every check and step is shown, and everything runs in your browser.
+    about:
+      - Differential leveling and traverse calculators built specifically for land surveyors, civil site engineers, and surveying students. The Survey Leveling Calculator reduces differential level books using either the Rise & Fall or Height of Instrument (Collimation) method, with complete arithmetic equality checks, closing misclosure comparison, allowable error limits, and distance- or setup-proportional adjustments.
+      - Input observations quickly by typing or pasting directly from Excel or Google Sheets. Change points with both incoming foresight and outgoing backsight are automatically detected and verified against engineering sequence rules.
+      - All reductions and adjustments use exact rational decimal arithmetic and run 100% locally on your device. Your field measurements and project benchmarks are never sent to any server.
+    faq:
+      - q: "Are these surveying calculators free?"
+        a: "Yes. All calculators are free to use, require no account registration, and contain no ads."
+      - q: "Which leveling reduction methods are supported?"
+        a: "Both standard differential leveling reduction methods are supported: Rise & Fall (with three agreeing deltas arithmetic checks) and Height of Instrument / Collimation (HI = RL + BS)."
+      - q: "Can I paste field readings from Excel or spreadsheets?"
+        a: "Yes. The Paste from Excel modal parses tab-separated or comma-separated rows with automatic column header detection and live sequence validation."
+      - q: "Are my survey benchmark coordinates or field notes uploaded anywhere?"
+        a: "No. All calculations run strictly client-side inside your web browser. No project data or observations ever leave your computer."
   - id: construction
     slug: construction
     name: Civil & Construction
@@ -98,6 +111,25 @@ categories:
         a: Money is rounded to two decimal places using commercial rounding, where halves round away from zero. Each tool explains its exact rounding rule on its page.
       - q: Is this tax or accounting advice?
         a: No. The tools help you calculate and check figures. Confirm tax treatment with the official rules or your accountant.
+  - id: food-and-catering
+    slug: food-and-catering
+    name: Food & Catering
+    icon: utensils
+    order: 55
+    summary: Recipe planning, ingredient scaling, consolidated shopping, cost estimation and cooking schedules.
+    seo:
+      title: Food & Catering Tools – Recipe Scaling & Meal Planning
+      description: Free Food & Catering planning tools for Indian events and parties. Scale recipe ingredients, consolidate shopping lists, estimate costs and schedule prep.
+    about:
+      - The Food & Catering planning tools help home cooks, event hosts, caterers and cloud kitchens plan menus with precision. Scale recipe ingredients for any guest count, consolidate shared items into an aisle-grouped shopping list, estimate grocery and event costs against retail and wholesale benchmarks, and generate backward-scheduled cooking timelines.
+      - All ingredient arithmetic and unit conversions use exact decimal math. Recipe scalings preserve verified kitchen ratios, and your custom menus and event budgets remain completely private on your device.
+    faq:
+      - q: Are these food and catering planning tools free?
+        a: Yes. All tools are free to use with no sign-up, no subscriptions and no ads.
+      - q: Can I plan events for large guest counts?
+        a: Yes. The engine scales seamlessly from intimate family dinners of 5-10 guests to large community feasts and catering events of 100+ guests.
+      - q: Is my menu or pricing data uploaded to any server?
+        a: No. All calculations run client-side in your browser. Nothing is sent to any server.
   - id: developer
     slug: developer
     name: Developer & Data

@@ -27,6 +27,7 @@ function Step4EdgeCard({
           min="0"
           max="30"
           step="1"
+          aria-label="Feather Radius"
           value={edgeSettings.featherRadius}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -46,6 +47,7 @@ function Step4EdgeCard({
           min="-20"
           max="20"
           step="1"
+          aria-label="Expand / Contract"
           value={edgeSettings.expandContract}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -65,6 +67,7 @@ function Step4EdgeCard({
           min="0"
           max="100"
           step="5"
+          aria-label="Smooth Path"
           value={edgeSettings.smoothPath}
           class={styles.rangeInput}
           onInput={(e) => {
@@ -84,6 +87,7 @@ function Step4EdgeCard({
           min="0"
           max="100"
           step="5"
+          aria-label="Edge Blur"
           value={edgeSettings.edgeBlur}
           class={styles.rangeInput}
           onInput={(e) => {

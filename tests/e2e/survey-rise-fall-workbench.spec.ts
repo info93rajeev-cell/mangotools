@@ -79,7 +79,7 @@ for (const vp of viewports) {
     // Verify Breadcrumbs and Title with real site shell
     await expect(page.locator('h1')).toHaveText('Rise & Fall Leveling Calculator');
     await expect(page.getByText('Home')).toBeVisible();
-    await expect(page.getByText('Surveying')).toBeVisible();
+    await expect(page.locator('nav.crumbs').getByText('Surveying')).toBeVisible();
 
     // On initial mount, allowable constant C has no automatic default -> Criterion not provided
     const resultsBadge = page.locator('[data-results-badge]');
@@ -183,6 +183,21 @@ for (const vp of viewports) {
       () => document.documentElement.scrollWidth > window.innerWidth,
     );
     expect(hasHorizontalOverflow).toBe(false);
+
+    // Return page to scroll position 0 and wait for sticky header to settle
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      window.scrollTo(0, 0);
+    });
+    await page.waitForTimeout(350);
+
+    // Confirm header settled at the top of the page
+    const headerBox = await page.locator('.site-header').boundingBox();
+    if (headerBox) {
+      expect(headerBox.y).toBe(0);
+    }
 
     // Capture full-page screenshot with real typography, header, and footer
     const shotPath = `tests/artifacts/screenshots/survey-workbench-${vp.name}-${vp.width}.png`;

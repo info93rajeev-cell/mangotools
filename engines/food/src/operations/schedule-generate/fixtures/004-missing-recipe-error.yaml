@@ -1,0 +1,19 @@
+id: 004-missing-recipe-error
+operation: food.schedule.generate@1
+source: {type: synthetic}
+input:
+  mealTime: "13:00"
+  burnersAvailable: 2
+  recipes:
+    - id: jeera-rice
+      version: 0.1.0
+      name: Jeera Rice
+      servings: 4
+      prepMinutes: 10
+      cookMinutes: 20
+      steps: [Cook rice]
+  selection:
+    - { recipe: missing-curry, recipeVersion: 0.1.0 }
+expectedError:
+  code: FOOD_UNKNOWN_RECIPE
+  details: { recipe: missing-curry, version: 0.1.0 }

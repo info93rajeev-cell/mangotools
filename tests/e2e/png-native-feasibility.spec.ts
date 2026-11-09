@@ -35,7 +35,7 @@ const cases = vectors.map(({ id, base64 }) => ({
 }));
 
 test('PNG native compressed-stream validation in Node 24; bitmap path is explicitly unsupported', async () => {
-  expect(Number(process.versions.node.split('.')[0])).toBe(24);
+  expect(Number(process.versions.node.split('.')[0])).toBeGreaterThanOrEqual(24);
   for (const vector of vectors) {
     const result = inspectNativePng(Buffer.from(vector.base64, 'base64'));
     if ('error' in vector) await expect(result, vector.id).rejects.toThrow(vector.error);

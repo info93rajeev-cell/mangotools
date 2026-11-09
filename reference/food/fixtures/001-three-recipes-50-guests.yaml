@@ -1,0 +1,54 @@
+# Golden fixture for the proposed operation food.shopping.consolidate@1 (TASK-FP-001).
+# It is checked today by tests/unit/food-reference.test.ts with an exact rational calculator;
+# the engine, once approved, must reproduce it unchanged (AGENTS.md rule 4).
+id: 001-three-recipes-50-guests
+operation: food.shopping.consolidate@1
+source:
+  type: derived
+  citation: >-
+    Recipe quantities from reference/food/recipes (jeera-rice, dal-tadka, aloo-gobi, all 0.1.0).
+    Metric kitchen measures: 1 tsp = 5 ml, 1 tbsp = 15 ml (as used by the cited Indian recipe
+    sources). Arithmetic only.
+assumptions:
+  - Every guest eats one full serving of each selected dish (portion factor 1).
+  - Scale factor per recipe = guests ÷ recipe servings = 50 ÷ 4 = 12.5, applied exactly.
+  - Lines are added only when they share an ingredient; spoons are converted to ml; no conversion between mass, volume and count.
+  - Mass and volume totals are exact. Count totals are rounded up to whole pieces after adding all recipes (never per recipe).
+  - Water used for cooking is part of the method, not the shopping list.
+  - Lines are sorted by ingredient id.
+input:
+  guests: 50
+  servingsPerGuest: "1"
+  recipes:
+    - { recipe: jeera-rice, recipeVersion: 0.1.0 }
+    - { recipe: dal-tadka, recipeVersion: 0.1.0 }
+    - { recipe: aloo-gobi, recipeVersion: 0.1.0 }
+expected:
+  scale:
+    - { recipe: jeera-rice, factor: "12.5" }
+    - { recipe: dal-tadka, factor: "12.5" }
+    - { recipe: aloo-gobi, factor: "12.5" }
+  lines:
+    - { ingredient: amchur, total: "31.25", unit: ml, buy: "31.25", usedIn: [aloo-gobi] }
+    - { ingredient: asafoetida, total: "15.625", unit: ml, buy: "15.625", usedIn: [dal-tadka] }
+    - { ingredient: basmati-rice, total: "2500", unit: g, buy: "2500", usedIn: [jeera-rice] }
+    - { ingredient: bay-leaf, total: "12.5", unit: piece, buy: "13", usedIn: [jeera-rice] }
+    - { ingredient: cauliflower, total: "5000", unit: g, buy: "5000", usedIn: [aloo-gobi] }
+    - { ingredient: cooking-oil, total: "375", unit: ml, buy: "375", usedIn: [aloo-gobi] }
+    - { ingredient: coriander-leaves, total: "750", unit: ml, buy: "750", usedIn: [dal-tadka, aloo-gobi] }
+    - { ingredient: coriander-powder, total: "62.5", unit: ml, buy: "62.5", usedIn: [aloo-gobi] }
+    - { ingredient: cumin-seeds, total: "250", unit: ml, buy: "250", usedIn: [jeera-rice, dal-tadka, aloo-gobi] }
+    - { ingredient: dried-red-chilli, total: "25", unit: piece, buy: "25", usedIn: [dal-tadka] }
+    - { ingredient: garam-masala, total: "15.625", unit: ml, buy: "15.625", usedIn: [aloo-gobi] }
+    - { ingredient: garlic, total: "50", unit: piece, buy: "50", usedIn: [dal-tadka] }
+    - { ingredient: ghee, total: "562.5", unit: ml, buy: "562.5", usedIn: [jeera-rice, dal-tadka] }
+    - { ingredient: ginger-garlic-paste, total: "62.5", unit: ml, buy: "62.5", usedIn: [aloo-gobi] }
+    - { ingredient: onion, total: "25", unit: piece, buy: "25", usedIn: [dal-tadka, aloo-gobi] }
+    - { ingredient: potato, total: "5000", unit: g, buy: "5000", usedIn: [aloo-gobi] }
+    - { ingredient: red-chilli-powder, total: "31.25", unit: ml, buy: "31.25", usedIn: [aloo-gobi] }
+    - { ingredient: salt, total: "187.5", unit: ml, buy: "187.5", usedIn: [jeera-rice, dal-tadka, aloo-gobi] }
+    - { ingredient: tomato, total: "37.5", unit: piece, buy: "38", usedIn: [dal-tadka, aloo-gobi] }
+    - { ingredient: toor-dal, total: "2500", unit: g, buy: "2500", usedIn: [dal-tadka] }
+    - { ingredient: turmeric-powder, total: "62.5", unit: ml, buy: "62.5", usedIn: [dal-tadka, aloo-gobi] }
+  allergens: [gluten-cereals, milk]
+  diet: vegetarian

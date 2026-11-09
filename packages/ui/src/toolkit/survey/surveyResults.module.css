@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px 10px;
+  padding: 10px 16px 8px;
   border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
 }
 
@@ -49,7 +49,7 @@
 }
 
 .cardBody {
-  padding: 14px 16px 16px;
+  padding: 8px 16px 12px;
   min-width: 0;
   max-width: 100%;
 }
@@ -90,34 +90,34 @@
 .tilesGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .tile {
   border: 1px solid var(--color-border, #e2e8f0);
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 6px;
+  padding: 7px 8px;
   background: var(--color-surface, #fff);
   min-width: 0;
 }
 
 .tileHead {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   color: #334155;
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 5px;
+  margin-bottom: 2px;
 }
 
 .tileValue {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-heading, #0b1b3f);
   font-variant-numeric: tabular-nums;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .tileValue small {
@@ -128,31 +128,31 @@
 }
 
 .tileSub {
-  font-size: 10.5px;
+  font-size: 10px;
   color: #475569;
 }
 
 /* Gradient Bar & Checks */
 .gradientBar {
-  height: 4px;
+  height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #1a6ef5 0 25%, #16a34a 25% 50%, #f97316 50% 75%, #7c3aed 75%);
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .checksList {
   list-style: none;
   padding: 0;
-  margin: 0 0 14px;
+  margin: 0 0 8px;
 }
 
 .checkItem {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 0;
+  padding: 3.5px 0;
   border-bottom: 1px dashed var(--color-border-subtle, #e2e8f0);
-  font-size: 12px;
+  font-size: 11.5px;
   font-variant-numeric: tabular-nums;
   color: #0f172a;
 }
@@ -198,23 +198,23 @@
 .resultsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12.5px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .resultsTable th {
   background: var(--color-bg-subtle, #f8fafc);
-  font-size: 11.5px;
+  font-size: 11px;
   color: #334155;
   font-weight: 600;
-  padding: 7px 8px;
+  padding: 5px 6px;
   text-align: right;
   border-bottom: 1px solid var(--color-border, #e2e8f0);
 }
 
 .resultsTable tr td {
-  padding: 6px 8px;
+  padding: 3.5px 6px;
   text-align: right;
   border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
 }
@@ -243,6 +243,82 @@
   font-weight: 500;
 }
 
+.statusTextPass {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.statusTextFail {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.statusTextWarning {
+  color: #b45309;
+  font-weight: 500;
+}
+
+.tileValueMuted {
+  color: #64748b;
+}
+
+.iconWrapGreen {
+  background: #e9f8ef;
+  color: #15803d;
+}
+
+.iconWrapBlue {
+  background: #eaf1fe;
+  color: #1a6ef5;
+}
+
+.iconWrapAmber {
+  background: #fff6e5;
+  color: #d97706;
+}
+
+.iconWrapRed {
+  background: #fdecec;
+  color: #dc2626;
+}
+
+.checksSubtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.colAdjRLHeader {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.stationCell {
+  text-align: left;
+  font-weight: 600;
+}
+
+.hiCell {
+  font-weight: 600;
+  color: #0f766e;
+}
+
+.rlCell {
+  font-weight: 600;
+  color: #334155;
+}
+
+.corrCell {
+  font-size: 11.5px;
+  color: #475569;
+}
+
+.adjRLCell {
+  font-weight: 700;
+  color: #0b1b3f;
+}
+
 .staleNotice {
   background: #fffbeb;
   border: 1px solid #fcd34d;
@@ -257,16 +333,16 @@
 .outputActions {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .printBtn {
   background: #fbbf24;
   border: 0;
   border-radius: 6px;
-  padding: 10px;
+  padding: 7px 10px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
   color: #0f172a;
   display: flex;
@@ -283,9 +359,9 @@
   background: var(--color-surface, #fff);
   border: 1px solid var(--color-border, #cbd5e1);
   border-radius: 6px;
-  padding: 10px;
+  padding: 7px 10px;
   font-weight: 600;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
   color: #1a6ef5;
   display: flex;
@@ -314,6 +390,19 @@
   .tilesGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .resultsTable {
+    table-layout: fixed;
+    font-size: 10.5px;
+  }
+  .resultsTable th,
+  .resultsTable tr td {
+    padding: 5px 2px;
+    overflow-wrap: anywhere;
+  }
+  .resultsTable th:nth-child(2),
+  .resultsTable tr td:nth-child(2) {
+    display: none;
+  }
   .outputActions {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -324,4 +413,139 @@
   .statusBadge {
     display: none;
   }
+}
+
+/* Dark Theme Overrides */
+:global(:where([data-theme="dark"])) .card {
+  background: #151e33;
+  border-color: #2b3a57;
+}
+:global(:where([data-theme="dark"])) .cardHead {
+  border-bottom-color: #1d2940;
+}
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #f1f5f9;
+}
+:global(:where([data-theme="dark"])) .statusPass {
+  background: #052e16;
+  color: #4ade80;
+  border-color: #166534;
+}
+:global(:where([data-theme="dark"])) .statusFail {
+  background: #450a0a;
+  color: #f87171;
+  border-color: #991b1b;
+}
+:global(:where([data-theme="dark"])) .statusIdle {
+  background: #1e293b;
+  color: #cbd5e1;
+  border-color: #334155;
+}
+:global(:where([data-theme="dark"])) .statusWarning {
+  background: #451a03;
+  color: #fde68a;
+  border-color: #b45309;
+}
+:global(:where([data-theme="dark"])) .tile {
+  background: #101827;
+  border-color: #2b3a57;
+}
+:global(:where([data-theme="dark"])) .tileHead {
+  color: #cbd5e1;
+}
+:global(:where([data-theme="dark"])) .tileValue {
+  color: #f1f5f9;
+}
+:global(:where([data-theme="dark"])) .tileValue small {
+  color: #94a3b8;
+}
+:global(:where([data-theme="dark"])) .tileSub {
+  color: #94a3b8;
+}
+:global(:where([data-theme="dark"])) .checksSubtitle {
+  color: #cbd5e1;
+}
+:global(:where([data-theme="dark"])) .checkItem {
+  color: #f1f5f9;
+  border-bottom-color: #1d2940;
+}
+:global(:where([data-theme="dark"])) .checkValue {
+  color: #4ade80;
+}
+:global(:where([data-theme="dark"])) .checkValueMismatch {
+  color: #f87171;
+}
+:global(:where([data-theme="dark"])) .resultsTable th {
+  background: #101827;
+  color: #cbd5e1;
+  border-bottom-color: #2b3a57;
+}
+:global(:where([data-theme="dark"])) .colAdjRLHeader {
+  color: #93c5fd;
+}
+:global(:where([data-theme="dark"])) .resultsTable tr td {
+  border-bottom-color: #1d2940;
+  color: #f1f5f9;
+}
+:global(:where([data-theme="dark"])) .hiCell {
+  color: #2dd4bf;
+}
+:global(:where([data-theme="dark"])) .rlCell {
+  color: #e2e8f0;
+}
+:global(:where([data-theme="dark"])) .corrCell {
+  color: #94a3b8;
+}
+:global(:where([data-theme="dark"])) .adjRLCell {
+  color: #f8fafc;
+}
+:global(:where([data-theme="dark"])) .riseText {
+  color: #4ade80;
+}
+:global(:where([data-theme="dark"])) .fallText {
+  color: #f87171;
+}
+:global(:where([data-theme="dark"])) .zeroText {
+  color: #94a3b8;
+}
+:global(:where([data-theme="dark"])) .staleNotice {
+  background: #451a03;
+  border-color: #b45309;
+  color: #fde68a;
+}
+:global(:where([data-theme="dark"])) .copyBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #60a5fa;
+}
+:global(:where([data-theme="dark"])) .copyBtn:hover:not(:disabled) {
+  border-color: #60a5fa;
+}
+:global(:where([data-theme="dark"])) .statusTextPass {
+  color: #4ade80;
+}
+:global(:where([data-theme="dark"])) .statusTextFail {
+  color: #f87171;
+}
+:global(:where([data-theme="dark"])) .statusTextWarning {
+  color: #fde68a;
+}
+:global(:where([data-theme="dark"])) .tileValueMuted {
+  color: #94a3b8;
+}
+:global(:where([data-theme="dark"])) .iconWrapGreen {
+  background: #052e16;
+  color: #4ade80;
+}
+:global(:where([data-theme="dark"])) .iconWrapBlue {
+  background: #172554;
+  color: #60a5fa;
+}
+:global(:where([data-theme="dark"])) .iconWrapAmber {
+  background: #451a03;
+  color: #fbbf24;
+}
+:global(:where([data-theme="dark"])) .iconWrapRed {
+  background: #450a0a;
+  color: #f87171;
 }

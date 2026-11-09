@@ -4,9 +4,9 @@ import { gotoReady, island, openTool, primaryResult } from '../support/tool-page
 
 test.describe('Image Metadata Remover', () => {
   const fileInput = (page: Page) =>
-    island(page, 'image-metadata-remover').locator('input[type="file"]');
+    island(page, 'image-metadata-remover').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-metadata-remover/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-metadata-remover').locator('img');
+  const preview = (page: Page) => island(page, 'image-metadata-remover').locator('img').first();
 
   test('selecting an image previews it without exposing width or height controls', async ({
     page,
@@ -62,15 +62,20 @@ test.describe('Image Metadata Remover', () => {
     await openTool(page, 'image-metadata-remover');
     const notAnImage = join(process.cwd(), 'tools/image-metadata-remover/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByRole('button', { name: 'Download cleaned image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 });
 
 test.describe('Image Watermark', () => {
-  const fileInput = (page: Page) => island(page, 'image-watermark').locator('input[type="file"]');
+  const fileInput = (page: Page) =>
+    island(page, 'image-watermark').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-watermark/fixtures/files/sample.jpg');
-  const preview = (page: Page) => island(page, 'image-watermark').locator('img');
+  const preview = (page: Page) => island(page, 'image-watermark').locator('img').first();
 
   test('selecting an image previews it and shows watermark controls with their defaults', async ({
     page,
@@ -150,17 +155,21 @@ test.describe('Image Watermark', () => {
     await openTool(page, 'image-watermark');
     const notAnImage = join(process.cwd(), 'tools/image-watermark/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await page.getByLabel('Watermark text').fill('Sample');
-    await page.getByRole('button', { name: 'Download watermarked image' }).click();
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 });
 
 test.describe('Image Crop', () => {
-  const fileInput = (page: Page) => island(page, 'image-crop').locator('input[type="file"]');
+  const fileInput = (page: Page) =>
+    island(page, 'image-crop').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-crop/fixtures/files/sample.jpg');
   const preview = (page: Page) =>
-    island(page, 'image-crop').locator('section[aria-label="Visual Crop Canvas"] img');
+    island(page, 'image-crop').locator('section[aria-label="Visual Crop Canvas"] img').first();
 
   test('selecting an image previews it and shows the default crop rectangle', async ({ page }) => {
     await openTool(page, 'image-crop');
@@ -260,12 +269,18 @@ test.describe('Image Crop', () => {
     await openTool(page, 'image-crop');
     const notAnImage = join(process.cwd(), 'tools/image-crop/manifest.yaml');
     await fileInput(page).setInputFiles([notAnImage]);
-    await expect(page.getByText('is not a JPG, PNG, or WebP image.')).toBeVisible();
+    await expect(
+      page
+        .getByRole('alert')
+        .getByText(/is not a (supported )?JPG, PNG,? (or )?WebP image/i)
+        .first(),
+    ).toBeVisible();
   });
 });
 
 test.describe('Image Enlarger & Enhancer', () => {
-  const fileInput = (page: Page) => island(page, 'image-enlarger').locator('input[type="file"]');
+  const fileInput = (page: Page) =>
+    island(page, 'image-enlarger').locator('input[type="file"]').first();
   const sample = join(process.cwd(), 'tools/image-resize/fixtures/files/sample.jpg');
 
   test('selecting an image previews it and shows 2x default scale', async ({ page }) => {

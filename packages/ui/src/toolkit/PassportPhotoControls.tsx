@@ -186,6 +186,7 @@ export function PassportPhotoControls({
                   <div class={styles.dimInputWrap}>
                     <input
                       id={`${idPrefix}-target-width`}
+                      aria-label="Photo width"
                       type="number"
                       class={styles.dimInput}
                       value={passport.targetWidth}
@@ -202,6 +203,7 @@ export function PassportPhotoControls({
                   <div class={styles.dimInputWrap}>
                     <input
                       id={`${idPrefix}-target-height`}
+                      aria-label="Photo height"
                       type="number"
                       class={styles.dimInput}
                       value={passport.targetHeight}
@@ -228,6 +230,7 @@ export function PassportPhotoControls({
                 <div class={styles.formatField} style={{ flex: 1.5 }}>
                   <select
                     id={`${idPrefix}-output-format`}
+                    aria-label="Output format"
                     class={styles.formatSelect}
                     value={passport.outputFormat}
                     onChange={(e) =>
@@ -248,6 +251,7 @@ export function PassportPhotoControls({
                 <div class={styles.qualityField} style={{ flex: 1.2 }}>
                   <input
                     id={`${idPrefix}-quality`}
+                    aria-label="Quality"
                     type="number"
                     min="1"
                     max="100"
@@ -264,6 +268,7 @@ export function PassportPhotoControls({
                 <div style={{ flex: 2 }}>
                   <input
                     id={`${idPrefix}-custom-filename`}
+                    aria-label="Custom filename"
                     type="text"
                     placeholder="Filename"
                     class={styles.dimInput}

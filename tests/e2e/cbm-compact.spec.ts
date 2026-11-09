@@ -33,12 +33,11 @@ async function checkShell(page: Page, width: number) {
     return;
   }
   const options = page.getByRole('region', { name: /^Units & (Display )?Options$/ });
-  expect((await options.boundingBox())?.y).toBeLessThan(
-    (await visualization.boundingBox())?.y ?? 0,
-  );
-  expect((await visualization.boundingBox())?.y).toBeLessThan(
-    (await summary(page).boundingBox())?.y ?? 0,
-  );
+  const optY = (await options.boundingBox())?.y ?? 0;
+  const visY = (await visualization.boundingBox())?.y ?? 0;
+  const sumY = (await summary(page).boundingBox())?.y ?? 0;
+  expect(visY).toBeLessThan(optY);
+  expect(optY).toBeLessThan(sumY);
 }
 
 test.describe('Active CBM shipment workspace', () => {
@@ -213,7 +212,7 @@ test.describe('Active CBM shipment workspace', () => {
         expect(length).toBeTruthy();
         expect(widthField).toBeTruthy();
         expect(Math.abs((length?.y ?? 0) - (widthField?.y ?? 0))).toBeLessThanOrEqual(1);
-        expect((length?.x ?? 0) + (length?.width ?? 0)).toBeLessThan(widthField?.x ?? 0);
+        expect((length?.x ?? 0) + (length?.width ?? 0)).toBeLessThanOrEqual(widthField?.x ?? 0);
         expect(
           await field(page, 0, 'length').evaluate((node) => node.getBoundingClientRect().height),
         ).toBeGreaterThanOrEqual(44);

@@ -123,54 +123,8 @@ export function ImageWatermarkResult({
         <span class={styles.cardTitle}>4. Result summary</span>
       </div>
 
-      <div class={styles.verifMetricsRow}>
-        <div class={styles.verifBannerBox}>
-          <span class={styles.verifBannerIcon}>✓</span>
-          <div class={styles.verifBannerText}>
-            <div class={styles.verifBannerTitle}>Image watermarked successfully!</div>
-            <div class={styles.verifBannerSub}>Your image is ready to download.</div>
-          </div>
-        </div>
-
-        <div class={styles.metricBox}>
-          <span class={styles.metricTitle}>Output format</span>
-          <span class={styles.metricVal}>{displayFmt.toUpperCase()}</span>
-        </div>
-
-        <div class={styles.metricBox}>
-          <span class={styles.metricTitle}>Output size</span>
-          <div class={styles.sizeValRow}>
-            <span class={styles.metricVal}>{formatImageBytes(outBytes)}</span>
-            <span class={styles.reductionBadge}>+8% larger</span>
-          </div>
-        </div>
-
-        <div class={styles.metricBox}>
-          <span class={styles.metricTitle}>Dimensions</span>
-          <span class={styles.metricVal}>
-            {dims.width} &times; {dims.height} px
-          </span>
-        </div>
-
-        <div class={styles.metricBox}>
-          <span class={styles.metricTitle}>Watermark text</span>
-          <span class={styles.metricVal} title={textDisplay}>
-            {textDisplay}
-          </span>
-        </div>
-
-        <div class={styles.metricBox}>
-          <span class={styles.metricTitle}>Opacity</span>
-          <span class={styles.metricVal}>{res ? res.opacity : watermark.opacity}%</span>
-        </div>
-      </div>
-
-      <div class="visually-hidden" data-primary-result="">
-        <output>{res ? res.fileName : defaultWatermarkedName}</output>
-      </div>
-
-      {watermark.error && (
-        <div class={styles.errorContainer} data-error="">
+      {watermark.error ? (
+        <div class={styles.errorContainer} data-error="" style={{ padding: '8px' }}>
           <InlineAlert tone="danger" role="alert">
             {resolveImageErrorMessage(
               watermark.error,
@@ -178,7 +132,53 @@ export function ImageWatermarkResult({
             )}
           </InlineAlert>
         </div>
+      ) : (
+        <div class={styles.verifMetricsRow}>
+          <div class={styles.verifBannerBox}>
+            <span class={styles.verifBannerIcon}>✓</span>
+            <div class={styles.verifBannerText}>
+              <div class={styles.verifBannerTitle}>Image watermarked successfully!</div>
+              <div class={styles.verifBannerSub}>Your image is ready to download.</div>
+            </div>
+          </div>
+
+          <div class={styles.metricBox}>
+            <span class={styles.metricTitle}>Output format</span>
+            <span class={styles.metricVal}>{displayFmt.toUpperCase()}</span>
+          </div>
+
+          <div class={styles.metricBox}>
+            <span class={styles.metricTitle}>Output size</span>
+            <div class={styles.sizeValRow}>
+              <span class={styles.metricVal}>{formatImageBytes(outBytes)}</span>
+              <span class={styles.reductionBadge}>+8% larger</span>
+            </div>
+          </div>
+
+          <div class={styles.metricBox}>
+            <span class={styles.metricTitle}>Dimensions</span>
+            <span class={styles.metricVal}>
+              {dims.width} &times; {dims.height} px
+            </span>
+          </div>
+
+          <div class={styles.metricBox}>
+            <span class={styles.metricTitle}>Watermark text</span>
+            <span class={styles.metricVal} title={textDisplay}>
+              {textDisplay}
+            </span>
+          </div>
+
+          <div class={styles.metricBox}>
+            <span class={styles.metricTitle}>Opacity</span>
+            <span class={styles.metricVal}>{res ? res.opacity : watermark.opacity}%</span>
+          </div>
+        </div>
       )}
+
+      <div class="visually-hidden" data-primary-result="">
+        <output>{res ? res.fileName : defaultWatermarkedName}</output>
+      </div>
 
       <ContractDl
         res={res}

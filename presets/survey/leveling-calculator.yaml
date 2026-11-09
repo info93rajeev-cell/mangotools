@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: survey/leveling-calculator
+version: 0.1.0
+operation: survey.leveling.reduce@2
+params: { method: rise-fall, adjBy: distance, kConstant: "24" }
+fields:
+  startRL:
+    labelKey: survey.field.startRL
+    kind: text
+    required: true
+    default: "100.000"
+    order: 10
+    helpKey: survey.help.startRL
+  closingRL:
+    labelKey: survey.field.closingRL
+    kind: text
+    required: false
+    default: "99.805"
+    order: 20
+    helpKey: survey.help.closingRL
+  observations:
+    labelKey: survey.field.observations
+    kind: text
+    required: true
+    order: 30
+    helpKey: survey.help.observations
+outputs:
+  rows:
+    labelKey: survey.out.rows
+    format: text
+    order: 10
+    primary: true
+  startingRL:
+    labelKey: survey.out.startingRL
+    format: text
+    order: 20
+  endingRL:
+    labelKey: survey.out.endingRL
+    format: text
+    order: 30
+  misclosure:
+    labelKey: survey.out.misclosure
+    format: text
+    order: 40
+samples:
+  six-station-level-run:
+    titleKey: survey.sample.sixStation
+    input:
+      startRL: "100.000"
+      closingRL: "99.805"
+      observations:
+        - { station: BM-1, bs: "1.500", dist: "0", remarks: Start BM }
+        - { station: A, is: "1.200", dist: "30" }
+        - { station: CP1, fs: "2.000", bs: "0.800", dist: "30", remarks: Change point }
+        - { station: B, is: "1.100", dist: "25" }
+        - { station: CP2, fs: "0.600", bs: "2.300", dist: "35", remarks: Change point }
+        - { station: BM-2, fs: "2.200", dist: "40", remarks: Closing BM }
+ui:
+  archetypes: [B]
+  density: comfortable
+  compute: explicit
+strings:
+  en:
+    survey.field.startRL: "Starting BM RL"
+    survey.help.startRL: "Elevation of the starting benchmark in metres."
+    survey.field.closingRL: "Closing BM RL"
+    survey.help.closingRL: "Known elevation of the closing benchmark for misclosure calculation."
+    survey.field.observations: "Field observations"
+    survey.help.observations: "Ordered level book staff readings (BS, IS, FS, and distances)."
+    survey.out.rows: "Reduced levels"
+    survey.out.startingRL: "Starting RL"
+    survey.out.endingRL: "Ending RL"
+    survey.out.misclosure: "Closing misclosure"
+    survey.sample.sixStation: "Approved Six-Station Level Run"
+    work.leveling.working.rl: "RL = {previousRL} + ({rise} − {fall}) = {result} m"
+    work.leveling.working.hi.setup: "HI = {rl} + {bs} = {result} m"
+    work.leveling.working.hi.rl: "RL = {hi} − {reading} = {result} m"

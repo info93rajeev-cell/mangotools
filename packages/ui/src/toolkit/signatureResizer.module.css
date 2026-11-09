@@ -646,7 +646,11 @@
 }
 
 .goldDownloadBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -998,6 +1002,12 @@
 
 :global(:where([data-theme="dark"])) .goldDownloadBtn {
   color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .goldDownloadBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
 }
 
 :global(:where([data-theme="dark"])) .downloadSubtext {

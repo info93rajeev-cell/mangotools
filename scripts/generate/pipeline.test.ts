@@ -53,6 +53,7 @@ describe('registry pipeline — valid repository', () => {
       'excavation-calculator',
       'export-commercial-invoice-generator',
       'export-packing-list-generator',
+      'food-planner',
       'gst-calculator',
       'image-background-remover',
       'image-compress',
@@ -76,6 +77,7 @@ describe('registry pipeline — valid repository', () => {
       'plaster-calculator',
       'profit-margin-calculator',
       'signature-resizer',
+      'survey-leveling-calculator',
       'tile-flooring-calculator',
       'timestamp-converter',
       'url-encode-decode',
@@ -86,10 +88,12 @@ describe('registry pipeline — valid repository', () => {
       real.presets.filter((p) => (p.data as { abstract?: boolean }).abstract !== true).length,
     );
     expect(registry?.categories.filter((c) => c.visible).map((c) => c.id)).toEqual([
+      'surveying',
       'construction',
       'logistics',
       'export-import',
       'business',
+      'food-and-catering',
       'developer',
       'pdf',
       'media',
@@ -112,9 +116,11 @@ describe('registry pipeline — valid repository', () => {
       'data',
       'estimate',
       'export',
+      'food',
       'image',
       'logistics',
       'pdf',
+      'survey',
     ]);
   });
   it('excludes worker-only (non-Node) operations from the determinism suite', () => {
@@ -436,10 +442,12 @@ describe('category visibility threshold', () => {
     // pdf and export-import have three, three and two respectively. Visible categories are ordered by
     // taxonomy/categories.yaml's `order`.
     expect(visibleAt(1)).toEqual([
+      'surveying',
       'construction',
       'logistics',
       'export-import',
       'business',
+      'food-and-catering',
       'developer',
       'pdf',
       'media',

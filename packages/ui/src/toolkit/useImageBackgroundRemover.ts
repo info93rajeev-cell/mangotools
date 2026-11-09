@@ -201,7 +201,7 @@ async function handleSample(
   });
   const res = await inspectAndDecodeImage(fileObj);
   if (!res.ok) return;
-  if (isAutoMount && (userInteractedRef?.current || s.file || s.error)) return;
+  if (userInteractedRef?.current || (isAutoMount && s.file) || s.error) return;
   invalidate();
   if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
   s.setFile(res.value.file);
@@ -212,7 +212,7 @@ async function handleSample(
   // Pre-load the transparent cutout (sky removed) for the sample palace
   try {
     const cutout = await createPalaceCutoutSample();
-    if (cutout && !userInteractedRef?.current) {
+    if (cutout && !userInteractedRef?.current && s.file?.name === res.value.file.name) {
       if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
       s.setResultUrl(cutout.blobUrl);
       s.setResult({
@@ -246,7 +246,7 @@ export async function dispatchRemoval(
   isNode: boolean,
 ): Promise<Result<ImageBackgroundRemoverResultData>> {
   if (s.removalMode === 'universal' && !isNode && s.file) {
-    return executeUniversalCutout({
+    const outcome = await executeUniversalCutout({
       file: s.file,
       imageSrc: s.imageSrc,
       outputFormat: s.outputFormat,
@@ -260,6 +260,8 @@ export async function dispatchRemoval(
       customFileName: s.customFileName,
       onProgress: s.setProgressInfo,
     });
+    if (outcome.ok) return outcome;
+    return executeBgWorker(cfg);
   }
   if (s.removalMode === 'portrait' && !isNode && s.file) {
     return executePersonCutout({
@@ -357,12 +359,6 @@ export function useImageBackgroundRemover(
       if (s.imageSrc) URL.revokeObjectURL(s.imageSrc);
       if (s.resultUrl) URL.revokeObjectURL(s.resultUrl);
     };
-  }, []);
-
-  useEffect(() => {
-    if (!s.file && typeof window !== 'undefined' && typeof document !== 'undefined') {
-      void handleSample(s, invalidate, userInteractedRef, true);
-    }
   }, []);
 
   const actions = useBgActions(s, invalidate, preset, toolId, onPhase, notify, userInteractedRef);

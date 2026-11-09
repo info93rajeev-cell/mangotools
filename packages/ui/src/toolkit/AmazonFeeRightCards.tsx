@@ -34,6 +34,8 @@ export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstima
       <div class={styles.tabs} role="tablist" aria-label="Comparison Tabs">
         <button
           type="button"
+          role="tab"
+          aria-selected={tab === 'current'}
           class={`${styles.tab} ${tab === 'current' ? styles.tabActive : ''}`}
           onClick={() => setTab('current')}
         >
@@ -41,6 +43,8 @@ export function AmazonScenarioComparisonCard({ state }: { state: AmazonFeeEstima
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={tab === 'compare'}
           class={`${styles.tab} ${tab === 'compare' ? styles.tabActive : ''}`}
           onClick={() => setTab('compare')}
         >

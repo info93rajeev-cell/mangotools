@@ -1,0 +1,17 @@
+id: 005-dimension-mismatch-error
+operation: food.cost.estimate@1
+source: {type: synthetic}
+input:
+  guests: 10
+  lines:
+    - { ingredient: basmati-rice, buy: "500", unit: g }
+  prices:
+    - ingredient: basmati-rice
+      kind: retail-reference
+      priceInr: "120"
+      per: "1"
+      unit: l
+      observedOn: "2026-11-01"
+expectedError:
+  code: FOOD_PRICE_DIMENSION_MISMATCH
+  details: { ingredient: basmati-rice, priceUnit: l, lineUnit: g }

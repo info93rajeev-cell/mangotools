@@ -69,7 +69,7 @@ async function expectFooterLayout(footer: Locator, width: number) {
         (links) => new Set(links.map((link) => Math.round(link.getBoundingClientRect().top))).size,
       );
   expect(await rows('nav.info a')).toBe(1);
-  expect(await rows('nav.categories a')).toBeLessThanOrEqual(width >= 768 ? 2 : 4);
+  expect(await rows('nav.categories a')).toBeLessThanOrEqual(width >= 768 ? 2 : 6);
 }
 
 test.describe('CBM workbench (#219 founder reference)', () => {
@@ -91,6 +91,7 @@ test.describe('CBM workbench (#219 founder reference)', () => {
       ),
     ).toBeLessThan(16);
     await expect(toolbar(page).getByRole('button')).toHaveText([
+      'Guide',
       '3D visualization',
       'Unit conversion',
       'Print / Save PDF',
@@ -217,7 +218,7 @@ test.describe('CBM workbench (#219 founder reference)', () => {
     await result.getByRole('button', { name: 'Show cost breakdown' }).click();
     await expect(result.getByText('Other charges')).toBeVisible();
     const icons = page.locator('fieldset[data-placement="phone"] button');
-    await expect(icons).toHaveCount(4);
+    await expect(icons).toHaveCount(5);
     for (const icon of await icons.all())
       expect((await icon.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
   });

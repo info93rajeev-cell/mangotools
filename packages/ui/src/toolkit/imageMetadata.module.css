@@ -64,6 +64,18 @@
   padding: 3px 0;
 }
 
+@media (max-width: 480px) {
+  .loadedStage {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .previewThumbWrap {
+    width: 100%;
+    height: 90px;
+  }
+}
+
 .previewThumbWrap {
   width: 190px;
   height: 75px;
@@ -549,6 +561,13 @@
   gap: 5px;
 }
 
+@media (max-width: 360px) {
+  .formatCardsRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
 .formatCard {
   position: relative;
   background: var(--color-surface, #ffffff);
@@ -607,14 +626,16 @@
 .formatSub {
   font-size: calc(9px + (15px - 9px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #64748b);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   line-height: 1.15;
 }
 
 .formatNote {
   font-size: calc(8px + (15px - 8px) * var(--fs-lift, 0));
   color: var(--color-text-muted, #94a3b8);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   line-height: 1.15;
 }
 
@@ -741,7 +762,10 @@
 
 .applyActionBtn:disabled,
 .downloadActionBtn:disabled {
-  opacity: 0.6;
+  opacity: 1;
+  background: var(--color-surface-subtle, #f1f5f9);
+  color: var(--color-text-muted, #475569);
+  border: 1px solid var(--color-border, #cbd5e1);
   cursor: not-allowed;
 }
 
@@ -1121,6 +1145,13 @@
 
 :global(:where([data-theme="dark"])) .downloadActionBtn {
   color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .applyActionBtn:disabled,
+:global(:where([data-theme="dark"])) .downloadActionBtn:disabled {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
 }
 
 :global(:where([data-theme="dark"])) .primaryActionBtn {

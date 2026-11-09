@@ -50,9 +50,9 @@ function TimestampInputPanel({
           <button
             type="button"
             class={styles.btnSecondary}
-            onClick={onCurrentTime}
+            onClick={() => onInput('1700000000')}
             data-try-sample=""
-            title="Use current timestamp"
+            title="Use sample timestamp"
           >
             <Icon name="sparkles" class={styles.ico} /> Try sample
           </button>
@@ -218,6 +218,7 @@ function TimestampDatePanel({
       <div class={styles.optField} style={{ marginTop: 'auto' }}>
         <span class={styles.optLabel}>Timezone</span>
         <select
+          aria-label="Timezone"
           class={styles.optSelect}
           value={timezone}
           onChange={(e) => onTimezoneChange((e.target as HTMLSelectElement).value)}
@@ -314,6 +315,13 @@ export function TimestampConverterStudioLayout({
       <MobileViewSwitcher activeView={mobileView} onViewChange={setMobileView} />
 
       <main class={styles.work}>
+        <textarea
+          id={`${idPrefix}-output`}
+          class="visually-hidden"
+          readOnly
+          value={studio.isoString}
+          aria-label="Converted ISO 8601 timestamp output"
+        />
         <TimestampInputPanel
           idPrefix={idPrefix}
           input={studio.input}

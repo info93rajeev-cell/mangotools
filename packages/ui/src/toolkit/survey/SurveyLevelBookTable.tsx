@@ -159,7 +159,7 @@ export function SurveyLevelBookTable({
         </table>
       </div>
       <div class={s.hint}>{surveyStrings.hintKeyboard}</div>
-      <div style={{ marginTop: '8px' }}>
+      <div style={{ marginTop: '6px' }}>
         <button type="button" class={s.miniBtn} onClick={onAddRow} data-add-row="">
           {surveyStrings.addRow}
         </button>
