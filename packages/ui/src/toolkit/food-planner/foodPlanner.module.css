@@ -1454,3 +1454,25 @@
     font-size: 10.5px;
   }
 }
+
+@media (min-width: 600px) and (max-width: 1024px) {
+  .navPillBar {
+    grid-template-columns: 0.9fr 1.15fr 1.05fr 0.7fr 1.45fr;
+  }
+  .navPill {
+    white-space: nowrap;
+    min-height: 44px;
+  }
+  .toolSubtitle {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1024px) {
+  .topHeader {
+    margin-top: -8px;
+  }
+  :global(main:has([data-tool-island="food-planner"]) [data-secondary-information] summary) {
+    font-size: 18px;
+  }
+}

@@ -30,7 +30,6 @@ export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
       <div class={styles.mobileOnly}>
         <ShoppingListMobileView
           planner={planner}
-          items={state.shoppingItems}
           boughtMap={planner.boughtItems}
           onToggleBought={planner.toggleBoughtItem}
         />

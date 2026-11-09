@@ -1,7 +1,7 @@
 import type { RecipeCostItem } from './CostOtherExpensesCard.tsx';
-import { OtherCostsCard } from './CostOtherExpensesCard.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
+import { MobileOtherCosts } from './MobileOtherCosts.tsx';
 import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { money } from './plannerResults.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
@@ -72,12 +72,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
         <p class={s.mobileCardSubtitle}>{t.costNote}</p>
       </section>
       <div class={s.mobileCostDetails}>
-        <OtherCostsCard
-          idPrefix="mobile"
-          items={planner.otherCosts}
-          totalOtherCost={totalOtherCost}
-          onUpdate={planner.updateOtherCost}
-        />
+        <MobileOtherCosts planner={planner} />
         <section class={s.mobileCard}>
           <h4 class={s.mobileCardTitle}>{t.insights}</h4>
           <p>

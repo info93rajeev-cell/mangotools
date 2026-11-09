@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { AISLE_DISPLAY_MAP, CATALOG_INGREDIENTS } from './foodReferenceData.ts';
@@ -69,17 +70,24 @@ export function IngredientsMobileView({
         }}
       />
       <section class={s.mobileCard}>
+        <div class={s.mobileInventoryHeader}>
+          <strong>
+            {t.ingredients} ({items.length})
+          </strong>
+          <span>{t.price}</span>
+          <span>{t.stock}</span>
+        </div>
         {paged.map((item) => (
           <div key={item.id}>
-            <div class={s.mobileDishItem}>
+            <div class={`${s.mobileDishItem} ${s.mobileInventoryRow}`}>
               <img class={s.mobileDishThumb} src={item.thumbnailUrl} alt="" />
               <div class={s.mobileDishInfo}>
                 <strong>{item.name}</strong>
                 <div>
                   {t.required}: {item.quantity} {item.unit}
                 </div>
-                <small>{priceLabel(item.id, planner)}</small>
               </div>
+              <span class={s.mobileInventoryPrice}>{priceLabel(item.id, planner)}</span>
               <span>{stockLabel(item, planner)}</span>
               <button
                 type="button"
@@ -87,7 +95,7 @@ export function IngredientsMobileView({
                 aria-label={`${t.edit}: ${item.name}`}
                 onClick={() => setEditing(editing === item.id ? null : item.id)}
               >
-                {t.edit}
+                <Icon name="pencil" />
               </button>
             </div>
             {editing === item.id && (
@@ -104,7 +112,7 @@ export function IngredientsMobileView({
       </section>
       <MobilePagination page={currentPage} pages={pages} setPage={setPage} />
       <InventorySummary planner={planner} items={items} />
-      <div class={s.mobileDualActions}>
+      <div class={s.mobileInventoryActions}>
         <button
           type="button"
           class={s.mobilePrimaryBtn}
@@ -115,19 +123,16 @@ export function IngredientsMobileView({
         <button type="button" class={s.mobileSecondaryBtn} onClick={() => setTransfer(!transfer)}>
           {t.importExport}
         </button>
+        <button
+          type="button"
+          class={s.mobileSecondaryBtn}
+          onClick={() => setCategories(!categories)}
+        >
+          {t.addCategory}
+        </button>
       </div>
       {transfer && <InventoryTransfer items={items} planner={planner} />}
-      <button type="button" class={s.mobileSecondaryBtn} onClick={() => setCategories(!categories)}>
-        {t.addCategory}
-      </button>
       {categories && <InventoryCategories items={items} planner={planner} />}
-      <button
-        type="button"
-        class={s.mobileSecondaryBtn}
-        onClick={() => planner.setActiveSection('shopping')}
-      >
-        {t.shopping}
-      </button>
     </div>
   );
 }
@@ -314,23 +319,33 @@ function IngredientCategories({
   category: string;
   onSelect: (key: string) => void;
 }) {
-  const categories = [...new Set(items.map((item) => item.aisle))];
+  const priority = ['vegetables', 'grains', 'dairy'];
+  const categories = [...new Set(items.map((item) => item.aisle))].sort(
+    (a, b) =>
+      (priority.includes(a) ? priority.indexOf(a) : 9) -
+      (priority.includes(b) ? priority.indexOf(b) : 9),
+  );
+  const button = (key: string) => (
+    <button
+      type="button"
+      key={key}
+      class={`${s.mobileNavPill} ${category === key ? s.mobileNavPillActive : ''}`}
+      aria-pressed={category === key}
+      onClick={() => onSelect(key)}
+    >
+      {key === 'all' ? t.all : (AISLE_DISPLAY_MAP[key] ?? key)} (
+      {key === 'all' ? items.length : items.filter((item) => item.aisle === key).length})
+    </button>
+  );
   return (
     <div class={s.mobileNavPillsRow}>
-      {['all', ...categories].map((key) => (
-        <button
-          type="button"
-          key={key}
-          class={`${s.mobileNavPill} ${category === key ? s.mobileNavPillActive : ''}`}
-          aria-pressed={category === key}
-          onClick={() => {
-            onSelect(key);
-          }}
-        >
-          {key === 'all' ? t.all : (AISLE_DISPLAY_MAP[key] ?? key)} (
-          {key === 'all' ? items.length : items.filter((item) => item.aisle === key).length})
-        </button>
-      ))}
+      {['all', ...categories.slice(0, 3)].map(button)}
+      {categories.length > 3 && (
+        <details class={s.mobileCategoryMore}>
+          <summary>{t.more}</summary>
+          <div>{categories.slice(3).map(button)}</div>
+        </details>
+      )}
     </div>
   );
 }

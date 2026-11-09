@@ -123,6 +123,7 @@
 
 /* Sub-Navigation Pills (e.g. Menu Plan, All Recipes, Favorites, My Recipes) */
 .mobileNavPillsRow {
+  position: relative;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -673,4 +674,155 @@
 }
 .mobileCourseBadge[data-course="dessert"] {
   background: #ffd7ef;
+}
+
+.mobileInventoryHeader {
+  display: none;
+}
+.mobileInventoryActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.mobileContinueLink {
+  background: transparent;
+  color: #1346c4;
+  border: 0;
+  min-height: 44px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.mobileCategoryMore {
+  position: static;
+  min-width: 70px;
+}
+.mobileCategoryMore summary {
+  cursor: pointer;
+  border: 1px solid #cdd7f6;
+  border-radius: 22px;
+  padding: 8px 16px;
+}
+.mobileCategoryMore > div {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 3;
+  min-width: 240px;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+  background: white;
+  border: 1px solid #cdd7f6;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px #1e3a8a22;
+}
+.mobileOtherCostList {
+  margin: 0;
+}
+.mobileOtherCostList > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #d7e1fa;
+}
+.mobileOtherCostList dd {
+  margin: 0;
+  font-weight: 750;
+}
+@media (min-width: 600px) {
+  .mobileInventoryActions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .mobileInventoryHeader,
+  .mobileInventoryRow {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1.8fr) minmax(0, 1.05fr) minmax(0, 0.8fr) 42px;
+    align-items: center;
+    gap: 10px;
+  }
+  .mobileInventoryHeader {
+    padding: 8px;
+    margin: -8px -8px 0;
+    background: #fff4cf;
+    border-radius: 12px 12px 0 0;
+    font-size: 20px;
+  }
+  .mobileInventoryHeader strong {
+    grid-column: 1 / 3;
+  }
+  .mobileInventoryRow .mobileDishInfo {
+    display: block;
+  }
+  .mobileInventoryRow .mobileDishInfo strong {
+    font-size: 22px;
+  }
+  .mobileInventoryRow .mobileDishInfo div {
+    font-size: 14px;
+  }
+  .mobileInventoryRow .mobileDishThumb {
+    width: 72px;
+    height: 42px;
+  }
+  .mobileInventoryPrice,
+  .mobileInventoryRow > span {
+    font-size: 18px;
+  }
+  .mobileInventoryRow {
+    padding: 5px 0;
+  }
+  .mobileOtherCostList {
+    font-size: 22px;
+  }
+  .mobileDishThumb {
+    height: 48px;
+  }
+  .mobileContainer[data-testid="mobile-cost"] .mobileDishThumb {
+    height: 42px;
+  }
+  .mobileContainer[data-testid="mobile-cost"] .mobileDishItem {
+    padding: 4px 0;
+  }
+  .mobileContainer nav[aria-label="Page"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0;
+  }
+  .mobileContainer nav[aria-label="Page"] button {
+    padding: 5px 12px;
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 600px) {
+  .mobileContainer[data-testid="mobile-ingredients"] .mobileNavPill {
+    font-size: 18px;
+    padding: 8px 12px;
+    flex: 0 1 auto;
+  }
+  .mobileSummaryTile {
+    padding: 8px;
+  }
+  .mobileSummaryTileLabel {
+    font-size: 18px;
+  }
+  .mobileSummaryTileValue {
+    font-size: 26px;
+  }
+  .mobileCardTitle {
+    line-height: 1.15;
+  }
+  .mobileContainer[data-testid="mobile-shopping"] .mobileDishItem {
+    padding: 3px 0;
+  }
+}
+
+.mobileStockBadge {
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-weight: 700;
 }
