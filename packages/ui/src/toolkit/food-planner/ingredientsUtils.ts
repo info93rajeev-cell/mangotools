@@ -8,13 +8,43 @@ export interface IngredientLineItem {
   unit: string;
   usedIn: string[];
   allergens: string[];
+  prepForm?: string;
+  thumbnailUrl?: string;
+}
+
+const PREP_FORMS: Record<string, string> = {
+  'basmati-rice': 'Wash & Soak',
+  'toor-dal': 'Pressure Boil',
+  besan: 'Sieve & Roast',
+  maida: 'Sieve & Knead',
+  sugar: 'Tagar / Powder',
+  ghee: 'Melt',
+  'cooking-oil': 'Warm Oil',
+  paneer: 'Cube 1-inch',
+  'curd-yogurt': 'Whisk Smooth',
+  potato: 'Dice & Boil',
+  cauliflower: 'Florets',
+  tomato: 'Finely Dice',
+  onion: 'Thin Slice',
+  garlic: 'Fine Mince',
+  'ginger-garlic-paste': 'Fine Mince',
+  'coriander-leaves': 'Wash & Chop',
+  'cumin-seeds': 'Whole Temper',
+};
+
+export function getPrepForm(id: string): string {
+  return PREP_FORMS[id] ?? 'Ground Powder';
+}
+
+export function getIngredientThumbnail(id: string): string {
+  return `/food/ingredients/${id}.svg`;
 }
 
 export function extractIngredientLines(
   engineConsolidated: unknown,
   selectedRecipes: ExtendedFoodRecipe[],
-  guests: number,
-  servingsPerGuest: number,
+  _guests: number,
+  _servingsPerGuest: number,
 ): IngredientLineItem[] {
   const cons = engineConsolidated as {
     lines?: Array<{ ingredient: string; total: string; buy: string; unit: string }>;
@@ -23,28 +53,7 @@ export function extractIngredientLines(
   const catalogMap = new Map(CATALOG_INGREDIENTS.map((i) => [i.id, i]));
 
   if (!cons?.lines) {
-    const agg = new Map<string, { total: number; unit: string; usedIn: Set<string> }>();
-    for (const recipe of selectedRecipes) {
-      const factor = (guests * servingsPerGuest) / recipe.servings;
-      for (const ing of recipe.ingredients) {
-        const entry = agg.get(ing.ingredient) ?? { total: 0, unit: ing.unit, usedIn: new Set() };
-        entry.total += Number.parseFloat(ing.quantity) * factor;
-        entry.usedIn.add(recipe.name);
-        agg.set(ing.ingredient, entry);
-      }
-    }
-    return Array.from(agg.entries()).map(([ingId, data]) => {
-      const cat = catalogMap.get(ingId);
-      return {
-        id: ingId,
-        name: cat?.name ?? ingId,
-        aisle: cat?.aisle ?? 'other',
-        quantity: formatDisplayQty(data.total, data.unit),
-        unit: formatDisplayUnit(data.total, data.unit),
-        usedIn: Array.from(data.usedIn),
-        allergens: cat?.allergens ?? [],
-      };
-    });
+    return [];
   }
 
   return cons.lines.map((l) => {
@@ -61,6 +70,8 @@ export function extractIngredientLines(
       unit: formatDisplayUnit(num, l.unit),
       usedIn,
       allergens: cat?.allergens ?? [],
+      prepForm: getPrepForm(l.ingredient),
+      thumbnailUrl: getIngredientThumbnail(l.ingredient),
     };
   });
 }
@@ -78,9 +89,9 @@ export function formatDisplayUnit(val: number, unit: string): string {
 }
 
 export function getAisleColor(aisle: string): string {
-  if (aisle === 'vegetables' || aisle === 'herbs') return '#22c55e';
-  if (aisle === 'dairy') return '#0284c7';
-  if (aisle === 'spices') return '#ef4444';
-  if (aisle === 'grains' || aisle === 'pulses') return '#f59e0b';
-  return '#8b5cf6';
+  if (aisle === 'vegetables' || aisle === 'herbs') return '#166534';
+  if (aisle === 'dairy') return '#075985';
+  if (aisle === 'spices') return '#b91c1c';
+  if (aisle === 'grains' || aisle === 'pulses') return '#92400e';
+  return '#6d28d9';
 }

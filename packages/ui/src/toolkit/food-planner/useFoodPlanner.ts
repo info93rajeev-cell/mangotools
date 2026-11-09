@@ -1,6 +1,8 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
 import { RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
+import { sumMoney } from './plannerResults.ts';
 import { usePlannerEngines, workerRun } from './usePlannerEngines.ts';
 
 export type PlannerSection = 'recipes' | 'ingredients' | 'shopping' | 'cost' | 'schedule';
@@ -57,6 +59,16 @@ function usePlannerSelection() {
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(
     () => new Set(SAMPLE_PLAN.selectedDishes),
   );
+  const [favorites, setFavorites] = useState<Set<string>>(
+    () => new Set(['besan-ladoo', 'shahi-paneer']),
+  );
+  const toggleFavorite = (id: string) =>
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   const [portionFactors, setPortionFactors] = useState<Record<string, number>>({});
 
   const selectedRecipes = useMemo(
@@ -80,6 +92,8 @@ function usePlannerSelection() {
   const clearAllRecipes = useCallback(() => setSelectedRecipeIds(new Set()), []);
 
   return {
+    favorites,
+    toggleFavorite,
     selectedRecipeIds,
     setSelectedRecipeIds,
     portionFactors,
@@ -98,10 +112,11 @@ function usePlannerCosts() {
   const [otherCosts, setOtherCosts] = useState<OtherCostItem[]>(DEFAULT_OTHER_COSTS);
 
   const totalOtherCost = useMemo(() => {
-    return otherCosts.filter((i) => i.enabled).reduce((sum, i) => sum + (i.cost || 0), 0);
+    return sumMoney(otherCosts.filter((i) => i.enabled).map((i) => i.cost || 0));
   }, [otherCosts]);
 
   const updateOtherCost = useCallback((id: string, cost: number, enabled: boolean) => {
+    if (!Number.isFinite(cost) || cost < 0 || cost > 1_000_000_000) return;
     setOtherCosts((prev) => prev.map((i) => (i.id === id ? { ...i, cost, enabled } : i)));
   }, []);
 
@@ -123,6 +138,7 @@ function usePlannerChecklist() {
   const [mealTime, setMealTime] = useState<string>('17:00');
   const [burners, setBurners] = useState<number>(2);
   const [boughtItems, setBoughtItems] = useState<Record<string, boolean>>({});
+  const [customTasks, setCustomTasks] = useState<ScheduleTaskItem[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
 
   const toggleBoughtItem = useCallback((id: string) => {
@@ -141,6 +157,8 @@ function usePlannerChecklist() {
     boughtItems,
     setBoughtItems,
     toggleBoughtItem,
+    customTasks,
+    setCustomTasks,
     completedTasks,
     setCompletedTasks,
     toggleTaskCompleted,
@@ -153,6 +171,8 @@ export function useFoodPlanner(run: RunFn = workerRun) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCourse, setActiveCourse] = useState<string>('all');
   const [combineSimilar, setCombineSimilar] = useState<boolean>(true);
+  const [stockQuantities, setStockQuantities] = useState<Record<string, string>>({});
+  const [ingredientQuantities, setIngredientQuantities] = useState<Record<string, string>>({});
 
   const selection = usePlannerSelection();
   const costs = usePlannerCosts();
@@ -168,18 +188,30 @@ export function useFoodPlanner(run: RunFn = workerRun) {
     checklist.burners,
     1,
     run,
+    costs.userPrices,
+    ingredientQuantities,
+    stockQuantities,
   );
 
   const loadSamplePlan = useCallback(() => {
     setSetup(DEFAULT_SETUP);
+    setStockQuantities({});
+    setIngredientQuantities({});
+    costs.setUserPrices({});
+    costs.setOtherCosts(DEFAULT_OTHER_COSTS);
     selection.setSelectedRecipeIds(new Set(SAMPLE_PLAN.selectedDishes));
     selection.setPortionFactors({});
     checklist.setBoughtItems({});
     checklist.setCompletedTasks({});
+    checklist.setCustomTasks([]);
     costs.setPriceMode('retail');
   }, [selection, checklist, costs]);
 
   return {
+    stockQuantities,
+    setStockQuantities,
+    ingredientQuantities,
+    setIngredientQuantities,
     activeSection,
     setActiveSection,
     setup,

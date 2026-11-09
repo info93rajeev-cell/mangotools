@@ -17,7 +17,9 @@ export function OtherCostsCard({
   items,
   totalOtherCost,
   onUpdate,
+  idPrefix = 'desktop',
 }: {
+  idPrefix?: string;
   items: OtherCostItem[];
   totalOtherCost: number;
   onUpdate: (id: string, cost: number, enabled: boolean) => void;
@@ -33,7 +35,7 @@ export function OtherCostsCard({
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+      <div class={styles.otherCostsGrid}>
         {items.map((item) => (
           <div
             key={item.id}
@@ -48,7 +50,7 @@ export function OtherCostsCard({
             }}
           >
             <label
-              for={`cost-${item.id}`}
+              for={`${idPrefix}-cost-${item.id}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -58,7 +60,7 @@ export function OtherCostsCard({
               }}
             >
               <input
-                id={`cost-${item.id}`}
+                id={`${idPrefix}-cost-${item.id}`}
                 type="checkbox"
                 checked={item.enabled}
                 onChange={(e) =>
@@ -71,6 +73,8 @@ export function OtherCostsCard({
               <span style={{ fontSize: '12px', color: '#64748b' }}>₹</span>
               <input
                 type="number"
+                min="0"
+                step="0.01"
                 aria-label={`${item.label} cost in rupees`}
                 style={{
                   width: '70px',
@@ -238,7 +242,7 @@ export function BudgetTargetCard({
               ⚠️ Budget Exceeded by ₹{Math.abs(budgetDiff).toLocaleString('en-IN')}
             </span>
           ) : (
-            <span style={{ color: '#16a34a' }}>
+            <span style={{ color: '#166534' }}>
               ✓ Under Budget by ₹{budgetDiff.toLocaleString('en-IN')}
             </span>
           )}
@@ -259,7 +263,7 @@ export function CostInsightsCard({
   ingredientCost: number;
   totalCost: number;
 }) {
-  const ingredientShare = totalCost === 0 ? 80 : Math.round((ingredientCost / totalCost) * 100);
+  const ingredientShare = totalCost === 0 ? 0 : Math.round((ingredientCost / totalCost) * 100);
   const otherShare = 100 - ingredientShare;
 
   return (

@@ -1,9 +1,8 @@
 import { useMemo } from 'preact/hooks';
-import {
-  CATALOG_INGREDIENTS,
-  type ExtendedFoodRecipe,
-  REFERENCE_PRICES,
-} from './foodReferenceData.ts';
+import { CATALOG_INGREDIENTS, type ExtendedFoodRecipe } from './foodReferenceData.ts';
+import { getIngredientThumbnail } from './ingredientsUtils.ts';
+import { priceBasis } from './plannerPrices.ts';
+import { money } from './plannerResults.ts';
 
 export interface ShoppingLineItem {
   id: string;
@@ -15,15 +14,19 @@ export interface ShoppingLineItem {
   estCost: number;
   storeType: string;
   isBought: boolean;
+  thumbnailUrl?: string;
 }
 
 export function buildShoppingItems(
   engineConsolidated: unknown,
   selectedRecipes: ExtendedFoodRecipe[],
-  portionFactors: Record<string, number>,
-  guests: number,
-  servingsPerGuest: number,
+  _portionFactors: Record<string, number>,
+  _guests: number,
+  _servingsPerGuest: number,
   boughtItems: Record<string, boolean>,
+  engineCost: unknown = null,
+  priceMode: 'retail' | 'wholesale' = 'retail',
+  userPrices: Record<string, string> = {},
 ): ShoppingLineItem[] {
   if (selectedRecipes.length === 0) return [];
 
@@ -32,59 +35,18 @@ export function buildShoppingItems(
   } | null;
 
   const catalogMap = new Map(CATALOG_INGREDIENTS.map((i) => [i.id, i]));
-  const priceMap = new Map(
-    REFERENCE_PRICES.filter((p) => p.kind === 'retail-reference').map((p) => [p.ingredient, p]),
-  );
 
-  let lines: Array<{ ingredient: string; buy: string; unit: string }> = [];
-
-  if (cons?.lines && cons.lines.length > 0) {
-    lines = cons.lines;
-  } else {
-    // Immediate synchronous fallback so shopping list is populated reliably on initial render
-    const agg = new Map<string, { total: number; unit: string }>();
-    for (const recipe of selectedRecipes) {
-      const factor =
-        (guests * servingsPerGuest * (portionFactors[recipe.id] ?? 1)) / recipe.servings;
-      for (const ing of recipe.ingredients) {
-        const entry = agg.get(ing.ingredient) ?? { total: 0, unit: ing.unit };
-        entry.total += Number.parseFloat(ing.quantity) * factor;
-        agg.set(ing.ingredient, entry);
-      }
-    }
-    lines = Array.from(agg.entries()).map(([ingredient, data]) => {
-      let buy = data.total;
-      let unit = data.unit;
-      if (unit === 'kg') {
-        buy *= 1000;
-        unit = 'g';
-      } else if (unit === 'l') {
-        buy *= 1000;
-        unit = 'ml';
-      } else if (unit === 'tbsp') {
-        buy *= 15;
-        unit = 'ml';
-      } else if (unit === 'tsp') {
-        buy *= 5;
-        unit = 'ml';
-      } else if (unit === 'cup') {
-        buy *= 240;
-        unit = 'ml';
-      }
-      return {
-        ingredient,
-        buy: String(Math.ceil(buy)),
-        unit,
-      };
-    });
-  }
+  const lines = (cons?.lines ?? []).filter((line) => Number(line.buy) > 0);
 
   return lines.map((l) => {
     const cat = catalogMap.get(l.ingredient);
-    const pr = priceMap.get(l.ingredient);
+    const pr = priceBasis(l.ingredient, priceMode);
+    const rate = userPrices[l.ingredient] ?? ('priceInr' in pr ? pr.priceInr : undefined);
     const buyNum = Number.parseFloat(l.buy) || 0;
-    const estCost = computeLineCost(buyNum, l.unit, pr?.priceInr, pr?.per, pr?.unit);
-    const priceLabel = pr ? `₹${pr.priceInr} / ${pr.unit}` : '—';
+    const costs = engineCost as { items?: Array<{ ingredient: string; costInr: string }> } | null;
+    const actual = costs?.items?.find((item) => item.ingredient === l.ingredient);
+    const estCost = Number(actual?.costInr ?? '0');
+    const priceLabel = rate !== undefined ? `${money(rate)} / ${pr.per} ${pr.unit}` : '—';
 
     return {
       id: l.ingredient,
@@ -93,31 +55,12 @@ export function buildShoppingItems(
       buyQuantity: formatDisplayBuy(buyNum, l.unit),
       unit: formatDisplayBuyUnit(buyNum, l.unit),
       priceLabel,
-      estCost: Math.round(estCost),
+      estCost,
       storeType: getStoreTypeForAisle(cat?.aisle ?? 'other'),
       isBought: !!boughtItems[l.ingredient],
+      thumbnailUrl: getIngredientThumbnail(l.ingredient),
     };
   });
-}
-
-function computeLineCost(
-  buyNum: number,
-  lineUnit: string,
-  priceInr?: string,
-  per?: string,
-  priceUnit?: string,
-): number {
-  if (!priceInr || !per || !priceUnit) return 0;
-  const rate = Number.parseFloat(priceInr);
-  const p = Number.parseFloat(per);
-
-  if (lineUnit === 'g' && priceUnit === 'kg') {
-    return (buyNum / 1000) * (rate / p);
-  }
-  if (lineUnit === 'ml' && (priceUnit === 'l' || priceUnit === '1000')) {
-    return (buyNum / 1000) * (rate / p);
-  }
-  return (buyNum / p) * rate;
 }
 
 function formatDisplayBuy(num: number, unit: string): string {
@@ -147,6 +90,9 @@ export function useGroupedShoppingItems(
   guests: number,
   servingsPerGuest: number,
   boughtItems: Record<string, boolean>,
+  engineCost: unknown = null,
+  priceMode: 'retail' | 'wholesale' = 'retail',
+  userPrices: Record<string, string> = {},
 ) {
   const shoppingItems = useMemo(
     () =>
@@ -157,8 +103,21 @@ export function useGroupedShoppingItems(
         guests,
         servingsPerGuest,
         boughtItems,
+        engineCost,
+        priceMode,
+        userPrices,
       ),
-    [engineConsolidated, selectedRecipes, portionFactors, guests, servingsPerGuest, boughtItems],
+    [
+      engineConsolidated,
+      selectedRecipes,
+      portionFactors,
+      guests,
+      servingsPerGuest,
+      boughtItems,
+      engineCost,
+      priceMode,
+      userPrices,
+    ],
   );
 
   const groupedItems = useMemo(() => {

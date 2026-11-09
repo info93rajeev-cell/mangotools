@@ -5,6 +5,8 @@ import {
   type ExtendedFoodRecipe,
   REFERENCE_PRICES,
 } from './foodReferenceData.ts';
+import { enteredPrices } from './plannerPrices.ts';
+import { applyIngredientQuantities } from './plannerQuantities.ts';
 import type { PlanSetupState } from './useFoodPlanner.ts';
 
 export const workerRun: RunFn = (...args) => getWorkerHost().run(...args);
@@ -14,6 +16,8 @@ export function useShoppingEngine(
   portionFactors: Record<string, number>,
   setup: PlanSetupState,
   run: RunFn,
+  quantities: Record<string, string> = {},
+  stock: Record<string, string> = {},
 ) {
   const [engineConsolidated, setEngineConsolidated] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,7 +46,7 @@ export function useShoppingEngine(
         recipes: selectedRecipes,
         selection,
         guests: setup.guests,
-        servingsPerGuest: setup.servingsPerGuest,
+        servingsPerGuest: String(setup.servingsPerGuest ?? '1'),
       },
       { diet: setup.diet, dietPolicy: setup.dietPolicy },
       controller.signal,
@@ -51,7 +55,7 @@ export function useShoppingEngine(
         if (!active) return;
         setIsLoading(false);
         if (res.ok) {
-          setEngineConsolidated(res.value);
+          setEngineConsolidated(applyIngredientQuantities(res.value, quantities, stock));
           setError(null);
         } else {
           setEngineConsolidated(null);
@@ -75,6 +79,8 @@ export function useShoppingEngine(
     setup.servingsPerGuest,
     setup.diet,
     setup.dietPolicy,
+    quantities,
+    stock,
     run,
   ]);
 
@@ -87,6 +93,7 @@ export function useCostEngine(
   priceMode: 'retail' | 'wholesale',
   targetBudget: string,
   run: RunFn,
+  userPrices: Record<string, string> = {},
 ) {
   const [engineCost, setEngineCost] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -96,7 +103,7 @@ export function useCostEngine(
     const controller = new AbortController();
     let active = true;
     const cons = engineConsolidated as {
-      lines?: Array<{ ingredient: string; buy: string; unit: string }>;
+      lines?: Array<{ ingredient: string; buy: string; unit: string; total?: string }>;
     } | null;
     if (!cons?.lines || cons.lines.length === 0) {
       setEngineCost(null);
@@ -106,12 +113,21 @@ export function useCostEngine(
     }
     setIsLoading(true);
     setError(null);
+    const cleanLines = cons.lines.map((l) => ({
+      ingredient: l.ingredient,
+      buy: String(l.buy),
+      unit: l.unit as 'g' | 'ml' | 'piece',
+      ...(l.total ? { total: String(l.total) } : {}),
+    }));
     run(
       'food.cost.estimate@1',
       {
         guests,
-        lines: cons.lines,
-        prices: REFERENCE_PRICES,
+        lines: cleanLines,
+        prices: [
+          ...REFERENCE_PRICES,
+          ...enteredPrices(userPrices, priceMode, new Date().toISOString().slice(0, 10)),
+        ],
         budgetInr: targetBudget || undefined,
       },
       {
@@ -141,7 +157,7 @@ export function useCostEngine(
       active = false;
       controller.abort();
     };
-  }, [engineConsolidated, guests, priceMode, targetBudget, run]);
+  }, [engineConsolidated, guests, priceMode, targetBudget, userPrices, run]);
 
   return { engineCost, isLoadingCost: isLoading, costError: error };
 }
@@ -219,14 +235,25 @@ export function usePlannerEngines(
   burners: number,
   prepStations: number,
   run: RunFn,
+  userPrices: Record<string, string> = {},
+  quantities: Record<string, string> = {},
+  stock: Record<string, string> = {},
 ) {
-  const shopping = useShoppingEngine(selectedRecipes, portionFactors, setup, run);
+  const shopping = useShoppingEngine(
+    selectedRecipes,
+    portionFactors,
+    setup,
+    run,
+    quantities,
+    stock,
+  );
   const cost = useCostEngine(
     shopping.engineConsolidated,
     setup.guests,
     priceMode,
     targetBudget,
     run,
+    userPrices,
   );
   const schedule = useScheduleEngine(
     selectedRecipes,

@@ -1,45 +1,21 @@
-export interface ExtendedFoodRecipe {
-  id: string;
-  version: string;
-  name: string;
-  localName?: string;
-  course: 'main' | 'rice' | 'bread' | 'dal' | 'side' | 'snack' | 'dessert' | 'drink';
-  cuisine: string;
-  diet: 'vegetarian' | 'vegan' | 'jain' | 'eggetarian' | 'non-vegetarian';
-  servings: number;
-  prepMinutes: number;
-  cookMinutes: number;
-  ingredients: Array<{
-    ingredient: string;
-    quantity: string;
-    unit: 'g' | 'kg' | 'ml' | 'l' | 'tsp' | 'tbsp' | 'cup' | 'piece';
-    note?: string;
-  }>;
-  steps: string[];
-  sources?: Array<{
-    title: string;
-    publisher: string;
-    url: string;
-    accessed: string;
-    checks: string;
-  }>;
-  verification?: {
-    status: 'draft' | 'source-checked' | 'kitchen-tested' | 'approved';
-    by: string;
-    date: string;
-    notes: string;
-  };
-  verified: boolean;
-  thumbnailUrl?: string;
-}
+import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
+import type {
+  ExtendedFoodRecipe,
+  ImageProvenance,
+  RecipeVerificationInfo,
+} from './foodRecipesTypes.ts';
 
-export interface RecipeVerificationInfo {
-  label: string;
-  badgeClass: 'badgeVerified' | 'badgePrototype';
-  title: string;
-}
+export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
+export { CATALOG_AWAITING_RECIPES };
 
 export function getRecipeVerificationInfo(recipe: ExtendedFoodRecipe): RecipeVerificationInfo {
+  if (recipe.awaitingData) {
+    return {
+      label: 'Awaiting Data',
+      badgeClass: 'badgePrototype',
+      title: 'Recipe awaiting documented cooking trials',
+    };
+  }
   const status = recipe.verification?.status;
   if (status === 'approved') {
     return {
@@ -118,6 +94,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       date: '2026-11-02',
       notes: 'Cross-checked against published sources. Exact proportions.',
     },
+    thumbnailUrl: '/food/recipes/jeera-rice.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'dal-tadka',
@@ -163,6 +145,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       by: 'Claude (Engineering Office)',
       date: '2026-11-02',
       notes: 'Cross-checked against published sources.',
+    },
+    thumbnailUrl: '/food/recipes/dal-tadka.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
   {
@@ -210,6 +198,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       date: '2026-11-02',
       notes: 'Standard dry sabzi proportions.',
     },
+    thumbnailUrl: '/food/recipes/aloo-gobi.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'besan-ladoo',
@@ -234,6 +228,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Remove from heat and let cool to lukewarm temperature.',
       'Mix in powdered sugar (boora/tagar) thoroughly and shape into smooth round ladoos.',
     ],
+    thumbnailUrl: '/food/recipes/besan-ladoo.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'mathri',
@@ -260,6 +260,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Roll into small thick rounds, prick with a fork on both sides.',
       'Deep fry in medium-hot oil on low flame until crisp and pale golden.',
     ],
+    thumbnailUrl: '/food/recipes/mathri.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'shahi-paneer',
@@ -285,6 +291,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Warm ghee in a handi, cook the spiced masala paste until glossy.',
       'Gently fold in fresh paneer cubes and warm milk/cream, simmer 5 minutes on low.',
     ],
+    thumbnailUrl: '/food/recipes/shahi-paneer.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'raita',
@@ -308,6 +320,12 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Whisk fresh chilled curd with salt and roasted cumin powder until smooth.',
       'Garnish with fresh coriander and serve cold alongside rice and curries.',
     ],
+    thumbnailUrl: '/food/recipes/raita.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
   {
     id: 'mixed-veg-salad',
@@ -331,5 +349,16 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       'Finely dice tomatoes and onions.',
       'Toss with salt, lemon juice, and freshly chopped coriander.',
     ],
+    thumbnailUrl: '/food/recipes/mixed-veg-salad.jpg',
+    imageProvenance: {
+      type: 'ai-generated',
+      notes:
+        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
+    },
   },
+];
+
+export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
+  ...RECIPES,
+  ...CATALOG_AWAITING_RECIPES,
 ];

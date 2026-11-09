@@ -7,6 +7,7 @@ import {
   REFERENCE_PRICES,
   SAMPLE_PLAN,
 } from './foodReferenceData.ts';
+import { getCourseIcon, getCoursePlaceholderClass } from './RecipeCardImage.tsx';
 
 describe('Food Planner Toolkit Reference Data', () => {
   it('contains the 21 FP-001 catalog ingredients with valid aisles and dimensions', () => {
@@ -82,5 +83,36 @@ describe('Food Planner Toolkit Reference Data', () => {
     expect(AISLE_DISPLAY_MAP.spices).toBe('Spices & Condiments');
     expect(AISLE_DISPLAY_MAP.dairy).toBe('Dairy & Paneer');
     expect(AISLE_DISPLAY_MAP['oils-fats']).toBe('Oil & Ghee');
+  });
+
+  it('covers every recipe with thumbnail URL and image provenance', () => {
+    expect(RECIPES.length).toBe(8);
+    for (const recipe of RECIPES) {
+      expect(recipe.thumbnailUrl).toBeDefined();
+      expect(recipe.thumbnailUrl).toMatch(/^\/food\/recipes\/[a-z0-9-]+\.jpg$/);
+      expect(recipe.imageProvenance).toBeDefined();
+      expect(recipe.imageProvenance?.type).toBe('ai-generated');
+      expect(recipe.imageProvenance?.notes).toBeTruthy();
+    }
+  });
+
+  it('provides course icons and fallback placeholder classes for all categories', () => {
+    expect(getCourseIcon('rice')).toBe('🍚');
+    expect(getCourseIcon('dal')).toBe('🍲');
+    expect(getCourseIcon('main')).toBe('🍛');
+    expect(getCourseIcon('side')).toBe('🥗');
+    expect(getCourseIcon('snack')).toBe('🥟');
+    expect(getCourseIcon('dessert')).toBe('🍨');
+    expect(getCourseIcon('bread')).toBe('🫓');
+    expect(getCourseIcon('drink')).toBe('🥤');
+    expect(getCourseIcon('unknown')).toBe('🍽️');
+
+    expect(getCoursePlaceholderClass('rice')).toBeTruthy();
+    expect(getCoursePlaceholderClass('dal')).toBeTruthy();
+    expect(getCoursePlaceholderClass('main')).toBeTruthy();
+    expect(getCoursePlaceholderClass('side')).toBeTruthy();
+    expect(getCoursePlaceholderClass('snack')).toBeTruthy();
+    expect(getCoursePlaceholderClass('dessert')).toBeTruthy();
+    expect(getCoursePlaceholderClass('unknown')).toBeTruthy();
   });
 });

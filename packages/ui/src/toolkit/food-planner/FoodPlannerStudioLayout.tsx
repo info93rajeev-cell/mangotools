@@ -2,6 +2,7 @@ import { Icon } from '../../primitives/Icon.tsx';
 import { CookingScheduleSection } from './CookingScheduleSection.tsx';
 import { CostEstimationSection } from './CostEstimationSection.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
 import { RecipesMenuSection } from './RecipesMenuSection.tsx';
@@ -16,23 +17,36 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
   const planner = useFoodPlanner();
   const { activeSection, setActiveSection, setup, setSetup, loadSamplePlan } = planner;
 
-  const handleShare = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      void navigator.clipboard.writeText(window.location.href);
-      notify?.('Plan link copied to clipboard!');
+  const handleShare = async () => {
+    const text = [
+      t.recipes,
+      `${t.guests}: ${setup.guests}`,
+      setup.location,
+      setup.occasion,
+      ...planner.selectedRecipes.map(
+        (recipe) =>
+          `${recipe.name}: ${setup.guests * (planner.portionFactors[recipe.id] ?? 1)} ${t.servings}`,
+      ),
+    ].join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      notify?.(t.shared);
+    } catch {
+      notify?.(t.shareError);
     }
   };
 
   return (
     <div class={styles.container}>
-      <PlannerBreadcrumbs />
-      <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={handleShare} />
+      <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={() => void handleShare()} />
       <PlannerNavBar activeSection={activeSection} onSelectSection={setActiveSection} />
-      <PlanSetupCard
-        setup={setup}
-        onSetSetup={setSetup}
-        onUpdate={() => notify?.(`Plan updated for ${setup.guests} guests (${setup.occasion})`)}
-      />
+      <div class={styles.desktopOnly}>
+        <PlanSetupCard
+          setup={setup}
+          onSetSetup={setSetup}
+          onUpdate={() => notify?.(`Plan updated for ${setup.guests} guests (${setup.occasion})`)}
+        />
+      </div>
 
       {activeSection === 'recipes' && <RecipesMenuSection planner={planner} />}
       {activeSection === 'ingredients' && <IngredientsSection planner={planner} />}
@@ -40,22 +54,6 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
       {activeSection === 'cost' && <CostEstimationSection planner={planner} />}
       {activeSection === 'schedule' && <CookingScheduleSection planner={planner} />}
     </div>
-  );
-}
-
-function PlannerBreadcrumbs() {
-  return (
-    <nav class={styles.breadcrumb} aria-label="Breadcrumb">
-      <a href="/" class={styles.breadcrumbLink}>
-        Home
-      </a>
-      <span class={styles.breadcrumbSep}>&gt;</span>
-      <a href="/food-and-catering" class={styles.breadcrumbLink}>
-        Food &amp; Catering
-      </a>
-      <span class={styles.breadcrumbSep}>&gt;</span>
-      <span class={styles.breadcrumbActive}>Food Planner</span>
-    </nav>
   );
 }
 
@@ -74,9 +72,17 @@ function PlannerTopHeader({
             <Icon name="chef-hat" />
           </div>
           <h2 class={styles.toolTitle}>Food Planner</h2>
-          <span class={styles.guidePill}>
+          <button
+            type="button"
+            class={styles.guidePill}
+            onClick={() =>
+              document
+                .querySelector<HTMLButtonElement>('.tool-header [data-guide-trigger]')
+                ?.click()
+            }
+          >
             <Icon name="lightbulb" /> Guide
-          </span>
+          </button>
         </div>
         <p class={styles.toolSubtitle}>
           Plan recipes, calculate quantities, create ingredient lists, estimate cost and schedule
@@ -110,6 +116,7 @@ function PlannerNavBar({
       <NavTab
         id="recipes"
         label="Recipes & Menu"
+        mobileLabel="Recipes"
         icon="utensils"
         active={activeSection === 'recipes'}
         onClick={() => onSelectSection('recipes')}
@@ -117,6 +124,7 @@ function PlannerNavBar({
       <NavTab
         id="ingredients"
         label="Ingredients"
+        mobileLabel="Ingredients"
         icon="leaf"
         active={activeSection === 'ingredients'}
         onClick={() => onSelectSection('ingredients')}
@@ -124,6 +132,7 @@ function PlannerNavBar({
       <NavTab
         id="shopping"
         label="Shopping List"
+        mobileLabel="Shopping"
         icon="shopping-cart"
         active={activeSection === 'shopping'}
         onClick={() => onSelectSection('shopping')}
@@ -131,6 +140,7 @@ function PlannerNavBar({
       <NavTab
         id="cost"
         label="Cost Estimation"
+        mobileLabel="Cost"
         icon="coins"
         active={activeSection === 'cost'}
         onClick={() => onSelectSection('cost')}
@@ -138,6 +148,7 @@ function PlannerNavBar({
       <NavTab
         id="schedule"
         label="Cooking Schedule"
+        mobileLabel="Cooking Schedule"
         icon="calendar"
         active={activeSection === 'schedule'}
         onClick={() => onSelectSection('schedule')}
@@ -251,12 +262,14 @@ function PlanSetupCard({
 function NavTab({
   id: _id,
   label,
+  mobileLabel,
   icon,
   active,
   onClick,
 }: {
   id: PlannerSection;
   label: string;
+  mobileLabel?: string;
   icon: string;
   active: boolean;
   onClick: () => void;
@@ -270,7 +283,8 @@ function NavTab({
       onClick={onClick}
     >
       <Icon name={icon} />
-      <span>{label}</span>
+      <span class={styles.desktopTabLabel}>{label}</span>
+      {mobileLabel && <span class={styles.mobileTabLabel}>{mobileLabel}</span>}
     </button>
   );
 }

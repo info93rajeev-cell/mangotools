@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 
 export function formatTimeSpan(minutes: number): string {
   const h = Math.floor(minutes / 60);
@@ -15,10 +16,7 @@ export function CapacityNotice() {
       style={{ background: '#f8fafc', borderColor: '#e2e8f0', color: '#475569' }}
     >
       <Icon name="info" />
-      <span>
-        Timings are deterministic model estimates backward scheduled from serving time minus 10m
-        rest. Not kitchen guarantees.
-      </span>
+      <span>{t.capacityHint}</span>
     </div>
   );
 }
@@ -55,7 +53,7 @@ export function ScheduleSummaryCard({
         </h2>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13.5px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
         <div
           style={{
             display: 'flex',
@@ -64,7 +62,7 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span>Total Tasks:</span>
+          <span style={{ color: '#475569' }}>Total Tasks:</span>
           <strong>{tasksCount}</strong>
         </div>
         <div
@@ -75,7 +73,7 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span>Active Prep Time:</span>
+          <span style={{ color: '#475569' }}>Active Prep Time:</span>
           <strong>{timeSpanStr}</strong>
         </div>
         <div
@@ -86,8 +84,10 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span>Burner Limit:</span>
-          <strong>{burners} burners</strong>
+          <span style={{ color: '#475569' }}>Parallel Tasks Max:</span>
+          <strong>
+            {maximumParallel(tasks)} (Burners: {burners})
+          </strong>
         </div>
         <div
           style={{
@@ -97,25 +97,40 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span>Serving Time:</span>
+          <span style={{ color: '#475569' }}>Serving Time:</span>
           <strong>{mealTime}</strong>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-          <span>Buffer Allowance:</span>
-          <strong>15 min</strong>
+          <span style={{ color: '#475569' }}>Buffer Time:</span>
+          <strong>10 min</strong>
         </div>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 10px 0' }}>
+      <div style={{ marginTop: '20px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+        <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: '#0f172a' }}>
           Recipe Readiness
         </h3>
         <div class={styles.categoryBreakdown}>
           {recipeProgress.map((r) => (
-            <div key={r.id}>
+            <div key={r.id} style={{ marginBottom: '8px' }}>
               <div class={styles.breakdownRow}>
-                <span>{r.name}</span>
-                <strong>{r.percent}%</strong>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <img
+                    src={`/food/recipes/${r.id}.jpg`}
+                    alt=""
+                    class={styles.tableThumb}
+                    style={{ width: '24px', height: '24px' }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/food/recipes/besan-ladoo.jpg';
+                    }}
+                  />
+                  <span style={{ fontWeight: 600, fontSize: '12.5px' }}>{r.name}</span>
+                </div>
+                <strong
+                  style={{ fontSize: '12px', color: r.percent === 100 ? '#16a34a' : '#2563eb' }}
+                >
+                  {r.percent}%
+                </strong>
               </div>
               <div class={styles.progressBarBg}>
                 <div
@@ -137,12 +152,14 @@ export function ScheduleSummaryCard({
 export function PlanTotalsFooter({
   tasksCount,
   timeSpanStr,
-  guests,
+  guests: _guests,
+  tasks,
   mealTime,
 }: {
   tasksCount: number;
   timeSpanStr: string;
   guests: number;
+  tasks: ScheduleTaskItem[];
   mealTime: string;
 }) {
   return (
@@ -151,10 +168,10 @@ export function PlanTotalsFooter({
         background: '#fffbeb',
         border: '1px solid #fde68a',
         borderRadius: '10px',
-        padding: '12px 18px',
+        padding: '12px 20px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '12px',
         fontSize: '13px',
@@ -163,20 +180,47 @@ export function PlanTotalsFooter({
       }}
     >
       <span>
+        📅 <strong>Plan Totals</strong>
+      </span>
+      <span>|</span>
+      <span>
         Total Tasks: <strong>{tasksCount}</strong>
       </span>
-      <span>•</span>
+      <span>|</span>
       <span>
         Total Prep Time: <strong>{timeSpanStr}</strong>
       </span>
-      <span>•</span>
+      <span>|</span>
       <span>
-        Guests: <strong>{guests}</strong>
+        Cooking Window:{' '}
+        <strong>
+          {tasks.map((task) => task.startTime).sort()[0] ?? '—'} — {mealTime}
+        </strong>
       </span>
-      <span>•</span>
+      <span>|</span>
       <span>
         Serving Deadline: <strong>{mealTime}</strong>
       </span>
     </div>
   );
+}
+
+function maximumParallel(tasks: ScheduleTaskItem[]): number {
+  const events = tasks
+    .flatMap((task) => {
+      const [hours = 0, minutes = 0] = task.startTime.split(':').map(Number);
+      const start = hours * 60 + minutes;
+      return [
+        { time: start, delta: 1 },
+        { time: start + task.durationMinutes, delta: -1 },
+      ];
+    })
+    .sort((a, b) => a.time - b.time || a.delta - b.delta);
+  let active = 0;
+  let maximum = 0;
+  for (const event of events) {
+    active += event.delta;
+    maximum = Math.max(maximum, active);
+  }
+  return maximum;
 }
