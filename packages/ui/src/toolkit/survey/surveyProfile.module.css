@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px 10px;
+  padding: 10px 16px 8px;
   border-bottom: 1px solid var(--color-border-subtle, #f1f5f9);
 }
 
@@ -49,14 +49,14 @@
 }
 
 .cardBody {
-  padding: 14px 16px 16px;
+  padding: 6px 16px 12px;
   min-width: 0;
   max-width: 100%;
 }
 
 .profileWrap {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   overflow: hidden;
 }
 
@@ -73,27 +73,27 @@
 }
 
 .notice {
-  padding: 14px;
+  padding: 12px;
   background: var(--color-bg-subtle, #f8fafc);
   border: 1px dashed #cbd5e1;
   border-radius: 8px;
   font-size: 12px;
   color: #334155;
-  line-height: 1.5;
-  margin-bottom: 12px;
+  line-height: 1.45;
+  margin-bottom: 8px;
   text-align: center;
 }
 
 .chipsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 6px;
 }
 
 .chip {
   background: var(--color-bg-subtle, #f8fafc);
   border-radius: 6px;
-  padding: 8px;
+  padding: 6px 8px;
   text-align: center;
   min-width: 0;
 }

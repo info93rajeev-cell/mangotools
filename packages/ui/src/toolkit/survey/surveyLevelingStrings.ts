@@ -23,9 +23,10 @@ export const surveyStrings = {
   startRL: 'Starting BM RL',
   closingRL: 'Closing BM RL (known)',
   closingRLPlaceholder: 'Leave blank if open',
-  allowableConstant: 'Allowable error constant C (mm/√km) [Optional]',
+  allowableConstant: 'Allowable constant C',
   allowableConstantPlaceholder: 'e.g. 12 or 24',
-  allowableConstantHelper:
+  allowableConstantHelper: 'Optional (skips tolerance check)',
+  allowableConstantFullExplanation:
     'Enter your contract or survey specification constant C. Leaving blank calculates misclosure without a pass/fail tolerance check.',
   adjustBy: 'Adjustment method',
   adjustNone: "Don't adjust (raw reduction)",
@@ -121,9 +122,12 @@ export const surveyStrings = {
 
   // Profile Card
   profileTitle: 'Level profile · RL along the line',
+  profileTitleAdjusted: 'Level profile · Adjusted RL along the line',
   profileNotice: 'Profile chart will render once observations are entered and calculated.',
   profileHighestRL: 'Highest RL',
+  profileHighestRLAdjusted: 'Highest adjusted RL',
   profileLowestRL: 'Lowest RL',
+  profileLowestRLAdjusted: 'Lowest adjusted RL',
   profileLineLength: 'Line length',
 
   // Results Summary Card

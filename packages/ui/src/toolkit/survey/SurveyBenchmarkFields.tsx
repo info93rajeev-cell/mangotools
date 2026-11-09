@@ -87,7 +87,11 @@ function AllowableConstField({
 }) {
   return (
     <div class={sb.field}>
-      <label class={sb.fieldLabel} for="survey-allowable-const">
+      <label
+        class={sb.fieldLabel}
+        for="survey-allowable-const"
+        title="Allowable error constant C (mm/√km) [Optional]"
+      >
         {surveyStrings.allowableConstant}
       </label>
       <div class={sb.inputWrap}>
@@ -114,7 +118,11 @@ function AllowableConstField({
           {error}
         </span>
       ) : null}
-      <span id="survey-allowable-const-help" class={sb.fieldHelperText}>
+      <span
+        id="survey-allowable-const-help"
+        class={sb.fieldHelperText}
+        title={surveyStrings.allowableConstantFullExplanation}
+      >
         {surveyStrings.allowableConstantHelper}
       </span>
     </div>
