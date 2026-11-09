@@ -1,5 +1,4 @@
 import { useState } from 'preact/hooks';
-import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import type { ExtendedFoodRecipe } from './foodReferenceData.ts';
 
@@ -79,14 +78,6 @@ export function RecipeCardImage({ recipe }: RecipeCardImageProps) {
           <span class={styles.placeholderBadge}>Image coming soon</span>
         </div>
       )}
-      <button
-        type="button"
-        class={styles.favBtn}
-        title="Favorite"
-        aria-label={`Favorite ${recipe.name}`}
-      >
-        <Icon name="heart" />
-      </button>
     </div>
   );
 }

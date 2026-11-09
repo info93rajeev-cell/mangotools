@@ -93,6 +93,7 @@ export function useGroupedShoppingItems(
   engineCost: unknown = null,
   priceMode: 'retail' | 'wholesale' = 'retail',
   userPrices: Record<string, string> = {},
+  categories: Record<string, string> = {},
 ) {
   const shoppingItems = useMemo(
     () =>
@@ -106,7 +107,7 @@ export function useGroupedShoppingItems(
         engineCost,
         priceMode,
         userPrices,
-      ),
+      ).map((item) => ({ ...item, aisle: categories[item.id] ?? item.aisle })),
     [
       engineConsolidated,
       selectedRecipes,
@@ -117,6 +118,7 @@ export function useGroupedShoppingItems(
       engineCost,
       priceMode,
       userPrices,
+      categories,
     ],
   );
 

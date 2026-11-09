@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'preact/hooks';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
+import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { matchesRecipeFilter, RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
 import { RecipesMobileView } from './RecipesMobileView.tsx';
 import { SelectedMenuPanel } from './RecipesSelectedMenuComponents.tsx';
@@ -13,6 +15,7 @@ interface RecipesMenuSectionProps {
 export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const { searchQuery, activeCourse } = planner;
 
+  const [personal, setPersonal] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
@@ -20,15 +23,24 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
 
   const filteredRecipes = useMemo(
     () =>
-      CATALOG_GALLERY_RECIPES.filter((r) =>
+      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) =>
         matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites),
       ),
-    [searchQuery, activeCourse, favoritesOnly, favorites],
+    [searchQuery, activeCourse, favoritesOnly, favorites, planner.personalRecipes],
   );
 
   return (
     <>
       <div class={styles.desktopOnly}>
+        <button
+          type="button"
+          class={styles.actionBtn}
+          aria-expanded={personal}
+          onClick={() => setPersonal(!personal)}
+        >
+          {t.myRecipes}
+        </button>
+        {personal && <PersonalRecipes planner={planner} />}
         <RecipesDesktopGrid
           planner={planner}
           filteredRecipes={filteredRecipes}
@@ -105,6 +117,7 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
   return (
     <div class={`${styles.layoutGrid} ${styles.recipesLayoutGrid}`}>
       <RecipeGalleryPanel
+        catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes]}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         activeCourse={activeCourse}

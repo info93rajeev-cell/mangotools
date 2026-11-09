@@ -2,28 +2,31 @@ import { useState } from 'preact/hooks';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { AISLE_DISPLAY_MAP, CATALOG_INGREDIENTS } from './foodReferenceData.ts';
+import { InventoryCategories, InventoryTransfer } from './InventoryTransfer.tsx';
 import {
   formatDisplayQty,
   formatDisplayUnit,
   type IngredientLineItem,
 } from './ingredientsUtils.ts';
-import {
-  MobileMetric,
-  MobilePagination,
-  MobilePlanSetup,
-  MobileSectionHeader,
-} from './MobilePlanSetup.tsx';
+import { inventoryValue } from './inventoryValue.ts';
+import { MobileMetric, MobilePagination, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { priceBasis } from './plannerPrices.ts';
 import { money } from './plannerResults.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 export function IngredientsMobileView({
   planner,
-  items,
+  items: rawItems,
 }: {
   planner: UseFoodPlannerReturn;
   items: IngredientLineItem[];
 }) {
+  const items = rawItems.map((item) => ({
+    ...item,
+    aisle: planner.ingredientCategories[item.id] ?? item.aisle,
+  }));
+  const [transfer, setTransfer] = useState(false);
+  const [categories, setCategories] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
@@ -39,8 +42,7 @@ export function IngredientsMobileView({
   const paged = visible.slice((currentPage - 1) * 8, currentPage * 8);
   return (
     <div class={s.mobileContainer} data-testid="mobile-ingredients">
-      <MobileSectionHeader title={t.ingredients} intro={t.ingredientsIntro} icon="leaf" />
-      <MobilePlanSetup planner={planner} id="mobile-ingredients" />
+      <MobilePlanHeader planner={planner} section="ingredients" />
       <div class={s.mobileDualActions}>
         <input
           class={s.mobileSelect}
@@ -110,14 +112,15 @@ export function IngredientsMobileView({
         >
           {t.updateStock}
         </button>
-        <button
-          type="button"
-          class={s.mobileSecondaryBtn}
-          onClick={() => exportInventory(items, planner)}
-        >
-          {t.export}
+        <button type="button" class={s.mobileSecondaryBtn} onClick={() => setTransfer(!transfer)}>
+          {t.importExport}
         </button>
       </div>
+      {transfer && <InventoryTransfer items={items} planner={planner} />}
+      <button type="button" class={s.mobileSecondaryBtn} onClick={() => setCategories(!categories)}>
+        {t.addCategory}
+      </button>
+      {categories && <InventoryCategories items={items} planner={planner} />}
       <button
         type="button"
         class={s.mobileSecondaryBtn}
@@ -276,28 +279,6 @@ export function AddIngredient({
   );
 }
 
-function exportInventory(items: IngredientLineItem[], planner: UseFoodPlannerReturn) {
-  const rows = [
-    [t.ingredients, t.required, t.amount, t.stock, t.price],
-    ...items.map((item) => [
-      item.name,
-      item.quantity,
-      item.unit,
-      stockLabel(item, planner),
-      priceLabel(item.id, planner),
-    ]),
-  ];
-  const csv = rows
-    .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
-    .join('\r\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'food-planner-inventory.csv';
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
 function InventorySummary({
   planner,
   items,
@@ -314,10 +295,10 @@ function InventorySummary({
   return (
     <section class={s.mobileCard}>
       <div class={s.mobileSummary2x2}>
-        <MobileMetric label={t.totalItems} value={items.length} icon="clipboard" />
+        <MobileMetric label={t.totalItems} value={items.length} icon="clipboard-paste" />
         <MobileMetric label={t.lowStock} value={low} icon="shopping-cart" />
-        <MobileMetric label={t.knownStock} value={known} icon="check-circle" />
-        <MobileMetric label={t.stockUnknown} value={items.length - known} icon="info" />
+        <MobileMetric label={t.knownStock} value={known} icon="circle-check" />
+        <MobileMetric label={t.value} value={money(inventoryValue(items, planner))} icon="coins" />
       </div>
       <p class={s.mobileCardSubtitle}>{t.stockHint}</p>
     </section>

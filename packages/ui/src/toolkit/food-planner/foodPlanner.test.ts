@@ -8,6 +8,7 @@ import {
   SAMPLE_PLAN,
 } from './foodReferenceData.ts';
 import { getCourseIcon, getCoursePlaceholderClass } from './RecipeCardImage.tsx';
+import { matchesCourseFilter } from './RecipesGalleryComponents.tsx';
 
 describe('Food Planner Toolkit Reference Data', () => {
   it('contains the 21 FP-001 catalog ingredients with valid aisles and dimensions', () => {
@@ -115,4 +116,9 @@ describe('Food Planner Toolkit Reference Data', () => {
     expect(getCoursePlaceholderClass('dessert')).toBeTruthy();
     expect(getCoursePlaceholderClass('unknown')).toBeTruthy();
   });
+});
+
+it('keeps side dishes out of the beverages filter', () => {
+  expect(matchesCourseFilter('drink', 'beverages')).toBe(true);
+  expect(matchesCourseFilter('side', 'beverages')).toBe(false);
 });

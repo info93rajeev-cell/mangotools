@@ -6,14 +6,15 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   margin: 0 auto;
   box-sizing: border-box;
   font-family: inherit;
-  color: #0f172a;
+  line-height: 1.3;
+  color: #0b104b;
 }
 
 /* Breadcrumbs */
@@ -26,17 +27,17 @@
   margin-bottom: -4px;
 }
 .breadcrumbLink {
-  color: #334155;
+  color: #15185b;
   text-decoration: none;
 }
 .breadcrumbLink:hover {
-  color: #0f172a;
+  color: #0b104b;
 }
 .breadcrumbSep {
   color: #cbd5e1;
 }
 .breadcrumbActive {
-  color: #0f172a;
+  color: #0b104b;
   font-weight: 600;
 }
 
@@ -61,7 +62,7 @@
 }
 .headerIcon {
   width: 38px;
-  height: 38px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,7 +73,7 @@
 .toolTitle {
   font-size: 26px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b104b;
   margin: 0;
   letter-spacing: -0.5px;
 }
@@ -91,7 +92,7 @@
 }
 .toolSubtitle {
   font-size: 13.5px;
-  color: #334155;
+  color: #15185b;
   margin: 0;
 }
 .headerActions {
@@ -107,7 +108,7 @@
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: #15185b;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -124,10 +125,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 6px;
+  background: linear-gradient(115deg, #fff, #f4f7ff);
+  border: 1px solid #cdd7f6;
+  border-radius: 16px;
+  padding: 2px;
   overflow-x: auto;
   max-width: 100%;
   min-width: 0;
@@ -146,9 +147,9 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #334155;
+  font-size: 17px;
+  font-weight: 750;
+  color: #15185b;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -159,21 +160,21 @@
 }
 .navPill:hover {
   background: #f1f5f9;
-  color: #0f172a;
+  color: #0b104b;
 }
 .navPillActive {
   background: #fbbf24;
-  color: #0f172a;
+  color: #0b104b;
   font-weight: 700;
   box-shadow: 0 1px 3px rgba(251, 191, 36, 0.35);
 }
 
 /* Plan Setup Card */
 .planSetupCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 14px 18px;
+  background: linear-gradient(115deg, #fff, #f4f7ff);
+  border: 1px solid #cdd7f6;
+  border-radius: 16px;
+  padding: 9px 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   max-width: 100%;
   min-width: 0;
@@ -185,7 +186,7 @@
   gap: 8px;
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin-bottom: 12px;
 }
 .planSetupHeaderSub {
@@ -206,7 +207,7 @@
   gap: 4px;
 }
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #475569;
   display: flex;
@@ -215,10 +216,10 @@
 }
 .selectInput,
 .textInput {
-  height: 38px;
+  height: 34px;
   padding: 0 12px;
   font-size: 13.5px;
-  color: #0f172a;
+  color: #0b104b;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -233,7 +234,7 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }
 .updatePlanBtn {
-  height: 38px;
+  height: 34px;
   padding: 0 18px;
   background: #1e3a8a;
   color: #ffffff;
@@ -256,7 +257,7 @@
 .layoutGrid {
   display: grid;
   grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
-  gap: 20px;
+  gap: 14px;
   align-items: start;
   max-width: 100%;
   min-width: 0;
@@ -265,10 +266,10 @@
 
 /* Cards & Containers */
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px;
+  background: linear-gradient(115deg, #fff, #f4f7ff);
+  border: 1px solid #cdd7f6;
+  border-radius: 16px;
+  padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   max-width: 100%;
   min-width: 0;
@@ -279,7 +280,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 .cardTitleGroup {
@@ -288,9 +289,9 @@
   gap: 2px;
 }
 .cardTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0b104b;
   margin: 0;
   display: flex;
   align-items: center;
@@ -323,7 +324,7 @@
 }
 .filterPill:hover {
   background: #e2e8f0;
-  color: #0f172a;
+  color: #0b104b;
 }
 .filterPillActive {
   background: #2563eb;
@@ -339,7 +340,7 @@
 }
 .recipeCard {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   border-radius: 10px;
   padding: 12px;
   display: flex;
@@ -446,7 +447,7 @@
 .recipeName {
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -494,20 +495,21 @@
   max-width: 100%;
   min-width: 0;
   overflow-x: auto;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   border-radius: 8px;
   box-sizing: border-box;
 }
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.25;
   text-align: left;
 }
 .table th {
   background: #f8fafc;
   padding: 10px 12px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #475569;
   border-bottom: 1px solid #e2e8f0;
@@ -578,7 +580,7 @@
   height: 26px;
   border: none;
   background: #f8fafc;
-  color: #334155;
+  color: #15185b;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -639,7 +641,7 @@
   font-size: 15px;
   font-weight: 700;
   background: #fbbf24;
-  color: #0f172a;
+  color: #0b104b;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -703,7 +705,7 @@
 /* Cooking Schedule Phase Headers */
 .phaseHeader {
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   border-radius: 8px;
   padding: 10px 14px;
   display: flex;
@@ -899,7 +901,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   background: #f8fafc;
 }
 
@@ -930,7 +932,7 @@
   height: 40px;
   padding: 0 12px 0 36px;
   font-size: 13.5px;
-  color: #0f172a;
+  color: #0b104b;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -958,7 +960,7 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .recipeGrid4 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -999,7 +1001,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #ffffff;
-  color: #334155;
+  color: #15185b;
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
@@ -1029,7 +1031,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 12px;
-  color: #334155;
+  color: #15185b;
   background: #ffffff;
   cursor: pointer;
 }
@@ -1120,7 +1122,7 @@
 .donutCenterNumber {
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b104b;
   display: block;
 }
 
@@ -1143,7 +1145,7 @@
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: #334155;
+  color: #15185b;
 }
 
 .legendDot {
@@ -1226,7 +1228,7 @@
   display: none;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .desktopOnly {
     display: none;
   }
@@ -1286,9 +1288,15 @@
     gap: 20px;
   }
   .planSetupHeader {
-    min-width: 150px;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    min-width: 190px;
     margin-bottom: 0;
     flex-wrap: wrap;
+  }
+  .planSetupHeaderSub {
+    grid-column: 2;
+    margin: 0;
   }
   .planSetupControls {
     flex: 1;
@@ -1299,7 +1307,7 @@
     padding: 6px 8px;
   }
 }
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .topHeader {
     gap: 0;
   }
@@ -1335,5 +1343,114 @@
 @media (min-width: 1100px) {
   .recipesLayoutGrid {
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .container button {
+    line-height: 1.2;
+  }
+  .container .cardTitle :global(.icon) {
+    color: #e9a600;
+    font-size: 26px;
+  }
+  .tableThumb {
+    width: 34px;
+    height: 30px;
+    border-radius: 8px;
+  }
+  .recipeImageHolder {
+    height: 108px;
+  }
+  .recipeName {
+    font-size: 15px;
+  }
+  .cardHeader {
+    flex-wrap: nowrap;
+  }
+  .recipeMeta {
+    padding: 5px 8px;
+  }
+  .gallerySearchRow {
+    margin-bottom: 8px;
+  }
+  .filterBar {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .filterPill {
+    padding: 5px 9px;
+  }
+}
+@media (min-width: 600px) and (max-width: 1024px) {
+  .toolTitle {
+    font-size: 36px;
+  }
+  .headerIcon {
+    width: 58px;
+    height: 58px;
+    font-size: 32px;
+    background: transparent;
+  }
+  .toolSubtitle {
+    font-size: 19px;
+  }
+  .navPill {
+    flex-direction: row;
+    font-size: 18px;
+    gap: 8px;
+  }
+  .guidePill {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :global(main:has([data-tool-island="food-planner"]) nav[aria-label="Breadcrumb"]) {
+    display: none;
+  }
+  :global(main:has([data-tool-island="food-planner"]) .tool-header .title-row) {
+    top: 0;
+  }
+}
+@media (min-width: 1025px) {
+  .costTable .tableThumb {
+    display: none;
+  }
+  .otherCostsGrid {
+    gap: 8px 16px;
+  }
+}
+.otherCostRow {
+  padding: 4px 8px;
+}
+
+.table button:has(:global(.icon)) {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+}
+.table button :global(.icon) {
+  width: 18px;
+  height: 18px;
+  font-size: 14px;
+}
+
+@media (min-width: 1025px) {
+  .recipeCard {
+    padding: 8px;
+  }
+  .recipeInfoRow {
+    padding-right: 62px;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .recipeCard > .addRecipeBtn {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 58px;
+    padding: 3px 4px;
+    font-size: 10.5px;
   }
 }

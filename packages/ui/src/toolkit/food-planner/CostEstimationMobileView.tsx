@@ -2,7 +2,7 @@ import type { RecipeCostItem } from './CostOtherExpensesCard.tsx';
 import { OtherCostsCard } from './CostOtherExpensesCard.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { MobileMetric, MobilePlanSetup, MobileSectionHeader } from './MobilePlanSetup.tsx';
+import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { money } from './plannerResults.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
@@ -29,8 +29,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
     totalMenuCost > 0 ? Math.round((totalIngredientCost / totalMenuCost) * 1000) / 10 : 0;
   return (
     <div class={s.mobileContainer} data-testid="mobile-cost">
-      <MobileSectionHeader title={t.cost} intro={t.costIntro} icon="coins" />
-      <MobilePlanSetup planner={planner} id="mobile-cost" />
+      <MobilePlanHeader planner={planner} section="cost" />
       {planner.isLoadingCost && <p role="status">{t.calculating}</p>}
       {planner.costError && <p role="alert">{planner.costError}</p>}
       <section class={s.mobileCard}>
@@ -64,7 +63,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
           <MobileMetric
             label={t.ingredientCost}
             value={money(totalIngredientCost)}
-            icon="shopping-basket"
+            icon="shopping-cart"
           />
           <MobileMetric label={t.otherCost} value={money(totalOtherCost)} icon="coins" />
           <MobileMetric label={t.totalCost} value={money(totalMenuCost)} icon="utensils" />
@@ -72,37 +71,39 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
         </div>
         <p class={s.mobileCardSubtitle}>{t.costNote}</p>
       </section>
-      <OtherCostsCard
-        idPrefix="mobile"
-        items={planner.otherCosts}
-        totalOtherCost={totalOtherCost}
-        onUpdate={planner.updateOtherCost}
-      />
-      <section class={s.mobileCard}>
-        <h4 class={s.mobileCardTitle}>{t.insights}</h4>
-        <p>
-          {t.ingredientShare}: {share}%
-        </p>
-        <progress max={100} value={share} aria-label={t.ingredientShare} />
-        <p>
-          {t.otherShare}: {totalMenuCost ? Math.round((100 - share) * 10) / 10 : 0}%
-        </p>
-        {highest && (
+      <div class={s.mobileCostDetails}>
+        <OtherCostsCard
+          idPrefix="mobile"
+          items={planner.otherCosts}
+          totalOtherCost={totalOtherCost}
+          onUpdate={planner.updateOtherCost}
+        />
+        <section class={s.mobileCard}>
+          <h4 class={s.mobileCardTitle}>{t.insights}</h4>
           <p>
-            {t.highest}:{' '}
-            <strong>
-              {highest.name} ({money(highest.totalDish)})
-            </strong>
+            {t.ingredientShare}: {share}%
           </p>
-        )}
-        <button
-          type="button"
-          class={s.mobilePrimaryBtn}
-          onClick={() => planner.setActiveSection('schedule')}
-        >
-          {t.goSchedule}
-        </button>
-      </section>
+          <progress max={100} value={share} aria-label={t.ingredientShare} />
+          <p>
+            {t.otherShare}: {totalMenuCost ? Math.round((100 - share) * 10) / 10 : 0}%
+          </p>
+          {highest && (
+            <p>
+              {t.highest}:{' '}
+              <strong>
+                {highest.name} ({money(highest.totalDish)})
+              </strong>
+            </p>
+          )}
+          <button
+            type="button"
+            class={s.mobilePrimaryBtn}
+            onClick={() => planner.setActiveSection('schedule')}
+          >
+            {t.goSchedule}
+          </button>
+        </section>
+      </div>
     </div>
   );
 }

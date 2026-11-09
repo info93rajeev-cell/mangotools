@@ -55,6 +55,7 @@ function useShoppingListState(planner: UseFoodPlannerReturn) {
     planner.engineCost,
     planner.priceMode,
     planner.userPrices,
+    planner.ingredientCategories,
   );
 
   const totalCost = useMemo(() => ingredientTotal(planner.engineCost), [planner.engineCost]);

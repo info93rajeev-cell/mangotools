@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { AISLE_DISPLAY_MAP } from './foodReferenceData.ts';
-import { MobileMetric, MobilePlanSetup, MobileSectionHeader } from './MobilePlanSetup.tsx';
+import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { ingredientTotal, money, sumMoney } from './plannerResults.ts';
 import type { ShoppingLineItem } from './shoppingListUtils.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
@@ -16,10 +16,14 @@ interface ShoppingListMobileViewProps {
 
 export function ShoppingListMobileView({
   planner,
-  items,
+  items: rawItems,
   boughtMap,
   onToggleBought,
 }: ShoppingListMobileViewProps) {
+  const items = rawItems.map((item) => ({
+    ...item,
+    aisle: planner.ingredientCategories[item.id] ?? item.aisle,
+  }));
   const [filter, setFilter] = useState<'all' | 'tobuy' | 'instock'>('all');
   const [closed, setClosed] = useState<Record<string, boolean>>(initialClosedGroups);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
@@ -27,20 +31,10 @@ export function ShoppingListMobileView({
   const inList = items.filter((item) => boughtMap[item.id]).length;
 
   const groups = shoppingGroups(items, filter, boughtMap);
-  const share = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        items.map((item) => `${item.name}: ${item.buyQuantity} ${item.unit}`).join('\n'),
-      );
-      setMessage(t.shared);
-    } catch {
-      setMessage(t.shareError);
-    }
-  };
+  const share = () => shareShopping(items, setMessage);
   return (
     <div class={s.mobileContainer} data-testid="mobile-shopping">
-      <MobileSectionHeader title={t.shopping} intro={t.shoppingIntro} icon="shopping-cart" />
-      <MobilePlanSetup planner={planner} id="mobile-shopping" />
+      <MobilePlanHeader planner={planner} section="shopping" />
       <ShoppingOverview
         items={items}
         inList={inList}
@@ -148,9 +142,9 @@ function ShoppingOverview({
       <section class={s.mobileCard}>
         <h4 class={s.mobileCardTitle}>{t.listSummary}</h4>
         <div class={s.mobileSummary2x2}>
-          <MobileMetric label={t.totalItems} value={items.length} icon="clipboard" />
+          <MobileMetric label={t.totalItems} value={items.length} icon="clipboard-paste" />
           <MobileMetric label={t.toBuy} value={items.length - inList} icon="shopping-cart" />
-          <MobileMetric label={t.inList} value={inList} icon="check-circle" />
+          <MobileMetric label={t.inList} value={inList} icon="circle-check" />
           <MobileMetric label={t.estimated} value={money(total)} icon="coins" />
         </div>
       </section>
@@ -202,4 +196,15 @@ function orderedShoppingGroups(groups: Record<string, ShoppingLineItem[]>) {
   return Object.entries(groups).sort(([a], [b]) =>
     a === 'vegetables' ? -1 : b === 'vegetables' ? 1 : a.localeCompare(b),
   );
+}
+
+async function shareShopping(items: ShoppingLineItem[], setMessage: (message: string) => void) {
+  try {
+    await navigator.clipboard.writeText(
+      items.map((item) => `${item.name}: ${item.buyQuantity} ${item.unit}`).join('\n'),
+    );
+    setMessage(t.shared);
+  } catch {
+    setMessage(t.shareError);
+  }
 }

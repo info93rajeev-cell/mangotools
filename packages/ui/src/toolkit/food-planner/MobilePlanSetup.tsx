@@ -138,3 +138,25 @@ export function MobilePagination({
     </nav>
   );
 }
+
+export function MobilePlanHeader({
+  planner,
+  section,
+}: {
+  planner: UseFoodPlannerReturn;
+  section: 'recipes' | 'ingredients' | 'shopping' | 'cost' | 'schedule';
+}) {
+  const [title, intro, icon] = {
+    recipes: [t.recipes, t.recipesIntro, 'book-open'],
+    ingredients: [t.ingredients, t.ingredientsIntro, 'leaf'],
+    shopping: [t.shopping, t.shoppingIntro, 'shopping-cart'],
+    cost: [t.cost, t.costIntro, 'coins'],
+    schedule: [t.schedule, t.scheduleIntro, 'calendar'],
+  }[section];
+  return (
+    <section class={s.mobileHero}>
+      <MobileSectionHeader title={title} intro={intro} icon={icon} />
+      <MobilePlanSetup planner={planner} id={`mobile-${section}`} />
+    </section>
+  );
+}

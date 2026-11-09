@@ -36,23 +36,23 @@
 .mobileSectionHeaderTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin: 0;
   line-height: 1.2;
 }
 
 .mobileSectionHeaderSub {
   font-size: 12.5px;
-  color: #475569;
+  color: #24265e;
   margin: 2px 0 0 0;
 }
 
 /* Plan Setup Card (Mobile 2x2 Grid) */
 .mobileSetupCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 14px;
+  background: linear-gradient(115deg, #fff, #f5f7ff);
+  border: 1px solid #cdd7f6;
+  border-radius: 18px;
+  padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -62,7 +62,7 @@
   gap: 6px;
   font-size: 14.5px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin-bottom: 12px;
 }
 
@@ -82,7 +82,7 @@
 .mobileFieldLabel {
   font-size: 11.5px;
   font-weight: 600;
-  color: #475569;
+  color: #24265e;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -144,24 +144,24 @@
   font-size: 12.5px;
   font-weight: 600;
   white-space: nowrap;
-  background: #ffffff;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(115deg, #fff, #f5f7ff);
+  color: #141858;
+  border: 1px solid #cdd7f6;
   cursor: pointer;
 }
 
 .mobileNavPillActive {
-  background: #2563eb;
+  background: linear-gradient(135deg, #057dff, #0037c9);
   color: #ffffff;
   border-color: #2563eb;
 }
 
 /* Cards on Mobile */
 .mobileCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 14px;
+  background: linear-gradient(115deg, #fff, #f5f7ff);
+  border: 1px solid #cdd7f6;
+  border-radius: 18px;
+  padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -181,13 +181,13 @@
 .mobileCardTitle {
   font-size: 14.5px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin: 0;
 }
 
 .mobileCardSubtitle {
   font-size: 12px;
-  color: #475569;
+  color: #24265e;
   margin: 2px 0 0 0;
 }
 
@@ -210,7 +210,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
+  padding: 6px 0;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -224,7 +224,7 @@
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
 }
 
 .mobileDishInfo {
@@ -235,7 +235,7 @@
 .mobileDishName {
   font-size: 13.5px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin: 0 0 4px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -261,7 +261,7 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #475569;
+  color: #24265e;
   font-weight: 500;
 }
 
@@ -280,7 +280,7 @@
 
 .mobileMetricBox {
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   border-radius: 10px;
   padding: 8px 6px;
   text-align: center;
@@ -297,7 +297,7 @@
 
 .mobileMetricLabel {
   font-size: 10.5px;
-  color: #475569;
+  color: #24265e;
   font-weight: 500;
   line-height: 1.1;
   text-align: center;
@@ -306,7 +306,7 @@
 .mobileMetricValue {
   font-size: 13.5px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
 }
 
 /* Bottom Dual CTA Buttons */
@@ -324,7 +324,7 @@
   gap: 6px;
   padding: 10px;
   border-radius: 8px;
-  background: #2563eb;
+  background: linear-gradient(135deg, #057dff, #0037c9);
   color: #ffffff;
   border: none;
   font-size: 13px;
@@ -340,7 +340,7 @@
   gap: 6px;
   padding: 10px;
   border-radius: 8px;
-  background: #ffffff;
+  background: linear-gradient(115deg, #fff, #f5f7ff);
   color: #1d4ed8;
   border: 1.5px solid #2563eb;
   font-size: 13px;
@@ -351,11 +351,11 @@
 
 /* Accordion Stage Groups (Shopping & Cooking Schedule) */
 .mobileAccordionGroup {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cdd7f6;
   border-radius: 10px;
   margin-bottom: 8px;
   overflow: hidden;
-  background: #ffffff;
+  background: linear-gradient(115deg, #fff, #f5f7ff);
 }
 
 .mobileAccordionHeader {
@@ -386,12 +386,12 @@
   align-items: center;
   gap: 8px;
   font-size: 12.5px;
-  color: #475569;
+  color: #24265e;
 }
 
 .mobileAccordionBody {
   padding: 8px 12px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #cdd7f6;
 }
 
 /* Mobile 2x2 Cost / Schedule Summary Grid */
@@ -423,7 +423,7 @@
 
 .mobileSummaryTileLabel {
   font-size: 11px;
-  color: #475569;
+  color: #24265e;
   font-weight: 500;
   margin: 0;
 }
@@ -431,7 +431,7 @@
 .mobileSummaryTileValue {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b104b;
   margin: 2px 0 0 0;
 }
 
@@ -440,14 +440,14 @@
   width: 100%;
   height: 6px;
   border-radius: 3px;
-  background: #e2e8f0;
+  background: #cdd7f6;
   overflow: hidden;
   margin-top: 4px;
 }
 
 .mobileProgressFill {
   height: 100%;
-  background: #2563eb;
+  background: linear-gradient(135deg, #057dff, #0037c9);
   border-radius: 3px;
 }
 
@@ -496,4 +496,181 @@
 }
 .mobileEditBtn {
   min-height: 40px;
+}
+
+.mobileHero {
+  border: 1px solid #cdd7f6;
+  border-radius: 20px;
+  padding: 12px;
+  background: linear-gradient(115deg, #fff, #f1f5ff);
+  box-shadow: 0 2px 4px #193e9b12;
+}
+.mobileHero .mobileSectionHeader {
+  margin-bottom: 12px;
+}
+.mobileHero .mobileSetupCard {
+  box-shadow: none;
+}
+.mobileSummaryTile :global(.icon) {
+  color: #eba900;
+  font-size: 22px;
+}
+@media (min-width: 600px) {
+  .mobileContainer {
+    gap: 12px;
+    font-size: 21px;
+  }
+  .mobileHero {
+    padding: 14px;
+  }
+  .mobileSectionHeaderTitle {
+    font-size: 36px;
+  }
+  .mobileSectionHeaderSub {
+    font-size: 21px;
+  }
+  .mobileSectionHeaderIcon {
+    width: 72px;
+    height: 58px;
+    font-size: 42px;
+    background: transparent;
+  }
+  .mobileSetupTitle {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .mobileSetupGrid {
+    gap: 10px 28px;
+  }
+  .mobileFieldLabel {
+    font-size: 21px;
+  }
+  .mobileSelect {
+    font-size: 22px;
+    min-height: 42px;
+    padding: 5px 16px;
+  }
+  .mobileUpdateBtn {
+    font-size: 26px;
+    padding: 8px;
+  }
+  .mobileCardTitle {
+    font-size: 28px;
+  }
+  .mobileCardSubtitle {
+    font-size: 18px;
+  }
+  .mobileCard {
+    padding: 14px;
+  }
+  .mobileNavPillsRow {
+    gap: 10px;
+  }
+  .mobileNavPill {
+    flex: 1;
+    justify-content: center;
+    font-size: 21px;
+    padding: 10px 18px;
+  }
+  .mobileDishName {
+    font-size: 27px;
+  }
+  .mobileDishThumb {
+    width: 96px;
+    height: 56px;
+  }
+  .mobileCourseBadge {
+    font-size: 20px;
+    background: #e4eaff;
+  }
+  .mobileServingsBadge {
+    font-size: 20px;
+  }
+  .mobileEditBtn {
+    font-size: 20px;
+  }
+  .mobileSummaryTileValue {
+    font-size: 28px;
+  }
+  .mobileSummaryTileLabel {
+    font-size: 20px;
+  }
+  .mobileSummaryTile {
+    padding: 12px;
+  }
+  .mobilePrimaryBtn,
+  .mobileSecondaryBtn {
+    font-size: 23px;
+    padding: 12px;
+  }
+  .mobileAccordionHeader {
+    font-size: 24px;
+    padding: 9px 14px;
+  }
+}
+
+.mobileCostDetails {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .mobileCostDetails {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mobileCostDetails .mobileCard {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 600px) {
+  .mobileFieldLabel {
+    font-size: 18px;
+  }
+  .mobileSelect {
+    font-size: 21px;
+    min-height: 38px;
+  }
+  .mobileSetupGrid {
+    gap: 8px 28px;
+    margin-bottom: 8px;
+  }
+  .mobileSetupTitle {
+    font-size: 26px;
+    line-height: 1.1;
+  }
+  .mobileUpdateBtn {
+    font-size: 23px;
+    line-height: 1.2;
+  }
+  .mobileDishInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mobileDishName {
+    flex: 1;
+    margin: 0;
+  }
+  .mobileCourseBadge {
+    min-width: 140px;
+    text-align: center;
+  }
+  .mobileContainer[data-testid="mobile-recipes"] .mobileSummary2x2,
+  .mobileContainer[data-testid="mobile-ingredients"] .mobileSummary2x2,
+  .mobileContainer[data-testid="mobile-shopping"] .mobileSummary2x2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.mobileCourseBadge[data-course="main"],
+.mobileCourseBadge[data-course="dal"] {
+  background: #ffd9d4;
+}
+.mobileCourseBadge[data-course="rice"] {
+  background: #d5f5d5;
+}
+.mobileCourseBadge[data-course="snack"] {
+  background: #ffe9b0;
+}
+.mobileCourseBadge[data-course="dessert"] {
+  background: #ffd7ef;
 }
