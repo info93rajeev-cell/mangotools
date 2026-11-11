@@ -1476,3 +1476,106 @@
     font-size: 18px;
   }
 }
+
+/* Approved 1672px desktop reference: compact gallery and menu without hiding data. */
+@media (min-width: 1500px) {
+  .container {
+    width: calc(100% - 48px);
+    margin-top: -14px;
+  }
+  .desktopOnly:has(> .recipesLayoutGrid) {
+    position: relative;
+  }
+  .desktopOnly:has(> .recipesLayoutGrid) > .actionBtn {
+    position: absolute;
+    z-index: 2;
+    top: 13px;
+    left: calc((100% - 14px) * 0.565 - 120px);
+    min-height: 32px;
+  }
+  .desktopOnly:has(> .actionBtn[aria-expanded="true"]) > .actionBtn {
+    position: static;
+    margin-bottom: 8px;
+  }
+  .recipesLayoutGrid .gallerySearchInput {
+    height: 34px;
+  }
+  .recipesLayoutGrid .gallerySearchRow {
+    margin-bottom: 6px;
+  }
+  .recipesLayoutGrid .filterBar {
+    margin-bottom: 8px;
+  }
+  .recipesLayoutGrid .recipeGrid4 {
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .recipesLayoutGrid .recipeCard {
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+  .recipesLayoutGrid .recipeImageHolder {
+    height: 85px;
+    border-radius: 0;
+  }
+  .recipesLayoutGrid .recipeMeta {
+    padding: 4px 8px 6px;
+  }
+  .recipesLayoutGrid .paginationBar {
+    padding: 7px 4px 0;
+  }
+  .recipesLayoutGrid .table th {
+    padding: 5px 6px;
+  }
+  .recipesLayoutGrid .table td {
+    padding: 3px 6px;
+  }
+  .recipesLayoutGrid .dashedBtn {
+    margin-top: 6px;
+    padding: 6px;
+  }
+  .recipesLayoutGrid .diwaliCard {
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .recipesLayoutGrid .summaryStats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .recipesLayoutGrid .diwaliArtRow {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  .recipesLayoutGrid .ctaBtn {
+    padding: 8px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .shoppingQuickActions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .shoppingQuickActions .actionBtn {
+    padding: 6px 4px;
+    white-space: nowrap;
+  }
+}
+.groceryDiscoveryCard {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid #cdd7f6;
+  border-radius: 8px;
+}
+.discoveryHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.groceryDiscoveryCard[open] .discoveryHeader {
+  margin-bottom: 8px;
+}

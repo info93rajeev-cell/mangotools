@@ -296,7 +296,7 @@ function ShoppingSidebar({
         <h3 style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>
           Quick Actions
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div class={styles.shoppingQuickActions}>
           <button
             type="button"
             class={styles.actionBtn}
