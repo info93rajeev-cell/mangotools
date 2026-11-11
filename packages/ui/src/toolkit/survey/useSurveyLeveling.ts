@@ -204,7 +204,7 @@ function useSurveyCalculation(
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     const currentReqId = ++reqIdRef.current;
-    setCalcState((prev) => ({ ...prev, phase: 'calculating' }));
+    setCalcState((prev) => ({ ...prev, result: null, phase: 'calculating' }));
     const outcome = await executeLeveling(runFn, s, c, r, a, k, m, ctrl.signal);
     if (!ctrl.signal.aborted && currentReqId === reqIdRef.current) {
       setCalcState(outcome);
@@ -271,7 +271,11 @@ export function useSurveyLeveling(customRun?: RunFn) {
 
   return {
     method: bm.method,
-    setMethod: bm.setMethod,
+    setMethod: (method: 'rise-fall' | 'height-of-instrument') => {
+      if (method === bm.method) return;
+      bm.setMethodState(method);
+      void calc.calculate(bm.startRL, bm.closingRL, rowOps.rows, bm.adjBy, bm.kConstant, method);
+    },
     startRL: bm.startRL,
     setStartRL: bm.setStartRL,
     closingRL: bm.closingRL,
