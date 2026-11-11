@@ -1,8 +1,15 @@
 import type { ExtendedFoodRecipe } from './foodRecipesTypes.ts';
 
+const generatedImageProvenance = {
+  type: 'ai-generated' as const,
+  notes: 'AI-generated visual illustration. Not a photograph of a tested recipe.',
+};
+
 export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   {
     id: 'gulab-jamun',
+    thumbnailUrl: '/food/recipes/gulab-jamun.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Gulab Jamun',
     localName: 'गुलाब जामुन',
@@ -19,6 +26,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'kaju-katli',
+    thumbnailUrl: '/food/recipes/kaju-katli.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Kaju Katli',
     localName: 'काजू कतली',
@@ -35,6 +44,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'kheer',
+    thumbnailUrl: '/food/recipes/kheer.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Rice Kheer',
     localName: 'खीर',
@@ -51,6 +62,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'jalebi',
+    thumbnailUrl: '/food/recipes/jalebi.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Crispy Jalebi',
     localName: 'जलेबी',
@@ -67,6 +80,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'rasgulla',
+    thumbnailUrl: '/food/recipes/rasgulla.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Rasgulla',
     localName: 'रसगुल्ला',
@@ -83,6 +98,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'samosa',
+    thumbnailUrl: '/food/recipes/samosa.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Aloo Samosa',
     localName: 'समोसा',
@@ -99,6 +116,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'paneer-tikka',
+    thumbnailUrl: '/food/recipes/paneer-tikka.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Paneer Tikka',
     localName: 'पनीर टिक्का',
@@ -115,6 +134,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'pakoda',
+    thumbnailUrl: '/food/recipes/pakoda.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Mixed Veg Pakoda',
     localName: 'पकोड़ा',
@@ -131,6 +152,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'chana-masala',
+    thumbnailUrl: '/food/recipes/chana-masala.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Chana Masala',
     localName: 'चना मसाला',
@@ -147,6 +170,8 @@ export const CATALOG_AWAITING_RECIPES: ExtendedFoodRecipe[] = [
   },
   {
     id: 'masala-chai',
+    thumbnailUrl: '/food/recipes/masala-chai.jpg',
+    imageProvenance: generatedImageProvenance,
     version: '0.1.0',
     name: 'Masala Chai',
     localName: 'मसाला चाय',
