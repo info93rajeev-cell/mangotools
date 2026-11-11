@@ -334,3 +334,12 @@ The final portrait pass uses compact ingredient price/stock columns, a More menu
 Schedule task details and readiness bars keep recipe names on a separate visible line at portrait widths; reference viewport checks guard against flex compression hiding those labels.
 
 #317 Food Planner visual density follow-up: at the approved 1672×941 desktop viewport, the content now matches the reference inset and starts the gallery below Plan Setup. The My Recipes control sits in the gallery heading instead of consuming a separate row; recipe images/cards and menu summary use reference-sized desktop proportions. Shopping quick actions share one row, and the optional nearby grocery lookup opens on demand. Personal recipes, shopping prices and engine outputs are unchanged. Browser checks cover the desktop geometry and the nearby lookup, plus all five desktop and portrait views.
+
+### Food Planner recipe detail follow-up — issue #321
+
+The existing recipe gallery now opens a native dialog on desktop and mobile for the eight
+populated recipes. It shows their image provenance, verification status, ingredient amounts
+scaled to the plan's serving count, original cooking steps, and available published references.
+The gallery separately reports ready recipes and the ten awaiting-trial entries; pending entries
+remain disabled and have no invented quantities or images. Existing selection, calculations,
+and session-only data behavior are unchanged.
