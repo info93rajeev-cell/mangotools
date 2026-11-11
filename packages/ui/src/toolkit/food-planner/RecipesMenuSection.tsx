@@ -133,6 +133,8 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
         setPage={setPage}
         pageSize={pageSize}
         setPageSize={setPageSize}
+        guests={setup.guests}
+        portionFactors={portionFactors}
       />
 
       <SelectedMenuPanel

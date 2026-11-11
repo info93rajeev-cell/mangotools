@@ -172,6 +172,8 @@ function MobileGallery(props: RecipesMobileViewProps) {
       setPage={props.setPage}
       pageSize={props.pageSize}
       setPageSize={props.setPageSize}
+      guests={planner.setup.guests}
+      portionFactors={planner.portionFactors}
     />
   );
 }

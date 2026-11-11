@@ -1,8 +1,10 @@
+import { useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
-import { RecipeCardImage } from './RecipeCardImage.tsx';
+import { RecipeDetailDialog } from './RecipeDetailDialog.tsx';
+import { RecipeGalleryCard } from './RecipeGalleryCard.tsx';
 
 export function matchesCourseFilter(recipeCourse: string, activeCourse: string): boolean {
   if (activeCourse === 'all') return true;
@@ -51,6 +53,8 @@ export interface RecipeGalleryPanelProps {
   setPage: (p: number | ((prev: number) => number)) => void;
   pageSize: number;
   setPageSize: (s: number) => void;
+  guests: number;
+  portionFactors: Record<string, number>;
 }
 
 export function RecipeGalleryPanel({
@@ -70,7 +74,12 @@ export function RecipeGalleryPanel({
   setPage,
   pageSize,
   setPageSize,
+  guests,
+  portionFactors,
 }: RecipeGalleryPanelProps) {
+  const [detailRecipe, setDetailRecipe] = useState<ExtendedFoodRecipe | null>(null);
+  const readyCount = catalogRecipes.filter((recipe) => !recipe.awaitingData).length;
+  const awaitingCount = catalogRecipes.length - readyCount;
   const totalPages = Math.max(1, Math.ceil(filteredRecipes.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const pagedRecipes = filteredRecipes.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -87,6 +96,9 @@ export function RecipeGalleryPanel({
             {t.gallery} ({filteredRecipes.length})
           </h2>
           <p class={styles.cardSubtitle}>{t.galleryIntro}</p>
+          <p class={styles.recipeAvailability}>
+            {readyCount} {t.readyRecipes} · {awaitingCount} {t.awaitingTrials}
+          </p>
         </div>
       </header>
       <div class={styles.gallerySearchRow}>
@@ -134,9 +146,16 @@ export function RecipeGalleryPanel({
               if (recipe.awaitingData) return;
               toggleRecipe(recipe.id);
             }}
+            onView={() => setDetailRecipe(recipe)}
           />
         ))}
       </div>
+
+      <RecipeDetailDialog
+        recipe={detailRecipe}
+        servings={guests * (portionFactors[detailRecipe?.id ?? ''] ?? 1)}
+        onClose={() => setDetailRecipe(null)}
+      />
 
       <GalleryPaginationBar
         totalItems={filteredRecipes.length}
@@ -303,83 +322,6 @@ function CourseFilterBar({
           <option value="drink">Beverages</option>
         </select>
       </div>
-    </div>
-  );
-}
-
-function RecipeGalleryCard({
-  recipe,
-  isAdded,
-  isFavorited,
-  onToggleFavorite,
-  onToggle,
-}: {
-  recipe: ExtendedFoodRecipe;
-  isAdded: boolean;
-  isFavorited: boolean;
-  onToggleFavorite: () => void;
-  onToggle: () => void;
-}) {
-  const isAwaiting = Boolean(recipe.awaitingData);
-
-  return (
-    <div class={styles.recipeCard}>
-      <div style={{ position: 'relative' }}>
-        <RecipeCardImage recipe={recipe} />
-        <button
-          type="button"
-          class={styles.favBtn}
-          style={{ color: isFavorited ? '#ef4444' : '#94a3b8' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite();
-          }}
-          title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-          aria-label={`Favorite ${recipe.name}`}
-          aria-pressed={isFavorited}
-        >
-          <Icon name="heart" />
-        </button>
-      </div>
-      <div class={styles.recipeMeta}>
-        <h3 class={styles.recipeName} title={recipe.name}>
-          {recipe.name}
-        </h3>
-        <div class={styles.recipeInfoRow}>
-          <span>⏱ {recipe.prepMinutes + recipe.cookMinutes} min</span>
-          <span>•</span>
-          <span title={t.baseServings}>
-            👥 {recipe.servings}
-            <span class="sr-only"> {t.baseServings}</span>
-          </span>
-        </div>
-      </div>
-      {isAwaiting ? (
-        <button
-          type="button"
-          class={styles.addRecipeBtn}
-          style={{ opacity: 0.6, cursor: 'not-allowed', background: '#f8fafc' }}
-          disabled
-        >
-          Awaiting Trials
-        </button>
-      ) : (
-        <button
-          type="button"
-          class={`${styles.addRecipeBtn} ${isAdded ? styles.addRecipeBtnAdded : ''}`}
-          onClick={onToggle}
-        >
-          {isAdded ? (
-            <>
-              <Icon name="check" /> Added
-            </>
-          ) : (
-            <>
-              <Icon name="plus" /> Add
-            </>
-          )}
-        </button>
-      )}
     </div>
   );
 }

@@ -76,14 +76,14 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Easy Jeera Rice',
         publisher: 'Chef Not Required',
-        url: 'https://example.com/jeera-1',
+        url: 'https://www.chefnotrequired.com/wprm_print/easy-jeera-rice-cumin-rice',
         accessed: '2026-11-02',
         checks: '1 cup basmati serves 4',
       },
       {
         title: 'Jeera Rice Recipe',
         publisher: 'Cup of Yum',
-        url: 'https://example.com/jeera-2',
+        url: 'https://cupofyum.com/recipes/jeera-rice-indian-cumin-rice',
         accessed: '2026-11-02',
         checks: '1 cup rice for 4 servings',
       },
@@ -135,7 +135,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Dal Tadka',
         publisher: 'The Cooks Cook',
-        url: 'https://example.com/dal-1',
+        url: 'https://www.thecookscook.com/recipes/dal-tadka-tempered-lentils/',
         accessed: '2026-11-02',
         checks: '200g toor dal serves 4',
       },
@@ -187,7 +187,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Aloo Gobi',
         publisher: 'Swasthi Recipes',
-        url: 'https://example.com/aloo-gobi-1',
+        url: 'https://hebbarskitchen.com/aloo-gobi-dry-recipe-aloo-gobhi-ki-sabji/',
         accessed: '2026-11-02',
         checks: '400g potatoes and cauliflower serves 4',
       },
