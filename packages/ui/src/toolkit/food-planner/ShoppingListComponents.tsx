@@ -140,11 +140,11 @@ export function GroceryDiscoveryCard({
   const googleMapsUrl = `https://www.google.com/maps/search/grocery+stores+near+${encodeURIComponent(location)}`;
 
   return (
-    <div class={styles.groceryDiscoveryCard}>
-      <div class={styles.discoveryHeader}>
+    <details class={styles.groceryDiscoveryCard}>
+      <summary class={styles.discoveryHeader}>
         <Icon name="map-pin" />
         <strong>Find Nearby Grocery Stores</strong>
-      </div>
+      </summary>
       <p class={styles.discoveryDesc}>
         Locate nearby wholesale mandis, kirana stores, and dairy booths for your shopping list.
       </p>
@@ -167,6 +167,6 @@ export function GroceryDiscoveryCard({
       >
         <Icon name="external-link" /> Open in Google Maps
       </a>
-    </div>
+    </details>
   );
 }
