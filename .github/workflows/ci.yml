@@ -19,7 +19,7 @@ jobs:
     # Every push and PR: fast gate (~10 min) so results arrive before the next deploy.
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     name: verify · build · e2e (Node 24, Chromium)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
@@ -67,7 +67,7 @@ jobs:
     # Nightly and on demand: the full suite on Chromium, Firefox and WebKit.
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     name: verify · build · e2e (Node 24, Chromium/Firefox/WebKit)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
