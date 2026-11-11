@@ -19,7 +19,10 @@ jobs:
     # Every push and PR: fast gate (~10 min) so results arrive before the next deploy.
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     name: verify · build · e2e (Node 24, Chromium)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     timeout-minutes: 35
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
@@ -47,9 +50,6 @@ jobs:
         env:
           MANGOTOOLS_ENV: production
 
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: pnpm test:e2e (Chromium e2e, a11y, seo)
         run: pnpm test:e2e --project=e2e-chromium --project=a11y --project=seo
 
@@ -67,7 +67,10 @@ jobs:
     # Nightly and on demand: the full suite on Chromium, Firefox and WebKit.
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     name: verify · build · e2e (Node 24, Chromium/Firefox/WebKit)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     timeout-minutes: 60
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
@@ -93,9 +96,6 @@ jobs:
         run: pnpm build:deploy
         env:
           MANGOTOOLS_ENV: production
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: pnpm test:e2e (e2e, a11y, determinism, privacy, seo, screenshots)
         run: pnpm test:e2e
