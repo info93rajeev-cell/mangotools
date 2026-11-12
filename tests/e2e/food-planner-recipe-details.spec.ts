@@ -14,10 +14,10 @@ for (const width of [390, 1672]) {
     await expect(details).toBeVisible();
     await expect(details).toContainText('Basmati rice');
     await expect(details).toContainText(width < 600 ? '1.5 kg' : '1 kg');
-    await expect(details).toContainText('Rinse the rice');
-    await expect(details.getByRole('link', { name: /Cup of Yum/ })).toHaveAttribute(
+    await expect(details).toContainText('Wash aged long-grain basmati rice');
+    await expect(details.getByRole('link', { name: /Ranveer Brar/ })).toHaveAttribute(
       'href',
-      'https://cupofyum.com/recipes/jeera-rice-indian-cumin-rice',
+      'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
     );
     await page.screenshot({ path: test.info().outputPath('recipe-detail.png') });
     await details.getByRole('button', { name: 'Close recipe' }).click();
@@ -25,12 +25,18 @@ for (const width of [390, 1672]) {
   });
 }
 
-test('gallery distinguishes ready recipes from pending trials', async ({ page }) => {
+test('gallery presents all 18 recipes ready with video tutorial and pro tips', async ({ page }) => {
   await openTool(page, 'food-planner');
-  await expect(page.getByText('13 ready recipes')).toBeVisible();
-  await expect(page.getByText('5 awaiting trials')).toBeVisible();
+  await expect(page.getByText('18 ready recipes')).toBeVisible();
   await page.getByRole('button', { name: '3', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Awaiting Trials' }).first()).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Add', exact: true }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'View recipe: Crispy Jalebi' }).click();
+  const details = page.getByRole('dialog', { name: 'Crispy Jalebi' });
+  await expect(details).toBeVisible();
+  await expect(details.getByRole('link', { name: /Watch Video Tutorial/ })).toBeVisible();
+  await expect(details).toContainText("Chef's Secrets & Practical Tips");
+  await details.getByRole('button', { name: 'Close recipe' }).click();
+  await expect(details).not.toBeVisible();
 });
 
 test('festival sweet selection reaches ingredients, shopping, cost and schedule', async ({
@@ -60,17 +66,17 @@ test('festival sweet selection reaches ingredients, shopping, cost and schedule'
 });
 
 for (const width of [390, 1672]) {
-  test(`pending recipe illustrations load at ${width}px`, async ({ page }) => {
+  test(`recipe illustrations load at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 941 });
     await openTool(page, 'food-planner');
     if (width < 600) {
       await page.getByRole('button', { name: 'All Recipes', exact: true }).click();
     }
-    const pendingIds = ['samosa', 'paneer-tikka', 'pakoda', 'chana-masala', 'masala-chai'];
-    for (const [pageNumber, ids] of [
-      [2, pendingIds.slice(0, 3)],
-      [3, pendingIds.slice(3)],
-    ] as const) {
+    const pagesAndIds = [
+      [1, ['samosa', 'paneer-tikka', 'pakoda']],
+      [2, ['chana-masala', 'masala-chai']],
+    ] as const;
+    for (const [pageNumber, ids] of pagesAndIds) {
       await page.getByRole('button', { name: String(pageNumber), exact: true }).click();
       for (const id of ids) {
         const image = page.locator(`[data-testid="recipe-image-${id}"] img:visible`);

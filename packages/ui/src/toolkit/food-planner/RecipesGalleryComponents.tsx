@@ -97,7 +97,8 @@ export function RecipeGalleryPanel({
           </h2>
           <p class={styles.cardSubtitle}>{t.galleryIntro}</p>
           <p class={styles.recipeAvailability}>
-            {readyCount} {t.readyRecipes} · {awaitingCount} {t.awaitingTrials}
+            {readyCount} {t.readyRecipes}
+            {awaitingCount > 0 ? ` · ${awaitingCount} ${t.awaitingTrials}` : ''}
           </p>
         </div>
       </header>
