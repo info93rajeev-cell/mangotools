@@ -1,7 +1,9 @@
 import { useState } from 'preact/hooks';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { MobileMetric, MobilePlanSetup, MobileSectionHeader } from './MobilePlanSetup.tsx';
+import { CATALOG_GALLERY_RECIPES } from './foodReferenceData.ts';
+import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
+import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
@@ -29,8 +31,7 @@ export function RecipesMobileView(props: RecipesMobileViewProps) {
   };
   return (
     <div class={s.mobileContainer} data-testid="mobile-recipes">
-      <MobileSectionHeader title={t.recipes} intro={t.recipesIntro} icon="book-open" />
-      <MobilePlanSetup planner={planner} id="mobile-recipes" />
+      <MobilePlanHeader planner={planner} section="recipes" />
       <div class={s.mobileNavPillsRow}>
         {(
           [
@@ -89,12 +90,7 @@ export function RecipesMobileView(props: RecipesMobileViewProps) {
           </div>
         </>
       ) : tab === 'mine' ? (
-        <section class={s.mobileCard}>
-          <p>{t.myRecipesNote}</p>
-          <button type="button" class={s.mobilePrimaryBtn} onClick={() => browse('all')}>
-            {t.allRecipes}
-          </button>
-        </section>
+        <PersonalRecipes planner={planner} />
       ) : (
         <MobileGallery {...props} />
       )}
@@ -131,7 +127,9 @@ function SelectedMobileMenu({
           />
           <div class={s.mobileDishInfo}>
             <p class={s.mobileDishName}>{dish.name}</p>
-            <span class={s.mobileCourseBadge}>{dish.course}</span>
+            <span class={s.mobileCourseBadge} data-course={dish.course}>
+              {dish.course}
+            </span>
           </div>
           <label class={s.mobileServingsBadge}>
             <input
@@ -158,6 +156,7 @@ function MobileGallery(props: RecipesMobileViewProps) {
   const { planner } = props;
   return (
     <RecipeGalleryPanel
+      catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes]}
       searchQuery={planner.searchQuery}
       setSearchQuery={planner.setSearchQuery}
       activeCourse={planner.activeCourse}
@@ -173,6 +172,8 @@ function MobileGallery(props: RecipesMobileViewProps) {
       setPage={props.setPage}
       pageSize={props.pageSize}
       setPageSize={props.setPageSize}
+      guests={planner.setup.guests}
+      portionFactors={planner.portionFactors}
     />
   );
 }

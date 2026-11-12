@@ -39,11 +39,11 @@ export function OtherCostsCard({
         {items.map((item) => (
           <div
             key={item.id}
+            class={styles.otherCostRow}
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '8px 12px',
               background: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0',
@@ -93,23 +93,21 @@ export function OtherCostsCard({
             </div>
           </div>
         ))}
-      </div>
-
-      <div
-        style={{
-          marginTop: '14px',
-          padding: '10px 14px',
-          background: '#fef3c7',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          fontWeight: 700,
-          fontSize: '14px',
-        }}
-      >
-        <span>Total Other Cost</span>
-        <span>₹{totalOtherCost.toLocaleString('en-IN')}</span>
+        <div
+          style={{
+            padding: '6px 10px',
+            background: '#fef3c7',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontWeight: 700,
+            fontSize: '14px',
+          }}
+        >
+          <span>Total Other Cost</span>
+          <span>₹{totalOtherCost.toLocaleString('en-IN')}</span>
+        </div>
       </div>
     </div>
   );

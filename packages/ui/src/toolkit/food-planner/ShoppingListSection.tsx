@@ -30,7 +30,6 @@ export function ShoppingListSection({ planner }: ShoppingListSectionProps) {
       <div class={styles.mobileOnly}>
         <ShoppingListMobileView
           planner={planner}
-          items={state.shoppingItems}
           boughtMap={planner.boughtItems}
           onToggleBought={planner.toggleBoughtItem}
         />
@@ -55,6 +54,7 @@ function useShoppingListState(planner: UseFoodPlannerReturn) {
     planner.engineCost,
     planner.priceMode,
     planner.userPrices,
+    planner.ingredientCategories,
   );
 
   const totalCost = useMemo(() => ingredientTotal(planner.engineCost), [planner.engineCost]);
@@ -296,7 +296,7 @@ function ShoppingSidebar({
         <h3 style={{ fontSize: '13.5px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>
           Quick Actions
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div class={styles.shoppingQuickActions}>
           <button
             type="button"
             class={styles.actionBtn}

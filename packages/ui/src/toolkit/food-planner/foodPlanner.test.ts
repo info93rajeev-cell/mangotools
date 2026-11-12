@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
+import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
 import { getRecipeVerificationInfo, RECIPES } from './foodRecipesData.ts';
 import {
   AISLE_DISPLAY_MAP,
@@ -8,6 +9,7 @@ import {
   SAMPLE_PLAN,
 } from './foodReferenceData.ts';
 import { getCourseIcon, getCoursePlaceholderClass } from './RecipeCardImage.tsx';
+import { matchesCourseFilter } from './RecipesGalleryComponents.tsx';
 
 describe('Food Planner Toolkit Reference Data', () => {
   it('contains the 21 FP-001 catalog ingredients with valid aisles and dimensions', () => {
@@ -32,7 +34,17 @@ describe('Food Planner Toolkit Reference Data', () => {
   it('contains the verified and prototype recipes with steps and ingredients', () => {
     expect(RECIPES.length).toBeGreaterThanOrEqual(8);
     const verified = RECIPES.filter((r) => r.verified);
-    expect(verified.map((r) => r.id)).toEqual(['jeera-rice', 'dal-tadka', 'aloo-gobi']);
+    expect(verified.map((r) => r.id)).toEqual([
+      'jeera-rice',
+      'dal-tadka',
+      'aloo-gobi',
+      'besan-ladoo',
+      'gulab-jamun',
+      'kaju-katli',
+      'kheer',
+      'jalebi',
+      'rasgulla',
+    ]);
 
     // Check verification status label mapping
     const jeera = RECIPES.find((r) => r.id === 'jeera-rice');
@@ -43,7 +55,7 @@ describe('Food Planner Toolkit Reference Data', () => {
     const ladoo = RECIPES.find((r) => r.id === 'besan-ladoo');
     expect(ladoo).toBeDefined();
     if (ladoo) {
-      expect(getRecipeVerificationInfo(ladoo).label).toBe('Prototype');
+      expect(getRecipeVerificationInfo(ladoo).label).toBe('✓ Source Checked');
     }
 
     for (const recipe of RECIPES) {
@@ -86,13 +98,36 @@ describe('Food Planner Toolkit Reference Data', () => {
   });
 
   it('covers every recipe with thumbnail URL and image provenance', () => {
-    expect(RECIPES.length).toBe(8);
+    expect(RECIPES.length).toBe(13);
     for (const recipe of RECIPES) {
       expect(recipe.thumbnailUrl).toBeDefined();
       expect(recipe.thumbnailUrl).toMatch(/^\/food\/recipes\/[a-z0-9-]+\.jpg$/);
       expect(recipe.imageProvenance).toBeDefined();
       expect(recipe.imageProvenance?.type).toBe('ai-generated');
       expect(recipe.imageProvenance?.notes).toBeTruthy();
+    }
+  });
+
+  it('makes all sourced festival sweets available with valid ingredients', () => {
+    const ingredientIds = new Set(CATALOG_INGREDIENTS.map((ingredient) => ingredient.id));
+    for (const id of ['besan-ladoo', 'gulab-jamun', 'kaju-katli', 'kheer', 'jalebi', 'rasgulla']) {
+      const recipe = RECIPES.find((item) => item.id === id);
+      expect(recipe?.awaitingData).toBeFalsy();
+      expect(recipe?.sources?.length).toBeGreaterThanOrEqual(2);
+      expect(recipe?.ingredients.length).toBeGreaterThan(0);
+      for (const line of recipe?.ingredients ?? []) {
+        expect(ingredientIds.has(line.ingredient)).toBe(true);
+      }
+    }
+  });
+
+  it('keeps the remaining illustrated recipes disabled until data is sourced', () => {
+    expect(CATALOG_AWAITING_RECIPES).toHaveLength(5);
+    for (const recipe of CATALOG_AWAITING_RECIPES) {
+      expect(recipe.awaitingData).toBe(true);
+      expect(recipe.ingredients).toHaveLength(0);
+      expect(recipe.thumbnailUrl).toBe(`/food/recipes/${recipe.id}.jpg`);
+      expect(recipe.imageProvenance?.type).toBe('ai-generated');
     }
   });
 
@@ -115,4 +150,9 @@ describe('Food Planner Toolkit Reference Data', () => {
     expect(getCoursePlaceholderClass('dessert')).toBeTruthy();
     expect(getCoursePlaceholderClass('unknown')).toBeTruthy();
   });
+});
+
+it('keeps side dishes out of the beverages filter', () => {
+  expect(matchesCourseFilter('drink', 'beverages')).toBe(true);
+  expect(matchesCourseFilter('side', 'beverages')).toBe(false);
 });

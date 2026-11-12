@@ -1,4 +1,5 @@
 import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
+import { FESTIVAL_SWEET_RECIPES } from './foodRecipesFestivalSweets.ts';
 import type {
   ExtendedFoodRecipe,
   ImageProvenance,
@@ -76,14 +77,14 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Easy Jeera Rice',
         publisher: 'Chef Not Required',
-        url: 'https://example.com/jeera-1',
+        url: 'https://www.chefnotrequired.com/wprm_print/easy-jeera-rice-cumin-rice',
         accessed: '2026-11-02',
         checks: '1 cup basmati serves 4',
       },
       {
         title: 'Jeera Rice Recipe',
         publisher: 'Cup of Yum',
-        url: 'https://example.com/jeera-2',
+        url: 'https://cupofyum.com/recipes/jeera-rice-indian-cumin-rice',
         accessed: '2026-11-02',
         checks: '1 cup rice for 4 servings',
       },
@@ -135,7 +136,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Dal Tadka',
         publisher: 'The Cooks Cook',
-        url: 'https://example.com/dal-1',
+        url: 'https://www.thecookscook.com/recipes/dal-tadka-tempered-lentils/',
         accessed: '2026-11-02',
         checks: '200g toor dal serves 4',
       },
@@ -187,7 +188,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Aloo Gobi',
         publisher: 'Swasthi Recipes',
-        url: 'https://example.com/aloo-gobi-1',
+        url: 'https://hebbarskitchen.com/aloo-gobi-dry-recipe-aloo-gobhi-ki-sabji/',
         accessed: '2026-11-02',
         checks: '400g potatoes and cauliflower serves 4',
       },
@@ -199,36 +200,6 @@ export const RECIPES: ExtendedFoodRecipe[] = [
       notes: 'Standard dry sabzi proportions.',
     },
     thumbnailUrl: '/food/recipes/aloo-gobi.jpg',
-    imageProvenance: {
-      type: 'ai-generated',
-      notes:
-        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
-    },
-  },
-  {
-    id: 'besan-ladoo',
-    version: '0.1.0',
-    name: 'Besan Ladoo',
-    localName: 'बेसन के लड्डू',
-    course: 'dessert',
-    cuisine: 'North Indian / Festival',
-    diet: 'vegetarian',
-    servings: 8,
-    prepMinutes: 10,
-    cookMinutes: 35,
-    verified: false,
-    ingredients: [
-      { ingredient: 'besan', quantity: '250', unit: 'g' },
-      { ingredient: 'ghee', quantity: '125', unit: 'ml' },
-      { ingredient: 'sugar', quantity: '175', unit: 'g' },
-    ],
-    steps: [
-      'Heat ghee in a thick kadai over low flame, add coarse besan.',
-      'Roast continuously on gentle heat for 25-30 minutes until aromatic and golden brown.',
-      'Remove from heat and let cool to lukewarm temperature.',
-      'Mix in powdered sugar (boora/tagar) thoroughly and shape into smooth round ladoos.',
-    ],
-    thumbnailUrl: '/food/recipes/besan-ladoo.jpg',
     imageProvenance: {
       type: 'ai-generated',
       notes:
@@ -356,6 +327,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
         'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
+  ...FESTIVAL_SWEET_RECIPES,
 ];
 
 export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [

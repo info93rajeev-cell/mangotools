@@ -1,0 +1,279 @@
+import type { ExtendedFoodRecipe } from './foodRecipesTypes.ts';
+
+const illustration = {
+  type: 'ai-generated' as const,
+  notes: 'AI-generated visual illustration. Not a photograph of a tested recipe.',
+};
+
+export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
+  {
+    id: 'kheer',
+    version: '0.3.0',
+    name: 'Rice Kheer',
+    localName: 'खीर',
+    course: 'dessert',
+    cuisine: 'North Indian / Festival',
+    diet: 'vegetarian',
+    servings: 5,
+    prepMinutes: 20,
+    cookMinutes: 35,
+    verified: true,
+    ingredients: [
+      {
+        ingredient: 'basmati-rice',
+        quantity: '50',
+        unit: 'g',
+        note: 'Short-grain or broken fragrant basmati (tukda)',
+      },
+      {
+        ingredient: 'whole-milk',
+        quantity: '1000',
+        unit: 'ml',
+        note: 'Full-cream whole milk for creamy richness',
+      },
+      {
+        ingredient: 'sugar',
+        quantity: '75',
+        unit: 'g',
+        note: 'Granulated sugar (approx 6 tablespoons)',
+      },
+      {
+        ingredient: 'ground-cardamom',
+        quantity: '0.5',
+        unit: 'tsp',
+        note: 'Freshly ground green cardamom powder',
+      },
+      {
+        ingredient: 'ghee',
+        quantity: '1',
+        unit: 'tsp',
+        note: 'Desi ghee to coat soaked rice grains',
+      },
+      {
+        ingredient: 'cashew',
+        quantity: '15',
+        unit: 'g',
+        note: 'Chopped cashews for nutty crunch',
+      },
+    ],
+    steps: [
+      '[चावल भिगोना व क्रश करना] Rinse 50 g basmati rice (approx 1/4 cup) until water runs clear. Soak for 20 minutes, drain well. Rub with 1 tsp ghee and gently crush grains between fingers into smaller bits for natural creaminess.',
+      '[दूध उबालना] In a heavy-bottomed pot or handi, bring 1000 ml full-cream whole milk to a gentle rolling boil on medium heat, stirring the bottom occasionally with a ladle so the milk does not scorch or stick.',
+      '[चावल डालना] Once milk boils, lower flame to low-medium and add the ghee-coated crushed rice. Stir immediately to distribute grains evenly so they do not form a clump at the base.',
+      '[धीमी आंच पर पकाना व मलाई मिलाना] Simmer uncovered on low heat for 20-25 minutes, stirring every 2-3 minutes. Regularly scrape the cream (malai) from pan sides back into the milk — this gives kheer its authentic rabri-like richness.',
+      '[चावल के पकने की जांच] Press a rice grain between two fingers: it must mash completely flat with zero hard core. The milk will have reduced by about a third and thickened significantly.',
+      '[चीनी मिलाना (महत्वपूर्ण नियम)] ONLY AFTER rice is completely tender, add 75 g sugar. (CAUTION: If sugar is added while rice is still slightly firm, the sugar prevents starch from softening and rice remains tough!). Stir until dissolved.',
+      '[अंतिम सिमरिंग व इलायची] Simmer on low heat for 5 minutes, stirring constantly as kheer thickens to a velvety, spoon-coating consistency. Stir in 0.5 tsp ground cardamom and chopped cashews.',
+      '[परोसना] Turn off heat. Note that kheer thickens substantially as it cools. Serve piping hot, warm, or refrigerate for 2 hours for a luxurious chilled festive dessert.',
+    ],
+    sources: [
+      {
+        title: 'Kheer Recipe (Rice Kheer)',
+        publisher: 'Dassana Amit (Veg Recipes of India)',
+        url: 'https://www.vegrecipesofindia.com/rice-kheer-recipe-chawal-ki-kheer/',
+        accessed: '2026-11-12',
+        checks:
+          '5-serving batch: 50g rice, 1 litre whole milk, 75g sugar, malai scraping and late-sugar addition rule',
+      },
+      {
+        title: 'Pal Payasam Recipe | Rice Kheer',
+        publisher: 'Hebbars Kitchen',
+        url: 'https://hebbarskitchen.com/pal-payasam-recipe-rice-kheer-recipe/',
+        accessed: '2026-11-12',
+        checks:
+          'Cross-checked milk reduction by 1/3rd, cardamom timing, and crushed rice technique',
+      },
+    ],
+    verification: {
+      status: 'source-checked',
+      by: 'Food Planner culinary research',
+      date: '2026-11-12',
+      notes:
+        'Detailed beginner method cross-checked against published references; not a kitchen trial.',
+    },
+    thumbnailUrl: '/food/recipes/kheer.jpg',
+    imageProvenance: illustration,
+  },
+  {
+    id: 'jalebi',
+    version: '0.2.0',
+    name: 'Crispy Jalebi',
+    localName: 'जलेबी',
+    course: 'dessert',
+    cuisine: 'North Indian / Festival',
+    diet: 'vegetarian',
+    servings: 10,
+    prepMinutes: 15,
+    cookMinutes: 25,
+    verified: true,
+    ingredients: [
+      {
+        ingredient: 'maida',
+        quantity: '120',
+        unit: 'g',
+        note: 'All-purpose flour, sifted; approx 1 cup',
+      },
+      {
+        ingredient: 'curd-yogurt',
+        quantity: '30',
+        unit: 'g',
+        note: 'Thick plain curd (2 tbsp) for fermented tang',
+      },
+      {
+        ingredient: 'baking-soda',
+        quantity: '0.25',
+        unit: 'tsp',
+        note: 'Level 1/4 tsp for crisp air pockets',
+      },
+      {
+        ingredient: 'ghee',
+        quantity: '1',
+        unit: 'tbsp',
+        note: 'Melted ghee in batter for crisp structure',
+      },
+      {
+        ingredient: 'sugar',
+        quantity: '250',
+        unit: 'g',
+        note: 'Granulated sugar for aromatic syrup',
+      },
+      {
+        ingredient: 'ground-cardamom',
+        quantity: '0.5',
+        unit: 'tsp',
+        note: 'Cardamom powder for fragrance',
+      },
+      {
+        ingredient: 'lemon',
+        quantity: '1',
+        unit: 'piece',
+        note: '1 tsp fresh juice to prevent crystallization',
+      },
+      {
+        ingredient: 'cooking-oil',
+        quantity: '300',
+        unit: 'ml',
+        note: 'Neutral oil or ghee for flat-pan shallow fry',
+      },
+    ],
+    steps: [
+      '[घोल तैयार करना] In a bowl, combine 120 g sifted maida, 30 g thick curd, 1 tbsp melted ghee, and 1/4 tsp baking soda. Add approx 100 ml water gradually, whisking vigorously for 3-4 minutes to incorporate air.',
+      '[बैटर की स्थिरता (Ribbon)] The batter must be smooth, lump-free, and of flowing ribbon consistency — thick enough to hold spiral shape when piped, but fluid enough to flow freely from a nozzle. Rest batter covered for 15 minutes.',
+      '[एक-तार की चाशनी] In a saucepan, heat 250 g sugar with 150 ml water on medium flame. Stir until dissolved. Simmer 4-5 minutes until it reaches a clean 1-string consistency (एक तार): pulling syrup between fingers forms a thin thread.',
+      '[चाशनी को सुरक्षित करना] Stir in 0.5 tsp cardamom powder and 1 tsp fresh lemon juice (prevents sugar from crystallizing upon cooling). Keep the syrup warm on lowest flame so it penetrates deep inside fried jalebis.',
+      '[पाइपिंग व तेल का तापमान] Pour rested batter into a squeeze bottle with a 2-3 mm tip. Heat 1.5 inches oil or ghee in a flat-bottomed pan on medium flame. Test: a tiny drop of batter should rise immediately without browning.',
+      '[जलेबी की पाइपिंग तकनीक] Hold nozzle perpendicular just above hot oil. Squeeze firmly, moving in 3 concentric circular spirals from inside out, and finish by pulling an overlapping line across circles to lock spirals in place.',
+      '[कुरकुरा तलना] Fry 4-5 jalebis per batch on low-medium flame for 2-3 minutes, flipping once with tongs, until crisp, rigid, and pale golden on both sides.',
+      '[चाशनी में डुबोना (30-45 सेकंड)] Lift jalebis from hot oil, drain 5 seconds, and submerge directly into warm syrup. Press gently with a slotted spoon so syrup fills hollow tubes. Soak exactly 30–45 seconds, remove and serve crisp!',
+    ],
+    sources: [
+      {
+        title: 'Crispy Jalebi Recipe (Instant Jalebi)',
+        publisher: 'Dassana Amit (Veg Recipes of India)',
+        url: 'https://www.vegrecipesofindia.com/jalebi-recipe-how-to-make-jalebi/',
+        accessed: '2026-11-12',
+        checks:
+          '10-serving batch (20-24 pcs): 120g maida, curd fermentation tang, 1-string syrup, 40-sec soak',
+      },
+      {
+        title: 'Instant Jalebi Recipe – Crispy & Juicy',
+        publisher: 'Hebbars Kitchen',
+        url: 'https://hebbarskitchen.com/instant-jalebi-recipe-jalebi-sweet/',
+        accessed: '2026-11-12',
+        checks: 'Cross-checked squeeze bottle piping, flat-pan oil depth, and lemon juice in syrup',
+      },
+    ],
+    verification: {
+      status: 'source-checked',
+      by: 'Food Planner culinary research',
+      date: '2026-11-12',
+      notes:
+        'Detailed beginner method cross-checked against published references; not a kitchen trial.',
+    },
+    thumbnailUrl: '/food/recipes/jalebi.jpg',
+    imageProvenance: illustration,
+  },
+  {
+    id: 'rasgulla',
+    version: '0.2.0',
+    name: 'Rasgulla',
+    localName: 'रसगुल्ला',
+    course: 'dessert',
+    cuisine: 'Bengali / Indian',
+    diet: 'vegetarian',
+    servings: 8,
+    prepMinutes: 25,
+    cookMinutes: 25,
+    verified: true,
+    ingredients: [
+      {
+        ingredient: 'whole-milk',
+        quantity: '1000',
+        unit: 'ml',
+        note: 'Cow milk (गाय का दूध) preferred for light, spongy chenna',
+      },
+      {
+        ingredient: 'lemon',
+        quantity: '2',
+        unit: 'piece',
+        note: '2 tbsp fresh juice diluted with 2 tbsp warm water to curdle',
+      },
+      {
+        ingredient: 'sugar',
+        quantity: '300',
+        unit: 'g',
+        note: 'Granulated white sugar for light syrup',
+      },
+      {
+        ingredient: 'maida',
+        quantity: '1',
+        unit: 'tsp',
+        note: 'Fine flour (level 1 tsp) for structural binding',
+      },
+      {
+        ingredient: 'ground-cardamom',
+        quantity: '0.5',
+        unit: 'tsp',
+        note: 'Cardamom powder for fragrant syrup',
+      },
+    ],
+    steps: [
+      '[दूध उबालना] Use 1000 ml full-cream cow milk (avoid homogenized or buffalo milk, as high fat makes rasgulla dense and rubbery). Bring milk to a gentle boil in a heavy pot, stirring occasionally.',
+      '[दूध फाड़ना (छेना बनाना)] When milk boils, TURN OFF flame and let cool 3-4 minutes. Slowly add diluted lemon juice (2 tbsp lemon juice + 2 tbsp water) 1 tbsp at a time, swirling gently until greenish whey separates and chenna floats.',
+      '[छेना छानना व धोना] Line a colander with a thin muslin cloth. Pour curdled milk to separate chenna. Rinse chenna thoroughly under cold tap water to wash away all lemon sourness and stop cooking immediately.',
+      '[अतिरिक्त पानी निकालना] Squeeze cloth gently to drain whey. DO NOT squeeze until bone dry! Chenna must retain slight moisture (like a damp sponge); if bone dry, rasgulla turns rubbery; if too wet, it collapses. Hang cloth for 30 minutes.',
+      '[छेना गूंधना (5-7 मिनट)] Place drained chenna on a large plate. Using palm heels, rub and mash in outward strokes for 5-7 minutes until grainy texture melts into smooth, buttery dough. Stop as soon as palms feel slightly greasy.',
+      '[बाइंडिंग व गोलियां] Add 1 level tsp maida and knead 30 seconds. Divide into 16 equal small portions. Roll each between palms into a perfectly smooth round ball with ZERO cracks. (Balls swell to double size when boiled!).',
+      '[पतली चाशनी में उबालना] In a wide, deep pot, combine 300 g sugar and 1200 ml water (light syrup ratio 1:4). Bring to a rolling, vigorous boil on high flame. Syrup MUST be bubbling rapidly before adding chenna balls.',
+      '[ढक्कन लगाकर पकाना (10-12 मिनट)] Gently drop all 16 chenna balls into rolling syrup. Immediately cover with a tight lid. Cook on medium-high flame for 10-12 minutes without opening lid. The trapped steam expands balls to double size.',
+      '[सिंक टेस्ट व रस पिलाना] Drop one cooked rasgulla into cold water: if it sinks to bottom, it is fully cooked! Uncover pot, stir in 0.5 tsp cardamom, let cool to room temperature. Chill 4-5 hours so rasgullas turn exquisitely spongy and juicy.',
+    ],
+    sources: [
+      {
+        title: 'Rasgulla Recipe (Soft & Spongy Bengali Rasgulla)',
+        publisher: 'Dassana Amit (Veg Recipes of India)',
+        url: 'https://www.vegrecipesofindia.com/rasgulla-recipe-bengali-rasgulla/',
+        accessed: '2026-11-12',
+        checks:
+          '8-serving batch (16 pcs): 1L cow milk chenna, slight moisture retention, 1:4 syrup rolling boil 10-12 min',
+      },
+      {
+        title: 'Spongy Rasgulla Recipe in Pot / Cooker',
+        publisher: 'Hebbars Kitchen',
+        url: 'https://hebbarskitchen.com/rasgulla-recipe-sponge-rasgulla/',
+        accessed: '2026-11-12',
+        checks:
+          'Cross-checked milk curdling cooling step, gentle palm kneading, and cold water sink test',
+      },
+    ],
+    verification: {
+      status: 'source-checked',
+      by: 'Food Planner culinary research',
+      date: '2026-11-12',
+      notes:
+        'Detailed beginner method cross-checked against published references; not a kitchen trial.',
+    },
+    thumbnailUrl: '/food/recipes/rasgulla.jpg',
+    imageProvenance: illustration,
+  },
+];

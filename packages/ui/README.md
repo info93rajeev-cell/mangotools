@@ -323,3 +323,46 @@ ingredient categories are outside the existing schema contract; the UI states th
 No engine/schema changes or dependencies. Regression tests cover exact cost allocation and timeline
 mapping; browser tests cover the connected stock/price/purchase/task flow and all five views at
 360/390/430/1600 px. Screenshots are saved as test artifacts.
+
+### Food Planner reference completion follow-up (9 November 2026)
+Portrait reference widths (941/952 px) now use the dedicated mobile views. Reference comparisons capture the ten original viewport sizes alongside the existing 360/390/430/1600 responsive checks. Navy panels, table density, grouped mobile setup, course badges, wide portrait summaries and cost details follow the approved composition. Related tools remains a working disclosure even when no other food tool exists.
+My Recipes supports up to ten session recipes using catalog ingredients, entered base servings, timings and original instructions. These are personal unverified recipes, not additions to the source-checked catalog. Editing or deleting updates the shared engine selection; the recipe gallery reports real base servings rather than multiplying by five. Duplicate inert favorite overlays were removed.
+Inventory CSV can be pasted or opened from a local file, validated atomically, exported with catalog IDs/base units, and re-imported. Custom category labels reach ingredients and shopping; stock values use exact pack-based arithmetic and preserve zero prices. Malformed/duplicate/unknown rows are rejected before updates. Nothing is uploaded or persisted across reloads. Existing recipe verification labels, engine fixtures and schedule estimation limits remain unchanged.
+
+The final portrait pass uses compact ingredient price/stock columns, a More menu for additional categories and a single action row. Mobile shopping groups canonical aisles into the five approved presentation groups without changing the underlying engine data. In Stock filters actual pantry coverage, including fully stocked zero-buy lines; shopping-list checkmarks remain separate. The mobile other-cost summary opens a real editor instead of showing all entry fields by default.
+
+Schedule task details and readiness bars keep recipe names on a separate visible line at portrait widths; reference viewport checks guard against flex compression hiding those labels.
+
+#317 Food Planner visual density follow-up: at the approved 1672×941 desktop viewport, the content now matches the reference inset and starts the gallery below Plan Setup. The My Recipes control sits in the gallery heading instead of consuming a separate row; recipe images/cards and menu summary use reference-sized desktop proportions. Shopping quick actions share one row, and the optional nearby grocery lookup opens on demand. Personal recipes, shopping prices and engine outputs are unchanged. Browser checks cover the desktop geometry and the nearby lookup, plus all five desktop and portrait views.
+
+### Food Planner recipe detail follow-up — issue #321
+
+The existing recipe gallery now opens a native dialog on desktop and mobile for the eight
+populated recipes. It shows their image provenance, verification status, ingredient amounts
+scaled to the plan's serving count, original cooking steps, and available published references.
+The gallery separately reports ready recipes and the ten awaiting-trial entries; pending entries
+remain disabled and have no invented quantities or images. Existing selection, calculations,
+and session-only data behavior are unchanged.
+
+### Food Planner pending recipe images — issue #323
+
+The ten awaiting-data gallery entries now have distinct, locally optimized food illustrations.
+Their alt text and image provenance identify the visuals as AI-generated, and the cards continue
+to disable adding recipes until documented quantities and instructions are available. The image
+change does not alter ingredients, calculations, verification status or engine behavior.
+
+### Food Planner festival sweets — issue #325
+
+Gulab Jamun, Kaju Katli and Rice Kheer now have source-checked batch quantities,
+ingredient records, instructions and published references. They are selectable in
+the existing menu and use the shared ingredient, shopping, cost and schedule flows.
+Their illustrations remain marked as AI-generated. Planning conversions and
+unpriced optional ingredients are disclosed in the recipe details; these batches
+have not been kitchen-tested. Seven illustrated recipes still await source-backed
+quantities and remain disabled.
+
+### Food Planner comprehensive festival sweet recipes — issue #327
+
+All six Festival Sweets (Besan Ladoo, Gulab Jamun, Kaju Katli, Rice Kheer, Crispy Jalebi, and Rasgulla) now feature comprehensive, step-by-step culinary instructions designed for beginners who have never prepared these sweets before. Steps detail chronological phases with exact visual and sensory transition cues (such as low-flame roasting until ghee releases, the water-splash technique for danedar grain, soft-ball plate test, half-string and one-string syrup consistency, rolling without hairline cracks, and rolling-boil swelling for spongy chenna).
+
+Crispy Jalebi and Rasgulla have been fully sourced with documented batch measures, ingredients (including lemon for curdling and syrup protection), and published references from Veg Recipes of India and Hebbars Kitchen. RecipeDetailDialog now surfaces ingredient prep notes (`item.note`) alongside scaled quantities, and highlights cooking phases for improved legibility. All six sweets retain honest AI-illustration disclosures. Five illustrated recipes remain awaiting trials and disabled.

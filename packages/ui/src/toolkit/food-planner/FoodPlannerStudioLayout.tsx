@@ -84,10 +84,7 @@ function PlannerTopHeader({
             <Icon name="lightbulb" /> Guide
           </button>
         </div>
-        <p class={styles.toolSubtitle}>
-          Plan recipes, calculate quantities, create ingredient lists, estimate cost and schedule
-          your preparation.
-        </p>
+        <p class={styles.toolSubtitle}>{t.plannerIntro}</p>
       </div>
       <div class={styles.headerActions}>
         <button type="button" class={styles.actionBtn} onClick={onLoadSample}>

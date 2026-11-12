@@ -4,7 +4,7 @@ import { formatTimeSpan } from './CookingScheduleSummary.tsx';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { MobileMetric, MobilePlanSetup, MobileSectionHeader } from './MobilePlanSetup.tsx';
+import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 export function CookingScheduleMobileView({
@@ -28,8 +28,7 @@ export function CookingScheduleMobileView({
   const allClosed = phases.every(([key]) => closed[key ?? '']);
   return (
     <div class={s.mobileContainer} data-testid="mobile-schedule">
-      <MobileSectionHeader title={t.schedule} intro={t.scheduleIntro} icon="calendar" />
-      <MobilePlanSetup planner={planner} id="mobile-schedule" />
+      <MobilePlanHeader planner={planner} section="schedule" />
       {controls}
       {planner.isLoadingSchedule && <p role="status">{t.calculating}</p>}
       {planner.scheduleError && <p role="alert">{planner.scheduleError}</p>}
@@ -61,7 +60,7 @@ export function CookingScheduleMobileView({
       <section class={s.mobileCard}>
         <h4 class={s.mobileCardTitle}>{t.scheduleSummary}</h4>
         <div class={s.mobileSummary2x2}>
-          <MobileMetric label={t.totalTasks} value={tasks.length} icon="clipboard" />
+          <MobileMetric label={t.totalTasks} value={tasks.length} icon="clipboard-paste" />
           <MobileMetric label={t.activePrep} value={formatTimeSpan(minutes)} icon="clock" />
           <MobileMetric label={t.servingTime} value={planner.mealTime} icon="utensils" />
           <MobileMetric label={t.buffer} value="10 min" icon="clock" />

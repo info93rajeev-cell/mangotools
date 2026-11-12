@@ -9,6 +9,8 @@ export interface ShoppingLineItem {
   name: string;
   aisle: string;
   buyQuantity: string;
+  requiredQuantity?: string;
+  requiredUnit?: string;
   unit: string;
   priceLabel: string;
   estCost: number;
@@ -27,6 +29,7 @@ export function buildShoppingItems(
   engineCost: unknown = null,
   priceMode: 'retail' | 'wholesale' = 'retail',
   userPrices: Record<string, string> = {},
+  includeStock: boolean = false,
 ): ShoppingLineItem[] {
   if (selectedRecipes.length === 0) return [];
 
@@ -36,7 +39,9 @@ export function buildShoppingItems(
 
   const catalogMap = new Map(CATALOG_INGREDIENTS.map((i) => [i.id, i]));
 
-  const lines = (cons?.lines ?? []).filter((line) => Number(line.buy) > 0);
+  const lines = (cons?.lines ?? []).filter(
+    (line) => Number(line.buy) > 0 || (includeStock && Number(line.total) > 0),
+  );
 
   return lines.map((l) => {
     const cat = catalogMap.get(l.ingredient);
@@ -53,6 +58,8 @@ export function buildShoppingItems(
       name: cat?.name ?? l.ingredient,
       aisle: cat?.aisle ?? 'other',
       buyQuantity: formatDisplayBuy(buyNum, l.unit),
+      requiredQuantity: formatDisplayBuy(Number(l.total), l.unit),
+      requiredUnit: formatDisplayBuyUnit(Number(l.total), l.unit),
       unit: formatDisplayBuyUnit(buyNum, l.unit),
       priceLabel,
       estCost,
@@ -93,6 +100,7 @@ export function useGroupedShoppingItems(
   engineCost: unknown = null,
   priceMode: 'retail' | 'wholesale' = 'retail',
   userPrices: Record<string, string> = {},
+  categories: Record<string, string> = {},
 ) {
   const shoppingItems = useMemo(
     () =>
@@ -106,7 +114,7 @@ export function useGroupedShoppingItems(
         engineCost,
         priceMode,
         userPrices,
-      ),
+      ).map((item) => ({ ...item, aisle: categories[item.id] ?? item.aisle })),
     [
       engineConsolidated,
       selectedRecipes,
@@ -117,6 +125,7 @@ export function useGroupedShoppingItems(
       engineCost,
       priceMode,
       userPrices,
+      categories,
     ],
   );
 
