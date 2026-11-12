@@ -30,6 +30,13 @@ const PREP_FORMS: Record<string, string> = {
   'ginger-garlic-paste': 'Fine Mince',
   'coriander-leaves': 'Wash & Chop',
   'cumin-seeds': 'Whole Temper',
+  cashew: 'Grind / Halve',
+  'green-cardamom': 'Fresh Crush',
+  'ground-cardamom': 'Fine Powder',
+  'whole-milk': 'Boil & Cool',
+  'whole-milk-powder': 'Sift Lump-Free',
+  'baking-soda': 'Exact Pinch',
+  lemon: 'Fresh Juice',
 };
 
 export function getPrepForm(id: string): string {

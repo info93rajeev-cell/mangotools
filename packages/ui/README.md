@@ -360,3 +360,9 @@ Their illustrations remain marked as AI-generated. Planning conversions and
 unpriced optional ingredients are disclosed in the recipe details; these batches
 have not been kitchen-tested. Seven illustrated recipes still await source-backed
 quantities and remain disabled.
+
+### Food Planner comprehensive festival sweet recipes — issue #327
+
+All six Festival Sweets (Besan Ladoo, Gulab Jamun, Kaju Katli, Rice Kheer, Crispy Jalebi, and Rasgulla) now feature comprehensive, step-by-step culinary instructions designed for beginners who have never prepared these sweets before. Steps detail chronological phases with exact visual and sensory transition cues (such as low-flame roasting until ghee releases, the water-splash technique for danedar grain, soft-ball plate test, half-string and one-string syrup consistency, rolling without hairline cracks, and rolling-boil swelling for spongy chenna).
+
+Crispy Jalebi and Rasgulla have been fully sourced with documented batch measures, ingredients (including lemon for curdling and syrup protection), and published references from Veg Recipes of India and Hebbars Kitchen. RecipeDetailDialog now surfaces ingredient prep notes (`item.note`) alongside scaled quantities, and highlights cooking phases for improved legibility. All six sweets retain honest AI-illustration disclosures. Five illustrated recipes remain awaiting trials and disabled.

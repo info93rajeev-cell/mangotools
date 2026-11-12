@@ -207,36 +207,6 @@ export const RECIPES: ExtendedFoodRecipe[] = [
     },
   },
   {
-    id: 'besan-ladoo',
-    version: '0.1.0',
-    name: 'Besan Ladoo',
-    localName: 'बेसन के लड्डू',
-    course: 'dessert',
-    cuisine: 'North Indian / Festival',
-    diet: 'vegetarian',
-    servings: 8,
-    prepMinutes: 10,
-    cookMinutes: 35,
-    verified: false,
-    ingredients: [
-      { ingredient: 'besan', quantity: '250', unit: 'g' },
-      { ingredient: 'ghee', quantity: '125', unit: 'ml' },
-      { ingredient: 'sugar', quantity: '175', unit: 'g' },
-    ],
-    steps: [
-      'Heat ghee in a thick kadai over low flame, add coarse besan.',
-      'Roast continuously on gentle heat for 25-30 minutes until aromatic and golden brown.',
-      'Remove from heat and let cool to lukewarm temperature.',
-      'Mix in powdered sugar (boora/tagar) thoroughly and shape into smooth round ladoos.',
-    ],
-    thumbnailUrl: '/food/recipes/besan-ladoo.jpg',
-    imageProvenance: {
-      type: 'ai-generated',
-      notes:
-        'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
-    },
-  },
-  {
     id: 'mathri',
     version: '0.1.0',
     name: 'Khasta Mathri',
