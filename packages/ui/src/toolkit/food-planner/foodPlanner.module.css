@@ -453,11 +453,25 @@
   padding: 6px 0;
   border-bottom: 1px solid #e1e8f7;
 }
+.recipeIngredientNote {
+  display: block;
+  font-size: 11px;
+  color: #475569;
+  font-weight: normal;
+  margin-top: 2px;
+}
 .recipeDetailSteps {
   padding-left: 24px;
 }
 .recipeDetailSteps li {
-  padding: 4px 0;
+  padding: 6px 0;
+  line-height: 1.5;
+}
+.recipeStepPhase {
+  color: #1e3a8a;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 4px;
 }
 .recipePlaceholder {
   width: 100%;

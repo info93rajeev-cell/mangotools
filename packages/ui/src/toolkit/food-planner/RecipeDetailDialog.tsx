@@ -60,6 +60,7 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
                 <span>
                   {CATALOG_INGREDIENTS.find((ingredient) => ingredient.id === item.ingredient)
                     ?.name ?? item.ingredient}
+                  {item.note && <small class={s.recipeIngredientNote}> ({item.note})</small>}
                 </span>
                 <strong>
                   {scaledRecipeQuantity(item.quantity, item.unit, servings, recipe.servings)}
@@ -69,9 +70,17 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
           </ul>
           <h3>{t.recipeMethod}</h3>
           <ol class={s.recipeDetailSteps}>
-            {recipe.steps.map((step, index) => (
-              <li key={index}>{step}</li>
-            ))}
+            {recipe.steps.map((step, index) => {
+              const match = step.match(/^(\[[^\]]+\])\s*(.*)$/);
+              if (match) {
+                return (
+                  <li key={index}>
+                    <strong class={s.recipeStepPhase}>{match[1]}</strong> {match[2]}
+                  </li>
+                );
+              }
+              return <li key={index}>{step}</li>;
+            })}
           </ol>
           {recipe.sources && recipe.sources.length > 0 && (
             <>

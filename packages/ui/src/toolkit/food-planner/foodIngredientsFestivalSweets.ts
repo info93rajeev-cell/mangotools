@@ -56,4 +56,14 @@ export const FESTIVAL_SWEET_INGREDIENTS: FoodIngredient[] = [
     allergens: [],
     notFor: [],
   },
+  {
+    id: 'lemon',
+    name: 'Fresh lemon',
+    aliases: ['nimbu', 'lemon juice'],
+    dimension: 'count',
+    aisle: 'vegetables',
+    allergens: [],
+    notFor: [],
+    pieceNote: 'one medium lemon, yields approx 2 tbsp juice',
+  },
 ];
