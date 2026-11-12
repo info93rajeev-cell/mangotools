@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import styles from './foodPlanner.module.css';
+import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import type { ExtendedFoodRecipe } from './foodReferenceData.ts';
 
 export function getCourseIcon(course: string): string {
@@ -60,7 +61,11 @@ export function RecipeCardImage({ recipe }: RecipeCardImageProps) {
       {showImage ? (
         <img
           src={recipe.thumbnailUrl}
-          alt={recipe.name}
+          alt={
+            recipe.imageProvenance?.type === 'ai-generated'
+              ? `${t.generatedRecipeImage} ${recipe.name}`
+              : recipe.name
+          }
           class={styles.recipeImg}
           loading="lazy"
           onError={() => setImgFailed(true)}

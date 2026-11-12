@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
+import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
 import { getRecipeVerificationInfo, RECIPES } from './foodRecipesData.ts';
 import {
   AISLE_DISPLAY_MAP,
@@ -94,6 +95,16 @@ describe('Food Planner Toolkit Reference Data', () => {
       expect(recipe.imageProvenance).toBeDefined();
       expect(recipe.imageProvenance?.type).toBe('ai-generated');
       expect(recipe.imageProvenance?.notes).toBeTruthy();
+    }
+  });
+
+  it('keeps illustrated awaiting recipes disabled until their data is verified', () => {
+    expect(CATALOG_AWAITING_RECIPES).toHaveLength(10);
+    for (const recipe of CATALOG_AWAITING_RECIPES) {
+      expect(recipe.awaitingData).toBe(true);
+      expect(recipe.ingredients).toHaveLength(0);
+      expect(recipe.thumbnailUrl).toBe(`/food/recipes/${recipe.id}.jpg`);
+      expect(recipe.imageProvenance?.type).toBe('ai-generated');
     }
   });
 

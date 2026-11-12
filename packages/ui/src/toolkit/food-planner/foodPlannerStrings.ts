@@ -47,6 +47,7 @@ export const foodPlannerStrings = {
   gallery: 'Recipe Gallery',
   galleryIntro: 'Browse, search and add recipes to your menu.',
   viewRecipe: 'View recipe',
+  generatedRecipeImage: 'AI-generated illustration of',
   closeRecipe: 'Close recipe',
   readyRecipes: 'ready recipes',
   awaitingTrials: 'awaiting trials',

@@ -343,3 +343,10 @@ scaled to the plan's serving count, original cooking steps, and available publis
 The gallery separately reports ready recipes and the ten awaiting-trial entries; pending entries
 remain disabled and have no invented quantities or images. Existing selection, calculations,
 and session-only data behavior are unchanged.
+
+### Food Planner pending recipe images — issue #323
+
+The ten awaiting-data gallery entries now have distinct, locally optimized food illustrations.
+Their alt text and image provenance identify the visuals as AI-generated, and the cards continue
+to disable adding recipes until documented quantities and instructions are available. The image
+change does not alter ingredients, calculations, verification status or engine behavior.
