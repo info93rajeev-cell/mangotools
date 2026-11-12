@@ -350,3 +350,13 @@ The ten awaiting-data gallery entries now have distinct, locally optimized food 
 Their alt text and image provenance identify the visuals as AI-generated, and the cards continue
 to disable adding recipes until documented quantities and instructions are available. The image
 change does not alter ingredients, calculations, verification status or engine behavior.
+
+### Food Planner festival sweets — issue #325
+
+Gulab Jamun, Kaju Katli and Rice Kheer now have source-checked batch quantities,
+ingredient records, instructions and published references. They are selectable in
+the existing menu and use the shared ingredient, shopping, cost and schedule flows.
+Their illustrations remain marked as AI-generated. Planning conversions and
+unpriced optional ingredients are disclosed in the recipe details; these batches
+have not been kitchen-tested. Seven illustrated recipes still await source-backed
+quantities and remain disabled.

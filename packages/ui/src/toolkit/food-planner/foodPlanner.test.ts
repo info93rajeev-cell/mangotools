@@ -34,7 +34,14 @@ describe('Food Planner Toolkit Reference Data', () => {
   it('contains the verified and prototype recipes with steps and ingredients', () => {
     expect(RECIPES.length).toBeGreaterThanOrEqual(8);
     const verified = RECIPES.filter((r) => r.verified);
-    expect(verified.map((r) => r.id)).toEqual(['jeera-rice', 'dal-tadka', 'aloo-gobi']);
+    expect(verified.map((r) => r.id)).toEqual([
+      'jeera-rice',
+      'dal-tadka',
+      'aloo-gobi',
+      'gulab-jamun',
+      'kaju-katli',
+      'kheer',
+    ]);
 
     // Check verification status label mapping
     const jeera = RECIPES.find((r) => r.id === 'jeera-rice');
@@ -88,7 +95,7 @@ describe('Food Planner Toolkit Reference Data', () => {
   });
 
   it('covers every recipe with thumbnail URL and image provenance', () => {
-    expect(RECIPES.length).toBe(8);
+    expect(RECIPES.length).toBe(11);
     for (const recipe of RECIPES) {
       expect(recipe.thumbnailUrl).toBeDefined();
       expect(recipe.thumbnailUrl).toMatch(/^\/food\/recipes\/[a-z0-9-]+\.jpg$/);
@@ -98,8 +105,21 @@ describe('Food Planner Toolkit Reference Data', () => {
     }
   });
 
-  it('keeps illustrated awaiting recipes disabled until their data is verified', () => {
-    expect(CATALOG_AWAITING_RECIPES).toHaveLength(10);
+  it('makes three sourced festival sweets available with valid ingredients', () => {
+    const ingredientIds = new Set(CATALOG_INGREDIENTS.map((ingredient) => ingredient.id));
+    for (const id of ['gulab-jamun', 'kaju-katli', 'kheer']) {
+      const recipe = RECIPES.find((item) => item.id === id);
+      expect(recipe?.awaitingData).toBeFalsy();
+      expect(recipe?.sources?.length).toBeGreaterThanOrEqual(2);
+      expect(recipe?.ingredients.length).toBeGreaterThan(0);
+      for (const line of recipe?.ingredients ?? []) {
+        expect(ingredientIds.has(line.ingredient)).toBe(true);
+      }
+    }
+  });
+
+  it('keeps the remaining illustrated recipes disabled until data is sourced', () => {
+    expect(CATALOG_AWAITING_RECIPES).toHaveLength(7);
     for (const recipe of CATALOG_AWAITING_RECIPES) {
       expect(recipe.awaitingData).toBe(true);
       expect(recipe.ingredients).toHaveLength(0);

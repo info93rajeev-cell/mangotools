@@ -27,10 +27,36 @@ for (const width of [390, 1672]) {
 
 test('gallery distinguishes ready recipes from pending trials', async ({ page }) => {
   await openTool(page, 'food-planner');
-  await expect(page.getByText('8 ready recipes')).toBeVisible();
-  await expect(page.getByText('10 awaiting trials')).toBeVisible();
+  await expect(page.getByText('11 ready recipes')).toBeVisible();
+  await expect(page.getByText('7 awaiting trials')).toBeVisible();
   await page.getByRole('button', { name: '3', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Awaiting Trials' }).first()).toBeDisabled();
+});
+
+test('festival sweet selection reaches ingredients, shopping, cost and schedule', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openTool(page, 'food-planner');
+  await page.getByRole('button', { name: 'All Recipes', exact: true }).click();
+  await page.getByRole('button', { name: '2', exact: true }).click();
+  await page
+    .locator('[class*="recipeCard"]')
+    .filter({ has: page.getByRole('heading', { name: 'Gulab Jamun', exact: true }) })
+    .getByRole('button', { name: 'Add', exact: true })
+    .click();
+  await page.getByRole('tab').nth(1).click();
+  const ingredients = page.getByTestId('mobile-ingredients');
+  await ingredients.getByRole('searchbox').fill('Whole milk powder');
+  await expect(ingredients).toContainText('Whole milk powder');
+  await page.getByRole('tab').nth(2).click();
+  const shopping = page.getByTestId('mobile-shopping');
+  await shopping.getByRole('button', { name: /^Dairy & Paneer/ }).click();
+  await expect(shopping).toContainText('Whole milk powder');
+  await page.getByRole('tab').nth(3).click();
+  await expect(page.getByTestId('mobile-cost')).toContainText('Gulab Jamun');
+  await page.getByRole('tab').nth(4).click();
+  await expect(page.getByTestId('mobile-schedule')).toContainText('Gulab Jamun');
 });
 
 for (const width of [390, 1672]) {
@@ -41,9 +67,6 @@ for (const width of [390, 1672]) {
       await page.getByRole('button', { name: 'All Recipes', exact: true }).click();
     }
     const pendingIds = [
-      'gulab-jamun',
-      'kaju-katli',
-      'kheer',
       'jalebi',
       'rasgulla',
       'samosa',
@@ -53,8 +76,8 @@ for (const width of [390, 1672]) {
       'masala-chai',
     ];
     for (const [pageNumber, ids] of [
-      [2, pendingIds.slice(0, 8)],
-      [3, pendingIds.slice(8)],
+      [2, pendingIds.slice(0, 5)],
+      [3, pendingIds.slice(5)],
     ] as const) {
       await page.getByRole('button', { name: String(pageNumber), exact: true }).click();
       for (const id of ids) {
