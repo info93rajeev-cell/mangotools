@@ -1,4 +1,5 @@
 import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
+import { FESTIVAL_SWEET_RECIPES } from './foodRecipesFestivalSweets.ts';
 import type {
   ExtendedFoodRecipe,
   ImageProvenance,
@@ -356,6 +357,7 @@ export const RECIPES: ExtendedFoodRecipe[] = [
         'AI-generated visual illustration for recipe card preview. Not a photograph of the kitchen-tested batch.',
     },
   },
+  ...FESTIVAL_SWEET_RECIPES,
 ];
 
 export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
