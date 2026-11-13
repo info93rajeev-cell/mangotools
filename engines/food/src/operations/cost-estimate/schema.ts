@@ -2,7 +2,21 @@ import { z } from 'zod';
 
 const id = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
 const priceKindSchema = z.enum(['wholesale-reference', 'retail-reference', 'user-entered']);
-const unitSchema = z.enum(['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'piece']);
+const unitSchema = z.enum([
+  'g',
+  'kg',
+  'ml',
+  'l',
+  'tsp',
+  'tbsp',
+  'cup',
+  'piece',
+  'oz',
+  'lb',
+  'fl-oz',
+  'floz',
+  'gal',
+]);
 const baseUnitSchema = z.enum(['g', 'ml', 'piece']);
 
 const line = z.strictObject({

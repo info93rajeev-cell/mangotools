@@ -2,7 +2,10 @@ import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import { AISLE_DISPLAY_MAP } from './foodReferenceData.ts';
 import { getAisleColor } from './ingredientsUtils.ts';
+import { ShoppingEmptyState, ShoppingListAlerts } from './ShoppingListComponents.tsx';
 import type { ShoppingLineItem } from './shoppingListUtils.ts';
+
+export { ShoppingEmptyState, ShoppingListAlerts };
 
 export interface ShoppingPagination {
   page: number;
@@ -30,6 +33,8 @@ export function ShoppingMainPanel({
   onToggleBought,
   pagination,
   onBrowse,
+  currency = 'INR',
+  currencySymbol = '₹',
 }: {
   totalItems: number;
   recipeCount: number;
@@ -46,6 +51,8 @@ export function ShoppingMainPanel({
   onToggleBought: (id: string) => void;
   pagination: ShoppingPagination;
   onBrowse: () => void;
+  currency?: string;
+  currencySymbol?: string;
 }) {
   return (
     <div class={styles.card}>
@@ -111,8 +118,8 @@ export function ShoppingMainPanel({
                   <th>Category</th>
                   <th>Total Quantity</th>
                   <th>Unit</th>
-                  <th>Est. Price (₹)</th>
-                  <th>Est. Cost (₹)</th>
+                  <th>Est. Price ({currencySymbol})</th>
+                  <th>Est. Cost ({currencySymbol})</th>
                   <th>Buy From</th>
                   <th>Status</th>
                 </tr>
@@ -132,6 +139,8 @@ export function ShoppingMainPanel({
                       stepDelta={stepDelta}
                       onAdjustQuantity={onAdjustQuantity}
                       onToggleBought={onToggleBought}
+                      currency={currency}
+                      currencySymbol={currencySymbol}
                     />
                   );
                 })}
@@ -162,6 +171,8 @@ function ShoppingTableRow({
   stepDelta,
   onAdjustQuantity,
   onToggleBought,
+  currency = 'INR',
+  currencySymbol = '₹',
 }: {
   item: ShoppingLineItem;
   displayVal: number;
@@ -169,6 +180,8 @@ function ShoppingTableRow({
   stepDelta: number;
   onAdjustQuantity: (id: string, current: number, delta: number) => void;
   onToggleBought: (id: string) => void;
+  currency?: string;
+  currencySymbol?: string;
 }) {
   const aisleColor = getAisleColor(item.aisle);
   const aisleLabel = AISLE_DISPLAY_MAP[item.aisle] ?? item.aisle;
@@ -240,7 +253,10 @@ function ShoppingTableRow({
         </select>
       </td>
       <td style={{ color: '#475569', fontSize: '12px' }}>{item.priceLabel}</td>
-      <td style={{ fontWeight: 600 }}>₹{item.estCost.toLocaleString('en-IN')}</td>
+      <td style={{ fontWeight: 600 }}>
+        {currencySymbol}
+        {item.estCost.toLocaleString(currency === 'USD' ? 'en-US' : 'en-IN')}
+      </td>
       <td>
         <span
           class={styles.badge}
@@ -324,59 +340,5 @@ function ShoppingPaginationBar({
         <option value="16">Rows per page 16</option>
       </select>
     </div>
-  );
-}
-
-export function ShoppingEmptyState({ onBrowse }: { onBrowse: () => void }) {
-  return (
-    <div style={{ textAlign: 'center', padding: '36px 16px', color: '#475569' }}>
-      <p style={{ fontSize: '15px', fontWeight: 600, color: '#0f172a' }}>
-        No dishes in your menu yet
-      </p>
-      <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
-        Add recipes in Recipes &amp; Menu to generate your consolidated shopping list.
-      </p>
-      <button
-        type="button"
-        class={styles.actionBtn}
-        style={{ marginTop: '14px' }}
-        onClick={onBrowse}
-      >
-        <Icon name="utensils" /> Browse Recipes &amp; Menu
-      </button>
-    </div>
-  );
-}
-
-export function ShoppingListAlerts({
-  error,
-  isLoading,
-}: {
-  error: string | null;
-  isLoading: boolean;
-}) {
-  return (
-    <>
-      {error && (
-        <div
-          style={{
-            padding: '12px 16px',
-            background: '#fef2f2',
-            border: '1px solid #fecaca',
-            borderRadius: '8px',
-            color: '#991b1b',
-            fontSize: '13px',
-            marginBottom: '12px',
-          }}
-        >
-          <strong>⚠️ Calculation Note:</strong> {error}. Displaying preliminary item estimates.
-        </div>
-      )}
-      {isLoading && (
-        <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
-          Updating exact consolidation...
-        </div>
-      )}
-    </>
   );
 }

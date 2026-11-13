@@ -12,6 +12,13 @@ interface RecipesMenuSectionProps {
   planner: UseFoodPlannerReturn;
 }
 
+function isRecipeEligibleForCountry(r: ExtendedFoodRecipe, isUS: boolean): boolean {
+  if (isUS) {
+    return Boolean(r.countries?.includes('US'));
+  }
+  return !r.countries || r.countries.includes('IN');
+}
+
 export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const { searchQuery, activeCourse } = planner;
 
@@ -21,12 +28,21 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const { favorites, toggleFavorite } = planner;
 
+  const isUS =
+    planner.setup.country === 'US' ||
+    planner.setup.location?.includes('United States') ||
+    planner.setup.location?.includes('New York') ||
+    planner.setup.location?.includes('Los Angeles');
+
   const filteredRecipes = useMemo(
     () =>
-      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) =>
-        matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites),
-      ),
-    [searchQuery, activeCourse, favoritesOnly, favorites, planner.personalRecipes],
+      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) => {
+        if (!searchQuery && !favoritesOnly && !isRecipeEligibleForCountry(r, isUS)) {
+          return false;
+        }
+        return matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites);
+      }),
+    [searchQuery, activeCourse, favoritesOnly, favorites, planner.personalRecipes, isUS],
   );
 
   return (

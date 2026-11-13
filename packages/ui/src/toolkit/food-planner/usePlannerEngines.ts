@@ -3,8 +3,10 @@ import { useEffect, useState } from 'preact/hooks';
 import {
   CATALOG_INGREDIENTS,
   type ExtendedFoodRecipe,
+  type FoodPriceItem,
   REFERENCE_PRICES,
 } from './foodReferenceData.ts';
+import { REFERENCE_PRICES_US } from './foodReferencePricesUS.ts';
 import { enteredPrices } from './plannerPrices.ts';
 import { applyIngredientQuantities } from './plannerQuantities.ts';
 import type { PlanSetupState } from './useFoodPlanner.ts';
@@ -94,6 +96,7 @@ export function useCostEngine(
   targetBudget: string,
   run: RunFn,
   userPrices: Record<string, string> = {},
+  isUS = false,
 ) {
   const [engineCost, setEngineCost] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -119,13 +122,17 @@ export function useCostEngine(
       unit: l.unit as 'g' | 'ml' | 'piece',
       ...(l.total ? { total: String(l.total) } : {}),
     }));
+    const activeReferencePrices = isUS
+      ? ([...REFERENCE_PRICES_US, ...REFERENCE_PRICES] as unknown as FoodPriceItem[])
+      : ([...REFERENCE_PRICES, ...REFERENCE_PRICES_US] as unknown as FoodPriceItem[]);
+
     run(
       'food.cost.estimate@1',
       {
         guests,
         lines: cleanLines,
         prices: [
-          ...REFERENCE_PRICES,
+          ...activeReferencePrices,
           ...enteredPrices(userPrices, priceMode, new Date().toISOString().slice(0, 10)),
         ],
         budgetInr: targetBudget || undefined,
@@ -157,7 +164,7 @@ export function useCostEngine(
       active = false;
       controller.abort();
     };
-  }, [engineConsolidated, guests, priceMode, targetBudget, userPrices, run]);
+  }, [engineConsolidated, guests, priceMode, targetBudget, userPrices, isUS, run]);
 
   return { engineCost, isLoadingCost: isLoading, costError: error };
 }
@@ -247,6 +254,11 @@ export function usePlannerEngines(
     quantities,
     stock,
   );
+  const isUS =
+    setup.country === 'US' ||
+    setup.location?.includes('United States') ||
+    setup.location?.includes('New York') ||
+    setup.location?.includes('Los Angeles');
   const cost = useCostEngine(
     shopping.engineConsolidated,
     setup.guests,
@@ -254,6 +266,7 @@ export function usePlannerEngines(
     targetBudget,
     run,
     userPrices,
+    isUS,
   );
   const schedule = useScheduleEngine(
     selectedRecipes,

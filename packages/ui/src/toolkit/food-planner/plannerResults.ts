@@ -21,8 +21,10 @@ export function majorUnits(value: bigint): number {
 export function sumMoney(values: Array<string | number>): number {
   return majorUnits(values.reduce<bigint>((sum, value) => sum + minorUnits(value), 0n));
 }
-export function money(value: string | number): string {
-  return `₹${Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+export function money(value: string | number, currency: string = 'INR'): string {
+  const symbol = currency === 'USD' ? '$' : '₹';
+  const locale = currency === 'USD' ? 'en-US' : 'en-IN';
+  return `${symbol}${Number(value).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 type CostRecipe = Pick<ExtendedFoodRecipe, 'id' | 'name' | 'servings' | 'ingredients'>;

@@ -8,9 +8,10 @@ import type {
   ImageProvenance,
   RecipeVerificationInfo,
 } from './foodRecipesTypes.ts';
+import { US_RECIPES } from './foodRecipesUS.ts';
 
 export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
-export { CATALOG_AWAITING_RECIPES, STAPLE_RECIPES };
+export { CATALOG_AWAITING_RECIPES, STAPLE_RECIPES, US_RECIPES };
 
 export function getRecipeVerificationInfo(recipe: ExtendedFoodRecipe): RecipeVerificationInfo {
   if (recipe.awaitingData) {
@@ -83,7 +84,9 @@ export const RECIPES: ExtendedFoodRecipe[] = ORDERED_IDS.map((id) => {
   return found;
 });
 
+export const GLOBAL_RECIPES: ExtendedFoodRecipe[] = [...RECIPES, ...US_RECIPES];
+
 export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
-  ...RECIPES,
+  ...GLOBAL_RECIPES,
   ...CATALOG_AWAITING_RECIPES,
 ];

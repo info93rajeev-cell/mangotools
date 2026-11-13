@@ -28,6 +28,8 @@ export function CostLeftPanel(props: {
   otherCosts: OtherCostItem[];
   totalOtherCost: number;
   onUpdateOtherCost: (id: string, cost: number, enabled: boolean) => void;
+  currencySymbol?: string;
+  currency?: string;
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -41,11 +43,14 @@ export function CostLeftPanel(props: {
         onToggleSelectAll={props.onToggleSelectAll}
         onToggleDish={props.onToggleDish}
         onManageMenu={props.onManageMenu}
+        currencySymbol={props.currencySymbol}
       />
       <OtherCostsCard
         items={props.otherCosts}
         totalOtherCost={props.totalOtherCost}
         onUpdate={props.onUpdateOtherCost}
+        currencySymbol={props.currencySymbol}
+        currency={props.currency}
       />
     </div>
   );
@@ -60,6 +65,8 @@ export function CostRightPanel(props: {
   onSetTargetBudget: (val: string) => void;
   recipeCosts: RecipeCostItem[];
   onContinue: () => void;
+  currencySymbol?: string;
+  currency?: string;
 }) {
   const highestCostDish = useMemo(() => {
     if (props.recipeCosts.length === 0) return null;
@@ -81,6 +88,8 @@ export function CostRightPanel(props: {
         costPerServing={props.costData.costPerServing}
         guests={props.guests}
         dishesCount={props.dishesCount}
+        currencySymbol={props.currencySymbol}
+        currency={props.currency}
       />
 
       <details>
@@ -89,6 +98,8 @@ export function CostRightPanel(props: {
           budget={props.targetBudget}
           totalCost={props.costData.totalMenuCost}
           onSetBudget={props.onSetTargetBudget}
+          currencySymbol={props.currencySymbol}
+          currency={props.currency}
         />
       </details>
 
@@ -97,6 +108,7 @@ export function CostRightPanel(props: {
         highestCostDish={highestCostDish}
         ingredientCost={props.costData.totalIngredientCost}
         totalCost={props.costData.totalMenuCost}
+        currencySymbol={props.currencySymbol}
       />
 
       <div style={{ marginTop: '20px' }}>
@@ -173,6 +185,7 @@ function MenuCostTable({
   onToggleSelectAll,
   onToggleDish,
   onManageMenu,
+  currencySymbol = '₹',
 }: {
   recipeCosts: RecipeCostItem[];
   priceMode: 'retail' | 'wholesale';
@@ -182,6 +195,7 @@ function MenuCostTable({
   onToggleSelectAll: (c: boolean) => void;
   onToggleDish: (id: string) => void;
   onManageMenu: () => void;
+  currencySymbol?: string;
 }) {
   return (
     <div class={styles.card}>
@@ -259,9 +273,9 @@ function MenuCostTable({
               <th>Recipe / Dish</th>
               <th>Servings</th>
               <th>Total Qty</th>
-              <th>Ingredient Cost (₹)</th>
-              <th>Other Cost (₹)</th>
-              <th style={{ textAlign: 'right' }}>Total Cost (₹)</th>
+              <th>Ingredient Cost ({currencySymbol})</th>
+              <th>Other Cost ({currencySymbol})</th>
+              <th style={{ textAlign: 'right' }}>Total Cost ({currencySymbol})</th>
             </tr>
           </thead>
           <tbody>
@@ -298,10 +312,17 @@ function MenuCostTable({
                   </td>
                   <td>{dish.servings}</td>
                   <td>{dish.totalQty}</td>
-                  <td>₹{dish.ingCost.toFixed(2)}</td>
-                  <td style={{ color: '#64748b' }}>₹{dish.otherCost.toFixed(2)}</td>
+                  <td>
+                    {currencySymbol}
+                    {dish.ingCost.toFixed(2)}
+                  </td>
+                  <td style={{ color: '#64748b' }}>
+                    {currencySymbol}
+                    {dish.otherCost.toFixed(2)}
+                  </td>
                   <td style={{ textAlign: 'right', fontWeight: 700, color: '#1e3a8a' }}>
-                    ₹{dish.totalDish.toFixed(2)}
+                    {currencySymbol}
+                    {dish.totalDish.toFixed(2)}
                   </td>
                 </tr>
               ))

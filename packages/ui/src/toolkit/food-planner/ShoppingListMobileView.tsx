@@ -36,6 +36,7 @@ export function ShoppingListMobileView({
         total={ingredientTotal(planner.engineCost)}
         filter={filter}
         setFilter={setFilter}
+        currency={planner.currency}
       />
       {orderedShoppingGroups(groups).map(([aisle, lines]) => (
         <section class={s.mobileAccordionGroup} key={aisle}>
@@ -48,7 +49,9 @@ export function ShoppingListMobileView({
             <span>
               {shoppingGroupLabel(aisle)} ({lines?.length ?? 0})
             </span>
-            <strong>{money(sumMoney((lines ?? []).map((line) => line.estCost)))}</strong>
+            <strong>
+              {money(sumMoney((lines ?? []).map((line) => line.estCost)), planner.currency)}
+            </strong>
           </button>
           {!closed[aisle] && (
             <div class={s.mobileAccordionBody}>
@@ -124,23 +127,24 @@ function ShoppingOverview({
   total,
   filter,
   setFilter,
+  currency = 'INR',
 }: {
   items: ShoppingLineItem[];
   inStock: number;
   total: number;
   filter: 'all' | 'tobuy' | 'instock';
   setFilter: (value: 'all' | 'tobuy' | 'instock') => void;
+  currency?: string;
 }) {
   return (
     <>
-      {' '}
       <section class={s.mobileCard}>
         <h4 class={s.mobileCardTitle}>{t.listSummary}</h4>
         <div class={s.mobileSummary2x2}>
           <MobileMetric label={t.totalItems} value={items.length} icon="clipboard-paste" />
           <MobileMetric label={t.toBuy} value={items.length - inStock} icon="shopping-cart" />
           <MobileMetric label={t.stock} value={inStock} icon="circle-check" />
-          <MobileMetric label={t.estimated} value={money(total)} icon="coins" />
+          <MobileMetric label={t.estimated} value={money(total, currency)} icon="coins" />
         </div>
       </section>
       <div class={s.mobileNavPillsRow}>
@@ -228,5 +232,6 @@ function mobileShoppingItems(planner: UseFoodPlannerReturn) {
     planner.priceMode,
     planner.userPrices,
     true,
+    planner.currency,
   ).map((item) => ({ ...item, aisle: planner.ingredientCategories[item.id] ?? item.aisle }));
 }

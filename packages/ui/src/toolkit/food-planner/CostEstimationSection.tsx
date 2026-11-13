@@ -15,18 +15,9 @@ interface CostEstimationSectionProps {
 }
 
 export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
-  const {
-    setup,
-    selectedRecipes,
-    engineCost,
-    otherCosts,
-    updateOtherCost,
-    totalOtherCost,
-    setActiveSection,
-  } = planner;
+  const { setup, selectedRecipes, engineCost, totalOtherCost, setActiveSection } = planner;
 
-  const { selectAll, selectedDishes, toggleDish, toggleSelectAll } =
-    useCostDishSelection(selectedRecipes);
+  const dishSelection = useCostDishSelection(selectedRecipes);
 
   const costData = useMemo(
     () => calculateCostData(engineCost, setup.guests, totalOtherCost),
@@ -51,36 +42,12 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
 
   return (
     <>
-      <div class={styles.desktopOnly}>
-        <div class={styles.layoutGrid}>
-          <CostLeftPanel
-            costError={planner.costError}
-            isLoadingCost={planner.isLoadingCost}
-            recipeCosts={recipeCosts}
-            priceMode={planner.priceMode}
-            onSetPriceMode={planner.setPriceMode}
-            selectAll={selectAll}
-            selectedDishes={selectedDishes}
-            onToggleSelectAll={toggleSelectAll}
-            onToggleDish={toggleDish}
-            onManageMenu={() => setActiveSection('recipes')}
-            otherCosts={otherCosts}
-            totalOtherCost={totalOtherCost}
-            onUpdateOtherCost={updateOtherCost}
-          />
-
-          <CostRightPanel
-            costData={costData}
-            totalOtherCost={totalOtherCost}
-            guests={setup.guests}
-            dishesCount={selectedRecipes.length}
-            targetBudget={planner.targetBudget}
-            onSetTargetBudget={planner.setTargetBudget}
-            recipeCosts={recipeCosts}
-            onContinue={() => setActiveSection('schedule')}
-          />
-        </div>
-      </div>
+      <CostDesktopLayout
+        planner={planner}
+        recipeCosts={recipeCosts}
+        costData={costData}
+        dishSelection={dishSelection}
+      />
 
       <div class={styles.mobileOnly}>
         <CostEstimationMobileView
@@ -93,6 +60,59 @@ export function CostEstimationSection({ planner }: CostEstimationSectionProps) {
         />
       </div>
     </>
+  );
+}
+
+interface CostDesktopLayoutProps {
+  planner: UseFoodPlannerReturn;
+  recipeCosts: ReturnType<typeof calculateRecipeCosts>;
+  costData: ReturnType<typeof calculateCostData>;
+  dishSelection: ReturnType<typeof useCostDishSelection>;
+}
+
+function CostDesktopLayout({
+  planner,
+  recipeCosts,
+  costData,
+  dishSelection,
+}: CostDesktopLayoutProps) {
+  const { selectAll, selectedDishes, toggleDish, toggleSelectAll } = dishSelection;
+
+  return (
+    <div class={styles.desktopOnly}>
+      <div class={styles.layoutGrid}>
+        <CostLeftPanel
+          costError={planner.costError}
+          isLoadingCost={planner.isLoadingCost}
+          recipeCosts={recipeCosts}
+          priceMode={planner.priceMode}
+          onSetPriceMode={planner.setPriceMode}
+          selectAll={selectAll}
+          selectedDishes={selectedDishes}
+          onToggleSelectAll={toggleSelectAll}
+          onToggleDish={toggleDish}
+          onManageMenu={() => planner.setActiveSection('recipes')}
+          otherCosts={planner.otherCosts}
+          totalOtherCost={planner.totalOtherCost}
+          onUpdateOtherCost={planner.updateOtherCost}
+          currencySymbol={planner.currencySymbol}
+          currency={planner.currency}
+        />
+
+        <CostRightPanel
+          costData={costData}
+          totalOtherCost={planner.totalOtherCost}
+          guests={planner.setup.guests}
+          dishesCount={planner.selectedRecipes.length}
+          targetBudget={planner.targetBudget}
+          onSetTargetBudget={planner.setTargetBudget}
+          recipeCosts={recipeCosts}
+          onContinue={() => planner.setActiveSection('schedule')}
+          currencySymbol={planner.currencySymbol}
+          currency={planner.currency}
+        />
+      </div>
+    </div>
   );
 }
 

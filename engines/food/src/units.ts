@@ -6,11 +6,16 @@ export type Dimension = 'mass' | 'volume' | 'count';
 export const UNITS: Readonly<Record<string, { dimension: Dimension; toBase: Fraction }>> = {
   g: { dimension: 'mass', toBase: fraction(1n) },
   kg: { dimension: 'mass', toBase: fraction(1000n) },
+  oz: { dimension: 'mass', toBase: fraction(45359237n, 1600000n) },
+  lb: { dimension: 'mass', toBase: fraction(45359237n, 100000n) },
   ml: { dimension: 'volume', toBase: fraction(1n) },
   l: { dimension: 'volume', toBase: fraction(1000n) },
   tsp: { dimension: 'volume', toBase: fraction(5n) },
   tbsp: { dimension: 'volume', toBase: fraction(15n) },
   cup: { dimension: 'volume', toBase: fraction(250n) },
+  'fl-oz': { dimension: 'volume', toBase: fraction(473176473n, 16000000n) },
+  floz: { dimension: 'volume', toBase: fraction(473176473n, 16000000n) },
+  gal: { dimension: 'volume', toBase: fraction(473176473n, 125000n) },
   piece: { dimension: 'count', toBase: fraction(1n) },
 };
 

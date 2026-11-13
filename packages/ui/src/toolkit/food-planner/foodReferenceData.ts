@@ -1,17 +1,31 @@
+export {
+  COUNTRIES,
+  GLOBAL_MEAL_TYPES,
+  GLOBAL_OCCASIONS,
+  GLOBAL_PLANNING_TYPES,
+  getLocationMetadata,
+  SUPPORTED_LOCATIONS,
+  type SupportedCountry,
+  type SupportedLocation,
+} from './foodGlobalLocations.ts';
 export { CATALOG_INGREDIENTS } from './foodIngredientsData.ts';
 export {
   CATALOG_GALLERY_RECIPES,
   type ExtendedFoodRecipe,
+  GLOBAL_RECIPES,
   getRecipeVerificationInfo,
   type ImageProvenance,
   RECIPES,
+  US_RECIPES,
 } from './foodRecipesData.ts';
-
 export { type FoodPriceItem, REFERENCE_PRICES } from './foodReferencePrices.ts';
+export { type FoodPriceItemUS, REFERENCE_PRICES_US } from './foodReferencePricesUS.ts';
 
 export const LOCATIONS = [
   'Delhi, India',
   'Mumbai, India',
+  'New York, United States',
+  'Los Angeles, United States',
   'Bengaluru, India',
   'Kolkata, India',
   'Chennai, India',

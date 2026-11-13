@@ -21,18 +21,37 @@ export const foodDimensionSchema = z.enum(['mass', 'volume', 'count']);
 export const FOOD_UNITS = {
   g: { dimension: 'mass', toBase: '1' },
   kg: { dimension: 'mass', toBase: '1000' },
+  oz: { dimension: 'mass', toBase: '28.349523125' },
+  lb: { dimension: 'mass', toBase: '453.59237' },
   ml: { dimension: 'volume', toBase: '1' },
   l: { dimension: 'volume', toBase: '1000' },
   tsp: { dimension: 'volume', toBase: '5' },
   tbsp: { dimension: 'volume', toBase: '15' },
   cup: { dimension: 'volume', toBase: '250' },
+  'fl-oz': { dimension: 'volume', toBase: '29.5735295625' },
+  floz: { dimension: 'volume', toBase: '29.5735295625' },
+  gal: { dimension: 'volume', toBase: '3785.411784' },
   piece: { dimension: 'count', toBase: '1' },
 } as const satisfies Record<
   string,
   { dimension: z.infer<typeof foodDimensionSchema>; toBase: string }
 >;
 
-export const foodUnitSchema = z.enum(['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'piece']);
+export const foodUnitSchema = z.enum([
+  'g',
+  'kg',
+  'ml',
+  'l',
+  'tsp',
+  'tbsp',
+  'cup',
+  'piece',
+  'oz',
+  'lb',
+  'fl-oz',
+  'floz',
+  'gal',
+]);
 export type FoodUnit = z.infer<typeof foodUnitSchema>;
 
 /** Base unit per dimension: what shopping totals are expressed in. */
