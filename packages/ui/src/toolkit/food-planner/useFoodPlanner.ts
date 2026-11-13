@@ -1,12 +1,9 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
+import { isUSLocation } from './foodCulinaryRegions.ts';
 import { type ExtendedFoodRecipe, GLOBAL_RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
-import {
-  getCurrencyForCountry,
-  getCurrencySymbol,
-  type SupportedCurrency,
-} from './plannerCurrency.ts';
+import { getCurrencySymbol, type SupportedCurrency } from './plannerCurrency.ts';
 import { sumMoney } from './plannerResults.ts';
 import { usePlannerEngines, workerRun } from './usePlannerEngines.ts';
 
@@ -211,15 +208,9 @@ function usePlannerState() {
 
 function usePlannerCurrency(country?: string, location?: string) {
   const currency: SupportedCurrency = useMemo(() => {
-    if (country === 'US' || country === 'IN') return getCurrencyForCountry(country);
-    if (
-      location?.includes('United States') ||
-      location?.includes('New York') ||
-      location?.includes('Los Angeles')
-    ) {
-      return 'USD';
-    }
-    return 'INR';
+    if (country === 'US') return 'USD';
+    if (country === 'IN') return 'INR';
+    return isUSLocation(location, country) ? 'USD' : 'INR';
   }, [country, location]);
 
   const currencySymbol = useMemo(() => getCurrencySymbol(currency), [currency]);

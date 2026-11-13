@@ -4,11 +4,11 @@ import { CostEstimationSection } from './CostEstimationSection.tsx';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
+  CULINARY_REGIONS,
   type ExtendedFoodRecipe,
-  INDIAN_LOCATIONS,
+  isUSLocation,
   OCCASIONS,
   PLANNING_TYPES,
-  US_LOCATIONS,
 } from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
 import { getDefaultOtherExpenses } from './plannerCurrency.ts';
@@ -26,11 +26,7 @@ export interface FoodPlannerStudioLayoutProps {
   notify?: (msg: string) => void;
 }
 
-export function isUSLocation(loc?: string, country?: string): boolean {
-  if (country === 'US') return true;
-  if (!loc) return false;
-  return loc.includes('United States') || loc.includes('New York') || loc.includes('Los Angeles');
-}
+export { isUSLocation };
 
 function applyCountryDefaults(
   isUS: boolean,
@@ -52,6 +48,7 @@ function applyCountryDefaults(
 
   const recommended = recommendMenu({
     country: isUS ? 'US' : 'IN',
+    location: updated.location,
     occasion: updated.occasion,
     mealType: updated.mealType ?? 'Dinner',
     diet: updated.diet,
@@ -87,12 +84,13 @@ function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: stri
   };
 
   const handleSetSetup = (next: PlanSetupState) => {
+    const prevLocation = setup.location;
     const prevIsUS = isUSLocation(setup.location, setup.country);
     const nextIsUS = isUSLocation(next.location, next.country);
     const updated: PlanSetupState = { ...next, country: nextIsUS ? 'US' : 'IN' };
     setSetup(updated);
 
-    if (prevIsUS !== nextIsUS) {
+    if (prevLocation !== next.location || prevIsUS !== nextIsUS) {
       applyCountryDefaults(nextIsUS, updated, planner);
     }
   };
@@ -101,6 +99,7 @@ function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: stri
     const isUS = isUSLocation(setup.location, setup.country);
     const recommended = recommendMenu({
       country: isUS ? 'US' : 'IN',
+      location: setup.location,
       occasion: setup.occasion,
       mealType: setup.mealType ?? 'Dinner',
       diet: setup.diet,
@@ -254,7 +253,7 @@ function PlanSetupCard({
       <div class={styles.planSetupControls}>
         <div class={styles.setupField}>
           <label class={styles.fieldLabel} for="setup-loc">
-            <Icon name="map-pin" /> Location
+            <Icon name="globe" /> {t.cuisineRegion}
           </label>
           <select
             id="setup-loc"
@@ -264,20 +263,11 @@ function PlanSetupCard({
               onSetSetup({ ...setup, location: (e.target as HTMLSelectElement).value })
             }
           >
-            <optgroup label="India">
-              {INDIAN_LOCATIONS.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="United States">
-              {US_LOCATIONS.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </optgroup>
+            {CULINARY_REGIONS.map((region) => (
+              <option key={region.id} value={region.name}>
+                {region.name}
+              </option>
+            ))}
           </select>
         </div>
         <div class={styles.setupField}>

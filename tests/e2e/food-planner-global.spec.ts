@@ -11,7 +11,7 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
     // Recipes & Menu
     await expect(page.getByRole('tab', { name: /Recipes & Menu/i })).toBeVisible();
     const locSelect = page.locator('#setup-loc, select').first();
-    await expect(locSelect).toHaveValue(/Delhi/i);
+    await expect(locSelect).toHaveValue(/India/i);
 
     // Verify INR (₹) symbol on Plan Setup / Summary Card
     const menuSection = page.locator('[class*="layoutGrid"]');
@@ -46,9 +46,9 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
     await page.setViewportSize({ width: 1600, height: 900 });
     await openTool(page, 'food-planner');
 
-    // Select New York in location dropdown
+    // Select North America in cuisine region dropdown
     const locationSelect = page.locator('select').first();
-    await locationSelect.selectOption('New York, United States');
+    await locationSelect.selectOption('North America');
 
     // Click Update Plan button
     const updateBtn = page.getByRole('button', { name: /Update Plan/i });
@@ -96,7 +96,7 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
     // Switch location on mobile cost screen
     const mobileLocationSelect = page.locator('#mobile-cost-location');
     if (await mobileLocationSelect.isVisible()) {
-      await mobileLocationSelect.selectOption('New York, United States');
+      await mobileLocationSelect.selectOption('North America');
       const mobileUpdateBtn = page.getByRole('button', { name: /Update/i }).first();
       if (await mobileUpdateBtn.isVisible()) {
         await mobileUpdateBtn.click();

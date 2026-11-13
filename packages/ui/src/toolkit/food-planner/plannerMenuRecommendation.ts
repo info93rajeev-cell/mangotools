@@ -1,7 +1,9 @@
+import { type CulinaryRegionId, getCulinaryRegionId } from './foodCulinaryRegions.ts';
 import type { ExtendedFoodRecipe } from './foodRecipesTypes.ts';
 
 export interface MenuRecommendationParams {
-  country: 'IN' | 'US';
+  country?: 'IN' | 'US';
+  location?: string;
   occasion?: string;
   mealType?: string;
   diet?: string;
@@ -28,6 +30,42 @@ const US_DINNER = [
   'new-york-cheesecake',
 ];
 
+const EU_DINNER = [
+  'margherita-pizza',
+  'penne-arrabbiata',
+  'veggie-lasagna',
+  'minestrone-soup',
+  'mediterranean-salad',
+  'classic-tiramisu',
+];
+
+const ASIA_DINNER = [
+  'veg-fried-rice',
+  'hakka-noodles',
+  'spring-rolls',
+  'thai-green-curry',
+  'sweet-corn-soup',
+  'mango-sticky-rice',
+];
+
+const ME_DINNER = [
+  'falafel-platter',
+  'hummus-pita',
+  'mandi-rice',
+  'shawarma-wrap',
+  'fattoush-salad',
+  'baklava',
+];
+
+const LA_DINNER = [
+  'street-tacos',
+  'cheese-quesadilla',
+  'sizzling-fajitas',
+  'enchiladas-suizas',
+  'guacamole-chips',
+  'churros',
+];
+
 function getUSPreset(eligible: ExtendedFoodRecipe[], mealType?: string): ExtendedFoodRecipe[] {
   if (mealType === 'breakfast') {
     return findRecipesByIds(eligible, ['classic-pancakes', 'fresh-lemonade']);
@@ -43,11 +81,12 @@ function getUSPreset(eligible: ExtendedFoodRecipe[], mealType?: string): Extende
   return findRecipesByIds(eligible, US_DINNER);
 }
 
-const IN_TEA = ['samosa', 'mathri', 'masala-chai', 'besan-ladoo'];
+const IN_TEA = ['samosa', 'mathri', 'masala-chai', 'besan-ladoo', 'idli-sambar', 'medu-vada'];
 const IN_FESTIVAL = [
   'jeera-rice',
   'dal-tadka',
   'shahi-paneer',
+  'hyderabadi-biryani',
   'gulab-jamun',
   'kaju-katli',
   'kheer',
@@ -87,19 +126,36 @@ function getCourseFallback(eligible: ExtendedFoodRecipe[]): ExtendedFoodRecipe[]
   return result.length > 0 ? result : eligible.slice(0, 4);
 }
 
-export function recommendMenu(params: MenuRecommendationParams): ExtendedFoodRecipe[] {
-  const { country, occasion, mealType, diet, availableRecipes } = params;
+function getRegionalPreset(
+  regionId: CulinaryRegionId,
+  eligible: ExtendedFoodRecipe[],
+  mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  if (regionId === 'europe-med') return findRecipesByIds(eligible, EU_DINNER);
+  if (regionId === 'east-pan-asian') return findRecipesByIds(eligible, ASIA_DINNER);
+  if (regionId === 'middle-east') return findRecipesByIds(eligible, ME_DINNER);
+  if (regionId === 'latin-america') return findRecipesByIds(eligible, LA_DINNER);
+  if (regionId === 'north-america') return getUSPreset(eligible, mealType);
+  return getIndiaPreset(eligible, mealType, occasion);
+}
 
-  const countryFiltered = availableRecipes.filter((r) => {
-    if (!r.countries || r.countries.length === 0) return country === 'IN';
-    return r.countries.includes(country);
+export function recommendMenu(params: MenuRecommendationParams): ExtendedFoodRecipe[] {
+  const { country, location, occasion, mealType, diet, availableRecipes } = params;
+  const regionId = getCulinaryRegionId(location, country);
+
+  const regionFiltered = availableRecipes.filter((r) => {
+    if (regionId === 'india-south-asia') return !r.countries || r.countries.includes('IN');
+    if (regionId === 'north-america') return Boolean(r.countries?.includes('US'));
+    if (regionId === 'europe-med') return Boolean(r.countries?.includes('EU'));
+    if (regionId === 'east-pan-asian') return Boolean(r.countries?.includes('ASIA'));
+    if (regionId === 'middle-east') return Boolean(r.countries?.includes('ME'));
+    if (regionId === 'latin-america') return Boolean(r.countries?.includes('LA'));
+    return true;
   });
 
-  const eligible = filterByDiet(countryFiltered, diet);
-  const preset =
-    country === 'US'
-      ? getUSPreset(eligible, mealType)
-      : getIndiaPreset(eligible, mealType, occasion);
+  const eligible = filterByDiet(regionFiltered, diet);
+  const preset = getRegionalPreset(regionId, eligible, mealType, occasion);
 
   if (preset.length >= 2) return preset;
   return getCourseFallback(eligible);

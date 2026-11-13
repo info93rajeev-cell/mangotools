@@ -1,26 +1,26 @@
 import { useMemo, useState } from 'preact/hooks';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
+import {
+  CATALOG_GALLERY_RECIPES,
+  type ExtendedFoodRecipe,
+  isRecipeEligibleForCountry,
+  isRecipeEligibleForLocation,
+} from './foodReferenceData.ts';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { matchesRecipeFilter, RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
 import { RecipesMobileView } from './RecipesMobileView.tsx';
 import { SelectedMenuPanel } from './RecipesSelectedMenuComponents.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
+export { isRecipeEligibleForCountry, isRecipeEligibleForLocation };
+
 interface RecipesMenuSectionProps {
   planner: UseFoodPlannerReturn;
 }
 
-export function isRecipeEligibleForCountry(r: ExtendedFoodRecipe, isUS: boolean): boolean {
-  if (isUS) {
-    return Boolean(r.countries?.includes('US'));
-  }
-  return !r.countries || r.countries.includes('IN');
-}
-
 export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
-  const { searchQuery, activeCourse } = planner;
+  const { searchQuery, activeCourse, setup } = planner;
 
   const [personal, setPersonal] = useState(false);
   const [page, setPage] = useState(1);
@@ -28,21 +28,27 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const { favorites, toggleFavorite } = planner;
 
-  const isUS =
-    planner.setup.country === 'US' ||
-    planner.setup.location?.includes('United States') ||
-    planner.setup.location?.includes('New York') ||
-    planner.setup.location?.includes('Los Angeles');
-
   const filteredRecipes = useMemo(
     () =>
       [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) => {
-        if (!searchQuery && !favoritesOnly && !isRecipeEligibleForCountry(r, isUS)) {
+        if (
+          !searchQuery &&
+          !favoritesOnly &&
+          !isRecipeEligibleForLocation(r, setup.location, setup.country)
+        ) {
           return false;
         }
         return matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites);
       }),
-    [searchQuery, activeCourse, favoritesOnly, favorites, planner.personalRecipes, isUS],
+    [
+      searchQuery,
+      activeCourse,
+      favoritesOnly,
+      favorites,
+      planner.personalRecipes,
+      setup.location,
+      setup.country,
+    ],
   );
 
   return (
@@ -68,18 +74,16 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
           setPage={setPage}
           pageSize={pageSize}
           setPageSize={setPageSize}
-          isUS={isUS}
         />
       </div>
-
       <div class={styles.mobileOnly}>
         <RecipesMobileView
           planner={planner}
-          favorites={favorites}
-          toggleFavorite={toggleFavorite}
+          filteredRecipes={filteredRecipes}
           favoritesOnly={favoritesOnly}
           setFavoritesOnly={setFavoritesOnly}
-          filteredRecipes={filteredRecipes}
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
           page={page}
           setPage={setPage}
           pageSize={pageSize}
@@ -101,23 +105,30 @@ interface RecipesDesktopGridProps {
   setPage: (p: number | ((prev: number) => number)) => void;
   pageSize: number;
   setPageSize: (s: number | ((prev: number) => number)) => void;
-  isUS: boolean;
 }
 
-function getEligibleCatalogRecipes(personal: ExtendedFoodRecipe[], isUS: boolean) {
+function getEligibleCatalogRecipes(
+  personal: ExtendedFoodRecipe[],
+  location?: string,
+  country?: string,
+) {
   return [...CATALOG_GALLERY_RECIPES, ...personal].filter((r) =>
-    isRecipeEligibleForCountry(r, isUS),
+    isRecipeEligibleForLocation(r, location, country),
   );
 }
 
 function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
-  const { planner, filteredRecipes, isUS } = props;
+  const { planner, filteredRecipes } = props;
   const { setup, portionFactors, toggleRecipe } = planner;
 
   return (
     <div class={`${styles.layoutGrid} ${styles.recipesLayoutGrid}`}>
       <RecipeGalleryPanel
-        catalogRecipes={getEligibleCatalogRecipes(planner.personalRecipes, isUS)}
+        catalogRecipes={getEligibleCatalogRecipes(
+          planner.personalRecipes,
+          setup.location,
+          setup.country,
+        )}
         searchQuery={planner.searchQuery}
         setSearchQuery={planner.setSearchQuery}
         activeCourse={planner.activeCourse}
@@ -136,7 +147,6 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
         guests={setup.guests}
         portionFactors={portionFactors}
       />
-
       <SelectedMenuPanel
         selectedRecipes={planner.selectedRecipes}
         guests={setup.guests}

@@ -1,3 +1,5 @@
+import { GLOBAL_PRICES_INR } from './foodReferencePricesGlobal.ts';
+
 export interface FoodPriceItem {
   ingredient: string;
   kind: 'retail-reference' | 'wholesale-reference';
@@ -304,4 +306,5 @@ export const REFERENCE_PRICES: FoodPriceItem[] = [
     unit: 'ml',
     observedOn: '2026-11-01',
   },
+  ...GLOBAL_PRICES_INR,
 ];

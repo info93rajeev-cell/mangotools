@@ -2,11 +2,11 @@ import { Icon } from '../../primitives/Icon.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
-  INDIAN_LOCATIONS,
+  CULINARY_REGIONS,
+  isUSLocation,
   LOCATIONS,
   OCCASIONS,
   PLANNING_TYPES,
-  US_LOCATIONS,
 } from './foodReferenceData.ts';
 import { recommendMenu } from './plannerMenuRecommendation.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
@@ -36,8 +36,7 @@ export function MobileSectionHeader({
 function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlannerReturn) {
   const { setup, setSetup } = planner;
   if (key === 'location') {
-    const isUS =
-      val.includes('United States') || val.includes('New York') || val.includes('Los Angeles');
+    const isUS = isUSLocation(val, setup.country);
     const updated = {
       ...setup,
       location: val,
@@ -62,11 +61,7 @@ function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlann
 
 function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
   const { setup, setSetup } = planner;
-  const isUS =
-    setup.country === 'US' ||
-    setup.location?.includes('United States') ||
-    setup.location?.includes('New York') ||
-    setup.location?.includes('Los Angeles');
+  const isUS = isUSLocation(setup.location, setup.country);
   const recommended = recommendMenu({
     country: isUS ? 'US' : 'IN',
     occasion: setup.occasion,
@@ -84,7 +79,7 @@ function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
 export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn; id: string }) {
   const { setup, setSetup } = planner;
   const fields = [
-    { key: 'location' as const, label: t.location, options: LOCATIONS },
+    { key: 'location' as const, label: t.cuisineRegion, options: LOCATIONS },
     { key: 'occasion' as const, label: t.occasion, options: OCCASIONS },
     { key: 'planningType' as const, label: t.planningType, options: PLANNING_TYPES },
   ];
@@ -106,30 +101,17 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
               value={setup[field.key]}
               onChange={(e) => handleMobileFieldChange(field.key, e.currentTarget.value, planner)}
             >
-              {field.key === 'location' ? (
-                <>
-                  <optgroup label="India">
-                    {INDIAN_LOCATIONS.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="United States">
-                    {US_LOCATIONS.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
-                      </option>
-                    ))}
-                  </optgroup>
-                </>
-              ) : (
-                field.options.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))
-              )}
+              {field.key === 'location'
+                ? CULINARY_REGIONS.map((reg) => (
+                    <option key={reg.id} value={reg.name}>
+                      {reg.name}
+                    </option>
+                  ))
+                : field.options.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
             </select>
           </div>
         ))}
