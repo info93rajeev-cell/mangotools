@@ -226,6 +226,9 @@ export function isRecipeEligibleForLocation(
       r.cuisine.toLowerCase().includes('hyderabadi') ||
       r.cuisine.toLowerCase().includes('punjabi') ||
       r.cuisine.toLowerCase().includes('mughlai') ||
+      r.cuisine.toLowerCase().includes('kashmiri') ||
+      r.cuisine.toLowerCase().includes('awadhi') ||
+      r.cuisine.toLowerCase().includes('rajasthani') ||
       (!r.countries && !r.cuisine.toLowerCase().includes('american'))
     );
   }

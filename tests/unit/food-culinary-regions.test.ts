@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { unitOf } from '../../engines/food/src/units.ts';
+import { matchesDietaryFilter } from '../../packages/ui/src/toolkit/food-planner/dietaryFilter.ts';
 import {
   CULINARY_REGIONS,
   getCulinaryRegionId,
@@ -12,6 +13,7 @@ import {
   CATALOG_INGREDIENTS,
   EUROPE_RECIPES,
   GLOBAL_RECIPES,
+  INDIAN_NON_VEG_RECIPES,
   LATIN_AMERICA_RECIPES,
   MIDDLE_EAST_RECIPES,
   PAN_ASIAN_RECIPES,
@@ -117,13 +119,39 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
     expect(LATIN_AMERICA_RECIPES.length).toBe(11);
   });
 
+  it('has valid ingredients and matching dimensions for all Indian Non-Veg recipes', () => {
+    const errors = validateRecipeIngredients(INDIAN_NON_VEG_RECIPES);
+    expect(errors).toEqual([]);
+    expect(INDIAN_NON_VEG_RECIPES.length).toBe(12);
+  });
+
+  it('filters recipes accurately by dietary preference (veg vs non-veg)', () => {
+    const inEligible = GLOBAL_RECIPES.filter((r) =>
+      isRecipeEligibleForLocation(r, 'India & South Asia'),
+    );
+    const vegOnly = inEligible.filter((r) => matchesDietaryFilter(r.diet, 'veg'));
+    const nonVegOnly = inEligible.filter((r) => matchesDietaryFilter(r.diet, 'non-veg'));
+    expect(vegOnly.length).toBeGreaterThanOrEqual(20);
+    expect(nonVegOnly.length).toBe(12);
+    expect(
+      vegOnly.every((r) => r.diet === 'vegetarian' || r.diet === 'vegan' || r.diet === 'jain'),
+    ).toBe(true);
+    expect(nonVegOnly.every((r) => r.diet === 'non-vegetarian' || r.diet === 'eggetarian')).toBe(
+      true,
+    );
+  });
+
   it('filters catalog recipes correctly by culinary continent', () => {
     const all = GLOBAL_RECIPES;
 
     const inEligible = all.filter((r) => isRecipeEligibleForLocation(r, 'India & South Asia'));
-    expect(inEligible.length).toBe(RECIPES.length + SOUTH_ASIA_RECIPES.length);
+    expect(inEligible.length).toBe(
+      RECIPES.length + SOUTH_ASIA_RECIPES.length + INDIAN_NON_VEG_RECIPES.length,
+    );
     expect(inEligible.some((r) => r.id === 'idli-sambar')).toBe(true);
     expect(inEligible.some((r) => r.id === 'hyderabadi-biryani')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'butter-chicken')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'mutton-rogan-josh')).toBe(true);
 
     const usEligible = all.filter((r) => isRecipeEligibleForLocation(r, 'North America'));
     expect(usEligible.length).toBe(US_RECIPES.length);

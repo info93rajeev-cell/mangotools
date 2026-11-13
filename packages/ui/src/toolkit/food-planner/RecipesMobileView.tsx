@@ -164,6 +164,8 @@ function MobileGallery(props: RecipesMobileViewProps) {
       setSearchQuery={planner.setSearchQuery}
       activeCourse={planner.activeCourse}
       setActiveCourse={planner.setActiveCourse}
+      activeDiet={planner.activeDiet}
+      setActiveDiet={planner.setActiveDiet}
       favoritesOnly={props.favoritesOnly}
       setFavoritesOnly={props.setFavoritesOnly}
       favorites={props.favorites}

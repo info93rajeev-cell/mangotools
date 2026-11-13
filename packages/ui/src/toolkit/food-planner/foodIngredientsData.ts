@@ -4,6 +4,7 @@ import { FESTIVAL_SWEET_INGREDIENTS } from './foodIngredientsFestivalSweets.ts';
 import { FOUNDATION_INGREDIENTS } from './foodIngredientsFoundation.ts';
 import { GLOBAL_INGREDIENTS } from './foodIngredientsGlobal.ts';
 import { GLOBAL_INGREDIENTS_2 } from './foodIngredientsGlobal2.ts';
+import { NON_VEG_INGREDIENTS } from './foodIngredientsNonVeg.ts';
 import { US_INGREDIENTS } from './foodIngredientsUS.ts';
 
 export const CATALOG_INGREDIENTS: FoodIngredient[] = [
@@ -13,4 +14,5 @@ export const CATALOG_INGREDIENTS: FoodIngredient[] = [
   ...US_INGREDIENTS,
   ...GLOBAL_INGREDIENTS,
   ...GLOBAL_INGREDIENTS_2,
+  ...NON_VEG_INGREDIENTS,
 ];

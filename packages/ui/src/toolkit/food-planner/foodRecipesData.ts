@@ -1,6 +1,7 @@
 import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
 import { EUROPE_RECIPES } from './foodRecipesEurope.ts';
 import { FESTIVAL_SWEET_RECIPES } from './foodRecipesFestivalSweets.ts';
+import { INDIAN_NON_VEG_RECIPES } from './foodRecipesIndianNonVeg.ts';
 import { LATIN_AMERICA_RECIPES } from './foodRecipesLatinAmerica.ts';
 import { MAINS_AND_SIDES_RECIPES } from './foodRecipesMainsAndSides.ts';
 import { MIDDLE_EAST_RECIPES } from './foodRecipesMiddleEast.ts';
@@ -19,6 +20,7 @@ export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
 export {
   CATALOG_AWAITING_RECIPES,
   EUROPE_RECIPES,
+  INDIAN_NON_VEG_RECIPES,
   LATIN_AMERICA_RECIPES,
   MIDDLE_EAST_RECIPES,
   PAN_ASIAN_RECIPES,
@@ -101,6 +103,7 @@ export const RECIPES: ExtendedFoodRecipe[] = ORDERED_IDS.map((id) => {
 export const GLOBAL_RECIPES: ExtendedFoodRecipe[] = [
   ...RECIPES,
   ...SOUTH_ASIA_RECIPES,
+  ...INDIAN_NON_VEG_RECIPES,
   ...US_RECIPES,
   ...EUROPE_RECIPES,
   ...PAN_ASIAN_RECIPES,

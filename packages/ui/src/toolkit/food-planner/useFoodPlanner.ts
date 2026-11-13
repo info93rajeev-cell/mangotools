@@ -181,6 +181,7 @@ function usePlannerState() {
   const [setup, setSetup] = useState<PlanSetupState>(DEFAULT_SETUP);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCourse, setActiveCourse] = useState<string>('all');
+  const [activeDiet, setActiveDiet] = useState<'all' | 'veg' | 'non-veg' | 'vegan' | 'jain'>('all');
   const [combineSimilar, setCombineSimilar] = useState<boolean>(true);
   const [ingredientCategories, setIngredientCategories] = useState<Record<string, string>>({});
   const [stockQuantities, setStockQuantities] = useState<Record<string, string>>({});
@@ -195,6 +196,8 @@ function usePlannerState() {
     setSearchQuery,
     activeCourse,
     setActiveCourse,
+    activeDiet,
+    setActiveDiet,
     combineSimilar,
     setCombineSimilar,
     ingredientCategories,
