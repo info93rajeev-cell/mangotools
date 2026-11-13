@@ -19,6 +19,13 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 10,
     cookMinutes: 35,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
+    countries: ['IN', 'US', 'GB'],
+    events: ['diwali', 'ganesh-chaturthi', 'raksha-bandhan', 'festival', 'puja'],
+    proTips: [
+      'Always use traditional boora/tagar instead of fine powdered sugar for signature grainy texture.',
+      'Never add sugar to hot besan; cooling until lukewarm prevents sugar melting into a sticky paste.',
+    ],
     ingredients: [
       {
         ingredient: 'besan',
@@ -102,6 +109,13 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 20,
     cookMinutes: 35,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=Fq2r_sD1E_U',
+    countries: ['IN', 'US', 'GB'],
+    events: ['diwali', 'wedding', 'eid', 'festival', 'birthday'],
+    proTips: [
+      'Do not knead dough hard; gentle gathering prevents gluten and keeps jamuns soft.',
+      'Fry on low flame only (140°C); hot oil browns exterior leaving uncooked dough inside.',
+    ],
     ingredients: [
       {
         ingredient: 'whole-milk-powder',
@@ -203,6 +217,13 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 10,
     cookMinutes: 15,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    countries: ['IN', 'US', 'GB'],
+    events: ['diwali', 'raksha-bandhan', 'wedding', 'festival', 'gift'],
+    proTips: [
+      'Pulse cold cashews in short 3-second bursts; continuous grinding releases nut butter.',
+      'Test a pea-sized dough ball on plate: if it rolls without sticking to fingers, it is done.',
+    ],
     ingredients: [
       {
         ingredient: 'cashew',

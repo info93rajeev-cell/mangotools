@@ -48,8 +48,45 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
             {getRecipeVerificationInfo(recipe).label} · {recipe.prepMinutes} min {t.prep} ·{' '}
             {recipe.cookMinutes} min {t.cook}
           </p>
+          {((recipe.events && recipe.events.length > 0) ||
+            (recipe.countries && recipe.countries.length > 0)) && (
+            <div class={s.recipeMetadataBadges}>
+              {recipe.events?.map((ev) => (
+                <span key={ev} class={s.recipeEventBadge}>
+                  #{ev}
+                </span>
+              ))}
+              {recipe.countries?.map((c) => (
+                <span key={c} class={s.recipeCountryBadge}>
+                  {c}
+                </span>
+              ))}
+            </div>
+          )}
+          {recipe.videoUrl && (
+            <div class={s.recipeDetailActions}>
+              <a
+                href={recipe.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={s.recipeDetailVideoBtn}
+              >
+                ▶ Watch Video Tutorial
+              </a>
+            </div>
+          )}
           {recipe.imageProvenance && (
             <p class={s.recipeImageDisclosure}>{recipe.imageProvenance.notes}</p>
+          )}
+          {recipe.proTips && recipe.proTips.length > 0 && (
+            <div class={s.recipeProTipsCard}>
+              <h4 class={s.recipeProTipsTitle}>💡 Chef's Secrets &amp; Practical Tips</h4>
+              <ul class={s.recipeProTipsList}>
+                {recipe.proTips.map((tip, idx) => (
+                  <li key={idx}>{tip}</li>
+                ))}
+              </ul>
+            </div>
           )}
           <h3>
             {t.recipeIngredients} · {servings} {t.servings}
@@ -94,6 +131,11 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
                   </li>
                 ))}
               </ul>
+              <p class={s.recipeAttributionNote}>
+                Recipe instructions synthesized with culinary science and cross-referenced with
+                authoritative food publishers. External videos and publications remain the
+                intellectual property of their original creators.
+              </p>
             </>
           )}
           <p class={s.recipeDetailCaution}>{t.recipeQuantityNote}</p>

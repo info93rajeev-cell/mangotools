@@ -127,4 +127,22 @@ export const EXTENDED_INGREDIENTS: FoodIngredient[] = [
     allergens: ['milk'],
     notFor: ['vegan'],
   },
+  {
+    id: 'kabuli-chana',
+    name: 'Kabuli chana (white chickpeas)',
+    aliases: ['chole', 'chickpeas', 'safed chana'],
+    dimension: 'mass',
+    aisle: 'pulses',
+    allergens: [],
+    notFor: [],
+  },
+  {
+    id: 'tea-leaves',
+    name: 'Black tea leaves (CTC chai patti)',
+    aliases: ['chai patti', 'tea', 'black tea'],
+    dimension: 'mass',
+    aisle: 'other',
+    allergens: [],
+    notFor: [],
+  },
 ];

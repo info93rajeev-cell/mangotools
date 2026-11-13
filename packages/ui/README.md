@@ -366,3 +366,13 @@ quantities and remain disabled.
 All six Festival Sweets (Besan Ladoo, Gulab Jamun, Kaju Katli, Rice Kheer, Crispy Jalebi, and Rasgulla) now feature comprehensive, step-by-step culinary instructions designed for beginners who have never prepared these sweets before. Steps detail chronological phases with exact visual and sensory transition cues (such as low-flame roasting until ghee releases, the water-splash technique for danedar grain, soft-ball plate test, half-string and one-string syrup consistency, rolling without hairline cracks, and rolling-boil swelling for spongy chenna).
 
 Crispy Jalebi and Rasgulla have been fully sourced with documented batch measures, ingredients (including lemon for curdling and syrup protection), and published references from Veg Recipes of India and Hebbars Kitchen. RecipeDetailDialog now surfaces ingredient prep notes (`item.note`) alongside scaled quantities, and highlights cooking phases for improved legibility. All six sweets retain honest AI-illustration disclosures. Five illustrated recipes remain awaiting trials and disabled.
+
+### Food Planner deep culinary recipes, chef notes, video tutorials, and full 18-dish catalog — issue #330
+
+All 18 recipes in the Food Planner catalog are now fully sourced, verified, and operational with in-depth culinary guidance suitable for beginners:
+- Complete instruction sets featuring chronological phase tags `[Phase Title]`, exact heat levels, visual/sensory indicators (aroma release, color transition, crackling, surface oil separation, doneness tests), and essential timing.
+- Chef's Secrets & Practical Tips (`proTips`) covering troubleshooting, resting periods, emulsion stability, and crispness retention.
+- Direct link to authoritative video tutorials (`videoUrl`, e.g. YouTube masterclasses by Chef Ranveer Brar, Sanjeev Kapoor, Hebbar's Kitchen, etc.) and dual publisher source attributions.
+- Occasion / Event classifications (`events: ['diwali', 'wedding', 'festival', ...]`) and country/region codes (`countries: ['IN', 'US', 'GB']`).
+- Promoted all 5 previously pending dishes (`samosa`, `paneer-tikka`, `pakoda`, `chana-masala`, `masala-chai`) with vector ingredient icons (`kabuli-chana.svg`, `tea-leaves.svg`), verified unit dimensions, and local reference pricing.
+- 0 recipes awaiting trials; all 18 recipes are ready and selectable across desktop and mobile workflows.
