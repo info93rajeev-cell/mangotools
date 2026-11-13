@@ -34,6 +34,44 @@ export function MobileSectionHeader({
   );
 }
 
+function applyMobileRecommendation(
+  planner: UseFoodPlannerReturn,
+  location: string,
+  occasion: string,
+  country?: 'IN' | 'US',
+) {
+  const isUS = isUSLocation(location, country);
+  const recommended = recommendMenu({
+    country: isUS ? 'US' : 'IN',
+    location,
+    occasion,
+    mealType: planner.setup.mealType ?? 'Dinner',
+    diet: planner.setup.diet,
+    guests: planner.setup.guests,
+    availableRecipes: planner.allRecipes,
+  });
+  if (recommended.length > 0) {
+    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+  }
+}
+
+function handleMobileLocationChange(val: string, planner: UseFoodPlannerReturn) {
+  const { setup, setSetup } = planner;
+  const isUS = isUSLocation(val, setup.country);
+  const region = getCulinaryRegion(val);
+  const newOccasion = region.occasions.includes(setup.occasion)
+    ? setup.occasion
+    : region.defaultOccasion;
+  const updated = {
+    ...setup,
+    location: val,
+    occasion: newOccasion,
+    country: (isUS ? 'US' : 'IN') as 'IN' | 'US',
+  };
+  setSetup(updated);
+  applyMobileRecommendation(planner, val, newOccasion, updated.country);
+}
+
 function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlannerReturn) {
   const { setup, setSetup } = planner;
   if (key === 'guests') {
@@ -41,52 +79,25 @@ function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlann
     return;
   }
   if (key === 'location') {
-    const isUS = isUSLocation(val, setup.country);
-    const region = getCulinaryRegion(val);
-    const occasions = region.occasions;
-    const newOccasion = occasions.includes(setup.occasion)
-      ? setup.occasion
-      : region.defaultOccasion;
-    const updated = {
-      ...setup,
-      location: val,
-      occasion: newOccasion,
-      country: (isUS ? 'US' : 'IN') as 'IN' | 'US',
-    };
-    setSetup(updated);
-    const recommended = recommendMenu({
-      country: isUS ? 'US' : 'IN',
-      location: val,
-      occasion: updated.occasion,
-      mealType: updated.mealType ?? 'Dinner',
-      diet: updated.diet,
-      guests: updated.guests,
-      availableRecipes: planner.allRecipes,
-    });
-    if (recommended.length > 0) {
-      planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
-    }
+    handleMobileLocationChange(val, planner);
+    return;
+  }
+  if (key === 'occasion') {
+    setSetup({ ...setup, occasion: val });
+    applyMobileRecommendation(planner, setup.location, val, setup.country);
     return;
   }
   setSetup({ ...setup, [key]: val });
 }
 
 function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
-  const { setup, setSetup } = planner;
-  const isUS = isUSLocation(setup.location, setup.country);
-  const recommended = recommendMenu({
-    country: isUS ? 'US' : 'IN',
-    location: setup.location,
-    occasion: setup.occasion,
-    mealType: setup.mealType ?? 'Dinner',
-    diet: setup.diet,
-    guests: setup.guests,
-    availableRecipes: planner.allRecipes,
-  });
-  if (recommended.length > 0) {
-    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
-  }
-  setSetup({ ...setup });
+  applyMobileRecommendation(
+    planner,
+    planner.setup.location,
+    planner.setup.occasion,
+    planner.setup.country,
+  );
+  planner.setSetup({ ...planner.setup });
 }
 
 export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn; id: string }) {

@@ -155,6 +155,8 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
         toggleRecipe={toggleRecipe}
         clearAllRecipes={planner.clearAllRecipes}
         onContinue={() => planner.setActiveSection('ingredients')}
+        location={setup.location}
+        occasion={setup.occasion}
       />
     </div>
   );

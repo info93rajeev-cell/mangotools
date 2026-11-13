@@ -1,7 +1,11 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { type ExtendedFoodRecipe, getRecipeVerificationInfo } from './foodReferenceData.ts';
+import {
+  type ExtendedFoodRecipe,
+  getCulinaryRegion,
+  getRecipeVerificationInfo,
+} from './foodReferenceData.ts';
 
 export function SelectedMenuPanel({
   selectedRecipes,
@@ -11,6 +15,8 @@ export function SelectedMenuPanel({
   toggleRecipe,
   clearAllRecipes,
   onContinue,
+  location,
+  occasion,
 }: {
   selectedRecipes: ExtendedFoodRecipe[];
   guests: number;
@@ -19,6 +25,8 @@ export function SelectedMenuPanel({
   toggleRecipe: (id: string) => void;
   clearAllRecipes: () => void;
   onContinue: () => void;
+  location?: string;
+  occasion?: string;
 }) {
   const autoBalance = () => {
     for (const r of selectedRecipes) {
@@ -62,7 +70,12 @@ export function SelectedMenuPanel({
         onRemove={toggleRecipe}
       />
 
-      <PlanSummaryBanner selectedRecipes={selectedRecipes} guests={guests} />
+      <PlanSummaryBanner
+        selectedRecipes={selectedRecipes}
+        guests={guests}
+        location={location}
+        occasion={occasion}
+      />
 
       <button
         type="button"
@@ -235,14 +248,20 @@ function SelectedMenuTable({
 function PlanSummaryBanner({
   selectedRecipes,
   guests,
+  location,
+  occasion,
 }: {
   selectedRecipes: ExtendedFoodRecipe[];
   guests: number;
+  location?: string;
+  occasion?: string;
 }) {
   const totalMinutes = selectedRecipes.reduce((sum, r) => sum + r.prepMinutes + r.cookMinutes, 0);
   const hrs = Math.floor(totalMinutes / 60);
   const mins = totalMinutes % 60;
   const prepTimeStr = hrs === 0 ? `${mins} min` : `~${hrs} hr ${mins} min`;
+  const region = getCulinaryRegion(location);
+  const currentOccasion = occasion || region.defaultOccasion;
 
   return (
     <div class={styles.diwaliCard}>
@@ -288,9 +307,11 @@ function PlanSummaryBanner({
         </div>
       </div>
       <div class={styles.diwaliArtRow}>
-        <span class={styles.diwaliTitle}>🪔 Diwali Special Festival Preparation</span>
+        <span class={styles.diwaliTitle}>
+          {region.flag} {currentOccasion} Special Preparation
+        </span>
         <span style={{ fontSize: '11px', color: '#b45309', fontWeight: 600 }}>
-          Traditional Feast Plan
+          {region.shortName} Feast Plan
         </span>
       </div>
     </div>

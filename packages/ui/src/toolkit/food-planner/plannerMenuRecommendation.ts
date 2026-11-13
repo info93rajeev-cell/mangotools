@@ -29,38 +29,6 @@ const US_DINNER = [
   'caesar-salad',
   'new-york-cheesecake',
 ];
-const EU_DINNER = [
-  'margherita-pizza',
-  'penne-arrabbiata',
-  'veggie-lasagna',
-  'minestrone-soup',
-  'mediterranean-salad',
-  'classic-tiramisu',
-];
-const ASIA_DINNER = [
-  'veg-fried-rice',
-  'hakka-noodles',
-  'spring-rolls',
-  'thai-green-curry',
-  'sweet-corn-soup',
-  'mango-sticky-rice',
-];
-const ME_DINNER = [
-  'falafel-platter',
-  'hummus-pita',
-  'mandi-rice',
-  'shawarma-wrap',
-  'fattoush-salad',
-  'baklava',
-];
-const LA_DINNER = [
-  'street-tacos',
-  'cheese-quesadilla',
-  'sizzling-fajitas',
-  'enchiladas-suizas',
-  'guacamole-chips',
-  'churros',
-];
 
 function getUSPreset(
   eligible: ExtendedFoodRecipe[],
@@ -174,23 +142,38 @@ function getEuropePreset(
   occasion?: string,
 ): ExtendedFoodRecipe[] {
   const occ = (occasion ?? '').toLowerCase();
-  if (occ.includes('tapas') || occ.includes('garden')) {
+  if (occ.includes('christmas') || occ.includes('vigilia') || occ.includes('reveillon')) {
     return findRecipesByIds(eligible, [
       'margherita-pizza',
-      'penne-arrabbiata',
+      'veggie-lasagna',
       'minestrone-soup',
+      'caprese-salad',
       'classic-tiramisu',
+    ]);
+  }
+  if (occ.includes('tapas') || occ.includes('garden')) {
+    return findRecipesByIds(eligible, [
+      'bruschetta-pomodoro',
+      'spanish-paella',
+      'caprese-salad',
+      'panna-cotta',
     ]);
   }
   if (occ.includes('pranzo') || occ.includes('family')) {
     return findRecipesByIds(eligible, [
+      'greek-moussaka',
       'veggie-lasagna',
-      'penne-arrabbiata',
-      'mediterranean-salad',
+      'caprese-salad',
       'classic-tiramisu',
     ]);
   }
-  return findRecipesByIds(eligible, EU_DINNER);
+  return findRecipesByIds(eligible, [
+    'margherita-pizza',
+    'spanish-paella',
+    'penne-arrabbiata',
+    'minestrone-soup',
+    'classic-tiramisu',
+  ]);
 }
 
 function getPanAsianPreset(
@@ -202,21 +185,27 @@ function getPanAsianPreset(
   if (occ.includes('dim sum') || occ.includes('tea') || mealType === 'breakfast') {
     return findRecipesByIds(eligible, [
       'steamed-dim-sum',
+      'vegetable-gyoza',
       'spring-rolls',
-      'sweet-corn-soup',
-      'mango-sticky-rice',
+      'bubble-tea',
     ]);
   }
   if (occ.includes('street') || occ.includes('night market')) {
     return findRecipesByIds(eligible, [
-      'hakka-noodles',
-      'veg-fried-rice',
+      'pad-thai',
+      'vegetable-gyoza',
       'spring-rolls',
-      'steamed-dim-sum',
+      'bubble-tea',
       'mango-sticky-rice',
     ]);
   }
-  return findRecipesByIds(eligible, ASIA_DINNER);
+  return findRecipesByIds(eligible, [
+    'pad-thai',
+    'veg-fried-rice',
+    'thai-green-curry',
+    'tom-yum-soup',
+    'mango-sticky-rice',
+  ]);
 }
 
 function getMiddleEastPreset(
@@ -225,16 +214,44 @@ function getMiddleEastPreset(
   occasion?: string,
 ): ExtendedFoodRecipe[] {
   const occ = (occasion ?? '').toLowerCase();
-  if (occ.includes('mezze') || occ.includes('grill') || occ.includes('friday')) {
+  if (occ.includes('eid') || occ.includes('adha') || occ.includes('fitr')) {
     return findRecipesByIds(eligible, [
-      'hummus-pita',
+      'mandi-rice',
       'falafel-platter',
-      'shawarma-wrap',
-      'fattoush-salad',
+      'hummus-pita',
+      'tabbouleh',
+      'baba-ganoush',
       'baklava',
     ]);
   }
-  return findRecipesByIds(eligible, ME_DINNER);
+  if (occ.includes('mezze') || occ.includes('grill') || occ.includes('friday')) {
+    return findRecipesByIds(eligible, [
+      'hummus-pita',
+      'baba-ganoush',
+      'falafel-platter',
+      'tabbouleh',
+      'baklava',
+      'mint-lemonade',
+    ]);
+  }
+  if (occ.includes('iftar') || occ.includes('ramadan')) {
+    return findRecipesByIds(eligible, [
+      'lentil-soup-shorba',
+      'mandi-rice',
+      'shakshuka',
+      'hummus-pita',
+      'baklava',
+      'mint-lemonade',
+    ]);
+  }
+  return findRecipesByIds(eligible, [
+    'mandi-rice',
+    'falafel-platter',
+    'shawarma-wrap',
+    'baba-ganoush',
+    'tabbouleh',
+    'baklava',
+  ]);
 }
 
 function getLatinAmericaPreset(
@@ -246,21 +263,28 @@ function getLatinAmericaPreset(
   if (occ.includes('taco') || occ.includes('street')) {
     return findRecipesByIds(eligible, [
       'street-tacos',
-      'cheese-quesadilla',
+      'loaded-nachos',
+      'mexican-street-corn',
       'guacamole-chips',
-      'churros',
+      'agua-de-horchata',
     ]);
   }
-  if (occ.includes('asado') || occ.includes('barbacoa') || occ.includes('quinceañera')) {
+  if (occ.includes('asado') || occ.includes('barbacoa')) {
     return findRecipesByIds(eligible, [
       'sizzling-fajitas',
-      'street-tacos',
-      'enchiladas-suizas',
-      'guacamole-chips',
+      'chiles-rellenos',
+      'mexican-street-corn',
+      'loaded-nachos',
       'churros',
     ]);
   }
-  return findRecipesByIds(eligible, LA_DINNER);
+  return findRecipesByIds(eligible, [
+    'chiles-rellenos',
+    'street-tacos',
+    'enchiladas-suizas',
+    'tres-leches-cake',
+    'agua-de-horchata',
+  ]);
 }
 
 function getRegionalPreset(

@@ -102,7 +102,11 @@ function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: stri
     };
     setSetup(updated);
 
-    if (prevLocation !== next.location || prevIsUS !== nextIsUS) {
+    if (
+      prevLocation !== next.location ||
+      prevIsUS !== nextIsUS ||
+      setup.occasion !== nextOccasion
+    ) {
       applyCountryDefaults(nextIsUS, updated, planner);
     }
   };
@@ -140,11 +144,21 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
         <PlanSetupCard setup={setup} onSetSetup={handleSetSetup} onUpdate={handleUpdatePlan} />
       </div>
 
-      {activeSection === 'recipes' && <RecipesMenuSection planner={planner} />}
-      {activeSection === 'ingredients' && <IngredientsSection planner={planner} />}
-      {activeSection === 'shopping' && <ShoppingListSection planner={planner} />}
-      {activeSection === 'cost' && <CostEstimationSection planner={planner} />}
-      {activeSection === 'schedule' && <CookingScheduleSection planner={planner} />}
+      {activeSection === 'recipes' && (
+        <RecipesMenuSection key={`recipes-${setup.location}`} planner={planner} />
+      )}
+      {activeSection === 'ingredients' && (
+        <IngredientsSection key={`ingredients-${setup.location}`} planner={planner} />
+      )}
+      {activeSection === 'shopping' && (
+        <ShoppingListSection key={`shopping-${setup.location}`} planner={planner} />
+      )}
+      {activeSection === 'cost' && (
+        <CostEstimationSection key={`cost-${setup.location}`} planner={planner} />
+      )}
+      {activeSection === 'schedule' && (
+        <CookingScheduleSection key={`schedule-${setup.location}`} planner={planner} />
+      )}
     </div>
   );
 }
