@@ -5,6 +5,7 @@ import { CATALOG_GALLERY_RECIPES } from './foodReferenceData.ts';
 import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
+import { isRecipeEligibleForCountry } from './RecipesMenuSection.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 interface RecipesMobileViewProps {
@@ -154,9 +155,16 @@ function SelectedMobileMenu({
 
 function MobileGallery(props: RecipesMobileViewProps) {
   const { planner } = props;
+  const isUS =
+    planner.setup.country === 'US' ||
+    planner.setup.location?.includes('United States') ||
+    planner.setup.location?.includes('New York') ||
+    planner.setup.location?.includes('Los Angeles');
   return (
     <RecipeGalleryPanel
-      catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes]}
+      catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) =>
+        isRecipeEligibleForCountry(r, isUS),
+      )}
       searchQuery={planner.searchQuery}
       setSearchQuery={planner.setSearchQuery}
       activeCourse={planner.activeCourse}

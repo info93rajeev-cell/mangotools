@@ -62,7 +62,7 @@ test.describe('Invoice to Packing List transfer', () => {
     await waitForHydration(page);
 
     // The hash is consumed and stripped immediately, so it never lingers in the visible URL.
-    expect(new URL(page.url()).hash).toBe('');
+    await expect.poll(() => new URL(page.url()).hash).toBe('');
 
     await expect(page.getByText(NOTICE)).toBeVisible();
 

@@ -63,7 +63,7 @@ export function OtherCostsCard({
                 gap: '8px',
                 fontSize: '13px',
                 fontWeight: 600,
-                color: item.enabled ? '#1e293b' : '#94a3b8',
+                color: item.enabled ? '#1e293b' : '#64748b',
                 cursor: 'pointer',
               }}
             >

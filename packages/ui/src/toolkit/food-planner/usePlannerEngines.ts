@@ -89,6 +89,26 @@ export function useShoppingEngine(
   return { engineConsolidated, isLoadingConsolidated: isLoading, consolidateError: error };
 }
 
+function deduplicatePrices(primary: FoodPriceItem[], fallback: FoodPriceItem[]): FoodPriceItem[] {
+  const seen = new Set<string>();
+  const result: FoodPriceItem[] = [];
+  for (const p of primary) {
+    const key = `${p.ingredient}::${p.kind}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(p);
+    }
+  }
+  for (const p of fallback) {
+    const key = `${p.ingredient}::${p.kind}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(p);
+    }
+  }
+  return result;
+}
+
 export function useCostEngine(
   engineConsolidated: unknown,
   guests: number,
@@ -123,8 +143,14 @@ export function useCostEngine(
       ...(l.total ? { total: String(l.total) } : {}),
     }));
     const activeReferencePrices = isUS
-      ? ([...REFERENCE_PRICES_US, ...REFERENCE_PRICES] as unknown as FoodPriceItem[])
-      : ([...REFERENCE_PRICES, ...REFERENCE_PRICES_US] as unknown as FoodPriceItem[]);
+      ? deduplicatePrices(
+          REFERENCE_PRICES_US as unknown as FoodPriceItem[],
+          REFERENCE_PRICES as unknown as FoodPriceItem[],
+        )
+      : deduplicatePrices(
+          REFERENCE_PRICES as unknown as FoodPriceItem[],
+          REFERENCE_PRICES_US as unknown as FoodPriceItem[],
+        );
 
     run(
       'food.cost.estimate@1',

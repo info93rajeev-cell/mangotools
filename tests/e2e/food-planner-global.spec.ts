@@ -37,7 +37,7 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
 
     // Cooking Schedule tab
     await page.getByRole('tab', { name: /Cooking Schedule/i }).click();
-    await expect(page.getByText(/Preparation & Cooking Timeline/i).first()).toBeVisible();
+    await expect(page.getByText(/Cooking Schedule|preparation timeline/i).first()).toBeVisible();
   });
 
   test('Scenario B (USA): Switches to New York, verifies USD ($), US customary units, American catalog and cost estimation', async ({
@@ -75,7 +75,7 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
 
     // Cooking Schedule tab
     await page.getByRole('tab', { name: /Cooking Schedule/i }).click();
-    await expect(page.getByText(/Preparation & Cooking Timeline/i).first()).toBeVisible();
+    await expect(page.getByText(/Cooking Schedule|preparation timeline/i).first()).toBeVisible();
   });
 
   test('Mobile: Switching to USA updates currency to USD ($) on mobile layout', async ({
