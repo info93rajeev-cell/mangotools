@@ -1,0 +1,68 @@
+/* Shared freight cost card: the CBM cost panel's look, sized for the narrower tool columns. */
+.card {
+  /* The CBM workspace colours, so the card matches the CBM cost panel on any page. */
+  --cbm-ink: #0f1c3f;
+  --cbm-text: #1e293b;
+  --cbm-muted: #64748b;
+  --cbm-line: #e3e8ef;
+  --cbm-field: #d5dce6;
+  --cbm-surface: #fff;
+  --cbm-page: #f5f9fe;
+  --cbm-head: #f7f9fc;
+  --cbm-blue: #1a66e8;
+  --cbm-blue-text: #1a5fd6;
+  --cbm-blue-soft: #eef4fd;
+  --cbm-blue-line: #c9dbf7;
+  --cbm-yellow: #f9bd2c;
+  --cbm-yellow-soft: #fffaeb;
+  --cbm-yellow-line: #f5df9d;
+  --cbm-yellow-total: #fdf0c7;
+  --cbm-red: #dc2626;
+  --cbm-red-line: #f5b5b5;
+  --cbm-green: #15803d;
+  --cbm-green-soft: #e9f7ef;
+  --cbm-shadow: 0 1px 2px rgb(15 28 63 / 0.05), 0 2px 10px rgb(15 28 63 / 0.04);
+  margin: 0;
+}
+
+:global([data-theme="dark"]) .card {
+  --cbm-ink: var(--color-text);
+  --cbm-text: var(--color-text);
+  --cbm-muted: var(--color-text-muted);
+  --cbm-line: var(--color-border);
+  --cbm-field: var(--color-border-input);
+  --cbm-surface: var(--color-bg);
+  --cbm-page: var(--color-bg);
+  --cbm-head: color-mix(in srgb, var(--color-text) 5%, var(--color-bg));
+  --cbm-blue-text: var(--color-info);
+  --cbm-blue-soft: color-mix(in srgb, #1a66e8 14%, var(--color-bg));
+  --cbm-blue-line: color-mix(in srgb, #1a66e8 40%, var(--color-border));
+  --cbm-yellow-soft: color-mix(in srgb, #f9bd2c 10%, var(--color-bg));
+  --cbm-yellow-line: color-mix(in srgb, #f9bd2c 40%, var(--color-border));
+  --cbm-yellow-total: color-mix(in srgb, #f9bd2c 24%, var(--color-bg));
+  --cbm-red: var(--color-danger);
+  --cbm-red-line: color-mix(in srgb, var(--color-danger) 50%, var(--color-border));
+  --cbm-green: var(--color-success);
+  --cbm-green-soft: color-mix(in srgb, var(--color-success) 14%, var(--color-bg));
+  --cbm-shadow: none;
+}
+
+.card .fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.result {
+  margin-top: 14px;
+}
+
+.card .extra {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  padding-bottom: 0;
+}
+
+.extra small {
+  padding-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--cbm-muted);
+}

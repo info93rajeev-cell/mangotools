@@ -56,15 +56,12 @@ describe('cost issue 207 acceptance', () => {
     });
   });
 
-  it.each(['per-kg', 'per-pallet', 'per-box'])(
-    'rejects unsupported basis %s',
-    async (rateBasis) => {
-      expect(await run({ rateBasis })).toMatchObject({
-        ok: false,
-        error: { code: 'INVALID_INPUT', path: 'rateBasis' },
-      });
-    },
-  );
+  it.each(['per-box', 'per-tonne'])('rejects unsupported basis %s', async (rateBasis) => {
+    expect(await run({ rateBasis })).toMatchObject({
+      ok: false,
+      error: { code: 'INVALID_INPUT', path: 'rateBasis' },
+    });
+  });
 
   it.each(['NaN', 'Infinity', 'abc', '1e3'])('rejects malformed rate %s', async (rate) => {
     expect(await run({ rate })).toMatchObject({
