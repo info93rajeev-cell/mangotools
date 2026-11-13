@@ -5,6 +5,7 @@ export {
   type CulinaryRegionId,
   getCulinaryRegion,
   getCulinaryRegionId,
+  getOccasionsForRegion,
   isRecipeEligibleForCountry,
   isRecipeEligibleForLocation,
   isUSLocation,

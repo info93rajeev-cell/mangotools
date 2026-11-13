@@ -3,9 +3,10 @@ import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
   CULINARY_REGIONS,
+  getCulinaryRegion,
+  getOccasionsForRegion,
   isUSLocation,
   LOCATIONS,
-  OCCASIONS,
   PLANNING_TYPES,
 } from './foodReferenceData.ts';
 import { recommendMenu } from './plannerMenuRecommendation.ts';
@@ -33,54 +34,78 @@ export function MobileSectionHeader({
   );
 }
 
+function applyMobileRecommendation(
+  planner: UseFoodPlannerReturn,
+  location: string,
+  occasion: string,
+  country?: 'IN' | 'US',
+) {
+  const isUS = isUSLocation(location, country);
+  const recommended = recommendMenu({
+    country: isUS ? 'US' : 'IN',
+    location,
+    occasion,
+    mealType: planner.setup.mealType ?? 'Dinner',
+    diet: planner.setup.diet,
+    guests: planner.setup.guests,
+    availableRecipes: planner.allRecipes,
+  });
+  if (recommended.length > 0) {
+    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+  }
+}
+
+function handleMobileLocationChange(val: string, planner: UseFoodPlannerReturn) {
+  const { setup, setSetup } = planner;
+  const isUS = isUSLocation(val, setup.country);
+  const region = getCulinaryRegion(val);
+  const newOccasion = region.occasions.includes(setup.occasion)
+    ? setup.occasion
+    : region.defaultOccasion;
+  const updated = {
+    ...setup,
+    location: val,
+    occasion: newOccasion,
+    country: (isUS ? 'US' : 'IN') as 'IN' | 'US',
+  };
+  setSetup(updated);
+  applyMobileRecommendation(planner, val, newOccasion, updated.country);
+}
+
 function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlannerReturn) {
   const { setup, setSetup } = planner;
+  if (key === 'guests') {
+    setSetup({ ...setup, guests: Number(val) || 20 });
+    return;
+  }
   if (key === 'location') {
-    const isUS = isUSLocation(val, setup.country);
-    const updated = {
-      ...setup,
-      location: val,
-      country: (isUS ? 'US' : 'IN') as 'IN' | 'US',
-    };
-    setSetup(updated);
-    const recommended = recommendMenu({
-      country: isUS ? 'US' : 'IN',
-      occasion: updated.occasion,
-      mealType: updated.mealType ?? 'Dinner',
-      diet: updated.diet,
-      guests: updated.guests,
-      availableRecipes: planner.allRecipes,
-    });
-    if (recommended.length > 0) {
-      planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
-    }
+    handleMobileLocationChange(val, planner);
+    return;
+  }
+  if (key === 'occasion') {
+    setSetup({ ...setup, occasion: val });
+    applyMobileRecommendation(planner, setup.location, val, setup.country);
     return;
   }
   setSetup({ ...setup, [key]: val });
 }
 
 function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
-  const { setup, setSetup } = planner;
-  const isUS = isUSLocation(setup.location, setup.country);
-  const recommended = recommendMenu({
-    country: isUS ? 'US' : 'IN',
-    occasion: setup.occasion,
-    mealType: setup.mealType ?? 'Dinner',
-    diet: setup.diet,
-    guests: setup.guests,
-    availableRecipes: planner.allRecipes,
-  });
-  if (recommended.length > 0) {
-    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
-  }
-  setSetup({ ...setup });
+  applyMobileRecommendation(
+    planner,
+    planner.setup.location,
+    planner.setup.occasion,
+    planner.setup.country,
+  );
+  planner.setSetup({ ...planner.setup });
 }
 
 export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn; id: string }) {
-  const { setup, setSetup } = planner;
+  const { setup } = planner;
+  const occasions = getOccasionsForRegion(setup.location);
   const fields = [
     { key: 'location' as const, label: t.cuisineRegion, options: LOCATIONS },
-    { key: 'occasion' as const, label: t.occasion, options: OCCASIONS },
+    { key: 'occasion' as const, label: t.occasion, options: occasions },
     { key: 'planningType' as const, label: t.planningType, options: PLANNING_TYPES },
   ];
   return (
@@ -123,7 +148,7 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
             id={`${id}-guests`}
             class={s.mobileSelect}
             value={setup.guests}
-            onChange={(e) => setSetup({ ...setup, guests: Number(e.currentTarget.value) })}
+            onChange={(e) => handleMobileFieldChange('guests', e.currentTarget.value, planner)}
           >
             {[10, 20, 50, 100, 250, 500].map((n) => (
               <option key={n} value={n}>

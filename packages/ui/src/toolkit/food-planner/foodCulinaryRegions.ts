@@ -23,6 +23,7 @@ export interface CulinaryRegion {
   defaultBudget: string;
   defaultOccasion: string;
   description: string;
+  occasions: string[];
 }
 
 export const CULINARY_REGIONS: CulinaryRegion[] = [
@@ -36,8 +37,18 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '₹',
     unitSystem: 'metric',
     defaultBudget: '2500',
-    defaultOccasion: 'Diwali',
+    defaultOccasion: 'Diwali & Festive Feasts',
     description: 'North Indian gravies, South Indian tiffin, festive sweets & biryanis',
+    occasions: [
+      'Diwali & Festive Feasts',
+      'Wedding / Shaadi Banquet',
+      'South Indian Festive Feast',
+      'Eid Celebration',
+      'Birthday Party',
+      'Puja / Religious Feast',
+      'Family Gathering',
+      'Corporate Lunch',
+    ],
   },
   {
     id: 'north-america',
@@ -49,8 +60,17 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '$',
     unitSystem: 'us-customary',
     defaultBudget: '350',
-    defaultOccasion: 'Birthday Party',
+    defaultOccasion: 'Thanksgiving Dinner',
     description: 'American classic cookouts, BBQ, mac & cheese, burgers & pies',
+    occasions: [
+      'Thanksgiving Dinner',
+      '4th of July / Summer BBQ',
+      'Christmas & Holiday Feast',
+      'Super Bowl / Game Day',
+      'Birthday Party',
+      'Weekend Brunch',
+      'Corporate Cookout',
+    ],
   },
   {
     id: 'europe-med',
@@ -62,8 +82,17 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '$',
     unitSystem: 'metric',
     defaultBudget: '350',
-    defaultOccasion: 'Family Gathering',
+    defaultOccasion: 'Christmas Eve (Reveillon / Vigilia)',
     description: 'Artisan pizzas, penne pastas, lasagna, minestrone & tiramisu',
+    occasions: [
+      'Christmas Eve (Reveillon / Vigilia)',
+      'Easter Sunday Feast',
+      'Sunday Family Pranzo',
+      'Tapas & Wine Evening',
+      'Summer Garden Party',
+      'Birthday Celebration',
+      'Wedding Reception',
+    ],
   },
   {
     id: 'east-pan-asian',
@@ -75,8 +104,16 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '$',
     unitSystem: 'metric',
     defaultBudget: '300',
-    defaultOccasion: 'Small Party',
+    defaultOccasion: 'Lunar New Year / Spring Festival',
     description: 'Wok fried rice, hakka noodles, spring rolls, dim sum & green curry',
+    occasions: [
+      'Lunar New Year / Spring Festival',
+      'Mid-Autumn Mooncake Festival',
+      'Dim Sum Brunch & Tea',
+      'Birthday Longevity Feast',
+      'Asian Street Food Night',
+      'Wedding Banquet',
+    ],
   },
   {
     id: 'middle-east',
@@ -88,8 +125,16 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '$',
     unitSystem: 'metric',
     defaultBudget: '320',
-    defaultOccasion: 'Celebration',
+    defaultOccasion: 'Eid al-Fitr Feast',
     description: 'Falafel, creamy hummus, mandi spiced rice, shawarma & baklava',
+    occasions: [
+      'Eid al-Fitr Feast',
+      'Ramadan Iftar',
+      'Eid al-Adha Banquet',
+      'Friday Family Mezze & Grill',
+      'Levantine Wedding Feast',
+      'Birthday Celebration',
+    ],
   },
   {
     id: 'latin-america',
@@ -101,8 +146,16 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     currencySymbol: '$',
     unitSystem: 'us-customary',
     defaultBudget: '300',
-    defaultOccasion: 'Birthday Party',
+    defaultOccasion: 'Día de los Muertos Fiesta',
     description: 'Street tacos, cheesy quesadillas, sizzling fajitas & churros',
+    occasions: [
+      'Día de los Muertos Fiesta',
+      'Cinco de Mayo Celebration',
+      'Quinceañera Gala',
+      'Nochebuena / Christmas Posada',
+      'Sunday Asado / Barbacoa',
+      'Street Taco Fiesta',
+    ],
   },
 ];
 
@@ -149,6 +202,11 @@ export function getCulinaryRegionId(locationName?: string, countryCode?: string)
 export function getCulinaryRegion(idOrName?: string): CulinaryRegion {
   const regId = getCulinaryRegionId(idOrName);
   return CULINARY_REGIONS.find((r) => r.id === regId) ?? CULINARY_REGIONS[0];
+}
+
+export function getOccasionsForRegion(locationName?: string, countryCode?: string): string[] {
+  const reg = getCulinaryRegion(locationName || countryCode);
+  return reg.occasions;
 }
 
 export function isUSLocation(loc?: string, country?: string): boolean {

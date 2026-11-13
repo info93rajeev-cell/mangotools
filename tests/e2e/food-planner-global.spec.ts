@@ -105,4 +105,38 @@ test.describe('Global Food Planner — Scenario A (India) and Scenario B (USA)',
       await expect(mobileCost).toContainText('$');
     }
   });
+
+  test('Desktop & Mobile: Occasion dropdown dynamically updates to continental festivals on region switch', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await openTool(page, 'food-planner');
+
+    const locSelect = page.locator('#setup-loc, select').first();
+    const occSelect = page.locator('#setup-occ, select').nth(1);
+
+    // Initial India & South Asia occasions
+    await expect(occSelect).toContainText('Diwali & Festive Feasts');
+    await expect(occSelect).toContainText('South Indian Festive Feast');
+
+    // Switch to Europe & Mediterranean
+    await locSelect.selectOption('Europe & Mediterranean');
+    await expect(occSelect).toContainText('Christmas Eve (Reveillon / Vigilia)');
+    await expect(occSelect).toContainText('Sunday Family Pranzo');
+
+    // Switch to Latin America & Mexican
+    await locSelect.selectOption('Latin America & Mexican');
+    await expect(occSelect).toContainText('Día de los Muertos Fiesta');
+    await expect(occSelect).toContainText('Cinco de Mayo Celebration');
+
+    // Switch to East & Pan-Asian
+    await locSelect.selectOption('East & Pan-Asian');
+    await expect(occSelect).toContainText('Lunar New Year / Spring Festival');
+    await expect(occSelect).toContainText('Dim Sum Brunch & Tea');
+
+    // Switch to Middle East & Levantine
+    await locSelect.selectOption('Middle East & Levantine');
+    await expect(occSelect).toContainText('Eid al-Fitr Feast');
+    await expect(occSelect).toContainText('Friday Family Mezze & Grill');
+  });
 });

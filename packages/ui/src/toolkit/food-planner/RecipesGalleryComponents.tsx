@@ -13,6 +13,9 @@ export function matchesCourseFilter(recipeCourse: string, activeCourse: string):
   if (activeCourse === 'main') {
     return recipeCourse === 'main' || recipeCourse === 'dal' || recipeCourse === 'rice';
   }
+  if (activeCourse === 'sides') {
+    return recipeCourse === 'side';
+  }
   if (activeCourse === 'beverages') {
     return recipeCourse === 'drink';
   }
@@ -289,6 +292,13 @@ function CourseFilterBar({
           onClick={() => onSelect('main')}
         >
           🍲 {t.mainCourse} ({count('main')})
+        </button>
+        <button
+          type="button"
+          class={`${styles.filterPill} ${!favoritesOnly && activeCourse === 'sides' ? styles.filterPillActive : ''}`}
+          onClick={() => onSelect('sides')}
+        >
+          🥗 Sides ({count('sides')})
         </button>
         <button
           type="button"
