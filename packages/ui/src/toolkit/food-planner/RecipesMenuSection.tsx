@@ -19,18 +19,11 @@ interface RecipesMenuSectionProps {
   planner: UseFoodPlannerReturn;
 }
 
-export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
-  const { searchQuery, activeCourse, setup } = planner;
-
-  const [personal, setPersonal] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const { favorites, toggleFavorite } = planner;
-
-  const filteredRecipes = useMemo(
+function useFilteredCatalogRecipes(planner: UseFoodPlannerReturn, favoritesOnly: boolean) {
+  const { searchQuery, activeCourse, activeDiet, setup, favorites, personalRecipes } = planner;
+  return useMemo(
     () =>
-      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) => {
+      [...CATALOG_GALLERY_RECIPES, ...personalRecipes].filter((r) => {
         if (
           !searchQuery &&
           !favoritesOnly &&
@@ -38,18 +31,35 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
         ) {
           return false;
         }
-        return matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites);
+        return matchesRecipeFilter(
+          r,
+          searchQuery,
+          activeCourse,
+          favoritesOnly,
+          favorites,
+          activeDiet,
+        );
       }),
     [
       searchQuery,
       activeCourse,
+      activeDiet,
       favoritesOnly,
       favorites,
-      planner.personalRecipes,
+      personalRecipes,
       setup.location,
       setup.country,
     ],
   );
+}
+
+export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
+  const [personal, setPersonal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const { favorites, toggleFavorite } = planner;
+  const filteredRecipes = useFilteredCatalogRecipes(planner, favoritesOnly);
 
   return (
     <>
@@ -133,6 +143,8 @@ function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
         setSearchQuery={planner.setSearchQuery}
         activeCourse={planner.activeCourse}
         setActiveCourse={planner.setActiveCourse}
+        activeDiet={planner.activeDiet}
+        setActiveDiet={planner.setActiveDiet}
         favoritesOnly={props.favoritesOnly}
         setFavoritesOnly={props.setFavoritesOnly}
         favorites={props.favorites}
