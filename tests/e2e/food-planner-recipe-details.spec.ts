@@ -30,8 +30,8 @@ test('gallery presents all 18 recipes ready with video tutorial and pro tips', a
   await expect(page.getByText('18 ready recipes')).toBeVisible();
   await page.getByRole('button', { name: '3', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Add', exact: true }).first()).toBeVisible();
-  await page.getByRole('button', { name: 'View recipe: Crispy Jalebi' }).click();
-  const details = page.getByRole('dialog', { name: 'Crispy Jalebi' });
+  await page.getByRole('button', { name: 'View recipe: Masala Chai' }).click();
+  const details = page.getByRole('dialog', { name: 'Masala Chai' });
   await expect(details).toBeVisible();
   await expect(details.getByRole('link', { name: /Watch Video Tutorial/ })).toBeVisible();
   await expect(details).toContainText("Chef's Secrets & Practical Tips");
@@ -73,8 +73,8 @@ for (const width of [390, 1672]) {
       await page.getByRole('button', { name: 'All Recipes', exact: true }).click();
     }
     const pagesAndIds = [
-      [1, ['samosa', 'paneer-tikka', 'pakoda']],
-      [2, ['chana-masala', 'masala-chai']],
+      [2, ['samosa', 'paneer-tikka', 'pakoda']],
+      [3, ['chana-masala', 'masala-chai']],
     ] as const;
     for (const [pageNumber, ids] of pagesAndIds) {
       await page.getByRole('button', { name: String(pageNumber), exact: true }).click();
