@@ -41,29 +41,6 @@ export const SUPPORTED_LOCATIONS: LocationMetadata[] = [
     defaultBudget: '2800',
   },
   {
-    id: 'new-york-us',
-    name: 'New York, United States',
-    country: 'US',
-    countryName: 'United States',
-    city: 'New York',
-    currency: 'USD',
-    currencySymbol: '$',
-    unitSystem: 'us-customary',
-    defaultBudget: '350',
-  },
-  {
-    id: 'los-angeles-us',
-    name: 'Los Angeles, United States',
-    country: 'US',
-    countryName: 'United States',
-    city: 'Los Angeles',
-    currency: 'USD',
-    currencySymbol: '$',
-    unitSystem: 'us-customary',
-    defaultBudget: '325',
-  },
-  // Legacy Indian locations kept for backwards compatibility
-  {
     id: 'bengaluru-in',
     name: 'Bengaluru, India',
     country: 'IN',
@@ -129,6 +106,28 @@ export const SUPPORTED_LOCATIONS: LocationMetadata[] = [
     unitSystem: 'metric',
     defaultBudget: '2200',
   },
+  {
+    id: 'new-york-us',
+    name: 'New York, United States',
+    country: 'US',
+    countryName: 'United States',
+    city: 'New York',
+    currency: 'USD',
+    currencySymbol: '$',
+    unitSystem: 'us-customary',
+    defaultBudget: '350',
+  },
+  {
+    id: 'los-angeles-us',
+    name: 'Los Angeles, United States',
+    country: 'US',
+    countryName: 'United States',
+    city: 'Los Angeles',
+    currency: 'USD',
+    currencySymbol: '$',
+    unitSystem: 'us-customary',
+    defaultBudget: '325',
+  },
 ];
 
 export const COUNTRIES = [
@@ -173,7 +172,7 @@ export function getLocationMetadata(locationName: string): LocationMetadata {
     locationName.toLowerCase().includes('new york') ||
     locationName.toLowerCase().includes('los angeles')
   ) {
-    return SUPPORTED_LOCATIONS[2]; // Default US (New York)
+    return SUPPORTED_LOCATIONS.find((loc) => loc.country === 'US') ?? SUPPORTED_LOCATIONS[0];
   }
 
   return SUPPORTED_LOCATIONS[0]; // Default India (Delhi)

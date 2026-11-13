@@ -21,11 +21,9 @@ export {
 export { type FoodPriceItem, REFERENCE_PRICES } from './foodReferencePrices.ts';
 export { type FoodPriceItemUS, REFERENCE_PRICES_US } from './foodReferencePricesUS.ts';
 
-export const LOCATIONS = [
+export const INDIAN_LOCATIONS = [
   'Delhi, India',
   'Mumbai, India',
-  'New York, United States',
-  'Los Angeles, United States',
   'Bengaluru, India',
   'Kolkata, India',
   'Chennai, India',
@@ -33,6 +31,10 @@ export const LOCATIONS = [
   'Hyderabad, India',
   'Lucknow, India',
 ];
+
+export const US_LOCATIONS = ['New York, United States', 'Los Angeles, United States'];
+
+export const LOCATIONS = [...INDIAN_LOCATIONS, ...US_LOCATIONS];
 
 export const OCCASIONS = [
   'Diwali',

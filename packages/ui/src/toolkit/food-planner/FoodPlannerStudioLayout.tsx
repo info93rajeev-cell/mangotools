@@ -5,9 +5,10 @@ import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
   type ExtendedFoodRecipe,
-  LOCATIONS,
+  INDIAN_LOCATIONS,
   OCCASIONS,
   PLANNING_TYPES,
+  US_LOCATIONS,
 } from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
 import { getDefaultOtherExpenses } from './plannerCurrency.ts';
@@ -263,11 +264,20 @@ function PlanSetupCard({
               onSetSetup({ ...setup, location: (e.target as HTMLSelectElement).value })
             }
           >
-            {LOCATIONS.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
+            <optgroup label="India">
+              {INDIAN_LOCATIONS.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="United States">
+              {US_LOCATIONS.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </div>
         <div class={styles.setupField}>

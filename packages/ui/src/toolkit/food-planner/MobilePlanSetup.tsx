@@ -1,7 +1,13 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
+import {
+  INDIAN_LOCATIONS,
+  LOCATIONS,
+  OCCASIONS,
+  PLANNING_TYPES,
+  US_LOCATIONS,
+} from './foodReferenceData.ts';
 import { recommendMenu } from './plannerMenuRecommendation.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
@@ -100,11 +106,30 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
               value={setup[field.key]}
               onChange={(e) => handleMobileFieldChange(field.key, e.currentTarget.value, planner)}
             >
-              {field.options.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
+              {field.key === 'location' ? (
+                <>
+                  <optgroup label="India">
+                    {INDIAN_LOCATIONS.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="United States">
+                    {US_LOCATIONS.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </optgroup>
+                </>
+              ) : (
+                field.options.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))
+              )}
             </select>
           </div>
         ))}
