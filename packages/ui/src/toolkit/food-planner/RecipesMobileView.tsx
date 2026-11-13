@@ -5,6 +5,7 @@ import { CATALOG_GALLERY_RECIPES } from './foodReferenceData.ts';
 import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
+import { isRecipeEligibleForLocation } from './RecipesMenuSection.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 interface RecipesMobileViewProps {
@@ -156,7 +157,9 @@ function MobileGallery(props: RecipesMobileViewProps) {
   const { planner } = props;
   return (
     <RecipeGalleryPanel
-      catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes]}
+      catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) =>
+        isRecipeEligibleForLocation(r, planner.setup.location, planner.setup.country),
+      )}
       searchQuery={planner.searchQuery}
       setSearchQuery={planner.setSearchQuery}
       activeCourse={planner.activeCourse}

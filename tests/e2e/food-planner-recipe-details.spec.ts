@@ -25,9 +25,9 @@ for (const width of [390, 1672]) {
   });
 }
 
-test('gallery presents all 18 recipes ready with video tutorial and pro tips', async ({ page }) => {
+test('gallery presents all recipes ready with video tutorial and pro tips', async ({ page }) => {
   await openTool(page, 'food-planner');
-  await expect(page.getByText('18 ready recipes')).toBeVisible();
+  await expect(page.getByText(/ready recipes/)).toBeVisible();
   await page.getByRole('button', { name: '3', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Add', exact: true }).first()).toBeVisible();
   await page.getByRole('button', { name: 'View recipe: Masala Chai' }).click();

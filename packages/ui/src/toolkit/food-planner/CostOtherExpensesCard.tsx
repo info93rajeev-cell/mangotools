@@ -18,12 +18,17 @@ export function OtherCostsCard({
   totalOtherCost,
   onUpdate,
   idPrefix = 'desktop',
+  currencySymbol = '₹',
+  currency = 'INR',
 }: {
   idPrefix?: string;
   items: OtherCostItem[];
   totalOtherCost: number;
   onUpdate: (id: string, cost: number, enabled: boolean) => void;
+  currencySymbol?: string;
+  currency?: string;
 }) {
+  const loc = currency === 'USD' ? 'en-US' : 'en-IN';
   return (
     <div class={styles.card}>
       <div class={styles.cardHeader}>
@@ -47,15 +52,18 @@ export function OtherCostsCard({
               background: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0',
+              padding: '6px 12px',
             }}
           >
             <label
               for={`${idPrefix}-cost-${item.id}`}
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 fontSize: '13px',
+                fontWeight: 600,
+                color: item.enabled ? '#1e293b' : '#64748b',
                 cursor: 'pointer',
               }}
             >
@@ -70,12 +78,12 @@ export function OtherCostsCard({
               <span>{item.label}</span>
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>₹</span>
+              <span style={{ fontSize: '12px', color: '#64748b' }}>{currencySymbol}</span>
               <input
                 type="number"
                 min="0"
                 step="0.01"
-                aria-label={`${item.label} cost in rupees`}
+                aria-label={`${item.label} cost`}
                 style={{
                   width: '70px',
                   height: '28px',
@@ -106,7 +114,10 @@ export function OtherCostsCard({
           }}
         >
           <span>Total Other Cost</span>
-          <span>₹{totalOtherCost.toLocaleString('en-IN')}</span>
+          <span>
+            {currencySymbol}
+            {totalOtherCost.toLocaleString(loc)}
+          </span>
         </div>
       </div>
     </div>
@@ -120,6 +131,8 @@ export function CostSummaryStats({
   costPerServing,
   guests,
   dishesCount,
+  currencySymbol = '₹',
+  currency = 'INR',
 }: {
   totalIngredientCost: number;
   totalOtherCost: number;
@@ -127,21 +140,33 @@ export function CostSummaryStats({
   costPerServing: string;
   guests: number;
   dishesCount: number;
+  currencySymbol?: string;
+  currency?: string;
 }) {
+  const loc = currency === 'USD' ? 'en-US' : 'en-IN';
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
         <span>Total Ingredient Cost:</span>
-        <strong>₹{totalIngredientCost.toLocaleString('en-IN')}</strong>
+        <strong>
+          {currencySymbol}
+          {totalIngredientCost.toLocaleString(loc)}
+        </strong>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
         <span>Total Other Cost:</span>
-        <strong>₹{totalOtherCost.toLocaleString('en-IN')}</strong>
+        <strong>
+          {currencySymbol}
+          {totalOtherCost.toLocaleString(loc)}
+        </strong>
       </div>
 
       <div class={styles.totalCostHighlight}>
         <span>Total Menu Cost</span>
-        <span class={styles.totalCostValue}>₹{totalMenuCost.toLocaleString('en-IN')}</span>
+        <span class={styles.totalCostValue}>
+          {currencySymbol}
+          {totalMenuCost.toLocaleString(loc)}
+        </span>
       </div>
 
       <div
@@ -161,7 +186,10 @@ export function CostSummaryStats({
           }}
         >
           <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>Per Serving</span>
-          <strong style={{ fontSize: '15px' }}>₹{costPerServing}</strong>
+          <strong style={{ fontSize: '15px' }}>
+            {currencySymbol}
+            {costPerServing}
+          </strong>
         </div>
         <div
           style={{
@@ -192,25 +220,29 @@ export function CostSummaryStats({
 
 export function BudgetTargetCard({
   budget,
-  totalCost,
   onSetBudget,
+  totalCost,
+  currencySymbol = '₹',
+  currency = 'INR',
 }: {
   budget: string;
-  totalCost: number;
   onSetBudget: (val: string) => void;
+  totalCost: number;
+  currencySymbol?: string;
+  currency?: string;
 }) {
-  const budgetNum = Number.parseFloat(budget) || 0;
-  const budgetDiff = budgetNum > 0 ? budgetNum - totalCost : 0;
-  const isOverBudget = budgetNum > 0 && totalCost > budgetNum;
+  const budgetNum = Number(budget) || 0;
+  const budgetDiff = budgetNum - totalCost;
+  const isOverBudget = budgetNum > 0 && budgetDiff < 0;
+  const loc = currency === 'USD' ? 'en-US' : 'en-IN';
 
   return (
     <div
       style={{
-        marginTop: '16px',
-        padding: '12px',
         background: '#f8fafc',
-        borderRadius: '8px',
         border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '12px',
       }}
     >
       <label
@@ -223,25 +255,27 @@ export function BudgetTargetCard({
           marginBottom: '6px',
         }}
       >
-        Target Budget (₹)
+        Target Budget ({currencySymbol})
       </label>
       <input
         id="target-budget-input"
         type="number"
         class={styles.textInput}
         value={budget}
-        placeholder="e.g. 2500"
+        placeholder={currency === 'USD' ? 'e.g. 250' : 'e.g. 2500'}
         onInput={(e) => onSetBudget((e.target as HTMLInputElement).value)}
       />
       {budgetNum > 0 && (
         <div style={{ marginTop: '8px', fontSize: '12px', fontWeight: 600 }}>
           {isOverBudget ? (
             <span style={{ color: '#dc2626' }}>
-              ⚠️ Budget Exceeded by ₹{Math.abs(budgetDiff).toLocaleString('en-IN')}
+              ⚠️ Budget Exceeded by {currencySymbol}
+              {Math.abs(budgetDiff).toLocaleString(loc)}
             </span>
           ) : (
             <span style={{ color: '#166534' }}>
-              ✓ Under Budget by ₹{budgetDiff.toLocaleString('en-IN')}
+              ✓ Under Budget by {currencySymbol}
+              {budgetDiff.toLocaleString(loc)}
             </span>
           )}
         </div>
@@ -255,43 +289,34 @@ export function CostInsightsCard({
   highestCostDish,
   ingredientCost,
   totalCost,
+  currencySymbol = '₹',
 }: {
   costPerServing: string;
   highestCostDish: RecipeCostItem | null;
   ingredientCost: number;
   totalCost: number;
+  currencySymbol?: string;
 }) {
-  const ingredientShare = totalCost === 0 ? 0 : Math.round((ingredientCost / totalCost) * 100);
+  const ingredientShare = totalCost > 0 ? Math.round((ingredientCost / totalCost) * 100) : 0;
   const otherShare = 100 - ingredientShare;
 
   return (
     <div
       style={{
-        marginTop: '16px',
-        padding: '14px',
         background: '#fffbeb',
+        border: '1px solid #fef3c7',
         borderRadius: '8px',
-        border: '1px solid #fde68a',
+        padding: '12px',
       }}
     >
-      <h3
-        style={{
-          fontSize: '13.5px',
-          fontWeight: 700,
-          margin: '0 0 10px 0',
-          color: '#92400e',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-        }}
-      >
-        <Icon name="lightbulb" /> Cost Insights
+      <h3 style={{ fontSize: '13px', fontWeight: 700, color: '#92400e', marginBottom: '6px' }}>
+        Cost Insights & Budget Tips
       </h3>
       <ul
         style={{
           margin: 0,
-          paddingLeft: '18px',
-          fontSize: '12.5px',
+          paddingLeft: '16px',
+          fontSize: '12px',
           color: '#78350f',
           display: 'flex',
           flexDirection: 'column',
@@ -299,13 +324,18 @@ export function CostInsightsCard({
         }}
       >
         <li>
-          Cost per serving: <strong>₹{costPerServing}</strong>
+          Cost per serving:{' '}
+          <strong>
+            {currencySymbol}
+            {costPerServing}
+          </strong>
         </li>
         {highestCostDish && (
           <li>
             Highest cost dish:{' '}
             <strong>
-              {highestCostDish.name} (₹{highestCostDish.totalDish})
+              {highestCostDish.name} ({currencySymbol}
+              {highestCostDish.totalDish})
             </strong>
           </li>
         )}

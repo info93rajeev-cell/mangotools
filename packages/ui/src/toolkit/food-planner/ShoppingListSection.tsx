@@ -55,6 +55,7 @@ function useShoppingListState(planner: UseFoodPlannerReturn) {
     planner.priceMode,
     planner.userPrices,
     planner.ingredientCategories,
+    planner.currency,
   );
 
   const totalCost = useMemo(() => ingredientTotal(planner.engineCost), [planner.engineCost]);
@@ -119,6 +120,8 @@ function ShoppingDesktopGrid({ planner, state }: ShoppingDesktopGridProps) {
         onToggleBought={toggleBoughtItem}
         pagination={state.pagination}
         onBrowse={() => setActiveSection('recipes')}
+        currency={planner.currency}
+        currencySymbol={planner.currencySymbol}
       />
 
       <ShoppingSidebar
@@ -131,6 +134,7 @@ function ShoppingDesktopGrid({ planner, state }: ShoppingDesktopGridProps) {
         onChangeLocation={state.setGroceryQuery}
         onEdit={() => setActiveSection('ingredients')}
         onContinue={() => setActiveSection('cost')}
+        planner={planner}
       />
     </div>
   );
@@ -200,6 +204,7 @@ function ShoppingSidebar({
   onChangeLocation,
   onEdit,
   onContinue,
+  planner,
 }: {
   totalItems: number;
   toBuyCount: number;
@@ -210,6 +215,7 @@ function ShoppingSidebar({
   onChangeLocation: (loc: string) => void;
   onEdit: () => void;
   onContinue: () => void;
+  planner?: UseFoodPlannerReturn;
 }) {
   return (
     <div class={styles.card}>
@@ -282,12 +288,14 @@ function ShoppingSidebar({
           Estimated Cost
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <ShoppingCategoryCosts groupedItems={groupedItems} />
+          <ShoppingCategoryCosts groupedItems={groupedItems} planner={planner} />
         </div>
 
         <div class={styles.estCostYellowBanner}>
           <span>Total Estimated Cost</span>
-          <span style={{ fontSize: '17px', fontWeight: 800 }}>{money(totalCost)}</span>
+          <span style={{ fontSize: '17px', fontWeight: 800 }}>
+            {money(totalCost, planner?.currency)}
+          </span>
         </div>
         <p class={styles.cardSubtitle}>{t.roundingNote}</p>
       </div>
@@ -335,12 +343,16 @@ function ShoppingSidebar({
 
 function ShoppingCategoryCosts({
   groupedItems,
+  planner,
 }: {
   groupedItems: Record<string, ShoppingLineItem[]>;
+  planner?: UseFoodPlannerReturn;
 }) {
+  const currencySymbol = planner?.currencySymbol ?? '₹';
+  const currency = planner?.currency ?? 'INR';
+
   return (
     <>
-      {' '}
       {Object.entries(groupedItems).map(([aisle, items]) => {
         const aisleCost = sumMoney(items.map((i) => i.estCost));
         return (
@@ -357,7 +369,10 @@ function ShoppingCategoryCosts({
             <span style={{ color: '#475569' }}>
               {AISLE_DISPLAY_MAP[aisle] ?? aisle} ({items.length})
             </span>
-            <strong>₹{aisleCost.toLocaleString('en-IN')}</strong>
+            <strong>
+              {currencySymbol}
+              {aisleCost.toLocaleString(currency === 'USD' ? 'en-US' : 'en-IN')}
+            </strong>
           </div>
         );
       })}

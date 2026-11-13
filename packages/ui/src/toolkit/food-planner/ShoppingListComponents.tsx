@@ -170,3 +170,57 @@ export function GroceryDiscoveryCard({
     </details>
   );
 }
+
+export function ShoppingEmptyState({ onBrowse }: { onBrowse: () => void }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '36px 16px', color: '#475569' }}>
+      <p style={{ fontSize: '15px', fontWeight: 600, color: '#0f172a' }}>
+        No dishes in your menu yet
+      </p>
+      <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+        Add recipes in Recipes &amp; Menu to generate your consolidated shopping list.
+      </p>
+      <button
+        type="button"
+        class={styles.actionBtn}
+        style={{ marginTop: '14px' }}
+        onClick={onBrowse}
+      >
+        <Icon name="utensils" /> Browse Recipes &amp; Menu
+      </button>
+    </div>
+  );
+}
+
+export function ShoppingListAlerts({
+  error,
+  isLoading,
+}: {
+  error: string | null;
+  isLoading: boolean;
+}) {
+  return (
+    <>
+      {error && (
+        <div
+          style={{
+            padding: '12px 16px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#991b1b',
+            fontSize: '13px',
+            marginBottom: '12px',
+          }}
+        >
+          <strong>⚠️ Calculation Note:</strong> {error}. Displaying preliminary item estimates.
+        </div>
+      )}
+      {isLoading && (
+        <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
+          Updating exact consolidation...
+        </div>
+      )}
+    </>
+  );
+}

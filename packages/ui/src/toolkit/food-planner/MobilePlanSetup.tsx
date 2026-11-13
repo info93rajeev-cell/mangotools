@@ -1,7 +1,14 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
+import {
+  CULINARY_REGIONS,
+  isUSLocation,
+  LOCATIONS,
+  OCCASIONS,
+  PLANNING_TYPES,
+} from './foodReferenceData.ts';
+import { recommendMenu } from './plannerMenuRecommendation.ts';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
 export function MobileSectionHeader({
@@ -26,10 +33,53 @@ export function MobileSectionHeader({
   );
 }
 
+function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlannerReturn) {
+  const { setup, setSetup } = planner;
+  if (key === 'location') {
+    const isUS = isUSLocation(val, setup.country);
+    const updated = {
+      ...setup,
+      location: val,
+      country: (isUS ? 'US' : 'IN') as 'IN' | 'US',
+    };
+    setSetup(updated);
+    const recommended = recommendMenu({
+      country: isUS ? 'US' : 'IN',
+      occasion: updated.occasion,
+      mealType: updated.mealType ?? 'Dinner',
+      diet: updated.diet,
+      guests: updated.guests,
+      availableRecipes: planner.allRecipes,
+    });
+    if (recommended.length > 0) {
+      planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+    }
+    return;
+  }
+  setSetup({ ...setup, [key]: val });
+}
+
+function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
+  const { setup, setSetup } = planner;
+  const isUS = isUSLocation(setup.location, setup.country);
+  const recommended = recommendMenu({
+    country: isUS ? 'US' : 'IN',
+    occasion: setup.occasion,
+    mealType: setup.mealType ?? 'Dinner',
+    diet: setup.diet,
+    guests: setup.guests,
+    availableRecipes: planner.allRecipes,
+  });
+  if (recommended.length > 0) {
+    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+  }
+  setSetup({ ...setup });
+}
+
 export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn; id: string }) {
   const { setup, setSetup } = planner;
   const fields = [
-    { key: 'location' as const, label: t.location, options: LOCATIONS },
+    { key: 'location' as const, label: t.cuisineRegion, options: LOCATIONS },
     { key: 'occasion' as const, label: t.occasion, options: OCCASIONS },
     { key: 'planningType' as const, label: t.planningType, options: PLANNING_TYPES },
   ];
@@ -49,13 +99,19 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
               id={`${id}-${field.key}`}
               class={s.mobileSelect}
               value={setup[field.key]}
-              onChange={(e) => setSetup({ ...setup, [field.key]: e.currentTarget.value })}
+              onChange={(e) => handleMobileFieldChange(field.key, e.currentTarget.value, planner)}
             >
-              {field.options.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
+              {field.key === 'location'
+                ? CULINARY_REGIONS.map((reg) => (
+                    <option key={reg.id} value={reg.name}>
+                      {reg.name}
+                    </option>
+                  ))
+                : field.options.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
             </select>
           </div>
         ))}
@@ -77,7 +133,11 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
           </select>
         </div>
       </div>
-      <button type="button" class={s.mobileUpdateBtn} onClick={() => setSetup({ ...setup })}>
+      <button
+        type="button"
+        class={s.mobileUpdateBtn}
+        onClick={() => handleMobilePlanUpdate(planner)}
+      >
         <Icon name="refresh-cw" />
         {t.update}
       </button>

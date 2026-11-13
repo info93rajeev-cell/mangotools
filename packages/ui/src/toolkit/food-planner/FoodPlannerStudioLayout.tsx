@@ -3,19 +3,66 @@ import { CookingScheduleSection } from './CookingScheduleSection.tsx';
 import { CostEstimationSection } from './CostEstimationSection.tsx';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { LOCATIONS, OCCASIONS, PLANNING_TYPES } from './foodReferenceData.ts';
+import {
+  CULINARY_REGIONS,
+  type ExtendedFoodRecipe,
+  isUSLocation,
+  OCCASIONS,
+  PLANNING_TYPES,
+} from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
+import { getDefaultOtherExpenses } from './plannerCurrency.ts';
+import { recommendMenu } from './plannerMenuRecommendation.ts';
 import { RecipesMenuSection } from './RecipesMenuSection.tsx';
 import { ShoppingListSection } from './ShoppingListSection.tsx';
-import { type PlannerSection, type PlanSetupState, useFoodPlanner } from './useFoodPlanner.ts';
+import {
+  type PlannerSection,
+  type PlanSetupState,
+  type UseFoodPlannerReturn,
+  useFoodPlanner,
+} from './useFoodPlanner.ts';
 
 export interface FoodPlannerStudioLayoutProps {
   notify?: (msg: string) => void;
 }
 
-export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps) {
-  const planner = useFoodPlanner();
-  const { activeSection, setActiveSection, setup, setSetup, loadSamplePlan } = planner;
+export { isUSLocation };
+
+function applyCountryDefaults(
+  isUS: boolean,
+  updated: PlanSetupState,
+  planner: UseFoodPlannerReturn,
+) {
+  const newCurrency = isUS ? 'USD' : 'INR';
+  const expenses = getDefaultOtherExpenses(newCurrency);
+  planner.setOtherCosts(
+    expenses.map((e) => ({
+      id: e.id,
+      label: e.name,
+      defaultCost: e.amount,
+      cost: e.amount,
+      enabled: true,
+    })),
+  );
+  planner.setTargetBudget(isUS ? '250' : '2500');
+
+  const recommended = recommendMenu({
+    country: isUS ? 'US' : 'IN',
+    location: updated.location,
+    occasion: updated.occasion,
+    mealType: updated.mealType ?? 'Dinner',
+    diet: updated.diet,
+    guests: updated.guests,
+    availableRecipes: planner.allRecipes,
+  });
+  if (recommended.length > 0) {
+    planner.setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+  }
+}
+
+function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: string) => void) {
+  const { setup, setSetup, selectedRecipes, portionFactors, allRecipes, setSelectedRecipeIds } =
+    planner;
 
   const handleShare = async () => {
     const text = [
@@ -23,9 +70,9 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
       `${t.guests}: ${setup.guests}`,
       setup.location,
       setup.occasion,
-      ...planner.selectedRecipes.map(
-        (recipe) =>
-          `${recipe.name}: ${setup.guests * (planner.portionFactors[recipe.id] ?? 1)} ${t.servings}`,
+      ...selectedRecipes.map(
+        (recipe: ExtendedFoodRecipe) =>
+          `${recipe.name}: ${setup.guests * (portionFactors[recipe.id] ?? 1)} ${t.servings}`,
       ),
     ].join('\n');
     try {
@@ -36,16 +83,49 @@ export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps
     }
   };
 
+  const handleSetSetup = (next: PlanSetupState) => {
+    const prevLocation = setup.location;
+    const prevIsUS = isUSLocation(setup.location, setup.country);
+    const nextIsUS = isUSLocation(next.location, next.country);
+    const updated: PlanSetupState = { ...next, country: nextIsUS ? 'US' : 'IN' };
+    setSetup(updated);
+
+    if (prevLocation !== next.location || prevIsUS !== nextIsUS) {
+      applyCountryDefaults(nextIsUS, updated, planner);
+    }
+  };
+
+  const handleUpdatePlan = () => {
+    const isUS = isUSLocation(setup.location, setup.country);
+    const recommended = recommendMenu({
+      country: isUS ? 'US' : 'IN',
+      location: setup.location,
+      occasion: setup.occasion,
+      mealType: setup.mealType ?? 'Dinner',
+      diet: setup.diet,
+      guests: setup.guests,
+      availableRecipes: allRecipes,
+    });
+    if (recommended.length > 0) {
+      setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+    }
+    notify?.(`Plan updated for ${setup.guests} guests in ${setup.location} (${setup.occasion})`);
+  };
+
+  return { handleShare, handleSetSetup, handleUpdatePlan };
+}
+
+export function FoodPlannerStudioLayout({ notify }: FoodPlannerStudioLayoutProps) {
+  const planner = useFoodPlanner();
+  const { activeSection, setActiveSection, setup, loadSamplePlan } = planner;
+  const { handleShare, handleSetSetup, handleUpdatePlan } = useSetupPlanHandlers(planner, notify);
+
   return (
     <div class={styles.container}>
       <PlannerTopHeader onLoadSample={loadSamplePlan} onShare={() => void handleShare()} />
       <PlannerNavBar activeSection={activeSection} onSelectSection={setActiveSection} />
       <div class={styles.desktopOnly}>
-        <PlanSetupCard
-          setup={setup}
-          onSetSetup={setSetup}
-          onUpdate={() => notify?.(`Plan updated for ${setup.guests} guests (${setup.occasion})`)}
-        />
+        <PlanSetupCard setup={setup} onSetSetup={handleSetSetup} onUpdate={handleUpdatePlan} />
       </div>
 
       {activeSection === 'recipes' && <RecipesMenuSection planner={planner} />}
@@ -173,7 +253,7 @@ function PlanSetupCard({
       <div class={styles.planSetupControls}>
         <div class={styles.setupField}>
           <label class={styles.fieldLabel} for="setup-loc">
-            <Icon name="map-pin" /> Location
+            <Icon name="globe" /> {t.cuisineRegion}
           </label>
           <select
             id="setup-loc"
@@ -183,9 +263,9 @@ function PlanSetupCard({
               onSetSetup({ ...setup, location: (e.target as HTMLSelectElement).value })
             }
           >
-            {LOCATIONS.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
+            {CULINARY_REGIONS.map((region) => (
+              <option key={region.id} value={region.name}>
+                {region.name}
               </option>
             ))}
           </select>

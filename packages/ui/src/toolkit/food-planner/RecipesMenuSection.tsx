@@ -1,19 +1,26 @@
 import { useMemo, useState } from 'preact/hooks';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
-import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
+import {
+  CATALOG_GALLERY_RECIPES,
+  type ExtendedFoodRecipe,
+  isRecipeEligibleForCountry,
+  isRecipeEligibleForLocation,
+} from './foodReferenceData.ts';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { matchesRecipeFilter, RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
 import { RecipesMobileView } from './RecipesMobileView.tsx';
 import { SelectedMenuPanel } from './RecipesSelectedMenuComponents.tsx';
 import type { UseFoodPlannerReturn } from './useFoodPlanner.ts';
 
+export { isRecipeEligibleForCountry, isRecipeEligibleForLocation };
+
 interface RecipesMenuSectionProps {
   planner: UseFoodPlannerReturn;
 }
 
 export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
-  const { searchQuery, activeCourse } = planner;
+  const { searchQuery, activeCourse, setup } = planner;
 
   const [personal, setPersonal] = useState(false);
   const [page, setPage] = useState(1);
@@ -23,10 +30,25 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
 
   const filteredRecipes = useMemo(
     () =>
-      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) =>
-        matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites),
-      ),
-    [searchQuery, activeCourse, favoritesOnly, favorites, planner.personalRecipes],
+      [...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes].filter((r) => {
+        if (
+          !searchQuery &&
+          !favoritesOnly &&
+          !isRecipeEligibleForLocation(r, setup.location, setup.country)
+        ) {
+          return false;
+        }
+        return matchesRecipeFilter(r, searchQuery, activeCourse, favoritesOnly, favorites);
+      }),
+    [
+      searchQuery,
+      activeCourse,
+      favoritesOnly,
+      favorites,
+      planner.personalRecipes,
+      setup.location,
+      setup.country,
+    ],
   );
 
   return (
@@ -54,15 +76,14 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
           setPageSize={setPageSize}
         />
       </div>
-
       <div class={styles.mobileOnly}>
         <RecipesMobileView
           planner={planner}
-          favorites={favorites}
-          toggleFavorite={toggleFavorite}
+          filteredRecipes={filteredRecipes}
           favoritesOnly={favoritesOnly}
           setFavoritesOnly={setFavoritesOnly}
-          filteredRecipes={filteredRecipes}
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
           page={page}
           setPage={setPage}
           pageSize={pageSize}
@@ -86,65 +107,54 @@ interface RecipesDesktopGridProps {
   setPageSize: (s: number | ((prev: number) => number)) => void;
 }
 
+function getEligibleCatalogRecipes(
+  personal: ExtendedFoodRecipe[],
+  location?: string,
+  country?: string,
+) {
+  return [...CATALOG_GALLERY_RECIPES, ...personal].filter((r) =>
+    isRecipeEligibleForLocation(r, location, country),
+  );
+}
+
 function RecipesDesktopGrid(props: RecipesDesktopGridProps) {
-  const {
-    planner,
-    filteredRecipes,
-    favoritesOnly,
-    setFavoritesOnly,
-    favorites,
-    toggleFavorite,
-    page,
-    setPage,
-    pageSize,
-    setPageSize,
-  } = props;
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeCourse,
-    setActiveCourse,
-    selectedRecipeIds,
-    toggleRecipe,
-    selectedRecipes,
-    setup,
-    portionFactors,
-    setPortionFactor,
-    clearAllRecipes,
-    setActiveSection,
-  } = planner;
+  const { planner, filteredRecipes } = props;
+  const { setup, portionFactors, toggleRecipe } = planner;
 
   return (
     <div class={`${styles.layoutGrid} ${styles.recipesLayoutGrid}`}>
       <RecipeGalleryPanel
-        catalogRecipes={[...CATALOG_GALLERY_RECIPES, ...planner.personalRecipes]}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        activeCourse={activeCourse}
-        setActiveCourse={setActiveCourse}
-        favoritesOnly={favoritesOnly}
-        setFavoritesOnly={setFavoritesOnly}
-        favorites={favorites}
-        toggleFavorite={toggleFavorite}
+        catalogRecipes={getEligibleCatalogRecipes(
+          planner.personalRecipes,
+          setup.location,
+          setup.country,
+        )}
+        searchQuery={planner.searchQuery}
+        setSearchQuery={planner.setSearchQuery}
+        activeCourse={planner.activeCourse}
+        setActiveCourse={planner.setActiveCourse}
+        favoritesOnly={props.favoritesOnly}
+        setFavoritesOnly={props.setFavoritesOnly}
+        favorites={props.favorites}
+        toggleFavorite={props.toggleFavorite}
         filteredRecipes={filteredRecipes}
-        selectedRecipeIds={selectedRecipeIds}
+        selectedRecipeIds={planner.selectedRecipeIds}
         toggleRecipe={toggleRecipe}
-        page={page}
-        setPage={setPage}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
+        page={props.page}
+        setPage={props.setPage}
+        pageSize={props.pageSize}
+        setPageSize={props.setPageSize}
         guests={setup.guests}
         portionFactors={portionFactors}
       />
-
       <SelectedMenuPanel
-        selectedRecipes={selectedRecipes}
+        selectedRecipes={planner.selectedRecipes}
         guests={setup.guests}
         portionFactors={portionFactors}
-        setPortionFactor={setPortionFactor}
+        setPortionFactor={planner.setPortionFactor}
         toggleRecipe={toggleRecipe}
-        clearAllRecipes={clearAllRecipes}
-        onContinue={() => setActiveSection('ingredients')}
+        clearAllRecipes={planner.clearAllRecipes}
+        onContinue={() => planner.setActiveSection('ingredients')}
       />
     </div>
   );

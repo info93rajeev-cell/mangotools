@@ -37,7 +37,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
           <h4 class={s.mobileCardTitle}>
             {t.selectedDishes} ({recipeCosts.length})
           </h4>
-          <strong data-testid="mobile-menu-cost">{money(totalMenuCost)}</strong>
+          <strong data-testid="mobile-menu-cost">{money(totalMenuCost, planner.currency)}</strong>
         </div>
         {recipeCosts.map((dish) => (
           <div class={s.mobileDishItem} key={dish.id}>
@@ -53,7 +53,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
                 {dish.servings} {t.servings}
               </span>
             </div>
-            <strong>{money(dish.totalDish)}</strong>
+            <strong>{money(dish.totalDish, planner.currency)}</strong>
           </div>
         ))}
       </section>
@@ -62,12 +62,24 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
         <div class={s.mobileSummary2x2}>
           <MobileMetric
             label={t.ingredientCost}
-            value={money(totalIngredientCost)}
+            value={money(totalIngredientCost, planner.currency)}
             icon="shopping-cart"
           />
-          <MobileMetric label={t.otherCost} value={money(totalOtherCost)} icon="coins" />
-          <MobileMetric label={t.totalCost} value={money(totalMenuCost)} icon="utensils" />
-          <MobileMetric label={t.perServing} value={money(costPerServing)} icon="users" />
+          <MobileMetric
+            label={t.otherCost}
+            value={money(totalOtherCost, planner.currency)}
+            icon="coins"
+          />
+          <MobileMetric
+            label={t.totalCost}
+            value={money(totalMenuCost, planner.currency)}
+            icon="utensils"
+          />
+          <MobileMetric
+            label={t.perServing}
+            value={money(costPerServing, planner.currency)}
+            icon="users"
+          />
         </div>
         <p class={s.mobileCardSubtitle}>{t.costNote}</p>
       </section>
@@ -86,7 +98,7 @@ export function CostEstimationMobileView(props: CostEstimationMobileViewProps) {
             <p>
               {t.highest}:{' '}
               <strong>
-                {highest.name} ({money(highest.totalDish)})
+                {highest.name} ({money(highest.totalDish, planner.currency)})
               </strong>
             </p>
           )}

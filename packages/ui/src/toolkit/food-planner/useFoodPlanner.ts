@@ -1,15 +1,19 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
-import { type ExtendedFoodRecipe, RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
+import { isUSLocation } from './foodCulinaryRegions.ts';
+import { type ExtendedFoodRecipe, GLOBAL_RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
+import { getCurrencySymbol, type SupportedCurrency } from './plannerCurrency.ts';
 import { sumMoney } from './plannerResults.ts';
 import { usePlannerEngines, workerRun } from './usePlannerEngines.ts';
 
 export type PlannerSection = 'recipes' | 'ingredients' | 'shopping' | 'cost' | 'schedule';
 
 export interface PlanSetupState {
+  country?: 'IN' | 'US';
   location: string;
   occasion: string;
+  mealType?: string;
   planningType: string;
   guests: number;
   servingsPerGuest: number;
@@ -26,8 +30,10 @@ export interface OtherCostItem {
 }
 
 const DEFAULT_SETUP: PlanSetupState = {
+  country: 'IN',
   location: SAMPLE_PLAN.location,
   occasion: SAMPLE_PLAN.occasion,
+  mealType: 'Dinner',
   planningType: SAMPLE_PLAN.planningType,
   guests: SAMPLE_PLAN.guests,
   servingsPerGuest: 1,
@@ -57,7 +63,7 @@ const DEFAULT_OTHER_COSTS: OtherCostItem[] = [
 
 function usePlannerSelection() {
   const [personalRecipes, setPersonalRecipes] = useState<ExtendedFoodRecipe[]>([]);
-  const allRecipes = useMemo(() => [...RECIPES, ...personalRecipes], [personalRecipes]);
+  const allRecipes = useMemo(() => [...GLOBAL_RECIPES, ...personalRecipes], [personalRecipes]);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(
     () => new Set(SAMPLE_PLAN.selectedDishes),
   );
@@ -94,6 +100,7 @@ function usePlannerSelection() {
   const clearAllRecipes = useCallback(() => setSelectedRecipeIds(new Set()), []);
 
   return {
+    allRecipes,
     personalRecipes,
     setPersonalRecipes,
     favorites,
@@ -169,7 +176,7 @@ function usePlannerChecklist() {
   };
 }
 
-export function useFoodPlanner(run: RunFn = workerRun) {
+function usePlannerState() {
   const [activeSection, setActiveSection] = useState<PlannerSection>('recipes');
   const [setup, setSetup] = useState<PlanSetupState>(DEFAULT_SETUP);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -179,46 +186,7 @@ export function useFoodPlanner(run: RunFn = workerRun) {
   const [stockQuantities, setStockQuantities] = useState<Record<string, string>>({});
   const [ingredientQuantities, setIngredientQuantities] = useState<Record<string, string>>({});
 
-  const selection = usePlannerSelection();
-  const costs = usePlannerCosts();
-  const checklist = usePlannerChecklist();
-
-  const engines = usePlannerEngines(
-    selection.selectedRecipes,
-    selection.portionFactors,
-    setup,
-    costs.targetBudget,
-    costs.priceMode,
-    checklist.mealTime,
-    checklist.burners,
-    1,
-    run,
-    costs.userPrices,
-    ingredientQuantities,
-    stockQuantities,
-  );
-
-  const loadSamplePlan = useCallback(() => {
-    setSetup(DEFAULT_SETUP);
-    setStockQuantities({});
-    setIngredientQuantities({});
-    costs.setUserPrices({});
-    costs.setOtherCosts(DEFAULT_OTHER_COSTS);
-    selection.setSelectedRecipeIds(new Set(SAMPLE_PLAN.selectedDishes));
-    selection.setPortionFactors({});
-    checklist.setBoughtItems({});
-    checklist.setCompletedTasks({});
-    checklist.setCustomTasks([]);
-    costs.setPriceMode('retail');
-  }, [selection, checklist, costs]);
-
   return {
-    ingredientCategories,
-    setIngredientCategories,
-    stockQuantities,
-    setStockQuantities,
-    ingredientQuantities,
-    setIngredientQuantities,
     activeSection,
     setActiveSection,
     setup,
@@ -229,6 +197,69 @@ export function useFoodPlanner(run: RunFn = workerRun) {
     setActiveCourse,
     combineSimilar,
     setCombineSimilar,
+    ingredientCategories,
+    setIngredientCategories,
+    stockQuantities,
+    setStockQuantities,
+    ingredientQuantities,
+    setIngredientQuantities,
+  };
+}
+
+function usePlannerCurrency(country?: string, location?: string) {
+  const currency: SupportedCurrency = useMemo(() => {
+    if (country === 'US') return 'USD';
+    if (country === 'IN') return 'INR';
+    return isUSLocation(location, country) ? 'USD' : 'INR';
+  }, [country, location]);
+
+  const currencySymbol = useMemo(() => getCurrencySymbol(currency), [currency]);
+  return { currency, currencySymbol };
+}
+
+export function useFoodPlanner(run: RunFn = workerRun) {
+  const state = usePlannerState();
+  const selection = usePlannerSelection();
+  const costs = usePlannerCosts();
+  const checklist = usePlannerChecklist();
+  const { currency, currencySymbol } = usePlannerCurrency(
+    state.setup.country,
+    state.setup.location,
+  );
+
+  const engines = usePlannerEngines(
+    selection.selectedRecipes,
+    selection.portionFactors,
+    state.setup,
+    costs.targetBudget,
+    costs.priceMode,
+    checklist.mealTime,
+    checklist.burners,
+    1,
+    run,
+    costs.userPrices,
+    state.ingredientQuantities,
+    state.stockQuantities,
+  );
+
+  const loadSamplePlan = useCallback(() => {
+    state.setSetup(DEFAULT_SETUP);
+    state.setStockQuantities({});
+    state.setIngredientQuantities({});
+    costs.setUserPrices({});
+    costs.setOtherCosts(DEFAULT_OTHER_COSTS);
+    selection.setSelectedRecipeIds(new Set(SAMPLE_PLAN.selectedDishes));
+    selection.setPortionFactors({});
+    checklist.setBoughtItems({});
+    checklist.setCompletedTasks({});
+    checklist.setCustomTasks([]);
+    costs.setPriceMode('retail');
+  }, [state, selection, checklist, costs]);
+
+  return {
+    currency,
+    currencySymbol,
+    ...state,
     loadSamplePlan,
     ...selection,
     ...costs,

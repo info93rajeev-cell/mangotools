@@ -1,16 +1,31 @@
 import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
+import { EUROPE_RECIPES } from './foodRecipesEurope.ts';
 import { FESTIVAL_SWEET_RECIPES } from './foodRecipesFestivalSweets.ts';
+import { LATIN_AMERICA_RECIPES } from './foodRecipesLatinAmerica.ts';
 import { MAINS_AND_SIDES_RECIPES } from './foodRecipesMainsAndSides.ts';
+import { MIDDLE_EAST_RECIPES } from './foodRecipesMiddleEast.ts';
+import { PAN_ASIAN_RECIPES } from './foodRecipesPanAsian.ts';
 import { SNACK_RECIPES } from './foodRecipesSnacks.ts';
+import { SOUTH_ASIA_RECIPES } from './foodRecipesSouthAsia.ts';
 import { STAPLE_RECIPES } from './foodRecipesStaples.ts';
 import type {
   ExtendedFoodRecipe,
   ImageProvenance,
   RecipeVerificationInfo,
 } from './foodRecipesTypes.ts';
+import { US_RECIPES } from './foodRecipesUS.ts';
 
 export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
-export { CATALOG_AWAITING_RECIPES, STAPLE_RECIPES };
+export {
+  CATALOG_AWAITING_RECIPES,
+  EUROPE_RECIPES,
+  LATIN_AMERICA_RECIPES,
+  MIDDLE_EAST_RECIPES,
+  PAN_ASIAN_RECIPES,
+  SOUTH_ASIA_RECIPES,
+  STAPLE_RECIPES,
+  US_RECIPES,
+};
 
 export function getRecipeVerificationInfo(recipe: ExtendedFoodRecipe): RecipeVerificationInfo {
   if (recipe.awaitingData) {
@@ -83,7 +98,17 @@ export const RECIPES: ExtendedFoodRecipe[] = ORDERED_IDS.map((id) => {
   return found;
 });
 
-export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
+export const GLOBAL_RECIPES: ExtendedFoodRecipe[] = [
   ...RECIPES,
+  ...SOUTH_ASIA_RECIPES,
+  ...US_RECIPES,
+  ...EUROPE_RECIPES,
+  ...PAN_ASIAN_RECIPES,
+  ...MIDDLE_EAST_RECIPES,
+  ...LATIN_AMERICA_RECIPES,
+];
+
+export const CATALOG_GALLERY_RECIPES: ExtendedFoodRecipe[] = [
+  ...GLOBAL_RECIPES,
   ...CATALOG_AWAITING_RECIPES,
 ];

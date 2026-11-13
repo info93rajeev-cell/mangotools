@@ -760,6 +760,9 @@
   .mobileInventoryRow .mobileDishInfo div {
     font-size: 14px;
   }
+  .mobileDishThumb {
+    height: 48px;
+  }
   .mobileInventoryRow .mobileDishThumb {
     width: 72px;
     height: 42px;
@@ -773,9 +776,6 @@
   }
   .mobileOtherCostList {
     font-size: 22px;
-  }
-  .mobileDishThumb {
-    height: 48px;
   }
   .mobileContainer[data-testid="mobile-cost"] .mobileDishThumb {
     height: 42px;
