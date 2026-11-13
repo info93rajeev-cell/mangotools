@@ -13,7 +13,7 @@ const workingStep = z.strictObject({
 
 export const costEstimateInput = z.strictObject({
   rateBasis: z.enum(rateBases),
-  /** Units of the rate basis: m³ for per-cbm, a whole number of containers for per-container. */
+  /** Units of the rate basis: m³ (per-cbm), kg (per-kg), or a whole number of containers or pallets. */
   quantity: decimal.optional(),
   rate: decimal.optional(),
   minimumCharge: decimal.optional(),
