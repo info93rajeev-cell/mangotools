@@ -37,6 +37,8 @@ const PREP_FORMS: Record<string, string> = {
   'whole-milk-powder': 'Sift Lump-Free',
   'baking-soda': 'Exact Pinch',
   lemon: 'Fresh Juice',
+  'kabuli-chana': 'Soak & Pressure Boil',
+  'tea-leaves': 'Rolling Boil Infusion',
 };
 
 export function getPrepForm(id: string): string {

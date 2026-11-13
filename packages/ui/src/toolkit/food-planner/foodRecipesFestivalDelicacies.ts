@@ -18,6 +18,13 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 20,
     cookMinutes: 35,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    countries: ['IN', 'US', 'GB'],
+    events: ['diwali', 'sharad-purnima', 'eid', 'puja', 'festival'],
+    proTips: [
+      'Add sugar only after rice grains are completely tender; sugar stops rice from softening.',
+      'Simmer in wide heavy kadai so milk fats caramelize on sides and give rabdi flavor.',
+    ],
     ingredients: [
       {
         ingredient: 'basmati-rice',
@@ -106,6 +113,13 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 15,
     cookMinutes: 25,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=F3aJ1m-UuQc',
+    countries: ['IN', 'US', 'GB'],
+    events: ['diwali', 'holi', 'dussehra', 'sunday-breakfast', 'festival'],
+    proTips: [
+      'Add lemon juice drops to syrup; acid prevents sugar from recrystallizing on crust.',
+      'Dip crispy fried jalebis into warm syrup for only 40-45 seconds for juicy crunch.',
+    ],
     ingredients: [
       {
         ingredient: 'maida',
@@ -205,6 +219,13 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 25,
     cookMinutes: 25,
     verified: true,
+    videoUrl: 'https://www.youtube.com/watch?v=b4N_8i9jX9o',
+    countries: ['IN', 'US', 'GB'],
+    events: ['durga-puja', 'diwali', 'wedding', 'festival', 'summer'],
+    proTips: [
+      'Knead chenna with palm heel until smooth without releasing oily fat on hands.',
+      'Cook in rapid rolling boil with tight lid; steam pressure expands chenna into airy sponge.',
+    ],
     ingredients: [
       {
         ingredient: 'whole-milk',
@@ -226,9 +247,9 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
       },
       {
         ingredient: 'maida',
-        quantity: '1',
-        unit: 'tsp',
-        note: 'Fine flour (level 1 tsp) for structural binding',
+        quantity: '5',
+        unit: 'g',
+        note: 'Fine flour (level 1 tsp, 5g) for structural binding',
       },
       {
         ingredient: 'ground-cardamom',

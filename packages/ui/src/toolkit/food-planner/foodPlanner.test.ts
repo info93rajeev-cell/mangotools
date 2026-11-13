@@ -32,18 +32,27 @@ describe('Food Planner Toolkit Reference Data', () => {
   });
 
   it('contains the verified and prototype recipes with steps and ingredients', () => {
-    expect(RECIPES.length).toBeGreaterThanOrEqual(8);
+    expect(RECIPES.length).toBe(18);
     const verified = RECIPES.filter((r) => r.verified);
     expect(verified.map((r) => r.id)).toEqual([
       'jeera-rice',
       'dal-tadka',
       'aloo-gobi',
       'besan-ladoo',
+      'mathri',
+      'shahi-paneer',
+      'raita',
+      'mixed-veg-salad',
       'gulab-jamun',
       'kaju-katli',
       'kheer',
       'jalebi',
       'rasgulla',
+      'samosa',
+      'paneer-tikka',
+      'pakoda',
+      'chana-masala',
+      'masala-chai',
     ]);
 
     // Check verification status label mapping
@@ -98,7 +107,7 @@ describe('Food Planner Toolkit Reference Data', () => {
   });
 
   it('covers every recipe with thumbnail URL and image provenance', () => {
-    expect(RECIPES.length).toBe(13);
+    expect(RECIPES.length).toBe(18);
     for (const recipe of RECIPES) {
       expect(recipe.thumbnailUrl).toBeDefined();
       expect(recipe.thumbnailUrl).toMatch(/^\/food\/recipes\/[a-z0-9-]+\.jpg$/);
@@ -121,13 +130,20 @@ describe('Food Planner Toolkit Reference Data', () => {
     }
   });
 
-  it('keeps the remaining illustrated recipes disabled until data is sourced', () => {
-    expect(CATALOG_AWAITING_RECIPES).toHaveLength(5);
-    for (const recipe of CATALOG_AWAITING_RECIPES) {
-      expect(recipe.awaitingData).toBe(true);
-      expect(recipe.ingredients).toHaveLength(0);
+  it('makes all 18 illustrated recipes ready and fully operational with valid ingredients and sources', () => {
+    expect(CATALOG_AWAITING_RECIPES).toHaveLength(0);
+    expect(RECIPES).toHaveLength(18);
+    const ingredientIds = new Set(CATALOG_INGREDIENTS.map((ingredient) => ingredient.id));
+    for (const recipe of RECIPES) {
+      expect(recipe.awaitingData).toBeFalsy();
+      expect(recipe.sources?.length).toBeGreaterThanOrEqual(2);
+      expect(recipe.ingredients.length).toBeGreaterThan(0);
+      expect(recipe.steps.length).toBeGreaterThan(0);
       expect(recipe.thumbnailUrl).toBe(`/food/recipes/${recipe.id}.jpg`);
       expect(recipe.imageProvenance?.type).toBe('ai-generated');
+      for (const line of recipe.ingredients) {
+        expect(ingredientIds.has(line.ingredient)).toBe(true);
+      }
     }
   });
 

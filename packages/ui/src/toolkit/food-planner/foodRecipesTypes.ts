@@ -34,6 +34,10 @@ export interface ExtendedFoodRecipe {
   imageProvenance?: ImageProvenance;
   operational?: boolean;
   awaitingData?: boolean;
+  countries?: string[];
+  events?: string[];
+  proTips?: string[];
+  videoUrl?: string;
 }
 
 export interface ImageProvenance {
