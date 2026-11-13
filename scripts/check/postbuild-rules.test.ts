@@ -101,7 +101,7 @@ describe('post-build page checks', () => {
       indexable: false,
     });
     expect(text).toContain(
-      "script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com 'sha256-a' 'sha256-b';",
+      "script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms 'sha256-a' 'sha256-b';",
     );
     expect(text).toContain("frame-ancestors 'none'");
     expect(text).toContain('X-Robots-Tag: noindex');
@@ -153,8 +153,14 @@ describe('post-build page checks', () => {
   it('configures CSP connect-src to permit models from R2 custom domain and Cloudflare insights', () => {
     const text = headersFile({ scriptHashes: [], indexable: true });
     expect(text).toContain(
-      "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com blob:",
+      "connect-src 'self' https://models.beyandtheai.com https://cloudflareinsights.com https://*.clarity.ms https://c.bing.com blob:",
     );
+  });
+
+  it('permits consent-first Microsoft Clarity in the CSP header', () => {
+    const text = headersFile({ scriptHashes: [], indexable: true });
+    expect(text).toContain("img-src 'self' https://*.clarity.ms https://c.bing.com data: blob:;");
+    expect(text).toContain('https://www.clarity.ms https://*.clarity.ms');
   });
 
   it('finds entry modules and static imports but not dynamic imports', () => {
