@@ -6,8 +6,9 @@ import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
   CULINARY_REGIONS,
   type ExtendedFoodRecipe,
+  getCulinaryRegion,
+  getOccasionsForRegion,
   isUSLocation,
-  OCCASIONS,
   PLANNING_TYPES,
 } from './foodReferenceData.ts';
 import { IngredientsSection } from './IngredientsSection.tsx';
@@ -87,7 +88,18 @@ function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: stri
     const prevLocation = setup.location;
     const prevIsUS = isUSLocation(setup.location, setup.country);
     const nextIsUS = isUSLocation(next.location, next.country);
-    const updated: PlanSetupState = { ...next, country: nextIsUS ? 'US' : 'IN' };
+    let nextOccasion = next.occasion;
+    if (prevLocation !== next.location) {
+      const region = getCulinaryRegion(next.location);
+      if (!region.occasions.includes(next.occasion)) {
+        nextOccasion = region.defaultOccasion;
+      }
+    }
+    const updated: PlanSetupState = {
+      ...next,
+      occasion: nextOccasion,
+      country: nextIsUS ? 'US' : 'IN',
+    };
     setSetup(updated);
 
     if (prevLocation !== next.location || prevIsUS !== nextIsUS) {
@@ -282,7 +294,7 @@ function PlanSetupCard({
               onSetSetup({ ...setup, occasion: (e.target as HTMLSelectElement).value })
             }
           >
-            {OCCASIONS.map((occ) => (
+            {getOccasionsForRegion(setup.location).map((occ) => (
               <option key={occ} value={occ}>
                 {occ}
               </option>

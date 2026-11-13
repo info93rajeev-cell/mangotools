@@ -1,8 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { unitOf } from '../../engines/food/src/units.ts';
 import {
   CULINARY_REGIONS,
   getCulinaryRegionId,
+  getOccasionsForRegion,
   isRecipeEligibleForLocation,
 } from '../../packages/ui/src/toolkit/food-planner/foodCulinaryRegions.ts';
 import {
@@ -156,6 +159,93 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
       for (const recipe of menu) {
         expect(isRecipeEligibleForLocation(recipe, region.name, region.countryCode)).toBe(true);
       }
+    }
+  });
+
+  it('provides authentic festival & occasion lists for all 6 culinary continents', () => {
+    for (const region of CULINARY_REGIONS) {
+      const occs = getOccasionsForRegion(region.name);
+      expect(occs.length).toBeGreaterThanOrEqual(5);
+      expect(occs).toContain(region.defaultOccasion);
+    }
+
+    const sa = getOccasionsForRegion('India & South Asia');
+    expect(sa).toContain('Diwali & Festive Feasts');
+    expect(sa).toContain('South Indian Festive Feast');
+
+    const na = getOccasionsForRegion('North America');
+    expect(na).toContain('Thanksgiving Dinner');
+    expect(na).toContain('4th of July / Summer BBQ');
+
+    const eu = getOccasionsForRegion('Europe & Mediterranean');
+    expect(eu).toContain('Christmas Eve (Reveillon / Vigilia)');
+    expect(eu).toContain('Sunday Family Pranzo');
+
+    const asia = getOccasionsForRegion('East & Pan-Asian');
+    expect(asia).toContain('Lunar New Year / Spring Festival');
+    expect(asia).toContain('Dim Sum Brunch & Tea');
+
+    const me = getOccasionsForRegion('Middle East & Levantine');
+    expect(me).toContain('Eid al-Fitr Feast');
+    expect(me).toContain('Friday Family Mezze & Grill');
+
+    const la = getOccasionsForRegion('Latin America & Mexican');
+    expect(la).toContain('Día de los Muertos Fiesta');
+    expect(la).toContain('Cinco de Mayo Celebration');
+  });
+
+  it('recommends specific authentic dishes for continental festivals', () => {
+    const thanksgiving = recommendMenu({
+      location: 'North America',
+      country: 'US',
+      occasion: 'Thanksgiving Dinner',
+      availableRecipes: GLOBAL_RECIPES,
+    });
+    expect(
+      thanksgiving.some((r) => r.id === 'bbq-pulled-chicken' || r.id === 'mac-and-cheese'),
+    ).toBe(true);
+    expect(thanksgiving.some((r) => r.id === 'apple-pie')).toBe(true);
+
+    const southFeast = recommendMenu({
+      location: 'India & South Asia',
+      country: 'IN',
+      occasion: 'South Indian Festive Feast',
+      availableRecipes: GLOBAL_RECIPES,
+    });
+    expect(southFeast.some((r) => r.id === 'masala-dosa')).toBe(true);
+    expect(southFeast.some((r) => r.id === 'idli-sambar')).toBe(true);
+
+    const christmasEve = recommendMenu({
+      location: 'Europe & Mediterranean',
+      country: 'US',
+      occasion: 'Christmas Eve (Reveillon / Vigilia)',
+      availableRecipes: GLOBAL_RECIPES,
+    });
+    expect(christmasEve.some((r) => r.id === 'margherita-pizza' || r.id === 'veggie-lasagna')).toBe(
+      true,
+    );
+    expect(christmasEve.some((r) => r.id === 'classic-tiramisu')).toBe(true);
+
+    const eid = recommendMenu({
+      location: 'Middle East & Levantine',
+      country: 'US',
+      occasion: 'Eid al-Fitr Feast',
+      availableRecipes: GLOBAL_RECIPES,
+    });
+    expect(eid.some((r) => r.id === 'falafel-platter' || r.id === 'hummus-pita')).toBe(true);
+    expect(eid.some((r) => r.id === 'mandi-rice')).toBe(true);
+  });
+
+  it('verifies that every recipe thumbnail exists on disk without broken images', () => {
+    const publicFoodDir = path.resolve(__dirname, '../../apps/web/public');
+    for (const recipe of GLOBAL_RECIPES) {
+      expect(recipe.thumbnailUrl).toBeTruthy();
+      const url = recipe.thumbnailUrl ?? '';
+      const relativePath = url.startsWith('/') ? url.slice(1) : url;
+      const fullPath = path.join(publicFoodDir, relativePath);
+      expect(fs.existsSync(fullPath), `Missing image file for ${recipe.id}: ${fullPath}`).toBe(
+        true,
+      );
     }
   });
 });

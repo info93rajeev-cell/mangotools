@@ -29,7 +29,6 @@ const US_DINNER = [
   'caesar-salad',
   'new-york-cheesecake',
 ];
-
 const EU_DINNER = [
   'margherita-pizza',
   'penne-arrabbiata',
@@ -38,7 +37,6 @@ const EU_DINNER = [
   'mediterranean-salad',
   'classic-tiramisu',
 ];
-
 const ASIA_DINNER = [
   'veg-fried-rice',
   'hakka-noodles',
@@ -47,7 +45,6 @@ const ASIA_DINNER = [
   'sweet-corn-soup',
   'mango-sticky-rice',
 ];
-
 const ME_DINNER = [
   'falafel-platter',
   'hummus-pita',
@@ -56,7 +53,6 @@ const ME_DINNER = [
   'fattoush-salad',
   'baklava',
 ];
-
 const LA_DINNER = [
   'street-tacos',
   'cheese-quesadilla',
@@ -66,9 +62,43 @@ const LA_DINNER = [
   'churros',
 ];
 
-function getUSPreset(eligible: ExtendedFoodRecipe[], mealType?: string): ExtendedFoodRecipe[] {
-  if (mealType === 'breakfast') {
-    return findRecipesByIds(eligible, ['classic-pancakes', 'fresh-lemonade']);
+function getUSPreset(
+  eligible: ExtendedFoodRecipe[],
+  mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  const occ = (occasion ?? '').toLowerCase();
+  if (mealType === 'breakfast' || occ.includes('brunch')) {
+    return findRecipesByIds(eligible, [
+      'classic-pancakes',
+      'fresh-lemonade',
+      'chocolate-chip-cookies',
+    ]);
+  }
+  if (
+    occ.includes('bbq') ||
+    occ.includes('4th') ||
+    occ.includes('super bowl') ||
+    occ.includes('game day')
+  ) {
+    return findRecipesByIds(eligible, [
+      'bbq-pulled-chicken',
+      'buffalo-wings',
+      'black-bean-burger',
+      'creamy-coleslaw',
+      'chocolate-chip-cookies',
+      'fresh-lemonade',
+    ]);
+  }
+  if (occ.includes('thanksgiving') || occ.includes('christmas') || occ.includes('holiday')) {
+    return findRecipesByIds(eligible, [
+      'bbq-pulled-chicken',
+      'mac-and-cheese',
+      'mashed-potatoes',
+      'skillet-cornbread',
+      'caesar-salad',
+      'apple-pie',
+    ]);
   }
   if (mealType === 'lunch') {
     return findRecipesByIds(eligible, [
@@ -91,6 +121,22 @@ const IN_FESTIVAL = [
   'kaju-katli',
   'kheer',
 ];
+const IN_SOUTH_INDIAN = [
+  'masala-dosa',
+  'idli-sambar',
+  'medu-vada',
+  'hyderabadi-biryani',
+  'boondi-raita',
+  'kheer',
+];
+const IN_WEDDING = [
+  'hyderabadi-biryani',
+  'shahi-paneer',
+  'dal-tadka',
+  'paneer-tikka',
+  'kaju-katli',
+  'gulab-jamun',
+];
 const IN_DINNER = [
   'jeera-rice',
   'dal-tadka',
@@ -110,20 +156,111 @@ function getIndiaPreset(
   if (mealType === 'breakfast' || occ.includes('tea')) {
     return findRecipesByIds(eligible, IN_TEA);
   }
-  if (occ.includes('festival') || occ.includes('diwali')) {
+  if (occ.includes('south') || occ.includes('pongal') || occ.includes('onam')) {
+    return findRecipesByIds(eligible, IN_SOUTH_INDIAN);
+  }
+  if (occ.includes('wedding') || occ.includes('shaadi')) {
+    return findRecipesByIds(eligible, IN_WEDDING);
+  }
+  if (occ.includes('festival') || occ.includes('diwali') || occ.includes('puja')) {
     return findRecipesByIds(eligible, IN_FESTIVAL);
   }
   return findRecipesByIds(eligible, IN_DINNER);
 }
 
-function getCourseFallback(eligible: ExtendedFoodRecipe[]): ExtendedFoodRecipe[] {
-  const courses: Array<ExtendedFoodRecipe['course']> = ['snack', 'main', 'side', 'dessert'];
-  const result: ExtendedFoodRecipe[] = [];
-  for (const c of courses) {
-    const item = eligible.find((r) => r.course === c && !result.some((p) => p.id === r.id));
-    if (item) result.push(item);
+function getEuropePreset(
+  eligible: ExtendedFoodRecipe[],
+  _mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  const occ = (occasion ?? '').toLowerCase();
+  if (occ.includes('tapas') || occ.includes('garden')) {
+    return findRecipesByIds(eligible, [
+      'margherita-pizza',
+      'penne-arrabbiata',
+      'minestrone-soup',
+      'classic-tiramisu',
+    ]);
   }
-  return result.length > 0 ? result : eligible.slice(0, 4);
+  if (occ.includes('pranzo') || occ.includes('family')) {
+    return findRecipesByIds(eligible, [
+      'veggie-lasagna',
+      'penne-arrabbiata',
+      'mediterranean-salad',
+      'classic-tiramisu',
+    ]);
+  }
+  return findRecipesByIds(eligible, EU_DINNER);
+}
+
+function getPanAsianPreset(
+  eligible: ExtendedFoodRecipe[],
+  mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  const occ = (occasion ?? '').toLowerCase();
+  if (occ.includes('dim sum') || occ.includes('tea') || mealType === 'breakfast') {
+    return findRecipesByIds(eligible, [
+      'steamed-dim-sum',
+      'spring-rolls',
+      'sweet-corn-soup',
+      'mango-sticky-rice',
+    ]);
+  }
+  if (occ.includes('street') || occ.includes('night market')) {
+    return findRecipesByIds(eligible, [
+      'hakka-noodles',
+      'veg-fried-rice',
+      'spring-rolls',
+      'steamed-dim-sum',
+      'mango-sticky-rice',
+    ]);
+  }
+  return findRecipesByIds(eligible, ASIA_DINNER);
+}
+
+function getMiddleEastPreset(
+  eligible: ExtendedFoodRecipe[],
+  _mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  const occ = (occasion ?? '').toLowerCase();
+  if (occ.includes('mezze') || occ.includes('grill') || occ.includes('friday')) {
+    return findRecipesByIds(eligible, [
+      'hummus-pita',
+      'falafel-platter',
+      'shawarma-wrap',
+      'fattoush-salad',
+      'baklava',
+    ]);
+  }
+  return findRecipesByIds(eligible, ME_DINNER);
+}
+
+function getLatinAmericaPreset(
+  eligible: ExtendedFoodRecipe[],
+  _mealType?: string,
+  occasion?: string,
+): ExtendedFoodRecipe[] {
+  const occ = (occasion ?? '').toLowerCase();
+  if (occ.includes('taco') || occ.includes('street')) {
+    return findRecipesByIds(eligible, [
+      'street-tacos',
+      'cheese-quesadilla',
+      'guacamole-chips',
+      'churros',
+    ]);
+  }
+  if (occ.includes('asado') || occ.includes('barbacoa') || occ.includes('quinceañera')) {
+    return findRecipesByIds(eligible, [
+      'sizzling-fajitas',
+      'street-tacos',
+      'enchiladas-suizas',
+      'guacamole-chips',
+      'churros',
+    ]);
+  }
+  return findRecipesByIds(eligible, LA_DINNER);
 }
 
 function getRegionalPreset(
@@ -132,11 +269,11 @@ function getRegionalPreset(
   mealType?: string,
   occasion?: string,
 ): ExtendedFoodRecipe[] {
-  if (regionId === 'europe-med') return findRecipesByIds(eligible, EU_DINNER);
-  if (regionId === 'east-pan-asian') return findRecipesByIds(eligible, ASIA_DINNER);
-  if (regionId === 'middle-east') return findRecipesByIds(eligible, ME_DINNER);
-  if (regionId === 'latin-america') return findRecipesByIds(eligible, LA_DINNER);
-  if (regionId === 'north-america') return getUSPreset(eligible, mealType);
+  if (regionId === 'europe-med') return getEuropePreset(eligible, mealType, occasion);
+  if (regionId === 'east-pan-asian') return getPanAsianPreset(eligible, mealType, occasion);
+  if (regionId === 'middle-east') return getMiddleEastPreset(eligible, mealType, occasion);
+  if (regionId === 'latin-america') return getLatinAmericaPreset(eligible, mealType, occasion);
+  if (regionId === 'north-america') return getUSPreset(eligible, mealType, occasion);
   return getIndiaPreset(eligible, mealType, occasion);
 }
 
@@ -159,6 +296,16 @@ export function recommendMenu(params: MenuRecommendationParams): ExtendedFoodRec
 
   if (preset.length >= 2) return preset;
   return getCourseFallback(eligible);
+}
+
+function getCourseFallback(eligible: ExtendedFoodRecipe[]): ExtendedFoodRecipe[] {
+  const courses: Array<ExtendedFoodRecipe['course']> = ['snack', 'main', 'side', 'dessert'];
+  const result: ExtendedFoodRecipe[] = [];
+  for (const c of courses) {
+    const item = eligible.find((r) => r.course === c && !result.some((p) => p.id === r.id));
+    if (item) result.push(item);
+  }
+  return result.length > 0 ? result : eligible.slice(0, 4);
 }
 
 function findRecipesByIds(list: ExtendedFoodRecipe[], ids: string[]): ExtendedFoodRecipe[] {
