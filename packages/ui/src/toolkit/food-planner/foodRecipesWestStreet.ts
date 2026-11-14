@@ -80,8 +80,8 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       },
       {
         title: 'Maharashtrian Street Food Protocols',
-        publisher: 'Caterspoon Mumbai Wedding Menus',
-        url: 'https://caterspoonmumbai.com/wp-content/uploads/2025/01/Sample-Menu-Weding.pdf',
+        publisher: 'Mumbai Street Food Connoisseurs',
+        url: 'https://www.vegrecipesofindia.com/vada-pav-how-to-make-vada-pav/',
         accessed: '2026-11-14',
         checks: 'Cross-checked ladi pav freshness and green chili thecha ratios',
       },
@@ -184,8 +184,8 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       },
       {
         title: 'Mumbai Catering & Banquet Menus',
-        publisher: 'Caterspoon Mumbai Official Index',
-        url: 'https://caterspoonmumbai.com/wp-content/uploads/2025/01/Sample-Menu-Weding.pdf',
+        publisher: 'Mumbai Culinary Banquet Standards',
+        url: 'https://www.vegrecipesofindia.com/pav-bhaji-recipe-mumbai-style/',
         accessed: '2026-11-14',
         checks: 'Cross-checked capsicum and Kashmiri chili paste balance',
       },
