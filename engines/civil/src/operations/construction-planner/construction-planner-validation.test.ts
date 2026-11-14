@@ -5,9 +5,11 @@ import { describe, expect, it } from 'vitest';
 import { constructionPlanner } from './operation.ts';
 import { constructionPlannerInput } from './schema.ts';
 import type {
+  BeamMemberInput,
   CalculatedBarScheduleItem,
   ColumnMemberInput,
   FootingMemberInput,
+  SlabZoneMemberInput,
   TrackedValue,
 } from './types.ts';
 
@@ -106,7 +108,7 @@ describe('Construction Planner - Validation, Provenance & Aggregation', () => {
       bottomMeshXSpacingMm: tracked(150),
       bottomMeshYBarDiameterMm: tracked(12),
       bottomMeshYSpacingMm: tracked(150),
-      bendLegHeightMm: tracked(200), // Specified leg under Method A must not be silently ignored
+      bendLegHeightMm: tracked(200),
     };
 
     const parsed = constructionPlannerInput.safeParse({
@@ -143,7 +145,7 @@ describe('Construction Planner - Validation, Provenance & Aggregation', () => {
       heightMm: tracked(3000),
       mainBarDiameterMm: tracked(16),
       mainBarCount: tracked(4),
-      mainBarLapOrEndExtensionMm: tracked(300), // Specified extension under Method A
+      mainBarLapOrEndExtensionMm: tracked(300),
       tieDiameterMm: tracked(8),
       tieSpacingMm: tracked(150),
       tieHookAngle: tracked(135),
@@ -153,6 +155,87 @@ describe('Construction Planner - Validation, Provenance & Aggregation', () => {
       projectId: 'p1',
       projectName: 'Test Project',
       members: [colWithExt],
+    });
+
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) {
+      expect(
+        parsed.error.issues.some(
+          (i) =>
+            i.message ===
+            'IS 2502 method supports standard end bends only for this shape — use Site Practice method or enter a standard bend',
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it('rejects Method A when hook length is entered for beam (top or bottom bars)', () => {
+    const beamWithHook: BeamMemberInput = {
+      id: 'b1',
+      label: 'B1',
+      memberType: 'beam',
+      count: tracked(1),
+      concreteGrade: tracked('M25'),
+      steelGrade: tracked('Fe500'),
+      clearCoverMm: tracked(25),
+      cuttingMethod: tracked('is2502-method-a'),
+      is2502KFactor: tracked(3),
+      widthMm: tracked(250),
+      depthMm: tracked(450),
+      lengthMm: tracked(4000),
+      topBarDiameterMm: tracked(12),
+      topBarCount: tracked(2),
+      topBarEndHookLengthMm: tracked(200),
+      bottomBarDiameterMm: tracked(16),
+      bottomBarCount: tracked(3),
+      stirrupDiameterMm: tracked(8),
+      stirrupSpacingMm: tracked(150),
+      stirrupHookAngle: tracked(135),
+    };
+
+    const parsed = constructionPlannerInput.safeParse({
+      projectId: 'p1',
+      projectName: 'Test Project',
+      members: [beamWithHook],
+    });
+
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) {
+      expect(
+        parsed.error.issues.some(
+          (i) =>
+            i.message ===
+            'IS 2502 method supports standard end bends only for this shape — use Site Practice method or enter a standard bend',
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it('rejects Method A when leg length is entered for slab (main or dist bars)', () => {
+    const slabWithLeg: SlabZoneMemberInput = {
+      id: 's1',
+      label: 'S1',
+      memberType: 'slab',
+      count: tracked(1),
+      concreteGrade: tracked('M20'),
+      steelGrade: tracked('Fe500'),
+      clearCoverMm: tracked(20),
+      cuttingMethod: tracked('is2502-method-a'),
+      is2502KFactor: tracked(3),
+      lengthMm: tracked(5000),
+      widthMm: tracked(3000),
+      thicknessMm: tracked(150),
+      mainBarDiameterMm: tracked(10),
+      mainBarSpacingMm: tracked(150),
+      mainBarEndBendLegMm: tracked(100),
+      distBarDiameterMm: tracked(8),
+      distBarSpacingMm: tracked(200),
+    };
+
+    const parsed = constructionPlannerInput.safeParse({
+      projectId: 'p1',
+      projectName: 'Test Project',
+      members: [slabWithLeg],
     });
 
     expect(parsed.success).toBe(false);
