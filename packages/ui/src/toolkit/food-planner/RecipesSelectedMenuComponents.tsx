@@ -244,17 +244,8 @@ function SelectedMenuTable({
         <tbody>
           {grouped.map((group) => (
             <>
-              <tr key={`header-${group.key}`} style={{ background: '#f1f5f9' }}>
-                <td
-                  colSpan={6}
-                  style={{
-                    padding: '5px 8px',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    color: '#1e293b',
-                    letterSpacing: '0.02em',
-                  }}
-                >
+              <tr key={`header-${group.key}`} class={styles.courseGroupHeaderRow}>
+                <td colSpan={6} class={styles.courseGroupHeaderCell}>
                   {group.icon} {group.label} ({group.items.length})
                 </td>
               </tr>
