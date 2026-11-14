@@ -150,7 +150,7 @@ export const NORTH_REGIONAL_PRICES_INR_2: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '90',
     per: '100',
-    unit: 'g',
+    unit: 'ml',
     observedOn: '2026-11-01',
   },
   {
@@ -158,7 +158,7 @@ export const NORTH_REGIONAL_PRICES_INR_2: FoodPriceItem[] = [
     kind: 'wholesale-reference',
     priceInr: '70',
     per: '100',
-    unit: 'g',
+    unit: 'ml',
     observedOn: '2026-11-01',
   },
   {
@@ -214,7 +214,7 @@ export const NORTH_REGIONAL_PRICES_INR_2: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '60',
     per: '25',
-    unit: 'g',
+    unit: 'ml',
     observedOn: '2026-11-01',
   },
   {
@@ -222,7 +222,7 @@ export const NORTH_REGIONAL_PRICES_INR_2: FoodPriceItem[] = [
     kind: 'wholesale-reference',
     priceInr: '45',
     per: '25',
-    unit: 'g',
+    unit: 'ml',
     observedOn: '2026-11-01',
   },
   {

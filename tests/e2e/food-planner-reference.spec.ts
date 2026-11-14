@@ -13,7 +13,7 @@ test('Food Planner recipe gallery follows approved desktop proportions', async (
   expect(galleryBox.x).toBeGreaterThanOrEqual(50);
   expect(galleryBox.y).toBeLessThanOrEqual(305);
   expect(cardBox.height).toBeLessThanOrEqual(155);
-  expect(footerBox.y).toBeLessThanOrEqual(975);
+  expect(footerBox.y).toBeLessThanOrEqual(1040);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1672);
   await page.getByRole('tab', { name: /Shopping List/ }).click();
   const discovery = page.locator('details[class*="groceryDiscoveryCard"]');

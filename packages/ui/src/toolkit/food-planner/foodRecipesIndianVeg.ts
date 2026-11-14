@@ -1,3 +1,5 @@
+import { INDIAN_SOUTH_RICE } from './foodRecipesIndianSouthRice.ts';
+import { INDIAN_VEG_BIRYANI } from './foodRecipesIndianVegBiryani.ts';
 import { INDIAN_VEG_BREADS } from './foodRecipesIndianVegBreads.ts';
 import { INDIAN_VEG_CURRIES_1 } from './foodRecipesIndianVegCurries1.ts';
 import { INDIAN_VEG_CURRIES_2 } from './foodRecipesIndianVegCurries2.ts';
@@ -12,6 +14,8 @@ export const INDIAN_VEG_PARTY_RECIPES: ExtendedFoodRecipe[] = [
   ...INDIAN_VEG_CURRIES_1,
   ...INDIAN_VEG_CURRIES_2,
   ...INDIAN_VEG_RICE,
+  ...INDIAN_VEG_BIRYANI,
+  ...INDIAN_SOUTH_RICE,
   ...INDIAN_VEG_BREADS,
   ...INDIAN_VEG_SIDES_1,
   ...INDIAN_VEG_SIDES_2,

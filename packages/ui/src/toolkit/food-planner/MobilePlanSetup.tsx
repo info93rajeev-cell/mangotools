@@ -91,12 +91,14 @@ function handleMobileFieldChange(key: string, val: string, planner: UseFoodPlann
 }
 
 function handleMobilePlanUpdate(planner: UseFoodPlannerReturn) {
-  applyMobileRecommendation(
-    planner,
-    planner.setup.location,
-    planner.setup.occasion,
-    planner.setup.country,
-  );
+  if (planner.selectedRecipes.length === 0) {
+    applyMobileRecommendation(
+      planner,
+      planner.setup.location,
+      planner.setup.occasion,
+      planner.setup.country,
+    );
+  }
   planner.setSetup({ ...planner.setup });
 }
 
@@ -150,9 +152,9 @@ export function MobilePlanSetup({ planner, id }: { planner: UseFoodPlannerReturn
             value={setup.guests}
             onChange={(e) => handleMobileFieldChange('guests', e.currentTarget.value, planner)}
           >
-            {[10, 20, 50, 100, 250, 500].map((n) => (
+            {[10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 250, 500].map((n) => (
               <option key={n} value={n}>
-                {n}
+                {n} Guests
               </option>
             ))}
           </select>

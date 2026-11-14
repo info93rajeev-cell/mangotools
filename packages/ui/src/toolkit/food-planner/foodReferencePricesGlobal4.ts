@@ -5,8 +5,8 @@ export const GLOBAL_PRICES_INR_PART4: FoodPriceItem[] = [
     ingredient: 'saffron',
     kind: 'retail-reference',
     priceInr: '250',
-    per: '100',
-    unit: 'ml',
+    per: '1',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -38,7 +38,7 @@ export const GLOBAL_PRICES_INR_PART4: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '90',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -94,7 +94,7 @@ export const GLOBAL_PRICES_INR_PART4: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '70',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -102,7 +102,7 @@ export const GLOBAL_PRICES_INR_PART4: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '120',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -214,7 +214,7 @@ export const GLOBAL_PRICES_INR_PART4: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '30',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {

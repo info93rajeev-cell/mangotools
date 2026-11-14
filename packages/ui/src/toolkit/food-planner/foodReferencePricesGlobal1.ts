@@ -23,7 +23,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '60',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -31,7 +31,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'wholesale-reference',
     priceInr: '45',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -39,7 +39,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '15',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -47,7 +47,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'wholesale-reference',
     priceInr: '10',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -71,7 +71,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'retail-reference',
     priceInr: '70',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
   {
@@ -79,7 +79,7 @@ export const GLOBAL_PRICES_INR: FoodPriceItem[] = [
     kind: 'wholesale-reference',
     priceInr: '50',
     per: '100',
-    unit: 'ml',
+    unit: 'g',
     observedOn: '2026-11-13',
   },
 ];

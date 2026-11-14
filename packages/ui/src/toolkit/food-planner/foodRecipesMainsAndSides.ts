@@ -169,8 +169,8 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
   {
     id: 'raita',
     version: '1.0.0',
-    name: 'Boondi / Veg Raita',
-    localName: 'रायता',
+    name: 'Homestyle Mix Veg Raita',
+    localName: 'मिक्स वेज रायता',
     course: 'side',
     cuisine: 'North Indian',
     diet: 'vegetarian',
@@ -243,8 +243,8 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
   {
     id: 'mixed-veg-salad',
     version: '1.0.0',
-    name: 'Kachumber Salad',
-    localName: 'कचुंबर सलाद',
+    name: 'Fresh Garden Green Salad',
+    localName: 'ताज़ा हरा सलाद',
     course: 'side',
     cuisine: 'Indian',
     diet: 'vegan',

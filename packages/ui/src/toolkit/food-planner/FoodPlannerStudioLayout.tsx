@@ -112,18 +112,20 @@ function useSetupPlanHandlers(planner: UseFoodPlannerReturn, notify?: (msg: stri
   };
 
   const handleUpdatePlan = () => {
-    const isUS = isUSLocation(setup.location, setup.country);
-    const recommended = recommendMenu({
-      country: isUS ? 'US' : 'IN',
-      location: setup.location,
-      occasion: setup.occasion,
-      mealType: setup.mealType ?? 'Dinner',
-      diet: setup.diet,
-      guests: setup.guests,
-      availableRecipes: allRecipes,
-    });
-    if (recommended.length > 0) {
-      setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+    if (selectedRecipes.length === 0) {
+      const isUS = isUSLocation(setup.location, setup.country);
+      const recommended = recommendMenu({
+        country: isUS ? 'US' : 'IN',
+        location: setup.location,
+        occasion: setup.occasion,
+        mealType: setup.mealType ?? 'Dinner',
+        diet: setup.diet,
+        guests: setup.guests,
+        availableRecipes: allRecipes,
+      });
+      if (recommended.length > 0) {
+        setSelectedRecipeIds(new Set(recommended.map((r) => r.id)));
+      }
     }
     notify?.(`Plan updated for ${setup.guests} guests in ${setup.location} (${setup.occasion})`);
   };
@@ -346,12 +348,11 @@ function PlanSetupCard({
               onSetSetup({ ...setup, guests: Number((e.target as HTMLSelectElement).value) || 20 })
             }
           >
-            <option value="10">10 Guests</option>
-            <option value="20">20 Guests</option>
-            <option value="50">50 Guests</option>
-            <option value="100">100 Guests</option>
-            <option value="250">250 Guests</option>
-            <option value="500">500 Guests</option>
+            {[10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 250, 500].map((g) => (
+              <option key={g} value={g}>
+                {g} Guests
+              </option>
+            ))}
           </select>
         </div>
         <button type="button" class={styles.updatePlanBtn} onClick={onUpdate}>
