@@ -48,6 +48,7 @@ describe('registry pipeline — valid repository', () => {
       'cbm-calculator',
       'compress-pdf',
       'concrete-quantity-calculator',
+      'construction-project-planner',
       'container-loading-calculator',
       'csv-to-json',
       'excavation-calculator',
@@ -479,7 +480,7 @@ describe('category visibility threshold', () => {
     ]);
     expect(visibleAt(5)).toEqual(['construction', 'developer', 'pdf', 'media']);
     expect(visibleAt(6)).toEqual(['construction', 'developer', 'pdf', 'media']);
-    expect(visibleAt(7)).toEqual(['media']);
+    expect(visibleAt(7)).toEqual(['construction', 'media']);
     expect(visibleAt(8)).toEqual(['media']);
     expect(visibleAt(9)).toEqual(['media']);
     expect(visibleAt(10)).toEqual(['media']);

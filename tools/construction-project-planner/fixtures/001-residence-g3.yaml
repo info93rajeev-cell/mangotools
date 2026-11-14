@@ -1,0 +1,30 @@
+id: 001-residence-g3
+preset: civil/construction-planner
+source:
+  type: hand-verified
+  citation: "Hand-worked verification example 1 (Footing - IS 2502 Method A, k=3)"
+input:
+  projectId: "P01"
+  projectName: "P01 · Residence + Office (G+3)"
+  members:
+    - id: "F1"
+      label: "F1 - Isolated Footing"
+      memberType: "footing"
+      count: { value: 1, origin: "typed", confirmedByUser: true }
+      concreteGrade: { value: "M25", origin: "typed", confirmedByUser: true }
+      steelGrade: { value: "Fe500", origin: "typed", confirmedByUser: true }
+      clearCoverMm: { value: 50, origin: "typed", confirmedByUser: true }
+      cuttingMethod: { value: "is2502-method-a", origin: "typed", confirmedByUser: true }
+      is2502KFactor: { value: 3, origin: "typed", confirmedByUser: true }
+      lengthMm: { value: 2000, origin: "typed", confirmedByUser: true }
+      widthMm: { value: 1500, origin: "typed", confirmedByUser: true }
+      depthMm: { value: 400, origin: "typed", confirmedByUser: true }
+      bottomMeshXBarDiameterMm: { value: 12, origin: "typed", confirmedByUser: true }
+      bottomMeshXSpacingMm: { value: 150, origin: "typed", confirmedByUser: true }
+      bottomMeshYBarDiameterMm: { value: 12, origin: "typed", confirmedByUser: true }
+      bottomMeshYSpacingMm: { value: 150, origin: "typed", confirmedByUser: true }
+expected:
+  projectId: "P01"
+  projectName: "P01 · Residence + Office (G+3)"
+  totalConcreteVolumeM3: "1.2"
+  totalRebarWeightKg: "39.294"

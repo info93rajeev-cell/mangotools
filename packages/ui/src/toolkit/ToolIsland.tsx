@@ -21,6 +21,7 @@ import { t } from '../strings/en.ts';
 import { ActionBar, type ActionBarProps } from './ActionBar.tsx';
 import { amazonManualProfitabilityInput } from './amazonManualProfitabilityInput.ts';
 import { DynamicAmazonFeeLayout } from './DynamicAmazonFeeLayout.tsx';
+import { DynamicConstructionPlannerLayout } from './DynamicConstructionPlannerLayout.tsx';
 import { DynamicFoodPlannerLayout } from './DynamicFoodPlannerLayout.tsx';
 import { DynamicLogisticsLayout } from './DynamicLogisticsLayout.tsx';
 import { DynamicMarkupCalculatorLayout } from './DynamicMarkupCalculatorLayout.tsx';
@@ -64,6 +65,7 @@ const PDF_STUDIO_TOOL_IDS = new Set([
 ]);
 const FOOD_STUDIO_TOOL_IDS = new Set(['food-planner']);
 const SURVEY_STUDIO_TOOL_IDS = new Set(['survey-leveling-calculator']);
+const CONSTRUCTION_PLANNER_TOOL_IDS = new Set(['construction-project-planner']);
 export interface ToolIslandProps {
   toolId: string;
   archetype: 'A' | 'B' | 'D';
@@ -151,7 +153,8 @@ const isStandardCalculator = (
   presetId !== PACKING_LIST_MULTI_ITEM_PRESET_ID &&
   !BUSINESS_STUDIO_TOOL_IDS.has(toolId ?? '') &&
   !FOOD_STUDIO_TOOL_IDS.has(toolId ?? '') &&
-  !SURVEY_STUDIO_TOOL_IDS.has(toolId ?? '');
+  !SURVEY_STUDIO_TOOL_IDS.has(toolId ?? '') &&
+  !CONSTRUCTION_PLANNER_TOOL_IDS.has(toolId ?? '');
 interface ToolIslandViewProps extends ArchetypeProps {
   sampleId: string | null;
   displayPhase: FilePhase | ToolSnapshot['phase'];
@@ -178,12 +181,14 @@ function ToolIslandView(props: ToolIslandViewProps) {
   const isPdfStudio = PDF_STUDIO_TOOL_IDS.has(toolId);
   const isFoodStudio = FOOD_STUDIO_TOOL_IDS.has(toolId);
   const isSurveyStudio = SURVEY_STUDIO_TOOL_IDS.has(toolId);
+  const isConstructionStudio = CONSTRUCTION_PLANNER_TOOL_IDS.has(toolId);
   const isCustomStudio =
     isDataStudio ||
     BUSINESS_STUDIO_TOOL_IDS.has(toolId) ||
     isPdfStudio ||
     isFoodStudio ||
-    isSurveyStudio;
+    isSurveyStudio ||
+    isConstructionStudio;
   return (
     <div class={styles.island} data-tool-island={toolId} data-phase={displayPhase}>
       {standardCalculator || isCustomStudio ? null : (
@@ -206,6 +211,9 @@ function renderSpecialCalculators(props: ArchetypeProps) {
   }
   if (toolId === 'food-planner') {
     return <DynamicFoodPlannerLayout notify={notify} />;
+  }
+  if (toolId === 'construction-project-planner') {
+    return <DynamicConstructionPlannerLayout notify={notify} />;
   }
   if (toolId === 'gst-calculator') {
     return <DynamicUniversalTaxLayout notify={notify} />;

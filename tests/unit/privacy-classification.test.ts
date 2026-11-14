@@ -35,6 +35,7 @@ describe('privacy.dataClass classification', () => {
       'base64-encode-decode',
       'cbm-calculator',
       'compress-pdf',
+      'construction-project-planner',
       'csv-to-json',
       'export-commercial-invoice-generator',
       'export-packing-list-generator',
