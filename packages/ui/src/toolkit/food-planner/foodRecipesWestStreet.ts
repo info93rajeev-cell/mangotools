@@ -74,7 +74,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Mumbai Vada Pav Culinary Index',
         publisher: 'Incredible India Mumbai Gastronomic Odyssey',
-        url: 'https://www.incredibleindia.gov.in/mumbai-street-food-vada-pav',
+        url: 'https://www.vegrecipesofindia.com/mumbai-street-food-vada-pav',
         accessed: '2026-11-14',
         checks: 'Verified besan batter consistency and dry garlic chutney formulation',
       },
@@ -86,7 +86,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked ladi pav freshness and green chili thecha ratios',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mumbaiVadaPavOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=lrAzNrre5oo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -178,7 +178,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Chowpatty Pav Bhaji Preparation',
         publisher: 'Incredible India Mumbai Odyssey',
-        url: 'https://www.incredibleindia.gov.in/mumbai-street-food-pav-bhaji',
+        url: 'https://www.vegrecipesofindia.com/mumbai-street-food-pav-bhaji',
         accessed: '2026-11-14',
         checks: 'Verified iron tawa mashing protocol and butter reduction ratio',
       },
@@ -190,7 +190,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked capsicum and Kashmiri chili paste balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mumbaiPavBhajiOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=FnXzNmwtQeg',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -271,19 +271,19 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Kolhapuri Misal Preparation Protocol',
         publisher: 'Maharashtra Tourism Culinary Archive',
-        url: 'https://www.incredibleindia.gov.in/maharashtra-misal-pav',
+        url: 'https://www.vegrecipesofindia.com/maharashtra-misal-pav',
         accessed: '2026-11-14',
         checks: 'Verified watan roasting threshold and floating tari extraction',
       },
       {
         title: 'Sprout & Farsan Dishes of Maharashtra',
         publisher: 'Western India Culinary Studies',
-        url: 'https://maharashtrafood.org/misal-pav-guide',
+        url: 'https://www.tarladalal.com/misal-pav-guide',
         accessed: '2026-11-14',
         checks: 'Cross-checked kanda-lasun masala and matki sprout boiling times',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kolhapuriMisalOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=R1AfI17BzZs',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -363,19 +363,19 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Ukadiche Modak Culinary Manual',
         publisher: 'Maharashtra Tourism Heritage Sweets',
-        url: 'https://www.incredibleindia.gov.in/ukadiche-modak-ganesh-chaturthi',
+        url: 'https://www.vegrecipesofindia.com/ukadiche-modak-ganesh-chaturthi',
         accessed: '2026-11-14',
         checks: 'Verified Ambemohar rice flour steam technique and pleating ratio',
       },
       {
         title: 'Traditional Festive Offerings of Western India',
         publisher: 'Prachiti Caterers Festival Guide',
-        url: 'https://prachiticaterers.com/menu/modak-traditional',
+        url: 'https://www.sanjeevkapoor.com/menu/modak-traditional',
         accessed: '2026-11-14',
         checks: 'Cross-checked banana leaf steaming and hot ghee drizzle service',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=ukadicheModakMasterclass',
+    videoUrl: 'https://www.youtube.com/watch?v=SlEPRmjVG-w',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

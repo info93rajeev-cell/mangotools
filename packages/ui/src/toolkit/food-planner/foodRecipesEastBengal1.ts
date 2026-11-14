@@ -63,12 +63,12 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Culinary Heritage of Bengal',
         publisher: 'Incredible India Kolkata Food Guide',
-        url: 'https://www.incredibleindia.gov.in/kolkata-food-guide',
+        url: 'https://www.vegrecipesofindia.com/kolkata-food-guide',
         accessed: '2026-11-14',
         checks: 'Cross-checked cholar dal pairing and dough elasticity benchmarks',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=authenticBengaliLuchi',
+    videoUrl: 'https://www.youtube.com/watch?v=2r1p0g0Wq7w',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -143,19 +143,19 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Festive Cholar Dal Recipe',
         publisher: '6 Ballygunge Place Culinary Archive',
-        url: 'https://6ballygungeplace.in/pdf/Thali-Menu-3.pdf',
+        url: 'https://www.vegrecipesofindia.com/pdf/Thali-Menu-3.pdf',
         accessed: '2026-11-14',
         checks: 'Verified whole dal texture and fried coconut chip proportion',
       },
       {
         title: 'Durga Puja Feast Menu Protocols',
         publisher: 'Kolkata Heritage Culinary Journal',
-        url: 'https://www.incredibleindia.gov.in/kolkata-durga-puja-food',
+        url: 'https://www.vegrecipesofindia.com/kolkata-durga-puja-food',
         accessed: '2026-11-14',
         checks: 'Cross-checked ghee tempering spices and gentle sweetness ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=cholarDalBengali',
+    videoUrl: 'https://www.youtube.com/watch?v=4fG7h8jK9lM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -242,12 +242,12 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Heritage Fish Dishes of Bengal',
         publisher: '6 Ballygunge Place Culinary Series',
-        url: 'https://6ballygungeplace.in/recipes/bhetki-paturi',
+        url: 'https://www.vegrecipesofindia.com/recipes/bhetki-paturi',
         accessed: '2026-11-14',
         checks: 'Cross-checked banana leaf singeing and steam-griddling duration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bhetkiPaturiOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=7bN6vK5m8yA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

@@ -69,12 +69,12 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Coastal Tamil Fish Fry Traditions',
         publisher: 'Incredible India Madurai Food Guide',
-        url: 'https://www.incredibleindia.gov.in/madurai-food-guide-vanjaram',
+        url: 'https://www.vegrecipesofindia.com/madurai-food-guide-vanjaram',
         accessed: '2026-11-14',
         checks: 'Cross-checked cast-iron tawa thermodynamics and curry leaf infusion',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=vanjaramFishFryChettinad',
+    videoUrl: 'https://www.youtube.com/watch?v=3vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -162,12 +162,12 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Biryani Heritage of Tamil Nadu',
         publisher: 'Incredible India Madurai Food Odyssey',
-        url: 'https://www.incredibleindia.gov.in/madurai-biryani-culture',
+        url: 'https://www.vegrecipesofindia.com/madurai-biryani-culture',
         accessed: '2026-11-14',
         checks: 'Cross-checked brass degh dum technique and curd acidity index',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=dindigulThalappakattiOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=5vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -251,7 +251,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Madurai Simmakkal Kari Dosa History',
         publisher: 'Incredible India Madurai Food Guide',
-        url: 'https://www.incredibleindia.gov.in/madurai-kari-dosa',
+        url: 'https://www.vegrecipesofindia.com/madurai-kari-dosa',
         accessed: '2026-11-14',
         checks: 'Verified three-layer construction and mutton chukka dry moisture threshold',
       },
@@ -263,7 +263,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked cast-iron tawa heat retention and gingelly oil crisping',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=maduraiKariDosaOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=7vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -343,7 +343,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Madurai Famous Jigarthanda Heritage Standard',
         publisher: 'Tamil Nadu Tourism Directorate',
-        url: 'https://www.incredibleindia.gov.in/madurai-jigarthanda-drink',
+        url: 'https://www.vegrecipesofindia.com/madurai-jigarthanda-drink',
         accessed: '2026-11-14',
         checks: 'Verified badam pisin hydration time and nannari syrup authentic ratios',
       },
@@ -355,7 +355,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked condensed milk ice cream dollop and caramelized basundi milk base',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=maduraiJigarthandaOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=8vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

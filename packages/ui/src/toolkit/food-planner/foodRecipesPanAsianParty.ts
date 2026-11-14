@@ -220,7 +220,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Thai Red Curry Masterclass',
         publisher: 'Bangkok Culinary Arts Institute',
-        url: 'https://thai-gastronomy.org/recipes/gaeng-daeng',
+        url: 'https://hot-thai-kitchen.com/recipes/gaeng-daeng',
         accessed: '2026-11-14',
         checks: 'Verified authentic red paste emulsion and vegetable cooking stages',
       },

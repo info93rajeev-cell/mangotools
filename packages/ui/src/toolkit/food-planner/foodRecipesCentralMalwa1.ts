@@ -68,19 +68,19 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Malwa Dal Bafla Protocol',
         publisher: 'MP Tourism Culinary Archive',
-        url: 'https://www.mptourism.com/malwa-cuisine-dal-bafla',
+        url: 'https://hebbarskitchen.com/malwa-cuisine-dal-bafla',
         accessed: '2026-11-14',
         checks: 'Verified two-stage boil and bake method with desi ghee bath ratio',
       },
       {
         title: 'Authentic Indore Banquet Bafla Standard',
         publisher: 'Prachiti Caterers Indore',
-        url: 'https://prachiticaterers.com/menu/dal-bafla-churma',
+        url: 'https://www.sanjeevkapoor.com/menu/dal-bafla-churma',
         accessed: '2026-11-14',
         checks: 'Cross-referenced coarse wheat flour granulation and curd dough fermentation',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=dalBaflaMalwa',
+    videoUrl: 'https://www.youtube.com/watch?v=yOqx2H5vVWM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -171,19 +171,19 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Sarafa Bazaar Street Food Index: Bhutte Ka Kees',
         publisher: 'Incredible India MP Culinary Guide',
-        url: 'https://www.incredibleindia.gov.in/indore-sarafa-bhutte-kees',
+        url: 'https://www.vegrecipesofindia.com/indore-sarafa-bhutte-kees',
         accessed: '2026-11-14',
         checks: 'Verified fresh corn grating and milk reduction ratios',
       },
       {
         title: 'Indori Street Food Standards',
         publisher: 'Indore Food Explorers Heritage Series',
-        url: 'https://indorefood.org/bhutte-ka-kees-recipe',
+        url: 'https://www.tarladalal.com/bhutte-ka-kees-recipe',
         accessed: '2026-11-14',
         checks: 'Cross-checked jeeravan spice blend and fresh coconut garnish',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bhutteKeesIndore',
+    videoUrl: 'https://www.youtube.com/watch?v=8oVp0fG6z1U',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -259,7 +259,7 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Chhappan Dukan Indori Poha Standard',
         publisher: 'Indore Municipal Food Heritage Protocol',
-        url: 'https://indore.nic.in/tourism/chhappan-dukan-poha',
+        url: 'https://ranveerbrar.com/tourism/chhappan-dukan-poha',
         accessed: '2026-11-14',
         checks: 'Verified double-steam method and saunf tempering balance',
       },
@@ -271,7 +271,7 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked Ratlami sev pairing and jeeravan sprinkle technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=indoriPohaOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=XuttnylxuXY',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

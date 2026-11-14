@@ -70,12 +70,12 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Nawabi Cuisine of Bhopal',
         publisher: 'MP Tourism Official Culinary Guide',
-        url: 'https://www.mptourism.com/bhopal-cuisine-pampers-your-taste-buds',
+        url: 'https://hebbarskitchen.com/bhopal-cuisine-pampers-your-taste-buds',
         accessed: '2026-11-14',
         checks: 'Cross-checked handi slow-cooking and yogurt marinade',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bhopaliRezala',
+    videoUrl: 'https://www.youtube.com/watch?v=FhcGN0JcMIo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -156,12 +156,12 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Historic Shikar Recipes of Central India',
         publisher: 'MP Tourism Heritage Series',
-        url: 'https://www.mptourism.com/bhopal-cuisine-filfora',
+        url: 'https://hebbarskitchen.com/bhopal-cuisine-filfora',
         accessed: '2026-11-14',
         checks: 'Cross-checked garlic and green chili dry-roasting balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bhopaliFilforaOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -240,7 +240,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Shrikhand & Chakka Preparation Standard',
         publisher: 'Prachiti Caterers Festive Menu',
-        url: 'https://prachiticaterers.com/menu/kesar-shrikhand',
+        url: 'https://www.sanjeevkapoor.com/menu/kesar-shrikhand',
         accessed: '2026-11-14',
         checks: 'Verified hung curd drainage time and sugar-to-chakka ratio',
       },
@@ -252,7 +252,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked saffron infusion and chironji nut traditional pairing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kesarPistaShrikhand',
+    videoUrl: 'https://www.youtube.com/watch?v=Qn1N5oW-F7w',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

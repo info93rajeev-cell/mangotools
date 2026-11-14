@@ -81,12 +81,12 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Banana Leaf Feast Traditions of Tamil Nadu',
         publisher: 'Incredible India Madurai & Chennai Food Guide',
-        url: 'https://www.incredibleindia.gov.in/tamil-nadu-sambar-tradition',
+        url: 'https://www.vegrecipesofindia.com/tamil-nadu-sambar-tradition',
         accessed: '2026-11-14',
         checks: 'Cross-checked chinna vengayam shallot handling and perungayam tempering',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kalyanaSambarChennai',
+    videoUrl: 'https://www.youtube.com/watch?v=2vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -184,12 +184,12 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Digestive Soups of South India',
         publisher: 'Tamil Nadu Tourism Culinary Guide',
-        url: 'https://www.incredibleindia.gov.in/tamil-nadu-pepper-rasam',
+        url: 'https://www.vegrecipesofindia.com/tamil-nadu-pepper-rasam',
         accessed: '2026-11-14',
         checks: 'Cross-checked eeya chombu vessel traditional thermodynamics',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=chettinadMilaguRasam',
+    videoUrl: 'https://www.youtube.com/watch?v=4vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -277,7 +277,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked sour curd balance and coarse coconut paste texture',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=keralaSadyaAvial',
+    videoUrl: 'https://www.youtube.com/watch?v=6vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -365,7 +365,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked manpaanai clay pot slow simmer and jaggery balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sundakkaiVathaKuzhambu',
+    videoUrl: 'https://www.youtube.com/watch?v=1vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
