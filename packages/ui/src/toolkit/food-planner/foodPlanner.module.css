@@ -311,6 +311,11 @@
   flex-wrap: wrap;
   margin-bottom: 14px;
 }
+.dietaryFilterNav {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
 .filterPill {
   padding: 6px 12px;
   font-size: 12.5px;
@@ -397,6 +402,7 @@
   width: min(720px, calc(100vw - 24px));
   max-height: min(90vh, 900px);
   padding: 0;
+  background: #ffffff;
   border: 1px solid #b7c8ed;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(11, 16, 75, 0.25);
@@ -702,6 +708,16 @@
 }
 .table tr:last-child td {
   border-bottom: none;
+}
+.courseGroupHeaderRow {
+  background: #f1f5f9;
+}
+.courseGroupHeaderCell {
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: 0.02em;
 }
 
 /* Badges */
@@ -1757,4 +1773,526 @@
 }
 .groceryDiscoveryCard[open] .discoveryHeader {
   margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   Dark Mode Theme Overrides (:where([data-theme="dark"]))
+   ========================================================================== */
+
+:global(:where([data-theme="dark"])) .topHeader {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .toolTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .toolSubtitle {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .headerIcon {
+  background: #2e1d4f;
+  color: #f59e0b;
+}
+
+:global(:where([data-theme="dark"])) .guidePill {
+  background: #291e0a;
+  border-color: #78350f;
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .guidePill:hover {
+  background: #3d2a07;
+}
+
+:global(:where([data-theme="dark"])) .actionBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .actionBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .navPillBar {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .navPill {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .navPill:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .container .navPillActive,
+:global(:where([data-theme="dark"])) .container .navPillActive:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #0f172a;
+  font-weight: 700;
+}
+
+:global(:where([data-theme="dark"])) .planSetupCard {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .planSetupHeader {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .planSetupHeaderSub {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .fieldLabel {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .selectInput,
+:global(:where([data-theme="dark"])) .textInput {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .selectInput:focus,
+:global(:where([data-theme="dark"])) .textInput:focus {
+  border-color: #3b82f6;
+  outline-color: #3b82f6;
+}
+
+:global(:where([data-theme="dark"])) .card {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .cardTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .cardSubtitle {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .gallerySearchRow {
+  background: transparent;
+}
+
+:global(:where([data-theme="dark"])) .gallerySearchIcon {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .gallerySearchInput {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .gallerySearchInput:focus {
+  border-color: #3b82f6;
+}
+
+:global(:where([data-theme="dark"])) .filterPill {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .filterPill:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .filterPillActive {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .dietaryFilterNav {
+  border-bottom-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .recipeCard {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .recipeCard:hover {
+  border-color: #475569;
+}
+
+:global(:where([data-theme="dark"])) .recipeImageHolder {
+  background: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .recipeName {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .recipeInfoRow {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .recipeAvailability {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .recipeViewBtn {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid #334155;
+  color: #60a5fa;
+}
+
+:global(:where([data-theme="dark"])) .recipeViewBtn:hover {
+  background: rgba(30, 41, 59, 0.96);
+  color: #93c5fd;
+}
+
+:global(:where([data-theme="dark"])) .favBtn {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid #334155;
+}
+
+:global(:where([data-theme="dark"])) .addRecipeBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .addRecipeBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .addRecipeBtnAdded {
+  background: #064e3b;
+  border-color: #059669;
+  color: #6ee7b7;
+}
+
+:global(:where([data-theme="dark"])) .tableWrapper {
+  border-color: #1e293b;
+  background: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .table th {
+  background: #1e293b;
+  color: #cbd5e1;
+  border-bottom-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .table tr:nth-child(n) td {
+  color: #e2e8f0;
+  border-bottom-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .table tr:last-child td {
+  border-bottom: none;
+}
+
+:global(:where([data-theme="dark"])) .courseGroupHeaderRow {
+  background: #182438;
+}
+
+:global(:where([data-theme="dark"])) .courseGroupHeaderCell {
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .stepper {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .stepperBtn {
+  background: #0f172a;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .stepperBtn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .stepperVal {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .dashedBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .dashedBtn:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .paginationBar {
+  border-top-color: #1e293b;
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .pageBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .pageBtn:hover:not(:disabled) {
+  background: #334155;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .pageBtn:disabled {
+  opacity: 0.4;
+}
+
+:global(:where([data-theme="dark"])) .pageBtnActive {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+:global(:where([data-theme="dark"])) .pageSizeSelect {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .diwaliCard,
+:global(:where([data-theme="dark"])) .summaryBanner {
+  background: #1c1917;
+  border-color: #78350f;
+}
+
+:global(:where([data-theme="dark"])) .diwaliTitle {
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .diwaliArtRow {
+  border-top-color: #78350f;
+}
+
+:global(:where([data-theme="dark"])) .statLabel {
+  color: #fde68a;
+}
+
+:global(:where([data-theme="dark"])) .statValue {
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .estCostYellowBanner {
+  background: #1c1917;
+  border-color: #78350f;
+  color: #fde68a;
+}
+
+:global(:where([data-theme="dark"])) .estCostYellowBanner strong {
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .totalCostHighlight {
+  background: #1c1917;
+  border-color: #78350f;
+}
+
+:global(:where([data-theme="dark"])) .totalCostValue {
+  color: #fbbf24;
+}
+
+/* Modal Dialog Dark Theme */
+:global(:where([data-theme="dark"])) .recipeDetailDialog {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailClose {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailClose:hover {
+  background: #334155;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailBody h2 {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailBody h3 {
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailBody p {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailIngredients li {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailIngredients li strong {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .recipeIngredientNote {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailSteps li {
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .recipeStepPhase {
+  color: #60a5fa;
+}
+
+:global(:where([data-theme="dark"])) .recipeEventBadge {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .recipeCountryBadge {
+  background: #1e3a8a;
+  border-color: #2563eb;
+  color: #bfdbfe;
+}
+
+:global(:where([data-theme="dark"])) .recipeProTipsCard {
+  background: #1c1917;
+  border-color: #78350f;
+}
+
+:global(:where([data-theme="dark"])) .recipeProTipsTitle {
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .recipeProTipsList {
+  color: #fde68a;
+}
+
+:global(:where([data-theme="dark"])) .recipeAttributionNote,
+:global(:where([data-theme="dark"])) .recipeImageDisclosure,
+:global(:where([data-theme="dark"])) .recipeDetailCaution {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailBody a {
+  color: #60a5fa;
+}
+
+:global(:where([data-theme="dark"])) .recipeDetailBody a:hover {
+  color: #93c5fd;
+}
+
+/* Ingredients, Shopping, Cost, Schedule tabs */
+:global(:where([data-theme="dark"])) .categoryBreakdown {
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .breakdownRow {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .progressBarBg {
+  background: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .phaseHeader {
+  color: #f8fafc;
+  border-bottom-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .phaseTag {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .taskRow {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .taskInfo {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .taskTime {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .capacityWarning {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fca5a5;
+}
+
+:global(:where([data-theme="dark"])) .discoveryCard {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .discoveryTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .discoveryDesc {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .discoveryBtn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .groceryDiscoveryCard {
+  border-color: #1e293b;
+  background: #0f172a;
+}
+
+:global(:where([data-theme="dark"])) .groceryDiscoveryCard .discoveryHeader {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .donutCenterLabel {
+  fill: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .donutCenterNumber {
+  fill: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .donutCenterText {
+  fill: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .donutLegendItem {
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .otherCostsGrid {
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .otherCostRow {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
 }

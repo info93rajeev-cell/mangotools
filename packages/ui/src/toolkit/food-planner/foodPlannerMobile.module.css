@@ -836,3 +836,156 @@
   overflow-wrap: anywhere;
   margin-bottom: 4px;
 }
+
+/* ==========================================================================
+   Mobile Dark Mode Theme Overrides (:where([data-theme="dark"]))
+   ========================================================================== */
+
+:global(:where([data-theme="dark"])) .mobileSectionHeaderTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileSectionHeaderSub {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileSetupCard {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .mobileSetupTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileFieldLabel {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileSelect {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileNavPillsRow {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .mobileNavPill {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileNavPillActive {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #0f172a;
+  font-weight: 700;
+}
+
+:global(:where([data-theme="dark"])) .mobileCard {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .mobileCardTitle {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileCardSubtitle {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileEditBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #60a5fa;
+}
+
+:global(:where([data-theme="dark"])) .mobileDishItem {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .mobileContainer .mobileDishName {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileDishMeta {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileDishThumb {
+  background: #1e293b;
+}
+
+:global(:where([data-theme="dark"])) .mobileMetricBox {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .mobileMetricLabel {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileMetricValue {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTile {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTileLabel {
+  color: #94a3b8;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTileValue {
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTileYellow {
+  background: #1c1917;
+  border-color: #78350f;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTileYellow .mobileSummaryTileLabel {
+  color: #fde68a;
+}
+
+:global(:where([data-theme="dark"])) .mobileSummaryTileYellow .mobileSummaryTileValue {
+  color: #fbbf24;
+}
+
+:global(:where([data-theme="dark"])) .mobileAccordionHeader {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .mobileAccordionBody {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .mobileSecondaryBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:global(:where([data-theme="dark"])) .mobileOtherCostList > div {
+  border-bottom-color: #1e293b;
+  color: #e2e8f0;
+}
+
+:global(:where([data-theme="dark"])) .mobileCategoryMore summary {
+  color: #60a5fa;
+}
+
+:global(:where([data-theme="dark"])) .mobileCategoryMore > div {
+  background: #1e293b;
+  border-color: #334155;
+}

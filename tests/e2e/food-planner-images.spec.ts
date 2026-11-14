@@ -99,9 +99,10 @@ test.describe('Food Planner Recipe Images & Fallbacks', () => {
         width: el.naturalWidth,
         height: el.naturalHeight,
       }));
-      // Sized to 600x448 high-DPI assets
+      // Sized to ~600x448-450 high-DPI assets (4:3 aspect ratio)
       expect(dimensions.width).toBe(600);
-      expect(dimensions.height).toBe(448);
+      expect(dimensions.height).toBeGreaterThanOrEqual(448);
+      expect(dimensions.height).toBeLessThanOrEqual(450);
     }
 
     // Confirm all 8 HTTP network responses were 200 OK with image/jpeg

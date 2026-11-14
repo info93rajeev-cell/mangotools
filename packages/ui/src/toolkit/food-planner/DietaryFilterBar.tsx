@@ -26,15 +26,7 @@ export function DietaryFilterBar({
   const jainCount = catalogRecipes.filter((r) => r.diet === 'jain').length;
 
   return (
-    <nav
-      aria-label="Dietary Preferences"
-      class={styles.filterBar}
-      style={{
-        marginBottom: '10px',
-        paddingBottom: '8px',
-        borderBottom: '1px solid #e2e8f0',
-      }}
-    >
+    <nav aria-label="Dietary Preferences" class={`${styles.filterBar} ${styles.dietaryFilterNav}`}>
       <button
         type="button"
         class={`${styles.filterPill} ${activeDiet === 'all' ? styles.filterPillActive : ''}`}

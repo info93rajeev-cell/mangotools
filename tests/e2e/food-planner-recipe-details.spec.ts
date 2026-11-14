@@ -107,3 +107,27 @@ test('festival sweet recipe details show beginner phase titles and ingredient no
   await details.getByRole('button', { name: 'Close recipe' }).click();
   await expect(details).not.toBeVisible();
 });
+
+test('dark mode applies readable styling to food planner studio and recipe dialog', async ({
+  page,
+}) => {
+  await openTool(page, 'food-planner');
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  const header = page.locator('h2', { hasText: 'Food Planner' });
+  await expect(header).toBeVisible();
+  const headerColor = await header.evaluate((el) => window.getComputedStyle(el).color);
+  expect(headerColor).toBe('rgb(248, 250, 252)');
+
+  await page
+    .getByRole('button', { name: /View recipe: / })
+    .first()
+    .click();
+  const dialog = page.locator('dialog[open]');
+  await expect(dialog).toBeVisible();
+  const dialogBg = await dialog.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+  expect(dialogBg).toBe('rgb(15, 23, 42)');
+  const titleColor = await dialog.locator('h2').evaluate((el) => window.getComputedStyle(el).color);
+  expect(titleColor).toBe('rgb(248, 250, 252)');
+  await dialog.getByRole('button', { name: 'Close recipe' }).click();
+  await expect(dialog).not.toBeVisible();
+});

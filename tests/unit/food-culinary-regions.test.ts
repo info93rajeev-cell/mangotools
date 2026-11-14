@@ -130,7 +130,7 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
   it('has valid ingredients and matching dimensions for all Indian Veg party recipes', () => {
     const errors = validateRecipeIngredients(INDIAN_VEG_PARTY_RECIPES);
     expect(errors).toEqual([]);
-    expect(INDIAN_VEG_PARTY_RECIPES.length).toBe(22);
+    expect(INDIAN_VEG_PARTY_RECIPES.length).toBe(39);
   });
 
   it('has valid ingredients and matching dimensions for all Indian 5 Regions recipes', () => {
