@@ -42,10 +42,21 @@ export const CULINARY_REGIONS: CulinaryRegion[] = [
     occasions: [
       'Diwali & Festive Feasts',
       'Wedding / Shaadi Banquet',
+      'North Indian Wedding Banquet',
+      'Central & Malwa Royal Feast (Dal Bafla)',
+      'Bengali & East Wedding / Reception',
+      'Maharashtrian & West Celebration',
+      'South Indian Banana Leaf Feast',
+      'Old Delhi & Lucknow Restaurant Dine-In',
+      'Sarafa Bazaar & Street Chaat Counter',
+      'Mumbai Chowpatty Street Food & Pav',
+      'Kolkata Rolls & Street Food',
+      'Madurai & Chennai Tiffin & Street Feast',
+      'Village Authentic & Desi Traditional',
       'South Indian Festive Feast',
       'Eid Celebration',
-      'Birthday Party',
       'Puja / Religious Feast',
+      'Birthday Party',
       'Family Gathering',
       'Corporate Lunch',
     ],
@@ -222,6 +233,7 @@ export function isRecipeEligibleForLocation(
   const regId = getCulinaryRegionId(locationName, countryCode);
   if (regId === 'india-south-asia') {
     return (
+      Boolean(r.countries?.includes('IN')) ||
       r.cuisine.toLowerCase().includes('india') ||
       r.cuisine.toLowerCase().includes('hyderabadi') ||
       r.cuisine.toLowerCase().includes('punjabi') ||

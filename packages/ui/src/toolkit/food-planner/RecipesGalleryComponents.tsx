@@ -22,10 +22,13 @@ export function matchesRecipeFilter(
 ): boolean {
   if (favoritesOnly && !favorites.has(r.id)) return false;
   if (searchQuery) {
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
     const inName = r.name.toLowerCase().includes(q);
-    const inLocal = Boolean(r.localName?.includes(searchQuery));
-    if (!inName && !inLocal) return false;
+    const inLocal = Boolean(r.localName?.toLowerCase().includes(q));
+    const inCuisine = Boolean(r.cuisine?.toLowerCase().includes(q));
+    const inEvents = Boolean(r.events?.some((e) => e.toLowerCase().includes(q)));
+    const inId = r.id.toLowerCase().includes(q);
+    if (!inName && !inLocal && !inCuisine && !inEvents && !inId) return false;
   }
   if (!matchesDietaryFilter(r.diet, activeDiet)) return false;
   return matchesCourseFilter(r.course, activeCourse);

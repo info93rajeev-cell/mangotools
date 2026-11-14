@@ -1,6 +1,7 @@
 import { CATALOG_AWAITING_RECIPES } from './foodRecipesCatalogAwaiting.ts';
 import { EUROPE_RECIPES } from './foodRecipesEurope.ts';
 import { FESTIVAL_SWEET_RECIPES } from './foodRecipesFestivalSweets.ts';
+import { INDIA_5_REGIONS_RECIPES } from './foodRecipesIndia5Regions.ts';
 import { INDIAN_NON_VEG_RECIPES } from './foodRecipesIndianNonVeg.ts';
 import { INDIAN_VEG_PARTY_RECIPES } from './foodRecipesIndianVeg.ts';
 import { LATIN_AMERICA_RECIPES } from './foodRecipesLatinAmerica.ts';
@@ -21,6 +22,7 @@ export type { ExtendedFoodRecipe, ImageProvenance, RecipeVerificationInfo };
 export {
   CATALOG_AWAITING_RECIPES,
   EUROPE_RECIPES,
+  INDIA_5_REGIONS_RECIPES,
   INDIAN_NON_VEG_RECIPES,
   INDIAN_VEG_PARTY_RECIPES,
   LATIN_AMERICA_RECIPES,
@@ -107,6 +109,7 @@ export const GLOBAL_RECIPES: ExtendedFoodRecipe[] = [
   ...SOUTH_ASIA_RECIPES,
   ...INDIAN_NON_VEG_RECIPES,
   ...INDIAN_VEG_PARTY_RECIPES,
+  ...INDIA_5_REGIONS_RECIPES,
   ...US_RECIPES,
   ...EUROPE_RECIPES,
   ...PAN_ASIAN_RECIPES,

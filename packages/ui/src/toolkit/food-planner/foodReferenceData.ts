@@ -28,6 +28,7 @@ export {
   GLOBAL_RECIPES,
   getRecipeVerificationInfo,
   type ImageProvenance,
+  INDIA_5_REGIONS_RECIPES,
   INDIAN_NON_VEG_RECIPES,
   INDIAN_VEG_PARTY_RECIPES,
   LATIN_AMERICA_RECIPES,

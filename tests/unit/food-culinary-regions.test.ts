@@ -13,6 +13,7 @@ import {
   CATALOG_INGREDIENTS,
   EUROPE_RECIPES,
   GLOBAL_RECIPES,
+  INDIA_5_REGIONS_RECIPES,
   INDIAN_NON_VEG_RECIPES,
   INDIAN_VEG_PARTY_RECIPES,
   LATIN_AMERICA_RECIPES,
@@ -132,6 +133,12 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
     expect(INDIAN_VEG_PARTY_RECIPES.length).toBe(22);
   });
 
+  it('has valid ingredients and matching dimensions for all Indian 5 Regions recipes', () => {
+    const errors = validateRecipeIngredients(INDIA_5_REGIONS_RECIPES);
+    expect(errors).toEqual([]);
+    expect(INDIA_5_REGIONS_RECIPES.length).toBe(47);
+  });
+
   it('filters recipes accurately by dietary preference (veg vs non-veg)', () => {
     const inEligible = GLOBAL_RECIPES.filter((r) =>
       isRecipeEligibleForLocation(r, 'India & South Asia'),
@@ -139,7 +146,7 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
     const vegOnly = inEligible.filter((r) => matchesDietaryFilter(r.diet, 'veg'));
     const nonVegOnly = inEligible.filter((r) => matchesDietaryFilter(r.diet, 'non-veg'));
     expect(vegOnly.length).toBeGreaterThanOrEqual(20);
-    expect(nonVegOnly.length).toBe(12);
+    expect(nonVegOnly.length).toBe(25);
     expect(
       vegOnly.every((r) => r.diet === 'vegetarian' || r.diet === 'vegan' || r.diet === 'jain'),
     ).toBe(true);
@@ -156,7 +163,8 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
       RECIPES.length +
         SOUTH_ASIA_RECIPES.length +
         INDIAN_NON_VEG_RECIPES.length +
-        INDIAN_VEG_PARTY_RECIPES.length,
+        INDIAN_VEG_PARTY_RECIPES.length +
+        INDIA_5_REGIONS_RECIPES.length,
     );
     expect(inEligible.some((r) => r.id === 'idli-sambar')).toBe(true);
     expect(inEligible.some((r) => r.id === 'hyderabadi-biryani')).toBe(true);

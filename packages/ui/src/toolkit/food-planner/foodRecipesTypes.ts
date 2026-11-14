@@ -36,6 +36,8 @@ export interface ExtendedFoodRecipe {
   awaitingData?: boolean;
   countries?: string[];
   events?: string[];
+  subRegion?: 'north' | 'central' | 'east' | 'west' | 'south';
+  diningContext?: Array<'wedding' | 'restaurant' | 'street-food' | 'traditional'>;
   proTips?: string[];
   videoUrl?: string;
 }
