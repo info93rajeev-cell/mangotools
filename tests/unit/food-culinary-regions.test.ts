@@ -99,25 +99,25 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
   it('has valid ingredients and matching dimensions for all European recipes', () => {
     const errors = validateRecipeIngredients(EUROPE_RECIPES);
     expect(errors).toEqual([]);
-    expect(EUROPE_RECIPES.length).toBe(11);
+    expect(EUROPE_RECIPES.length).toBe(15);
   });
 
   it('has valid ingredients and matching dimensions for all Pan-Asian recipes', () => {
     const errors = validateRecipeIngredients(PAN_ASIAN_RECIPES);
     expect(errors).toEqual([]);
-    expect(PAN_ASIAN_RECIPES.length).toBe(11);
+    expect(PAN_ASIAN_RECIPES.length).toBe(15);
   });
 
   it('has valid ingredients and matching dimensions for all Middle Eastern recipes', () => {
     const errors = validateRecipeIngredients(MIDDLE_EAST_RECIPES);
     expect(errors).toEqual([]);
-    expect(MIDDLE_EAST_RECIPES.length).toBe(11);
+    expect(MIDDLE_EAST_RECIPES.length).toBe(15);
   });
 
   it('has valid ingredients and matching dimensions for all Latin American recipes', () => {
     const errors = validateRecipeIngredients(LATIN_AMERICA_RECIPES);
     expect(errors).toEqual([]);
-    expect(LATIN_AMERICA_RECIPES.length).toBe(11);
+    expect(LATIN_AMERICA_RECIPES.length).toBe(14);
   });
 
   it('has valid ingredients and matching dimensions for all Indian Non-Veg recipes', () => {

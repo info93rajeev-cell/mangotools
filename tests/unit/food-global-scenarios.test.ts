@@ -27,8 +27,8 @@ import {
 } from '../../packages/ui/src/toolkit/food-planner/plannerUnits.ts';
 
 describe('Global Food Planner Scenarios & Verification', () => {
-  it('contains 16 authentic, source-checked American recipes', () => {
-    expect(US_RECIPES.length).toBe(16);
+  it('contains 19 authentic, source-checked American recipes', () => {
+    expect(US_RECIPES.length).toBe(19);
     for (const recipe of US_RECIPES) {
       expect(recipe.countries).toContain('US');
       expect(recipe.sources).toBeDefined();
