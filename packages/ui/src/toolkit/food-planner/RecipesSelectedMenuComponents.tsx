@@ -183,6 +183,17 @@ function SelectedMenuRow({
   );
 }
 
+const COURSE_ORDER: Array<{ key: string; label: string; icon: string }> = [
+  { key: 'bread', label: 'Breads & Roti', icon: '🫓' },
+  { key: 'main', label: 'Main Curries', icon: '🍲' },
+  { key: 'dal', label: 'Dal & Legumes', icon: '🍛' },
+  { key: 'rice', label: 'Rice & Biryani', icon: '🍚' },
+  { key: 'snack', label: 'Starters & Snacks', icon: '🥟' },
+  { key: 'side', label: 'Sides & Raita', icon: '🥗' },
+  { key: 'dessert', label: 'Sweets & Mithai', icon: '🧁' },
+  { key: 'drink', label: 'Drinks & Beverages', icon: '☕' },
+];
+
 function SelectedMenuTable({
   recipes,
   guests,
@@ -204,6 +215,19 @@ function SelectedMenuTable({
     );
   }
 
+  const grouped = COURSE_ORDER.map((c) => ({
+    ...c,
+    items: recipes.filter((r) => r.course === c.key),
+  })).filter((g) => g.items.length > 0);
+
+  const knownKeys = new Set(COURSE_ORDER.map((c) => c.key));
+  const otherItems = recipes.filter((r) => !knownKeys.has(r.course));
+  if (otherItems.length > 0) {
+    grouped.push({ key: 'other', label: 'Other Dishes', icon: '🍽️', items: otherItems });
+  }
+
+  let counter = 0;
+
   return (
     <div class={styles.tableWrapper}>
       <table class={styles.table} aria-label="Selected Dishes Table">
@@ -218,16 +242,37 @@ function SelectedMenuTable({
           </tr>
         </thead>
         <tbody>
-          {recipes.map((recipe, idx) => (
-            <SelectedMenuRow
-              key={recipe.id}
-              recipe={recipe}
-              idx={idx}
-              guests={guests}
-              factor={portionFactors[recipe.id] ?? 1}
-              onSetPortion={onSetPortion}
-              onRemove={onRemove}
-            />
+          {grouped.map((group) => (
+            <>
+              <tr key={`header-${group.key}`} style={{ background: '#f1f5f9' }}>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: '5px 8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#1e293b',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {group.icon} {group.label} ({group.items.length})
+                </td>
+              </tr>
+              {group.items.map((recipe) => {
+                counter += 1;
+                return (
+                  <SelectedMenuRow
+                    key={recipe.id}
+                    recipe={recipe}
+                    idx={counter - 1}
+                    guests={guests}
+                    factor={portionFactors[recipe.id] ?? 1}
+                    onSetPortion={onSetPortion}
+                    onRemove={onRemove}
+                  />
+                );
+              })}
+            </>
           ))}
         </tbody>
       </table>
