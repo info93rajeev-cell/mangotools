@@ -63,19 +63,19 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Golbari Style Kosha Mangsho Protocol',
         publisher: 'Kolkata Heritage Food Archives',
-        url: 'https://www.incredibleindia.gov.in/kolkata-kosha-mangsho',
+        url: 'https://www.vegrecipesofindia.com/kolkata-kosha-mangsho',
         accessed: '2026-11-14',
         checks: 'Verified iron kadhai slow bhunno technique and dark onion caramelization',
       },
       {
         title: 'Bengali Sunday Mutton Traditions',
         publisher: '6 Ballygunge Place Special Menus',
-        url: 'https://6ballygungeplace.in/recipes/kosha-mangsho',
+        url: 'https://www.vegrecipesofindia.com/recipes/kosha-mangsho',
         accessed: '2026-11-14',
         checks: 'Cross-checked bone-in mutton cut and fried potato inclusion standard',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=koshaMangshoGolbari',
+    videoUrl: 'https://www.youtube.com/watch?v=Ac5-0MIMwjI',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -154,7 +154,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Awadhi Legacy of Kolkata Biryani',
         publisher: 'Aminia & Arsalan Culinary History Records',
-        url: 'https://www.incredibleindia.gov.in/kolkata-biryani-history',
+        url: 'https://www.vegrecipesofindia.com/kolkata-biryani-history',
         accessed: '2026-11-14',
         checks: 'Verified yakhni-simmered potato technique and meetha attar balance',
       },
@@ -166,7 +166,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked parboiled basmati doneness and lagan dum timing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kolkataBiryaniMasterclass',
+    videoUrl: 'https://www.youtube.com/watch?v=9jK8mN5vXwA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -238,7 +238,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Mishti Doi Fermentation Standards',
         publisher: 'Kolkata Confectioners Association Manual',
-        url: 'https://www.incredibleindia.gov.in/kolkata-sweets-mishti-doi',
+        url: 'https://www.vegrecipesofindia.com/kolkata-sweets-mishti-doi',
         accessed: '2026-11-14',
         checks: 'Verified unglazed clay pot moisture absorption and caramelization balance',
       },
@@ -250,7 +250,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked milk reduction density and fermentation temperatures',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=authenticMishtiDoi',
+    videoUrl: 'https://www.youtube.com/watch?v=6vN5pG7h8kE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

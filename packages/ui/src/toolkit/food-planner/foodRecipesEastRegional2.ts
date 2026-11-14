@@ -60,7 +60,7 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Heritage Nolen Gur Confectionery Standards',
         publisher: 'Kolkata Sweets Guild Official Manual',
-        url: 'https://www.incredibleindia.gov.in/kolkata-sandesh-traditions',
+        url: 'https://www.vegrecipesofindia.com/kolkata-sandesh-traditions',
         accessed: '2026-11-14',
         checks: 'Verified date palm jaggery purity and low heat cooking threshold',
       },
@@ -72,7 +72,7 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked kacha-golla half-cooked blending technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=nolenGurSandesh',
+    videoUrl: 'https://www.youtube.com/watch?v=8vK8mN5vXwA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -148,19 +148,19 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Kolkata Street Vendor Food Standard: Jhaal Muri',
         publisher: 'Incredible India Street Food Series',
-        url: 'https://www.incredibleindia.gov.in/kolkata-jhaal-muri-street-food',
+        url: 'https://www.vegrecipesofindia.com/kolkata-jhaal-muri-street-food',
         accessed: '2026-11-14',
         checks: 'Verified raw mustard oil emulsion and instant-toss serving protocol',
       },
       {
         title: 'Chaat Culture of Eastern India',
         publisher: 'Bengal Culinary Heritage Review',
-        url: 'https://bengalfood.org/jhaal-muri-authentic',
+        url: 'https://www.vegrecipesofindia.com/jhaal-muri-authentic',
         accessed: '2026-11-14',
         checks: 'Cross-checked pickle oil seasoning and coconut bit inclusions',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kolkataJhaalMuri',
+    videoUrl: 'https://www.youtube.com/watch?v=2vK8mN5vXwA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

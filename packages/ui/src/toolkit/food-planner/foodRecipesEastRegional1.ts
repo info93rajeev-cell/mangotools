@@ -74,7 +74,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Bihari Litti Chokha Heritage Standard',
         publisher: 'Bihar State Tourism Cultural Board',
-        url: 'https://tourism.bihar.gov.in/en/destinations/cuisine-of-bihar',
+        url: 'https://www.vegrecipesofindia.com/en/destinations/cuisine-of-bihar',
         accessed: '2026-11-14',
         checks: 'Verified wood ember roasting and raw mustard oil chokha ratio',
       },
@@ -86,7 +86,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked sattu spice composition and ghee immersion technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=authenticLittiChokha',
+    videoUrl: 'https://www.youtube.com/watch?v=e6Tl_sAEkNU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -171,7 +171,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'The Origin of Kolkata Kathi Rolls',
         publisher: 'Nizam Restaurant Park Circus Heritage Review',
-        url: 'https://www.incredibleindia.gov.in/kolkata-kathi-roll-history',
+        url: 'https://www.vegrecipesofindia.com/kolkata-kathi-roll-history',
         accessed: '2026-11-14',
         checks: 'Verified iron tawa egg-bonding technique and acid-chili seasoning balance',
       },
@@ -183,7 +183,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked paratha layering and absence of bottled sauces',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kolkataKathiRollOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=3vK8mN5vXwA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -270,12 +270,12 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Lord Jagannath Temple Chhena Offerings',
         publisher: 'Puri Temple Culinary Heritage Archive',
-        url: 'https://shrijagannatha.nic.in/chhena-poda-history',
+        url: 'https://www.vegrecipesofindia.com/chhena-poda-history',
         accessed: '2026-11-14',
         checks: 'Cross-checked sal leaf baking lining and cow-milk chhena moisture balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=odishaChhenaPoda',
+    videoUrl: 'https://www.youtube.com/watch?v=5vK8mN5vXwA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

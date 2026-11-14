@@ -4,6 +4,16 @@ import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { type ExtendedFoodRecipe, getRecipeVerificationInfo } from './foodRecipesData.ts';
 import { CATALOG_INGREDIENTS } from './foodReferenceData.ts';
 
+export function getRecipeVideoTutorialUrl(recipe: ExtendedFoodRecipe): string {
+  if (recipe.videoUrl && /(?:watch\?v=|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(recipe.videoUrl)) {
+    return recipe.videoUrl;
+  }
+  const cleanName = recipe.name.replace(/\([^)]*\)/g, '').trim();
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    `${cleanName} authentic recipe video tutorial`,
+  )}`;
+}
+
 export function scaledRecipeQuantity(
   quantity: string,
   unit: string,
@@ -63,18 +73,16 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
               ))}
             </div>
           )}
-          {recipe.videoUrl && (
-            <div class={s.recipeDetailActions}>
-              <a
-                href={recipe.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={s.recipeDetailVideoBtn}
-              >
-                ▶ Watch Video Tutorial
-              </a>
-            </div>
-          )}
+          <div class={s.recipeDetailActions}>
+            <a
+              href={getRecipeVideoTutorialUrl(recipe)}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={s.recipeDetailVideoBtn}
+            >
+              ▶ Watch Video Tutorial
+            </a>
+          </div>
           {recipe.imageProvenance && (
             <p class={s.recipeImageDisclosure}>{recipe.imageProvenance.notes}</p>
           )}

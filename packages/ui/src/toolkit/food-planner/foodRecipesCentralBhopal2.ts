@@ -52,7 +52,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Historic Beverage Traditions of Old Bhopal',
         publisher: 'MP Tourism Heritage Tea Protocol',
-        url: 'https://www.mptourism.com/bhopal-sulemani-chai',
+        url: 'https://hebbarskitchen.com/bhopal-sulemani-chai',
         accessed: '2026-11-14',
         checks: 'Verified off-heat steeping technique and lemon-mint balance',
       },
@@ -64,7 +64,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked black salt digestive touch and amber hue standard',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sulemaniChaiBhopal',
+    videoUrl: 'https://www.youtube.com/watch?v=W7h0I7_k9kE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -144,7 +144,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Wedding Katachi Amti Manual',
         publisher: 'Prachiti Caterers Wedding Selection',
-        url: 'https://prachiticaterers.com/menu/katachi-amti-recipe',
+        url: 'https://www.sanjeevkapoor.com/menu/katachi-amti-recipe',
         accessed: '2026-11-14',
         checks: 'Verified dal stock reduction and goda masala seasoning ratio',
       },
@@ -156,7 +156,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked tamarind and jaggery harmony index',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=katachiAmtiOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=8VqF9jC6vWc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

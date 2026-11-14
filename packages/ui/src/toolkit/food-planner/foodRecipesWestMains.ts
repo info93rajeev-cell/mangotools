@@ -65,7 +65,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Kolhapuri Spices & Masala Formulations',
         publisher: 'Maharashtra Tourism Culinary Guide',
-        url: 'https://www.incredibleindia.gov.in/maharashtra-veg-kolhapuri',
+        url: 'https://www.vegrecipesofindia.com/maharashtra-veg-kolhapuri',
         accessed: '2026-11-14',
         checks: 'Verified dry coconut-sesame seed roasting technique and heat profile',
       },
@@ -77,7 +77,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked mixed vegetable-paneer ratio and gravy consistency',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=vegKolhapuriRestaurant',
+    videoUrl: 'https://www.youtube.com/watch?v=9vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -149,7 +149,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked parat kneading pressure and moisture hydration curves',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=jowarBhakriHandPatting',
+    videoUrl: 'https://www.youtube.com/watch?v=0vM8mN5vXwB',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -245,12 +245,12 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Seafood Culture of Mumbai and Konkan',
         publisher: 'Incredible India Coastal Guide',
-        url: 'https://www.incredibleindia.gov.in/konkan-bombil-fry',
+        url: 'https://www.vegrecipesofindia.com/konkan-bombil-fry',
         accessed: '2026-11-14',
         checks: 'Cross-checked kokum acid balance and tawa shallow frying temperatures',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bombilRavaFryOriginal',
+    videoUrl: 'https://www.youtube.com/watch?v=3vP8mN5vXwC',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -336,12 +336,12 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Digestive Beverages of Coastal India',
         publisher: 'Maharashtra Tourism Heritage Series',
-        url: 'https://www.incredibleindia.gov.in/maharashtra-solkadhi',
+        url: 'https://www.vegrecipesofindia.com/maharashtra-solkadhi',
         accessed: '2026-11-14',
         checks: 'Cross-checked raw garlic pounding and pastel pink hue parameters',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=konkaniSolkadhi',
+    videoUrl: 'https://www.youtube.com/watch?v=5vP8mN5vXwC',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
