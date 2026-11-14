@@ -50,7 +50,7 @@ export const footingMemberSchema = baseMemberSchema.extend({
   bottomMeshXSpacingMm: trackedValueSchema(positiveNumber),
   bottomMeshYBarDiameterMm: trackedValueSchema(positiveNumber),
   bottomMeshYSpacingMm: trackedValueSchema(positiveNumber),
-  bendLegHeightMm: trackedValueSchema(nonNegativeNumber),
+  bendLegHeightMm: trackedValueSchema(nonNegativeNumber).optional(),
 });
 
 export const columnMemberSchema = baseMemberSchema.extend({
@@ -60,7 +60,7 @@ export const columnMemberSchema = baseMemberSchema.extend({
   heightMm: trackedValueSchema(positiveNumber),
   mainBarDiameterMm: trackedValueSchema(positiveNumber),
   mainBarCount: trackedValueSchema(positiveInt),
-  mainBarLapOrEndExtensionMm: trackedValueSchema(nonNegativeNumber),
+  mainBarLapOrEndExtensionMm: trackedValueSchema(nonNegativeNumber).optional(),
   tieDiameterMm: trackedValueSchema(positiveNumber),
   tieSpacingMm: trackedValueSchema(positiveNumber),
   tieHookAngle: trackedValueSchema(z.union([z.literal(90), z.literal(135), z.literal(180)])),
@@ -75,10 +75,10 @@ export const beamMemberSchema = baseMemberSchema.extend({
   lengthMm: trackedValueSchema(positiveNumber),
   topBarDiameterMm: trackedValueSchema(positiveNumber),
   topBarCount: trackedValueSchema(positiveInt),
-  topBarEndHookLengthMm: trackedValueSchema(nonNegativeNumber),
+  topBarEndHookLengthMm: trackedValueSchema(nonNegativeNumber).optional(),
   bottomBarDiameterMm: trackedValueSchema(positiveNumber),
   bottomBarCount: trackedValueSchema(positiveInt),
-  bottomBarEndHookLengthMm: trackedValueSchema(nonNegativeNumber),
+  bottomBarEndHookLengthMm: trackedValueSchema(nonNegativeNumber).optional(),
   stirrupDiameterMm: trackedValueSchema(positiveNumber),
   stirrupSpacingMm: trackedValueSchema(positiveNumber),
   stirrupHookAngle: trackedValueSchema(z.union([z.literal(90), z.literal(135), z.literal(180)])),
@@ -93,10 +93,10 @@ export const slabZoneMemberSchema = baseMemberSchema.extend({
   thicknessMm: trackedValueSchema(positiveNumber),
   mainBarDiameterMm: trackedValueSchema(positiveNumber),
   mainBarSpacingMm: trackedValueSchema(positiveNumber),
-  mainBarEndBendLegMm: trackedValueSchema(nonNegativeNumber),
+  mainBarEndBendLegMm: trackedValueSchema(nonNegativeNumber).optional(),
   distBarDiameterMm: trackedValueSchema(positiveNumber),
   distBarSpacingMm: trackedValueSchema(positiveNumber),
-  distBarEndBendLegMm: trackedValueSchema(nonNegativeNumber),
+  distBarEndBendLegMm: trackedValueSchema(nonNegativeNumber).optional(),
 });
 
 export const constructionMemberSchema = z
@@ -116,6 +116,35 @@ export const constructionMemberSchema = z
     {
       message: 'CIVIL_MISSING_IS2502_K_FACTOR',
       path: ['is2502KFactor'],
+    },
+  )
+  .refine(
+    (member) => {
+      if (member.cuttingMethod.value !== 'is2502-method-a') {
+        return true;
+      }
+      if (member.memberType === 'footing') {
+        return !member.bendLegHeightMm || member.bendLegHeightMm.value <= 0;
+      }
+      if (member.memberType === 'column') {
+        return !member.mainBarLapOrEndExtensionMm || member.mainBarLapOrEndExtensionMm.value <= 0;
+      }
+      if (member.memberType === 'beam') {
+        const top = !member.topBarEndHookLengthMm || member.topBarEndHookLengthMm.value <= 0;
+        const bot = !member.bottomBarEndHookLengthMm || member.bottomBarEndHookLengthMm.value <= 0;
+        return top && bot;
+      }
+      if (member.memberType === 'slab') {
+        const main = !member.mainBarEndBendLegMm || member.mainBarEndBendLegMm.value <= 0;
+        const dist = !member.distBarEndBendLegMm || member.distBarEndBendLegMm.value <= 0;
+        return main && dist;
+      }
+      return true;
+    },
+    {
+      message:
+        'IS 2502 method supports standard end bends only for this shape — use Site Practice method or enter a standard bend',
+      path: ['cuttingMethod'],
     },
   );
 

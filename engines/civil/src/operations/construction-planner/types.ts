@@ -44,8 +44,8 @@ export interface FootingMemberInput extends BaseMemberInput {
   /** Bottom reinforcement along width (Y direction) */
   bottomMeshYBarDiameterMm: TrackedValue<number>;
   bottomMeshYSpacingMm: TrackedValue<number>;
-  /** Height of vertical bend leg (mm) at each bar end */
-  bendLegHeightMm: TrackedValue<number>;
+  /** Optional specified vertical bend leg height (mm). If omitted, standard end bend per IS 2502 Table III Ref E is used. */
+  bendLegHeightMm?: TrackedValue<number>;
 }
 
 export interface ColumnMemberInput extends BaseMemberInput {
@@ -56,8 +56,8 @@ export interface ColumnMemberInput extends BaseMemberInput {
   /** Main longitudinal bars */
   mainBarDiameterMm: TrackedValue<number>;
   mainBarCount: TrackedValue<number>;
-  /** Longitudinal lap or starter crank / extension at top/bottom (mm) */
-  mainBarLapOrEndExtensionMm: TrackedValue<number>;
+  /** Optional longitudinal lap or starter crank / extension (mm). If omitted, standard end bend per IS 2502 Table III Ref D is used. */
+  mainBarLapOrEndExtensionMm?: TrackedValue<number>;
   /** Lateral ties / stirrups */
   tieDiameterMm: TrackedValue<number>;
   tieSpacingMm: TrackedValue<number>;
@@ -76,11 +76,13 @@ export interface BeamMemberInput extends BaseMemberInput {
   /** Top hanger / longitudinal bars */
   topBarDiameterMm: TrackedValue<number>;
   topBarCount: TrackedValue<number>;
-  topBarEndHookLengthMm: TrackedValue<number>; // End anchor development or L-bend
+  /** Optional top end anchor development or L-bend hook length (mm). If omitted, standard end bend per Table III Ref E is used. */
+  topBarEndHookLengthMm?: TrackedValue<number>;
   /** Bottom tensile longitudinal bars */
   bottomBarDiameterMm: TrackedValue<number>;
   bottomBarCount: TrackedValue<number>;
-  bottomBarEndHookLengthMm: TrackedValue<number>; // End anchor development or L-bend
+  /** Optional bottom end anchor development or L-bend hook length (mm). If omitted, standard end bend per Table III Ref E is used. */
+  bottomBarEndHookLengthMm?: TrackedValue<number>;
   /** Shear stirrups */
   stirrupDiameterMm: TrackedValue<number>;
   stirrupSpacingMm: TrackedValue<number>;
@@ -98,11 +100,13 @@ export interface SlabZoneMemberInput extends BaseMemberInput {
   /** Main reinforcement (short span) */
   mainBarDiameterMm: TrackedValue<number>;
   mainBarSpacingMm: TrackedValue<number>;
-  mainBarEndBendLegMm: TrackedValue<number>;
+  /** Optional main bar end bend leg height (mm). If omitted, standard end bend per Table III Ref E is used. */
+  mainBarEndBendLegMm?: TrackedValue<number>;
   /** Distribution reinforcement (long span) */
   distBarDiameterMm: TrackedValue<number>;
   distBarSpacingMm: TrackedValue<number>;
-  distBarEndBendLegMm: TrackedValue<number>;
+  /** Optional distribution bar end bend leg height (mm). If omitted, standard end bend per Table III Ref E is used. */
+  distBarEndBendLegMm?: TrackedValue<number>;
 }
 
 export type ConstructionMemberInput =

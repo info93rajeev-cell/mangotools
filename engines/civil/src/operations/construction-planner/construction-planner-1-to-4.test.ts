@@ -78,7 +78,7 @@ describe('Construction Planner - Hand-Worked Examples 1 to 4 (Footing & Column)'
       bottomMeshXSpacingMm: tracked(150),
       bottomMeshYBarDiameterMm: tracked(12),
       bottomMeshYSpacingMm: tracked(150),
-      bendLegHeightMm: tracked(200),
+      // Standard end bends per IS 2502 Table III Ref E (no specified leg height input)
     };
 
     const res = constructionPlanner.run({
@@ -217,7 +217,7 @@ describe('Construction Planner - Hand-Worked Examples 1 to 4 (Footing & Column)'
       heightMm: tracked(3000),
       mainBarDiameterMm: tracked(16),
       mainBarCount: tracked(4),
-      mainBarLapOrEndExtensionMm: tracked(300),
+      // Standard end bend per IS 2502 Table III Ref D (no custom extension)
       tieDiameterMm: tracked(8),
       tieSpacingMm: tracked(150),
       tieHookAngle: tracked(135),

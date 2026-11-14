@@ -79,21 +79,21 @@ export function computeLBentBarLengths(p: {
   isA: boolean;
   k: IS2502KFactor;
 }): { calcMm: number; specifiedMm: number; dims: Record<string, string> } {
-  if (p.extMm <= 0) {
-    const specifiedMm = p.isA ? ceilToMultipleOf25(p.straightLengthMm) : p.straightLengthMm;
-    return {
-      calcMm: p.straightLengthMm,
-      specifiedMm,
-      dims: { length: String(p.straightLengthMm) },
-    };
-  }
   if (p.isA) {
+    // IS 2502:1963 Table III Ref No. D: standard end bend L = l + B
     const bA = is2502BendAllowance(p.k, p.dMm);
     const calcMm = p.straightLengthMm + bA;
     return {
       calcMm,
       specifiedMm: ceilToMultipleOf25(calcMm),
       dims: { length: String(p.straightLengthMm), bendAllowanceB: String(bA) },
+    };
+  }
+  if (p.extMm <= 0) {
+    return {
+      calcMm: p.straightLengthMm,
+      specifiedMm: p.straightLengthMm,
+      dims: { length: String(p.straightLengthMm) },
     };
   }
   const calcMm = p.straightLengthMm + p.extMm - 2 * p.dMm;

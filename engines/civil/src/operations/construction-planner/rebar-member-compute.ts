@@ -24,7 +24,7 @@ export function computeFootingRebar(member: FootingMemberInput): CalculatedBarSc
   const c = member.clearCoverMm.value;
   const isA = member.cuttingMethod.value === 'is2502-method-a';
   const k = member.is2502KFactor?.value ?? 3;
-  const leg = member.bendLegHeightMm.value;
+  const leg = member.bendLegHeightMm?.value ?? 0;
   const mCount = member.count.value;
   const label = methodLabel(member.cuttingMethod.value, k);
 
@@ -80,7 +80,7 @@ export function computeColumnRebar(member: ColumnMemberInput): CalculatedBarSche
   const label = methodLabel(member.cuttingMethod.value, k);
 
   const dMain = member.mainBarDiameterMm.value;
-  const ext = member.mainBarLapOrEndExtensionMm.value;
+  const ext = member.mainBarLapOrEndExtensionMm?.value ?? 0;
   const h = member.heightMm.value;
   const cutMain = computeLBentBarLengths({
     straightLengthMm: h,
@@ -184,7 +184,7 @@ export function computeBeamRebar(member: BeamMemberInput): CalculatedBarSchedule
   const dTop = member.topBarDiameterMm.value;
   const cutTop = computeUBentBarLengths({
     clearSpanMm: span,
-    legMm: member.topBarEndHookLengthMm.value,
+    legMm: member.topBarEndHookLengthMm?.value ?? 0,
     dMm: dTop,
     isA,
     k,
@@ -192,7 +192,7 @@ export function computeBeamRebar(member: BeamMemberInput): CalculatedBarSchedule
   const dBot = member.bottomBarDiameterMm.value;
   const cutBot = computeUBentBarLengths({
     clearSpanMm: span,
-    legMm: member.bottomBarEndHookLengthMm.value,
+    legMm: member.bottomBarEndHookLengthMm?.value ?? 0,
     dMm: dBot,
     isA,
     k,
@@ -245,7 +245,7 @@ export function computeSlabRebar(member: SlabZoneMemberInput): CalculatedBarSche
   const baseMain = member.widthMm.value - 2 * c;
   const cutMain = computeUBentBarLengths({
     clearSpanMm: baseMain,
-    legMm: member.mainBarEndBendLegMm.value,
+    legMm: member.mainBarEndBendLegMm?.value ?? 0,
     dMm: dMain,
     isA,
     k,
@@ -256,7 +256,7 @@ export function computeSlabRebar(member: SlabZoneMemberInput): CalculatedBarSche
   const baseDist = member.lengthMm.value - 2 * c;
   const cutDist = computeUBentBarLengths({
     clearSpanMm: baseDist,
-    legMm: member.distBarEndBendLegMm.value,
+    legMm: member.distBarEndBendLegMm?.value ?? 0,
     dMm: dDist,
     isA,
     k,

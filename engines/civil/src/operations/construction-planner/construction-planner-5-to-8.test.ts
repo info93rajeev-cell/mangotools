@@ -69,10 +69,10 @@ describe('Construction Planner - Hand-Worked Examples 5 to 8 (Beam & Slab)', () 
       lengthMm: tracked(4000),
       topBarDiameterMm: tracked(12),
       topBarCount: tracked(2),
-      topBarEndHookLengthMm: tracked(200),
+      // Standard end bends per IS 2502 Table III Ref E (no custom hook length specified)
       bottomBarDiameterMm: tracked(16),
       bottomBarCount: tracked(3),
-      bottomBarEndHookLengthMm: tracked(200),
+      // Standard end bends per IS 2502 Table III Ref E (no custom hook length specified)
       stirrupDiameterMm: tracked(8),
       stirrupSpacingMm: tracked(150),
       stirrupHookAngle: tracked(135),
@@ -204,10 +204,10 @@ describe('Construction Planner - Hand-Worked Examples 5 to 8 (Beam & Slab)', () 
       thicknessMm: tracked(150),
       mainBarDiameterMm: tracked(10),
       mainBarSpacingMm: tracked(150),
-      mainBarEndBendLegMm: tracked(100),
+      // Standard end bends per IS 2502 Table III Ref E (no custom leg length specified)
       distBarDiameterMm: tracked(8),
       distBarSpacingMm: tracked(200),
-      distBarEndBendLegMm: tracked(100),
+      // Standard end bends per IS 2502 Table III Ref E (no custom leg length specified)
     };
 
     const res = constructionPlanner.run({
