@@ -34,6 +34,9 @@ export const engine: EngineModule = {
   messages,
 };
 
+export * from './operations/construction-planner/project-diff.ts';
+
+export * from './operations/construction-planner/types.ts';
 export {
   brickworkQuantity,
   brickworkQuantityV2,

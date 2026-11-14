@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mangotools/core": "workspace:*",
+    "@mangotools/engine-civil": "workspace:*",
     "@mangotools/engine-search": "workspace:*",
     "@mangotools/schemas": "workspace:*"
   }

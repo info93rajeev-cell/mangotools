@@ -228,6 +228,9 @@ importers:
       '@mangotools/core':
         specifier: workspace:*
         version: link:../core
+      '@mangotools/engine-civil':
+        specifier: workspace:*
+        version: link:../../engines/civil
       '@mangotools/engine-search':
         specifier: workspace:*
         version: link:../../engines/search
