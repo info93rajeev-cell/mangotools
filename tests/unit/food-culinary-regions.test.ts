@@ -14,6 +14,7 @@ import {
   EUROPE_RECIPES,
   GLOBAL_RECIPES,
   INDIAN_NON_VEG_RECIPES,
+  INDIAN_VEG_PARTY_RECIPES,
   LATIN_AMERICA_RECIPES,
   MIDDLE_EAST_RECIPES,
   PAN_ASIAN_RECIPES,
@@ -125,6 +126,12 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
     expect(INDIAN_NON_VEG_RECIPES.length).toBe(12);
   });
 
+  it('has valid ingredients and matching dimensions for all Indian Veg party recipes', () => {
+    const errors = validateRecipeIngredients(INDIAN_VEG_PARTY_RECIPES);
+    expect(errors).toEqual([]);
+    expect(INDIAN_VEG_PARTY_RECIPES.length).toBe(22);
+  });
+
   it('filters recipes accurately by dietary preference (veg vs non-veg)', () => {
     const inEligible = GLOBAL_RECIPES.filter((r) =>
       isRecipeEligibleForLocation(r, 'India & South Asia'),
@@ -146,12 +153,19 @@ describe('Global Food Planner — 6 Culinary Continents System', () => {
 
     const inEligible = all.filter((r) => isRecipeEligibleForLocation(r, 'India & South Asia'));
     expect(inEligible.length).toBe(
-      RECIPES.length + SOUTH_ASIA_RECIPES.length + INDIAN_NON_VEG_RECIPES.length,
+      RECIPES.length +
+        SOUTH_ASIA_RECIPES.length +
+        INDIAN_NON_VEG_RECIPES.length +
+        INDIAN_VEG_PARTY_RECIPES.length,
     );
     expect(inEligible.some((r) => r.id === 'idli-sambar')).toBe(true);
     expect(inEligible.some((r) => r.id === 'hyderabadi-biryani')).toBe(true);
     expect(inEligible.some((r) => r.id === 'butter-chicken')).toBe(true);
     expect(inEligible.some((r) => r.id === 'mutton-rogan-josh')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'dal-makhani')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'kadhai-paneer')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'matar-pulao')).toBe(true);
+    expect(inEligible.some((r) => r.id === 'butter-naan')).toBe(true);
 
     const usEligible = all.filter((r) => isRecipeEligibleForLocation(r, 'North America'));
     expect(usEligible.length).toBe(US_RECIPES.length);
