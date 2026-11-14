@@ -77,6 +77,8 @@ function createSampleProject(id: string, name: string): ConstructionProject {
   };
 
   return {
+    schemaVersion: 1,
+    version: 1,
     id,
     name,
     createdAt: '2026-11-15T00:00:00.000Z',
@@ -97,9 +99,11 @@ describe('Construction Project Planner Storage & Lifecycle', () => {
       expect(exportedJson.length).toBeGreaterThan(0);
 
       const imported = importProject(exportedJson);
-      expect(imported.isDuplicate).toBe(false);
-      expect(imported.action).toBe('created');
-      expect(imported.project).toEqual(original);
+      expect(imported.status).toBe('success');
+      if (imported.status === 'success') {
+        expect(imported.action).toBe('created');
+        expect(imported.project).toEqual(original);
+      }
     });
   });
 
@@ -193,45 +197,178 @@ describe('Construction Project Planner Storage & Lifecycle', () => {
   });
 
   describe('No duplicate project on retry', () => {
-    it('handles repeated import of existing project idempotently without creating duplicates', async () => {
+    it('returns conflict by default and allows caller to choose replace or copy', async () => {
       const store = createMemoryProjectStore();
       const project = createSampleProject('proj-retry', 'Retry Test Site');
       const exportedJson = exportProject(project);
 
       // First import
       const result1 = importProject(exportedJson);
-      expect(result1.isDuplicate).toBe(false);
-      expect(result1.action).toBe('created');
-      await store.saveProject(result1.project);
+      expect(result1.status).toBe('success');
+      if (result1.status === 'success') {
+        expect(result1.action).toBe('created');
+        await store.saveProject(result1.project);
+      }
 
       const list1 = await store.listProjects();
       expect(list1).toHaveLength(1);
 
-      // Second import (simulating user retrying the import of the same file)
+      // Second import: default is CONFLICT (never silently overwrites)
       const existingIds = new Set((await store.listProjects()).map((p) => p.id));
-      const result2 = importProject(exportedJson, { existingProjectIds: existingIds });
+      const conflictResult = importProject(exportedJson, { existingProjectIds: existingIds });
+      expect(conflictResult.status).toBe('conflict');
+      if (conflictResult.status === 'conflict') {
+        expect(conflictResult.existingProjectId).toBe('proj-retry');
+        expect(conflictResult.existingProjectName).toBe('Retry Test Site');
+      }
 
-      expect(result2.isDuplicate).toBe(true);
-      expect(result2.action).toBe('updated');
-      await store.saveProject(result2.project);
+      // Caller chooses "replace" explicitly
+      const replaceResult = importProject(exportedJson, {
+        existingProjectIds: existingIds,
+        onConflict: 'replace',
+      });
+      expect(replaceResult.status).toBe('success');
+      if (replaceResult.status === 'success') {
+        expect(replaceResult.action).toBe('replaced');
+      }
 
-      // Total count in store MUST remain 1 (no duplicate project created)
-      const list2 = await store.listProjects();
-      expect(list2).toHaveLength(1);
-      expect(list2[0]?.id).toBe('proj-retry');
+      // Caller chooses "copy" explicitly (gets new unique ID and "(Copy)" in name)
+      const copyResult = importProject(exportedJson, {
+        existingProjectIds: existingIds,
+        onConflict: 'copy',
+      });
+      expect(copyResult.status).toBe('success');
+      if (copyResult.status === 'success') {
+        expect(copyResult.action).toBe('copied');
+        expect(copyResult.project.id).not.toBe('proj-retry');
+        expect(copyResult.project.name).toContain('(Copy)');
+      }
     });
 
-    it('rejects duplicate import when onConflict is set to error', () => {
+    it('rejects duplicate import when onConflict is set to conflict', () => {
       const project = createSampleProject('proj-conflict', 'Conflict Test Site');
       const exportedJson = exportProject(project);
       const existingIds = new Set(['proj-conflict']);
 
-      expect(() =>
-        importProject(exportedJson, {
-          existingProjectIds: existingIds,
-          onConflict: 'error',
-        }),
-      ).toThrow("Project with ID 'proj-conflict' already exists");
+      const res = importProject(exportedJson, { existingProjectIds: existingIds });
+      expect(res.status).toBe('conflict');
+    });
+  });
+
+  describe('Immutable Revision Snapshots (Fix 4)', () => {
+    it('rejects saving a project when an existing revision has been altered or deleted', async () => {
+      const store = createMemoryProjectStore();
+      const project = createSampleProject('proj-immutable', 'Immutable Site');
+      await store.saveProject(project);
+
+      // Attempt to modify Revision 1 members
+      const firstRev = project.revisions[0];
+      expect(firstRev).toBeDefined();
+      if (!firstRev) return;
+
+      const tamperedProject: ConstructionProject = {
+        ...project,
+        revisions: [
+          {
+            ...firstRev,
+            comment: 'Tampered comment',
+          },
+        ],
+      };
+
+      await expect(store.saveProject(tamperedProject)).rejects.toThrow(
+        'Cannot modify existing revision: revisions are immutable snapshots',
+      );
+    });
+  });
+
+  describe('Concurrent Edit Conflict Detection (Fix 6)', () => {
+    it('detects when two tabs attempt to save conflicting project versions', async () => {
+      const store = createMemoryProjectStore();
+      const project = createSampleProject('proj-concurrent', 'Tab Conflict Site');
+      await store.saveProject(project);
+
+      // Tab 1 loads project (version 1)
+      const tab1Project = await store.getProject('proj-concurrent');
+      expect(tab1Project).toBeDefined();
+
+      // Tab 2 loads same project (version 1)
+      const tab2Project = await store.getProject('proj-concurrent');
+      expect(tab2Project).toBeDefined();
+      if (!tab1Project || !tab2Project) return;
+
+      // Tab 1 appends revision and saves -> store increments version to 2
+      const tab1Updated: ConstructionProject = {
+        ...tab1Project,
+        updatedAt: '2026-11-15T01:00:00.000Z',
+        revisions: [
+          ...tab1Project.revisions,
+          {
+            revisionNumber: 2,
+            createdAt: '2026-11-15T01:00:00.000Z',
+            comment: 'Tab 1 revision',
+            members: [],
+          },
+        ],
+      };
+      await store.saveProject(tab1Updated);
+
+      // Tab 2 attempts to save with stale version 1 -> must throw concurrency conflict
+      const tab2Updated: ConstructionProject = {
+        ...tab2Project,
+        updatedAt: '2026-11-15T01:05:00.000Z',
+        revisions: [
+          ...tab2Project.revisions,
+          {
+            revisionNumber: 2,
+            createdAt: '2026-11-15T01:05:00.000Z',
+            comment: 'Tab 2 conflicting revision',
+            members: [],
+          },
+        ],
+      };
+
+      await expect(store.saveProject(tab2Updated)).rejects.toThrow(
+        'Project was modified by another tab or session. Reload to see the latest changes.',
+      );
+    });
+  });
+
+  describe('Export without drawings option (Fix 7)', () => {
+    it('exports project payload without drawing binaries when includeDrawings is false', () => {
+      const project = createSampleProject('proj-no-dwgs', 'No Drawings Site');
+      const exported = exportProject(project, { includeDrawings: false });
+      const parsed = JSON.parse(exported);
+
+      expect(parsed.project.drawings).toBeDefined();
+      for (const d of parsed.project.drawings) {
+        expect(d.base64Data).toBeUndefined();
+      }
+    });
+  });
+
+  describe('schemaVersion validation with Zod (Fix 5)', () => {
+    it('rejects unknown or future project schema versions with plain message', () => {
+      const project = createSampleProject('proj-v99', 'Future Project');
+      const exported = exportProject(project);
+      const futureBundle = JSON.parse(exported);
+      futureBundle.schemaVersion = 99;
+
+      expect(() => importProject(JSON.stringify(futureBundle))).toThrow(
+        'Unsupported project schema version 99. Please update MangoTools to open this project.',
+      );
+    });
+  });
+
+  describe('No silent memory fallback in store (Fix 1)', () => {
+    it('reports isAvailable: false and rejects operations when IndexedDB is unavailable', async () => {
+      // Calling createProjectStore with driver: 'idb' when indexedDB is undefined
+      const store = createProjectStore({ driver: 'idb', idb: undefined });
+      expect(store.isAvailable).toBe(false);
+      expect(store.unavailableReason).toBeDefined();
+
+      const p = createSampleProject('proj-unavail', 'Unavailable Test');
+      await expect(store.saveProject(p)).rejects.toThrow();
     });
   });
 

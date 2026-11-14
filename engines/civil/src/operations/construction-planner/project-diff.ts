@@ -1,9 +1,24 @@
 /**
  * Deterministic revision diff algorithm for Construction Project Planner.
- * Compares member revisions by stable member IDs into added, removed, changed, and unchanged.
+ * Compares member revisions by stable member IDs and computes comprehensive
+ * quantity diffs (project totals, member breakdowns, and BBS rows).
  */
 
-import type { ConstructionMemberInput, MemberType, TrackedValue } from './types.ts';
+import { computePlannerOutput } from './operation.ts';
+import {
+  type BbsRevisionDiff,
+  diffBbsRows,
+  diffMemberQuantities,
+  diffProjectQuantities,
+  type MemberQuantityDiff,
+  type ProjectQuantityDiff,
+} from './quantity-diff.ts';
+import type {
+  ConstructionMemberInput,
+  ConstructionPlannerEngineOutput,
+  MemberType,
+  TrackedValue,
+} from './types.ts';
 
 export interface PropertyChange {
   property: string;
@@ -23,6 +38,11 @@ export interface RevisionDiff {
   removed: ConstructionMemberInput[];
   changed: MemberChange[];
   unchanged: ConstructionMemberInput[];
+  quantities: {
+    project: ProjectQuantityDiff;
+    members: MemberQuantityDiff[];
+    bbs: BbsRevisionDiff;
+  };
 }
 
 function isTrackedValue(obj: unknown): obj is TrackedValue<unknown> {
@@ -97,11 +117,15 @@ function compareMembers(
 
 /**
  * Computes deterministic diff between old and new revisions by stable member ID.
- * Returns members partitioned into added, removed, changed (with details), and unchanged.
+ * Extends the diff to project quantities, member quantities, and BBS row schedules.
  */
 export function diffProjectRevisions(
   oldMembers: ConstructionMemberInput[],
   newMembers: ConstructionMemberInput[],
+  options?: {
+    oldOutput?: ConstructionPlannerEngineOutput;
+    newOutput?: ConstructionPlannerEngineOutput;
+  },
 ): RevisionDiff {
   const oldMap = new Map<string, ConstructionMemberInput>();
   for (const m of oldMembers) {
@@ -144,5 +168,22 @@ export function diffProjectRevisions(
     }
   }
 
-  return { added, removed, changed, unchanged };
+  const oldOutput =
+    options?.oldOutput ?? computePlannerOutput('diff-old', 'Old Revision', oldMembers);
+  const newOutput =
+    options?.newOutput ?? computePlannerOutput('diff-new', 'New Revision', newMembers);
+
+  return {
+    added,
+    removed,
+    changed,
+    unchanged,
+    quantities: {
+      project: diffProjectQuantities(oldOutput, newOutput),
+      members: diffMemberQuantities(oldOutput, newOutput),
+      bbs: diffBbsRows(oldOutput.bbsItems, newOutput.bbsItems),
+    },
+  };
 }
+
+export * from './quantity-diff.ts';

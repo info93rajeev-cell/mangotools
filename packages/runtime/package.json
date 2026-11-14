@@ -15,6 +15,7 @@
     "@mangotools/core": "workspace:*",
     "@mangotools/engine-civil": "workspace:*",
     "@mangotools/engine-search": "workspace:*",
-    "@mangotools/schemas": "workspace:*"
+    "@mangotools/schemas": "workspace:*",
+    "zod": "^4.6.5"
   }
 }

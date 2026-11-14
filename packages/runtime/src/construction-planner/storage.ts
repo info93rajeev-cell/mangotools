@@ -1,15 +1,28 @@
 /**
- * Single-store IndexedDB persistence driver and in-memory fallback for Construction Project Planner.
- * Operates on database 'mangotools_construction_planner' with object store 'projects' (keyPath: 'id').
+ * Primary storage entrypoint and in-memory store driver for Construction Project Planner.
+ * Supports single database 'mangotools_construction_planner' with:
+ * 1. 'projects' (keyPath: 'id') — holds project metadata and drawing references
+ * 2. 'drawing_binaries' (keyPath: ['projectId', 'drawingId']) — holds drawing Blob/ArrayBuffer data
  */
 
+import { createIndexedDbProjectStore } from './idb-storage.ts';
+import { CURRENT_SCHEMA_VERSION } from './schemas.ts';
 import type { ConstructionProject, ConstructionProjectSummary, ProjectStore } from './types.ts';
 
 export const DB_NAME = 'mangotools_construction_planner';
-export const STORE_NAME = 'projects';
+export const STORE_PROJECTS = 'projects';
+export const STORE_DRAWINGS = 'drawing_binaries';
 export const DB_VERSION = 1;
 
-function toProjectSummary(project: ConstructionProject): ConstructionProjectSummary {
+export class StorageUnavailableError extends Error {
+  readonly code = 'STORAGE_UNAVAILABLE';
+  constructor(message = 'IndexedDB is unavailable in this environment') {
+    super(message);
+    this.name = 'StorageUnavailableError';
+  }
+}
+
+export function toProjectSummary(project: ConstructionProject): ConstructionProjectSummary {
   const currentRev = project.revisions.find(
     (r) => r.revisionNumber === project.currentRevisionNumber,
   );
@@ -19,166 +32,129 @@ function toProjectSummary(project: ConstructionProject): ConstructionProjectSumm
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
     currentRevisionNumber: project.currentRevisionNumber,
+    version: project.version ?? 1,
     memberCount: currentRev?.members.length ?? 0,
     drawingCount: project.drawings.length,
   };
 }
 
-function cloneProject<T>(val: T): T {
+export function cloneVal<T>(val: T): T {
   if (typeof structuredClone === 'function') {
     return structuredClone(val);
   }
   return JSON.parse(JSON.stringify(val));
 }
 
+export function assertRevisionsImmutable(
+  existing: ConstructionProject,
+  candidate: ConstructionProject,
+): void {
+  for (const oldRev of existing.revisions) {
+    const candidateRev = candidate.revisions.find(
+      (r) => r.revisionNumber === oldRev.revisionNumber,
+    );
+    if (!candidateRev) {
+      throw new Error('Cannot modify existing revision: revisions are immutable snapshots');
+    }
+    const oldStr = JSON.stringify({
+      num: oldRev.revisionNumber,
+      comment: oldRev.comment,
+      members: oldRev.members,
+    });
+    const newStr = JSON.stringify({
+      num: candidateRev.revisionNumber,
+      comment: candidateRev.comment,
+      members: candidateRev.members,
+    });
+    if (oldStr !== newStr) {
+      throw new Error('Cannot modify existing revision: revisions are immutable snapshots');
+    }
+  }
+}
+
 /**
- * Creates an in-memory project store.
- * Fully isolated; used for Node unit tests and as browser storage fallback.
+ * Creates an in-memory project store for unit tests.
  */
 export function createMemoryProjectStore(): ProjectStore {
-  const store = new Map<string, ConstructionProject>();
+  const projectMap = new Map<string, ConstructionProject>();
+  const drawingMap = new Map<string, Blob | ArrayBuffer>();
+  const drawingKey = (pId: string, dId: string) => `${pId}::${dId}`;
 
   return {
+    isAvailable: true,
+
     async getProject(id: string): Promise<ConstructionProject | null> {
-      const proj = store.get(id);
-      return proj ? cloneProject(proj) : null;
+      const proj = projectMap.get(id);
+      return proj ? cloneVal(proj) : null;
     },
 
     async listProjects(): Promise<ConstructionProjectSummary[]> {
-      const summaries: ConstructionProjectSummary[] = [];
-      for (const proj of store.values()) {
-        summaries.push(toProjectSummary(proj));
-      }
+      const summaries = Array.from(projectMap.values()).map(toProjectSummary);
       return summaries.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     },
 
     async saveProject(project: ConstructionProject): Promise<void> {
-      store.set(project.id, cloneProject(project));
-    },
-
-    async deleteProject(id: string): Promise<boolean> {
-      return store.delete(id);
-    },
-
-    close(): void {
-      store.clear();
-    },
-  };
-}
-
-/**
- * Creates a browser IndexedDB-backed project store.
- */
-export function createIndexedDbProjectStore(idb?: IDBFactory): ProjectStore {
-  const factory = idb ?? (typeof indexedDB !== 'undefined' ? indexedDB : undefined);
-  if (!factory) {
-    throw new Error('IndexedDB factory is not available');
-  }
-  const idbFactory = factory;
-
-  let dbPromise: Promise<IDBDatabase> | null = null;
-
-  function getDb(): Promise<IDBDatabase> {
-    if (!dbPromise) {
-      dbPromise = new Promise((resolve, reject) => {
-        const req = idbFactory.open(DB_NAME, DB_VERSION);
-        req.onupgradeneeded = () => {
-          const db = req.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-          }
-        };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error ?? new Error('Failed to open IndexedDB'));
-      });
-    }
-    return dbPromise;
-  }
-
-  return {
-    async getProject(id: string): Promise<ConstructionProject | null> {
-      const db = await getDb();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const st = tx.objectStore(STORE_NAME);
-        const req = st.get(id);
-        req.onsuccess = () => {
-          const res = req.result as ConstructionProject | undefined;
-          resolve(res ? cloneProject(res) : null);
-        };
-        req.onerror = () => reject(req.error ?? new Error(`Failed to get project ${id}`));
-      });
-    },
-
-    async listProjects(): Promise<ConstructionProjectSummary[]> {
-      const db = await getDb();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const st = tx.objectStore(STORE_NAME);
-        const req = st.getAll();
-        req.onsuccess = () => {
-          const projects = (req.result as ConstructionProject[]) || [];
-          const summaries = projects.map(toProjectSummary);
-          resolve(summaries.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
-        };
-        req.onerror = () => reject(req.error ?? new Error('Failed to list projects'));
-      });
-    },
-
-    async saveProject(project: ConstructionProject): Promise<void> {
-      const db = await getDb();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const st = tx.objectStore(STORE_NAME);
-        const req = st.put(cloneProject(project));
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error ?? new Error(`Failed to save project ${project.id}`));
-      });
-    },
-
-    async deleteProject(id: string): Promise<boolean> {
-      const db = await getDb();
-      const existing = await this.getProject(id);
-      if (!existing) return false;
-
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const st = tx.objectStore(STORE_NAME);
-        const req = st.delete(id);
-        req.onsuccess = () => resolve(true);
-        req.onerror = () => reject(req.error ?? new Error(`Failed to delete project ${id}`));
-      });
-    },
-
-    close(): void {
-      if (dbPromise) {
-        dbPromise.then((db) => db.close()).catch(() => {});
-        dbPromise = null;
+      const existing = projectMap.get(project.id);
+      if (existing) {
+        if (project.version !== existing.version) {
+          throw new Error(
+            'Project was modified by another tab or session. Reload to see the latest changes.',
+          );
+        }
+        assertRevisionsImmutable(existing, project);
       }
+
+      const toSave: ConstructionProject = {
+        ...cloneVal(project),
+        schemaVersion: project.schemaVersion ?? CURRENT_SCHEMA_VERSION,
+        version: existing ? existing.version + 1 : (project.version ?? 1),
+      };
+      projectMap.set(toSave.id, toSave);
+    },
+
+    async deleteProject(id: string): Promise<boolean> {
+      const existed = projectMap.delete(id);
+      if (existed) {
+        for (const k of Array.from(drawingMap.keys())) {
+          if (k.startsWith(`${id}::`)) drawingMap.delete(k);
+        }
+      }
+      return existed;
+    },
+
+    async saveDrawing(pId: string, dId: string, data: Blob | ArrayBuffer): Promise<void> {
+      drawingMap.set(drawingKey(pId, dId), data);
+    },
+
+    async getDrawing(pId: string, dId: string): Promise<Blob | ArrayBuffer | null> {
+      return drawingMap.get(drawingKey(pId, dId)) ?? null;
+    },
+
+    async deleteDrawing(pId: string, dId: string): Promise<boolean> {
+      return drawingMap.delete(drawingKey(pId, dId));
+    },
+
+    close(): void {
+      projectMap.clear();
+      drawingMap.clear();
     },
   };
 }
 
 /**
- * Creates the primary project store. Defaults to IndexedDB in browsers,
- * falling back gracefully to memory store in Node/unsupported environments.
+ * Creates the project store. Defaults to IndexedDB.
+ * If IndexedDB is unavailable, reports isAvailable: false (does NOT silently fall back to memory).
+ * Use driver: 'memory' explicitly for unit tests.
  */
 export function createProjectStore(options?: {
+  driver?: 'idb' | 'memory';
   preferMemory?: boolean;
   idb?: IDBFactory;
 }): ProjectStore {
-  if (options?.preferMemory) {
+  if (options?.driver === 'memory' || options?.preferMemory) {
     return createMemoryProjectStore();
   }
-
-  const factory = options?.idb ?? (typeof indexedDB !== 'undefined' ? indexedDB : undefined);
-  if (factory) {
-    try {
-      return createIndexedDbProjectStore(factory);
-    } catch {
-      return createMemoryProjectStore();
-    }
-  }
-
-  return createMemoryProjectStore();
+  return createIndexedDbProjectStore(options?.idb);
 }
+
+export { createIndexedDbProjectStore } from './idb-storage.ts';

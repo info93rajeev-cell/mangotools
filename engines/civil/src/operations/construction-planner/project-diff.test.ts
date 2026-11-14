@@ -174,4 +174,61 @@ describe('diffProjectRevisions', () => {
       newValue: 8,
     });
   });
+
+  describe('Quantity Diff (Fix 8: project, member, and BBS quantities with units)', () => {
+    it('computes old vs new concrete volume, rebar weight by diameter, and BBS rows', () => {
+      // Old revision: 1 footing (2000 x 1500 x 400 mm, count 2)
+      const f1Old = makeFooting('f-1', 'F1');
+      // New revision: Footing depth increased from 400 to 500 mm + 1 Column added (count 4, 6 bars dia 16)
+      const f1New = makeFooting('f-1', 'F1', { depthMm: tracked(500) });
+      const c1New = makeColumn('c-1', 'C1');
+
+      const diff = diffProjectRevisions([f1Old], [f1New, c1New]);
+
+      expect(diff.quantities).toBeDefined();
+
+      // 1. Project level quantities diff
+      const pDiff = diff.quantities.project;
+      expect(pDiff.concreteVolume.unit).toBe('m³');
+      expect(Number(pDiff.concreteVolume.oldValue)).toBeGreaterThan(0);
+      expect(Number(pDiff.concreteVolume.newValue)).toBeGreaterThan(
+        Number(pDiff.concreteVolume.oldValue),
+      );
+      expect(Number(pDiff.concreteVolume.delta)).toBeGreaterThan(0);
+
+      expect(pDiff.totalRebarWeight.unit).toBe('kg');
+      expect(Number(pDiff.totalRebarWeight.oldValue)).toBeGreaterThan(0);
+      expect(Number(pDiff.totalRebarWeight.newValue)).toBeGreaterThan(
+        Number(pDiff.totalRebarWeight.oldValue),
+      );
+      expect(Number(pDiff.totalRebarWeight.delta)).toBeGreaterThan(0);
+
+      // Steel weight by diameter
+      expect(pDiff.steelWeightByDiameter.length).toBeGreaterThan(0);
+      for (const d of pDiff.steelWeightByDiameter) {
+        expect(d.unit).toBe('kg');
+        expect(['8', '12', '16']).toContain(d.diameterMm);
+      }
+
+      // 2. Member level quantities diff
+      expect(diff.quantities.members).toHaveLength(2);
+      const f1Qty = diff.quantities.members.find((m) => m.memberId === 'f-1');
+      expect(f1Qty).toBeDefined();
+      expect(f1Qty?.concreteVolume.unit).toBe('m³');
+      expect(f1Qty?.rebarWeight.unit).toBe('kg');
+      expect(Number(f1Qty?.concreteVolume.delta)).toBeGreaterThan(0); // 400mm -> 500mm depth increased concrete
+
+      const c1Qty = diff.quantities.members.find((m) => m.memberId === 'c-1');
+      expect(c1Qty).toBeDefined();
+      expect(c1Qty?.concreteVolume.oldValue).toBe('0');
+      expect(Number(c1Qty?.concreteVolume.newValue)).toBeGreaterThan(0);
+
+      // 3. BBS rows diff matched by stable bar-mark ID
+      const bbs = diff.quantities.bbs;
+      expect(bbs.added.length).toBeGreaterThan(0); // Column bars are added
+      expect(bbs.added.some((b) => b.barMark.startsWith('C1'))).toBe(true);
+      expect(bbs.removed).toEqual([]); // No bars removed
+      expect(bbs.unchanged.length).toBeGreaterThanOrEqual(0);
+    });
+  });
 });
