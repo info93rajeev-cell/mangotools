@@ -1,17 +1,16 @@
 /**
  * Member-specific reinforcement schedule computations:
- * - Footing (Bottom mesh X and Y)
- * - Column (Main longitudinal bars + lateral ties)
- * - Beam (Top hanger bars, bottom tension bars, shear stirrups)
- * - Slab Zone (Main short-span bars, distribution long-span bars)
+ * - Footing (Bottom mesh X and Y per IS 2502 Table III Ref E or Method B)
+ * - Column (Main longitudinal bars per Table III Ref D + lateral ties per Table VIII Ref A)
+ * - Beam (Top/bottom bars per Table III Ref E + shear stirrups per Table VIII Ref A)
+ * - Slab Zone (Main and distribution bars per Table III Ref E or Method B)
  */
 import {
   buildBarScheduleItem,
-  computeClosedTieCutMm,
-  computeUBentBarCutMm,
-  is2502BendAllowance,
+  computeClosedTieLengths,
+  computeLBentBarLengths,
+  computeUBentBarLengths,
   methodLabel,
-  stirrupHookExtension,
 } from './rebar-compute.ts';
 import type {
   BeamMemberInput,
@@ -30,15 +29,14 @@ export function computeFootingRebar(member: FootingMemberInput): CalculatedBarSc
   const label = methodLabel(member.cuttingMethod.value, k);
 
   const dX = member.bottomMeshXBarDiameterMm.value;
-  const countX = Math.floor((member.widthMm.value - 2 * c) / member.bottomMeshXSpacingMm.value) + 1;
+  const countX = Math.ceil((member.widthMm.value - 2 * c) / member.bottomMeshXSpacingMm.value) + 1;
   const baseX = member.lengthMm.value - 2 * c;
-  const cutX = computeUBentBarCutMm(baseX, leg, dX, isA, k);
+  const cutX = computeUBentBarLengths({ clearSpanMm: baseX, legMm: leg, dMm: dX, isA, k });
 
   const dY = member.bottomMeshYBarDiameterMm.value;
-  const countY =
-    Math.floor((member.lengthMm.value - 2 * c) / member.bottomMeshYSpacingMm.value) + 1;
+  const countY = Math.ceil((member.lengthMm.value - 2 * c) / member.bottomMeshYSpacingMm.value) + 1;
   const baseY = member.widthMm.value - 2 * c;
-  const cutY = computeUBentBarCutMm(baseY, leg, dY, isA, k);
+  const cutY = computeUBentBarLengths({ clearSpanMm: baseY, legMm: leg, dMm: dY, isA, k });
 
   return [
     buildBarScheduleItem({
@@ -48,12 +46,13 @@ export function computeFootingRebar(member: FootingMemberInput): CalculatedBarSc
       memberType: 'footing',
       desc: 'Bottom mesh X direction',
       dMm: dX,
-      cutMm: cutX,
+      calcCutMm: cutX.calcMm,
+      specifiedCutMm: cutX.specifiedMm,
       barsPerMember: countX,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { base: String(baseX), leg: String(leg) },
+      dims: cutX.dims,
     }),
     buildBarScheduleItem({
       barMark: `${member.label}-B2-Y`,
@@ -62,12 +61,13 @@ export function computeFootingRebar(member: FootingMemberInput): CalculatedBarSc
       memberType: 'footing',
       desc: 'Bottom mesh Y direction',
       dMm: dY,
-      cutMm: cutY,
+      calcCutMm: cutY.calcMm,
+      specifiedCutMm: cutY.specifiedMm,
       barsPerMember: countY,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { base: String(baseY), leg: String(leg) },
+      dims: cutY.dims,
     }),
   ];
 }
@@ -82,16 +82,26 @@ export function computeColumnRebar(member: ColumnMemberInput): CalculatedBarSche
   const dMain = member.mainBarDiameterMm.value;
   const ext = member.mainBarLapOrEndExtensionMm.value;
   const h = member.heightMm.value;
-  const bMain = isA ? is2502BendAllowance(k, dMain) : 0;
-  const cutMain = ext > 0 ? (isA ? h + ext + bMain : h + ext - 2 * dMain) : h;
+  const cutMain = computeLBentBarLengths({
+    straightLengthMm: h,
+    extMm: ext,
+    dMm: dMain,
+    isA,
+    k,
+  });
 
   const dTie = member.tieDiameterMm.value;
-  const tieCount = Math.floor(h / member.tieSpacingMm.value) + 1;
-  const tieA = member.widthMm.value - 2 * c;
-  const tieB = member.depthMm.value - 2 * c;
-  const hookAngle = member.tieHookAngle.value;
-  const seisMm = member.seismicHookLengthMm?.value;
-  const cutTie = computeClosedTieCutMm(tieA, tieB, dTie, hookAngle, seisMm, isA);
+  const tieCount = Math.ceil(h / member.tieSpacingMm.value) + 1;
+  const cutTie = computeClosedTieLengths({
+    widthMm: member.widthMm.value,
+    depthMm: member.depthMm.value,
+    coverMm: c,
+    dMm: dTie,
+    isA,
+    hookAngle: member.tieHookAngle.value,
+    seismicHookMm: member.seismicHookLengthMm?.value,
+    methodBHookMm: member.methodBStirrupHookMm?.value,
+  });
 
   return [
     buildBarScheduleItem({
@@ -101,12 +111,13 @@ export function computeColumnRebar(member: ColumnMemberInput): CalculatedBarSche
       memberType: 'column',
       desc: 'Longitudinal main bars',
       dMm: dMain,
-      cutMm: cutMain,
+      calcCutMm: cutMain.calcMm,
+      specifiedCutMm: cutMain.specifiedMm,
       barsPerMember: member.mainBarCount.value,
       memberCount: mCount,
       methodLabel: label,
       shapeType: ext > 0 ? 'l-shape' : 'straight',
-      dims: { height: String(h), extension: String(ext) },
+      dims: cutMain.dims,
     }),
     buildBarScheduleItem({
       barMark: `${member.label}-T1`,
@@ -115,16 +126,13 @@ export function computeColumnRebar(member: ColumnMemberInput): CalculatedBarSche
       memberType: 'column',
       desc: 'Lateral ties',
       dMm: dTie,
-      cutMm: cutTie,
+      calcCutMm: cutTie.calcMm,
+      specifiedCutMm: cutTie.specifiedMm,
       barsPerMember: tieCount,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'closed-tie',
-      dims: {
-        a: String(tieA),
-        b: String(tieB),
-        hook: String(stirrupHookExtension(dTie, hookAngle, seisMm)),
-      },
+      dims: cutTie.dims,
     }),
   ];
 }
@@ -135,14 +143,18 @@ function computeBeamStirrupItem(
   isA: boolean,
   label: string,
 ): CalculatedBarScheduleItem {
-  const c = member.clearCoverMm.value;
   const dSt = member.stirrupDiameterMm.value;
-  const stCount = Math.floor(span / member.stirrupSpacingMm.value) + 1;
-  const stA = member.widthMm.value - 2 * c;
-  const stB = member.depthMm.value - 2 * c;
-  const hookAngle = member.stirrupHookAngle.value;
-  const seisMm = member.seismicHookLengthMm?.value;
-  const cutSt = computeClosedTieCutMm(stA, stB, dSt, hookAngle, seisMm, isA);
+  const stCount = Math.ceil(span / member.stirrupSpacingMm.value) + 1;
+  const cutSt = computeClosedTieLengths({
+    widthMm: member.widthMm.value,
+    depthMm: member.depthMm.value,
+    coverMm: member.clearCoverMm.value,
+    dMm: dSt,
+    isA,
+    hookAngle: member.stirrupHookAngle.value,
+    seismicHookMm: member.seismicHookLengthMm?.value,
+    methodBHookMm: member.methodBStirrupHookMm?.value,
+  });
 
   return buildBarScheduleItem({
     barMark: `${member.label}-S1`,
@@ -151,16 +163,13 @@ function computeBeamStirrupItem(
     memberType: 'beam',
     desc: 'Shear stirrups',
     dMm: dSt,
-    cutMm: cutSt,
+    calcCutMm: cutSt.calcMm,
+    specifiedCutMm: cutSt.specifiedMm,
     barsPerMember: stCount,
     memberCount: member.count.value,
     methodLabel: label,
     shapeType: 'closed-tie',
-    dims: {
-      a: String(stA),
-      b: String(stB),
-      hook: String(stirrupHookExtension(dSt, hookAngle, seisMm)),
-    },
+    dims: cutSt.dims,
   });
 }
 
@@ -173,9 +182,21 @@ export function computeBeamRebar(member: BeamMemberInput): CalculatedBarSchedule
   const span = member.lengthMm.value - 2 * c;
 
   const dTop = member.topBarDiameterMm.value;
-  const cutTop = computeUBentBarCutMm(span, member.topBarEndHookLengthMm.value, dTop, isA, k);
+  const cutTop = computeUBentBarLengths({
+    clearSpanMm: span,
+    legMm: member.topBarEndHookLengthMm.value,
+    dMm: dTop,
+    isA,
+    k,
+  });
   const dBot = member.bottomBarDiameterMm.value;
-  const cutBot = computeUBentBarCutMm(span, member.bottomBarEndHookLengthMm.value, dBot, isA, k);
+  const cutBot = computeUBentBarLengths({
+    clearSpanMm: span,
+    legMm: member.bottomBarEndHookLengthMm.value,
+    dMm: dBot,
+    isA,
+    k,
+  });
 
   return [
     buildBarScheduleItem({
@@ -185,12 +206,13 @@ export function computeBeamRebar(member: BeamMemberInput): CalculatedBarSchedule
       memberType: 'beam',
       desc: 'Top hanger bars',
       dMm: dTop,
-      cutMm: cutTop,
+      calcCutMm: cutTop.calcMm,
+      specifiedCutMm: cutTop.specifiedMm,
       barsPerMember: member.topBarCount.value,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { span: String(span), hook: String(member.topBarEndHookLengthMm.value) },
+      dims: cutTop.dims,
     }),
     buildBarScheduleItem({
       barMark: `${member.label}-B1`,
@@ -199,12 +221,13 @@ export function computeBeamRebar(member: BeamMemberInput): CalculatedBarSchedule
       memberType: 'beam',
       desc: 'Bottom tension bars',
       dMm: dBot,
-      cutMm: cutBot,
+      calcCutMm: cutBot.calcMm,
+      specifiedCutMm: cutBot.specifiedMm,
       barsPerMember: member.bottomBarCount.value,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { span: String(span), hook: String(member.bottomBarEndHookLengthMm.value) },
+      dims: cutBot.dims,
     }),
     computeBeamStirrupItem(member, span, isA, label),
   ];
@@ -218,14 +241,26 @@ export function computeSlabRebar(member: SlabZoneMemberInput): CalculatedBarSche
   const label = methodLabel(member.cuttingMethod.value, k);
 
   const dMain = member.mainBarDiameterMm.value;
-  const countMain = Math.floor((member.lengthMm.value - 2 * c) / member.mainBarSpacingMm.value) + 1;
+  const countMain = Math.ceil((member.lengthMm.value - 2 * c) / member.mainBarSpacingMm.value) + 1;
   const baseMain = member.widthMm.value - 2 * c;
-  const cutMain = computeUBentBarCutMm(baseMain, member.mainBarEndBendLegMm.value, dMain, isA, k);
+  const cutMain = computeUBentBarLengths({
+    clearSpanMm: baseMain,
+    legMm: member.mainBarEndBendLegMm.value,
+    dMm: dMain,
+    isA,
+    k,
+  });
 
   const dDist = member.distBarDiameterMm.value;
-  const countDist = Math.floor((member.widthMm.value - 2 * c) / member.distBarSpacingMm.value) + 1;
+  const countDist = Math.ceil((member.widthMm.value - 2 * c) / member.distBarSpacingMm.value) + 1;
   const baseDist = member.lengthMm.value - 2 * c;
-  const cutDist = computeUBentBarCutMm(baseDist, member.distBarEndBendLegMm.value, dDist, isA, k);
+  const cutDist = computeUBentBarLengths({
+    clearSpanMm: baseDist,
+    legMm: member.distBarEndBendLegMm.value,
+    dMm: dDist,
+    isA,
+    k,
+  });
 
   return [
     buildBarScheduleItem({
@@ -235,12 +270,13 @@ export function computeSlabRebar(member: SlabZoneMemberInput): CalculatedBarSche
       memberType: 'slab',
       desc: 'Main slab reinforcement',
       dMm: dMain,
-      cutMm: cutMain,
+      calcCutMm: cutMain.calcMm,
+      specifiedCutMm: cutMain.specifiedMm,
       barsPerMember: countMain,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { base: String(baseMain), leg: String(member.mainBarEndBendLegMm.value) },
+      dims: cutMain.dims,
     }),
     buildBarScheduleItem({
       barMark: `${member.label}-D1`,
@@ -249,12 +285,13 @@ export function computeSlabRebar(member: SlabZoneMemberInput): CalculatedBarSche
       memberType: 'slab',
       desc: 'Distribution reinforcement',
       dMm: dDist,
-      cutMm: cutDist,
+      calcCutMm: cutDist.calcMm,
+      specifiedCutMm: cutDist.specifiedMm,
       barsPerMember: countDist,
       memberCount: mCount,
       methodLabel: label,
       shapeType: 'u-shape',
-      dims: { base: String(baseDist), leg: String(member.distBarEndBendLegMm.value) },
+      dims: cutDist.dims,
     }),
   ];
 }

@@ -55,12 +55,12 @@ export const CITATION_STIRRUP_HOOK_EXTENSIONS: ReferenceCitation = {
 export const CITATION_IS_2502_METHOD_A: ReferenceCitation = {
   standard: 'IS 2502',
   edition: '1963 (Reaffirmed 2004)',
-  clauseOrTable: 'Clause 4.1 & Table II',
-  page: 7,
-  sourceUrlOrDocument: 'Bureau of Indian Standards official publication IS 2502:1963',
+  clauseOrTable: 'Clause 4.1, Table II, Table III, Table VIII, and Clause 5.1.1',
+  page: 7, // Table II p. 7, Table III p. 8, Table VIII p. 13, Cl. 5.1.1 p. 6
+  sourceUrlOrDocument: 'https://law.resource.org/pub/in/bis/S03/is.2502.1963.pdf',
   status: 'VERIFIED',
   notes:
-    'Internal bend factor k in {2, 3, 4, 6}. Hook allowance H and bend allowance B added to bending dimensions. Allowances rounded up to nearest multiple of 5 mm, min 75 mm for hooks. Factor k is strictly an explicit user selection.',
+    'Table II: H = 9d/11d/13d/17d and B = 5d/5.5d/6d/7d for k = 2/3/4/6, rounded to nearest 5 mm, min 75 mm. Table III: Ref E (U-bar) L = l + 2B, Ref D (L-bar) L = l + B. Table VIII: Ref A (closed tie) L = 2(A+E) + 24d with inside dimensions A and E. Cl. 5.1.1: specified cutting lengths rounded up to next whole 25 mm. Factor k is strictly an explicit user selection.',
 };
 
 export const CITATION_SITE_PRACTICE_METHOD_B: ReferenceCitation = {
@@ -71,7 +71,7 @@ export const CITATION_SITE_PRACTICE_METHOD_B: ReferenceCitation = {
   sourceUrlOrDocument: 'Site construction convention; not a published BIS code standard value',
   status: 'UNVERIFIED',
   notes:
-    'Deducts bend elongation from out-to-out dimensions. Clearly labeled in BBS and UI as "Method: Site Practice Deductions (not a code standard)".',
+    'Deducts bend elongation from out-to-out dimensions. Clearly labeled in BBS and UI as "Method: Site Practice Deductions (not a code standard)". Stirrup hook length is an explicit user input (no default).',
 };
 
 export const CITATION_SEISMIC_135_HOOK: ReferenceCitation = {

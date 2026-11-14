@@ -65,6 +65,7 @@ export const columnMemberSchema = baseMemberSchema.extend({
   tieSpacingMm: trackedValueSchema(positiveNumber),
   tieHookAngle: trackedValueSchema(z.union([z.literal(90), z.literal(135), z.literal(180)])),
   seismicHookLengthMm: trackedValueSchema(nonNegativeNumber).optional(),
+  methodBStirrupHookMm: trackedValueSchema(nonNegativeNumber).optional(),
 });
 
 export const beamMemberSchema = baseMemberSchema.extend({
@@ -82,6 +83,7 @@ export const beamMemberSchema = baseMemberSchema.extend({
   stirrupSpacingMm: trackedValueSchema(positiveNumber),
   stirrupHookAngle: trackedValueSchema(z.union([z.literal(90), z.literal(135), z.literal(180)])),
   seismicHookLengthMm: trackedValueSchema(nonNegativeNumber).optional(),
+  methodBStirrupHookMm: trackedValueSchema(nonNegativeNumber).optional(),
 });
 
 export const slabZoneMemberSchema = baseMemberSchema.extend({
@@ -132,6 +134,7 @@ export const barScheduleItemSchema = z.strictObject({
   memberType: z.enum(memberTypes),
   description: z.string(),
   diameterMm: z.string(),
+  calculatedCuttingLengthMm: z.string(),
   singleBarCuttingLengthMm: z.string(),
   singleBarCuttingLengthM: z.string(),
   barsPerMember: z.string(),

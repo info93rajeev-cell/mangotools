@@ -64,6 +64,8 @@ export interface ColumnMemberInput extends BaseMemberInput {
   tieHookAngle: TrackedValue<90 | 135 | 180>;
   /** Optional custom seismic 135° hook extension (mm). If omitted, IS 456 Cl. 26.2.2.4(b) is used. */
   seismicHookLengthMm?: TrackedValue<number>;
+  /** Method B stirrup/tie hook length (mm) entered by user (no pre-filled code default) */
+  methodBStirrupHookMm?: TrackedValue<number>;
 }
 
 export interface BeamMemberInput extends BaseMemberInput {
@@ -84,6 +86,8 @@ export interface BeamMemberInput extends BaseMemberInput {
   stirrupSpacingMm: TrackedValue<number>;
   stirrupHookAngle: TrackedValue<90 | 135 | 180>;
   seismicHookLengthMm?: TrackedValue<number>;
+  /** Method B stirrup hook length (mm) entered by user (no pre-filled code default) */
+  methodBStirrupHookMm?: TrackedValue<number>;
 }
 
 export interface SlabZoneMemberInput extends BaseMemberInput {
@@ -120,6 +124,9 @@ export interface CalculatedBarScheduleItem {
   memberType: MemberType;
   description: string;
   diameterMm: string;
+  /** Exact calculated cutting length before standard rounding (mm) */
+  calculatedCuttingLengthMm: string;
+  /** Specified cutting length (IS 2502 Cl. 5.1.1 rounded to next whole 25mm in Method A, or calculated mm in Method B) */
   singleBarCuttingLengthMm: string;
   singleBarCuttingLengthM: string;
   barsPerMember: string;
