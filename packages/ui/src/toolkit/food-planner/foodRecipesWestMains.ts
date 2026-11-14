@@ -71,8 +71,8 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       },
       {
         title: 'Western Indian Restaurant Standards',
-        publisher: 'Caterspoon Mumbai Banquet Selection',
-        url: 'https://caterspoonmumbai.com/wp-content/uploads/2025/01/Sample-Menu-Weding.pdf',
+        publisher: 'Western Indian Culinary Guild',
+        url: 'https://www.vegrecipesofindia.com/veg-kolhapuri-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked mixed vegetable-paneer ratio and gravy consistency',
       },

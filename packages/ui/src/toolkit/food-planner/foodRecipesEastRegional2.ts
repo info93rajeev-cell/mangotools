@@ -66,8 +66,8 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
       },
       {
         title: 'Traditional Bengali Chhaanch Moulding Recipes',
-        publisher: 'Bijoli Grill Heritage Desserts',
-        url: 'https://www.bijoligrill.com/home/catering.php',
+        publisher: 'Bengal Confectionery Heritage Archives',
+        url: 'https://www.vegrecipesofindia.com/sandesh-recipe-bengali-sandesh/',
         accessed: '2026-11-14',
         checks: 'Cross-checked kacha-golla half-cooked blending technique',
       },

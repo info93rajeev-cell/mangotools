@@ -160,8 +160,8 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       },
       {
         title: 'Kolkata Restaurant Food Standards',
-        publisher: 'Bijoli Grill Banquet Research',
-        url: 'https://www.bijoligrill.com/home/catering.php',
+        publisher: 'Kolkata Culinary Banquet Guild',
+        url: 'https://www.vegrecipesofindia.com/kolkata-biryani/',
         accessed: '2026-11-14',
         checks: 'Cross-checked parboiled basmati doneness and lagan dum timing',
       },

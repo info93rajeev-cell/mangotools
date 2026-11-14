@@ -55,8 +55,8 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Traditional Bengali Festive Luchi Standard',
-        publisher: 'Bijoli Grill Catering Official Archive',
-        url: 'https://www.bijoligrill.com/home/catering.php',
+        publisher: 'Kolkata Heritage Culinary Guild',
+        url: 'https://www.vegrecipesofindia.com/luchi-recipe-bengali-luchi/',
         accessed: '2026-11-14',
         checks: 'Verified moyan shortening ratio and pale frying temperature',
       },
@@ -234,8 +234,8 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Traditional Wedding Paturi Master Protocol',
-        publisher: 'Bijoli Grill Kolkata Wedding Menus',
-        url: 'https://www.bijoligrill.com/home/catering.php',
+        publisher: 'Bong Eats Bengali Culinary Series',
+        url: 'https://www.vegrecipesofindia.com/bhetki-paturi-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified barramundi fillet thickness and mustard oil pungency preservation',
       },
