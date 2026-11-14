@@ -25,6 +25,7 @@ import {
 import type {
   CalculatedBarScheduleItem,
   ConstructionMemberInput,
+  ConstructionPlannerEngineOutput,
   MemberCalculationResult,
 } from './types.ts';
 
@@ -67,6 +68,35 @@ function computeMemberResult(member: ConstructionMemberInput): MemberCalculation
   };
 }
 
+export function computePlannerOutput(
+  projectId: string,
+  projectName: string,
+  members: ConstructionMemberInput[],
+): ConstructionPlannerEngineOutput {
+  const memberResults = members.map(computeMemberResult);
+  const allBbsItems: CalculatedBarScheduleItem[] = memberResults.flatMap((m) => m.rebarItems);
+
+  let totalConcreteM3 = '0';
+  let totalRebarKg = '0';
+  for (const m of memberResults) {
+    totalConcreteM3 = add(totalConcreteM3, m.totalConcreteVolumeM3);
+    totalRebarKg = add(totalRebarKg, m.totalRebarWeightKg);
+  }
+
+  return {
+    projectId,
+    projectName,
+    totalConcreteVolumeM3: totalConcreteM3,
+    totalRebarWeightKg: totalRebarKg,
+    totalRebarWeightTonnes: rebarTotalTonnes(totalRebarKg),
+    members: memberResults,
+    bbsItems: allBbsItems,
+    summaryByDiameter: summarizeByDiameter(allBbsItems),
+    summaryByMemberType: summarizeByMemberType(memberResults),
+    summaryByConcreteGrade: summarizeByConcreteGrade(memberResults),
+  };
+}
+
 export const constructionPlanner = defineOperation({
   id: 'civil.construction.planner',
   major: 1,
@@ -82,27 +112,6 @@ export const constructionPlanner = defineOperation({
   exposure: 'internal',
   dataClass: 'public',
   run(input: ConstructionPlannerInput) {
-    const memberResults = input.members.map(computeMemberResult);
-    const allBbsItems: CalculatedBarScheduleItem[] = memberResults.flatMap((m) => m.rebarItems);
-
-    let totalConcreteM3 = '0';
-    let totalRebarKg = '0';
-    for (const m of memberResults) {
-      totalConcreteM3 = add(totalConcreteM3, m.totalConcreteVolumeM3);
-      totalRebarKg = add(totalRebarKg, m.totalRebarWeightKg);
-    }
-
-    return ok({
-      projectId: input.projectId,
-      projectName: input.projectName,
-      totalConcreteVolumeM3: totalConcreteM3,
-      totalRebarWeightKg: totalRebarKg,
-      totalRebarWeightTonnes: rebarTotalTonnes(totalRebarKg),
-      members: memberResults,
-      bbsItems: allBbsItems,
-      summaryByDiameter: summarizeByDiameter(allBbsItems),
-      summaryByMemberType: summarizeByMemberType(memberResults),
-      summaryByConcreteGrade: summarizeByConcreteGrade(memberResults),
-    });
+    return ok(computePlannerOutput(input.projectId, input.projectName, input.members));
   },
 });

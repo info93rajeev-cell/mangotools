@@ -228,12 +228,18 @@ importers:
       '@mangotools/core':
         specifier: workspace:*
         version: link:../core
+      '@mangotools/engine-civil':
+        specifier: workspace:*
+        version: link:../../engines/civil
       '@mangotools/engine-search':
         specifier: workspace:*
         version: link:../../engines/search
       '@mangotools/schemas':
         specifier: workspace:*
         version: link:../../schemas
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
 
   packages/ui:
     dependencies:
