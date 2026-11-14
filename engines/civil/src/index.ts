@@ -4,6 +4,7 @@ import { brickworkQuantity } from './operations/brickwork-quantity/operation.ts'
 import { brickworkQuantityV2 } from './operations/brickwork-quantity-v2/operation.ts';
 import { concreteQuantity } from './operations/concrete-quantity/operation.ts';
 import { concreteQuantityV2 } from './operations/concrete-quantity-v2/operation.ts';
+import { constructionPlanner } from './operations/construction-planner/operation.ts';
 import { excavationVolume } from './operations/excavation-volume/operation.ts';
 import { excavationVolumeV2 } from './operations/excavation-volume-v2/operation.ts';
 import { paintQuantity } from './operations/paint-quantity/operation.ts';
@@ -18,6 +19,7 @@ export const engine: EngineModule = {
   operations: [
     concreteQuantity,
     concreteQuantityV2,
+    constructionPlanner,
     excavationVolume,
     excavationVolumeV2,
     brickworkQuantity,
@@ -37,6 +39,7 @@ export {
   brickworkQuantityV2,
   concreteQuantity,
   concreteQuantityV2,
+  constructionPlanner,
   excavationVolume,
   excavationVolumeV2,
   paintQuantity,

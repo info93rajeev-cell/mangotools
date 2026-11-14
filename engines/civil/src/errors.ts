@@ -108,4 +108,9 @@ export const messages: Readonly<Record<string, string>> = {
     'This tool does not calculate grout or adhesive quantity, skirting, layout-specific cuts, material or labour cost, or a bill of quantities (BOQ).',
   CIVIL_INFO_PLASTER_MATERIAL:
     'To also estimate bags, choose a material estimate and enter the yield or coverage stated by your plaster product.',
+  CIVIL_UNCONFIRMED_INPUT:
+    'Only inputs confirmed by the user are permitted into engineering calculations.',
+  CIVIL_MISSING_IS2502_K_FACTOR:
+    'Select an internal bend factor k (2, 3, 4, or 6) for IS 2502 Method A.',
+  CIVIL_NO_MEMBERS_ENTERED: 'Enter at least one structural member to plan.',
 };
