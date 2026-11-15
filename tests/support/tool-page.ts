@@ -41,6 +41,10 @@ export const SAMPLES = {
     archetype: 'B',
     resultPattern: /Level Book|Criterion not provided|Calculated/,
   },
+  'construction-project-planner': {
+    archetype: 'B',
+    resultPattern: /Project Setup|Structural Drawings|Project Summary|Residence G\+3/i,
+  },
 } as const;
 
 /**
@@ -214,11 +218,12 @@ export const island = (page: Page, id: string) => {
     return page.locator('[data-volumetric-weight-workspace]');
   if (id === 'image-background-remover') return page.locator('[data-image-bg-remover-layout]');
   if (CIVIL_TOOL_IDS.has(id)) return page.locator('.civil-workspace-container');
+  if (id === 'construction-project-planner') return page.locator('[data-planner-root]');
   return page.locator(`[data-tool-island="${id}"]`);
 };
 export const primaryResult = (page: Page) =>
   page.locator(
-    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong, [data-tool-island="food-planner"], [data-tool-island="survey-leveling-calculator"]',
+    '[data-primary-result] output, [data-cbm-total], [data-container-workspace] strong[data-load-kpi="0"], [data-pallet-loading-workspace] [data-pallet-kpi="total-boxes"], [data-volumetric-weight-workspace] [class*="chargeableValue"], [data-tax-results-card] span[class*="headlineAmount"], .civil-workspace-container .kpis .kpi:first-child strong, [data-tool-island="food-planner"], [data-tool-island="survey-leveling-calculator"], [data-planner-root]',
   );
 export const inputArea = (page: Page, id: string) => page.locator(`#tool-${id}-input`);
 export const outputArea = (page: Page, id: string) => page.locator(`#tool-${id}-output`);
@@ -321,6 +326,10 @@ export async function waitForResult(page: Page, id: string): Promise<void> {
     await expect(page.locator('[data-survey-workbench]')).toBeVisible();
     return;
   }
+  if (id === 'construction-project-planner') {
+    await expect(page.locator('[data-planner-root]')).toBeVisible();
+    return;
+  }
   if (CIVIL_TOOL_IDS.has(id)) {
     await expect(page.locator('.civil-workspace-container .results')).toHaveAttribute(
       'data-stale',
@@ -387,9 +396,10 @@ export async function produceResult(page: Page, id: string): Promise<void> {
     isLogisticsStudio(id) ||
     id === 'gst-calculator' ||
     id === 'food-planner' ||
-    id === 'survey-leveling-calculator'
+    id === 'survey-leveling-calculator' ||
+    id === 'construction-project-planner'
   ) {
-    // The Logistics studios, Universal Tax worksheets, Food Planner and Survey Leveling open already filled with their calculation result
+    // The Logistics studios, Universal Tax worksheets, Food Planner, Survey Leveling and Construction Planner open already filled with their calculation result
     // (the approved designs have no "Try sample" control), so their result is waited for, not produced.
   } else if (CIVIL_TOOL_IDS.has(id)) {
     // Civil workspaces open pre-calculated with default reference values; pressing Calculate performs the calculation.
