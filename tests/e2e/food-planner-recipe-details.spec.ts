@@ -17,7 +17,7 @@ for (const width of [390, 1672]) {
     await expect(details).toContainText('Wash aged long-grain basmati rice');
     await expect(details.getByRole('link', { name: /Ranveer Brar/ })).toHaveAttribute(
       'href',
-      'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+      'https://www.youtube.com/watch?v=2u3H7JoAm_U',
     );
     await page.screenshot({ path: test.info().outputPath('recipe-detail.png') });
     await details.getByRole('button', { name: 'Close recipe' }).click();

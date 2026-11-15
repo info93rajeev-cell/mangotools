@@ -85,10 +85,13 @@ function usePlannerSelection() {
     [selectedRecipeIds, allRecipes],
   );
 
-  const portionFactors = useMemo(
-    () => getEffectivePortionFactors(selectedRecipes, customPortions),
-    [selectedRecipes, customPortions],
-  );
+  const portionFactors = useMemo(() => {
+    const factors: Record<string, number> = {};
+    for (const r of selectedRecipes) {
+      factors[r.id] = customPortions[r.id] ?? 1;
+    }
+    return factors;
+  }, [selectedRecipes, customPortions]);
 
   const toggleRecipe = useCallback((id: string) => {
     setSelectedRecipeIds((prev) => {
