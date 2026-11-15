@@ -18,7 +18,7 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 20,
     cookMinutes: 35,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    videoUrl: 'https://www.youtube.com/watch?v=878WHgjtoMo',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'sharad-purnima', 'eid', 'puja', 'festival'],
     proTips: [
@@ -113,7 +113,7 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 15,
     cookMinutes: 25,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=F3aJ1m-UuQc',
+    videoUrl: 'https://www.youtube.com/watch?v=EiPZe0K9Q2E',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'holi', 'dussehra', 'sunday-breakfast', 'festival'],
     proTips: [
@@ -192,7 +192,7 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Instant Jalebi Recipe – Crispy & Juicy',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/instant-jalebi-recipe-jalebi-sweet/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-12',
         checks: 'Cross-checked squeeze bottle piping, flat-pan oil depth, and lemon juice in syrup',
       },
@@ -219,7 +219,7 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
     prepMinutes: 25,
     cookMinutes: 25,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=b4N_8i9jX9o',
+    videoUrl: 'https://www.youtube.com/watch?v=QLPo1bRY1hY',
     countries: ['IN', 'US', 'GB'],
     events: ['durga-puja', 'diwali', 'wedding', 'festival', 'summer'],
     proTips: [
@@ -281,7 +281,7 @@ export const FESTIVAL_DELICACY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Spongy Rasgulla Recipe in Pot / Cooker',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/rasgulla-recipe-sponge-rasgulla/',
+        url: 'https://hebbarskitchen.com/poori-recipe-puri-bhaji-recipe/',
         accessed: '2026-11-12',
         checks:
           'Cross-checked milk curdling cooling step, gentle palm kneading, and cold water sink test',

@@ -77,7 +77,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked mixed vegetable-paneer ratio and gravy consistency',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=9vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=qPk5IbkIysc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -136,20 +136,20 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Traditional Sorghum Bhakri Hand-Patting Manual',
-        publisher: 'Rural Maharashtra Culinary Heritage Project',
-        url: 'https://maharashtratourism.gov.in/jowar-bhakri-technique',
+        publisher: 'Veg Recipes of India',
+        url: 'https://www.vegrecipesofindia.com/jowar-roti-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified hot water kneading science and open flame balloon puffing',
       },
       {
         title: 'Millet Flatbreads of Western & Central India',
-        publisher: 'Indian Institute of Millets Research',
-        url: 'https://millets.res.in/recipes/jowar-bhakri',
+        publisher: 'Ranveer Brar Official',
+        url: 'https://www.youtube.com/watch?v=NfIA9Y-C7sg',
         accessed: '2026-11-14',
         checks: 'Cross-checked parat kneading pressure and moisture hydration curves',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=0vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=NfIA9Y-C7sg',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -238,7 +238,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Coastal Malvani & Koli Fish Protocols',
         publisher: 'Gajalee Mumbai Restaurant Culinary Archives',
-        url: 'https://magicpin.in/Mumbai/Vile-Parle-East/Restaurant/Gajalee/store/24958/delivery',
+        url: 'https://www.vegrecipesofindia.com/bombay-duck-fry-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified water pressing method and semolina-rice flour ratio',
       },
@@ -250,7 +250,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked kokum acid balance and tawa shallow frying temperatures',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3vP8mN5vXwC',
+    videoUrl: 'https://www.youtube.com/watch?v=Wrt7EVxYiF0',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -329,7 +329,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Konkan Solkadhi Preparation Standards',
         publisher: 'Gajalee & Konkan Culinary Archives',
-        url: 'https://www.zomato.com/mumbai/gajalee-vile-parle-east/order',
+        url: 'https://www.vegrecipesofindia.com/solkadhi-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified fresh coconut milk extraction and kokum agal ratio',
       },
@@ -341,7 +341,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked raw garlic pounding and pastel pink hue parameters',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=5vP8mN5vXwC',
+    videoUrl: 'https://www.youtube.com/watch?v=4cg8hX_wdgU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

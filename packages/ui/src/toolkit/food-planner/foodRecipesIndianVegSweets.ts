@@ -52,7 +52,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Royal Halwai Moong Dal Halwa Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/moong-dal-halwa-recipe/',
+        url: 'https://www.youtube.com/watch?v=tEtc8InDNRE',
         accessed: '2026-11-14',
         checks: 'Verified slow ghee roasting stages and warm milk absorption ratio',
       },
@@ -64,7 +64,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
         checks: 'Verified coarse grinding consistency and saffron infusion temperature',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mY8bH9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=tEtc8InDNRE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -126,7 +126,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Traditional Gajar Ka Halwa Secrets',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/gajar-ka-halwa-recipe/',
+        url: 'https://www.youtube.com/watch?v=DLT7hC3oQFg',
         accessed: '2026-11-14',
         checks: 'Verified whole milk reduction method and red carrot caramelization in desi ghee',
       },
@@ -138,7 +138,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
         checks: 'Verified sugar addition timing to retain carrot texture without liquefying',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=gY8bH9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=DLT7hC3oQFg',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -195,7 +195,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Awadhi Shahi Tukda Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/shahi-tukda-recipe/',
+        url: 'https://www.youtube.com/watch?v=4OgBldTs0us',
         accessed: '2026-11-14',
         checks: 'Verified rabri reduction consistency and bread ghee-frying temperature',
       },
@@ -207,7 +207,7 @@ export const INDIAN_VEG_SWEETS: ExtendedFoodRecipe[] = [
         checks: 'Verified saffron sugar syrup dipping duration to keep bread crisp',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bT9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=4OgBldTs0us',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

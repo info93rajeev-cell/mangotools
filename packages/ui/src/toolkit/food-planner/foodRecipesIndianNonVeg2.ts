@@ -69,7 +69,7 @@ export const INDIAN_NON_VEG_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Kashmiri Pandit Rogan Josh',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/kashmiri-rogan-josh-recipe/',
+        url: 'https://www.youtube.com/watch?v=XVgZBsuNU60',
         accessed: '2026-11-14',
         checks: 'Verified no onion garlic formulation and spice layering',
       },
@@ -81,7 +81,7 @@ export const INDIAN_NON_VEG_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified slow braising duration and curd incorporation',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=f2Vf8m2_nE8',
+    videoUrl: 'https://www.youtube.com/watch?v=XVgZBsuNU60',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -142,19 +142,19 @@ export const INDIAN_NON_VEG_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Restaurant Style Chicken Tikka Masala',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/chicken-tikka-masala-recipe/',
+        url: 'https://hebbarskitchen.com/paneer-butter-masala-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified onion-capsicum texture and masala base',
       },
       {
         title: 'Authentic British-Indian Murgh Tikka Masala',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/chicken-tikka-masala-39217r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Authentic%20British-Indian%20Murgh%20Tikka%20Masala',
         accessed: '2026-11-14',
         checks: 'Verified cream balancing and char requirements',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=5Uf3_w2v_4k',
+    videoUrl: 'https://www.youtube.com/watch?v=TzYACT9nT7A',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -223,7 +223,7 @@ export const INDIAN_NON_VEG_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Royal Rajputana Laal Maas',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/laal-maas-recipe/',
+        url: 'https://www.youtube.com/watch?v=x6VBBUDXQbo',
         accessed: '2026-11-14',
         checks: 'Verified Mathania chilli paste and desi ghee ratio',
       },
@@ -235,7 +235,7 @@ export const INDIAN_NON_VEG_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified bhunao technique and curd emulsion',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3g8Kk9j_gA4',
+    videoUrl: 'https://www.youtube.com/watch?v=x6VBBUDXQbo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

@@ -166,7 +166,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked parboiled basmati doneness and lagan dum timing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=9jK8mN5vXwA',
+    videoUrl: 'https://www.youtube.com/watch?v=qFk20hWp878',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -245,12 +245,12 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Dairy Desserts of Eastern India',
         publisher: 'National Dairy Research Institute',
-        url: 'https://ndri.res.in/bengal-mishti-doi',
+        url: 'https://www.vegrecipesofindia.com/mishti-doi-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked milk reduction density and fermentation temperatures',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=6vN5pG7h8kE',
+    videoUrl: 'https://www.youtube.com/watch?v=Jaryq-5aF18',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

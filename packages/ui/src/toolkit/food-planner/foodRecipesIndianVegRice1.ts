@@ -47,7 +47,7 @@ export const INDIAN_VEG_RICE_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Matar Pulao Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/matar-pulao-recipe/',
+        url: 'https://www.youtube.com/watch?v=2nuUTOlp9VY',
         accessed: '2026-11-14',
         checks: 'Verified whole spice tempering and water-to-rice absorption ratio',
       },
@@ -59,7 +59,7 @@ export const INDIAN_VEG_RICE_1: ExtendedFoodRecipe[] = [
         checks: 'Verified low-flame dum steam technique and rice grain separation',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mY7bX9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=2nuUTOlp9VY',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -140,12 +140,12 @@ export const INDIAN_VEG_RICE_1: ExtendedFoodRecipe[] = [
       {
         title: 'Royal Kashmiri Shahi Pulao Guide',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/kashmiri-pulao-recipe/',
+        url: 'https://www.youtube.com/watch?v=2SYRstDb34A',
         accessed: '2026-11-14',
         checks: 'Verified dry fruit roasting and fennel seed aromatic balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kShA1h1P_L0',
+    videoUrl: 'https://www.youtube.com/watch?v=2SYRstDb34A',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -227,7 +227,7 @@ export const INDIAN_VEG_RICE_1: ExtendedFoodRecipe[] = [
         checks: 'Verified vegetable parboiling timing and fried paneer integration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=nAvR7n_PuL1',
+    videoUrl: 'https://www.youtube.com/watch?v=WSthHkamGlM',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',

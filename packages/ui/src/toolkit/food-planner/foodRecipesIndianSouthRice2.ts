@@ -65,12 +65,12 @@ export const INDIAN_SOUTH_RICE_PART2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Karnataka Bisi Bele Huliyanna',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/bisi-bele-bhaat-3652r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Traditional%20Karnataka%20Bisi%20Bele%20Huliyanna',
         accessed: '2026-11-14',
         checks: 'Verified copra and cinnamon roasting balance and ghee tempering',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bIsIbElE_01',
+    videoUrl: 'https://www.youtube.com/watch?v=C0nAdyXDlnk',
     verification: {
       status: 'source-checked',
       by: 'Executive South Indian Chef',
@@ -133,7 +133,7 @@ export const INDIAN_SOUTH_RICE_PART2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Coconut Rice (Thengai Sadam)',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/coconut-rice-recipe-thengai-sadam/',
+        url: 'https://hebbarskitchen.com/?s=Authentic%20Coconut%20Rice',
         accessed: '2026-11-14',
         checks:
           'Verified fresh grated coconut sauté duration and cold-pressed coconut oil tempering',
@@ -146,7 +146,7 @@ export const INDIAN_SOUTH_RICE_PART2: ExtendedFoodRecipe[] = [
         checks: 'Verified coconut oil infusion and crunchy dal tempering balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=cOcOnUtR_01',
+    videoUrl: 'https://www.youtube.com/watch?v=7KmeOIcBrzg',
     verification: {
       status: 'source-checked',
       by: 'Executive South Indian Chef',

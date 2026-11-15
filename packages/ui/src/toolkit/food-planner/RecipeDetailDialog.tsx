@@ -3,74 +3,19 @@ import s from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { type ExtendedFoodRecipe, getRecipeVerificationInfo } from './foodRecipesData.ts';
 import { CATALOG_INGREDIENTS } from './foodReferenceData.ts';
+import {
+  getRecipeVideoTutorialUrl,
+  getSafeRecipeSourceUrl,
+  KNOWN_DEAD_PATTERNS,
+  scaledRecipeQuantity,
+} from './recipeLinkHelpers.ts';
 
-export function getSafeRecipeSourceUrl(
-  source: { url: string; publisher: string; title: string },
-  recipeName: string,
-): string {
-  const url = source.url || '';
-  const badDomains = ['bijoligrill.com', '9wolf', 'caterspoonmumbai.com'];
-  if (badDomains.some((d) => url.toLowerCase().includes(d))) {
-    const cleanRecipe = recipeName.replace(/\([^)]*\)/g, '').trim();
-    return `https://www.google.com/search?q=${encodeURIComponent(
-      `${source.publisher} ${source.title || cleanRecipe} recipe`,
-    )}`;
-  }
-  return url;
-}
-
-export function getRecipeVideoTutorialUrl(recipe: ExtendedFoodRecipe): string {
-  if (recipe.videoUrl?.includes('search_query=')) {
-    return recipe.videoUrl;
-  }
-  const cleanName = recipe.name.replace(/\([^)]*\)/g, '').trim();
-  const deadPatterns = [
-    '7bN6vK5m8yA',
-    '9jK8mN5vXwA',
-    '8vK8mN5vXwA',
-    '2r1p0g0Wq7w',
-    'mAtAr',
-    'FjC2g',
-    'kY8b',
-    'rY8b',
-    'sY8b',
-    'tY8b',
-    'gY8b',
-    'hY8b',
-    'mY8b',
-    'fY8b',
-    'bY8b',
-    'pY8b',
-    'cY8b',
-    'nY8b',
-    'vM8m',
-    'vP8m',
-  ];
-  if (
-    recipe.videoUrl &&
-    /(?:watch\?v=|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(recipe.videoUrl) &&
-    !deadPatterns.some((p) => recipe.videoUrl?.includes(p))
-  ) {
-    return recipe.videoUrl;
-  }
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    `${cleanName} authentic recipe video tutorial`,
-  )}`;
-}
-
-export function scaledRecipeQuantity(
-  quantity: string,
-  unit: string,
-  servings: number,
-  baseServings: number,
-): string {
-  const scaled = (Number(quantity) * servings) / baseServings;
-  if (!Number.isFinite(scaled) || scaled <= 0) return `${quantity} ${unit}`;
-  const displayUnit =
-    unit === 'g' && scaled >= 1000 ? 'kg' : unit === 'ml' && scaled >= 1000 ? 'l' : unit;
-  const displayValue = displayUnit === unit ? scaled : scaled / 1000;
-  return `${Number(displayValue.toFixed(2))} ${displayUnit}`;
-}
+export {
+  getRecipeVideoTutorialUrl,
+  getSafeRecipeSourceUrl,
+  KNOWN_DEAD_PATTERNS,
+  scaledRecipeQuantity,
+};
 
 interface RecipeDetailDialogProps {
   recipe: ExtendedFoodRecipe | null;

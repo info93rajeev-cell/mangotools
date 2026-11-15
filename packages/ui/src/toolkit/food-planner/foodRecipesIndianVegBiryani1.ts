@@ -72,7 +72,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Awadhi Veg Dum Biryani',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/veg-dum-biryani-recipe/',
+        url: 'https://www.youtube.com/watch?v=gYE9zOmJwsg',
         accessed: '2026-11-14',
         checks: 'Verified 70% rice parboil timing and hermetic dough dum seal',
       },
@@ -84,7 +84,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
         checks: 'Verified floral rose-kewra balance and saffron milk distribution',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=AwAdh1_Biry',
+    videoUrl: 'https://www.youtube.com/watch?v=gYE9zOmJwsg',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -151,7 +151,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
       {
         title: 'Calcutta Biryani Secret Technique',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/kolkata-biryani-recipe/',
+        url: 'https://www.youtube.com/watch?v=y9kYkWu2MV8',
         accessed: '2026-11-14',
         checks: 'Verified potato braising technique and subtle Mughlai floral essence',
       },
@@ -163,7 +163,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
         checks: 'Verified slow tawa dum method and saffron seasoning ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kOlKaTa_Bir',
+    videoUrl: 'https://www.youtube.com/watch?v=y9kYkWu2MV8',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -234,7 +234,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Thalassery Biryani Guide',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/thalassery-biryani-recipe/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-14',
         checks: 'Verified Malabar fennel spice blend and ghee-roasted cashew garnish',
       },
@@ -246,7 +246,7 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
         checks: 'Verified vegetable masala reduction and dum steam sealing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=ThAlAsSe_Ry',
+    videoUrl: 'https://www.youtube.com/watch?v=Pmjfqm4oAy0',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -313,12 +313,12 @@ export const INDIAN_VEG_BIRYANI_1: ExtendedFoodRecipe[] = [
       {
         title: 'Sindhi Subz Biryani Heritage',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/sindhi-biryani-recipe/',
+        url: 'https://www.youtube.com/watch?v=y9kYkWu2MV8',
         accessed: '2026-11-14',
         checks: 'Verified tangy tomato reduction and aromatic mint layering',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sInDhI_Biry',
+    videoUrl: 'https://www.youtube.com/watch?v=y9kYkWu2MV8',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',

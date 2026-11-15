@@ -54,19 +54,19 @@ export const INDIAN_VEG_BIRYANI_2: ExtendedFoodRecipe[] = [
       {
         title: 'Chettinad Seeraga Samba Veg Biryani',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/seeraga-samba-veg-biryani-recipe/',
+        url: 'https://hebbarskitchen.com/chettinad-biryani-recipe-chettinad-style/',
         accessed: '2026-11-14',
         checks: 'Verified Seeraga Samba water-absorption ratio and stone-ground pepper tempering',
       },
       {
         title: 'South Indian Seeraga Samba Feast',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/chettinad-veg-biryani-4122r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=South%20Indian%20Seeraga%20Samba%20Feast',
         accessed: '2026-11-14',
         checks: 'Verified shallot caramelization and fennel-pepper aromatic profile',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=chEtTi_Biry',
+    videoUrl: 'https://www.youtube.com/watch?v=gYE9zOmJwsg',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -132,7 +132,7 @@ export const INDIAN_VEG_BIRYANI_2: ExtendedFoodRecipe[] = [
       {
         title: 'UP Style Veg Tahari Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/tahari-recipe/',
+        url: 'https://www.youtube.com/watch?v=6p3xvBrhT5k',
         accessed: '2026-11-14',
         checks: 'Verified smoked mustard oil tempering and potato-cauliflower sear technique',
       },
@@ -144,7 +144,7 @@ export const INDIAN_VEG_BIRYANI_2: ExtendedFoodRecipe[] = [
         checks: 'Verified rustic one-pot spice absorption and turmeric golden hue',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=uPtAhArI_01',
+    videoUrl: 'https://www.youtube.com/watch?v=6p3xvBrhT5k',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -223,19 +223,19 @@ export const INDIAN_VEG_BIRYANI_2: ExtendedFoodRecipe[] = [
       {
         title: 'Tandoori Paneer Tikka Biryani Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/paneer-tikka-biryani-recipe/',
+        url: 'https://www.youtube.com/watch?v=Lxa-Ws6-DiU',
         accessed: '2026-11-14',
         checks: 'Verified high-heat paneer charring and sealed layered dum steam balance',
       },
       {
         title: 'Restaurant Style Paneer Tikka Biryani',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/paneer-tikka-biryani-recipe/',
+        url: 'https://hebbarskitchen.com/?s=Restaurant%20Style%20Paneer%20Tikka%20Biryani',
         accessed: '2026-11-14',
         checks: 'Verified tandoori curd marinade and dum layering technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=pAnErT1k_Ka',
+    videoUrl: 'https://www.youtube.com/watch?v=Lxa-Ws6-DiU',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',

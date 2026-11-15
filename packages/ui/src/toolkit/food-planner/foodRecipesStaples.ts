@@ -20,7 +20,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/jeera-rice.jpg',
     imageProvenance: illustration,
-    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    videoUrl: 'https://www.youtube.com/watch?v=2u3H7JoAm_U',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'wedding', 'festival', 'dinner-party'],
     proTips: [
@@ -52,14 +52,14 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Perfect Jeera Rice & Restaurant Secrets',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+        url: 'https://www.youtube.com/watch?v=2u3H7JoAm_U',
         accessed: '2026-11-13',
         checks: 'Rice water ratio, ghee bloom, fork fluff technique',
       },
       {
         title: 'Jeera Rice Recipe | Cumin Rice Restaurant Style',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/jeera-rice-recipe-cumin-rice/',
+        url: 'https://hebbarskitchen.com/dal-fry-recipe-dal-recipe-arhar-dal-fry/',
         accessed: '2026-11-13',
         checks: 'Basmati soaking, whole spices, grain separation',
       },
@@ -85,7 +85,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/dal-tadka.jpg',
     imageProvenance: illustration,
-    videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
+    videoUrl: 'https://www.youtube.com/watch?v=3XTSCbZfEgM',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'festival', 'dinner-party'],
     proTips: [
@@ -134,7 +134,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Restaurant Style Dal Tadka Recipe',
         publisher: 'Sanjeev Kapoor Khazana',
-        url: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
+        url: 'https://www.youtube.com/watch?v=3XTSCbZfEgM',
         accessed: '2026-11-13',
         checks: 'Double tadka method, toor dal consistency, garlic browning',
       },
@@ -167,7 +167,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/aloo-gobi.jpg',
     imageProvenance: illustration,
-    videoUrl: 'https://www.youtube.com/watch?v=b4N_8i9jX9o',
+    videoUrl: 'https://www.youtube.com/watch?v=PhgyyJE90w8',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'festival', 'dinner-party'],
     proTips: [
@@ -244,7 +244,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/shahi-paneer.jpg',
     imageProvenance: illustration,
-    videoUrl: 'https://www.youtube.com/watch?v=Fq2r_sD1E_U',
+    videoUrl: 'https://www.youtube.com/watch?v=inVClSNYBQ4',
     countries: ['IN', 'US', 'GB'],
     events: ['wedding', 'festival', 'dinner-party', 'birthday'],
     proTips: [
@@ -300,7 +300,7 @@ export const STAPLE_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Original Shahi Paneer Recipe',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=Fq2r_sD1E_U',
+        url: 'https://www.youtube.com/watch?v=inVClSNYBQ4',
         accessed: '2026-11-13',
         checks: 'Cashew gravy ratio, paneer softening, curd emulsion',
       },

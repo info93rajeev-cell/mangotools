@@ -20,7 +20,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/chana-masala.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=FmH2Y1yLq-A',
+    videoUrl: 'https://www.youtube.com/watch?v=qPiqvDltIdM',
     countries: ['IN', 'US', 'GB'],
     events: ['wedding', 'festival', 'sunday-brunch', 'dinner-party'],
     proTips: [
@@ -71,7 +71,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Original Amritsari Pindi Chole Recipe',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=FmH2Y1yLq-A',
+        url: 'https://www.youtube.com/watch?v=qPiqvDltIdM',
         accessed: '2026-11-13',
         checks: 'Tea bag boiling, onion browning, chickpea mashing technique',
       },
@@ -105,7 +105,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/masala-chai.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=R9K-b4U1P3w',
+    videoUrl: 'https://www.youtube.com/watch?v=t0C7TQqLjtc',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'high-tea', 'monsoon', 'winter', 'morning'],
     proTips: [
@@ -147,14 +147,14 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Secrets to Indian Street Style Kadak Masala Chai',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=R9K-b4U1P3w',
+        url: 'https://www.youtube.com/watch?v=t0C7TQqLjtc',
         accessed: '2026-11-13',
         checks: 'Decoction method, triple boil technique, milk proportion',
       },
       {
         title: 'Masala Chai Recipe | Indian Spiced Tea',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/masala-chai-recipe-masala-tea/',
+        url: 'https://hebbarskitchen.com/peanut-masala-recipe-masala-groundnut/',
         accessed: '2026-11-13',
         checks: 'Water to milk 1:1 ratio, crushed spices, sugar timing',
       },
@@ -180,7 +180,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/raita.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    videoUrl: 'https://www.youtube.com/watch?v=ZpnKVSYDq80',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'wedding', 'festival', 'dinner-party'],
     proTips: [
@@ -228,7 +228,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Raita Recipe Collection | North Indian Style Raita',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/raita-recipe-veg-raita-recipes/',
+        url: 'https://hebbarskitchen.com/mix-veg-paratha-recipe-vegetable-paratha/',
         accessed: '2026-11-13',
         checks: 'Yogurt hydration, spice balance, chilling time',
       },
@@ -254,7 +254,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/mixed-veg-salad.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
+    videoUrl: 'https://www.youtube.com/watch?v=bF9cVX6qko0',
     countries: ['IN', 'US', 'GB'],
     events: ['daily', 'wedding', 'festival', 'dinner-party'],
     proTips: [
@@ -294,7 +294,7 @@ export const MAINS_AND_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Kachumber Salad Recipe (Indian Cucumber Tomato Onion Salad)',
         publisher: "Dassana's Veg Recipes",
-        url: 'https://www.vegrecipesofindia.com/kachumber-salad-recipe/',
+        url: 'https://www.vegrecipesofindia.com/kachumber-salad-kuchumber-salad/',
         accessed: '2026-11-13',
         checks: 'Dicing technique, lemon dressing balance, immediate service',
       },

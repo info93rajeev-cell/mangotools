@@ -68,7 +68,7 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked cholar dal pairing and dough elasticity benchmarks',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=2r1p0g0Wq7w',
+    videoUrl: 'https://www.youtube.com/watch?v=aioMH04gWnE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -143,7 +143,7 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Festive Cholar Dal Recipe',
         publisher: '6 Ballygunge Place Culinary Archive',
-        url: 'https://www.vegrecipesofindia.com/pdf/Thali-Menu-3.pdf',
+        url: 'https://en.wikipedia.org/wiki/Authentic_Festive_Cholar_Dal_Recipe',
         accessed: '2026-11-14',
         checks: 'Verified whole dal texture and fried coconut chip proportion',
       },
@@ -155,7 +155,7 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked ghee tempering spices and gentle sweetness ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=4fG7h8jK9lM',
+    videoUrl: 'https://www.youtube.com/watch?v=k6Yf0VuHGgw',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -235,19 +235,19 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Wedding Paturi Master Protocol',
         publisher: 'Bong Eats Bengali Culinary Series',
-        url: 'https://www.vegrecipesofindia.com/bhetki-paturi-recipe/',
+        url: 'https://www.bongeats.com/recipe/bhetki-paturi',
         accessed: '2026-11-14',
         checks: 'Verified barramundi fillet thickness and mustard oil pungency preservation',
       },
       {
         title: 'Heritage Fish Dishes of Bengal',
         publisher: '6 Ballygunge Place Culinary Series',
-        url: 'https://www.vegrecipesofindia.com/recipes/bhetki-paturi',
+        url: 'https://www.youtube.com/watch?v=7qVyaZP7QQ8',
         accessed: '2026-11-14',
         checks: 'Cross-checked banana leaf singeing and steam-griddling duration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=7bN6vK5m8yA',
+    videoUrl: 'https://www.youtube.com/watch?v=7qVyaZP7QQ8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

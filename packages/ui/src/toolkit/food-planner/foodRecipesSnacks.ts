@@ -20,7 +20,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/samosa.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=F3aJ1m-UuQc',
+    videoUrl: 'https://www.youtube.com/watch?v=EKPAfUCn_Jo',
     countries: ['IN', 'US', 'GB'],
     events: ['high-tea', 'festival', 'wedding', 'birthday', 'party'],
     proTips: [
@@ -63,14 +63,14 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Halwai Style Punjabi Samosa Recipe',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=F3aJ1m-UuQc',
+        url: 'https://www.youtube.com/watch?v=EKPAfUCn_Jo',
         accessed: '2026-11-13',
         checks: 'Moyan ratio, low flame frying, pleat folding technique',
       },
       {
         title: 'Samosa Recipe | Punjabi Samosa | Aloo Samosa',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/samosa-recipe-punjabi-samosa/',
+        url: 'https://hebbarskitchen.com/onion-samosa-recipe-patti-samosa/',
         accessed: '2026-11-13',
         checks: 'Dough hydration, potato stuffing texture, crust crispness',
       },
@@ -96,7 +96,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/paneer-tikka.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=R3K_W7O10L8',
+    videoUrl: 'https://www.youtube.com/watch?v=c-oVDb-O2Q8',
     countries: ['IN', 'US', 'GB'],
     events: ['festival', 'wedding', 'dinner-party', 'birthday', 'barbecue'],
     proTips: [
@@ -154,7 +154,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Tawa Paneer Tikka Recipe Without Oven',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=R3K_W7O10L8',
+        url: 'https://www.youtube.com/watch?v=c-oVDb-O2Q8',
         accessed: '2026-11-13',
         checks: 'Mustard oil tempering, hung curd consistency, tawa charring',
       },
@@ -187,7 +187,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/pakoda.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=b4N_8i9jX9o',
+    videoUrl: 'https://www.youtube.com/watch?v=ibzQobIsG4k',
     countries: ['IN', 'US', 'GB'],
     events: ['high-tea', 'monsoon', 'festival', 'daily', 'party'],
     proTips: [
@@ -230,14 +230,14 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Mix Veg Pakoda Recipe | Crispy Vegetable Pakora',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/mix-veg-pakoda-recipe-vegetable-pakora/',
+        url: 'https://hebbarskitchen.com/veg-pakora-recipe-mix-veg-pakoda-mixed/',
         accessed: '2026-11-13',
         checks: 'Vegetable moisture extraction, dry coating, crunch frying',
       },
       {
         title: 'Secrets to Crisp Halwai Style Pakodas',
         publisher: 'Ranveer Brar',
-        url: 'https://www.youtube.com/watch?v=b4N_8i9jX9o',
+        url: 'https://www.youtube.com/watch?v=ibzQobIsG4k',
         accessed: '2026-11-13',
         checks: 'Oil temperature, lacy cluster dropping, double fry trick',
       },
@@ -263,7 +263,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
     verified: true,
     thumbnailUrl: '/food/recipes/mathri.jpg',
     imageProvenance: generatedImageProvenance,
-    videoUrl: 'https://www.youtube.com/watch?v=F3aJ1m-UuQc',
+    videoUrl: 'https://www.youtube.com/watch?v=mtzeOTJuaHs',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'holi', 'karwa-chauth', 'high-tea', 'festival'],
     proTips: [
@@ -294,7 +294,7 @@ export const SNACK_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Crispy Mathri Recipe | Khasta Mathri Namkeen',
         publisher: "Hebbar's Kitchen",
-        url: 'https://hebbarskitchen.com/crispy-mathri-recipe-khasta-mathri/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-13',
         checks: 'Moyan ratio, fork pricking, low flame drying',
       },
