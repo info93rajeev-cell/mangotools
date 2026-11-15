@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../generated/schemas/preset.json
+presetVersion: 1
+id: civil/construction-planner
+version: 0.1.0
+operation: civil.construction.planner@1
+fields:
+  projectId:
+    labelKey: planner.field.projectId
+    kind: text
+    required: true
+    default: "proj-default"
+    order: 10
+  projectName:
+    labelKey: planner.field.projectName
+    kind: text
+    required: true
+    default: "P01 · Residence + Office (G+3)"
+    order: 20
+  members:
+    labelKey: planner.field.members
+    kind: text
+    required: false
+    order: 30
+outputs:
+  totalConcreteVolumeM3:
+    labelKey: planner.out.concrete
+    format: text
+    order: 10
+    primary: true
+  totalRebarWeightKg:
+    labelKey: planner.out.rebarKg
+    format: text
+    order: 20
+  totalRebarWeightTonnes:
+    labelKey: planner.out.rebarTonnes
+    format: text
+    order: 30
+samples:
+  residence-g3-sample:
+    titleKey: planner.sample.residenceG3
+    input:
+      projectId: "P01"
+      projectName: "P01 · Residence + Office (G+3)"
+      members:
+        - id: "F1"
+          label: "F1 - Isolated Footing"
+          memberType: "footing"
+          count: { value: 1, origin: "typed", confirmedByUser: true }
+          concreteGrade: { value: "M25", origin: "typed", confirmedByUser: true }
+          steelGrade: { value: "Fe500", origin: "typed", confirmedByUser: true }
+          clearCoverMm: { value: 50, origin: "typed", confirmedByUser: true }
+          cuttingMethod: { value: "is2502-method-a", origin: "typed", confirmedByUser: true }
+          is2502KFactor: { value: 3, origin: "typed", confirmedByUser: true }
+          lengthMm: { value: 2000, origin: "typed", confirmedByUser: true }
+          widthMm: { value: 1500, origin: "typed", confirmedByUser: true }
+          depthMm: { value: 400, origin: "typed", confirmedByUser: true }
+          bottomMeshXBarDiameterMm: { value: 12, origin: "typed", confirmedByUser: true }
+          bottomMeshXSpacingMm: { value: 150, origin: "typed", confirmedByUser: true }
+          bottomMeshYBarDiameterMm: { value: 12, origin: "typed", confirmedByUser: true }
+          bottomMeshYSpacingMm: { value: 150, origin: "typed", confirmedByUser: true }
+ui:
+  archetypes: [B]
+  density: comfortable
+  compute: live
+strings:
+  en:
+    planner.field.projectId: "Project ID"
+    planner.field.projectName: "Project Name"
+    planner.field.members: "Members"
+    planner.out.concrete: "Total Concrete Volume (m³)"
+    planner.out.rebarKg: "Total Rebar Weight (kg)"
+    planner.out.rebarTonnes: "Total Rebar Weight (t)"
+    planner.sample.residenceG3: "Residence + Office (G+3)"

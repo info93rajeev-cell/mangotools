@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../../generated/schemas/manifest.json
+manifestVersion: 1
+id: construction-project-planner
+slug: construction-project-planner
+status: beta
+tier: T2
+version: 0.1.0
+changelog:
+  - { version: 0.1.0, date: 2026-11-15, type: added, summary: "Stage 2: Tab 1 Project Setup with project overview, drawing package, project summary, workflow roadmap, recent work, and getting started." }
+name: Construction Project Planner
+shortName: Project Planner
+summary: Organize structural drawings, concrete members, rebar calculations, BBS, revisions and reports for one site or multiple site portions.
+archetype: B
+preset: civil/construction-planner
+sample: residence-g3-sample
+taxonomy:
+  category: construction
+  professions: [small-businesses]
+  tags: [construction, concrete]
+  synonyms: [construction planner, structural project planner, rebar bbs planner, concrete project planner, civil construction project planner, construction project estimator]
+capabilities: { print: true, share: true }
+privacy: { dataClass: personal, network: none }
+disclaimer: professional
+seo:
+  title: Construction Project Planner – Concrete, Rebar & BBS
+  description: Organize structural drawings, concrete members, rebar calculations, BBS, revisions and reports. Runs 100% locally in your browser.
+  primaryKeyword: construction project planner
+  secondaryKeywords: [structural drawing planner, rebar calculator, bar bending schedule planner]
+quality:
+  verifiedAgainst:
+    - { citation: "IS 456:2000 Plain and Reinforced Concrete - Code of Practice", locator: "Clause 26.2.2.4(b)" }
+    - { citation: "IS 2502:1963 Bending and Fixing of Bars for Concrete Reinforcement", locator: "Table II, Table III, Table VIII" }
+    - { citation: "IS 1786:2008 High strength deformed steel bars and wires for concrete reinforcement", locator: "Table 1 Nominal Mass" }
+  lastVerified: 2026-11-15

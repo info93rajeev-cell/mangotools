@@ -41,11 +41,11 @@ test.describe('navigation', () => {
     await expect(popularSection).toBeVisible();
     await expect(popularSection.locator('[data-tool-card]')).toHaveCount(6);
 
-    // All Tools section has exactly 41 unique tool cards
+    // All Tools section has exactly 42 unique tool cards
     const allToolsSection = page.locator('#all-tools');
     await expect(allToolsSection).toBeVisible();
     const allCards = allToolsSection.locator('[data-tool-card]');
-    await expect(allCards).toHaveCount(41);
+    await expect(allCards).toHaveCount(42);
 
     await expect(page.locator('[data-trust-line]')).toHaveText(
       'No ads · No unnecessary uploads · Deterministic results · Built for professional workflows',
@@ -88,7 +88,7 @@ test.describe('navigation', () => {
 
     // Clear search restores all cards
     await search.fill('');
-    await expect(page.locator('#all-tools [data-tool-card]')).toHaveCount(41);
+    await expect(page.locator('#all-tools [data-tool-card]')).toHaveCount(42);
   });
 
   test('clicking upgraded tools opens modern studio layout', async ({ page }) => {
@@ -122,7 +122,7 @@ test.describe('navigation', () => {
     await gotoReady(page, '/construction');
 
     const cards = page.locator('main [data-tool-card]');
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(7);
     await expect(cards.last()).toBeInViewport();
 
     for (const name of ['about', 'faq']) {
