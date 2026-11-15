@@ -3,7 +3,7 @@ import type { ExtendedFoodRecipe } from '../../packages/ui/src/toolkit/food-plan
 import {
   getRecipeVideoTutorialUrl,
   getSafeRecipeSourceUrl,
-} from '../../packages/ui/src/toolkit/food-planner/RecipeDetailDialog.tsx';
+} from '../../packages/ui/src/toolkit/food-planner/recipeLinkHelpers.ts';
 
 describe('Food Planner — Safe recipe source & video links', () => {
   it('preserves direct YouTube and Wikipedia links for recipes and sources', () => {
@@ -72,15 +72,17 @@ describe('Food Planner — Safe recipe source & video links', () => {
   it('generates active YouTube video tutorial query for broken video URLs', () => {
     const recipeWithDeadVideo: ExtendedFoodRecipe = {
       id: 'test-recipe',
+      version: '1.0.0',
       name: 'Fresh Garden Green Salad',
       servings: 4,
-      prepTimeMinutes: 10,
-      cookTimeMinutes: 0,
+      prepMinutes: 10,
+      cookMinutes: 0,
       diet: 'vegan',
-      category: 'Side Dish',
+      course: 'side',
       cuisine: 'Indian',
-      occasion: 'Daily',
-      image: 'recipes/mixed-veg-salad.jpg',
+      events: ['daily'],
+      thumbnailUrl: '/food/recipes/mixed-veg-salad.jpg',
+      verified: true,
       ingredients: [],
       steps: ['Step 1', 'Step 2'],
       videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
