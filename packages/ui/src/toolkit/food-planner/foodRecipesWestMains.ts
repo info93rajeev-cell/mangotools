@@ -136,15 +136,15 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Traditional Sorghum Bhakri Hand-Patting Manual',
-        publisher: 'Rural Maharashtra Culinary Heritage Project',
-        url: 'https://maharashtratourism.gov.in/jowar-bhakri-technique',
+        publisher: 'Veg Recipes of India',
+        url: 'https://www.vegrecipesofindia.com/jowar-roti-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified hot water kneading science and open flame balloon puffing',
       },
       {
         title: 'Millet Flatbreads of Western & Central India',
-        publisher: 'Indian Institute of Millets Research',
-        url: 'https://millets.res.in/recipes/jowar-bhakri',
+        publisher: 'Ranveer Brar Official',
+        url: 'https://ranveerbrar.com/recipes/jowar-bhakri/',
         accessed: '2026-11-14',
         checks: 'Cross-checked parat kneading pressure and moisture hydration curves',
       },
@@ -238,7 +238,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Coastal Malvani & Koli Fish Protocols',
         publisher: 'Gajalee Mumbai Restaurant Culinary Archives',
-        url: 'https://magicpin.in/Mumbai/Vile-Parle-East/Restaurant/Gajalee/store/24958/delivery',
+        url: 'https://www.vegrecipesofindia.com/bombay-duck-fry-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified water pressing method and semolina-rice flour ratio',
       },
@@ -329,7 +329,7 @@ export const WEST_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Konkan Solkadhi Preparation Standards',
         publisher: 'Gajalee & Konkan Culinary Archives',
-        url: 'https://www.zomato.com/mumbai/gajalee-vile-parle-east/order',
+        url: 'https://www.vegrecipesofindia.com/solkadhi-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified fresh coconut milk extraction and kokum agal ratio',
       },

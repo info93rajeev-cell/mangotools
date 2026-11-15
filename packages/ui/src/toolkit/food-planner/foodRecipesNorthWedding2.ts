@@ -186,15 +186,15 @@ export const NORTH_WEDDING_RECIPES_2: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Mithai Masterclass: The Art of Rasmalai',
-        publisher: 'Haldiram Culinary Documentation Archive',
-        url: 'https://haldiram.com/mithai-standards/rasmalai',
+        publisher: 'Veg Recipes of India',
+        url: 'https://www.vegrecipesofindia.com/rasmalai-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified chhena kneading duration and sugar syrup poaching density',
       },
       {
         title: 'North Indian Festive Confectionery',
-        publisher: 'National Dairy Research Institute (NDRI)',
-        url: 'https://ndri.res.in/publications/traditional-dairy-sweets',
+        publisher: 'Ranveer Brar Official',
+        url: 'https://ranveerbrar.com/recipes/rasmalai-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked milk reduction solids and saffron-cardamom equilibrium',
       },

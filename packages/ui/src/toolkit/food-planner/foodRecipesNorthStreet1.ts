@@ -90,15 +90,15 @@ export const NORTH_STREET_RECIPES_1: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Murthal Highway Dhaba Paratha Protocol',
-        publisher: 'Punjab Culinary Heritage Documentation',
-        url: 'https://punjabtourism.gov.in/food/murthal-paratha',
+        publisher: 'Ranveer Brar Official',
+        url: 'https://ranveerbrar.com/recipes/aloo-paratha-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified dough elasticity and high-heat cast iron searing benchmarks',
       },
       {
         title: 'Authentic Indian Breads & Tawa Specials',
-        publisher: 'National Council for Hotel Management',
-        url: 'https://nchm.nic.in/curriculum/indian-breads',
+        publisher: 'Veg Recipes of India',
+        url: 'https://www.vegrecipesofindia.com/aloo-paratha-recipe/',
         accessed: '2026-11-14',
         checks: 'Benchmarked stuffing-to-dough weight ratio for tawa flatbreads',
       },
@@ -211,7 +211,7 @@ export const NORTH_STREET_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Street Food Standards of North India',
         publisher: 'Food Safety and Standards Authority of India (FSSAI)',
-        url: 'https://fssai.gov.in/street-food/delhi-chaat-guidelines',
+        url: 'https://www.vegrecipesofindia.com/aloo-tikki-chaat-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked starch retrogradation and safe temperature frying thresholds',
       },

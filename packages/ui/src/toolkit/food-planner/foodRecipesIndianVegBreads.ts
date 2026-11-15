@@ -117,7 +117,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Amritsar Street Food Kulcha Heritage Guide',
         publisher: 'Punjab Tourism Heritage Board',
-        url: 'https://punjabtourism.punjab.gov.in/amritsari-kulcha',
+        url: 'https://www.vegrecipesofindia.com/amritsari-kulcha-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified spicy potato-onion stuffing spice profile and crushing step',
       },

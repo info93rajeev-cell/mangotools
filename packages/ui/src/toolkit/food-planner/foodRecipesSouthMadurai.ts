@@ -350,7 +350,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Cooling Summer Drinks of South India',
         publisher: 'Culinary Traditions of Tamil Nadu',
-        url: 'https://tamilnadutourism.tn.gov.in/jigarthanda-origin',
+        url: 'https://www.vegrecipesofindia.com/jigarthanda-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked condensed milk ice cream dollop and caramelized basundi milk base',
       },

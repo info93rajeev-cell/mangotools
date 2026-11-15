@@ -9,14 +9,20 @@ export function getSafeRecipeSourceUrl(
   recipeName: string,
 ): string {
   const url = source.url || '';
-  const badDomains = ['bijoligrill.com', '9wolf', 'caterspoonmumbai.com'];
-  if (badDomains.some((d) => url.toLowerCase().includes(d))) {
-    const cleanRecipe = recipeName.replace(/\([^)]*\)/g, '').trim();
-    return `https://www.google.com/search?q=${encodeURIComponent(
-      `${source.publisher} ${source.title || cleanRecipe} recipe`,
-    )}`;
+  const urlLower = url.toLowerCase();
+
+  if (
+    urlLower.startsWith('https://www.youtube.com/') ||
+    urlLower.startsWith('https://youtube.com/') ||
+    urlLower.startsWith('https://en.wikipedia.org/') ||
+    urlLower.startsWith('https://www.google.com/search')
+  ) {
+    return url;
   }
-  return url;
+
+  const cleanRecipe = recipeName.replace(/\([^)]*\)/g, '').trim();
+  const searchTerms = [source.publisher, source.title, cleanRecipe].filter(Boolean).join(' ');
+  return `https://www.google.com/search?q=${encodeURIComponent(`${searchTerms} recipe`)}`;
 }
 
 export function getRecipeVideoTutorialUrl(recipe: ExtendedFoodRecipe): string {

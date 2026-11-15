@@ -165,7 +165,7 @@ export const CENTRAL_MALWA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Central Indian Festive Flatbreads',
         publisher: 'Indian Culinary Research Institute',
-        url: 'https://icri.res.in/recipes/puran-poli-malwa',
+        url: 'https://www.vegrecipesofindia.com/puran-poli-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked dough resting time and tawa ghee roasting technique',
       },

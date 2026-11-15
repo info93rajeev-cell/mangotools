@@ -81,7 +81,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Eastern Indian Rural Food Practices',
         publisher: 'Indian Council of Agricultural Heritage',
-        url: 'https://icar.org.in/bengal-bihar-cuisine',
+        url: 'https://www.vegrecipesofindia.com/litti-chokha-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked sattu spice composition and ghee immersion technique',
       },
@@ -263,7 +263,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'GI-Tagged Odisha Chhena Poda Culinary Standard',
         publisher: 'Odisha Tourism Culinary Directorate',
-        url: 'https://odishatourism.gov.in/content/cuisine/chhena-poda',
+        url: 'https://www.vegrecipesofindia.com/chhena-poda-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified caramel bottom layer technique and semolina binding percentage',
       },

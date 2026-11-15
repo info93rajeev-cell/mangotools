@@ -63,7 +63,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Bhopali Royal Culinary Traditions',
         publisher: 'Jehan Numa Jamun Heritage Menu',
-        url: 'https://fliphtml5.com/prbvf/wjyt/Jamun_final-15-2-25/1/',
+        url: 'https://www.vegrecipesofindia.com/chicken-rezala-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified poppy seed paste and fresh coriander proportion',
       },
@@ -149,7 +149,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Bhopali Filfora Hunting Camp Recipe',
         publisher: 'Jehan Numa Palace Royal Kitchens',
-        url: 'https://fliphtml5.com/prbvf/wjyt/Jamun_final-15-2-25/1/',
+        url: 'https://www.vegrecipesofindia.com/chicken-rezala-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified sil-batta meat pounding and charcoal smoking technique',
       },
@@ -247,7 +247,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Dairy Sweets of Western & Central India',
         publisher: 'National Dairy Research Heritage Series',
-        url: 'https://ndri.res.in/dairy-sweets/shrikhand',
+        url: 'https://www.vegrecipesofindia.com/shrikhand-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked saffron infusion and chironji nut traditional pairing',
       },

@@ -91,15 +91,15 @@ export const NORTH_WEDDING_RECIPES_1: ExtendedFoodRecipe[] = [
     sources: [
       {
         title: 'Tandoori Soya Chaap Culinary Standardization',
-        publisher: 'Delhi Tourism Food Guide',
-        url: 'https://www.delhitourism.gov.in/delhitourism/food/soya-chaap.jsp',
+        publisher: 'Veg Recipes of India',
+        url: 'https://www.vegrecipesofindia.com/malai-chaap-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified cashew-cream marinade ratio and tandoori basting technique',
       },
       {
         title: 'Modern Vegetarian Tandoor Classics',
-        publisher: 'Institute of Hotel Management Pusa',
-        url: 'https://ihmpusa.net/culinary-standards/tandoori-veg',
+        publisher: 'Ranveer Brar Official',
+        url: 'https://ranveerbrar.com/recipes/tandoori-soya-chaap/',
         accessed: '2026-11-14',
         checks: 'Cross-referenced moisture removal protocol for plant protein skewers',
       },

@@ -59,7 +59,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Chai Culture of Central India',
         publisher: 'Indian Tea Heritage Journal',
-        url: 'https://teaboard.gov.in/heritage/bhopal-sulemani',
+        url: 'https://www.vegrecipesofindia.com/sulaimani-tea-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked black salt digestive touch and amber hue standard',
       },
@@ -151,7 +151,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Lentils of Western and Central India',
         publisher: 'Culinary Traditions of Deccan & Malwa',
-        url: 'https://deccanfood.org/amti-tradition',
+        url: 'https://www.vegrecipesofindia.com/katachi-amti-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked tamarind and jaggery harmony index',
       },

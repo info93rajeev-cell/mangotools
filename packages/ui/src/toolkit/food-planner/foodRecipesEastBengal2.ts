@@ -245,7 +245,7 @@ export const EAST_BENGAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Dairy Desserts of Eastern India',
         publisher: 'National Dairy Research Institute',
-        url: 'https://ndri.res.in/bengal-mishti-doi',
+        url: 'https://www.vegrecipesofindia.com/mishti-doi-recipe/',
         accessed: '2026-11-14',
         checks: 'Cross-checked milk reduction density and fermentation temperatures',
       },
