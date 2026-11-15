@@ -1,7 +1,64 @@
 import type { ConstructionProject } from '@mangotools/runtime';
-import type { SheetMetadata } from './types.ts';
+import type { ProjectOverviewState, RecentWorkItem, SheetMetadata } from './types.ts';
 
 export const SAMPLE_PROJECT_ID = 'sample-p01-residence';
+
+export const SAMPLE_PROJECT_OVERVIEW: ProjectOverviewState = {
+  projectName: 'P01 · Residence + Office (G+3)',
+  location: 'Bengaluru, KA',
+  projectType: 'Mixed Use (House + Office)',
+  floors: '3 (G + 3)',
+  sitePortion: 'Site A / Block 1',
+  unitSystem: 'Metric (m, mm, kg, m³)',
+  concreteStandard: 'IS 456 : 2000',
+  rebarStandard: 'IS 1786 : 2008 (Fe 500)',
+};
+
+export const EMPTY_PROJECT_OVERVIEW: ProjectOverviewState = {
+  projectName: '',
+  location: '',
+  projectType: '',
+  floors: '',
+  sitePortion: '',
+  unitSystem: 'Metric (m, mm, kg, m³)',
+  concreteStandard: 'IS 456 : 2000',
+  rebarStandard: 'IS 1786 : 2008 (Fe 500)',
+};
+
+export const SAMPLE_RECENT_WORK: RecentWorkItem[] = [
+  {
+    id: 'f1',
+    name: 'F1 - Footing Set (F1-F6)',
+    memberType: 'footing',
+    portion: 'Site A',
+    lastUpdated: '26 Nov 2026, 09:58',
+    status: 'Calculated',
+  },
+  {
+    id: 'c3',
+    name: 'C3 - Column Cage',
+    memberType: 'column',
+    portion: 'Site A',
+    lastUpdated: '26 Nov 2026, 09:41',
+    status: 'Calculated',
+  },
+  {
+    id: 'b7',
+    name: 'B7 - Beam Design (3.6 m)',
+    memberType: 'beam',
+    portion: 'Site A',
+    lastUpdated: '25 Nov 2026, 17:22',
+    status: 'Calculated',
+  },
+  {
+    id: 's2',
+    name: 'S2 - Slab Zone (120 m²)',
+    memberType: 'slab',
+    portion: 'Site A',
+    lastUpdated: '25 Nov 2026, 16:37',
+    status: 'In Progress',
+  },
+];
 
 export const SAMPLE_SHEETS: SheetMetadata[] = [
   {
@@ -11,6 +68,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'architectural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:00:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'a-02',
@@ -19,6 +77,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'architectural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:05:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'a-03',
@@ -27,6 +86,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'architectural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:10:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-01',
@@ -35,6 +95,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'structural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:15:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-02',
@@ -43,6 +104,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'structural',
     revision: 'R2',
     uploadedAt: '2026-11-15T09:20:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-03',
@@ -51,6 +113,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'structural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:25:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-04',
@@ -59,6 +122,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'structural',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:30:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-10',
@@ -67,6 +131,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'section-elevation',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:35:00Z',
+    status: 'Uploaded',
   },
   {
     id: 's-11',
@@ -75,6 +140,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'section-elevation',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:40:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-01',
@@ -83,6 +149,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:45:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-02',
@@ -91,6 +158,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:50:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-03',
@@ -99,6 +167,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T09:55:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-04',
@@ -107,6 +176,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T10:00:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-05',
@@ -115,6 +185,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T10:05:00Z',
+    status: 'Uploaded',
   },
   {
     id: 'd-06',
@@ -123,6 +194,7 @@ export const SAMPLE_SHEETS: SheetMetadata[] = [
     category: 'member-details',
     revision: 'R1',
     uploadedAt: '2026-11-15T10:10:00Z',
+    status: 'Uploaded',
   },
 ];
 

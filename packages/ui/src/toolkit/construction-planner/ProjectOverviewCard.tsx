@@ -22,164 +22,186 @@ export function ProjectOverviewCard({ overview, onChangeField }: ProjectOverview
         </div>
       </div>
 
-      <div class={styles.overviewFormGrid}>
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-project-name">
-            {t.projectNameLabel}
-          </label>
-          <input
-            id="cp-project-name"
-            class={styles.formInput}
-            type="text"
-            value={overview.projectName}
-            placeholder={t.projectNamePlaceholder}
-            onInput={(e) => onChangeField('projectName', (e.target as HTMLInputElement).value)}
-          />
-        </div>
+      <div class={styles.overviewFormRows}>
+        {/* Row 1: Project name, Location */}
+        <div class={styles.formRowTwoCols}>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-project-name">
+              Project name
+            </label>
+            <input
+              id="cp-project-name"
+              class={styles.formInput}
+              type="text"
+              value={overview.projectName}
+              placeholder="e.g., P01 · Residence + Office (G+3)"
+              onInput={(e) => onChangeField('projectName', (e.target as HTMLInputElement).value)}
+            />
+          </div>
 
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-location">
-            {t.locationLabel}
-          </label>
-          <input
-            id="cp-location"
-            class={styles.formInput}
-            type="text"
-            value={overview.location}
-            placeholder={t.locationPlaceholder}
-            onInput={(e) => onChangeField('location', (e.target as HTMLInputElement).value)}
-          />
-        </div>
-
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-project-type">
-            {t.projectTypeLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-project-type"
-              class={styles.formSelect}
-              value={overview.projectType}
-              onChange={(e) => onChangeField('projectType', (e.target as HTMLSelectElement).value)}
-            >
-              <option value="Mixed Use (House + Office)">Mixed Use (House + Office)</option>
-              <option value="Residential Individual House">Residential Individual House</option>
-              <option value="Residential Apartment">Residential Apartment</option>
-              <option value="Commercial Office Building">Commercial Office Building</option>
-              <option value="Industrial Shed / Warehouse">Industrial Shed / Warehouse</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-location">
+              Location
+            </label>
+            <input
+              id="cp-location"
+              class={styles.formInput}
+              type="text"
+              value={overview.location}
+              placeholder="e.g., Bengaluru, KA"
+              onInput={(e) => onChangeField('location', (e.target as HTMLInputElement).value)}
+            />
           </div>
         </div>
 
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-floors">
-            {t.floorsLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-floors"
-              class={styles.formSelect}
-              value={overview.floors}
-              onChange={(e) => onChangeField('floors', (e.target as HTMLSelectElement).value)}
-            >
-              <option value="G (Ground only)">G (Ground only)</option>
-              <option value="1 (G + 1)">1 (G + 1)</option>
-              <option value="2 (G + 2)">2 (G + 2)</option>
-              <option value="3 (G + 3)">3 (G + 3)</option>
-              <option value="4 (G + 4)">4 (G + 4)</option>
-              <option value="5 (G + 5)">5 (G + 5)</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
+        {/* Row 2: Project type, Floors, Site / Portion */}
+        <div class={styles.formRowThreeCols}>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-project-type">
+              Project type
+            </label>
+            <div class={styles.selectWrap}>
+              <span class={styles.selectPrefixIcon}>
+                <Icon name="home" />
+              </span>
+              <select
+                id="cp-project-type"
+                class={`${styles.formSelect} ${styles.hasPrefixIcon}`}
+                value={overview.projectType}
+                onChange={(e) =>
+                  onChangeField('projectType', (e.target as HTMLSelectElement).value)
+                }
+              >
+                <option value="">-- Select project type --</option>
+                <option value="Mixed Use (House + Office)">Mixed Use (House + Office)</option>
+                <option value="Residential Individual House">Residential Individual House</option>
+                <option value="Residential Apartment">Residential Apartment</option>
+                <option value="Commercial Office Building">Commercial Office Building</option>
+                <option value="Industrial Shed / Warehouse">Industrial Shed / Warehouse</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
+          </div>
+
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-floors">
+              Floors (above ground)
+            </label>
+            <div class={styles.selectWrap}>
+              <select
+                id="cp-floors"
+                class={styles.formSelect}
+                value={overview.floors}
+                onChange={(e) => onChangeField('floors', (e.target as HTMLSelectElement).value)}
+              >
+                <option value="">-- Select floors --</option>
+                <option value="G (Ground only)">G (Ground only)</option>
+                <option value="1 (G + 1)">1 (G + 1)</option>
+                <option value="2 (G + 2)">2 (G + 2)</option>
+                <option value="3 (G + 3)">3 (G + 3)</option>
+                <option value="4 (G + 4)">4 (G + 4)</option>
+                <option value="5 (G + 5)">5 (G + 5)</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
+          </div>
+
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-site-portion">
+              Site / Portion
+            </label>
+            <div class={styles.selectWrap}>
+              <span class={styles.selectPrefixIcon}>
+                <Icon name="layers" />
+              </span>
+              <select
+                id="cp-site-portion"
+                class={`${styles.formSelect} ${styles.hasPrefixIcon}`}
+                value={overview.sitePortion}
+                onChange={(e) =>
+                  onChangeField('sitePortion', (e.target as HTMLSelectElement).value)
+                }
+              >
+                <option value="">-- Select portion --</option>
+                <option value="Site A / Block 1">Site A / Block 1</option>
+                <option value="Site B / Block 2">Site B / Block 2</option>
+                <option value="Main Tower">Main Tower</option>
+                <option value="Entire Site">Entire Site</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
           </div>
         </div>
 
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-site-portion">
-            {t.sitePortionLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-site-portion"
-              class={styles.formSelect}
-              value={overview.sitePortion}
-              onChange={(e) => onChangeField('sitePortion', (e.target as HTMLSelectElement).value)}
-            >
-              <option value="Site A / Block 1">Site A / Block 1</option>
-              <option value="Site B / Block 2">Site B / Block 2</option>
-              <option value="Main Tower">Main Tower</option>
-              <option value="Entire Site">Entire Site</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
+        {/* Row 3: Unit system, Concrete standard, Rebar standard */}
+        <div class={styles.formRowThreeCols}>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-unit-system">
+              Unit system
+            </label>
+            <div class={styles.selectWrap}>
+              <select
+                id="cp-unit-system"
+                class={styles.formSelect}
+                value={overview.unitSystem}
+                onChange={(e) => onChangeField('unitSystem', (e.target as HTMLSelectElement).value)}
+              >
+                <option value="Metric (m, mm, kg, m³)">Metric (m, mm, kg, m³)</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-unit-system">
-            {t.unitSystemLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-unit-system"
-              class={styles.formSelect}
-              value={overview.unitSystem}
-              onChange={(e) => onChangeField('unitSystem', (e.target as HTMLSelectElement).value)}
-            >
-              <option value="Metric (m, mm, kg, m³)">Metric (m, mm, kg, m³)</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-concrete-std">
+              Concrete standard
+            </label>
+            <div class={styles.selectWrap}>
+              <select
+                id="cp-concrete-std"
+                class={styles.formSelect}
+                value={overview.concreteStandard}
+                onChange={(e) =>
+                  onChangeField('concreteStandard', (e.target as HTMLSelectElement).value)
+                }
+              >
+                <option value="IS 456 : 2000">IS 456 : 2000</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-concrete-std">
-            {t.concreteStandardLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-concrete-std"
-              class={styles.formSelect}
-              value={overview.concreteStandard}
-              onChange={(e) =>
-                onChangeField('concreteStandard', (e.target as HTMLSelectElement).value)
-              }
-            >
-              <option value="IS 456 : 2000">IS 456 : 2000</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
-          </div>
-        </div>
-
-        <div class={styles.formGroup}>
-          <label class={styles.formLabel} for="cp-rebar-std">
-            {t.rebarStandardLabel}
-          </label>
-          <div class={styles.selectWrap}>
-            <select
-              id="cp-rebar-std"
-              class={styles.formSelect}
-              value={overview.rebarStandard}
-              onChange={(e) =>
-                onChangeField('rebarStandard', (e.target as HTMLSelectElement).value)
-              }
-            >
-              <option value="IS 1786 : 2008 (Fe 500)">IS 1786 : 2008 (Fe 500)</option>
-              <option value="IS 1786 : 2008 (Fe 415)">IS 1786 : 2008 (Fe 415)</option>
-              <option value="IS 1786 : 2008 (Fe 550D)">IS 1786 : 2008 (Fe 550D)</option>
-            </select>
-            <span class={styles.selectArrow}>
-              <Icon name="chevron-down" />
-            </span>
+          <div class={styles.formGroup}>
+            <label class={styles.formLabel} for="cp-rebar-std">
+              Rebar standard
+            </label>
+            <div class={styles.selectWrap}>
+              <select
+                id="cp-rebar-std"
+                class={styles.formSelect}
+                value={overview.rebarStandard}
+                onChange={(e) =>
+                  onChangeField('rebarStandard', (e.target as HTMLSelectElement).value)
+                }
+              >
+                <option value="IS 1786 : 2008 (Fe 500)">IS 1786 : 2008 (Fe 500)</option>
+                <option value="IS 1786 : 2008 (Fe 415)">IS 1786 : 2008 (Fe 415)</option>
+                <option value="IS 1786 : 2008 (Fe 550D)">IS 1786 : 2008 (Fe 550D)</option>
+              </select>
+              <span class={styles.selectArrow}>
+                <Icon name="chevron-down" />
+              </span>
+            </div>
           </div>
         </div>
       </div>

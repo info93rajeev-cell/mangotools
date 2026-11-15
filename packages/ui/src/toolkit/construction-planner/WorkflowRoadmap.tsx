@@ -70,16 +70,16 @@ export function WorkflowRoadmap({ onStepClick }: WorkflowRoadmapProps) {
 
   return (
     <section class={styles.roadmapCard} aria-labelledby="roadmap-heading">
-      <div class={styles.roadmapHeader}>
+      <div class={styles.cardHeader}>
         <div class={styles.cardHeaderTitle}>
           <span class={styles.cardIconBlue}>
             <Icon name="route" />
           </span>
           <div>
-            <h2 id="roadmap-heading" class={styles.roadmapTitle}>
+            <h2 id="roadmap-heading" class={styles.cardTitle}>
               {t.workflowRoadmapTitle}
             </h2>
-            <p class={styles.roadmapSubtitle}>{t.workflowRoadmapSubtitle}</p>
+            <p class={styles.cardSubtitle}>{t.workflowRoadmapSubtitle}</p>
           </div>
         </div>
       </div>
