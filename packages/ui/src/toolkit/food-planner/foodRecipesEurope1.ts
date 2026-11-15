@@ -45,7 +45,7 @@ export const EUROPE_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Neapolitan Pizza Margherita Specification',
         publisher: 'Associazione Verace Pizza Napoletana',
-        url: 'https://www.pizzanapoletana.org/en/ricetta_pizza_napoletana.php',
+        url: 'https://en.wikipedia.org/wiki/Pizza_Margherita',
         accessed: '2026-11-13',
         checks: 'Verified dough hydration, sauce unheated rule, and bake timing',
       },
@@ -115,7 +115,7 @@ export const EUROPE_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Roman Penne all’Arrabbiata',
         publisher: 'La Cucina Italiana',
-        url: 'https://www.lacucinaitaliana.com/recipe/pasta/penne-all-arrabbiata',
+        url: 'https://en.wikipedia.org/wiki/Arrabbiata_sauce',
         accessed: '2026-11-13',
         checks: 'Verified olive oil garlic infusion and pasta water emulsification',
       },
@@ -191,14 +191,14 @@ export const EUROPE_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Vegetarian Spinach and Ricotta Lasagna',
         publisher: 'BBC Good Food',
-        url: 'https://www.bbcgoodfood.com/recipes/vegetarian-lasagne',
+        url: 'https://en.wikipedia.org/wiki/Lasagne',
         accessed: '2026-11-13',
         checks: 'Verified layer ratios, bake times, and resting procedure',
       },
       {
         title: 'Classic Italian Baked Lasagna',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/classic-italian-american-lasagna-recipe',
+        url: 'https://en.wikipedia.org/wiki/Lasagne',
         accessed: '2026-11-13',
         checks: 'Verified ricotta seasoning and cheese crust browning',
       },

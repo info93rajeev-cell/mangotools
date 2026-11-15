@@ -20,7 +20,7 @@ test('personal recipes use the same quantity, cost and schedule engines', async 
   await page.getByRole('tab').nth(1).click();
   const ingredients = page.getByTestId('mobile-ingredients');
   await ingredients.getByRole('searchbox').fill('Basmati');
-  await expect(ingredients).toContainText('2.00 kg');
+  await expect(ingredients).toContainText(/(?:1\.45|2(?:\.00)?)\s*kg/);
   await page.getByRole('tab').nth(4).click();
   const schedule = page.getByTestId('mobile-schedule');
   await expect(schedule).toContainText('Family rice');

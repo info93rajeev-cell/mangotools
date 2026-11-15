@@ -74,7 +74,7 @@ export const EUROPE_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Hellenic Gastronomy Traditional Greek Standards',
         publisher: 'Hellenic Gastronomy Traditional Greek Standards Authority',
-        url: 'https://www.greekgastronomyguide.gr/',
+        url: 'https://en.wikipedia.org/wiki/Greek_salad',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

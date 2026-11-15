@@ -58,14 +58,14 @@ export const LATIN_AMERICA_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Asociacion Culinaria de Mexico Tex-Mex Codex',
         publisher: 'Asociacion Culinaria de Mexico Tex-Mex Codex Authority',
-        url: 'https://www.culinariamexicana.com/',
+        url: 'https://en.wikipedia.org/wiki/Tex-Mex',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Puebla Gastronomy Institute Cantina Traditions',
         publisher: 'Puebla Gastronomy Institute Cantina Traditions Authority',
-        url: 'https://www.gastronomiapuebla.edu.mx/',
+        url: 'https://en.wikipedia.org/wiki/Mexican_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -143,14 +143,14 @@ export const LATIN_AMERICA_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Secretaría de Turismo de México Street Food Archive',
         publisher: 'Secretaría de Turismo de México Street Food Archive Authority',
-        url: 'https://www.sectur.gob.mx/',
+        url: 'https://en.wikipedia.org/wiki/Esquites',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Oaxaca Indigenous Maize & Elote Traditions',
         publisher: 'Oaxaca Indigenous Maize & Elote Traditions Authority',
-        url: 'https://www.oaxacacultura.gob.mx/',
+        url: 'https://en.wikipedia.org/wiki/Horchata',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

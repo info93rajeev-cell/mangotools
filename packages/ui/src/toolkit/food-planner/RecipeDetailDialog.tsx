@@ -132,6 +132,20 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
                   </li>
                 ))}
               </ul>
+              <div class={s.creatorAppreciationCard}>
+                <div class={s.creatorAppreciationHeader}>
+                  <span class={s.creatorAppreciationIcon}>🙏</span>
+                  <strong>Heartfelt Chef &amp; Creator Appreciation</strong>
+                </div>
+                <p class={s.creatorAppreciationText}>
+                  We gratefully acknowledge and thank master chefs, home culinary creators, and food
+                  publishers (including Chef Ranveer Brar, Chef Sanjeev Kapoor, Tarla Dalal, Dassana
+                  Amit, Hebbar&apos;s Kitchen, and traditional regional kitchen custodians) whose
+                  authentic techniques, verified recipes, and instructional video guides preserve
+                  our rich culinary heritage. Please support and subscribe to their official
+                  channels and publications!
+                </p>
+              </div>
               <p class={s.recipeAttributionNote}>
                 Recipe instructions synthesized with culinary science and cross-referenced with
                 authoritative food publishers. External videos and publications remain the

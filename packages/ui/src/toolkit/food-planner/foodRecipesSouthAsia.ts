@@ -105,14 +105,14 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Crispy Medu Vada Recipe with Troubleshooting Guide',
         publisher: 'Swasthi Recipes',
-        url: 'https://en.wikipedia.org/wiki/Crispy_Medu_Vada_Recipe_with_Troubleshooting_Guide',
+        url: 'https://en.wikipedia.org/wiki/Medu_vada',
         accessed: '2026-11-13',
         checks: 'Verified batter hydration and aeration test',
       },
       {
         title: 'Hotel Style Crispy Ulundu Vadai',
         publisher: 'Padhus Kitchen',
-        url: 'https://en.wikipedia.org/wiki/Hotel_Style_Crispy_Ulundu_Vadai',
+        url: 'https://en.wikipedia.org/wiki/Medu_vada',
         accessed: '2026-11-13',
         checks: 'Verified shaping technique and frying temperatures',
       },
@@ -174,7 +174,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Karnataka Masala Dosa Batter & Bhaji',
         publisher: 'Cook with Manali',
-        url: 'https://en.wikipedia.org/wiki/Authentic_Karnataka_Masala_Dosa_Batter_%26_Bhaji',
+        url: 'https://en.wikipedia.org/wiki/Masala_dosa',
         accessed: '2026-11-13',
         checks: 'Verified griddle temperature and ghee crisping guidelines',
       },
@@ -232,7 +232,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Hyderabadi Veg Dum Biryani Recipe',
         publisher: 'Swasthi Recipes',
-        url: 'https://en.wikipedia.org/wiki/Authentic_Hyderabadi_Veg_Dum_Biryani_Recipe',
+        url: 'https://en.wikipedia.org/wiki/Hyderabadi_biryani',
         accessed: '2026-11-13',
         checks: 'Verified dum cooking duration and parboil percentage',
       },

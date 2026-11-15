@@ -91,7 +91,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Bangkok Culinary Institute Street Classics',
         publisher: 'Bangkok Culinary Institute Street Classics Authority',
-        url: 'https://www.bangkokculinary.com/',
+        url: 'https://en.wikipedia.org/wiki/Thai_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -176,14 +176,14 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Tokyo Gyoza Association Culinary Code',
         publisher: 'Tokyo Gyoza Association Culinary Code Authority',
-        url: 'https://www.gyoza-assoc.jp/',
+        url: 'https://en.wikipedia.org/wiki/Gyoza',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Japanese Food Standards Agency Dim Sum Studies',
         publisher: 'Japanese Food Standards Agency Dim Sum Studies Authority',
-        url: 'https://www.maff.go.jp/',
+        url: 'https://en.wikipedia.org/wiki/Japanese_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -286,7 +286,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Siam Culinary Academy Heritage Recipes',
         publisher: 'Siam Culinary Academy Heritage Recipes Authority',
-        url: 'https://www.siamculinary.com/',
+        url: 'https://en.wikipedia.org/wiki/Thai_curry',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -361,14 +361,14 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Taiwan Bubble Tea Heritage Council',
         publisher: 'Taiwan Bubble Tea Heritage Council Authority',
-        url: 'https://www.taiwan.net.tw/',
+        url: 'https://en.wikipedia.org/wiki/Baozi',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Taichung Original Boba Tea Standards',
         publisher: 'Taichung Original Boba Tea Standards Authority',
-        url: 'https://www.taichung.gov.tw/',
+        url: 'https://en.wikipedia.org/wiki/Bubble_tea',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

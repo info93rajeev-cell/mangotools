@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Whole Cloves (Laung)</title>
+  <rect width="80" height="80" rx="14" fill="#fafaf9"/>
+  <!-- Clove 1 -->
+  <g transform="translate(32, 42) rotate(-25)">
+    <!-- Shaft -->
+    <path d="M -3 0 L 3 0 L 2 24 L -2 24 Z" fill="#44403c" stroke="#1c1917" stroke-width="1"/>
+    <!-- Calyx sepals -->
+    <path d="M -7 -2 L -2 0 L 2 0 L 7 -2 L 5 -5 L -5 -5 Z" fill="#57534e"/>
+    <!-- Head crown ball -->
+    <circle cx="0" cy="-6" r="4.5" fill="#78716c" stroke="#292524" stroke-width="1"/>
+  </g>
+  <!-- Clove 2 -->
+  <g transform="translate(50, 36) rotate(35)">
+    <path d="M -2.5 0 L 2.5 0 L 1.8 20 L -1.8 20 Z" fill="#57534e" stroke="#292524" stroke-width="1"/>
+    <path d="M -6 -2 L -2 0 L 2 0 L 6 -2 L 4 -4 L -4 -4 Z" fill="#78716c"/>
+    <circle cx="0" cy="-5" r="4" fill="#a8a29e" stroke="#44403c" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Fresh Curry Leaves (Kadi Patta)</title>
+  <rect width="80" height="80" rx="14" fill="#f0fdf4"/>
+  <!-- Central curved stem -->
+  <path d="M18 68 Q 38 48 58 14" stroke="#15803d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Alternating pinnate leaves -->
+  <!-- Left leaves -->
+  <path d="M26 58 C 18 54 16 46 22 42 C 26 44 28 52 28 56 Z" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+  <path d="M34 47 C 22 43 20 33 28 29 C 32 31 36 40 36 45 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <path d="M43 36 C 32 30 31 21 38 18 C 42 20 45 29 45 34 Z" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+  <path d="M51 25 C 44 19 44 12 49 10 C 53 11 54 18 53 23 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <!-- Right leaves -->
+  <path d="M32 54 C 40 52 46 44 42 38 C 38 40 34 47 30 52 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <path d="M40 43 C 50 39 54 31 50 25 C 46 27 42 35 38 41 Z" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+  <path d="M49 32 C 58 27 61 19 57 14 C 53 16 50 24 47 30 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <!-- Terminal leaf -->
+  <path d="M58 14 C 64 8 68 8 67 13 C 65 17 60 17 58 14 Z" fill="#15803d" stroke="#14532d" stroke-width="1"/>
+</svg>

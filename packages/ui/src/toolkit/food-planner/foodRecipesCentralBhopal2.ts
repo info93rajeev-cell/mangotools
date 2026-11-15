@@ -144,7 +144,7 @@ export const CENTRAL_BHOPAL_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Wedding Katachi Amti Manual',
         publisher: 'Prachiti Caterers Wedding Selection',
-        url: 'https://www.youtube.com/results?search_query=Traditional%20Wedding%20Katachi%20Amti%20Manual%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=MWInAFKhwZE',
         accessed: '2026-11-14',
         checks: 'Verified dal stock reduction and goda masala seasoning ratio',
       },

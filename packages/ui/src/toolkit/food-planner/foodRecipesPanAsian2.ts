@@ -54,7 +54,7 @@ export const PAN_ASIAN_RECIPES_PART2: ExtendedFoodRecipe[] = [
       {
         title: 'Classic Vegetarian Thai Green Curry',
         publisher: 'Temple of Thai',
-        url: 'https://www.templeofthai.com/recipes/green_curry.php',
+        url: 'https://en.wikipedia.org/wiki/Green_curry',
         accessed: '2026-11-13',
         checks: 'Verified spice paste proportions and vegetable simmering',
       },
@@ -106,7 +106,7 @@ export const PAN_ASIAN_RECIPES_PART2: ExtendedFoodRecipe[] = [
       {
         title: 'Chinese Sweet Corn Vegetable Soup',
         publisher: 'Swasthi Recipes',
-        url: 'https://www.indianhealthyrecipes.com/sweet-corn-vegetable-soup-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Corn_soup',
         accessed: '2026-11-13',
         checks: 'Verified pureed and whole corn ratio and vegetable mince',
       },

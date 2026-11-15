@@ -29,11 +29,20 @@ export function RecipeGalleryCard({
         {!isAwaiting && (
           <button
             type="button"
+            class={styles.recipeImageClickTarget}
+            onClick={onView}
+            aria-label={`Recipe details: ${recipe.name}`}
+            title={`${t.viewRecipe}: ${recipe.name}`}
+          />
+        )}
+        {!isAwaiting && (
+          <button
+            type="button"
             class={styles.recipeViewBtn}
             onClick={onView}
             aria-label={`${t.viewRecipe}: ${recipe.name}`}
           >
-            {t.viewRecipe}
+            ▶ {t.viewRecipe}
           </button>
         )}
         <button

@@ -1,5 +1,6 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import mobileStyles from './foodPlannerMobile.module.css';
+import { IngredientThumbnail } from './IngredientThumbnail.tsx';
 import type { ShoppingLineItem } from './shoppingListUtils.ts';
 
 export interface DeptGroup {
@@ -149,14 +150,7 @@ export function MobileShoppingItemRow({
       }}
     >
       <input type="checkbox" checked={!isBought} onChange={onToggle} />
-      <img
-        src="/food/recipes/jeera-rice.jpg"
-        alt=""
-        style={{ width: '28px', height: '28px', borderRadius: '4px', objectFit: 'cover' }}
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = '/food/recipes/dal-tadka.jpg';
-        }}
-      />
+      <IngredientThumbnail id={it.id} name={it.name} aisle={it.aisle} size={28} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <strong style={{ fontSize: '13px', color: '#0f172a' }}>{it.name}</strong>
         {isBought && (

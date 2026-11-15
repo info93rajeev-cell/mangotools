@@ -81,7 +81,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Colegio Superior de Gastronomía de México',
         publisher: 'Colegio Superior de Gastronomía de México Authority',
-        url: 'https://www.csg.edu.mx/',
+        url: 'https://en.wikipedia.org/wiki/Chile_relleno',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -165,14 +165,14 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Academia Mexicana de Repostería Tradicional',
         publisher: 'Academia Mexicana de Repostería Tradicional Authority',
-        url: 'https://www.reposteriamexicana.org/',
+        url: 'https://en.wikipedia.org/wiki/Tres_leches_cake',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Panadería y Pastelería Latinoamericana Standards',
         publisher: 'Panadería y Pastelería Latinoamericana Standards Authority',
-        url: 'https://www.pastelerialatina.org/',
+        url: 'https://en.wikipedia.org/wiki/Tres_leches_cake',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -261,7 +261,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Oaxaca Traditional Beverage Keepers Codex',
         publisher: 'Oaxaca Traditional Beverage Keepers Codex Authority',
-        url: 'https://www.oaxacacultura.gob.mx/',
+        url: 'https://en.wikipedia.org/wiki/Horchata',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

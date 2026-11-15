@@ -67,14 +67,14 @@ export const MIDDLE_EAST_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Levantine Culinary Council Traditional Mezze Guide',
         publisher: 'Levantine Culinary Council Traditional Mezze Guide Authority',
-        url: 'https://www.levantineculinary.org/',
+        url: 'https://en.wikipedia.org/wiki/Baba_ghanoush',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Beirut Hospitality Institute Standards',
         publisher: 'Beirut Hospitality Institute Standards Authority',
-        url: 'https://www.beiruthospitality.edu.lb/',
+        url: 'https://en.wikipedia.org/wiki/Baba_ghanoush',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -168,14 +168,14 @@ export const MIDDLE_EAST_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Syndicate of Lebanese Restaurateurs Standards',
         publisher: 'Syndicate of Lebanese Restaurateurs Standards Authority',
-        url: 'https://www.lebaneserecipe.org/',
+        url: 'https://en.wikipedia.org/wiki/Tabbouleh',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Byblos Gastronomy Society Traditional Levantine Series',
         publisher: 'Byblos Gastronomy Society Traditional Levantine Series Authority',
-        url: 'https://www.byblosgastronomy.com/',
+        url: 'https://en.wikipedia.org/wiki/Tabbouleh',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

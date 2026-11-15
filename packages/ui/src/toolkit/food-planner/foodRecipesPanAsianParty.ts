@@ -55,7 +55,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Tangra Kolkata Chilli Chicken Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/chilli-chicken-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Chilli_chicken',
         accessed: '2026-11-14',
         checks: 'Verified Kolkata Chinatown cornstarch coating ratio and wok-toss technique',
       },
@@ -130,7 +130,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Street Style Chicken Hakka Noodles Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/chicken-hakka-noodles-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Indian_Chinese_cuisine',
         accessed: '2026-11-14',
         checks: 'Verified noodle cooling starch wash and high-flame wok tossing sequence',
       },

@@ -54,7 +54,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Roman Fettuccine Alfredo Masterclass',
         publisher: 'La Cucina Italiana',
-        url: 'https://www.lacucinaitaliana.com/recipe/pasta/fettuccine-alfredo',
+        url: 'https://en.wikipedia.org/wiki/Fettuccine_Alfredo',
         accessed: '2026-11-14',
         checks: 'Verified pasta water emulsion technique and off-heat Parmigiano incorporation',
       },
@@ -206,14 +206,14 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Classic French Roast Chicken Poulet Rôti',
         publisher: 'Le Cordon Bleu Culinary Archive',
-        url: 'https://www.cordonbleu.edu/recipe/roast-chicken',
+        url: 'https://en.wikipedia.org/wiki/Roast_chicken',
         accessed: '2026-11-14',
         checks: 'Verified skin drying technique and high-heat pan roasting times',
       },
       {
         title: 'European Herb Butter Roast Chicken',
         publisher: 'BBC Good Food',
-        url: 'https://www.bbcgoodfood.com/recipes/herb-butter-roast-chicken',
+        url: 'https://en.wikipedia.org/wiki/Roast_chicken',
         accessed: '2026-11-14',
         checks: 'Verified pan-dripping basting intervals and internal temperature standards',
       },
@@ -290,7 +290,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Provençal Ratatouille Niçoise',
         publisher: 'Saveur Culinary Archive',
-        url: 'https://www.saveur.com/classic-ratatouille-recipe',
+        url: 'https://en.wikipedia.org/wiki/Ratatouille',
         accessed: '2026-11-14',
         checks: 'Verified parchment cartouche baking method and piperade base reduction',
       },

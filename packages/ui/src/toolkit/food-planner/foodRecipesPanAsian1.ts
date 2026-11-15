@@ -42,7 +42,7 @@ export const PAN_ASIAN_RECIPES_PART1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Restaurant Fried Rice Masterclass',
         publisher: 'Woks of Life',
-        url: 'https://thewoksoflife.com/classic-vegetable-fried-rice/',
+        url: 'https://en.wikipedia.org/wiki/Fried_rice',
         accessed: '2026-11-13',
         checks: 'Verified wok-hei high heat technique and chilled rice rule',
       },
@@ -168,7 +168,7 @@ export const PAN_ASIAN_RECIPES_PART1: ExtendedFoodRecipe[] = [
       {
         title: 'Crispy Vegetable Spring Rolls Recipe',
         publisher: 'Woks of Life',
-        url: 'https://thewoksoflife.com/vegetable-spring-rolls/',
+        url: 'https://en.wikipedia.org/wiki/Spring_roll',
         accessed: '2026-11-13',
         checks: 'Verified wrapper sealing mechanics and moisture drainage rule',
       },
@@ -228,7 +228,7 @@ export const PAN_ASIAN_RECIPES_PART1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Steamed Vegetable Dumplings',
         publisher: 'Omnivores Cookbook',
-        url: 'https://omnivorescookbook.com/steamed-veggie-dumplings/',
+        url: 'https://en.wikipedia.org/wiki/Jiaozi',
         accessed: '2026-11-13',
         checks: 'Verified salt drainage and bamboo steaming duration',
       },

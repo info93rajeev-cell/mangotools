@@ -161,7 +161,7 @@ export const EUROPE_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'The Silver Spoon Traditional Antipasto Collection',
         publisher: 'The Silver Spoon Traditional Antipasto Collection Authority',
-        url: 'https://www.silverspoon.com/',
+        url: 'https://en.wikipedia.org/wiki/Italian_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Coriander Powder (Dhaniya Powder)</title>
+  <rect width="80" height="80" rx="14" fill="#fdfbf7"/>
+  <!-- Glass spice container with golden-brown powder -->
+  <rect x="25" y="24" width="30" height="44" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Lid -->
+  <rect x="27" y="16" width="26" height="8" rx="2" fill="#475569" stroke="#334155" stroke-width="1"/>
+  <!-- Label with text / spice color -->
+  <rect x="26.5" y="32" width="27" height="34" rx="2" fill="#ca8a04"/>
+  <path d="M 27 34 Q 40 30 53 34 L 53 65 Q 40 67 27 65 Z" fill="#b45309"/>
+  <!-- Label badge -->
+  <rect x="30" y="42" width="20" height="12" rx="2" fill="#ffffff" opacity="0.95"/>
+  <text x="40" y="50" font-size="6.5" font-family="sans-serif" font-weight="bold" fill="#78350f" text-anchor="middle">DHANIYA</text>
+</svg>

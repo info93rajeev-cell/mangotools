@@ -370,7 +370,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Festive Offerings of Western India',
         publisher: 'Prachiti Caterers Festival Guide',
-        url: 'https://www.youtube.com/results?search_query=Traditional%20Festive%20Offerings%20of%20Western%20India%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=SlEPRmjVG-w',
         accessed: '2026-11-14',
         checks: 'Cross-checked banana leaf steaming and hot ghee drizzle service',
       },

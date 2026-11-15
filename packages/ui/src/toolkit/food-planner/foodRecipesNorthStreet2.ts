@@ -97,7 +97,7 @@ export const NORTH_STREET_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Mughlai Slow Cooking Standards',
         publisher: 'Culinary Academy of Northern India',
-        url: 'https://en.wikipedia.org/wiki/Mughlai_Slow_Cooking_Standards',
+        url: 'https://en.wikipedia.org/wiki/Nihari',
         accessed: '2026-11-14',
         checks: 'Cross-checked collagen breakdown kinetics and whole wheat flour slurry density',
       },
@@ -205,7 +205,7 @@ export const NORTH_STREET_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Iconic Indian Chilled Desserts',
         publisher: 'National Dairy Development Board (NDDB)',
-        url: 'https://en.wikipedia.org/wiki/Iconic_Indian_Chilled_Desserts',
+        url: 'https://en.wikipedia.org/wiki/Falooda',
         accessed: '2026-11-14',
         checks: 'Benchmarked malai layer coagulation and floral syrup balance',
       },

@@ -70,14 +70,14 @@ export const LATIN_AMERICA_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Mexican Sizzling Chicken Fajitas',
         publisher: 'Mexico in My Kitchen',
-        url: 'https://www.mexicoinmykitchen.com/chicken-fajitas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Fajita',
         accessed: '2026-11-14',
         checks: 'Verified citrus marinade balancing and cast-iron searing technique',
       },
       {
         title: 'Traditional Northern Mexican Fajitas Guide',
         publisher: 'Serious Eats Latin Cuisine',
-        url: 'https://www.seriouseats.com/classic-chicken-fajitas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Fajita',
         accessed: '2026-11-14',
         checks: 'Verified high-heat vegetable blistering and tortilla warm steam wrapping',
       },
@@ -158,14 +158,14 @@ export const LATIN_AMERICA_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Argentine Baked Chicken Empanadas',
         publisher: 'Laylita Recipes Latin Heritage',
-        url: 'https://www.laylita.com/recipes/chicken-empanadas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Empanada',
         accessed: '2026-11-14',
         checks: 'Verified cold butter pastry crust lamination and filling cooling protocol',
       },
       {
         title: 'Traditional Latin American Empanadas Guide',
         publisher: 'Saveur Latin America Archive',
-        url: 'https://www.saveur.com/chicken-empanadas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Empanada',
         accessed: '2026-11-14',
         checks: 'Verified repulgue edge sealing technique and golden baking temperatures',
       },
@@ -236,7 +236,7 @@ export const LATIN_AMERICA_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Ensenada Baja Fish Tacos Guide',
         publisher: 'Serious Eats Mexican Culinary Team',
-        url: 'https://www.seriouseats.com/baja-fish-tacos-recipe',
+        url: 'https://en.wikipedia.org/wiki/Taco#Fish_tacos',
         accessed: '2026-11-14',
         checks:
           'Verified sparkling water batter carbonation technique and double-tortilla assembly',

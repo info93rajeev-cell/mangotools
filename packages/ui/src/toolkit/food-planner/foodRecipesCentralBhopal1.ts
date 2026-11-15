@@ -240,7 +240,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Shrikhand & Chakka Preparation Standard',
         publisher: 'Prachiti Caterers Festive Menu',
-        url: 'https://www.youtube.com/results?search_query=Traditional%20Shrikhand%20%26%20Chakka%20Preparation%20Standard%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=zuViMZCfA-c',
         accessed: '2026-11-14',
         checks: 'Verified hung curd drainage time and sugar-to-chakka ratio',
       },

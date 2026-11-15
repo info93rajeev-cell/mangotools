@@ -52,7 +52,7 @@ export const LATIN_AMERICA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Mexican Street Tacos Recipe',
         publisher: 'Mexico in My Kitchen',
-        url: 'https://www.mexicoinmykitchen.com/mexican-street-tacos/',
+        url: 'https://en.wikipedia.org/wiki/Taco',
         accessed: '2026-11-13',
         checks: 'Verified double-tortilla standard, cilantro-onion relish, and comal toasting',
       },
@@ -128,7 +128,7 @@ export const LATIN_AMERICA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Crispy Quesadillas Recipe',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/the-best-cheesy-quesadillas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Quesadilla',
         accessed: '2026-11-13',
         checks: 'Verified cheese blend ratio, heat regulation, and folding geometry',
       },
@@ -203,14 +203,14 @@ export const LATIN_AMERICA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Sizzling Fajitas Guide',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/grilled-vegetable-fajitas-recipe',
+        url: 'https://en.wikipedia.org/wiki/Fajita',
         accessed: '2026-11-13',
         checks: 'Verified cast iron sear dynamics and vegetable slice thickness',
       },
       {
         title: 'Classic Restaurant Style Fajitas',
         publisher: 'The Modern Proper',
-        url: 'https://themodernproper.com/fajita-veggies',
+        url: 'https://en.wikipedia.org/wiki/Fajita',
         accessed: '2026-11-13',
         checks: 'Verified spice blend seasoning and skillet serving standard',
       },

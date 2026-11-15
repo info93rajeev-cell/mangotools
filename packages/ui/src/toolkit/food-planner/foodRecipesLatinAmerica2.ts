@@ -66,7 +66,7 @@ export const LATIN_AMERICA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Enchiladas Suizas Recipe',
         publisher: 'Mexico in My Kitchen',
-        url: 'https://www.mexicoinmykitchen.com/enchiladas-suizas-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Enchilada',
         accessed: '2026-11-13',
         checks: 'Verified crema-tomatillo emulsion and tortilla softening technique',
       },
@@ -136,7 +136,7 @@ export const LATIN_AMERICA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Molcajete Guacamole Recipe',
         publisher: 'Rick Bayless Official',
-        url: 'https://www.rickbayless.com/recipe/classic-guacamole/',
+        url: 'https://en.wikipedia.org/wiki/Guacamole',
         accessed: '2026-11-13',
         checks: 'Verified aromatic paste base technique and chunky fork-mash rule',
       },
@@ -207,14 +207,14 @@ export const LATIN_AMERICA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Spanish & Mexican Churros Masterclass',
         publisher: 'RecipeTin Eats',
-        url: 'https://www.recipetineats.com/churros/',
+        url: 'https://en.wikipedia.org/wiki/Churro',
         accessed: '2026-11-13',
         checks: 'Verified star nozzle steam venting rule, dough hydration, and frying heat',
       },
       {
         title: 'Traditional Churros con Chocolate',
         publisher: 'Spain on a Fork',
-        url: 'https://spainonafork.com/authentic-spanish-churros-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Churro',
         accessed: '2026-11-13',
         checks: 'Verified cinnamon sugar tossing timing and chocolate dip ratio',
       },

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Black Peppercorns (Kali Mirch)</title>
+  <rect width="80" height="80" rx="14" fill="#f4f4f5"/>
+  <circle cx="30" cy="30" r="7" fill="#27272a" stroke="#09090b" stroke-width="1.5"/>
+  <circle cx="28" cy="28" r="2" fill="#52525b"/>
+  <circle cx="48" cy="26" r="6.5" fill="#18181b" stroke="#09090b" stroke-width="1.5"/>
+  <circle cx="46" cy="24" r="1.8" fill="#3f3f46"/>
+  <circle cx="38" cy="46" r="8" fill="#27272a" stroke="#09090b" stroke-width="1.5"/>
+  <circle cx="35" cy="43" r="2.2" fill="#52525b"/>
+  <circle cx="56" cy="48" r="6" fill="#18181b" stroke="#09090b" stroke-width="1.5"/>
+  <circle cx="22" cy="50" r="5.5" fill="#3f3f46" stroke="#09090b" stroke-width="1.2"/>
+</svg>

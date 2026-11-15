@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Fresh Mint Leaves (Pudina)</title>
+  <rect width="80" height="80" rx="14" fill="#f0fdf4"/>
+  <path d="M 40 66 Q 40 44 40 20" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Serrated paired leaves -->
+  <path d="M 40 44 C 26 44 22 36 26 30 C 32 30 38 38 40 44 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <path d="M 40 44 C 54 44 58 36 54 30 C 48 30 42 38 40 44 Z" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+  <path d="M 40 28 C 30 26 28 18 34 14 C 38 16 40 22 40 28 Z" fill="#22c55e" stroke="#15803d" stroke-width="1"/>
+  <path d="M 40 28 C 50 26 52 18 46 14 C 42 16 40 22 40 28 Z" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+  <!-- Top terminal bud -->
+  <path d="M 40 20 C 36 14 38 8 40 6 C 42 8 44 14 40 20 Z" fill="#4ade80" stroke="#16a34a" stroke-width="1"/>
+</svg>

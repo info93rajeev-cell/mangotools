@@ -143,7 +143,7 @@ export const EAST_BENGAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Festive Cholar Dal Recipe',
         publisher: '6 Ballygunge Place Culinary Archive',
-        url: 'https://en.wikipedia.org/wiki/Authentic_Festive_Cholar_Dal_Recipe',
+        url: 'https://en.wikipedia.org/wiki/Dal',
         accessed: '2026-11-14',
         checks: 'Verified whole dal texture and fried coconut chip proportion',
       },
