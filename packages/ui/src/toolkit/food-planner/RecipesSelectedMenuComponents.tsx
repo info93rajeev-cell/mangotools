@@ -1,3 +1,4 @@
+import { useState } from 'preact/hooks';
 import { Icon } from '../../primitives/Icon.tsx';
 import { computeAutoBalancedPortions, getCateringBalancedPortion } from './cateringPortions.ts';
 import styles from './foodPlanner.module.css';
@@ -7,6 +8,7 @@ import {
   getCulinaryRegion,
   getRecipeVerificationInfo,
 } from './foodReferenceData.ts';
+import { RecipeDetailDialog } from './RecipeDetailDialog.tsx';
 
 export function SelectedMenuPanel({
   selectedRecipes,
@@ -29,6 +31,8 @@ export function SelectedMenuPanel({
   location?: string;
   occasion?: string;
 }) {
+  const [detailRecipe, setDetailRecipe] = useState<ExtendedFoodRecipe | null>(null);
+
   const autoBalance = () => {
     const balanced = computeAutoBalancedPortions(selectedRecipes);
     for (const [id, factor] of Object.entries(balanced)) {
@@ -70,6 +74,7 @@ export function SelectedMenuPanel({
         portionFactors={portionFactors}
         onSetPortion={setPortionFactor}
         onRemove={toggleRecipe}
+        onView={setDetailRecipe}
       />
 
       <PlanSummaryBanner
@@ -87,6 +92,12 @@ export function SelectedMenuPanel({
       >
         Continue to Ingredients <Icon name="arrow-right" />
       </button>
+
+      <RecipeDetailDialog
+        recipe={detailRecipe}
+        servings={guests * (portionFactors[detailRecipe?.id ?? ''] ?? 1)}
+        onClose={() => setDetailRecipe(null)}
+      />
     </div>
   );
 }
@@ -98,6 +109,7 @@ function SelectedMenuRow({
   factor,
   onSetPortion,
   onRemove,
+  onView,
 }: {
   recipe: ExtendedFoodRecipe;
   idx: number;
@@ -105,6 +117,7 @@ function SelectedMenuRow({
   factor: number;
   onSetPortion: (id: string, factor: number) => void;
   onRemove: (id: string) => void;
+  onView: (recipe: ExtendedFoodRecipe) => void;
 }) {
   const plannedServings = Math.round(guests * factor);
   const verInfo = getRecipeVerificationInfo(recipe);
@@ -114,16 +127,32 @@ function SelectedMenuRow({
       <td>{idx + 1}</td>
       <td>
         <div class={styles.tableItemWithThumb}>
-          <img
-            src={recipe.thumbnailUrl || '/food/recipes/besan-ladoo.jpg'}
-            alt=""
-            class={styles.tableThumb}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/food/recipes/besan-ladoo.jpg';
-            }}
-          />
+          <button
+            type="button"
+            class={styles.tableThumbBtn}
+            onClick={() => onView(recipe)}
+            title={`Inspect ${recipe.name}`}
+            aria-label={`Inspect ${recipe.name}`}
+          >
+            <img
+              src={recipe.thumbnailUrl || '/food/recipes/besan-ladoo.jpg'}
+              alt=""
+              class={styles.tableThumb}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/food/recipes/besan-ladoo.jpg';
+              }}
+            />
+          </button>
           <div>
-            <strong>{recipe.name}</strong>
+            <button
+              type="button"
+              class={styles.tableNameBtn}
+              onClick={() => onView(recipe)}
+              title={`Inspect ${recipe.name}`}
+              aria-label={`Inspect ${recipe.name}`}
+            >
+              <strong>{recipe.name}</strong>
+            </button>
             <span
               class={`${styles.badge} ${styles[verInfo.badgeClass]}`}
               style={{ marginLeft: '6px', fontSize: '10px' }}
@@ -209,12 +238,14 @@ function SelectedMenuTable({
   portionFactors,
   onSetPortion,
   onRemove,
+  onView,
 }: {
   recipes: ExtendedFoodRecipe[];
   guests: number;
   portionFactors: Record<string, number>;
   onSetPortion: (id: string, factor: number) => void;
   onRemove: (id: string) => void;
+  onView: (recipe: ExtendedFoodRecipe) => void;
 }) {
   if (recipes.length === 0) {
     return (
@@ -283,6 +314,7 @@ function SelectedMenuTable({
                     factor={portionFactors[recipe.id] ?? 1}
                     onSetPortion={onSetPortion}
                     onRemove={onRemove}
+                    onView={onView}
                   />
                 );
               })}

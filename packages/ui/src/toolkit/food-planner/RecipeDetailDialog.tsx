@@ -33,11 +33,27 @@ export function RecipeDetailDialog({ recipe, servings, onClose }: RecipeDetailDi
   }, [recipe]);
 
   return (
-    <dialog ref={dialog} class={s.recipeDetailDialog} onClose={onClose} aria-label={recipe?.name}>
+    // biome-ignore lint/a11y/useKeyWithClickEvents: backdrop click-to-dismiss
+    <dialog
+      ref={dialog}
+      class={s.recipeDetailDialog}
+      onClose={onClose}
+      onClick={(e) => {
+        if (e.target === dialog.current) {
+          dialog.current?.close();
+        }
+      }}
+      aria-label={recipe?.name}
+    >
       {recipe && (
         <div class={s.recipeDetailBody}>
-          <button type="button" class={s.recipeDetailClose} onClick={() => dialog.current?.close()}>
-            {t.closeRecipe}
+          <button
+            type="button"
+            class={s.recipeDetailClose}
+            onClick={() => dialog.current?.close()}
+            aria-label={t.closeRecipe}
+          >
+            ✕ {t.closeRecipe}
           </button>
           {recipe.thumbnailUrl && (
             <img class={s.recipeDetailImage} src={recipe.thumbnailUrl} alt={recipe.name} />

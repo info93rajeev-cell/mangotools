@@ -471,14 +471,19 @@
   color: #713f12;
 }
 .recipeDetailClose {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: block;
   margin: 0 0 10px auto;
   border: 1px solid #b7c8ed;
   border-radius: 8px;
-  padding: 7px 12px;
-  background: #fff;
+  padding: 7px 14px;
+  background: #ffffff;
   color: #0b104b;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .recipeImageDisclosure,
 .recipeDetailCaution {
@@ -675,6 +680,25 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.recipeNameBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recipeNameBtn:hover {
+  color: #003dab;
+  text-decoration: underline;
 }
 .recipeInfoRow {
   display: flex;
@@ -1091,6 +1115,19 @@
     min-width: 0;
     max-width: 100%;
   }
+  .recipeDetailDialog {
+    width: calc(100vw - 16px);
+    max-height: 92vh;
+    border-radius: 12px;
+    margin: auto;
+  }
+  .recipeDetailBody {
+    padding: 14px 16px 20px;
+    max-height: 92vh;
+  }
+  .recipeDetailImage {
+    max-height: 220px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1142,6 +1179,37 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.tableThumbBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.tableThumbBtn:hover {
+  opacity: 0.85;
+}
+
+.tableNameBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tableNameBtn:hover {
+  color: #003dab;
+  text-decoration: underline;
 }
 
 /* Gallery search row */
@@ -1973,6 +2041,11 @@
 
 :global(:where([data-theme="dark"])) .recipeName {
   color: #f8fafc;
+}
+
+:global(:where([data-theme="dark"])) .recipeNameBtn:hover,
+:global(:where([data-theme="dark"])) .tableNameBtn:hover {
+  color: #93c5fd;
 }
 
 :global(:where([data-theme="dark"])) .recipeInfoRow {

@@ -59,7 +59,18 @@ export function RecipeGalleryCard({
       </div>
       <div class={styles.recipeMeta}>
         <h3 class={styles.recipeName} title={recipe.name}>
-          {recipe.name}
+          {!isAwaiting ? (
+            <button
+              type="button"
+              class={styles.recipeNameBtn}
+              onClick={onView}
+              title={`${t.viewRecipe}: ${recipe.name}`}
+            >
+              {recipe.name}
+            </button>
+          ) : (
+            recipe.name
+          )}
         </h3>
         <div class={styles.recipeInfoRow}>
           <span>⏱ {recipe.prepMinutes + recipe.cookMinutes} min</span>

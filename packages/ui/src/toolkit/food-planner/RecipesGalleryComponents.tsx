@@ -55,6 +55,7 @@ export interface RecipeGalleryPanelProps {
   setPageSize: (s: number) => void;
   guests: number;
   portionFactors: Record<string, number>;
+  onViewRecipe?: (r: ExtendedFoodRecipe) => void;
 }
 
 function GallerySearchBar({
@@ -246,13 +247,15 @@ export function RecipeGalleryPanel(props: RecipeGalleryPanelProps) {
         favorites={props.favorites}
         onToggleFavorite={props.toggleFavorite}
         onToggleRecipe={props.toggleRecipe}
-        onViewDetail={setDetailRecipe}
+        onViewDetail={props.onViewRecipe ?? setDetailRecipe}
       />
-      <RecipeDetailDialog
-        recipe={detailRecipe}
-        servings={props.guests * (props.portionFactors[detailRecipe?.id ?? ''] ?? 1)}
-        onClose={() => setDetailRecipe(null)}
-      />
+      {!props.onViewRecipe && (
+        <RecipeDetailDialog
+          recipe={detailRecipe}
+          servings={props.guests * (props.portionFactors[detailRecipe?.id ?? ''] ?? 1)}
+          onClose={() => setDetailRecipe(null)}
+        />
+      )}
       <GalleryPaginationBar
         totalItems={filteredRecipes.length}
         startIdx={startIdx}
