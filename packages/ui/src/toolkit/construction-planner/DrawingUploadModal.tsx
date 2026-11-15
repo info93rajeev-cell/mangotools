@@ -32,6 +32,7 @@ function UploadForm({ onClose, onAddSheet }: UploadFormProps) {
       revision: 'R1',
       sizeBytes: 1048576,
       uploadedAt: new Date().toISOString(),
+      status: 'Uploaded',
     });
     onClose();
   };
