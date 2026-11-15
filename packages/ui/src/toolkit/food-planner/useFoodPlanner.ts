@@ -1,7 +1,6 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
-import { getEffectivePortionFactors } from './cateringPortions.ts';
 import { isUSLocation } from './foodCulinaryRegions.ts';
 import { type ExtendedFoodRecipe, GLOBAL_RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
 import { getCurrencySymbol, type SupportedCurrency } from './plannerCurrency.ts';
