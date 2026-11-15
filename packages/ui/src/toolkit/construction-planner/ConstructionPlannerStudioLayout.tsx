@@ -94,7 +94,7 @@ export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerS
         <TabNavigation activeTab={p.activeTab} onSelectTab={p.setActiveTab} />
       </div>
       {p.activeTab === 'setup' ? (
-        <main class={`${styles.tabContentGrid} no-print`}>
+        <div class={`${styles.tabContentGrid} no-print`}>
           <div class={styles.topCardsRow}>
             <ProjectOverviewCard overview={p.overview} onChangeField={p.setOverviewField} />
             <DrawingPackageCard
@@ -123,7 +123,7 @@ export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerS
               onSelectMemberType={() => p.setActiveTab('concrete-rebar')}
             />
           </div>
-        </main>
+        </div>
       ) : (
         <div class="no-print">
           <StageNoticeCard
