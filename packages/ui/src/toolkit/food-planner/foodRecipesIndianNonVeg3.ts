@@ -64,7 +64,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Lucknowi Mutton Seekh Kabab',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/seekh-kabab-recipe/',
+        url: 'https://www.youtube.com/watch?v=_6ZnbxlErUo',
         accessed: '2026-11-14',
         checks: 'Verified meat fat ratio and kneading binding technique',
       },
@@ -76,7 +76,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
         checks: 'Verified roasted besan measurement and grilling duration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=0Lz8EwB2gJc',
+    videoUrl: 'https://www.youtube.com/watch?v=_6ZnbxlErUo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -140,7 +140,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Street-Style Amritsari Fish Fry',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/amritsari-fish-fry-recipe/',
+        url: 'https://www.youtube.com/watch?v=d-tVAHYh4N4',
         accessed: '2026-11-14',
         checks: 'Verified ajwain ratio and mustard oil deep fry technique',
       },
@@ -152,7 +152,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
         checks: 'Verified besan coating consistency and double-fry method',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kYJqD_wJq5M',
+    videoUrl: 'https://www.youtube.com/watch?v=d-tVAHYh4N4',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -216,7 +216,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Original Hotel Buhari Style Chicken 65',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/chicken-65-recipe/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-14',
         checks: 'Verified South Indian tempering technique and curd marination',
       },
@@ -228,7 +228,7 @@ export const INDIAN_NON_VEG_RECIPES_3: ExtendedFoodRecipe[] = [
         checks: 'Verified crisp frying temperatures and curry leaf aromatics',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=7uK3w6V_5mY',
+    videoUrl: 'https://www.youtube.com/watch?v=DZtqRaHYsf8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

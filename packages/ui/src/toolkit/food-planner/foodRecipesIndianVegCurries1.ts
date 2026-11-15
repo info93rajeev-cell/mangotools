@@ -59,12 +59,12 @@ export const INDIAN_VEG_CURRIES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Dhaba Kadhai Paneer Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/kadai-paneer-recipe/',
+        url: 'https://www.youtube.com/watch?v=zqgYAL_Nf2Y',
         accessed: '2026-11-14',
         checks: 'Verified high-heat iron wok stir-fry method and tomato gravy balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kYJzX9a9_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=zqgYAL_Nf2Y',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -125,7 +125,7 @@ export const INDIAN_VEG_CURRIES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Classic Paneer Butter Masala Heritage Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/paneer-butter-masala-recipe/',
+        url: 'https://www.youtube.com/watch?v=a30BLUQiFoc',
         accessed: '2026-11-14',
         checks: 'Verified strained makhani velvet reduction and cashew emulsion',
       },
@@ -137,7 +137,7 @@ export const INDIAN_VEG_CURRIES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified butter-cream balance and kasoori methi finishing timing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=4b7xQ3A9a_b',
+    videoUrl: 'https://www.youtube.com/watch?v=a30BLUQiFoc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -193,7 +193,7 @@ export const INDIAN_VEG_CURRIES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Shahi Malai Kofta Royal Mughal Banquet Recipe',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/Malai-Kofta-174r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Shahi%20Malai%20Kofta%20Royal%20Mughal%20Banquet',
         accessed: '2026-11-14',
         checks: 'Verified potato-to-paneer dumpling binding ratio and low-heat frying temperature',
       },
@@ -205,7 +205,7 @@ export const INDIAN_VEG_CURRIES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified ivory cashew-cream sauce reduction and assembly method',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mY9zK1A9a_b',
+    videoUrl: 'https://www.youtube.com/watch?v=h2ERzW-8ZnM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

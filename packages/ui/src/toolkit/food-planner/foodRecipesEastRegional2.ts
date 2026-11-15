@@ -72,7 +72,7 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked kacha-golla half-cooked blending technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=8vK8mN5vXwA',
+    videoUrl: 'https://www.youtube.com/watch?v=dzLGwVD1piM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -160,7 +160,7 @@ export const EAST_REGIONAL_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked pickle oil seasoning and coconut bit inclusions',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=2vK8mN5vXwA',
+    videoUrl: 'https://www.youtube.com/watch?v=RMemEbsp6P8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

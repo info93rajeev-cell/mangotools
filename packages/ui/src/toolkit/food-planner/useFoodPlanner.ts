@@ -1,6 +1,7 @@
 import type { RunFn } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
+import { getEffectivePortionFactors } from './cateringPortions.ts';
 import { isUSLocation } from './foodCulinaryRegions.ts';
 import { type ExtendedFoodRecipe, GLOBAL_RECIPES, SAMPLE_PLAN } from './foodReferenceData.ts';
 import { getCurrencySymbol, type SupportedCurrency } from './plannerCurrency.ts';
@@ -77,11 +78,16 @@ function usePlannerSelection() {
       else next.add(id);
       return next;
     });
-  const [portionFactors, setPortionFactors] = useState<Record<string, number>>({});
+  const [customPortions, setCustomPortions] = useState<Record<string, number>>({});
 
   const selectedRecipes = useMemo(
     () => allRecipes.filter((r) => selectedRecipeIds.has(r.id)),
     [selectedRecipeIds, allRecipes],
+  );
+
+  const portionFactors = useMemo(
+    () => getEffectivePortionFactors(selectedRecipes, customPortions),
+    [selectedRecipes, customPortions],
   );
 
   const toggleRecipe = useCallback((id: string) => {
@@ -94,10 +100,13 @@ function usePlannerSelection() {
   }, []);
 
   const setPortionFactor = useCallback((id: string, factor: number) => {
-    setPortionFactors((prev) => ({ ...prev, [id]: Math.max(0.25, Math.min(10, factor)) }));
+    setCustomPortions((prev) => ({ ...prev, [id]: Math.max(0.25, Math.min(10, factor)) }));
   }, []);
 
-  const clearAllRecipes = useCallback(() => setSelectedRecipeIds(new Set()), []);
+  const clearAllRecipes = useCallback(() => {
+    setSelectedRecipeIds(new Set());
+    setCustomPortions({});
+  }, []);
 
   return {
     allRecipes,
@@ -108,7 +117,7 @@ function usePlannerSelection() {
     selectedRecipeIds,
     setSelectedRecipeIds,
     portionFactors,
-    setPortionFactors,
+    setPortionFactors: setCustomPortions,
     selectedRecipes,
     toggleRecipe,
     setPortionFactor,

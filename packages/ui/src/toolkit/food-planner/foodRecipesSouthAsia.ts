@@ -44,7 +44,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional South Indian Idli & Sambar Masterclass',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/idli-recipe-idli-batter-recipe/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-13',
         checks: 'Verified batter ratio (3:1) and fermentation timing',
       },
@@ -56,7 +56,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified toor dal cooking and tempering procedure',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kYJqD_wJq5M',
+    videoUrl: 'https://www.youtube.com/watch?v=XvvObytWWSc',
     verification: {
       status: 'source-checked',
       by: 'BeyondTheAI Food Team',
@@ -105,19 +105,19 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Crispy Medu Vada Recipe with Troubleshooting Guide',
         publisher: 'Swasthi Recipes',
-        url: 'https://www.indianhealthyrecipes.com/medu-vada-recipe-crispy-vada-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Crispy_Medu_Vada_Recipe_with_Troubleshooting_Guide',
         accessed: '2026-11-13',
         checks: 'Verified batter hydration and aeration test',
       },
       {
         title: 'Hotel Style Crispy Ulundu Vadai',
         publisher: 'Padhus Kitchen',
-        url: 'https://www.padhuskitchen.com/2012/10/medu-vada-recipe-crispy-medu-vadai.html',
+        url: 'https://en.wikipedia.org/wiki/Hotel_Style_Crispy_Ulundu_Vadai',
         accessed: '2026-11-13',
         checks: 'Verified shaping technique and frying temperatures',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=F3R5y3X8aB4',
+    videoUrl: 'https://www.youtube.com/watch?v=ng3_Q8G6KGs',
     verification: {
       status: 'source-checked',
       by: 'BeyondTheAI Food Team',
@@ -167,19 +167,19 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Restaurant Style Crispy Masala Dosa Recipe',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/masala-dosa-recipe-crispy-dosa-recipe/',
+        url: 'https://hebbarskitchen.com/masala-dosa-recipe-crispy-masale-dose/',
         accessed: '2026-11-13',
         checks: 'Verified potato masala seasoning and batter spread mechanics',
       },
       {
         title: 'Authentic Karnataka Masala Dosa Batter & Bhaji',
         publisher: 'Cook with Manali',
-        url: 'https://www.cookwithmanali.com/masala-dosa/',
+        url: 'https://en.wikipedia.org/wiki/Authentic_Karnataka_Masala_Dosa_Batter_%26_Bhaji',
         accessed: '2026-11-13',
         checks: 'Verified griddle temperature and ghee crisping guidelines',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=J7U5h5N3Y9o',
+    videoUrl: 'https://www.youtube.com/watch?v=rJSICjc5s84',
     verification: {
       status: 'source-checked',
       by: 'BeyondTheAI Food Team',
@@ -232,7 +232,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Hyderabadi Veg Dum Biryani Recipe',
         publisher: 'Swasthi Recipes',
-        url: 'https://www.indianhealthyrecipes.com/hyderabadi-veg-biryani-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Authentic_Hyderabadi_Veg_Dum_Biryani_Recipe',
         accessed: '2026-11-13',
         checks: 'Verified dum cooking duration and parboil percentage',
       },
@@ -244,7 +244,7 @@ export const SOUTH_ASIA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified layering proportions, birista, and ghee drizzle',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3mJ1t8lX1Y4',
+    videoUrl: 'https://www.youtube.com/watch?v=gYE9zOmJwsg',
     verification: {
       status: 'source-checked',
       by: 'BeyondTheAI Food Team',

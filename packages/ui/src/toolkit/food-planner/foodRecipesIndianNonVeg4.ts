@@ -44,19 +44,19 @@ export const INDIAN_NON_VEG_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Highway Dhaba Style Egg Curry',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/egg-curry-recipe/',
+        url: 'https://www.youtube.com/watch?v=CbZxp8bwErM',
         accessed: '2026-11-14',
         checks: 'Verified egg blistering technique and onion reduction',
       },
       {
         title: 'Punjabi Tariwali Anda Curry',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/punjabi-egg-curry-recipe/',
+        url: 'https://hebbarskitchen.com/cocktail-samosa-recipe-party-samosa/',
         accessed: '2026-11-14',
         checks: 'Verified spice emulsion and simmering duration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3g8Kk9j_gA4',
+    videoUrl: 'https://www.youtube.com/watch?v=CbZxp8bwErM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -214,7 +214,7 @@ export const INDIAN_NON_VEG_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Awadhi Lucknowi Mutton Biryani',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/lucknowi-mutton-biryani/',
+        url: 'https://www.youtube.com/watch?v=8HCuUY-b-dY',
         accessed: '2026-11-14',
         checks: 'Verified yakhni extraction and Awadhi dum seasoning',
       },
@@ -226,7 +226,7 @@ export const INDIAN_NON_VEG_RECIPES_4: ExtendedFoodRecipe[] = [
         checks: 'Verified rice parboiling in stock and spice potli methods',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=F3z77xM_gD0',
+    videoUrl: 'https://www.youtube.com/watch?v=8HCuUY-b-dY',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

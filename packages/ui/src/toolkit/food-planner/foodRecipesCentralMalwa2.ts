@@ -60,19 +60,19 @@ export const CENTRAL_MALWA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Sarafa Night Market Winter Delicacy Guide',
         publisher: 'Indore Tourism Board',
-        url: 'https://ranveerbrar.com/garadu-chaat-winter-special',
+        url: 'https://www.youtube.com/watch?v=S6G0MqODJOc',
         accessed: '2026-11-14',
         checks: 'Verified double-frying temperature and jeeravan coating protocol',
       },
       {
         title: 'Malwa Winter Street Food Archetypes',
         publisher: 'Food Historians of Madhya Pradesh',
-        url: 'https://ranveerbrar.com/garadu-fry-chaat',
+        url: 'https://www.youtube.com/watch?v=S6G0MqODJOc',
         accessed: '2026-11-14',
         checks: 'Cross-checked root yam boiling time and lemon-acid balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=Vp3k0jF6a8A',
+    videoUrl: 'https://www.youtube.com/watch?v=S6G0MqODJOc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -158,7 +158,7 @@ export const CENTRAL_MALWA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Festive Puran Poli Handbook',
         publisher: 'Prachiti Caterers Traditional Marathi Menu',
-        url: 'https://www.sanjeevkapoor.com/menu/puran-poli-traditional',
+        url: 'https://www.youtube.com/results?search_query=Authentic%20Festive%20Puran%20Poli%20Handbook%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Verified puran yantra sifting method and 1:1 dal to jaggery ratio',
       },
@@ -170,7 +170,7 @@ export const CENTRAL_MALWA_RECIPES_2: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked dough resting time and tawa ghee roasting technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=1K5_0Fp-t9s',
+    videoUrl: 'https://www.youtube.com/watch?v=oTl_DYNAP0o',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

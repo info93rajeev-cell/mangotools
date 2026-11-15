@@ -126,14 +126,14 @@ export const INDIAN_NON_VEG_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Smoky Tandoori Chicken Master Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/tandoori-chicken-recipe/',
+        url: 'https://www.youtube.com/watch?v=-CKvt1KNU74',
         accessed: '2026-11-14',
         checks: 'Verified double marination and mustard oil bloom technique',
       },
       {
         title: 'Classic Restaurant Style Tandoori Chicken',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/tandoori-chicken-recipe/',
+        url: 'https://hebbarskitchen.com/paneer-makhani-recipe-paneer-makhanwala/',
         accessed: '2026-11-14',
         checks: 'Verified roasting temperature and spice balances',
       },
@@ -203,7 +203,7 @@ export const INDIAN_NON_VEG_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Amritsari Murgh Tikka Kabab',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/chicken-tikka-recipe-33827r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Amritsari%20Murgh%20Tikka%20Kabab',
         accessed: '2026-11-14',
         checks: 'Verified skewer configuration and baking duration',
       },
@@ -215,7 +215,7 @@ export const INDIAN_NON_VEG_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified spice ratios and hung curd consistency',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=1F341S_W_i4',
+    videoUrl: 'https://www.youtube.com/watch?v=VhijkWkuSKo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

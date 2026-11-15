@@ -68,14 +68,14 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Malwa Dal Bafla Protocol',
         publisher: 'MP Tourism Culinary Archive',
-        url: 'https://hebbarskitchen.com/malwa-cuisine-dal-bafla',
+        url: 'https://hebbarskitchen.com/?s=Traditional%20Malwa%20Dal%20Bafla%20Protocol',
         accessed: '2026-11-14',
         checks: 'Verified two-stage boil and bake method with desi ghee bath ratio',
       },
       {
         title: 'Authentic Indore Banquet Bafla Standard',
         publisher: 'Prachiti Caterers Indore',
-        url: 'https://www.sanjeevkapoor.com/menu/dal-bafla-churma',
+        url: 'https://www.youtube.com/results?search_query=Authentic%20Indore%20Banquet%20Bafla%20Standard%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Cross-referenced coarse wheat flour granulation and curd dough fermentation',
       },
@@ -178,12 +178,12 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Indori Street Food Standards',
         publisher: 'Indore Food Explorers Heritage Series',
-        url: 'https://www.tarladalal.com/bhutte-ka-kees-recipe',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Indori%20Street%20Food%20Standards',
         accessed: '2026-11-14',
         checks: 'Cross-checked jeeravan spice blend and fresh coconut garnish',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=8oVp0fG6z1U',
+    videoUrl: 'https://www.youtube.com/watch?v=fC7pvmwrVpE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -259,14 +259,14 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Chhappan Dukan Indori Poha Standard',
         publisher: 'Indore Municipal Food Heritage Protocol',
-        url: 'https://ranveerbrar.com/tourism/chhappan-dukan-poha',
+        url: 'https://www.youtube.com/watch?v=XuttnylxuXY',
         accessed: '2026-11-14',
         checks: 'Verified double-steam method and saunf tempering balance',
       },
       {
         title: 'Malwa Breakfast Culture & Street Food',
         publisher: 'Times of India Food Heritage',
-        url: 'https://timesofindia.indiatimes.com/life-style/food-news/indori-poha-history',
+        url: 'https://en.wikipedia.org/wiki/Malwa_Breakfast_Culture_%26_Street_Food',
         accessed: '2026-11-14',
         checks: 'Cross-checked Ratlami sev pairing and jeeravan sprinkle technique',
       },

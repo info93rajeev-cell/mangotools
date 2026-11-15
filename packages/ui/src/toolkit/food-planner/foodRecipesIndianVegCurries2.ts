@@ -55,7 +55,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Bukhara Style Dal Makhani Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/dal-makhani-recipe/',
+        url: 'https://www.youtube.com/watch?v=mA5XjhdwJHc',
         accessed: '2026-11-14',
         checks:
           'Verified overnight soaking, slow simmering reduction, and cold butter emulsification',
@@ -69,7 +69,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
           'Verified urad-to-rajma ratio and deghi mirch coloration without artificial food color',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=dY8bX9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=mA5XjhdwJHc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -150,7 +150,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Amritsari Pindi Chana Heritage Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/pindi-chole-recipe/',
+        url: 'https://www.youtube.com/watch?v=_e1hHIbdBUw',
         accessed: '2026-11-14',
         checks: 'Verified tea leaf potli tannin extraction and sizzling hot iron wok tadka',
       },
@@ -162,7 +162,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified amchur and roasted spice coating balance without wet tomato gravy',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=pY8bC7a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=_e1hHIbdBUw',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -231,7 +231,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Kashmiri Pandit Dum Aloo Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/kashmiri-dum-aloo-recipe/',
+        url: 'https://www.youtube.com/watch?v=Ox6dwlIVp6E',
         accessed: '2026-11-14',
         checks: 'Verified no onion or garlic authentic Kashmiri preparation with fennel and ginger',
       },
@@ -243,7 +243,7 @@ export const INDIAN_VEG_CURRIES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified potato pricking, deep frying in mustard oil, and sealed dum simmering',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY7bA9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=Ox6dwlIVp6E',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

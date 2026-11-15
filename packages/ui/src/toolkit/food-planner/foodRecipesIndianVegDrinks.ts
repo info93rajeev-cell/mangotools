@@ -46,7 +46,7 @@ export const INDIAN_VEG_DRINKS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Banarasi Shahi Thandai Formulation',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/thandai-recipe/',
+        url: 'https://www.youtube.com/watch?v=_H-RZosr6J4',
         accessed: '2026-11-14',
         checks: 'Verified nut-seed soaking duration and rose water saffron balance',
       },
@@ -58,7 +58,7 @@ export const INDIAN_VEG_DRINKS: ExtendedFoodRecipe[] = [
         checks: 'Verified digestive spice ratios including fennel and black pepper notes',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=tY8bT9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=_H-RZosr6J4',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -116,7 +116,7 @@ export const INDIAN_VEG_DRINKS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Creamy Mango Lassi Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/mango-lassi-recipe/',
+        url: 'https://www.youtube.com/watch?v=iJ2M0cYXznk',
         accessed: '2026-11-14',
         checks: 'Verified Alphonso mango-to-yogurt ratio and frothing technique',
       },
@@ -128,7 +128,7 @@ export const INDIAN_VEG_DRINKS: ExtendedFoodRecipe[] = [
         checks: 'Verified sweetness balancing and clay cup serving temperature',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mY8bL9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=iJ2M0cYXznk',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

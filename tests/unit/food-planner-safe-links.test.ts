@@ -10,10 +10,28 @@ describe('Food Planner — Safe recipe source & video links', () => {
     const ytSource = {
       title: 'Jeera Rice Recipe',
       publisher: 'Chef Ranveer Brar',
-      url: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+      url: 'https://www.youtube.com/watch?v=2u3H7JoAm_U',
     };
     expect(getSafeRecipeSourceUrl(ytSource, 'Jeera Rice')).toBe(
-      'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+      'https://www.youtube.com/watch?v=2u3H7JoAm_U',
+    );
+
+    const vegRecipesSource = {
+      title: 'Kachumber Salad Recipe',
+      publisher: "Dassana's Veg Recipes",
+      url: 'https://www.vegrecipesofindia.com/kachumber-salad-kuchumber-salad/',
+    };
+    expect(getSafeRecipeSourceUrl(vegRecipesSource, 'Kachumber Salad')).toBe(
+      'https://www.vegrecipesofindia.com/kachumber-salad-kuchumber-salad/',
+    );
+
+    const hebbarSource = {
+      title: 'Kachumber Recipe',
+      publisher: "Hebbar's Kitchen",
+      url: 'https://hebbarskitchen.com/kachumber-salad-recipe/',
+    };
+    expect(getSafeRecipeSourceUrl(hebbarSource, 'Kachumber Salad')).toBe(
+      'https://hebbarskitchen.com/kachumber-salad-recipe/',
     );
 
     const wikiSource = {
@@ -54,21 +72,29 @@ describe('Food Planner — Safe recipe source & video links', () => {
   it('generates active YouTube video tutorial query for broken video URLs', () => {
     const recipeWithDeadVideo: ExtendedFoodRecipe = {
       id: 'test-recipe',
-      name: 'Kolkata Bhetki Macher Paturi',
+      name: 'Fresh Garden Green Salad',
       servings: 4,
-      prepTimeMinutes: 30,
-      cookTimeMinutes: 20,
-      diet: 'non-veg',
-      category: 'Main Course',
+      prepTimeMinutes: 10,
+      cookTimeMinutes: 0,
+      diet: 'vegan',
+      category: 'Side Dish',
       cuisine: 'Indian',
-      occasion: 'Wedding',
-      image: 'recipes/bhetki-paturi.jpg',
+      occasion: 'Daily',
+      image: 'recipes/mixed-veg-salad.jpg',
       ingredients: [],
       steps: ['Step 1', 'Step 2'],
-      videoUrl: 'https://www.youtube.com/watch?v=7bN6vK5m8yA',
+      videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
     };
     const safeVideoUrl = getRecipeVideoTutorialUrl(recipeWithDeadVideo);
     expect(safeVideoUrl).toContain('https://www.youtube.com/results?search_query=');
-    expect(safeVideoUrl).toContain('Kolkata%20Bhetki%20Macher%20Paturi');
+    expect(safeVideoUrl).toContain('Fresh%20Garden%20Green%20Salad');
+
+    const recipeWithVerifiedVideo: ExtendedFoodRecipe = {
+      ...recipeWithDeadVideo,
+      videoUrl: 'https://www.youtube.com/watch?v=bF9cVX6qko0',
+    };
+    expect(getRecipeVideoTutorialUrl(recipeWithVerifiedVideo)).toBe(
+      'https://www.youtube.com/watch?v=bF9cVX6qko0',
+    );
   });
 });

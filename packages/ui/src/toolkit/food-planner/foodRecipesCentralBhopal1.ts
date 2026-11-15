@@ -70,7 +70,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Nawabi Cuisine of Bhopal',
         publisher: 'MP Tourism Official Culinary Guide',
-        url: 'https://hebbarskitchen.com/bhopal-cuisine-pampers-your-taste-buds',
+        url: 'https://hebbarskitchen.com/?s=Nawabi%20Cuisine%20of%20Bhopal',
         accessed: '2026-11-14',
         checks: 'Cross-checked handi slow-cooking and yogurt marinade',
       },
@@ -156,12 +156,12 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Historic Shikar Recipes of Central India',
         publisher: 'MP Tourism Heritage Series',
-        url: 'https://hebbarskitchen.com/bhopal-cuisine-filfora',
+        url: 'https://hebbarskitchen.com/?s=Historic%20Shikar%20s%20of%20Central%20India',
         accessed: '2026-11-14',
         checks: 'Cross-checked garlic and green chili dry-roasting balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    videoUrl: 'https://www.youtube.com/watch?v=0C_0gspE7Og',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -240,7 +240,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Shrikhand & Chakka Preparation Standard',
         publisher: 'Prachiti Caterers Festive Menu',
-        url: 'https://www.sanjeevkapoor.com/menu/kesar-shrikhand',
+        url: 'https://www.youtube.com/results?search_query=Traditional%20Shrikhand%20%26%20Chakka%20Preparation%20Standard%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Verified hung curd drainage time and sugar-to-chakka ratio',
       },
@@ -252,7 +252,7 @@ export const CENTRAL_BHOPAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked saffron infusion and chironji nut traditional pairing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=Qn1N5oW-F7w',
+    videoUrl: 'https://www.youtube.com/watch?v=zuViMZCfA-c',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

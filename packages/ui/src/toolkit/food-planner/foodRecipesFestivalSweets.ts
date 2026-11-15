@@ -19,7 +19,7 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 10,
     cookMinutes: 35,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=FjLw3h3iU_8',
+    videoUrl: 'https://www.youtube.com/watch?v=ejJbDButM6g',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'ganesh-chaturthi', 'raksha-bandhan', 'festival', 'puja'],
     proTips: [
@@ -109,7 +109,7 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 20,
     cookMinutes: 35,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=Fq2r_sD1E_U',
+    videoUrl: 'https://www.youtube.com/watch?v=VVhs1wj9DhU',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'wedding', 'eid', 'festival', 'birthday'],
     proTips: [
@@ -217,7 +217,7 @@ export const FESTIVAL_SWEETS_CORE: ExtendedFoodRecipe[] = [
     prepMinutes: 10,
     cookMinutes: 15,
     verified: true,
-    videoUrl: 'https://www.youtube.com/watch?v=kYJ6gVlFw8c',
+    videoUrl: 'https://www.youtube.com/watch?v=v4ZRuZgFrZA',
     countries: ['IN', 'US', 'GB'],
     events: ['diwali', 'raksha-bandhan', 'wedding', 'festival', 'gift'],
     proTips: [

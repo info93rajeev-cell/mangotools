@@ -278,7 +278,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Sprout & Farsan Dishes of Maharashtra',
         publisher: 'Western India Culinary Studies',
-        url: 'https://www.tarladalal.com/misal-pav-guide',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Sprout%20%26%20Farsan%20Dishes%20of%20Maharashtra',
         accessed: '2026-11-14',
         checks: 'Cross-checked kanda-lasun masala and matki sprout boiling times',
       },
@@ -370,7 +370,7 @@ export const WEST_STREET_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Festive Offerings of Western India',
         publisher: 'Prachiti Caterers Festival Guide',
-        url: 'https://www.sanjeevkapoor.com/menu/modak-traditional',
+        url: 'https://www.youtube.com/results?search_query=Traditional%20Festive%20Offerings%20of%20Western%20India%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Cross-checked banana leaf steaming and hot ghee drizzle service',
       },

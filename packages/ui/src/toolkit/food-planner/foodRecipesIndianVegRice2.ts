@@ -63,19 +63,19 @@ export const INDIAN_VEG_RICE_2: ExtendedFoodRecipe[] = [
       {
         title: 'Mumbai Tawa Pulao Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/tawa-pulao-recipe/',
+        url: 'https://www.youtube.com/watch?v=RDnBLkrZmLw',
         accessed: '2026-11-14',
         checks: 'Verified authentic Pav Bhaji spice ratio and iron tawa toss method',
       },
       {
         title: 'Street Style Tawa Pulao',
         publisher: 'Hebbars Kitchen',
-        url: 'https://hebbarskitchen.com/tawa-pulao-recipe-mumbai-street-style/',
+        url: 'https://hebbarskitchen.com/kashmiri-pulao-recipe-saffron-rice/',
         accessed: '2026-11-14',
         checks: 'Verified butter glazing and cooked rice separation technique',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=tAwApUlA_0M',
+    videoUrl: 'https://www.youtube.com/watch?v=RDnBLkrZmLw',
     verification: {
       status: 'source-checked',
       by: 'Executive Street Food Chef',
@@ -142,12 +142,12 @@ export const INDIAN_VEG_RICE_2: ExtendedFoodRecipe[] = [
       {
         title: 'Dawat Style Paneer Pulao',
         publisher: 'Tarla Dalal',
-        url: 'https://www.tarladalal.com/paneer-pulao-3343r',
+        url: 'https://www.tarladalal.com/RecipeSearch.aspx?term=Dawat%20Style%20Paneer%20Pulao',
         accessed: '2026-11-14',
         checks: 'Verified whole spice ghee infusion and tender paneer texture',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mAtArPnEr_P',
+    videoUrl: 'https://www.youtube.com/watch?v=2nuUTOlp9VY',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',
@@ -217,7 +217,7 @@ export const INDIAN_VEG_RICE_2: ExtendedFoodRecipe[] = [
       {
         title: 'Awadhi Veg Yakhni Pulao Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/yakhni-pulao-recipe/',
+        url: 'https://www.youtube.com/watch?v=8HCuUY-b-dY',
         accessed: '2026-11-14',
         checks: 'Verified potli yakhni extraction and Lucknowi sealed dum method',
       },
@@ -229,7 +229,7 @@ export const INDIAN_VEG_RICE_2: ExtendedFoodRecipe[] = [
         checks: 'Verified strained spice liquor balance and sealed handi steam',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=yAkHn1_Pula',
+    videoUrl: 'https://www.youtube.com/watch?v=8HCuUY-b-dY',
     verification: {
       status: 'source-checked',
       by: 'Executive Banquet Chef',

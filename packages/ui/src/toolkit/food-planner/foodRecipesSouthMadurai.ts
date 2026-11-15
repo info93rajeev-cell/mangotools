@@ -74,7 +74,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked cast-iron tawa thermodynamics and curry leaf infusion',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=Cb22Y_uSWpE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -167,7 +167,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked brass degh dum technique and curd acidity index',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=5vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=KNfqnmTWluo',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -263,7 +263,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked cast-iron tawa heat retention and gingelly oil crisping',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=7vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=b4uQfbUbgqc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -355,7 +355,7 @@ export const SOUTH_MADURAI_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked condensed milk ice cream dollop and caramelized basundi milk base',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=8vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=jXd2ULo3pT0',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

@@ -51,7 +51,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Restaurant Green Chutney Secrets',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/green-chutney-recipe/',
+        url: 'https://www.youtube.com/watch?v=KixYq5evmZ0',
         accessed: '2026-11-14',
         checks: 'Verified ice-cube oxidation prevention technique and coriander-to-mint ratio',
       },
@@ -63,7 +63,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified lemon juice acidity stabilization and roasted cumin balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=gY8bC9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=KixYq5evmZ0',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -130,7 +130,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Halwai Saunth Tamarind Chutney Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/meethi-chutney-recipe/',
+        url: 'https://www.youtube.com/watch?v=ewgy8XMDz88',
         accessed: '2026-11-14',
         checks: 'Verified sonth ginger reduction and glossy ribbon consistency',
       },
@@ -142,7 +142,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified kala namak balance and cold storage shelf-life validation',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=tY8bC9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=ewgy8XMDz88',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -207,7 +207,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Crispy Boondi Raita Party Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/boondi-raita-recipe/',
+        url: 'https://www.youtube.com/watch?v=eQS6c-SAnvU',
         accessed: '2026-11-14',
         checks: 'Verified dual-boondi texture method and roasted cumin seasoning',
       },
@@ -219,7 +219,7 @@ export const INDIAN_VEG_SIDES_1: ExtendedFoodRecipe[] = [
         checks: 'Verified yogurt whisking consistency and chilled presentation standards',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=rY8bR9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=eQS6c-SAnvU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

@@ -86,7 +86,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked chinna vengayam shallot handling and perungayam tempering',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=2vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=XvvObytWWSc',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -189,7 +189,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked eeya chombu vessel traditional thermodynamics',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=4vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=zQVU4HmHBOM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -277,7 +277,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked sour curd balance and coarse coconut paste texture',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=6vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=e1HRlyAUxBU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -365,7 +365,7 @@ export const SOUTH_SADYA_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked manpaanai clay pot slow simmer and jaggery balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=1vM8mN5vXwB',
+    videoUrl: 'https://www.youtube.com/watch?v=3NAf1UEE8E0',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

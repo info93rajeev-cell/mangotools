@@ -60,7 +60,7 @@ export const INDIAN_VEG_SIDES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Hyderabadi Burani Raita Formulation',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/burani-raita-recipe/',
+        url: 'https://www.youtube.com/watch?v=SHR1fMJTy5A',
         accessed: '2026-11-14',
         checks: 'Verified fried garlic infusion and hung curd consistency',
       },
@@ -72,7 +72,7 @@ export const INDIAN_VEG_SIDES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified roasted cumin dust and temperature balancing for spicy dum biryani',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bY8bG9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=SHR1fMJTy5A',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -145,7 +145,7 @@ export const INDIAN_VEG_SIDES_2: ExtendedFoodRecipe[] = [
         checks: 'Verified late-salting technique to prevent cucumber wilting',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY8bS9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=TZ5rYIferLk',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -210,19 +210,19 @@ export const INDIAN_VEG_SIDES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Restaurant Sirka Pyaz Pickling Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/sirka-pyaz-recipe/',
+        url: 'https://www.youtube.com/watch?v=ZgOW50tYrnw',
         accessed: '2026-11-14',
         checks: 'Verified natural beetroot color extraction and sweet vinegar brine ratio',
       },
       {
         title: 'Dhaba Style Pickled Vinegar Onions Recipe',
         publisher: 'Sanjeev Kapoor Khazana',
-        url: 'https://www.sanjeevkapoor.com/recipe/Sirka-Pyaaz.html',
+        url: 'https://www.youtube.com/results?search_query=Dhaba%20Style%20Pickled%20Vinegar%20Onions%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Verified pearl onion scoring method for deep acid penetration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bP9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=ZgOW50tYrnw',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

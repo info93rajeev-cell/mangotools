@@ -41,7 +41,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Tawa Butter Naan Without Tandoor Masterclass',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/butter-naan-recipe/',
+        url: 'https://www.youtube.com/watch?v=ZPbPTENKRLM',
         accessed: '2026-11-14',
         checks: 'Verified inverted cast-iron tawa baking method and blister charring',
       },
@@ -53,7 +53,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
         checks: 'Verified yogurt leavening reaction and dough resting hydration',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bY8bN9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=ZPbPTENKRLM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -110,7 +110,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Amritsari Kulcha Layering Technique',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/amritsari-kulcha-recipe/',
+        url: 'https://www.youtube.com/watch?v=YYrcrhFYe80',
         accessed: '2026-11-14',
         checks: 'Verified butter lamination folding and dry tandoor baking',
       },
@@ -122,7 +122,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
         checks: 'Verified spicy potato-onion stuffing spice profile and crushing step',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY8bK9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=YYrcrhFYe80',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -173,7 +173,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Multi-Layered Laccha Paratha Secrets',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/laccha-paratha-recipe/',
+        url: 'https://www.youtube.com/watch?v=fOyZ06OG57I',
         accessed: '2026-11-14',
         checks: 'Verified pleating accordion technique and spiral resting time',
       },
@@ -185,7 +185,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
         checks: 'Verified ghee roasting temperature and crispy spiral ring retention',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=lY8bP9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=fOyZ06OG57I',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -235,19 +235,19 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Amritsari Bhature Halwai Recipe',
         publisher: 'Ranveer Brar Official',
-        url: 'https://ranveerbrar.com/recipes/bhature-recipe/',
+        url: 'https://www.youtube.com/watch?v=aFzBnNWEu5Y',
         accessed: '2026-11-14',
         checks: 'Verified semolina crispness stabilizer and high-temperature oil flash frying',
       },
       {
         title: 'Old Delhi Halwai Style Puffed Bhatura',
         publisher: 'Sanjeev Kapoor Khazana',
-        url: 'https://www.sanjeevkapoor.com/recipe/Bhatura.html',
+        url: 'https://www.youtube.com/results?search_query=Old%20Delhi%20Halwai%20Style%20Puffed%20Bhatura%20Sanjeev%20Kapoor%20Khazana',
         accessed: '2026-11-14',
         checks: 'Verified curd-baking soda fermentation lift without yeast',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bY8bB9a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=aFzBnNWEu5Y',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

@@ -1,4 +1,5 @@
 import { Icon } from '../../primitives/Icon.tsx';
+import { computeAutoBalancedPortions, getCateringBalancedPortion } from './cateringPortions.ts';
 import styles from './foodPlanner.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import {
@@ -29,8 +30,9 @@ export function SelectedMenuPanel({
   occasion?: string;
 }) {
   const autoBalance = () => {
-    for (const r of selectedRecipes) {
-      setPortionFactor(r.id, 1);
+    const balanced = computeAutoBalancedPortions(selectedRecipes);
+    for (const [id, factor] of Object.entries(balanced)) {
+      setPortionFactor(id, factor);
     }
   };
 
@@ -104,7 +106,7 @@ function SelectedMenuRow({
   onSetPortion: (id: string, factor: number) => void;
   onRemove: (id: string) => void;
 }) {
-  const plannedServings = guests * factor;
+  const plannedServings = Math.round(guests * factor);
   const verInfo = getRecipeVerificationInfo(recipe);
 
   return (
@@ -143,7 +145,14 @@ function SelectedMenuRow({
           >
             -
           </button>
-          <span class={styles.stepperVal}>{plannedServings}</span>
+          <span class={styles.stepperVal}>
+            {plannedServings}
+            {factor !== 1 && (
+              <small style={{ display: 'block', fontSize: '9px', opacity: 0.75 }}>
+                ({Math.round(factor * 100)}%)
+              </small>
+            )}
+          </span>
           <button
             type="button"
             class={styles.stepperBtn}
@@ -247,6 +256,20 @@ function SelectedMenuTable({
               <tr key={`header-${group.key}`} class={styles.courseGroupHeaderRow}>
                 <td colSpan={6} class={styles.courseGroupHeaderCell}>
                   {group.icon} {group.label} ({group.items.length})
+                  {group.items.length > 1 && (
+                    <span
+                      style={{
+                        marginLeft: '8px',
+                        fontSize: '11px',
+                        fontWeight: 'normal',
+                        opacity: 0.85,
+                      }}
+                    >
+                      • Auto-scaled to{' '}
+                      {Math.round(getCateringBalancedPortion(group.key, group.items.length) * 100)}%
+                      per dish
+                    </span>
+                  )}
                 </td>
               </tr>
               {group.items.map((recipe) => {

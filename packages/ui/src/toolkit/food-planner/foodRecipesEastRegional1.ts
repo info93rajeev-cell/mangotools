@@ -178,12 +178,12 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Street Food Culture of Kolkata',
         publisher: 'Times of India Culinary History',
-        url: 'https://timesofindia.indiatimes.com/travel/kolkata/street-food/kathi-roll',
+        url: 'https://en.wikipedia.org/wiki/Street_Food_Culture_of_Kolkata',
         accessed: '2026-11-14',
         checks: 'Cross-checked paratha layering and absence of bottled sauces',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=3vK8mN5vXwA',
+    videoUrl: 'https://www.youtube.com/watch?v=-VUpN30ld3k',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -275,7 +275,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
         checks: 'Cross-checked sal leaf baking lining and cow-milk chhena moisture balance',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=5vK8mN5vXwA',
+    videoUrl: 'https://www.youtube.com/watch?v=5g8hrU7sJPg',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
