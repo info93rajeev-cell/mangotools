@@ -16,6 +16,7 @@ export interface SheetMetadata {
   revision: string;
   sizeBytes?: number;
   uploadedAt: string;
+  status: 'Uploaded' | 'Pending' | 'Draft';
 }
 
 export interface RecentWorkItem {
@@ -24,7 +25,7 @@ export interface RecentWorkItem {
   memberType: MemberType;
   portion: string;
   lastUpdated: string;
-  status: 'Calculated' | 'In Progress' | 'Draft';
+  status: 'Calculated' | 'In Progress' | 'Draft' | 'Pending';
 }
 
 export interface ProjectOverviewState {

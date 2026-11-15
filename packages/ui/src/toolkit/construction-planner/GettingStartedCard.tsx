@@ -1,6 +1,12 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './constructionPlanner.module.css';
 import { constructionPlannerStrings as t } from './constructionPlannerStrings.ts';
+import {
+  BeamIsoGraphic,
+  ColumnIsoGraphic,
+  FootingIsoGraphic,
+  SlabIsoGraphic,
+} from './isometricGraphics.tsx';
 import type { MemberType } from './types.ts';
 
 interface GettingStartedCardProps {
@@ -45,26 +51,28 @@ function AttachStep({ onAttach }: { onAttach: () => void }) {
         <span class={styles.stepNumCircle}>2</span>
         <h3 class={styles.gsStepTitle}>{t.gsStep2Title}</h3>
       </div>
-      <p class={styles.gsStepDesc}>{t.gsStep2Desc}</p>
+      <p class={styles.gsStepDesc}>PDF or image; DWG not supported</p>
       <button
         type="button"
         class={styles.gsBlueprintBtn}
         onClick={onAttach}
-        title="Attach drawings (PDF/images)"
+        title="Attach drawings (PDF or image; DWG not supported)"
       >
-        <svg class={styles.gsBlueprintSvg} viewBox="0 0 140 50" aria-hidden="true">
+        <svg class={styles.gsBlueprintSvg} viewBox="0 0 140 48" aria-hidden="true">
           <rect
-            x="5"
-            y="5"
-            width="130"
+            x="4"
+            y="4"
+            width="132"
             height="40"
-            fill="#f8fafc"
+            fill="#eff6ff"
             stroke="#93c5fd"
-            stroke-width="1"
+            stroke-width="1.2"
+            rx="4"
           />
+          {/* Blueprint grid & details */}
           <line
             x1="20"
-            y1="10"
+            y1="8"
             x2="20"
             y2="40"
             stroke="#bfdbfe"
@@ -73,7 +81,7 @@ function AttachStep({ onAttach }: { onAttach: () => void }) {
           />
           <line
             x1="50"
-            y1="10"
+            y1="8"
             x2="50"
             y2="40"
             stroke="#bfdbfe"
@@ -82,7 +90,7 @@ function AttachStep({ onAttach }: { onAttach: () => void }) {
           />
           <line
             x1="90"
-            y1="10"
+            y1="8"
             x2="90"
             y2="40"
             stroke="#bfdbfe"
@@ -91,14 +99,16 @@ function AttachStep({ onAttach }: { onAttach: () => void }) {
           />
           <rect
             x="25"
-            y="15"
-            width="20"
-            height="20"
-            fill="none"
+            y="14"
+            width="18"
+            height="18"
+            fill="#ffffff"
             stroke="#2563eb"
             stroke-width="1"
           />
-          <circle cx="105" cy="25" r="8" fill="#3b82f6" opacity="0.2" />
+          <line x1="60" y1="18" x2="80" y2="18" stroke="#1d4ed8" stroke-width="1.2" />
+          <line x1="60" y1="24" x2="76" y2="24" stroke="#60a5fa" stroke-width="1" />
+          <circle cx="106" cy="24" r="8" fill="#3b82f6" opacity="0.25" />
         </svg>
         <span class={styles.attachOverlayLabel}>
           <Icon name="file-plus" />
@@ -117,30 +127,57 @@ function MemberStep({ onSelect }: { onSelect: (type: MemberType) => void }) {
         <h3 class={styles.gsStepTitle}>{t.gsStep3Title}</h3>
       </div>
       <p class={styles.gsStepDesc}>{t.gsStep3Desc}</p>
-      <div class={styles.memberQuickButtonsGrid}>
-        <button type="button" class={styles.memberQuickBtn} onClick={() => onSelect('footing')}>
-          <span class={styles.quickBtnIcon}>
-            <Icon name="box" />
-          </span>
-          <span>{t.footingsTitle}</span>
+      <div class={styles.memberQuickRow}>
+        {/* Footing Tile */}
+        <button
+          type="button"
+          class={styles.memberQuickTile}
+          onClick={() => onSelect('footing')}
+          title="Start Footing Schedule"
+        >
+          <div class={styles.quickTileGraphic}>
+            <FootingIsoGraphic />
+          </div>
+          <span class={styles.quickTileLabel}>{t.footingsTitle}</span>
         </button>
-        <button type="button" class={styles.memberQuickBtn} onClick={() => onSelect('column')}>
-          <span class={styles.quickBtnIcon}>
-            <Icon name="layers" />
-          </span>
-          <span>{t.columnsTitle}</span>
+
+        {/* Column Tile */}
+        <button
+          type="button"
+          class={styles.memberQuickTile}
+          onClick={() => onSelect('column')}
+          title="Start Column Schedule"
+        >
+          <div class={styles.quickTileGraphic}>
+            <ColumnIsoGraphic />
+          </div>
+          <span class={styles.quickTileLabel}>{t.columnsTitle}</span>
         </button>
-        <button type="button" class={styles.memberQuickBtn} onClick={() => onSelect('beam')}>
-          <span class={styles.quickBtnIcon}>
-            <Icon name="table-2" />
-          </span>
-          <span>{t.beamsTitle}</span>
+
+        {/* Beam Tile */}
+        <button
+          type="button"
+          class={styles.memberQuickTile}
+          onClick={() => onSelect('beam')}
+          title="Start Beam Schedule"
+        >
+          <div class={styles.quickTileGraphic}>
+            <BeamIsoGraphic />
+          </div>
+          <span class={styles.quickTileLabel}>{t.beamsTitle}</span>
         </button>
-        <button type="button" class={styles.memberQuickBtn} onClick={() => onSelect('slab')}>
-          <span class={styles.quickBtnIcon}>
-            <Icon name="layout-grid" />
-          </span>
-          <span>{t.slabsTitle}</span>
+
+        {/* Slab Tile */}
+        <button
+          type="button"
+          class={styles.memberQuickTile}
+          onClick={() => onSelect('slab')}
+          title="Start Slab Schedule"
+        >
+          <div class={styles.quickTileGraphic}>
+            <SlabIsoGraphic />
+          </div>
+          <span class={styles.quickTileLabel}>{t.slabsTitle}</span>
         </button>
       </div>
     </div>

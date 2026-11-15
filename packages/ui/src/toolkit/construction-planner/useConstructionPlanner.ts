@@ -1,6 +1,11 @@
 import type { ConstructionProject } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { SAMPLE_SHEETS } from './sampleData.ts';
+import {
+  EMPTY_PROJECT_OVERVIEW,
+  SAMPLE_PROJECT_OVERVIEW,
+  SAMPLE_RECENT_WORK,
+  SAMPLE_SHEETS,
+} from './sampleData.ts';
 import type {
   DrawingCategory,
   PlannerTab,
@@ -11,52 +16,6 @@ import type {
 } from './types.ts';
 import { usePlannerStorage } from './usePlannerStorage.ts';
 
-const DEFAULT_OVERVIEW: ProjectOverviewState = {
-  projectName: 'P01 · Residence + Office (G+3)',
-  location: 'Bengaluru, KA',
-  projectType: 'Mixed Use (House + Office)',
-  floors: '3 (G + 3)',
-  sitePortion: 'Site A / Block 1',
-  unitSystem: 'Metric (m, mm, kg, m³)',
-  concreteStandard: 'IS 456 : 2000',
-  rebarStandard: 'IS 1786 : 2008 (Fe 500)',
-};
-
-const STATIC_RECENT_WORK: RecentWorkItem[] = [
-  {
-    id: 'f1',
-    name: 'F1 - Footing Set (F1-F6)',
-    memberType: 'footing',
-    portion: 'Site A',
-    lastUpdated: '26 Nov 2026, 09:58',
-    status: 'Calculated',
-  },
-  {
-    id: 'c3',
-    name: 'C3 - Column Cage',
-    memberType: 'column',
-    portion: 'Site A',
-    lastUpdated: '26 Nov 2026, 09:41',
-    status: 'Calculated',
-  },
-  {
-    id: 'b7',
-    name: 'B7 - Beam Design (3.6 m)',
-    memberType: 'beam',
-    portion: 'Site A',
-    lastUpdated: '25 Nov 2026, 17:22',
-    status: 'Calculated',
-  },
-  {
-    id: 's2',
-    name: 'S2 - Slab Zone (120 m²)',
-    memberType: 'slab',
-    portion: 'Site A',
-    lastUpdated: '25 Nov 2026, 16:37',
-    status: 'In Progress',
-  },
-];
-
 function sumMemberCounts(members: ConstructionProject['revisions'][0]['members']) {
   const counts = { footing: 0, column: 0, beam: 0, slab: 0 };
   for (const m of members) {
@@ -65,7 +24,23 @@ function sumMemberCounts(members: ConstructionProject['revisions'][0]['members']
   return counts;
 }
 
-function calculateMetrics(project: ConstructionProject | null): ProjectSummaryMetrics {
+function calculateMetrics(
+  project: ConstructionProject | null,
+  isSampleLoaded: boolean,
+): ProjectSummaryMetrics {
+  if (!project && !isSampleLoaded) {
+    return {
+      totalMembers: 0,
+      pendingDrawings: 0,
+      lastRevision: 'None',
+      status: 'Draft',
+      footingsCount: 0,
+      columnsCount: 0,
+      beamsCount: 0,
+      slabsCount: 0,
+    };
+  }
+
   const rev = project?.revisions[project.revisions.length - 1];
   const counts = sumMemberCounts(rev?.members ?? []);
   const total = counts.footing + counts.column + counts.beam + counts.slab;
@@ -101,14 +76,18 @@ function usePlannerModals() {
 
 export function useConstructionPlanner(notify?: (msg: string) => void) {
   const [activeTab, setActiveTab] = useState<PlannerTab>('setup');
-  const [overview, setOverview] = useState<ProjectOverviewState>(DEFAULT_OVERVIEW);
-  const [sheets, setSheets] = useState<SheetMetadata[]>(SAMPLE_SHEETS);
+  const [overview, setOverview] = useState<ProjectOverviewState>(EMPTY_PROJECT_OVERVIEW);
+  const [sheets, setSheets] = useState<SheetMetadata[]>([]);
+  const [recentWork, setRecentWork] = useState<RecentWorkItem[]>([]);
+  const [isSampleLoaded, setIsSampleLoaded] = useState(false);
   const modals = usePlannerModals();
 
-  const storage = usePlannerStorage(
-    (name) => setOverview((prev) => ({ ...prev, projectName: name })),
-    notify,
-  );
+  const storage = usePlannerStorage((_name) => {
+    setOverview(SAMPLE_PROJECT_OVERVIEW);
+    setSheets(SAMPLE_SHEETS);
+    setRecentWork(SAMPLE_RECENT_WORK);
+    setIsSampleLoaded(true);
+  }, notify);
 
   const setOverviewField = useCallback(
     (key: keyof ProjectOverviewState, value: string) => {
@@ -126,6 +105,14 @@ export function useConstructionPlanner(notify?: (msg: string) => void) {
     [storage],
   );
 
+  const handleLoadSample = useCallback(async () => {
+    setOverview(SAMPLE_PROJECT_OVERVIEW);
+    setSheets(SAMPLE_SHEETS);
+    setRecentWork(SAMPLE_RECENT_WORK);
+    setIsSampleLoaded(true);
+    await storage.loadSample();
+  }, [storage]);
+
   return {
     activeTab,
     setActiveTab,
@@ -134,11 +121,14 @@ export function useConstructionPlanner(notify?: (msg: string) => void) {
     setOverviewField,
     sheets,
     addSheet,
-    metrics: useMemo(() => calculateMetrics(storage.project), [storage.project]),
-    recentWork: STATIC_RECENT_WORK,
+    metrics: useMemo(
+      () => calculateMetrics(storage.project, isSampleLoaded),
+      [storage.project, isSampleLoaded],
+    ),
+    recentWork,
     saveStatus: storage.saveStatus,
     isStorageAvailable: storage.isStorageAvailable,
-    loadSample: storage.loadSample,
+    loadSample: handleLoadSample,
     handlePrint: () => window.print(),
     ...modals,
   };

@@ -1,3 +1,5 @@
+import { createPortal } from 'preact/compat';
+import { useLayoutEffect, useState } from 'preact/hooks';
 import { Button } from '../../primitives/Button.tsx';
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './constructionPlanner.module.css';
@@ -19,66 +21,121 @@ export interface ConstructionPlannerStudioLayoutProps {
   notify?: (msg: string) => void;
 }
 
-interface TopBarProps {
+interface HeaderActionsProps {
   saveStatus: 'saved' | 'saving' | 'error' | 'unavailable';
   onLoadSample: () => void;
   onPrint: () => void;
   onOpenExport: () => void;
 }
 
-function PlannerTopBar({ saveStatus, onLoadSample, onPrint, onOpenExport }: TopBarProps) {
+function HeaderBadgesActions({
+  saveStatus,
+  onLoadSample,
+  onPrint,
+  onOpenExport,
+}: HeaderActionsProps) {
   return (
-    <header class={`${styles.plannerTopBar} no-print`}>
-      <div class={styles.topBarLeft}>
-        <span class={styles.devicePrivacyBadge} title="Runs locally in your browser">
-          <Icon name="lock" />
-          <span>{t.runsOnDevice}</span>
+    <div class={styles.headerActionsCluster}>
+      {/* Compact save status */}
+      {saveStatus === 'saved' && (
+        <span class={styles.saveStatusSaved} title="Auto-saved to device storage">
+          <Icon name="check" />
+          <span>{t.autoSaveSaved}</span>
         </span>
-        {saveStatus === 'saved' && (
-          <span class={styles.saveStatusSaved}>
-            <Icon name="check" />
-            <span>{t.autoSaveSaved}</span>
-          </span>
-        )}
-        {saveStatus === 'saving' && (
-          <span class={styles.saveStatusSaving}>
-            <Icon name="refresh-cw" />
-            <span>{t.autoSaveSaving}</span>
-          </span>
-        )}
-        {saveStatus === 'unavailable' && (
-          <span class={styles.saveStatusUnavailable}>
-            <Icon name="triangle-alert" />
-            <span>Storage unavailable</span>
-          </span>
-        )}
-      </div>
-      <div class={styles.topBarActions}>
-        <Button variant="secondary" icon="folder-open" onClick={onLoadSample}>
-          {t.sampleProject}
-        </Button>
-        <Button variant="secondary" icon="printer" onClick={onPrint}>
-          {t.printSavePdf}
-        </Button>
-        <Button variant="primary" icon="share-2" onClick={onOpenExport}>
-          {t.share}
-        </Button>
-      </div>
-    </header>
+      )}
+      {saveStatus === 'saving' && (
+        <span class={styles.saveStatusSaving} title="Saving...">
+          <Icon name="refresh-cw" />
+          <span>{t.autoSaveSaving}</span>
+        </span>
+      )}
+      {saveStatus === 'unavailable' && (
+        <span class={styles.saveStatusUnavailable} title="IndexedDB unavailable">
+          <Icon name="triangle-alert" />
+          <span>Storage unavailable</span>
+        </span>
+      )}
+
+      {/* 1. Runs on your device pill */}
+      <span class={styles.devicePrivacyBadge} title="Runs locally in your browser">
+        <Icon name="lock" />
+        <span>{t.runsOnDevice}</span>
+      </span>
+
+      {/* 2. Sample Project button */}
+      <button
+        type="button"
+        class={styles.headerBtnSample}
+        onClick={onLoadSample}
+        title="Load residential + office sample project"
+      >
+        <Icon name="folder-open" />
+        <span>{t.sampleProject}</span>
+      </button>
+
+      {/* 3. Print / Save PDF (yellow primary) */}
+      <button
+        type="button"
+        class={styles.headerBtnPrint}
+        onClick={onPrint}
+        title="Print or export PDF summary"
+      >
+        <Icon name="printer" />
+        <span>{t.printSavePdf}</span>
+      </button>
+
+      {/* 4. Share (white outlined) */}
+      <button
+        type="button"
+        class={styles.headerBtnShare}
+        onClick={onOpenExport}
+        title="Export or share project file"
+      >
+        <Icon name="share-2" />
+        <span>{t.share}</span>
+      </button>
+    </div>
   );
+}
+
+function useHeaderBadgesSlot(): HTMLElement | null {
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    const badges = document.querySelector('.tool-header .header-badges');
+    if (!badges) return;
+    const container = document.createElement('div');
+    container.className = styles.headerSlotWrap;
+    badges.append(container);
+    setSlot(container);
+    return () => {
+      container.remove();
+    };
+  }, []);
+  return slot;
 }
 
 export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerStudioLayoutProps) {
   const p = useConstructionPlanner(notify);
+  const headerSlot = useHeaderBadgesSlot();
+
+  const actionsProps: HeaderActionsProps = {
+    saveStatus: p.saveStatus,
+    onLoadSample: p.loadSample,
+    onPrint: p.handlePrint,
+    onOpenExport: () => p.setIsExportModalOpen(true),
+  };
 
   return (
     <div class={styles.plannerContainer} data-planner-root="">
-      <PlannerTopBar
-        saveStatus={p.saveStatus}
-        onLoadSample={p.loadSample}
-        onPrint={p.handlePrint}
-        onOpenExport={() => p.setIsExportModalOpen(true)}
-      />
+      {/* Portal action buttons into the ToolHeader title row */}
+      {headerSlot ? (
+        createPortal(<HeaderBadgesActions {...actionsProps} />, headerSlot)
+      ) : (
+        <div class={styles.headerFallbackActions}>
+          <HeaderBadgesActions {...actionsProps} />
+        </div>
+      )}
+
       {!p.isStorageAvailable && (
         <div class={`${styles.storageAlertBanner} no-print`} role="alert">
           <span class={styles.alertIcon}>
@@ -90,9 +147,11 @@ export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerS
           </Button>
         </div>
       )}
+
       <div class="no-print">
         <TabNavigation activeTab={p.activeTab} onSelectTab={p.setActiveTab} />
       </div>
+
       {p.activeTab === 'setup' ? (
         <main class={`${styles.tabContentGrid} no-print`}>
           <div class={styles.topCardsRow}>
@@ -108,9 +167,11 @@ export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerS
               onChangePortion={(val) => p.setOverviewField('sitePortion', val)}
             />
           </div>
+
           <div class={styles.middleRow}>
             <WorkflowRoadmap onStepClick={p.setActiveTab} />
           </div>
+
           <div class={styles.bottomCardsRow}>
             <RecentWorkCard
               items={p.recentWork}
@@ -132,6 +193,7 @@ export function ConstructionPlannerStudioLayout({ notify }: ConstructionPlannerS
           />
         </div>
       )}
+
       <ExportImportModal
         isOpen={p.isExportModalOpen}
         onClose={() => p.setIsExportModalOpen(false)}

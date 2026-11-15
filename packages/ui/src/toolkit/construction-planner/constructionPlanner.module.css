@@ -3,39 +3,39 @@
   flex-direction: column;
   gap: var(--space-4, 16px);
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   box-sizing: border-box;
 }
 
-.plannerTopBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-3, 12px);
-  padding: 8px 12px;
-  background: var(--surface-2, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
+:global([data-fullscreen-root]:has([data-planner-root]) .tool-header .privacy) {
+  display: none;
 }
 
-:global([data-theme="dark"]) .plannerTopBar {
-  background: #1e293b;
-  border-color: #334155;
+.headerSlotWrap {
+  display: inline-flex;
+  align-items: center;
 }
 
-.topBarLeft {
-  display: flex;
+.headerActionsCluster {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
+}
+
+.headerFallbackActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
 }
 
 .devicePrivacyBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
@@ -49,6 +49,83 @@
   background: #052e16;
   color: #4ade80;
   border-color: #166534;
+}
+
+.headerBtnSample {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #cbd5e1);
+  background: var(--surface-1, #ffffff);
+  color: var(--text-color, #0f172a);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.headerBtnSample:hover {
+  background: var(--surface-2, #f8fafc);
+  border-color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .headerBtnSample {
+  background: #1e293b;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .headerBtnSample:hover {
+  background: #334155;
+}
+
+.headerBtnPrint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #d97706;
+  background: #f59e0b;
+  color: #0f172a;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(217, 119, 6, 0.2);
+  transition: all 0.15s ease;
+}
+
+.headerBtnPrint:hover {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.headerBtnShare {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #cbd5e1);
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.headerBtnShare:hover {
+  background: var(--surface-2, #f8fafc);
+  border-color: #94a3b8;
+}
+
+:global([data-theme="dark"]) .headerBtnShare {
+  background: #0f172a;
+  border-color: #475569;
+  color: #f8fafc;
 }
 
 .saveStatusSaved {
@@ -83,13 +160,6 @@
   color: #d97706;
 }
 
-.topBarActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .storageAlertBanner {
   display: flex;
   align-items: center;
@@ -106,64 +176,81 @@
 .tabNav {
   display: flex;
   width: 100%;
-  overflow-x: auto;
-  border-bottom: 2px solid var(--border-color, #e2e8f0);
+  background: var(--surface-2, #f1f5f9);
+  border-radius: 12px;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color, #e2e8f0);
+  overflow: hidden;
 }
 
 :global([data-theme="dark"]) .tabNav {
+  background: #1e293b;
   border-color: #334155;
 }
 
 .tabList {
-  display: flex;
-  gap: 8px;
-  min-width: max-content;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  width: 100%;
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .tabNav {
+    overflow-x: auto;
+  }
+  .tabList {
+    min-width: 600px;
+  }
 }
 
 .tabBtn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 9px 12px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-muted, #64748b);
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .tabBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
   color: var(--text-color, #0f172a);
 }
 
-.tabActive {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
-  font-weight: 600;
+:global([data-theme="dark"]) .tabBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
 }
 
-:global([data-theme="dark"]) .tabActive {
-  color: #60a5fa;
-  border-bottom-color: #60a5fa;
+.tabBtn.tabActive {
+  background: #1d4ed8;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.3);
 }
 
 .notBuiltBadge {
-  font-size: 11px;
-  padding: 2px 6px;
-  background: var(--surface-3, #f1f5f9);
+  font-size: 10px;
+  padding: 1px 6px;
+  background: rgba(100, 116, 139, 0.14);
   color: #64748b;
   border-radius: 4px;
-  border: 1px solid var(--border-color, #e2e8f0);
+  font-weight: 500;
 }
 
-:global([data-theme="dark"]) .notBuiltBadge {
-  background: #334155;
-  color: #94a3b8;
-  border-color: #475569;
+.tabActive .notBuiltBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .tabContentGrid {
@@ -174,8 +261,9 @@
 
 .topCardsRow {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 3.2fr 4.2fr 3.1fr;
   gap: var(--space-4, 16px);
+  align-items: stretch;
 }
 
 @media (max-width: 1080px) {
@@ -454,6 +542,8 @@
 .sheetNum {
   font-weight: 600;
   color: #2563eb;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sheetName {
@@ -566,29 +656,64 @@
   border: 1px solid #bfdbfe;
 }
 
-.memberCardsGrid {
+.summaryPortionWrap {
+  min-width: 140px;
+}
+
+.formSelectCompact {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px 26px 5px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-radius: 6px;
+  background: var(--surface-1, #ffffff);
+  color: var(--text-color, #0f172a);
+  appearance: none;
+  cursor: pointer;
+}
+
+:global([data-theme="dark"]) .formSelectCompact {
+  background: #1e293b;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+.statusBadgeDraft {
+  display: inline-flex;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+}
+
+:global([data-theme="dark"]) .statusBadgeDraft {
+  background: #334155;
+  color: #94a3b8;
+  border-color: #475569;
+}
+
+.memberCardsGrid2x2 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: 8px;
 }
 
-@media (max-width: 480px) {
-  .memberCardsGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.memberCard {
+.memberCardTile {
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 8px;
-  padding: 8px;
+  padding: 8px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--surface-2, #f8fafc);
 }
 
-:global([data-theme="dark"]) .memberCard {
+:global([data-theme="dark"]) .memberCardTile {
   background: #1e293b;
   border-color: #334155;
 }
@@ -596,6 +721,20 @@
 .memberCardInfo {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.memberCardTypeRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.memberTileDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
 }
 
 .memberCardType {
@@ -607,12 +746,20 @@
 .memberCardQty {
   font-size: 14px;
   font-weight: 700;
-  color: #2563eb;
+  color: #1e3a8a;
 }
 
-.memberCardGraphic {
-  width: 32px;
-  height: 32px;
+:global([data-theme="dark"]) .memberCardQty {
+  color: #93c5fd;
+}
+
+.memberTileGraphicWrap {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .memberSvg {
@@ -621,30 +768,48 @@
 }
 
 .roadmapStepsTrack {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 8px 0;
+  gap: 6px;
+  width: 100%;
+  overflow-x: visible;
+  padding: 4px 0;
+}
+
+@media (max-width: 1080px) {
+  .roadmapStepsTrack {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .roadmapStepsTrack {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .roadmapStepCol {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 6px;
+  min-width: 0;
 }
 
 .roadmapPill {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: 6px;
+  padding: 6px 8px;
   border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--surface-2, #f8fafc);
   cursor: pointer;
   text-align: left;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 :global([data-theme="dark"]) .roadmapPill {
@@ -872,34 +1037,58 @@
   margin-top: 4px;
 }
 
-.memberQuickButtonsGrid {
+.memberQuickRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
+  width: 100%;
 }
 
-.memberQuickBtn {
-  display: inline-flex;
+.memberQuickTile {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 6px;
-  background: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-color, #0f172a);
+  gap: 4px;
+  padding: 6px 4px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  background: var(--surface-1, #ffffff);
   cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
-:global([data-theme="dark"]) .memberQuickBtn {
+.memberQuickTile:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+:global([data-theme="dark"]) .memberQuickTile {
   background: #0f172a;
   border-color: #334155;
-  color: #f8fafc;
 }
 
-.quickBtnIcon {
-  color: #2563eb;
+:global([data-theme="dark"]) .memberQuickTile:hover {
+  background: #172554;
+  border-color: #3b82f6;
+}
+
+.quickTileGraphic {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickTileLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-color, #0f172a);
+}
+
+:global([data-theme="dark"]) .quickTileLabel {
+  color: #f8fafc;
 }
 
 .stageNoticeCard {
