@@ -4,24 +4,93 @@
   gap: var(--space-4, 16px);
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-:global([data-fullscreen-root]:has([data-planner-root]) .tool-header .privacy) {
-  display: none;
+.plannerContainer > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+:global(body:has([data-planner-root]) .tool-header .privacy) {
+  display: none !important;
+}
+
+:global(body:has([data-planner-root]) .tool-header .title-row) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+}
+
+:global(body:has([data-planner-root]) .tool-header h1) {
+  font-size: 26px !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.5px !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+:global(body:has([data-planner-root]) .tool-header .header-badges) {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  justify-content: flex-end !important;
+  max-width: 100% !important;
+}
+
+:global(body:has([data-planner-root]) .tool-header .guide-btn),
+:global(body:has([data-planner-root]) .tool-header .fullscreen-btn) {
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  color: #64748b !important;
+  border-color: #cbd5e1 !important;
+}
+
+@media (max-width: 1150px) {
+  :global(body:has([data-planner-root]) .tool-header .title-row) {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  :global(body:has([data-planner-root]) .tool-header h1) {
+    white-space: normal !important;
+  }
+  :global(body:has([data-planner-root]) .tool-header .header-badges) {
+    flex-wrap: wrap !important;
+  }
 }
 
 .headerSlotWrap {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
+  max-width: 100%;
 }
 
 .headerActionsCluster {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 100%;
+}
+
+@media (max-width: 1150px) {
+  .headerSlotWrap,
+  .headerActionsCluster {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerActionsCluster {
+    width: 100%;
+    gap: 6px;
+  }
 }
 
 .headerFallbackActions {
@@ -174,14 +243,22 @@
 }
 
 .tabNav {
-  display: flex;
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background: var(--surface-2, #f1f5f9);
   border-radius: 12px;
   padding: 4px;
   box-sizing: border-box;
   border: 1px solid var(--border-color, #e2e8f0);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tabNav::-webkit-scrollbar {
+  display: none;
 }
 
 :global([data-theme="dark"]) .tabNav {
@@ -191,17 +268,16 @@
 
 .tabList {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   width: 100%;
   gap: 4px;
 }
 
-@media (max-width: 768px) {
-  .tabNav {
-    overflow-x: auto;
-  }
+@media (max-width: 900px) {
   .tabList {
-    min-width: 600px;
+    display: flex;
+    width: max-content;
+    min-width: max-content;
   }
 }
 
@@ -233,10 +309,10 @@
 }
 
 .tabBtn.tabActive {
-  background: #1d4ed8;
+  background: #2563eb;
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.3);
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
 }
 
 .notBuiltBadge {
@@ -257,6 +333,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4, 16px);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .topCardsRow {
@@ -264,27 +342,33 @@
   grid-template-columns: 3.2fr 4.2fr 3.1fr;
   gap: var(--space-4, 16px);
   align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (max-width: 1080px) {
   .topCardsRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .middleRow {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .bottomCardsRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4, 16px);
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (max-width: 900px) {
   .bottomCardsRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -301,6 +385,12 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.06),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 :global([data-theme="dark"]) .overviewCard,
@@ -311,6 +401,7 @@
 :global([data-theme="dark"]) .gettingStartedCard {
   background: #0f172a;
   border-color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .cardHeader {
@@ -331,21 +422,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: #eff6ff;
-  color: #2563eb;
+  width: 30px;
+  height: 30px;
+  background: #2563eb;
+  color: #ffffff;
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+  flex-shrink: 0;
 }
 
 :global([data-theme="dark"]) .cardIconBlue {
-  background: #1e3a8a;
-  color: #93c5fd;
+  background: #1d4ed8;
+  color: #ffffff;
 }
 
 .cardTitle {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
   color: var(--text-color, #0f172a);
 }
@@ -360,14 +453,27 @@
   margin: 2px 0 0 0;
 }
 
-.overviewFormGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 12px;
+.overviewFormRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-@media (max-width: 480px) {
-  .overviewFormGrid {
+.formRowTwoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.formRowThreeCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .formRowTwoCols,
+  .formRowThreeCols {
     grid-template-columns: 1fr;
   }
 }
@@ -379,11 +485,15 @@
 }
 
 .formLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  color: #475569;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+:global([data-theme="dark"]) .formLabel {
+  color: #94a3b8;
 }
 
 .formInput {
@@ -406,6 +516,27 @@
 .selectWrap {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.selectPrefixIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  width: 16px;
+  height: 16px;
+  z-index: 1;
+}
+
+:global([data-theme="dark"]) .selectPrefixIcon {
+  color: #60a5fa;
 }
 
 .formSelect {
@@ -421,6 +552,10 @@
   cursor: pointer;
 }
 
+.formSelect.hasPrefixIcon {
+  padding-left: 32px;
+}
+
 :global([data-theme="dark"]) .formSelect {
   background: #1e293b;
   border-color: #475569;
@@ -429,22 +564,27 @@
 
 .selectArrow {
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
   color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
 }
 
 .drawingGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .drawingGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -456,6 +596,7 @@
   flex-direction: column;
   gap: 8px;
   background: var(--surface-2, #f8fafc);
+  min-width: 0;
 }
 
 :global([data-theme="dark"]) .drawingBox {
@@ -495,8 +636,8 @@
 
 .drawingBoxBody {
   display: grid;
-  grid-template-columns: 70px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 10px;
   align-items: center;
 }
 
@@ -505,7 +646,10 @@
   background: #eff6ff;
   border-radius: 6px;
   overflow: hidden;
-  height: 54px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 :global([data-theme="dark"]) .blueprintThumbnailWrap {
@@ -522,6 +666,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .sheetList {
@@ -565,12 +710,33 @@
   gap: 4px;
   font-size: 11px;
   color: #2563eb;
-  background: none;
-  border: none;
-  padding: 0;
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 2px 8px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 4px;
+  align-self: flex-start;
+  transition: all 0.15s ease;
+}
+
+.viewSheetsBtn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+:global([data-theme="dark"]) .viewSheetsBtn {
+  background: #1e293b;
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+
+.noSheetsMsg {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  padding: 8px 0;
 }
 
 .summaryTopRow {
@@ -580,12 +746,18 @@
   align-items: center;
 }
 
+@media (max-width: 480px) {
+  .summaryTopRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .buildingRenderWrap {
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 10px;
   padding: 6px;
   background: var(--surface-2, #f8fafc);
-  height: 96px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -643,6 +815,7 @@
   background: #f0fdf4;
   border-radius: 999px;
   border: 1px solid #bbf7d0;
+  white-space: nowrap;
 }
 
 .statusBadgeBlue {
@@ -654,6 +827,7 @@
   background: #eff6ff;
   border-radius: 999px;
   border: 1px solid #bfdbfe;
+  white-space: nowrap;
 }
 
 .summaryPortionWrap {
@@ -698,9 +872,16 @@
 
 .memberCardsGrid2x2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: 1fr 1fr;
   gap: 8px;
+}
+
+@media (max-width: 400px) {
+  .memberCardsGrid2x2 {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
 }
 
 .memberCardTile {
@@ -769,24 +950,30 @@
 
 .roadmapStepsTrack {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  align-items: center;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: stretch;
   gap: 6px;
   width: 100%;
-  overflow-x: visible;
+  min-width: 0;
   padding: 4px 0;
 }
 
 @media (max-width: 1080px) {
   .roadmapStepsTrack {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
   }
 }
 
 @media (max-width: 640px) {
   .roadmapStepsTrack {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 400px) {
+  .roadmapStepsTrack {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -795,13 +982,14 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
+  width: 100%;
 }
 
 .roadmapPill {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
+  padding: 8px;
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 8px;
   background: var(--surface-2, #f8fafc);
@@ -809,6 +997,7 @@
   text-align: left;
   width: 100%;
   min-width: 0;
+  height: 100%;
   box-sizing: border-box;
 }
 
@@ -838,34 +1027,55 @@
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .stepPillIcon {
   color: #3b82f6;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .stepTextWrap {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  gap: 2px;
 }
 
 .stepTitle {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-color, #0f172a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stepDesc {
   font-size: 10px;
   color: #64748b;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .stepArrow {
   color: #94a3b8;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .tableResponsiveWrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .recentTable {
@@ -880,18 +1090,21 @@
   border-bottom: 1px solid var(--border-color, #cbd5e1);
   color: #64748b;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .recentTable td {
   padding: 8px 10px;
   border-bottom: 1px solid var(--border-color, #e2e8f0);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .itemNameCell {
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .rowGraphicWrap {
@@ -899,6 +1112,7 @@
   height: 24px;
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .tableRowSvg {
@@ -909,6 +1123,19 @@
 .rowItemName {
   font-weight: 600;
   color: var(--text-color, #0f172a);
+  white-space: nowrap;
+}
+
+.rowPortion {
+  white-space: nowrap;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.rowDate {
+  white-space: nowrap;
+  color: #64748b;
+  font-size: 11px;
 }
 
 .typeBadge {
@@ -917,6 +1144,7 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .typeBadge_footing {
@@ -966,13 +1194,13 @@
 
 .gsCardsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 768px) {
   .gsCardsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

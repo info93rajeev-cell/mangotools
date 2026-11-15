@@ -148,6 +148,7 @@ export function ProjectSummaryCard({
               onChange={(e) => onChangePortion((e.target as HTMLSelectElement).value)}
               aria-label="Filter summary by portion"
             >
+              <option value="">-- Select portion --</option>
               <option value="Site A / Block 1">Site A / Block 1</option>
               <option value="Site B / Block 2">Site B / Block 2</option>
               <option value="Main Tower">Main Tower</option>

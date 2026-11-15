@@ -25,12 +25,16 @@ function PortionStep({ portion, onChange }: { portion: string; onChange: (v: str
       </div>
       <p class={styles.gsStepDesc}>{t.gsStep1Desc}</p>
       <div class={styles.selectWrap}>
+        <span class={styles.selectPrefixIcon}>
+          <Icon name="layers" />
+        </span>
         <select
-          class={styles.formSelect}
+          class={`${styles.formSelect} ${styles.hasPrefixIcon}`}
           value={portion}
           onChange={(e) => onChange((e.target as HTMLSelectElement).value)}
           aria-label={t.gsStep1Title}
         >
+          <option value="">-- Select portion --</option>
           <option value="Site A / Block 1">Site A / Block 1</option>
           <option value="Site B / Block 2">Site B / Block 2</option>
           <option value="Main Tower">Main Tower</option>
