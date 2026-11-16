@@ -117,7 +117,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Amritsar Street Food Kulcha Heritage Guide',
         publisher: 'Punjab Tourism Heritage Board',
-        url: 'https://www.vegrecipesofindia.com/amritsari-kulcha-recipe/',
+        url: 'https://hebbarskitchen.com/amritsari-kulcha-recipe/',
         accessed: '2026-11-14',
         checks: 'Verified spicy potato-onion stuffing spice profile and crushing step',
       },
@@ -242,7 +242,7 @@ export const INDIAN_VEG_BREADS: ExtendedFoodRecipe[] = [
       {
         title: 'Old Delhi Halwai Style Puffed Bhatura',
         publisher: 'Sanjeev Kapoor Khazana',
-        url: 'https://www.youtube.com/results?search_query=Old%20Delhi%20Halwai%20Style%20Puffed%20Bhatura%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=aFzBnNWEu5Y',
         accessed: '2026-11-14',
         checks: 'Verified curd-baking soda fermentation lift without yeast',
       },

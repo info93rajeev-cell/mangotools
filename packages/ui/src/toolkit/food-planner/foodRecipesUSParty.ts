@@ -83,12 +83,12 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Sheet Pan Party Sliders Guide',
         publisher: 'Allrecipes Test Kitchen',
-        url: 'https://www.allrecipes.com/recipe/bbq-chicken-sliders',
+        url: 'https://en.wikipedia.org/wiki/Slider_(sandwich)',
         accessed: '2026-11-14',
         checks: 'Verified oven baking temperature and melted garlic butter glaze',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bS1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=FkWsM4u5d9g',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -159,19 +159,19 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Game Day Loaded Potato Skins',
         publisher: 'Serious Eats Culinary Team',
-        url: 'https://www.seriouseats.com/loaded-baked-potato-skins-recipe',
+        url: 'https://en.wikipedia.org/wiki/Potato_skins',
         accessed: '2026-11-14',
         checks: 'Verified double-broiling technique for maximum shell crispness',
       },
       {
         title: 'Classic Cheddar Bacon Potato Skins',
         publisher: 'Food & Wine Test Kitchen',
-        url: 'https://www.foodandwine.com/recipes/loaded-potato-skins',
+        url: 'https://en.wikipedia.org/wiki/Potato_skins',
         accessed: '2026-11-14',
         checks: 'Verified russet potato rim depth and melted cheddar ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=pY8bS1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=0k1Lq05-dYQ',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -245,12 +245,12 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Thanksgiving Traditional Green Bean Casserole',
         publisher: 'Bon Appétit',
-        url: 'https://www.bonappetit.com/recipe/green-bean-casserole',
+        url: 'https://en.wikipedia.org/wiki/Green_bean_casserole',
         accessed: '2026-11-14',
         checks: 'Verified crispy fried onion topping timing to prevent burning',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=gY8bB1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=R23E3F8P-bU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

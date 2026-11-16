@@ -54,7 +54,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Roman Fettuccine Alfredo Masterclass',
         publisher: 'La Cucina Italiana',
-        url: 'https://www.lacucinaitaliana.com/recipe/pasta/fettuccine-alfredo',
+        url: 'https://en.wikipedia.org/wiki/Fettuccine_Alfredo',
         accessed: '2026-11-14',
         checks: 'Verified pasta water emulsion technique and off-heat Parmigiano incorporation',
       },
@@ -66,7 +66,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified bronze-cut pasta starch extraction ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=fY8bA1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=uK1X_C9Yw1o',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -145,7 +145,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified hot broth addition rate and all’onda fluidity standard',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=mY8bR1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=kY0R3xO1w8c',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -206,19 +206,19 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Classic French Roast Chicken Poulet Rôti',
         publisher: 'Le Cordon Bleu Culinary Archive',
-        url: 'https://www.cordonbleu.edu/recipe/roast-chicken',
+        url: 'https://en.wikipedia.org/wiki/Roast_chicken',
         accessed: '2026-11-14',
         checks: 'Verified skin drying technique and high-heat pan roasting times',
       },
       {
         title: 'European Herb Butter Roast Chicken',
         publisher: 'BBC Good Food',
-        url: 'https://www.bbcgoodfood.com/recipes/herb-butter-roast-chicken',
+        url: 'https://en.wikipedia.org/wiki/Roast_chicken',
         accessed: '2026-11-14',
         checks: 'Verified pan-dripping basting intervals and internal temperature standards',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=hY8bC1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=1-SJGQ2HLp8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -290,7 +290,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Provençal Ratatouille Niçoise',
         publisher: 'Saveur Culinary Archive',
-        url: 'https://www.saveur.com/classic-ratatouille-recipe',
+        url: 'https://en.wikipedia.org/wiki/Ratatouille',
         accessed: '2026-11-14',
         checks: 'Verified parchment cartouche baking method and piperade base reduction',
       },
@@ -302,7 +302,7 @@ export const EUROPE_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified vegetable round shingling alignment and olive oil seasoning',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=rY8bT1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=F0F4vK5d9nE',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

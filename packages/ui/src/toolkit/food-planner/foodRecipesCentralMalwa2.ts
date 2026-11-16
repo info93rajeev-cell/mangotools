@@ -158,7 +158,7 @@ export const CENTRAL_MALWA_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Festive Puran Poli Handbook',
         publisher: 'Prachiti Caterers Traditional Marathi Menu',
-        url: 'https://www.youtube.com/results?search_query=Authentic%20Festive%20Puran%20Poli%20Handbook%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=oTl_DYNAP0o',
         accessed: '2026-11-14',
         checks: 'Verified puran yantra sifting method and 1:1 dal to jaggery ratio',
       },

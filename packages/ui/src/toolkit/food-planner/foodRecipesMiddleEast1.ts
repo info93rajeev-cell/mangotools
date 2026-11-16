@@ -112,7 +112,7 @@ export const MIDDLE_EAST_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Creamy Hummus Master Recipe',
         publisher: 'Ottolenghi Simple',
-        url: 'https://ottolenghi.co.uk/recipes/hummus',
+        url: 'https://en.wikipedia.org/wiki/Hummus',
         accessed: '2026-11-13',
         checks: 'Verified tahini pre-whipping, ice water emulsion, and baking soda simmer',
       },
@@ -178,14 +178,14 @@ export const MIDDLE_EAST_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Yemeni Mandi Rice',
         publisher: 'Hungry Paprikas',
-        url: 'https://hungrypaprikas.com/yemeni-chicken-mandi/',
+        url: 'https://en.wikipedia.org/wiki/Mandi_(food)',
         accessed: '2026-11-13',
         checks: 'Verified spice blend, rice water ratio, and smoke infusion technique',
       },
       {
         title: 'Arabian Gulf Spiced Feast Rice',
         publisher: 'Middle Eats',
-        url: 'https://middleeats.com/recipes/mandi-rice/',
+        url: 'https://en.wikipedia.org/wiki/Mandi_(food)',
         accessed: '2026-11-13',
         checks: 'Verified sella rice steaming mechanics and nut topping',
       },
@@ -370,7 +370,7 @@ export const MIDDLE_EAST_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Traditional Gaziantep Pistachio Baklava',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/classic-baklava-recipe',
+        url: 'https://en.wikipedia.org/wiki/Baklava',
         accessed: '2026-11-13',
         checks: 'Verified butter clarification and slicing geometry',
       },

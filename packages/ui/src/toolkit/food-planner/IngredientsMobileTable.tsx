@@ -1,4 +1,5 @@
 import mobileStyles from './foodPlannerMobile.module.css';
+import { IngredientThumbnail } from './IngredientThumbnail.tsx';
 import type { IngredientLineItem } from './ingredientsUtils.ts';
 
 export const INGREDIENT_STOCK_DATA: Record<
@@ -124,19 +125,7 @@ export function MobileIngredientsTable({ items }: { items: IngredientLineItem[] 
                 <td style={{ padding: '8px 12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <input type="checkbox" checked readOnly />
-                    <img
-                      src={`/food/recipes/${ing.id.includes('rice') ? 'jeera-rice' : 'dal-tadka'}.jpg`}
-                      alt=""
-                      style={{
-                        width: '26px',
-                        height: '26px',
-                        borderRadius: '4px',
-                        objectFit: 'cover',
-                      }}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/food/recipes/dal-tadka.jpg';
-                      }}
-                    />
+                    <IngredientThumbnail id={ing.id} name={ing.name} aisle={ing.aisle} size={28} />
                     <div>
                       <strong style={{ fontSize: '13px', color: '#0f172a' }}>{ing.name}</strong>
                       <span

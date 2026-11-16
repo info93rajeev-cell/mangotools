@@ -312,14 +312,14 @@ export const NORTH_STREET_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Royal Street Food of Delhi and Awadh',
         publisher: 'Delhi Gastronomy Society',
-        url: 'https://www.youtube.com/results?search_query=Royal%20Street%20Food%20of%20Delhi%20and%20Awadh%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=a2hCYMo0NGs',
         accessed: '2026-11-14',
         checks: 'Verified batter aeration floating test and hing-water soaking ratio',
       },
       {
         title: 'Traditional Chaat Confectionery',
         publisher: 'All India Caterers Federation Manual',
-        url: 'https://en.wikipedia.org/wiki/Traditional_Chaat_Confectionery',
+        url: 'https://en.wikipedia.org/wiki/Dahi_vada',
         accessed: '2026-11-14',
         checks: 'Benchmarked curd thickness, saunth viscosity, and papdi pairing',
       },

@@ -167,7 +167,7 @@ export const US_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Classic Caesar Salad',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/classic-caesar-salad-recipe',
+        url: 'https://en.wikipedia.org/wiki/Caesar_salad',
         accessed: '2026-11-13',
         checks: 'Emulsion stability, garlic balance, leaf dryness protocol',
       },
@@ -246,14 +246,14 @@ export const US_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Creamy Coleslaw Recipe',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/creamy-coleslaw-recipe',
+        url: 'https://en.wikipedia.org/wiki/Coleslaw',
         accessed: '2026-11-13',
         checks: 'Salt draining step, cabbage crunch preservation, dressing balance',
       },
       {
         title: 'The Best Classic Coleslaw',
         publisher: 'Spend With Pennies',
-        url: 'https://www.spendwithpennies.com/classic-coleslaw-recipe/',
+        url: 'https://en.wikipedia.org/wiki/Coleslaw',
         accessed: '2026-11-13',
         checks: 'Vinegar-to-mayo ratio, chilling time, vegetable proportion',
       },
@@ -327,7 +327,7 @@ export const US_SIDES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Southern Buttermilk Cornbread',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/southern-buttermilk-cornbread-recipe',
+        url: 'https://en.wikipedia.org/wiki/Cornbread',
         accessed: '2026-11-13',
         checks: 'Cast iron preheating, foaming butter sizzle, crumb moisture',
       },

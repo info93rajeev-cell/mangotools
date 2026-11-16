@@ -57,20 +57,19 @@ describe('Catering Portion Balancing Engine', () => {
 
     const factors = getEffectivePortionFactors(recipes, {});
 
-    // 3 rice dishes: 45% each (total 135% buffer)
-    expect(factors['jeera-rice']).toBe(0.45);
-    expect(factors['veg-pulao']).toBe(0.45);
-    expect(factors['dum-biryani']).toBe(0.45);
+    // In a 7-dish menu, menu breadth factor scales dishes to prevent 20+ kg over-catering:
+    // 3 rice dishes: scaled by intra-course and menu breadth
+    expect(factors['jeera-rice']).toBe(0.32);
+    expect(factors['veg-pulao']).toBe(0.32);
+    expect(factors['dum-biryani']).toBe(0.32);
 
-    // 2 main curries: 60% each (total 120% buffer)
-    expect(factors['shahi-paneer']).toBe(0.6);
-    expect(factors['aloo-gobi']).toBe(0.6);
+    // 2 main curries: scaled to balanced 42% each
+    expect(factors['shahi-paneer']).toBe(0.42);
+    expect(factors['aloo-gobi']).toBe(0.42);
 
-    // 1 dal: 100%
-    expect(factors['dal-tadka']).toBe(1);
-
-    // 1 dessert: 100%
-    expect(factors['gulab-jamun']).toBe(1);
+    // 1 dal & 1 dessert: scaled to 45% matching 7-dish plate variety
+    expect(factors['dal-tadka']).toBe(0.45);
+    expect(factors['gulab-jamun']).toBe(0.45);
   });
 
   it('preserves user custom overrides while auto-scaling remaining dishes', () => {

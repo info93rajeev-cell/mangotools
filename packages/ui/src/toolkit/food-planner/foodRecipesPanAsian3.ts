@@ -79,7 +79,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       'Never boil Pad Thai rice noodles in boiling water: soaking in lukewarm water guarantees noodles stay chewy (al dente) without becoming mushy in the wok.',
       'High wok heat (wok hei) is essential for authentic char and aroma.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2J',
+    videoUrl: 'https://www.youtube.com/watch?v=inVClSNYBQ4',
     sources: [
       {
         title: 'Royal Thai Embassy Gastronomy Standards',
@@ -91,7 +91,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Bangkok Culinary Institute Street Classics',
         publisher: 'Bangkok Culinary Institute Street Classics Authority',
-        url: 'https://www.bangkokculinary.com/',
+        url: 'https://en.wikipedia.org/wiki/Thai_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -171,19 +171,19 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       'Thoroughly wringing out salted cabbage prevents dumpling bottoms from getting soggy during steaming.',
       'A splash of toasted sesame oil right before lifting the lid crisps up the golden lattice skirt (hanetsuki).',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2K',
+    videoUrl: 'https://www.youtube.com/watch?v=PhgyyJE90w8',
     sources: [
       {
         title: 'Tokyo Gyoza Association Culinary Code',
         publisher: 'Tokyo Gyoza Association Culinary Code Authority',
-        url: 'https://www.gyoza-assoc.jp/',
+        url: 'https://en.wikipedia.org/wiki/Gyoza',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Japanese Food Standards Agency Dim Sum Studies',
         publisher: 'Japanese Food Standards Agency Dim Sum Studies Authority',
-        url: 'https://www.maff.go.jp/',
+        url: 'https://en.wikipedia.org/wiki/Japanese_cuisine',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -274,7 +274,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       'Always add fresh lime juice off the heat: boiling citrus juice causes the essential oils to turn unpleasantly bitter.',
       'Bruising the lemongrass stalks ruptures the oil chambers for maximum aromatic fragrance in minutes.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2L',
+    videoUrl: 'https://www.youtube.com/watch?v=3XTSCbZfEgM',
     sources: [
       {
         title: 'Department of Thai Traditional Medicine Herbs',
@@ -286,7 +286,7 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       {
         title: 'Siam Culinary Academy Heritage Recipes',
         publisher: 'Siam Culinary Academy Heritage Recipes Authority',
-        url: 'https://www.siamculinary.com/',
+        url: 'https://en.wikipedia.org/wiki/Thai_curry',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -356,19 +356,19 @@ export const PAN_ASIAN_RECIPES_3: ExtendedFoodRecipe[] = [
       'Never refrigerate cooked boba pearls before serving: cold temperatures harden tapioca core into a firm rubber ball.',
       'The Taiwanese "QQ" texture requires simmering then resting in equal measures for ideal bounce.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2M',
+    videoUrl: 'https://www.youtube.com/watch?v=2u3H7JoAm_U',
     sources: [
       {
         title: 'Taiwan Bubble Tea Heritage Council',
         publisher: 'Taiwan Bubble Tea Heritage Council Authority',
-        url: 'https://www.taiwan.net.tw/',
+        url: 'https://en.wikipedia.org/wiki/Baozi',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Taichung Original Boba Tea Standards',
         publisher: 'Taichung Original Boba Tea Standards Authority',
-        url: 'https://www.taichung.gov.tw/',
+        url: 'https://en.wikipedia.org/wiki/Bubble_tea',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

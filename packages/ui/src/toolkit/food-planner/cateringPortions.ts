@@ -15,34 +15,61 @@ const TREAT_TIERS: Record<number, number> = {
 };
 
 /**
- * Calculates the catering buffet portion factor for a dish based on course and variety count.
+ * Calculates menu breadth diversity scaling.
+ * When a feast menu includes multiple dishes across courses
+ * (e.g. 1 rice, 1 bread, 2 curries, 1 side, 1 dessert), diners eat smaller
+ * portions of each dish rather than consuming 100% full meals for every single dish.
+ * This ensures 20 guests eat ~10-12 kg of food, avoiding massive over-catering and food waste.
+ */
+export function getMenuBreadthFactor(totalDishes: number): number {
+  if (totalDishes <= 2) return 1.0;
+  if (totalDishes === 3) return 0.75;
+  if (totalDishes === 4) return 0.65;
+  if (totalDishes === 5) return 0.55;
+  if (totalDishes === 6) return 0.5;
+  if (totalDishes === 7) return 0.45;
+  return Math.max(0.25, Number((3.0 / totalDishes).toFixed(2)));
+}
+
+/**
+ * Calculates the catering buffet portion factor for a dish based on course, variety count, and total menu size.
  *
  * Real-world catering guidelines:
- * - When guests have 1 option in a course: 100% preparation (factor = 1.0).
- * - When 2 options (e.g. Jeera Rice + Veg Pulao): ~60% each (120% total buffet buffer).
- * - When 3 options (e.g. Jeera Rice + Pulao + Dum Biryani): ~45% each (135% total buffet buffer).
- * - When 4 options: ~35% each (140% total buffer).
- * - When 5+ options: max(0.25, round(buffer / count, 2)).
+ * - When guests have 1 option in a small menu (1-2 dishes): 100% preparation (factor = 1.0).
+ * - When multi-dish menu (3-6+ dishes): portion scales down per dish so total ingredient weight
+ *   remains balanced (~11-12 kg for 20 guests) rather than blowing up to 20+ kg.
+ * - When multiple options in the same course (e.g. 2 rices or 2 sweets): shared intra-course division.
  */
-export function getCateringBalancedPortion(course: string, courseCount: number): number {
-  if (courseCount <= 1) return 1;
+export function getCateringBalancedPortion(
+  course: string,
+  courseCount: number,
+  totalDishes = 1,
+): number {
+  if (courseCount <= 1 && totalDishes <= 2) return 1;
 
   const isTreat = course === 'snack' || course === 'dessert' || course === 'drink';
   const table = isTreat ? TREAT_TIERS : BUFFET_TIERS;
-  const buffer = isTreat ? 1.5 : 1.4;
+  const courseFactor = table[courseCount] ?? Math.max(0.25, Number((1.4 / courseCount).toFixed(2)));
 
-  return table[courseCount] ?? Math.max(0.25, Number((buffer / courseCount).toFixed(2)));
+  if (totalDishes <= courseCount) {
+    return courseFactor;
+  }
+
+  const breadth = getMenuBreadthFactor(totalDishes);
+  const composite = courseCount > 1 ? courseFactor * Math.max(0.7, breadth) : breadth;
+  return Math.max(0.25, Number(composite.toFixed(2)));
 }
 
 /**
  * Computes effective portion factors for all selected recipes.
  * Explicit user customizations are retained; uncustomized dishes scale
- * dynamically based on category variety to prevent over-catering and food waste.
+ * dynamically based on category variety and overall menu size to prevent over-catering and food waste.
  */
 export function getEffectivePortionFactors(
   selectedRecipes: ExtendedFoodRecipe[],
   customPortions: Record<string, number>,
 ): Record<string, number> {
+  const totalDishes = selectedRecipes.length;
   const courseCounts: Record<string, number> = {};
   for (const r of selectedRecipes) {
     const c = r.course || 'other';
@@ -55,7 +82,7 @@ export function getEffectivePortionFactors(
       effective[r.id] = customPortions[r.id];
     } else {
       const c = r.course || 'other';
-      effective[r.id] = getCateringBalancedPortion(c, courseCounts[c] || 1);
+      effective[r.id] = getCateringBalancedPortion(c, courseCounts[c] || 1, totalDishes);
     }
   }
   return effective;
@@ -67,6 +94,7 @@ export function getEffectivePortionFactors(
 export function computeAutoBalancedPortions(
   selectedRecipes: ExtendedFoodRecipe[],
 ): Record<string, number> {
+  const totalDishes = selectedRecipes.length;
   const courseCounts: Record<string, number> = {};
   for (const r of selectedRecipes) {
     const c = r.course || 'other';
@@ -76,7 +104,7 @@ export function computeAutoBalancedPortions(
   const result: Record<string, number> = {};
   for (const r of selectedRecipes) {
     const c = r.course || 'other';
-    result[r.id] = getCateringBalancedPortion(c, courseCounts[c] || 1);
+    result[r.id] = getCateringBalancedPortion(c, courseCounts[c] || 1, totalDishes);
   }
   return result;
 }

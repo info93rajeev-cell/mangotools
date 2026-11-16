@@ -93,7 +93,7 @@ export const NORTH_WEDDING_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Awadhi Heritage Cookery',
         publisher: 'Indian Culinary Federation Journal',
-        url: 'https://en.wikipedia.org/wiki/Awadhi_Heritage_Cookery',
+        url: 'https://en.wikipedia.org/wiki/Awadhi_cuisine',
         accessed: '2026-11-14',
         checks: 'Cross-checked floral essence blending and potli masala composition',
       },

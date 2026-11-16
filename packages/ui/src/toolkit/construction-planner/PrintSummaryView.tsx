@@ -18,7 +18,7 @@ export function PrintSummaryView({ overview, metrics, sheets, recentWork }: Prin
     <div class={styles.printOnlyContainer} aria-hidden="true">
       <header class={styles.printHeader}>
         <div class={styles.printTitleRow}>
-          <h1 class={styles.printMainTitle}>{overview.projectName}</h1>
+          <h2 class={styles.printMainTitle}>{overview.projectName}</h2>
           <span class={styles.printDate}>{new Date().toLocaleDateString()}</span>
         </div>
         <p class={styles.printMeta}>

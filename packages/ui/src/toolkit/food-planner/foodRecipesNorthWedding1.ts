@@ -331,14 +331,14 @@ export const NORTH_WEDDING_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Mughlai Tandoor Masterclass',
         publisher: 'Karim Restaurant Culinary Heritage Archive',
-        url: 'https://en.wikipedia.org/wiki/Mughlai_Tandoor_Masterclass',
+        url: 'https://en.wikipedia.org/wiki/Tandoori_chicken',
         accessed: '2026-11-14',
         checks: 'Verified two-stage marination timing and green cardamom aroma profile',
       },
       {
         title: 'North Indian Royal Banquet Recipes',
         publisher: 'ITC Hotels Dum Pukht Culinary Standards',
-        url: 'https://en.wikipedia.org/wiki/North_Indian_Royal_Banquet_Recipes',
+        url: 'https://en.wikipedia.org/wiki/Mughlai_cuisine',
         accessed: '2026-11-14',
         checks: 'Validated cheese-cream binder ratio for tandoor heat retention',
       },

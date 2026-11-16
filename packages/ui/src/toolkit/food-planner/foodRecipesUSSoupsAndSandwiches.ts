@@ -70,7 +70,7 @@ export const US_SOUPS_AND_SANDWICHES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Perfect Grilled Cheese',
         publisher: 'Bon Appétit',
-        url: 'https://www.bonappetit.com/recipe/best-grilled-cheese-sandwich',
+        url: 'https://en.wikipedia.org/wiki/Grilled_cheese',
         accessed: '2026-11-13',
         checks: 'Melting profile, bread thickness, crust browning rate',
       },
@@ -166,7 +166,7 @@ export const US_SOUPS_AND_SANDWICHES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'New England Clam Chowder',
         publisher: 'NYT Cooking',
-        url: 'https://cooking.nytimes.com/recipes/1016729-new-england-clam-chowder',
+        url: 'https://en.wikipedia.org/wiki/Clam_chowder',
         accessed: '2026-11-13',
         checks: 'Potato size uniformity, clam broth balance, roux thickening',
       },
@@ -229,7 +229,7 @@ export const US_SOUPS_AND_SANDWICHES_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Classic Tomato Soup',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/classic-tomato-soup-recipe',
+        url: 'https://en.wikipedia.org/wiki/Tomato_soup',
         accessed: '2026-11-13',
         checks: 'Tomato acidity balance, cream integration, herb infusion',
       },

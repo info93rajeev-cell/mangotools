@@ -72,7 +72,7 @@ export const US_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Ultra-Gooey Stovetop Mac and Cheese',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/the-best-stovetop-macaroni-and-cheese-recipe',
+        url: 'https://en.wikipedia.org/wiki/Macaroni_and_cheese',
         accessed: '2026-11-13',
         checks: 'Cheese to pasta ratio, béchamel emulsification, cooking times',
       },
@@ -158,7 +158,7 @@ export const US_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'Best Shredded BBQ Chicken',
         publisher: 'Natashas Kitchen',
-        url: 'https://natashaskitchen.com/instant-pot-bbq-chicken/',
+        url: 'https://en.wikipedia.org/wiki/Barbecue_chicken',
         accessed: '2026-11-13',
         checks: 'Shredding technique, braising sauce concentration, resting time',
       },
@@ -308,7 +308,7 @@ export const US_MAINS_RECIPES: ExtendedFoodRecipe[] = [
       {
         title: 'The Ultimate Crispy Baked Chicken Wings',
         publisher: 'Serious Eats',
-        url: 'https://www.seriouseats.com/the-best-buffalo-wings-oven-baked-recipe',
+        url: 'https://en.wikipedia.org/wiki/Buffalo_wing',
         accessed: '2026-11-13',
         checks: 'Wire rack baking, moisture removal, hot sauce emulsion ratio',
       },

@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './foodPlanner.module.css';
 import { AISLE_DISPLAY_MAP } from './foodReferenceData.ts';
+import { IngredientThumbnail } from './IngredientThumbnail.tsx';
 import { getAisleColor, type IngredientLineItem } from './ingredientsUtils.ts';
 
 export interface IngredientsPagination {
@@ -94,14 +95,7 @@ function IngredientTableRow({
       <td style={{ color: '#64748b', fontSize: '12px' }}>{idx + 1}</td>
       <td>
         <div class={styles.tableItemWithThumb}>
-          <img
-            src={item.thumbnailUrl || '/food/recipes/jeera-rice.jpg'}
-            alt=""
-            class={styles.tableThumb}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/food/recipes/jeera-rice.jpg';
-            }}
-          />
+          <IngredientThumbnail id={item.id} name={item.name} aisle={item.aisle} size={32} />
           <strong>{item.name}</strong>
         </div>
       </td>

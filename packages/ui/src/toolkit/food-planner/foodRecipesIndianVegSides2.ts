@@ -217,7 +217,7 @@ export const INDIAN_VEG_SIDES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Dhaba Style Pickled Vinegar Onions Recipe',
         publisher: 'Sanjeev Kapoor Khazana',
-        url: 'https://www.youtube.com/results?search_query=Dhaba%20Style%20Pickled%20Vinegar%20Onions%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=ZgOW50tYrnw',
         accessed: '2026-11-14',
         checks: 'Verified pearl onion scoring method for deep acid penetration',
       },

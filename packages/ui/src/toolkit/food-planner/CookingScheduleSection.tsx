@@ -182,6 +182,21 @@ function ScheduleHeader({
         </p>
       </div>
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          class={styles.actionBtn}
+          style={{
+            height: '32px',
+            fontSize: '12px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+          onClick={() => window.print()}
+          title="Print Cooking Schedule & Kitchen Staff Checklist"
+        >
+          <Icon name="printer" /> Print Schedule
+        </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '4px' }}>
           <label
             for="schedule-meal-time"

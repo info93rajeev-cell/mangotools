@@ -48,17 +48,7 @@ export function getSafeRecipeSourceUrl(
     return `https://www.google.com/search?q=${encodeURIComponent(`${searchTerms} recipe`)}`;
   }
 
-  if (
-    urlLower.startsWith('https://www.youtube.com/') ||
-    urlLower.startsWith('https://youtube.com/') ||
-    urlLower.startsWith('https://en.wikipedia.org/') ||
-    urlLower.startsWith('https://www.google.com/search') ||
-    urlLower.startsWith('https://www.vegrecipesofindia.com/') ||
-    urlLower.startsWith('https://hebbarskitchen.com/') ||
-    urlLower.startsWith('https://www.tarladalal.com/') ||
-    urlLower.startsWith('https://www.bongeats.com/') ||
-    urlLower.startsWith('https://www.sanjeevkapoor.com/')
-  ) {
+  if (urlLower.startsWith('http://') || urlLower.startsWith('https://')) {
     return url;
   }
 

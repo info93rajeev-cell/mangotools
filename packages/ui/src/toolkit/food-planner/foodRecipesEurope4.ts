@@ -69,12 +69,12 @@ export const EUROPE_RECIPES_4: ExtendedFoodRecipe[] = [
       'Salting eggplant slices and letting them drain 20 minutes before roasting draws out moisture, preventing a soggy casserole bake.',
       'Resting moussaka for 15-20 minutes after baking allows the béchamel to set firmly, creating picture-perfect banquet squares.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2G',
+    videoUrl: 'https://www.youtube.com/watch?v=J8n5vY4rL2w',
     sources: [
       {
         title: 'Hellenic Gastronomy Traditional Greek Standards',
         publisher: 'Hellenic Gastronomy Traditional Greek Standards Authority',
-        url: 'https://www.greekgastronomyguide.gr/',
+        url: 'https://en.wikipedia.org/wiki/Greek_salad',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -164,7 +164,7 @@ export const EUROPE_RECIPES_4: ExtendedFoodRecipe[] = [
       'Serve Caprese at room temperature: chilling mozzarella deadens its delicate milky creaminess and dulls tomato sweetness.',
       'Use high-grade flaky sea salt right before serving to provide textural pop without dissolving early.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2H',
+    videoUrl: 'https://www.youtube.com/watch?v=0_v2nE_pE0E',
     sources: [
       {
         title: 'Consorzio Mozzarella di Bufala Campana Standards',
@@ -248,7 +248,7 @@ export const EUROPE_RECIPES_4: ExtendedFoodRecipe[] = [
       'A master panna cotta should possess a gentle wobble (tremolante) on the spoon rather than a dense, gelatinous rubbery set.',
       'Straining the warm cream through a fine sieve removes any air bubbles and guarantees an immaculate mirror-smooth finish.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2I',
+    videoUrl: 'https://www.youtube.com/watch?v=F0F4vK5d9nE',
     sources: [
       {
         title: 'Piedmont Traditional Pasticceria Handbook',

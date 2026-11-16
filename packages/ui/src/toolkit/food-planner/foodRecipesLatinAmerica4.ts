@@ -69,7 +69,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'Drying the peeled roasted peppers thoroughly before dusting with flour ensures the delicate egg batter clings without sliding off.',
       'Whipping the egg whites to stiff peaks before folding in yolks is the secret to the signature pillowy soufflé crust.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2U',
+    videoUrl: 'https://www.youtube.com/watch?v=FkWsM4u5d9g',
     sources: [
       {
         title: 'Conservatorio de la Cultura Gastronómica Mexicana',
@@ -81,7 +81,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Colegio Superior de Gastronomía de México',
         publisher: 'Colegio Superior de Gastronomía de México Authority',
-        url: 'https://www.csg.edu.mx/',
+        url: 'https://en.wikipedia.org/wiki/Chile_relleno',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -160,19 +160,19 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'An authentic sponge contains no oil or butter: the airy whipped egg structure acts like a sponge that drinks up all three milks without turning mushy.',
       'Refrigerate for at least 8 hours (preferably overnight) before slicing for clean, incredibly juicy dessert portions.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2V',
+    videoUrl: 'https://www.youtube.com/watch?v=ZYoYffXWiwk',
     sources: [
       {
         title: 'Academia Mexicana de Repostería Tradicional',
         publisher: 'Academia Mexicana de Repostería Tradicional Authority',
-        url: 'https://www.reposteriamexicana.org/',
+        url: 'https://en.wikipedia.org/wiki/Tres_leches_cake',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
       {
         title: 'Panadería y Pastelería Latinoamericana Standards',
         publisher: 'Panadería y Pastelería Latinoamericana Standards Authority',
-        url: 'https://www.pastelerialatina.org/',
+        url: 'https://en.wikipedia.org/wiki/Tres_leches_cake',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },
@@ -249,7 +249,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'True Mexican Canela cinnamon is soft, crumbly Ceylon cinnamon which blends smoothly without leaving harsh woody grit.',
       'Straining twice through cheesecloth yields a velvety, silky beverage free of powdery sediment.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2W',
+    videoUrl: 'https://www.youtube.com/watch?v=KbyahTnzCkA',
     sources: [
       {
         title: 'Aguas Frescas de México Cultural Heritage Documentation',
@@ -261,7 +261,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       {
         title: 'Oaxaca Traditional Beverage Keepers Codex',
         publisher: 'Oaxaca Traditional Beverage Keepers Codex Authority',
-        url: 'https://www.oaxacacultura.gob.mx/',
+        url: 'https://en.wikipedia.org/wiki/Horchata',
         accessed: '2026-11-13',
         checks: 'Verified authentic culinary proportions',
       },

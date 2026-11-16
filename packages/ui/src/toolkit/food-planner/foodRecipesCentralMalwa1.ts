@@ -75,7 +75,7 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Indore Banquet Bafla Standard',
         publisher: 'Prachiti Caterers Indore',
-        url: 'https://www.youtube.com/results?search_query=Authentic%20Indore%20Banquet%20Bafla%20Standard%20Sanjeev%20Kapoor%20Khazana',
+        url: 'https://www.youtube.com/watch?v=yOqx2H5vVWM',
         accessed: '2026-11-14',
         checks: 'Cross-referenced coarse wheat flour granulation and curd dough fermentation',
       },
@@ -266,7 +266,7 @@ export const CENTRAL_MALWA_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Malwa Breakfast Culture & Street Food',
         publisher: 'Times of India Food Heritage',
-        url: 'https://en.wikipedia.org/wiki/Malwa_Breakfast_Culture_%26_Street_Food',
+        url: 'https://en.wikipedia.org/wiki/Flattened_rice',
         accessed: '2026-11-14',
         checks: 'Cross-checked Ratlami sev pairing and jeeravan sprinkle technique',
       },

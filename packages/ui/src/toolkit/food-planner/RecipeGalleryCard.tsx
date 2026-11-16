@@ -29,11 +29,24 @@ export function RecipeGalleryCard({
         {!isAwaiting && (
           <button
             type="button"
+            class={styles.recipeImageClickTarget}
+            onClick={onView}
+            aria-label={`Recipe details: ${recipe.name}`}
+            title={`${t.viewRecipe}: ${recipe.name}`}
+          >
+            <span class={styles.recipeImagePlayCenter} aria-hidden="true">
+              ▶
+            </span>
+          </button>
+        )}
+        {!isAwaiting && (
+          <button
+            type="button"
             class={styles.recipeViewBtn}
             onClick={onView}
             aria-label={`${t.viewRecipe}: ${recipe.name}`}
           >
-            {t.viewRecipe}
+            ▶ {t.viewRecipe}
           </button>
         )}
         <button
@@ -50,7 +63,18 @@ export function RecipeGalleryCard({
       </div>
       <div class={styles.recipeMeta}>
         <h3 class={styles.recipeName} title={recipe.name}>
-          {recipe.name}
+          {!isAwaiting ? (
+            <button
+              type="button"
+              class={styles.recipeNameBtn}
+              onClick={onView}
+              title={`${t.viewRecipe}: ${recipe.name}`}
+            >
+              {recipe.name}
+            </button>
+          ) : (
+            recipe.name
+          )}
         </h3>
         <div class={styles.recipeInfoRow}>
           <span>⏱ {recipe.prepMinutes + recipe.cookMinutes} min</span>

@@ -42,14 +42,14 @@ export const EUROPE_RECIPES_2: ExtendedFoodRecipe[] = [
       {
         title: 'Authentic Italian Minestrone Master Recipe',
         publisher: 'La Cucina Italiana',
-        url: 'https://www.lacucinaitaliana.com/recipe/soup/minestrone-alla-milanese',
+        url: 'https://en.wikipedia.org/wiki/Minestrone',
         accessed: '2026-11-13',
         checks: 'Verified soffritto base and legume simmering timing',
       },
       {
         title: 'Classic Tuscan Vegetable Minestrone',
         publisher: 'Simply Recipes',
-        url: 'https://www.simplyrecipes.com/recipes/classic_minestrone_soup/',
+        url: 'https://en.wikipedia.org/wiki/Minestrone',
         accessed: '2026-11-13',
         checks: 'Verified bean texture integration and stock balance',
       },

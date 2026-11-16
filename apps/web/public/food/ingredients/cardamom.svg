@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <title>Green Cardamom (Elaichi)</title>
+  <rect width="80" height="80" rx="14" fill="#fefce8"/>
+  <g transform="translate(34, 40) rotate(-20)">
+    <path d="M 0 -18 C 9 -12 10 12 0 18 C -10 12 -9 -12 0 -18 Z" fill="#84cc16" stroke="#4d7c0f" stroke-width="1.2"/>
+    <path d="M 0 -18 L 0 18" stroke="#65a30d" stroke-width="1" stroke-dasharray="2 1"/>
+    <!-- Pointed tip -->
+    <path d="M -2 -18 L 0 -22 L 2 -18 Z" fill="#4d7c0f"/>
+  </g>
+  <g transform="translate(48, 38) rotate(35)">
+    <path d="M 0 -16 C 8 -10 9 10 0 16 C -9 10 -8 -10 0 -16 Z" fill="#65a30d" stroke="#3f6212" stroke-width="1.2"/>
+    <path d="M 0 -16 L 0 16" stroke="#4d7c0f" stroke-width="1" stroke-dasharray="2 1"/>
+  </g>
+</svg>

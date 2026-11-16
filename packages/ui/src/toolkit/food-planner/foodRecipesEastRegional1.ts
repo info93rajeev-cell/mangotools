@@ -178,7 +178,7 @@ export const EAST_REGIONAL_RECIPES_1: ExtendedFoodRecipe[] = [
       {
         title: 'Street Food Culture of Kolkata',
         publisher: 'Times of India Culinary History',
-        url: 'https://en.wikipedia.org/wiki/Street_Food_Culture_of_Kolkata',
+        url: 'https://en.wikipedia.org/wiki/Kati_roll',
         accessed: '2026-11-14',
         checks: 'Cross-checked paratha layering and absence of bottled sauces',
       },
