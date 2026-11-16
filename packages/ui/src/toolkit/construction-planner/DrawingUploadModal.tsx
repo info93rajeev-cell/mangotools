@@ -56,6 +56,18 @@ function UploadForm({ onClose, onAddSheet }: UploadFormProps) {
         <p class={styles.noticeText}>{t.dwgNotSupportedNotice}</p>
       </div>
 
+      <div class={styles.samplePdfDownloadBox}>
+        <Icon name="file-text" />
+        <span>Need a test file?</span>
+        <a
+          href="/sample-structural-drawing.pdf"
+          download="Sample-Structural-Drawing-Package.pdf"
+          class={styles.samplePdfLink}
+        >
+          Download sample 4-page drawing package (PDF)
+        </a>
+      </div>
+
       <div class={styles.formGroup}>
         <label class={styles.formLabel} for="modal-sheet-cat">
           Drawing Category

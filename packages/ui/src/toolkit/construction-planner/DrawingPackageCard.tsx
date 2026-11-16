@@ -185,35 +185,39 @@ function StructBlueprint() {
 
 function SectionBlueprint() {
   return (
-    <svg class={styles.blueprintSvg} viewBox="0 0 130 80" aria-label="Section elevation thumbnail">
+    <svg class={styles.blueprintSvg} viewBox="0 0 135 80" aria-label="Section elevation thumbnail">
       <rect
-        x="6"
-        y="6"
-        width="118"
-        height="68"
+        x="4"
+        y="4"
+        width="127"
+        height="72"
         fill="#ffffff"
         stroke="#1e40af"
-        stroke-width="1.4"
+        stroke-width="1.2"
       />
       {/* Building frame */}
-      <rect x="16" y="16" width="68" height="54" fill="#eff6ff" stroke="#1e40af" stroke-width="1" />
-      <line x1="16" y1="34" x2="84" y2="34" stroke="#2563eb" stroke-width="1.2" />
-      <line x1="16" y1="52" x2="84" y2="52" stroke="#2563eb" stroke-width="1.2" />
+      <rect x="12" y="14" width="62" height="52" fill="#eff6ff" stroke="#1e40af" stroke-width="1" />
+      <line x1="12" y1="31" x2="74" y2="31" stroke="#2563eb" stroke-width="1.1" />
+      <line x1="12" y1="48" x2="74" y2="48" stroke="#2563eb" stroke-width="1.1" />
       {/* Columns in section */}
-      <line x1="24" y1="16" x2="24" y2="70" stroke="#1e40af" stroke-width="2.5" />
-      <line x1="50" y1="16" x2="50" y2="70" stroke="#1e40af" stroke-width="2.5" />
-      <line x1="76" y1="16" x2="76" y2="70" stroke="#1e40af" stroke-width="2.5" />
+      <line x1="18" y1="14" x2="18" y2="66" stroke="#1e40af" stroke-width="2" />
+      <line x1="43" y1="14" x2="43" y2="66" stroke="#1e40af" stroke-width="2" />
+      <line x1="68" y1="14" x2="68" y2="66" stroke="#1e40af" stroke-width="2" />
+      {/* Footing pads at bottom */}
+      <rect x="14" y="66" width="8" height="3" fill="#cbd5e1" stroke="#1e40af" stroke-width="0.8" />
+      <rect x="39" y="66" width="8" height="3" fill="#cbd5e1" stroke="#1e40af" stroke-width="0.8" />
+      <rect x="64" y="66" width="8" height="3" fill="#cbd5e1" stroke="#1e40af" stroke-width="0.8" />
       {/* Level tags */}
-      <text x="88" y="20" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="78" y="18" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
         +10.80 m (Roof)
       </text>
-      <text x="88" y="38" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="78" y="35" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
         +7.20 m (FF)
       </text>
-      <text x="88" y="56" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="78" y="52" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
         +3.60 m (GF)
       </text>
-      <text x="88" y="73" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="78" y="69" fill="#475569" font-size="5.5" font-family="system-ui, sans-serif">
         ±0.00 m (NGL)
       </text>
     </svg>
@@ -222,50 +226,53 @@ function SectionBlueprint() {
 
 function DetailsBlueprint() {
   return (
-    <svg class={styles.blueprintSvg} viewBox="0 0 130 80" aria-label="Member details thumbnail">
+    <svg class={styles.blueprintSvg} viewBox="0 0 135 80" aria-label="Member details thumbnail">
       <rect
-        x="6"
-        y="6"
-        width="118"
-        height="68"
+        x="4"
+        y="4"
+        width="127"
+        height="72"
         fill="#ffffff"
         stroke="#1e40af"
-        stroke-width="1.4"
+        stroke-width="1.2"
       />
       {/* Beam/Column cross section */}
       <rect
-        x="30"
-        y="14"
-        width="46"
-        height="52"
+        x="28"
+        y="13"
+        width="44"
+        height="50"
         fill="#eff6ff"
         stroke="#1e40af"
         stroke-width="1.2"
       />
       {/* Stirrup ring */}
-      <rect x="35" y="19" width="36" height="42" fill="none" stroke="#d97706" stroke-width="0.9" />
-      {/* Main rebars */}
-      <circle cx="39" cy="23" r="2.5" fill="#dc2626" />
-      <circle cx="67" cy="23" r="2.5" fill="#dc2626" />
-      <circle cx="39" cy="57" r="2.5" fill="#dc2626" />
-      <circle cx="67" cy="57" r="2.5" fill="#dc2626" />
+      <rect x="32" y="17" width="36" height="42" fill="none" stroke="#ea580c" stroke-width="0.9" />
+      {/* Corner rebars */}
+      <circle cx="36" cy="21" r="2.2" fill="#dc2626" />
+      <circle cx="64" cy="21" r="2.2" fill="#dc2626" />
+      <circle cx="36" cy="55" r="2.2" fill="#dc2626" />
+      <circle cx="64" cy="55" r="2.2" fill="#dc2626" />
+      {/* Intermediate bars */}
+      <circle cx="50" cy="21" r="1.8" fill="#dc2626" />
+      <circle cx="50" cy="55" r="1.8" fill="#dc2626" />
       {/* Side face bars */}
-      <circle cx="39" cy="40" r="2" fill="#2563eb" />
-      <circle cx="67" cy="40" r="2" fill="#2563eb" />
+      <circle cx="36" cy="38" r="1.8" fill="#2563eb" />
+      <circle cx="64" cy="38" r="1.8" fill="#2563eb" />
       {/* Labels */}
-      <text x="82" y="25" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
-        4-20Φ (T)
+      <text x="76" y="23" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
+        4 - 20Ø (T)
       </text>
-      <text x="82" y="42" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
-        2-16Φ (S)
+      <text x="76" y="40" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
+        2 - 16Ø (S)
       </text>
-      <text x="82" y="59" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
-        4-20Φ (B)
+      <text x="76" y="57" fill="#334155" font-size="5.5" font-family="system-ui, sans-serif">
+        4 - 20Ø (B)
       </text>
-      <text x="46" y="73" fill="#64748b" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="44" y="70" fill="#64748b" font-size="5.5" font-family="system-ui, sans-serif">
         300
       </text>
-      <text x="21" y="43" fill="#64748b" font-size="5.5" font-family="system-ui, sans-serif">
+      <text x="14" y="40" fill="#64748b" font-size="5.5" font-family="system-ui, sans-serif">
         450
       </text>
     </svg>
