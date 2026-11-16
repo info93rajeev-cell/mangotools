@@ -44,8 +44,7 @@
   max-width: 100% !important;
 }
 
-:global(body:has([data-planner-root]) .tool-header .guide-btn),
-:global(body:has([data-planner-root]) .tool-header .fullscreen-btn) {
+:global(body:has([data-planner-root]) .tool-header .guide-btn) {
   display: none !important;
 }
 
