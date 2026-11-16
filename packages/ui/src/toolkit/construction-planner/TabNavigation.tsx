@@ -25,7 +25,7 @@ const TABS: TabDef[] = [
 
 export function TabNavigation({ activeTab, onSelectTab }: TabNavigationProps) {
   return (
-    <nav class={styles.tabNav} aria-label="Planner workflow tabs">
+    <nav class={styles.tabNav} style={{ overflowX: 'auto' }} aria-label="Planner workflow tabs">
       <div class={styles.tabList} role="tablist">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;

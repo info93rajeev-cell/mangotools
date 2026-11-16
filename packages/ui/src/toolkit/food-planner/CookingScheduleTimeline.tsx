@@ -47,8 +47,11 @@ export function PhaseGroupCard({
         </span>
       </button>
 
-      {isExpanded && tasks.length > 0 && (
-        <div class={styles.tableWrapper} style={{ borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+      {tasks.length > 0 && (
+        <div
+          class={`${styles.tableWrapper} ${!isExpanded ? styles.phaseCollapsed : ''}`}
+          style={{ borderTop: 'none', borderRadius: '0 0 8px 8px' }}
+        >
           <table class={styles.table} aria-label={`Schedule Table for ${title}`}>
             <thead>
               <tr>
@@ -60,6 +63,9 @@ export function PhaseGroupCard({
                 <th>Recipe (Dish)</th>
                 <th>Priority</th>
                 <th>Status</th>
+                <th class={styles.printOnly} style={{ width: '80px' }}>
+                  Staff Initials
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -150,6 +156,13 @@ function ScheduleTableRow({
       </td>
       <td>
         <ScheduleStatusBadge status={status} />
+      </td>
+      <td class={styles.printOnly} style={{ textAlign: 'center' }}>
+        <span
+          style={{ display: 'inline-block', width: '50px', borderBottom: '1px dotted #64748b' }}
+        >
+          &nbsp;
+        </span>
       </td>
     </tr>
   );

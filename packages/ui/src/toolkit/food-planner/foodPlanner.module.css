@@ -2616,6 +2616,14 @@
   color: #e2e8f0;
 }
 
+.printOnly {
+  display: none;
+}
+
+.phaseCollapsed {
+  display: none;
+}
+
 @media print {
   :global(body),
   :global(html) {
@@ -2702,5 +2710,13 @@
     font-size: 11pt;
     font-weight: bold;
     color: #000000;
+  }
+
+  .printOnly {
+    display: table-cell;
+  }
+
+  .phaseCollapsed {
+    display: block;
   }
 }

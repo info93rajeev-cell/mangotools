@@ -7,7 +7,6 @@ import {
   isRecipeEligibleForCountry,
   isRecipeEligibleForLocation,
 } from './foodReferenceData.ts';
-import { MenuVisualShowcase } from './MenuVisualShowcase.tsx';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { RecipeDetailDialog } from './RecipeDetailDialog.tsx';
 import { matchesRecipeFilter, RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
@@ -67,11 +66,6 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   return (
     <>
       <div class={styles.desktopOnly}>
-        <MenuVisualShowcase
-          dishes={planner.selectedRecipes}
-          fallbackDishes={filteredRecipes}
-          onViewRecipe={(dish) => setDetailRecipe(dish)}
-        />
         <button
           type="button"
           class={styles.actionBtn}

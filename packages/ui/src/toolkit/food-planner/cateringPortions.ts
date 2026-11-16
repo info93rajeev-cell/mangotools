@@ -22,36 +22,33 @@ const TREAT_TIERS: Record<number, number> = {
  * This ensures 20 guests eat ~10-12 kg of food, avoiding massive over-catering and food waste.
  */
 export function getMenuBreadthFactor(totalDishes: number): number {
-  if (totalDishes <= 2) return 1.0;
-  if (totalDishes === 3) return 0.75;
-  if (totalDishes === 4) return 0.65;
-  if (totalDishes === 5) return 0.55;
-  if (totalDishes === 6) return 0.5;
-  if (totalDishes === 7) return 0.45;
-  return Math.max(0.25, Number((3.0 / totalDishes).toFixed(2)));
+  if (totalDishes <= 7) return 1.0;
+  if (totalDishes === 8) return 0.85;
+  if (totalDishes === 9) return 0.75;
+  if (totalDishes === 10) return 0.65;
+  return Math.max(0.35, Number((6.5 / totalDishes).toFixed(2)));
 }
 
 /**
  * Calculates the catering buffet portion factor for a dish based on course, variety count, and total menu size.
  *
  * Real-world catering guidelines:
- * - When guests have 1 option in a small menu (1-2 dishes): 100% preparation (factor = 1.0).
- * - When multi-dish menu (3-6+ dishes): portion scales down per dish so total ingredient weight
- *   remains balanced (~11-12 kg for 20 guests) rather than blowing up to 20+ kg.
- * - When multiple options in the same course (e.g. 2 rices or 2 sweets): shared intra-course division.
+ * - When guests have 1 option in a course in a standard menu (<= 7 dishes): full preparation (factor = 1.0).
+ * - When multiple options in the same course (e.g. 2 rices or 2 curries): intra-course balancing (60% / 45% each).
+ * - When multi-course banquet expands to 8+ dishes: breadth scaling gently balances total meal volume.
  */
 export function getCateringBalancedPortion(
   course: string,
   courseCount: number,
   totalDishes = 1,
 ): number {
-  if (courseCount <= 1 && totalDishes <= 2) return 1;
+  if (courseCount <= 1 && totalDishes <= 7) return 1;
 
   const isTreat = course === 'snack' || course === 'dessert' || course === 'drink';
   const table = isTreat ? TREAT_TIERS : BUFFET_TIERS;
   const courseFactor = table[courseCount] ?? Math.max(0.25, Number((1.4 / courseCount).toFixed(2)));
 
-  if (totalDishes <= courseCount) {
+  if (totalDishes <= 7) {
     return courseFactor;
   }
 

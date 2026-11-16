@@ -15,6 +15,7 @@ import { t } from '../strings/en.ts';
   data-label-enter={t('fullscreen.enter')}
   data-label-exit={t('fullscreen.exit')}
   aria-pressed="false"
+  aria-label={t('fullscreen.enter')}
   title={t('fullscreen.enterHint')}
   hidden
 >
@@ -36,6 +37,7 @@ import { t } from '../strings/en.ts';
     const label = button.querySelector('[data-fullscreen-label]');
     const text = (active ? button.dataset.labelExit : button.dataset.labelEnter) ?? '';
     button.setAttribute('aria-pressed', String(active));
+    button.setAttribute('aria-label', text);
     if (label) label.textContent = text;
   };
 

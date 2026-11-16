@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
+import { Icon } from '../../primitives/Icon.tsx';
 import { formatTimeSpan } from './CookingScheduleSummary.tsx';
 import type { ScheduleTaskItem } from './CookingScheduleTimeline.tsx';
 import s from './foodPlannerMobile.module.css';
@@ -37,13 +38,25 @@ export function CookingScheduleMobileView({
           <h4 class={s.mobileCardTitle}>
             {t.schedule} ({tasks.length} {t.tasks})
           </h4>
-          <button
-            type="button"
-            class={s.mobileEditBtn}
-            onClick={() => setClosed(Object.fromEntries(phases.map(([key]) => [key, !allClosed])))}
-          >
-            {allClosed ? t.expand : t.collapse}
-          </button>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <button
+              type="button"
+              class={s.mobileEditBtn}
+              onClick={() => window.print()}
+              title="Print Cooking Schedule & Kitchen Staff Checklist"
+            >
+              <Icon name="printer" /> Print
+            </button>
+            <button
+              type="button"
+              class={s.mobileEditBtn}
+              onClick={() =>
+                setClosed(Object.fromEntries(phases.map(([key]) => [key, !allClosed])))
+              }
+            >
+              {allClosed ? t.expand : t.collapse}
+            </button>
+          </div>
         </div>
         {phases.map(([key = '', title]) => (
           <TaskGroup
@@ -124,27 +137,25 @@ function TaskGroup({
           {formatTimeSpan(tasks.reduce((n, task) => n + task.durationMinutes, 0))}
         </span>
       </button>
-      {!closed && (
-        <div class={s.mobileAccordionBody}>
-          {tasks.map((task) => (
-            <label class={s.mobileDishItem} key={task.id}>
-              <input
-                type="checkbox"
-                checked={task.isCompleted}
-                onChange={() => planner.toggleTaskCompleted(task.id)}
-                aria-label={`${task.name} ${t.done}`}
-              />
-              <div class={s.mobileDishInfo}>
-                <p class={s.mobileDishName}>{task.name}</p>
-                <span>
-                  {task.startTime} · {task.durationMinutes} min · {task.recipeName}
-                </span>
-              </div>
-              <span>{task.isCompleted ? t.done : t.pending}</span>
-            </label>
-          ))}
-        </div>
-      )}
+      <div class={`${s.mobileAccordionBody} ${closed ? s.accordionHidden : ''}`}>
+        {tasks.map((task) => (
+          <label class={s.mobileDishItem} key={task.id}>
+            <input
+              type="checkbox"
+              checked={task.isCompleted}
+              onChange={() => planner.toggleTaskCompleted(task.id)}
+              aria-label={`${task.name} ${t.done}`}
+            />
+            <div class={s.mobileDishInfo}>
+              <p class={s.mobileDishName}>{task.name}</p>
+              <span>
+                {task.startTime} · {task.durationMinutes} min · {task.recipeName}
+              </span>
+            </div>
+            <span>{task.isCompleted ? t.done : t.pending}</span>
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
