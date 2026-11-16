@@ -1256,3 +1256,13 @@
   border-color: #991b1b;
   color: #fca5a5;
 }
+
+.accordionHidden {
+  display: none;
+}
+
+@media print {
+  .accordionHidden {
+    display: block;
+  }
+}
