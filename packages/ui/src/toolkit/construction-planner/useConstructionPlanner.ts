@@ -1,11 +1,6 @@
 import type { ConstructionProject } from '@mangotools/runtime';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import {
-  EMPTY_PROJECT_OVERVIEW,
-  SAMPLE_PROJECT_OVERVIEW,
-  SAMPLE_RECENT_WORK,
-  SAMPLE_SHEETS,
-} from './sampleData.ts';
+import { SAMPLE_PROJECT_OVERVIEW, SAMPLE_RECENT_WORK, SAMPLE_SHEETS } from './sampleData.ts';
 import type {
   DrawingCategory,
   PlannerTab,
@@ -76,10 +71,10 @@ function usePlannerModals() {
 
 export function useConstructionPlanner(notify?: (msg: string) => void) {
   const [activeTab, setActiveTab] = useState<PlannerTab>('setup');
-  const [overview, setOverview] = useState<ProjectOverviewState>(EMPTY_PROJECT_OVERVIEW);
-  const [sheets, setSheets] = useState<SheetMetadata[]>([]);
-  const [recentWork, setRecentWork] = useState<RecentWorkItem[]>([]);
-  const [isSampleLoaded, setIsSampleLoaded] = useState(false);
+  const [overview, setOverview] = useState<ProjectOverviewState>(SAMPLE_PROJECT_OVERVIEW);
+  const [sheets, setSheets] = useState<SheetMetadata[]>(SAMPLE_SHEETS);
+  const [recentWork, setRecentWork] = useState<RecentWorkItem[]>(SAMPLE_RECENT_WORK);
+  const [isSampleLoaded, setIsSampleLoaded] = useState(true);
   const modals = usePlannerModals();
 
   const storage = usePlannerStorage((_name) => {

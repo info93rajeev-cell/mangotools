@@ -1,6 +1,12 @@
 import { Icon } from '../../primitives/Icon.tsx';
 import styles from './constructionPlanner.module.css';
 import { constructionPlannerStrings as t } from './constructionPlannerStrings.ts';
+import {
+  BeamIsoGraphic,
+  ColumnIsoGraphic,
+  FootingIsoGraphic,
+  SlabIsoGraphic,
+} from './isometricGraphics.tsx';
 import type { RecentWorkItem } from './types.ts';
 
 interface RecentWorkCardProps {
@@ -11,57 +17,13 @@ interface RecentWorkCardProps {
 function MemberTypeIcon({ type }: { type: RecentWorkItem['memberType'] }) {
   switch (type) {
     case 'footing':
-      return (
-        <svg viewBox="0 0 24 24" class={styles.tableRowSvg} aria-hidden="true">
-          <rect
-            x="3"
-            y="14"
-            width="18"
-            height="6"
-            fill="#cbd5e1"
-            stroke="#475569"
-            stroke-width="1.2"
-          />
-          <line x1="8" y1="4" x2="8" y2="14" stroke="#2563eb" stroke-width="1.5" />
-          <line x1="16" y1="4" x2="16" y2="14" stroke="#2563eb" stroke-width="1.5" />
-        </svg>
-      );
+      return <FootingIsoGraphic className={styles.tableRowSvg} />;
     case 'column':
-      return (
-        <svg viewBox="0 0 24 24" class={styles.tableRowSvg} aria-hidden="true">
-          <rect
-            x="7"
-            y="3"
-            width="10"
-            height="18"
-            fill="#cbd5e1"
-            stroke="#475569"
-            stroke-width="1.2"
-          />
-        </svg>
-      );
+      return <ColumnIsoGraphic className={styles.tableRowSvg} />;
     case 'beam':
-      return (
-        <svg viewBox="0 0 24 24" class={styles.tableRowSvg} aria-hidden="true">
-          <polygon
-            points="2,12 18,6 22,10 6,16"
-            fill="#cbd5e1"
-            stroke="#475569"
-            stroke-width="1.2"
-          />
-        </svg>
-      );
+      return <BeamIsoGraphic className={styles.tableRowSvg} />;
     case 'slab':
-      return (
-        <svg viewBox="0 0 24 24" class={styles.tableRowSvg} aria-hidden="true">
-          <polygon
-            points="12,3 22,9 12,15 2,9"
-            fill="#cbd5e1"
-            stroke="#475569"
-            stroke-width="1.2"
-          />
-        </svg>
-      );
+      return <SlabIsoGraphic className={styles.tableRowSvg} />;
   }
 }
 

@@ -46,10 +46,7 @@
 
 :global(body:has([data-planner-root]) .tool-header .guide-btn),
 :global(body:has([data-planner-root]) .tool-header .fullscreen-btn) {
-  padding: 3px 8px !important;
-  font-size: 11px !important;
-  color: #64748b !important;
-  border-color: #cbd5e1 !important;
+  display: none !important;
 }
 
 @media (max-width: 1150px) {
@@ -351,7 +348,7 @@
 
 .topCardsRow {
   display: grid;
-  grid-template-columns: 3.2fr 4.2fr 3.1fr;
+  grid-template-columns: 3.15fr 4.6fr 2.65fr;
   gap: var(--space-4, 16px);
   align-items: stretch;
   width: 100%;
@@ -361,7 +358,17 @@
 
 @media (max-width: 1080px) {
   .topCardsRow {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
+  }
+  .summaryCard {
+    order: -1;
+  }
+  .drawingCard {
+    order: 0;
+  }
+  .overviewCard {
+    order: 1;
   }
 }
 
@@ -475,19 +482,33 @@
 
 .formRowTwoCols {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 10px;
 }
 
 .formRowThreeCols {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  gap: 6px;
+}
+
+.formRowThreeColsRow2 {
+  display: grid;
+  grid-template-columns: 1.45fr 0.65fr 1fr;
+  gap: 6px;
+}
+
+.formRowThreeColsRow3 {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 1.35fr;
+  gap: 6px;
 }
 
 @media (max-width: 640px) {
   .formRowTwoCols,
-  .formRowThreeCols {
+  .formRowThreeCols,
+  .formRowThreeColsRow2,
+  .formRowThreeColsRow3 {
     grid-template-columns: 1fr;
   }
 }
@@ -499,11 +520,12 @@
 }
 
 .formLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: #475569;
   text-transform: none;
   letter-spacing: normal;
+  white-space: nowrap;
 }
 
 :global([data-theme="dark"]) .formLabel {
@@ -513,8 +535,8 @@
 .formInput {
   box-sizing: border-box;
   width: 100%;
-  padding: 7px 10px;
-  font-size: 13px;
+  padding: 5px 8px;
+  font-size: 11.5px;
   border: 1px solid var(--border-color, #cbd5e1);
   border-radius: 8px;
   background: var(--surface-1, #ffffff);
@@ -536,7 +558,7 @@
 
 .selectPrefixIcon {
   position: absolute;
-  left: 10px;
+  left: 6px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
@@ -544,8 +566,8 @@
   align-items: center;
   justify-content: center;
   color: #2563eb;
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   z-index: 1;
 }
 
@@ -556,8 +578,8 @@
 .formSelect {
   box-sizing: border-box;
   width: 100%;
-  padding: 7px 28px 7px 10px;
-  font-size: 13px;
+  padding: 5px 16px 5px 6px;
+  font-size: 11px;
   border: 1px solid var(--border-color, #cbd5e1);
   border-radius: 8px;
   background: var(--surface-1, #ffffff);
@@ -567,7 +589,7 @@
 }
 
 .formSelect.hasPrefixIcon {
-  padding-left: 32px;
+  padding-left: 21px;
 }
 
 :global([data-theme="dark"]) .formSelect {
@@ -578,7 +600,7 @@
 
 .selectArrow {
   position: absolute;
-  right: 10px;
+  right: 4px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
@@ -586,8 +608,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
 }
 
 .drawingGrid {
@@ -622,40 +644,66 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
 }
 
 .drawingBoxTitleRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  min-width: 0;
 }
 
 .checkIconGreen {
   color: #16a34a;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.pendingIconGray {
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .drawingBoxTitle {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   margin: 0;
+  white-space: nowrap;
 }
 
 .sheetCountBadge {
-  font-size: 11px;
+  font-size: 9.5px;
   color: #15803d;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 :global([data-theme="dark"]) .sheetCountBadge {
   color: #4ade80;
 }
 
+.sheetCountPending {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+:global([data-theme="dark"]) .sheetCountPending {
+  color: #94a3b8;
+}
+
 .drawingBoxBody {
   display: grid;
-  grid-template-columns: 105px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 8px;
   align-items: center;
 }
 
@@ -664,7 +712,7 @@
   background: #eff6ff;
   border-radius: 6px;
   overflow: hidden;
-  height: 72px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -683,7 +731,7 @@
 .drawingListWrap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -693,17 +741,18 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1.5px;
 }
 
 .sheetListItem {
   display: flex;
-  gap: 6px;
-  font-size: 11px;
+  gap: 4px;
+  font-size: 10px;
+  line-height: 1.35;
 }
 
 .sheetNum {
-  font-weight: 600;
+  font-weight: 700;
   color: #2563eb;
   white-space: nowrap;
   flex-shrink: 0;
@@ -717,7 +766,7 @@
 }
 
 .sheetExtra {
-  font-size: 10px;
+  font-size: 9.5px;
   color: #64748b;
   font-weight: 500;
 }
@@ -726,21 +775,21 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 10px;
   color: #2563eb;
-  background: #ffffff;
+  background: #eff6ff;
   border: 1px solid #bfdbfe;
   border-radius: 999px;
   padding: 2px 8px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 4px;
+  margin-top: 3px;
   align-self: flex-start;
   transition: all 0.15s ease;
 }
 
 .viewSheetsBtn:hover {
-  background: #eff6ff;
+  background: #dbeafe;
   border-color: #93c5fd;
 }
 
@@ -771,19 +820,19 @@
 }
 
 .buildingRenderWrap {
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
-  padding: 6px;
-  background: var(--surface-2, #f8fafc);
-  height: 110px;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 :global([data-theme="dark"]) .buildingRenderWrap {
-  background: #1e293b;
-  border-color: #334155;
+  background: transparent;
+  border-color: transparent;
 }
 
 .buildingIsoSvg {
@@ -953,8 +1002,8 @@
 }
 
 .memberTileGraphicWrap {
-  width: 38px;
-  height: 38px;
+  width: 50px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1016,6 +1065,7 @@
   text-align: left;
   width: 100%;
   min-width: 0;
+  min-height: 60px;
   height: 100%;
   box-sizing: border-box;
 }
@@ -1064,12 +1114,15 @@
 }
 
 .stepTitle {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-color, #0f172a);
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .stepDesc {
@@ -1578,6 +1631,50 @@
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 4px;
+}
+
+.samplePdfDownloadBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #166534;
+}
+
+.samplePdfLink {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.gsSampleDownloadRow {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.gsSampleDownloadLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 3px 8px;
+  transition: all 0.15s ease;
+}
+
+.gsSampleDownloadLink:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
 }
 
 .printOnlyContainer {

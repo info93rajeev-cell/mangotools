@@ -119,6 +119,17 @@ function AttachStep({ onAttach }: { onAttach: () => void }) {
           <span>Attach Sheets</span>
         </span>
       </button>
+      <div class={styles.gsSampleDownloadRow}>
+        <a
+          href="/sample-structural-drawing.pdf"
+          download="Sample-Structural-Drawing-Package.pdf"
+          class={styles.gsSampleDownloadLink}
+          title="Download sample 4-sheet structural drawing package (PDF)"
+        >
+          <Icon name="download" />
+          <span>Download sample drawing (PDF)</span>
+        </a>
+      </div>
     </div>
   );
 }
