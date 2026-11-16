@@ -40,11 +40,6 @@ export function TabNavigation({ activeTab, onSelectTab }: TabNavigationProps) {
             >
               <Icon name={tab.icon} />
               <span class={styles.tabLabel}>{tab.label}</span>
-              {!tab.isReady && (
-                <span class={styles.notBuiltBadge} title={t.notBuiltYetBadge}>
-                  Not built yet
-                </span>
-              )}
             </button>
           );
         })}

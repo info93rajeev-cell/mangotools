@@ -55,7 +55,7 @@ export function ProjectOverviewCard({ overview, onChangeField }: ProjectOverview
         </div>
 
         {/* Row 2: Project type, Floors, Site / Portion */}
-        <div class={styles.formRowThreeCols}>
+        <div class={styles.formRowThreeColsRow2}>
           <div class={styles.formGroup}>
             <label class={styles.formLabel} for="cp-project-type">
               Project type
@@ -140,7 +140,7 @@ export function ProjectOverviewCard({ overview, onChangeField }: ProjectOverview
         </div>
 
         {/* Row 3: Unit system, Concrete standard, Rebar standard */}
-        <div class={styles.formRowThreeCols}>
+        <div class={styles.formRowThreeColsRow3}>
           <div class={styles.formGroup}>
             <label class={styles.formLabel} for="cp-unit-system">
               Unit system

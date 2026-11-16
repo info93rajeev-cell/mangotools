@@ -29,33 +29,13 @@ interface HeaderActionsProps {
 }
 
 function HeaderBadgesActions({
-  saveStatus,
+  saveStatus: _saveStatus,
   onLoadSample,
   onPrint,
   onOpenExport,
 }: HeaderActionsProps) {
   return (
     <div class={styles.headerActionsCluster}>
-      {/* Compact save status */}
-      {saveStatus === 'saved' && (
-        <span class={styles.saveStatusSaved} title="Auto-saved to device storage">
-          <Icon name="check" />
-          <span>{t.autoSaveSaved}</span>
-        </span>
-      )}
-      {saveStatus === 'saving' && (
-        <span class={styles.saveStatusSaving} title="Saving...">
-          <Icon name="refresh-cw" />
-          <span>{t.autoSaveSaving}</span>
-        </span>
-      )}
-      {saveStatus === 'unavailable' && (
-        <span class={styles.saveStatusUnavailable} title="IndexedDB unavailable">
-          <Icon name="triangle-alert" />
-          <span>Storage unavailable</span>
-        </span>
-      )}
-
       {/* 1. Runs on your device pill */}
       <span class={styles.devicePrivacyBadge} title="Runs locally in your browser">
         <Icon name="lock" />
