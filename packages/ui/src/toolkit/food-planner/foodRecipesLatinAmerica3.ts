@@ -53,7 +53,7 @@ export const LATIN_AMERICA_RECIPES_3: ExtendedFoodRecipe[] = [
       'Layering chips and cheese in two distinct tiers prevents the dreaded dry naked chip bottom layer.',
       'Grate block cheese fresh: pre-shredded packaged cheese contains anti-caking starches that hinder a smooth silky melt.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2S',
+    videoUrl: 'https://www.youtube.com/watch?v=sI91aT8GZ1E',
     sources: [
       {
         title: 'Asociacion Culinaria de Mexico Tex-Mex Codex',
@@ -138,7 +138,7 @@ export const LATIN_AMERICA_RECIPES_3: ExtendedFoodRecipe[] = [
       'Charring the kernels until deeply brown caramelizes the natural sugars and creates the irreplaceable smoky street food contrast.',
       'Crumbled cotija cheese adheres best when applied immediately after brushing the warm crema.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2T',
+    videoUrl: 'https://www.youtube.com/watch?v=0k1Lq05-dYQ',
     sources: [
       {
         title: 'Secretaría de Turismo de México Street Food Archive',

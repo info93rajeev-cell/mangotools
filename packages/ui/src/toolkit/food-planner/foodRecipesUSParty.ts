@@ -88,7 +88,7 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified oven baking temperature and melted garlic butter glaze',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bS1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=FkWsM4u5d9g',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -171,7 +171,7 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified russet potato rim depth and melted cheddar ratio',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=pY8bS1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=0k1Lq05-dYQ',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -250,7 +250,7 @@ export const US_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified crispy fried onion topping timing to prevent burning',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=gY8bB1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=R23E3F8P-bU',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

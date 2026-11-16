@@ -7,7 +7,9 @@ import {
   isRecipeEligibleForCountry,
   isRecipeEligibleForLocation,
 } from './foodReferenceData.ts';
+import { MenuVisualShowcase } from './MenuVisualShowcase.tsx';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
+import { RecipeDetailDialog } from './RecipeDetailDialog.tsx';
 import { matchesRecipeFilter, RecipeGalleryPanel } from './RecipesGalleryComponents.tsx';
 import { RecipesMobileView } from './RecipesMobileView.tsx';
 import { SelectedMenuPanel } from './RecipesSelectedMenuComponents.tsx';
@@ -58,12 +60,18 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [detailRecipe, setDetailRecipe] = useState<ExtendedFoodRecipe | null>(null);
   const { favorites, toggleFavorite } = planner;
   const filteredRecipes = useFilteredCatalogRecipes(planner, favoritesOnly);
 
   return (
     <>
       <div class={styles.desktopOnly}>
+        <MenuVisualShowcase
+          dishes={planner.selectedRecipes}
+          fallbackDishes={filteredRecipes}
+          onViewRecipe={(dish) => setDetailRecipe(dish)}
+        />
         <button
           type="button"
           class={styles.actionBtn}
@@ -84,6 +92,11 @@ export function RecipesMenuSection({ planner }: RecipesMenuSectionProps) {
           setPage={setPage}
           pageSize={pageSize}
           setPageSize={setPageSize}
+        />
+        <RecipeDetailDialog
+          recipe={detailRecipe}
+          servings={planner.setup.guests * (planner.portionFactors[detailRecipe?.id ?? ''] ?? 1)}
+          onClose={() => setDetailRecipe(null)}
         />
       </div>
       <div class={styles.mobileOnly}>

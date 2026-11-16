@@ -4,6 +4,7 @@ import { computeAutoBalancedPortions } from './cateringPortions.ts';
 import s from './foodPlannerMobile.module.css';
 import { foodPlannerStrings as t } from './foodPlannerStrings.ts';
 import { CATALOG_GALLERY_RECIPES, type ExtendedFoodRecipe } from './foodReferenceData.ts';
+import { MenuVisualShowcase } from './MenuVisualShowcase.tsx';
 import { MobileMetric, MobilePlanHeader } from './MobilePlanSetup.tsx';
 import { PersonalRecipes } from './PersonalRecipes.tsx';
 import { RecipeDetailDialog } from './RecipeDetailDialog.tsx';
@@ -60,6 +61,11 @@ export function RecipesMobileView(props: RecipesMobileViewProps) {
       </div>
       {tab === 'menu' ? (
         <>
+          <MenuVisualShowcase
+            dishes={dishes}
+            fallbackDishes={props.filteredRecipes}
+            onViewRecipe={(dish) => setDetailRecipe(dish)}
+          />
           <SelectedMobileMenu
             planner={planner}
             onBrowse={() => browse('all')}

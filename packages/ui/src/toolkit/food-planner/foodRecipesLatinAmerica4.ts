@@ -69,7 +69,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'Drying the peeled roasted peppers thoroughly before dusting with flour ensures the delicate egg batter clings without sliding off.',
       'Whipping the egg whites to stiff peaks before folding in yolks is the secret to the signature pillowy soufflé crust.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2U',
+    videoUrl: 'https://www.youtube.com/watch?v=FkWsM4u5d9g',
     sources: [
       {
         title: 'Conservatorio de la Cultura Gastronómica Mexicana',
@@ -160,7 +160,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'An authentic sponge contains no oil or butter: the airy whipped egg structure acts like a sponge that drinks up all three milks without turning mushy.',
       'Refrigerate for at least 8 hours (preferably overnight) before slicing for clean, incredibly juicy dessert portions.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2V',
+    videoUrl: 'https://www.youtube.com/watch?v=ZYoYffXWiwk',
     sources: [
       {
         title: 'Academia Mexicana de Repostería Tradicional',
@@ -249,7 +249,7 @@ export const LATIN_AMERICA_RECIPES_4: ExtendedFoodRecipe[] = [
       'True Mexican Canela cinnamon is soft, crumbly Ceylon cinnamon which blends smoothly without leaving harsh woody grit.',
       'Straining twice through cheesecloth yields a velvety, silky beverage free of powdery sediment.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2W',
+    videoUrl: 'https://www.youtube.com/watch?v=KbyahTnzCkA',
     sources: [
       {
         title: 'Aguas Frescas de México Cultural Heritage Documentation',

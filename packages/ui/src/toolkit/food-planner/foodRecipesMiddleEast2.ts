@@ -62,7 +62,7 @@ export const MIDDLE_EAST_RECIPES_2: ExtendedFoodRecipe[] = [
       'Charring directly over an open flame rather than baking in an oven is what creates the true iconic smoky depth (smell of Damascus mezze).',
       'Never puree baba ganoush in a blender: a hand fork mash preserves delicate fibrous strands.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2N',
+    videoUrl: 'https://www.youtube.com/watch?v=F07G9vK5b08',
     sources: [
       {
         title: 'Levantine Culinary Council Traditional Mezze Guide',
@@ -163,7 +163,7 @@ export const MIDDLE_EAST_RECIPES_2: ExtendedFoodRecipe[] = [
       'Authentic Lebanese Tabbouleh is a parsley salad with a light whisper of bulgur, not a grain bowl with parsley garnish.',
       'Never use a dull knife: crushing parsley releases moisture early and makes the salad watery instead of fluffy.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2O',
+    videoUrl: 'https://www.youtube.com/watch?v=yY_vD4tF-zI',
     sources: [
       {
         title: 'Syndicate of Lebanese Restaurateurs Standards',

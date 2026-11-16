@@ -55,7 +55,7 @@ export const EUROPE_RECIPES_3: ExtendedFoodRecipe[] = [
       'Never stir paella once boiling commences: undisturbed starch settling allows the coveted crispy, fragrant socarrat bottom crust to develop.',
       'Infuse saffron threads in warm broth 15 minutes before cooking for maximum deep amber hue and aromatic profile.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2E',
+    videoUrl: 'https://www.youtube.com/watch?v=1-SJGQ2HLp8',
     sources: [
       {
         title: 'Turespaña Authentic Paella Guild Standards',
@@ -149,7 +149,7 @@ export const EUROPE_RECIPES_3: ExtendedFoodRecipe[] = [
       'Rubbing hot grilled bread with raw garlic melts the clove fibers into the crust without creating harsh raw garlic bitterness.',
       'Drain excess tomato liquid before spooning onto toast to keep the bruschetta perfectly crunchy for entertaining.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2F',
+    videoUrl: 'https://www.youtube.com/watch?v=uK1X_C9Yw1o',
     sources: [
       {
         title: 'Accademia Italiana della Cucina Classic Antipasti',

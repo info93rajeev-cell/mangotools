@@ -82,7 +82,7 @@ export const LATIN_AMERICA_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified high-heat vegetable blistering and tortilla warm steam wrapping',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=fY8bF1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=0bT_j_sF9yA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -249,7 +249,7 @@ export const LATIN_AMERICA_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified lime-cabbage slaw crunch retention and high-heat frying timing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=bY8bF1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=nQJjW58b-g8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

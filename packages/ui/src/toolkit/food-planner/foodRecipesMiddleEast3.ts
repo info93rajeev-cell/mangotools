@@ -65,7 +65,7 @@ export const MIDDLE_EAST_RECIPES_3: ExtendedFoodRecipe[] = [
       'Cooking the bell peppers until very soft before adding tomatoes guarantees sweet caramelized undertones throughout the spiced sauce.',
       'Keep yolks runny so they break and blend into the rich tomato sauce when scooped with warm pita bread.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2P',
+    videoUrl: 'https://www.youtube.com/watch?v=GLdl71c33bY',
     sources: [
       {
         title: 'Jerusalem Food Academy Traditional Skillet Studies',
@@ -143,7 +143,7 @@ export const MIDDLE_EAST_RECIPES_3: ExtendedFoodRecipe[] = [
       'Red split lentils break down naturally without cream: simmering them with carrots gives an irresistible golden sunrise color.',
       'A finishing swirl of fresh lemon juice cuts through the earthiness of cumin and lifts the soup instantly.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2Q',
+    videoUrl: 'https://www.youtube.com/watch?v=S08x-8pS13k',
     sources: [
       {
         title: 'Ramadan Culinary Traditions Council',
@@ -220,7 +220,7 @@ export const MIDDLE_EAST_RECIPES_3: ExtendedFoodRecipe[] = [
       'Only use the mint leaves, discarding thick stems which impart an unwanted astringent bitterness.',
       'Blending at maximum velocity emulsifies natural mint oils with citrus acid, creating a naturally frothy emerald head.',
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=FjC2gM10g2R',
+    videoUrl: 'https://www.youtube.com/watch?v=0kO78z4w1G0',
     sources: [
       {
         title: 'Beirut Cafe Culture Association',

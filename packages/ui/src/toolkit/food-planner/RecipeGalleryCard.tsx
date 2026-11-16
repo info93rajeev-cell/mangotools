@@ -33,7 +33,11 @@ export function RecipeGalleryCard({
             onClick={onView}
             aria-label={`Recipe details: ${recipe.name}`}
             title={`${t.viewRecipe}: ${recipe.name}`}
-          />
+          >
+            <span class={styles.recipeImagePlayCenter} aria-hidden="true">
+              ▶
+            </span>
+          </button>
         )}
         {!isAwaiting && (
           <button

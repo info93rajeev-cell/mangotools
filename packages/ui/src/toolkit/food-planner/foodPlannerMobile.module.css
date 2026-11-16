@@ -221,8 +221,8 @@
 
 .mobileDishThumbBtn {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border: none;
   background: transparent;
@@ -240,12 +240,12 @@
   position: absolute;
   bottom: 2px;
   right: 2px;
-  background: rgba(0, 61, 171, 0.88);
+  background: rgba(0, 61, 171, 0.92);
   color: #ffffff;
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1;
-  padding: 2px 4px;
-  border-radius: 3px;
+  padding: 3px 5px;
+  border-radius: 4px;
   backdrop-filter: blur(2px);
 }
 
@@ -294,21 +294,24 @@
 }
 
 .mobileViewRecipeTextBtn {
-  background: transparent;
-  border: none;
-  padding: 0;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 2px 7px;
   margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #003dab;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #1d4ed8;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  transition: all 0.15s ease;
 }
 
 .mobileViewRecipeTextBtn:active {
-  opacity: 0.7;
+  background: #1d4ed8;
+  color: #ffffff;
 }
 
 .mobileDishControls {

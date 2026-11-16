@@ -67,7 +67,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified dark soy sauce reduction and capsicum crunch retention',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=cY8bC1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=PhgyyJE90w8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -142,7 +142,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified sesame oil finishing and julienne vegetable crispness retention',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=nY8bC1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=inVClSNYBQ4',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -225,7 +225,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified authentic red paste emulsion and vegetable cooking stages',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=tY8bR1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=3XTSCbZfEgM',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -301,7 +301,7 @@ export const PAN_ASIAN_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified velvety chicken velveting technique and peanut timing',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY8bP1a1_bA',
+    videoUrl: 'https://www.youtube.com/watch?v=2u3H7JoAm_U',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',

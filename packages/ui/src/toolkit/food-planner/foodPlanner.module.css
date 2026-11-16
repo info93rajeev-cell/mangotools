@@ -390,19 +390,199 @@
   cursor: pointer;
   z-index: 1;
 }
+.recipeImageClickTarget:hover,
+.recipeImageClickTarget:focus-visible {
+  background: rgba(30, 58, 138, 0.05);
+}
+.recipeImagePlayCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.recipeCard:hover .recipeImagePlayCenter {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.12);
+  background: rgba(29, 78, 216, 0.9);
+}
 .recipeViewBtn {
   position: absolute;
   left: 6px;
   bottom: 6px;
-  border: 1px solid #bfd0f4;
+  border: 1px solid #93c5fd;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.96);
-  color: #003dab;
-  font-size: 11px;
+  color: #1d4ed8;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 10px;
   cursor: pointer;
   z-index: 2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s ease;
+}
+.recipeViewBtn:hover,
+.recipeViewBtn:focus-visible {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1e40af;
+  transform: scale(1.05);
+}
+.visualShowcaseSection {
+  background: linear-gradient(135deg, #f0f7ff 0%, #fefce8 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 12px 14px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.04);
+}
+:global(:where([data-theme="dark"])) .visualShowcaseSection {
+  background: linear-gradient(135deg, #1e293b 0%, #1e1b4b 100%);
+  border-color: #334155;
+}
+.visualShowcaseHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.visualShowcaseBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e40af;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseBadge {
+  color: #93c5fd;
+}
+.visualShowcaseHint {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  color: #475569;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseHint {
+  color: #94a3b8;
+}
+.visualShowcaseTrack {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+.visualShowcaseCard {
+  flex: 0 0 160px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+.visualShowcaseCard:hover,
+.visualShowcaseCard:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(30, 58, 138, 0.15);
+  border-color: #3b82f6;
+}
+.visualShowcaseImgWrapper {
+  position: relative;
+  width: 100%;
+  height: 96px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+.visualShowcaseImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+.visualShowcaseCard:hover .visualShowcaseImg {
+  transform: scale(1.05);
+}
+.visualShowcasePlayTag {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+.visualShowcaseMeta {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.visualShowcaseName {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseName {
+  color: #f8fafc;
+}
+.visualShowcaseRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: #64748b;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseRow {
+  color: #94a3b8;
+}
+.visualShowcaseCourse {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+:global(:where([data-theme="dark"])) .visualShowcaseCourse {
+  background: #0369a1;
+  color: #e0f2fe;
+}
+.visualShowcaseTime {
+  font-size: 10px;
 }
 .recipeAvailability {
   margin: 2px 0 0;
@@ -412,12 +592,26 @@
 .recipeDetailDialog {
   width: min(720px, calc(100vw - 24px));
   max-height: min(90vh, 900px);
+  margin: auto;
   padding: 0;
   background: #ffffff;
   border: 1px solid #b7c8ed;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(11, 16, 75, 0.25);
   color: #0b104b;
+}
+@media (max-width: 768px) {
+  .recipeDetailDialog {
+    width: calc(100vw - 16px);
+    max-width: 100vw;
+    max-height: 94vh;
+    margin: auto;
+    border-radius: 14px;
+  }
+  .recipeDetailBody {
+    padding: 14px 14px 20px;
+    max-height: 94vh;
+  }
 }
 .recipeDetailDialog::backdrop {
   background: rgba(8, 20, 58, 0.64);

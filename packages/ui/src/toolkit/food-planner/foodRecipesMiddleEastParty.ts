@@ -62,7 +62,7 @@ export const MIDDLE_EAST_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified sumac spice seasoning and pita bread presentation',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bT1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=FkWsM4u5d9g',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -135,7 +135,7 @@ export const MIDDLE_EAST_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified toasted almond garnish and dried lime infusion',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY8bK1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=0bT_j_sF9yA',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -223,7 +223,7 @@ export const MIDDLE_EAST_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified orange blossom sugar syrup density and hot pastry pouring sequence',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY8bN1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=ZYoYffXWiwk',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
@@ -292,7 +292,7 @@ export const MIDDLE_EAST_PARTY_RECIPES: ExtendedFoodRecipe[] = [
         checks: 'Verified spice rub formulation and platter presentation assembly',
       },
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=sY8bP1a1_cA',
+    videoUrl: 'https://www.youtube.com/watch?v=nQJjW58b-g8',
     verification: {
       status: 'source-checked',
       by: 'Culinary Team',
