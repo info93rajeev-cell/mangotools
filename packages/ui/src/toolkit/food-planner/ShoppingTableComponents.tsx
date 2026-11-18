@@ -200,8 +200,8 @@ function ShoppingTableRow({
       </td>
       <td>
         <div class={styles.tableItemWithThumb}>
-          <IngredientThumbnail id={item.id} name={item.name} aisle={item.aisle} size={32} />
-          <strong>{item.name}</strong>
+          <IngredientThumbnail id={item.id} name={item.name} aisle={item.aisle} size={38} />
+          <strong style={{ fontSize: '14.5px', color: '#0f172a' }}>{item.name}</strong>
         </div>
       </td>
       <td>
@@ -210,7 +210,8 @@ function ShoppingTableRow({
           style={{
             background: `${aisleColor}18`,
             color: aisleColor,
-            fontWeight: 600,
+            fontWeight: 700,
+            fontSize: '12px',
           }}
         >
           {aisleLabel}

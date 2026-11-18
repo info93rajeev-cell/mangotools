@@ -72,6 +72,31 @@ describe('Catering Portion Balancing Engine', () => {
     expect(factors['gulab-jamun']).toBe(1);
   });
 
+  it('smoothly scales down portions when menu expands to 10 dishes to prevent food waste', () => {
+    const recipes = [
+      createMockRecipe('jeera-rice', 'rice'),
+      createMockRecipe('veg-pulao', 'rice'),
+      createMockRecipe('tandoori-roti', 'bread'),
+      createMockRecipe('naan', 'bread'),
+      createMockRecipe('shahi-paneer', 'main'),
+      createMockRecipe('aloo-gobi', 'main'),
+      createMockRecipe('dal-tadka', 'dal'),
+      createMockRecipe('samosa', 'snack'),
+      createMockRecipe('gulab-jamun', 'dessert'),
+      createMockRecipe('rasgulla', 'dessert'),
+    ];
+
+    const factors = getEffectivePortionFactors(recipes, {});
+
+    // Single-course dal gets breadth factor 0.50
+    expect(factors['dal-tadka']).toBe(0.5);
+    // 2-dish desserts scaled by course factor and breadth factor
+    expect(factors['gulab-jamun']).toBe(0.42);
+    // Total effective servings across 10 dishes remains balanced (~4.6 full dish equivalents)
+    const sumFactors = Object.values(factors).reduce((acc, f) => acc + f, 0);
+    expect(sumFactors).toBeLessThan(5.5);
+  });
+
   it('preserves user custom overrides while auto-scaling remaining dishes', () => {
     const recipes = [
       createMockRecipe('jeera-rice', 'rice'),

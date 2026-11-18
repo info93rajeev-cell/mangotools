@@ -23,10 +23,12 @@ const TREAT_TIERS: Record<number, number> = {
  */
 export function getMenuBreadthFactor(totalDishes: number): number {
   if (totalDishes <= 7) return 1.0;
-  if (totalDishes === 8) return 0.85;
-  if (totalDishes === 9) return 0.75;
-  if (totalDishes === 10) return 0.65;
-  return Math.max(0.35, Number((6.5 / totalDishes).toFixed(2)));
+  if (totalDishes === 8) return 0.65;
+  if (totalDishes === 9) return 0.55;
+  if (totalDishes === 10) return 0.5;
+  if (totalDishes === 11) return 0.45;
+  if (totalDishes === 12) return 0.4;
+  return Math.max(0.25, Number((4.8 / totalDishes).toFixed(2)));
 }
 
 /**
@@ -35,7 +37,8 @@ export function getMenuBreadthFactor(totalDishes: number): number {
  * Real-world catering guidelines:
  * - When guests have 1 option in a course in a standard menu (<= 7 dishes): full preparation (factor = 1.0).
  * - When multiple options in the same course (e.g. 2 rices or 2 curries): intra-course balancing (60% / 45% each).
- * - When multi-course banquet expands to 8+ dishes: breadth scaling gently balances total meal volume.
+ * - When multi-course banquet expands to 8+ dishes: breadth scaling smoothly balances per-dish volume
+ *   so total ingredients for 20 guests stay ~10-12 kg rather than blowing up to 20+ kg.
  */
 export function getCateringBalancedPortion(
   course: string,
@@ -53,7 +56,7 @@ export function getCateringBalancedPortion(
   }
 
   const breadth = getMenuBreadthFactor(totalDishes);
-  const composite = courseCount > 1 ? courseFactor * Math.max(0.7, breadth) : breadth;
+  const composite = courseCount > 1 ? courseFactor * Math.max(0.65, breadth) : breadth;
   return Math.max(0.25, Number(composite.toFixed(2)));
 }
 

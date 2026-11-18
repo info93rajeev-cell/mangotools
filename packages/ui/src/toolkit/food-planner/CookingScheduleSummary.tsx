@@ -53,7 +53,7 @@ export function ScheduleSummaryCard({
         </h2>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13.5px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
         <div
           style={{
             display: 'flex',
@@ -62,8 +62,8 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span style={{ color: '#475569' }}>Total Tasks:</span>
-          <strong>{tasksCount}</strong>
+          <span style={{ color: '#334155', fontWeight: 500 }}>Total Tasks:</span>
+          <strong style={{ fontSize: '15px', color: '#0f172a' }}>{tasksCount}</strong>
         </div>
         <div
           style={{
@@ -73,8 +73,8 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span style={{ color: '#475569' }}>Active Prep Time:</span>
-          <strong>{timeSpanStr}</strong>
+          <span style={{ color: '#334155', fontWeight: 500 }}>Active Prep Time:</span>
+          <strong style={{ fontSize: '15px', color: '#0f172a' }}>{timeSpanStr}</strong>
         </div>
         <div
           style={{
@@ -84,8 +84,8 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span style={{ color: '#475569' }}>Parallel Tasks Max:</span>
-          <strong>
+          <span style={{ color: '#334155', fontWeight: 500 }}>Parallel Tasks Max:</span>
+          <strong style={{ fontSize: '15px', color: '#0f172a' }}>
             {maximumParallel(tasks)} (Burners: {burners})
           </strong>
         </div>
@@ -97,47 +97,59 @@ export function ScheduleSummaryCard({
             borderBottom: '1px solid #f1f5f9',
           }}
         >
-          <span style={{ color: '#475569' }}>Serving Time:</span>
-          <strong>{mealTime}</strong>
+          <span style={{ color: '#334155', fontWeight: 500 }}>Serving Time:</span>
+          <strong style={{ fontSize: '15px', color: '#0f172a' }}>{mealTime}</strong>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-          <span style={{ color: '#475569' }}>Buffer Time:</span>
-          <strong>10 min</strong>
+          <span style={{ color: '#334155', fontWeight: 500 }}>Buffer Time:</span>
+          <strong style={{ fontSize: '15px', color: '#0f172a' }}>10 min</strong>
         </div>
       </div>
 
-      <div style={{ marginTop: '20px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
-        <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: '#0f172a' }}>
+      <div style={{ marginTop: '22px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+        <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 14px 0', color: '#0f172a' }}>
           Recipe Readiness
         </h3>
         <div class={styles.categoryBreakdown}>
           {recipeProgress.map((r) => (
-            <div key={r.id} style={{ marginBottom: '8px' }}>
-              <div class={styles.breakdownRow}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div key={r.id} style={{ marginBottom: '12px' }}>
+              <div class={styles.breakdownRow} style={{ marginBottom: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img
                     src={r.thumbnailUrl ?? '/food/recipes/personal-placeholder.svg'}
                     alt=""
                     class={styles.tableThumb}
-                    style={{ width: '24px', height: '24px' }}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '8px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/food/recipes/personal-placeholder.svg';
                     }}
                   />
-                  <span style={{ fontWeight: 600, fontSize: '12.5px' }}>{r.name}</span>
+                  <span style={{ fontWeight: 700, fontSize: '13.5px', color: '#0f172a' }}>
+                    {r.name}
+                  </span>
                 </div>
                 <strong
-                  style={{ fontSize: '12px', color: r.percent === 100 ? '#16a34a' : '#2563eb' }}
+                  style={{
+                    fontSize: '13.5px',
+                    fontWeight: 700,
+                    color: r.percent === 100 ? '#16a34a' : '#2563eb',
+                  }}
                 >
                   {r.percent}%
                 </strong>
               </div>
-              <div class={styles.progressBarBg}>
+              <div class={styles.progressBarBg} style={{ height: '8px', borderRadius: '4px' }}>
                 <div
                   class={styles.progressBarFill}
                   style={{
                     width: `${r.percent}%`,
                     background: r.percent === 100 ? '#16a34a' : '#2563eb',
+                    borderRadius: '4px',
                   }}
                 />
               </div>

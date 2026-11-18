@@ -296,7 +296,9 @@ function MenuCostTable({
                       aria-label={`Select ${dish.name} for cost calculation`}
                     />
                   </td>
-                  <td style={{ color: '#64748b', fontSize: '12px' }}>{dish.num}</td>
+                  <td style={{ color: '#64748b', fontSize: '13px', fontWeight: 600 }}>
+                    {dish.num}
+                  </td>
                   <td>
                     <div class={styles.tableItemWithThumb}>
                       <img
@@ -307,7 +309,7 @@ function MenuCostTable({
                           (e.target as HTMLImageElement).src = '/food/recipes/besan-ladoo.jpg';
                         }}
                       />
-                      <strong>{dish.name}</strong>
+                      <strong style={{ fontSize: '14.5px', color: '#0f172a' }}>{dish.name}</strong>
                     </div>
                   </td>
                   <td>{dish.servings}</td>

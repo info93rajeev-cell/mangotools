@@ -333,8 +333,9 @@ function GalleryPaginationBar({
         onChange={(e) => onPageSizeChange(Number((e.target as HTMLSelectElement).value) || 8)}
         aria-label="Recipes per page"
       >
-        <option value="8">8 per page</option>
-        <option value="16">16 per page</option>
+        <option value="8">8 per page (2 rows)</option>
+        <option value="12">12 per page (3 rows)</option>
+        <option value="16">16 per page (4 rows)</option>
       </select>
     </div>
   );

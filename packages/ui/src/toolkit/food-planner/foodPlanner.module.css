@@ -1358,15 +1358,16 @@
    Approved Reference Design Restorations (Founder Approved Layout Elements)
    ========================================================================== */
 
-/* Circular thumbnails in tables */
+/* Circular & rounded thumbnails in tables */
 .tableThumb {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
   border: 1px solid #cdd7f6;
   background: #f8fafc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .tableItemWithThumb {
@@ -1850,9 +1851,14 @@
     font-size: 26px;
   }
   .tableThumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+  }
+  .recipesLayoutGrid .tableThumb {
     width: 34px;
     height: 30px;
-    border-radius: 8px;
+    border-radius: 6px;
   }
   .recipeImageHolder {
     height: 108px;
@@ -1910,7 +1916,10 @@
 }
 @media (min-width: 1025px) {
   .costTable .tableThumb {
-    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
   }
   .otherCostsGrid {
     gap: 8px 16px;

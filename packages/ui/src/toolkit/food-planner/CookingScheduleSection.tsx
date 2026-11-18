@@ -186,8 +186,9 @@ function ScheduleHeader({
           type="button"
           class={styles.actionBtn}
           style={{
-            height: '32px',
-            fontSize: '12px',
+            height: '34px',
+            fontSize: '13px',
+            fontWeight: 600,
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
@@ -197,10 +198,10 @@ function ScheduleHeader({
         >
           <Icon name="printer" /> Print Schedule
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '6px' }}>
           <label
             for="schedule-meal-time"
-            style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}
+            style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}
           >
             Meal:
           </label>
@@ -208,20 +209,20 @@ function ScheduleHeader({
             id="schedule-meal-time"
             type="time"
             class={styles.textInput}
-            style={{ height: '32px', width: '90px', fontSize: '12px', padding: '0 4px' }}
+            style={{ height: '34px', width: '96px', fontSize: '13px', padding: '0 6px' }}
             value={mealTime}
             onChange={(e) => onSetMealTime((e.target as HTMLInputElement).value)}
           />
           <label
             for="schedule-burners"
-            style={{ fontSize: '12px', fontWeight: 600, color: '#475569', marginLeft: '4px' }}
+            style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginLeft: '6px' }}
           >
             Burners:
           </label>
           <select
             id="schedule-burners"
             class={styles.selectInput}
-            style={{ height: '32px', width: '56px', fontSize: '12px', padding: '0 4px' }}
+            style={{ height: '34px', width: '60px', fontSize: '13px', padding: '0 6px' }}
             value={burners}
             onChange={(e) => onSetBurners(Number((e.target as HTMLSelectElement).value) || 2)}
           >

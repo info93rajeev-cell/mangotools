@@ -104,20 +104,21 @@ function ScheduleTableRow({
 
   return (
     <tr style={{ background: task.isCompleted ? '#f8fafc' : 'transparent' }}>
-      <td style={{ color: '#64748b', fontSize: '12px' }}>{idx + 1}</td>
+      <td style={{ color: '#0f172a', fontSize: '13.5px', fontWeight: 700 }}>{idx + 1}</td>
       <td>
         <input
           type="checkbox"
           aria-label={`Mark task completed: ${task.name}`}
           checked={task.isCompleted}
           onChange={() => onToggleTask(task.id)}
-          style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+          style={{ width: '18px', height: '18px', cursor: 'pointer' }}
         />
       </td>
       <td>
         <strong
           style={{
-            fontSize: '13px',
+            fontSize: '14.5px',
+            fontWeight: 700,
             display: 'block',
             textDecoration: task.isCompleted ? 'line-through' : 'none',
             color: task.isCompleted ? '#94a3b8' : '#0f172a',
@@ -127,17 +128,27 @@ function ScheduleTableRow({
         </strong>
       </td>
       <td style={{ whiteSpace: 'nowrap' }}>
-        <span class={styles.taskTime}>
+        <span
+          class={styles.taskTime}
+          style={{ fontSize: '13.5px', fontWeight: 700, color: '#1d4ed8' }}
+        >
           <Icon name="clock" /> {task.startTime}
         </span>
       </td>
-      <td style={{ color: '#475569', fontSize: '12.5px', whiteSpace: 'nowrap' }}>
+      <td
+        style={{
+          color: '#0f172a',
+          fontSize: '13.5px',
+          fontWeight: 600,
+          whiteSpace: 'nowrap',
+        }}
+      >
         {task.durationMinutes} min
       </td>
       <td>
         <span
           class={styles.badge}
-          style={{ background: '#f1f5f9', color: '#334155', fontSize: '11px' }}
+          style={{ background: '#f1f5f9', color: '#0f172a', fontSize: '12px', fontWeight: 600 }}
         >
           {task.recipeName}
         </span>
@@ -147,8 +158,9 @@ function ScheduleTableRow({
           class={styles.badge}
           style={{
             background: isHigh ? '#fee2e2' : '#f1f5f9',
-            color: isHigh ? '#b91c1c' : '#475569',
-            fontWeight: 600,
+            color: isHigh ? '#991b1b' : '#334155',
+            fontWeight: 700,
+            fontSize: '12px',
           }}
         >
           {task.priority}
