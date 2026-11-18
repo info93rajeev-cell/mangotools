@@ -171,6 +171,44 @@ export function CostSummaryStats({
 
       <div
         style={{
+          background: '#eff6ff',
+          border: '1.5px solid #bfdbfe',
+          borderRadius: '10px',
+          padding: '12px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '6px',
+        }}
+      >
+        <div>
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: '#1e3a8a',
+              display: 'block',
+              textTransform: 'uppercase',
+              letterSpacing: '0.4px',
+            }}
+          >
+            🍽️ Plate Level / Per Guest Cost
+          </span>
+          <span style={{ fontSize: '12px', color: '#1e40af', fontWeight: 600 }}>
+            For {guests} guests ({dishesCount} dishes)
+          </span>
+        </div>
+        <strong style={{ fontSize: '22px', fontWeight: 800, color: '#1e3a8a' }}>
+          {currencySymbol}
+          {costPerServing}
+          <small style={{ fontSize: '12px', fontWeight: 700, color: '#1e40af', marginLeft: '3px' }}>
+            /plate
+          </small>
+        </strong>
+      </div>
+
+      <div
+        style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '8px',

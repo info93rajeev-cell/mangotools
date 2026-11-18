@@ -13,7 +13,7 @@ export function IngredientThumbnail({
   id,
   name,
   aisle = 'other',
-  size = 32,
+  size = 38,
   className,
 }: IngredientThumbnailProps) {
   const visual = getDistinctIngredientVisual(id, name, aisle);
@@ -26,16 +26,16 @@ export function IngredientThumbnail({
         width: `${size}px`,
         height: `${size}px`,
         minWidth: `${size}px`,
-        borderRadius: '6px',
+        borderRadius: '8px',
         background: visual.bg,
         color: visual.color,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: `${Math.round(size * 0.54)}px`,
+        fontSize: `${Math.round(size * 0.58)}px`,
         lineHeight: 1,
         userSelect: 'none',
-        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08)',
+        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
         flexShrink: 0,
       }}
       title={`${name} (${aisle})`}
